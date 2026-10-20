@@ -14,17 +14,18 @@ Minimalne CI: formatowanie, vet, build, start CLI. Nie używamy CI jako językow
 2. [01 — model i zależności grafów](01-graph-layers.md)
 3. [02 — przepływ analizy/realizacji](02-runtime-pipeline.md)
 4. [03 — format źródła i runtime](03-data-decisions.md)
-5. [06 — walencja i ConstructionGraph](06-constructions-and-valency.md)
-6. [07 — generatory, paradygmaty i wyjątki](07-morphology-procedures-exceptions.md)
-7. [08 — MeaningGraph, fakty i rozumowanie](08-meaning-facts-reasoning.md)
-8. [09 — kontrakt pluginów językowych](09-language-plugin-contract.md)
-9. [10 — dane, słowniki i źródła](10-import-provenance.md)
-10. [11 — minimalne kontrole i ręczny review](11-manual-review.md)
-11. [12 — decyzje/ryzyka](12-decisions-and-risks.md)
-12. [13 — EPIC-i i kolejność](13-issue-traceability.md)
-13. [14 — przykładowe przebiegi projektowe](14-worked-vertical-slices.md)
+5. [04 — wyniki, diagnostyki i limity](04-results-and-limits.md) — kontrakt informacyjny, bez bramek testowych
+6. [06 — walencja i ConstructionGraph](06-constructions-and-valency.md)
+7. [07 — generatory, paradygmaty i wyjątki](07-morphology-procedures-exceptions.md)
+8. [08 — MeaningGraph, fakty i rozumowanie](08-meaning-facts-reasoning.md)
+9. [09 — kontrakt pluginów językowych](09-language-plugin-contract.md)
+10. [10 — dane, słowniki i źródła](10-import-provenance.md)
+11. [11 — minimalne kontrole i ręczny review](11-manual-review.md)
+12. [12 — decyzje/ryzyka](12-decisions-and-risks.md)
+13. [13 — EPIC-i i kolejność](13-issue-traceability.md)
+14. [14 — przykładowe przebiegi projektowe](14-worked-vertical-slices.md)
 
-**Nie tworzymy** dawnych `04-results-and-limits.md` ani `05-parity-policy.md` jako dokumentów bramkujących testy. G00-03 opisze statusy w kodzie, a G00-04 prosty sposób opisywania źródeł i danych; bez przewidzianych wcześniej generatorów raportów i oracli.
+Nie tworzymy dokumentów 04/05 jako bramek do testów, goldów ani parity. G00-03 udostępnia niebramkujący `04-results-and-limits.md` opisujący statusy i limity kodu. G00-04 opisze prosty sposób opisywania źródeł i danych; bez generatorów raportów i oracli.
 
 ## Co jest normatywne
 
