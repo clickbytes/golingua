@@ -12,6 +12,7 @@ import (
 
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/importer"
+	"github.com/clickbytes/golingua/internal/pack"
 	"github.com/clickbytes/golingua/internal/provenance"
 	"github.com/clickbytes/golingua/internal/staging"
 	"github.com/clickbytes/golingua/internal/status"
@@ -30,8 +31,11 @@ func run(args []string, stdout, stderr io.Writer) int {
 	if len(args) > 0 && args[0] == "snapshot" {
 		return runSnapshot(args[1:], stdout, stderr)
 	}
+	if len(args) > 0 && args[0] == "pack" {
+		return runPack(args[1:], stdout, stderr)
+	}
 	if len(args) == 1 && (args[0] == "--help" || args[0] == "-h" || args[0] == "help") {
-		fmt.Fprintln(stdout, "golingua-import --manifest PATH --data-dir DIR\n        golingua-import snapshot preview --manifest PATH --data-dir DIR --store DIR\n        golingua-import snapshot apply --manifest PATH --data-dir DIR --store DIR\n        golingua-import unimorph --input PATH --mapping PATH --features PATH --source-id ID --source-version VERSION --license LABEL (--source-path PATH | --source-uri URI)\n        golingua-import constructions --input PATH --features PATH\nValidates offline data and emits non-activated proposals; snapshot activation is local and explicit.")
+		fmt.Fprintln(stdout, "golingua-import --manifest PATH --data-dir DIR\n        golingua-import snapshot preview --manifest PATH --data-dir DIR --store DIR\n        golingua-import snapshot apply --manifest PATH --data-dir DIR --store DIR\n        golingua-import pack inspect --store DIR --dataset-id ID\n        golingua-import unimorph --input PATH --mapping PATH --features PATH --source-id ID --source-version VERSION --license LABEL (--source-path PATH | --source-uri URI)\n        golingua-import constructions --input PATH --features PATH\nValidates offline data and emits non-activated proposals; snapshot activation is local and explicit.")
 		return 0
 	}
 	if len(args) == 1 && args[0] == "--version" {
@@ -79,6 +83,57 @@ func run(args []string, stdout, stderr io.Writer) int {
 		Senses   int    `json:"senses"`
 		Bindings int    `json:"bindings"`
 	}{"valid", manifest.DatasetID, conceptCount, lexemeCount, senseCount, bindingCount})
+	return 0
+}
+
+func runPack(args []string, stdout, stderr io.Writer) int {
+	if len(args) == 1 && (args[0] == "--help" || args[0] == "-h") {
+		fmt.Fprintln(stdout, "Usage: golingua-import pack inspect --store DIR --dataset-id ID")
+		return 0
+	}
+	if len(args) == 2 && args[0] == "inspect" && (args[1] == "--help" || args[1] == "-h") {
+		fmt.Fprintln(stdout, "Usage: golingua-import pack inspect --store DIR --dataset-id ID")
+		return 0
+	}
+	if len(args) == 0 || args[0] != "inspect" {
+		fmt.Fprintln(stderr, "usage: golingua-import pack inspect --store DIR --dataset-id ID")
+		return 2
+	}
+	flags := flag.NewFlagSet("pack inspect", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	storeRoot := flags.String("store", "", "existing local active snapshot store")
+	datasetID := flags.String("dataset-id", "", "dataset whose active snapshot to inspect")
+	if err := flags.Parse(args[1:]); err != nil {
+		return 2
+	}
+	if flags.NArg() != 0 || !validCLIPath(*storeRoot) || *datasetID == "" || len(*datasetID) > importer.MaxManifestIDBytes {
+		fmt.Fprintln(stderr, "usage: golingua-import pack inspect --store DIR --dataset-id ID")
+		return 2
+	}
+	for _, path := range []string{*storeRoot, filepath.Join(*storeRoot, "active"), filepath.Join(*storeRoot, "snapshots")} {
+		info, err := os.Lstat(path)
+		if err != nil || !info.IsDir() || info.Mode()&os.ModeSymlink != 0 {
+			printFailure(stdout, stderr, newCLIFailure(status.OutcomeError, "SNAPSHOT_STORE_UNAVAILABLE", "store", "pack inspection requires an existing snapshot store with real active and snapshots directories"))
+			return 1
+		}
+	}
+	store, err := staging.OpenStore(*storeRoot)
+	if err != nil {
+		printFailure(stdout, stderr, storeInputError(*storeRoot, err))
+		return 1
+	}
+	compiled, err := pack.LoadActive(store, *datasetID)
+	if err != nil {
+		printFailure(stdout, stderr, err)
+		return 1
+	}
+	if err := json.NewEncoder(stdout).Encode(struct {
+		Status string       `json:"status"`
+		Pack   pack.Summary `json:"pack"`
+	}{Status: "loaded", Pack: compiled.Summary()}); err != nil {
+		fmt.Fprintf(stderr, "cannot write pack report: %v\n", err)
+		return 1
+	}
 	return 0
 }
 
