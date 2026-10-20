@@ -5,7 +5,9 @@ The Go APIs in `internal/construction` keep three representations separate:
 - `QuantityPlan` requires a validated `Meaning` quantifier node and an NP
   plan. Its semantic quantifier is independent of the optional grammatical
   feature bundle, which may describe number, case, or gender only when the
-  language profile declares those dimensions.
+  language profile declares those dimensions. The caller supplies the explicit
+  quantifier target and NP plan; absent an approved sense-to-concept binding,
+  the compiler does not assert that they denote the same entity.
 - `TemporalPlan` represents an explicit calendar date, clock time, duration,
   or relative day. It does not store or infer grammatical tense. Clock timezone
   offsets remain optional; relative days require an explicit Meaning anchor.

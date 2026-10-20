@@ -135,6 +135,16 @@ func CompileQuantity(plan QuantityPlan, dataProfile QuantityTimeMWEProfile, feat
 	if quantifier.Target != plan.TargetMeaningNodeID {
 		return CompiledQuantityPlan{}, unsupported("QUANTITY_TARGET_MISMATCH", "target_meaning_node_id", "quantity plan target must match the explicit Meaning quantifier target")
 	}
+	var targetNode *meaning.Node
+	for i := range graph.Nodes {
+		if graph.Nodes[i].ID == plan.TargetMeaningNodeID {
+			targetNode = &graph.Nodes[i]
+			break
+		}
+	}
+	if targetNode == nil || targetNode.Kind != meaning.KindReferent {
+		return CompiledQuantityPlan{}, unsupported("QUANTITY_TARGET_NOT_REFERENT", "target_meaning_node_id", "quantity plan must target an explicit Meaning referent")
+	}
 	if err := quantifier.Quantifier.Validate(); err != nil {
 		return CompiledQuantityPlan{}, err
 	}
