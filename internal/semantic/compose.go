@@ -250,6 +250,11 @@ func validateCompositionInputs(input CompositionInput, sourceBytes int) error {
 		if err := checkSpan(node.Span, fmt.Sprintf("forest.nodes[%d].span", i)); err != nil {
 			return err
 		}
+		for _, candidateID := range node.CandidateIDs {
+			if !addText(candidateID) {
+				return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "forest", "nested parser text exceeds the semantic text budget")
+			}
+		}
 		alternatives += len(node.Alternatives)
 		nestedItems += len(node.CandidateIDs) + len(node.Alternatives)
 		for j, alternative := range node.Alternatives {
@@ -287,6 +292,11 @@ func validateCompositionInputs(input CompositionInput, sourceBytes int) error {
 		}
 		if alternatives > maxAlternatives || nestedItems > maxNestedItems {
 			return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "forest", "nested parser alternatives exceed the bounded inventory")
+		}
+	}
+	for _, rootID := range input.Forest.Roots {
+		if !addText(string(rootID)) {
+			return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "forest.roots", "root identifiers exceed the semantic text budget")
 		}
 	}
 	candidateIDs := make(map[string]struct{}, len(input.Candidates))
@@ -342,6 +352,23 @@ func validateCompositionInputs(input CompositionInput, sourceBytes int) error {
 		}
 		if len(unmatched.CandidateID)+len(unmatched.Reason) > 1024 {
 			return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", fmt.Sprintf("forest.unmatched[%d]", i), "unmatched candidate metadata exceeds the text bound")
+		}
+	}
+	if len(input.References) > len(input.Candidates) || !addText(input.RequestContextID) {
+		return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "references", "reference inventory or request context exceeds the semantic text budget")
+	}
+	for i, reference := range input.References {
+		if !addText(reference.CandidateID, string(reference.ReferentID), reference.EvidenceID) {
+			return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", fmt.Sprintf("references[%d]", i), "reference evidence exceeds the semantic text budget")
+		}
+	}
+	for i, operator := range input.Operators {
+		if !addText(operator.TargetCandidateID, string(operator.Operator.Kind), string(operator.Operator.Value), string(operator.Operator.SemanticScope.TargetNodeID), string(operator.Operator.SemanticScope.ScopeNodeID)) {
+			return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", fmt.Sprintf("operators[%d]", i), "operator evidence exceeds the semantic text budget")
+		}
+		provenance := operator.Operator.Provenance
+		if !addText(provenance.ID, provenance.Path, provenance.URI, provenance.Version, provenance.License, provenance.Author, provenance.ChecksumSHA256) {
+			return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", fmt.Sprintf("operators[%d]", i), "operator provenance exceeds the semantic text budget")
 		}
 	}
 	return nil
