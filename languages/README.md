@@ -1,0 +1,9 @@
+# Dane językowe
+
+`languages/<kod>/` jest miejscem na przyszłe dane i reguły konkretnego języka, począwszy od `pl` i `en`. Pakiety językowe są zwykłymi danymi Go/JSON, nie kodem pluginów `.so`.
+
+Pakiet językowy może opisywać MorphLexeme, LexicalSense, paradygmaty, wyjątki, walencję i konstrukcje. Jego manifest podaje `schema_version`, `dataset_id`, kod języka oraz źródła. `SourceRef` wymaga jawnej wersji i pola licencji; walidacja metadanych nie stanowi zgody na redystrybucję.
+
+Definicje ConceptID pozostają w neutralnym CORE. Lexeme może być znany morfologii, choć jego sens nie ma zatwierdzonego mapowania do konceptu. Nie przenoś polskiej fleksji, angielskiego szyku ani innych reguł gramatycznych do CORE; nie zgaduj SenseID lub SemanticBinding z pisowni.
+
+Obecnie nie ma loadera ani aktywnych pakietów językowych. Ten dokument ustala granicę odpowiedzialności, a nie deklaruje obsługi PL lub EN w CLI.
