@@ -1,6 +1,6 @@
 # Architektura golingua — Go od zera, ocena ręczna
 
-**Status architektury: PROPOSED, nie wdrożony silnik.** Bieżący runtime ma CLI/bootstrap oraz typowane statusy i metadane źródeł; nie ma jeszcze parsera, leksykonu ani realizera. Wyjście `translate` pozostaje unsupported dopóki realizer/parsing nie powstanie.
+**Status architektury: PROPOSED, nie wdrożony silnik.** Bieżący runtime ma CLI/bootstrap, typowane statusy, metadane źródeł oraz stabilne symbole i snapshot-local table NodeID; nie ma jeszcze parsera, leksykonu ani realizera. Wyjście `translate` pozostaje unsupported dopóki realizer/parsing nie powstanie.
 
 ## Fundamentalna decyzja (2026-10-20)
 
@@ -12,19 +12,20 @@ Minimalne CI: formatowanie, vet, build, start CLI. Nie używamy CI jako językow
 
 1. [00 — cel i ograniczenia](00-product-contract.md)
 2. [01 — model i zależności grafów](01-graph-layers.md)
-3. [02 — przepływ analizy/realizacji](02-runtime-pipeline.md)
-4. [03 — format źródła i runtime](03-data-decisions.md)
-5. [04 — wyniki, diagnostyki i limity](04-results-and-limits.md) — kontrakt informacyjny, bez bramek testowych
-6. [05 — źródła danych i manifesty](05-data-sources.md) — otoczka źródeł, bez importera i parity gate
-7. [06 — walencja i ConstructionGraph](06-constructions-and-valency.md)
-8. [07 — generatory, paradygmaty i wyjątki](07-morphology-procedures-exceptions.md)
-9. [08 — MeaningGraph, fakty i rozumowanie](08-meaning-facts-reasoning.md)
-10. [09 — kontrakt pluginów językowych](09-language-plugin-contract.md)
-11. [10 — dane, słowniki i źródła](10-import-provenance.md)
-12. [11 — minimalne kontrole i ręczny review](11-manual-review.md)
-13. [12 — decyzje/ryzyka](12-decisions-and-risks.md)
-14. [13 — EPIC-i i kolejność](13-issue-traceability.md)
-15. [14 — przykładowe przebiegi projektowe](14-worked-vertical-slices.md)
+3. [IDs — stable symbols i dense runtime IDs](ids.md)
+4. [02 — przepływ analizy/realizacji](02-runtime-pipeline.md)
+5. [03 — format źródła i runtime](03-data-decisions.md)
+6. [04 — wyniki, diagnostyki i limity](04-results-and-limits.md) — kontrakt informacyjny, bez bramek testowych
+7. [05 — źródła danych i manifesty](05-data-sources.md) — otoczka źródeł, bez importera i parity gate
+8. [06 — walencja i ConstructionGraph](06-constructions-and-valency.md)
+9. [07 — generatory, paradygmaty i wyjątki](07-morphology-procedures-exceptions.md)
+10. [08 — MeaningGraph, fakty i rozumowanie](08-meaning-facts-reasoning.md)
+11. [09 — kontrakt pluginów językowych](09-language-plugin-contract.md)
+12. [10 — dane, słowniki i źródła](10-import-provenance.md)
+13. [11 — minimalne kontrole i ręczny review](11-manual-review.md)
+14. [12 — decyzje/ryzyka](12-decisions-and-risks.md)
+15. [13 — EPIC-i i kolejność](13-issue-traceability.md)
+16. [14 — przykładowe przebiegi projektowe](14-worked-vertical-slices.md)
 
 Dokumenty 04 i 05 opisują typy/statusy oraz manifesty/pochodzenie; nie są bramkami do testów, goldów ani parity. G00-03 dodaje `04-results-and-limits.md`, a G00-04 dodaje `05-data-sources.md`. Nie tworzymy dokumentu `05-parity-policy.md`, generatorów raportów ani oracli.
 
