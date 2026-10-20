@@ -27,6 +27,7 @@ const (
 )
 
 var errDuplicateJSONKey = errors.New("duplicate JSON object key")
+var errNonCanonicalJSONKey = errors.New("non-canonical JSON object key")
 
 type Manifest struct {
 	SchemaVersion int                    `json:"schema_version"`
@@ -195,6 +196,9 @@ func rejectDuplicateKeys(data []byte) error {
 				if !ok {
 					return fmt.Errorf("object key is not a string")
 				}
+				if !canonicalJSONFieldName(key) {
+					return fmt.Errorf("%w %q", errNonCanonicalJSONKey, key)
+				}
 				if _, exists := seen[key]; exists {
 					return fmt.Errorf("%w %q", errDuplicateJSONKey, key)
 				}
@@ -224,6 +228,18 @@ func rejectDuplicateKeys(data []byte) error {
 		return fmt.Errorf("trailing JSON data")
 	}
 	return nil
+}
+
+func canonicalJSONFieldName(value string) bool {
+	if value == "" {
+		return false
+	}
+	for _, character := range value {
+		if !(character >= 'a' && character <= 'z') && !(character >= '0' && character <= '9') && character != '_' {
+			return false
+		}
+	}
+	return true
 }
 
 func invalid(code, path, message string) error {

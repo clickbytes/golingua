@@ -62,9 +62,8 @@ func validateOperatorReferences(packages []construction.ConstructionPackage, ope
 			return invalid("UNATTACHED_CONSTRUCTION_OPERATOR", fmt.Sprintf("operators[%d].id", operatorIndex), "operator must be explicitly listed by an owning family")
 		}
 		_, inputOwner := owners[operator.InputFamilyID.String()]
-		_, outputOwner := owners[operator.OutputFamilyID.String()]
-		if !inputOwner && !outputOwner {
-			return invalid("OPERATOR_FAMILY_ATTACHMENT_MISMATCH", fmt.Sprintf("operators[%d].id", operatorIndex), "operator must be listed by its input or output family")
+		if !inputOwner {
+			return invalid("OPERATOR_INPUT_FAMILY_NOT_LICENSED", fmt.Sprintf("operators[%d].id", operatorIndex), "operator must be listed by its input family")
 		}
 		for ownerID := range owners {
 			if ownerID != operator.InputFamilyID.String() && ownerID != operator.OutputFamilyID.String() {

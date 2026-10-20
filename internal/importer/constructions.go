@@ -3,6 +3,7 @@ package importer
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 
@@ -98,6 +99,9 @@ func DecodeConstructionDataset(data []byte, featureProfile *features.LanguageFea
 		return CompiledConstructionDataset{}, unknown("FEATURE_PROFILE_UNAVAILABLE", "feature_profile", "construction import requires a language feature profile")
 	}
 	if err := rejectDuplicateKeys(data); err != nil {
+		if errors.Is(err, errNonCanonicalJSONKey) {
+			return CompiledConstructionDataset{}, invalid("NON_CANONICAL_JSON_KEY", "dataset", err.Error())
+		}
 		return CompiledConstructionDataset{}, invalid("DUPLICATE_JSON_KEY", "dataset", err.Error())
 	}
 	decoder := json.NewDecoder(bytes.NewReader(data))

@@ -140,6 +140,11 @@ func rejectDuplicateJSONKeys(data []byte) error {
 				if !ok {
 					return fmt.Errorf("object key is not a string")
 				}
+				for _, character := range key {
+					if !(character >= 'a' && character <= 'z') && !(character >= '0' && character <= '9') && character != '_' {
+						return fmt.Errorf("non-canonical object key %q", key)
+					}
+				}
 				if _, exists := seen[key]; exists {
 					return fmt.Errorf("duplicate object key %q", key)
 				}

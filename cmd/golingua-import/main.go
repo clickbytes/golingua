@@ -94,12 +94,12 @@ func runConstructions(args []string, stdout, stderr io.Writer) int {
 	}
 	data, err := readFileBounded(*inputPath, importer.MaxConstructionDatasetBytes)
 	if err != nil {
-		fmt.Fprintf(stderr, "cannot read construction dataset: %v\n", err)
+		printFailure(stdout, stderr, constructionInputError("input", importer.MaxConstructionDatasetBytes, err))
 		return 1
 	}
 	profileData, err := readFileBounded(*featuresPath, features.MaxProfileBytes)
 	if err != nil {
-		fmt.Fprintf(stderr, "cannot read feature profile: %v\n", err)
+		printFailure(stdout, stderr, constructionInputError("features", features.MaxProfileBytes, err))
 		return 1
 	}
 	profile, err := features.DecodeProfile(profileData)
@@ -218,9 +218,31 @@ func readFileBounded(path string, maximum int64) ([]byte, error) {
 		return nil, err
 	}
 	if int64(len(data)) > maximum {
-		return nil, fmt.Errorf("manifest exceeds %d bytes", maximum)
+		return nil, errInputFileTooLarge
 	}
 	return data, nil
+}
+
+var errInputFileTooLarge = errors.New("input file exceeds configured limit")
+
+type cliFailure struct{ result status.Result }
+
+func (failure *cliFailure) Error() string         { return failure.result.Diagnostics[0].Message }
+func (failure *cliFailure) Result() status.Result { return failure.result }
+
+func constructionInputError(label string, maximum int64, cause error) error {
+	kind := status.OutcomeError
+	code, message := "INPUT_READ_FAILED", "cannot read construction input file"
+	if errors.Is(cause, errInputFileTooLarge) {
+		kind, code = status.OutcomeResourceLimit, "RESOURCE_LIMIT"
+		message = fmt.Sprintf("construction input exceeds configured byte limit of %d", maximum)
+	}
+	diagnostic := status.Diagnostic{Code: code, Path: label, Message: message, Severity: status.SeverityError}
+	result, err := status.NewResult(kind, "", []status.Diagnostic{diagnostic}, nil)
+	if err != nil {
+		return &cliFailure{result: status.Result{Status: status.OutcomeError, Diagnostics: []status.Diagnostic{{Code: "INPUT_READ_FAILED", Path: label, Message: "cannot read construction input file", Severity: status.SeverityError}}}}
+	}
+	return &cliFailure{result: result}
 }
 
 func printFailure(stdout, stderr io.Writer, err error) {
