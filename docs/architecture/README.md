@@ -1,6 +1,6 @@
 # Architektura golingua — Go od zera, ocena ręczna
 
-**Status architektury: PROPOSED, nie wdrożony silnik.** Bieżący Go ma tylko CLI/bootstrap i minimalny CI. Wyjście `translate` pozostaje unsupported dopóki realizer/parsing nie powstanie.
+**Status architektury: PROPOSED, nie wdrożony silnik.** Bieżący runtime ma CLI/bootstrap oraz typowane statusy i metadane źródeł; nie ma jeszcze parsera, leksykonu ani realizera. Wyjście `translate` pozostaje unsupported dopóki realizer/parsing nie powstanie.
 
 ## Fundamentalna decyzja (2026-10-20)
 
@@ -15,17 +15,18 @@ Minimalne CI: formatowanie, vet, build, start CLI. Nie używamy CI jako językow
 3. [02 — przepływ analizy/realizacji](02-runtime-pipeline.md)
 4. [03 — format źródła i runtime](03-data-decisions.md)
 5. [04 — wyniki, diagnostyki i limity](04-results-and-limits.md) — kontrakt informacyjny, bez bramek testowych
-6. [06 — walencja i ConstructionGraph](06-constructions-and-valency.md)
-7. [07 — generatory, paradygmaty i wyjątki](07-morphology-procedures-exceptions.md)
-8. [08 — MeaningGraph, fakty i rozumowanie](08-meaning-facts-reasoning.md)
-9. [09 — kontrakt pluginów językowych](09-language-plugin-contract.md)
-10. [10 — dane, słowniki i źródła](10-import-provenance.md)
-11. [11 — minimalne kontrole i ręczny review](11-manual-review.md)
-12. [12 — decyzje/ryzyka](12-decisions-and-risks.md)
-13. [13 — EPIC-i i kolejność](13-issue-traceability.md)
-14. [14 — przykładowe przebiegi projektowe](14-worked-vertical-slices.md)
+6. [05 — źródła danych i manifesty](05-data-sources.md) — otoczka źródeł, bez importera i parity gate
+7. [06 — walencja i ConstructionGraph](06-constructions-and-valency.md)
+8. [07 — generatory, paradygmaty i wyjątki](07-morphology-procedures-exceptions.md)
+9. [08 — MeaningGraph, fakty i rozumowanie](08-meaning-facts-reasoning.md)
+10. [09 — kontrakt pluginów językowych](09-language-plugin-contract.md)
+11. [10 — dane, słowniki i źródła](10-import-provenance.md)
+12. [11 — minimalne kontrole i ręczny review](11-manual-review.md)
+13. [12 — decyzje/ryzyka](12-decisions-and-risks.md)
+14. [13 — EPIC-i i kolejność](13-issue-traceability.md)
+15. [14 — przykładowe przebiegi projektowe](14-worked-vertical-slices.md)
 
-Nie tworzymy dokumentów 04/05 jako bramek do testów, goldów ani parity. G00-03 udostępnia niebramkujący `04-results-and-limits.md` opisujący statusy i limity kodu. G00-04 opisze prosty sposób opisywania źródeł i danych; bez generatorów raportów i oracli.
+Dokumenty 04 i 05 opisują typy/statusy oraz manifesty/pochodzenie; nie są bramkami do testów, goldów ani parity. G00-03 dodaje `04-results-and-limits.md`, a G00-04 dodaje `05-data-sources.md`. Nie tworzymy dokumentu `05-parity-policy.md`, generatorów raportów ani oracli.
 
 ## Co jest normatywne
 

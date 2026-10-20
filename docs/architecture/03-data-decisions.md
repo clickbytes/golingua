@@ -35,4 +35,4 @@ Do rozwoju PL/EN można wykorzystać projektowo własne definicje i ręczne regu
 
 ## Aktualny status
 
-Bootstrap posiada tylko `go.mod` i CLI. Wszystkie planowane struktury leksykalne, grafowe, składniowe i pakiety są **PROPOSED**, dopóki ich implementacyjne issue nie zakończy się rzeczywistym scaleniem. Nie powołuj się na procenty pokrycia, jeśli nie ustaliliśmy jeszcze docelowej zawartości nowego słownika.
+Bootstrap posiada `go.mod`, CLI i generyczny pakiet typowanych wyników. G00-04 dodaje `SourceRef` i dokumentację manifestów, ale nie dodaje loadera, aktywnego słownika, walidatora pełnych rekordów ani pakietów językowych. Pozostałe planowane struktury leksykalne, grafowe i składniowe są **PROPOSED**, dopóki ich implementacyjne issue nie zakończy się rzeczywistym scaleniem. Nie powołuj się na procenty pokrycia, jeśli nie ustaliliśmy jeszcze docelowej zawartości nowego słownika.
