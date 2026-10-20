@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "dataset_id": "golingua-en-seed-v1",
+  "language": "en",
+  "profile": "features.json",
+  "morphology": {
+    "paradigms": "morphology/paradigms.json",
+    "lexemes": "morphology/lexemes.json"
+  },
+  "capabilities": {
+    "morphology_generate": "implemented",
+    "morphology_analyze": "implemented",
+    "sentence_analysis": "unsupported",
+    "meaning_realization": "unsupported"
+  }
+}
