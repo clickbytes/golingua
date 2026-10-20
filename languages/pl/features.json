@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "language": "pl",
+  "version": "v2026-10-20.1",
+  "dimensions": [
+    {"id": "aspect", "allow_absent": true, "allow_unknown": true, "values": ["imperfective", "perfective"]},
+    {"id": "case", "allow_absent": true, "allow_unknown": true, "values": ["accusative", "dative", "genitive", "instrumental", "locative", "nominative", "vocative"]},
+    {"id": "degree", "allow_absent": true, "allow_unknown": true, "values": ["comparative", "positive", "superlative"]},
+    {"id": "gender", "allow_absent": true, "allow_unknown": true, "values": ["feminine", "masculine_animal", "masculine_inanimate", "masculine_personal", "neuter"]},
+    {"id": "mood", "allow_absent": true, "allow_unknown": true, "values": ["conditional", "imperative", "indicative"]},
+    {"id": "number", "allow_absent": true, "allow_unknown": true, "values": ["plural", "singular"]},
+    {"id": "person", "allow_absent": true, "allow_unknown": true, "values": ["first", "second", "third"]},
+    {"id": "tense", "allow_absent": true, "allow_unknown": true, "values": ["future", "past", "present"]},
+    {"id": "verb_form", "allow_absent": true, "allow_unknown": true, "values": ["finite", "gerund", "imperative", "infinitive", "participle"]},
+    {"id": "voice", "allow_absent": true, "allow_unknown": true, "values": ["active", "impersonal", "passive"]}
+  ]
+}

@@ -6,4 +6,4 @@ Pakiet językowy może opisywać MorphLexeme, LexicalSense, paradygmaty, wyjątk
 
 Definicje ConceptID pozostają w neutralnym CORE. Lexeme może być znany morfologii, choć jego sens nie ma zatwierdzonego mapowania do konceptu. Nie przenoś polskiej fleksji, angielskiego szyku ani innych reguł gramatycznych do CORE; nie zgaduj SenseID lub SemanticBinding z pisowni.
 
-Obecnie nie ma loadera ani aktywnych pakietów językowych. Ten dokument ustala granicę odpowiedzialności, a nie deklaruje obsługi PL lub EN w CLI.
+`pl/features.json` i `en/features.json` zawierają wstępne, wersjonowane profile cech morfologicznych. Nie ma jeszcze loadera w CLI, parsera, generatora ani aktywnych pakietów słownikowych; same profile nie deklarują obsługi PL lub EN w CLI.
