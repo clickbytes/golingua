@@ -125,7 +125,7 @@ func validateCandidate(candidate Candidate) (Candidate, importer.Dataset, error)
 	}
 	dataset, err := importer.LoadDataset(root, stable.Manifest)
 	if err != nil {
-		return Candidate{}, importer.Dataset{}, storeError(status.OutcomeInvalid, "CANDIDATE_VALIDATION_FAILED", "candidate", err.Error())
+		return Candidate{}, importer.Dataset{}, preserveImportFailure(err, status.OutcomeInvalid, "CANDIDATE_VALIDATION_FAILED", "candidate")
 	}
 	stable.Summary = summarizeDataset(dataset)
 	return stable, dataset, nil
@@ -188,7 +188,7 @@ func (store *Store) writeSnapshot(datasetDir, snapshotDir string, candidate Cand
 	// receives its content-addressed name.
 	validated, err := importer.LoadDataset(temporary, candidate.Manifest)
 	if err != nil {
-		return storeError(status.OutcomeInvalid, "SNAPSHOT_VALIDATION_FAILED", "snapshot", err.Error())
+		return preserveImportFailure(err, status.OutcomeInvalid, "SNAPSHOT_VALIDATION_FAILED", "snapshot")
 	}
 	if summarizeDataset(validated) != summarizeDataset(dataset) {
 		return storeError(status.OutcomeInvalid, "SNAPSHOT_VALIDATION_MISMATCH", "snapshot", "snapshot summary changed while preparing the stored files")
@@ -218,6 +218,17 @@ func (store *Store) writeSnapshot(datasetDir, snapshotDir string, candidate Cand
 		return storeInfrastructure("SNAPSHOT_SYNC_FAILED", "snapshots", err)
 	}
 	return nil
+}
+
+func preserveImportFailure(err error, fallback status.OutcomeKind, code, path string) error {
+	var source interface{ Result() status.Result }
+	if errors.As(err, &source) {
+		result := source.Result()
+		if result.Validate() == nil && result.Status != status.OutcomeOK {
+			return &StoreError{result: result}
+		}
+	}
+	return storeError(fallback, code, path, err.Error())
 }
 
 func (store *Store) replacePointer(pointer storePointer) (bool, error) {

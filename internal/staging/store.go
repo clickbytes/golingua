@@ -297,7 +297,7 @@ func (store *Store) loadSnapshot(datasetID, digest string) (Candidate, error) {
 	}
 	candidate, err := BuildCandidate(snapshotDir, manifest)
 	if err != nil {
-		return Candidate{}, storeError(status.OutcomeInvalid, "INVALID_SNAPSHOT_DATA", "snapshot", err.Error())
+		return Candidate{}, preserveImportFailure(err, status.OutcomeInvalid, "INVALID_SNAPSHOT_DATA", "snapshot")
 	}
 	if candidate.Digest != digest {
 		return Candidate{}, storeError(status.OutcomeInvalid, "SNAPSHOT_DIGEST_MISMATCH", "snapshot.digest", "snapshot contents do not match their content address")
