@@ -1,0 +1,10 @@
+# Go build and profiling artifacts
+/golingua
+/golingua.exe
+/bin/
+/coverage.out
+/*.prof
+
+# Local staged corpora and debug reports (published fixtures stay committed)
+/.local/
+/.reports/
