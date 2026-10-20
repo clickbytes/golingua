@@ -6,13 +6,13 @@ Stable symbols name source definitions across versions. Dense `NodeID` values ar
 
 The canonical external form is `namespace:name`, for example `concept:animal.dog`. `Namespace` and `Name` are separate fields in Go. A name may contain dot-separated nonempty segments. Each segment uses ASCII letters, digits, `_` or `-`; canonical output uses lowercase ASCII. Whitespace, controls, separators inside a segment, empty segments and names exceeding the documented byte/segment bounds are invalid.
 
-Identifiers are intentionally ASCII-only. Concept, lexeme, sense, construction and procedure IDs are machine identifiers, not display labels or words in Polish/English. Rejecting non-ASCII here prevents canonically composed/decomposed and confusable Unicode spellings from creating aliases without imposing an implicit normalization policy. Human-readable Unicode definitions belong in separate data fields.
+Identifiers are intentionally ASCII-only. Concept, lexeme, sense, relation, construction and procedure IDs are machine identifiers, not display labels or words in Polish/English. Rejecting non-ASCII here prevents canonically composed/decomposed and confusable Unicode spellings from creating aliases without imposing an implicit normalization policy. Human-readable Unicode definitions belong in separate data fields.
 
 The JavaScript-sensitive segments `__proto__`, `prototype` and `constructor` are rejected in namespaces and names so identifiers remain safe across JSON/map tooling as well as Go. No namespace or concept is inferred from a name prefix; callers must supply the namespace explicitly.
 
 ## Distinct stable ID types
 
-`ConceptID`, `LexemeID`, `SenseID`, `ConstructionID` and `ProcedureID` are separate Go types whose constructors enforce their namespace. They cannot be substituted for each other by assignment. `Symbol` is the generic source-table key when a table intentionally contains more than one symbol kind.
+`ConceptID`, `LexemeID`, `SenseID`, `ConstructionID` and `ProcedureID` are separate Go types whose constructors enforce their namespace. Relation schemas use a typed `RelationID` in `internal/core`. IDs cannot be substituted for each other by assignment. `Symbol` is the generic source-table key when a table intentionally contains more than one symbol kind.
 
 ## Dense runtime table
 
