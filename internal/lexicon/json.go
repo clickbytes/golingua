@@ -125,7 +125,7 @@ func (binding *SemanticBinding) UnmarshalJSON(data []byte) error {
 		return fmt.Errorf("binding core ref: %w", err)
 	}
 	var source provenance.SourceRef
-	if err := decodeExactObject(wire.Provenance, map[string]bool{"id": true, "path": true, "uri": true, "version": true, "license": true}, &source); err != nil {
+	if err := decodeExactObject(wire.Provenance, map[string]bool{"id": true, "path": true, "uri": true, "version": true, "license": true, "author": true, "checksum_sha256": true}, &source); err != nil {
 		return fmt.Errorf("binding provenance: %w", err)
 	}
 	*binding = SemanticBinding{SenseID: senseID, CoreRef: coreRef, Mapping: wire.Mapping, Status: wire.Status, Provenance: source}
