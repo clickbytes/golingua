@@ -24,7 +24,8 @@ Construction slot bindings assign semantic roles. OVS surface order cannot
 assign roles. When a plan requires a case, only an explicit matching case value
 licenses that path. An unknown or conflicting feature cannot prove a hard
 constraint; unresolved evidence stays represented and marks coverage
-incomplete. Soft constraints are advisory and do not remove candidates.
+incomplete. Dedicated case evidence and a `case` feature, when both supplied,
+must agree. Soft constraints are advisory and do not remove candidates.
 
 Optional slots may be omitted only when licensed by the family and variant. A
 WH gap additionally needs explicit evidence naming its slot, semantic role and

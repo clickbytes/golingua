@@ -375,6 +375,9 @@ func validateCandidate(c PhraseCandidate, i int, l analyzer.LexicalLattice, seen
 	if featureCase, exists := c.Features[features.FeatureID("case")]; exists && c.CaseKnown && string(featureCase) != c.Case {
 		return newParserError(path+".features.case", "case feature disagrees with the dedicated case evidence")
 	}
+	if _, exists := c.Features[features.FeatureID("case")]; exists && !c.CaseKnown {
+		return newParserError(path+".features.case", "case feature evidence requires matching known dedicated case evidence")
+	}
 	return nil
 }
 
@@ -973,5 +976,22 @@ func appendDiagnosticOnce(values []status.Diagnostic, d status.Diagnostic) []sta
 	if len(values) < status.MaxDiagnostics {
 		return append(values, d)
 	}
+	if isPriorityParserDiagnostic(d.Code) {
+		for i := len(values) - 1; i >= 0; i-- {
+			if !isPriorityParserDiagnostic(values[i].Code) {
+				values[i] = d
+				return values
+			}
+		}
+	}
 	return values
+}
+
+func isPriorityParserDiagnostic(code string) bool {
+	switch code {
+	case "RESOURCE_LIMIT", "NO_LANGUAGE_PLANS", "NO_START_PLAN", "NO_PARSE", "UNRESOLVED_PARSE_EVIDENCE", "UNSUPPORTED_COMPETING_HEAD":
+		return true
+	default:
+		return false
+	}
 }
