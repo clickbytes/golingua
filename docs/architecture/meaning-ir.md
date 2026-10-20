@@ -31,6 +31,8 @@ There are no grammatical case, gender, inflection, tense morphology or surface-o
 
 The graph is a bounded semantic representation, not a parser, translator, persistent world model or evidence store. No language-specific data belongs in CORE.
 
+Request-scoped referents, mentions, context boundaries and the separate structural/semantic/surface equivalence operations are described in [references](references.md). A referent concept denotes a class, not an individual identity.
+
 ## CLI inspection
 
 `golingua meaning canonicalize --json` reads one Meaning document from stdin, applies the strict structural validator and prints canonical JSON. It does not load ontology data; callers that need cross-CORE role checks use `meaning.ValidateMeaning` with a compiled `core.ConceptGraph`.
