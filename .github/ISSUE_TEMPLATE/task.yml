@@ -1,0 +1,55 @@
+name: Task
+description: One implementation task in the active epic
+title: "[TASK][G00] "
+body:
+  - type: input
+    id: parent
+    attributes:
+      label: Parent epic
+      placeholder: "#1"
+    validations:
+      required: true
+  - type: dropdown
+    id: status
+    attributes:
+      label: Queue status
+      options:
+        - QUEUED
+        - ACTIVE
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal and observable CLI behavior
+      description: Describe positive and negative behavior; do not claim capabilities that do not exist.
+    validations:
+      required: true
+  - type: textarea
+    id: files
+    attributes:
+      label: Files and symbols
+      description: Name intended files/symbols and the implementation steps.
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification commands
+      value: "gofmt -l <changed Go files>\ngo vet ./...\ngo build ./cmd/golingua\ngo run ./cmd/golingua --version\ngo run ./cmd/golingua --help"
+    validations:
+      required: true
+  - type: textarea
+    id: manual
+    attributes:
+      label: Manual language evaluation
+      description: Record owner-provided examples and observed output if available; otherwise state NOT EVALUATED. Do not invent examples or expected output.
+  - type: checkboxes
+    id: policy
+    attributes:
+      label: Work policy
+      options:
+        - label: One implementing agent, branch, and PR; do not begin the next task before this task merges.
+          required: true
+        - label: This issue does not require unit tests, golds, JS parity, or a language-quality metric unless the owner separately changes project policy.
+          required: true

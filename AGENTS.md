@@ -13,6 +13,12 @@
 - Twórz jeden PR na issue. Przeglądaj diff, rzeczywisty CI i ręcznie obserwowane wyniki. Po merge sprawdź main i dopiero rozpocznij następny task.
 - Connector GitHub nie jest terminalem użytkownika. Nie podawaj fikcyjnego lokalnego PASS. Zapisz NOT RUN, jeśli nie uruchomiono CLI na rzeczywistym środowisku.
 
+## Narzędzia pracy Codex
+
+- Jeśli RTK jest zainstalowany, preferuj `rtk <polecenie>` dla terminala i `gh` (np. `rtk git status`, `rtk gh issue list`). Bez RTK używaj zwykłego polecenia; RTK jest opcjonalnym narzędziem agenta, nie zależnością projektu.
+- Używaj CodeGraph do wyszukiwania symboli, zebrania lokalnego kontekstu i sprawdzenia wpływu zmiany, jeśli indeks jest dostępny. Wyniki indeksu mogą być nieaktualne lub niepełne; sprawdzaj ważne ustalenia w plikach źródłowych. CodeGraph nie jest autorytetem dla semantyki produktu ani danych językowych.
+- Brak RTK, CodeGraph, ich konfiguracji lub indeksu nie może blokować builda ani CI.
+
 ## Minimalny CI, niemal zero testów
 
 - Wymagamy `gofmt`, `go vet ./...`, `go build ./cmd/golingua` i lekkiego smoke `--help`/`--version`.
@@ -38,3 +44,5 @@ Brak pamięci i samouczenia w Go v0. Bez własnego serwera, FST, grafowej bazy i
 ## Zmiana zakresu
 
 Jeśli stare issue nadal mówi o goldach, niezależnym oracle, matrycy testowej, test_*.go czy regresji względem flexLingua, jest to **stare wymaganie zastąpione decyzją 2026-10-20**. Takie issue musi zostać poprawione przed implementacją, nie wykonywane literalnie. Nie wolno rozszerzać zakresu bez zgody właściciela.
+
+@RTK.md

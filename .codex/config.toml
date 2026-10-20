@@ -1,0 +1,5 @@
+# Loaded only when this repository is trusted by Codex.
+# Override with a user-level CodeGraph MCP entry only if needed for this repo.
+[mcp_servers.codegraph]
+command = "codegraph"
+args = ["serve", "--mcp"]
