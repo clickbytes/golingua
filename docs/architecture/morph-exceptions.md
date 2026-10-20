@@ -26,7 +26,7 @@ Kompilator kopiuje wejście i porządkuje skompilowany zestaw po ID, dlatego zmi
 - `block`: zwraca `blocked=true`, bez form. Konsument nie może użyć regularnego fallbacku; sygnał blokady dotyczy też akceptacji formy w analizatorze.
 - `replace`: zwraca wyłącznie jedną jawnie podaną formę. Forma bazowa nie jest zachowywana.
 - `add_variant`: zachowuje formy bazowe ze źródłem `regular` i dopisuje podane warianty ze źródłem `exception`.
-- `stem_override`: zwraca jawne `StemOverrides`, `RequiresRegeneration=true`, źródło `exception` i ślad. Konsument generuje formę od nowa na nadpisanym temacie; nie używa wyniku policzonego ze starego tematu.
+- `stem_override`: zwraca jawne `StemOverrides` i `RequiresRegeneration=true`. Generator ponawia generowanie na nadpisanym temacie; wynik zachowuje `source=exception`, ID reguły i jej ślad.
 - `suppletion`: zwraca wyłącznie jedną jawną formę, bez fikcyjnego regularnego przepisu.
 
 Każda wygenerowana forma wyjątkowa zachowuje `source=exception`, ID reguły oraz `SourceRef`. Ślad niesie ID reguły, efekt i identyfikator źródła. Nieznany selektor z brakującą/absent cechą daje `unknown`; nierozstrzygnięta cecha daje `incomplete`. Brak formy bazowej bez pasującego wyjątku daje `unknown`.
@@ -35,4 +35,4 @@ Pusta komórka paradygmatu, jawny zerowy wykładnik i brak dowodu na formę to t
 
 ## Limity i granice
 
-Kompilator ogranicza zestaw do 2 048 reguł, 8 192 zapisów form i 16 384 krawędzi override; jedna reguła może emitować najwyżej 64 formy. Formy są ograniczone do 1 024 bajtów i 512 punktów kodowych. Nie ma wykonań skryptów, fallbacku po `block` ani zależności od kolejności dokumentu. Obsługa wyjątków jest osobnym krokiem runtime; pełny `Generate`/`Analyze` jest realizowany w kolejnym issue G02.
+Kompilator ogranicza zestaw do 2 048 reguł, 8 192 zapisów form i 16 384 krawędzi override; jedna reguła może emitować najwyżej 64 formy. Formy są ograniczone do 1 024 bajtów i 512 punktów kodowych. Nie ma wykonań skryptów, fallbacku po `block` ani zależności od kolejności dokumentu. Generator i analyzer używają tych reguł wraz z ograniczoną tabelą relacji morfologicznej.

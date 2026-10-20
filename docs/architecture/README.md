@@ -1,6 +1,6 @@
 # Architektura golingua — Go od zera, ocena ręczna
 
-**Status architektury: częściowo wdrożone typy danych, nie wdrożony silnik.** Bieżący runtime ma CLI/bootstrap, typowane statusy, metadane źródeł, stable symbols, snapshot-local table NodeID, kompilowany ConceptGraph, bounded adjacency/traversal, versioned Meaning IR i fail-closed asserted projection. Nie ma jeszcze leksykonu, parsera ani realizera. Wyjście `translate` pozostaje unsupported dopóki realizer/parsing nie powstanie.
+**Status architektury: częściowo wdrożony runtime.** Bieżący runtime ma CLI/bootstrap, typowane statusy, metadane źródeł, stable symbols, snapshot-local table NodeID, kompilowany ConceptGraph, bounded adjacency/traversal, versioned Meaning IR, fail-closed asserted projection oraz ograniczony generator i analyzer morfologiczny. Nie ma jeszcze zintegrowanego leksykonu, parsera ani realizera. Wyjście `translate` pozostaje unsupported dopóki realizer/parsing nie powstanie.
 
 ## Fundamentalna decyzja (2026-10-20)
 
@@ -27,6 +27,7 @@ Minimalne CI: formatowanie, vet, build, start CLI. Nie używamy CI jako językow
 15. [06 — walencja i ConstructionGraph](06-constructions-and-valency.md)
 16. [07 — generatory, paradygmaty i wyjątki](07-morphology-procedures-exceptions.md)
    - [Kontrakt formalnych wyjątków morfologicznych](morph-exceptions.md)
+   - [Generator i finite relation table](morph-backends.md)
 17. [08 — MeaningGraph, fakty i rozumowanie](08-meaning-facts-reasoning.md)
 18. [09 — kontrakt pluginów językowych](09-language-plugin-contract.md)
 19. [10 — dane, słowniki i źródła](10-import-provenance.md)

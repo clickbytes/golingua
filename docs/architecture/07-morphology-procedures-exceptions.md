@@ -1,6 +1,6 @@
 # 07 — Proceduralna morfologia, generatory i wyjątki
 
-**Częściowo wdrożone w G02.** Typowane operacje, kompilator paradygmatów i formalny kompilator wyjątków istnieją w `internal/procedure` oraz `internal/morph`. Pełny generator/analyzer pozostaje w kolejce G02. Podstawowa zasada: opisujemy **klasy i reguły**, a nie przechowujemy wszystkich regularnych form pojedynczych słów.
+**Częściowo wdrożone w G02.** Typowane operacje, kompilator paradygmatów, formalny kompilator wyjątków, generator i finite relation analyzer istnieją w `internal/procedure` oraz `internal/morph`. Podstawowa zasada: opisujemy **klasy i reguły**, a nie przechowujemy wszystkich regularnych form pojedynczych słów.
 
 ## Osobne komponenty
 
@@ -20,7 +20,7 @@ Kompilator sprawdza wersję profilu, komórki i reguły, cykle dziedziczenia, ko
 
 ## Generator
 
-`(LexemeID, FeatureBundle) → select paradigm/cell → pick stem → operations → exception → legal surface variants`.
+`Generate(MorphLexeme, PrincipalParts, FeatureBundle, CompiledParadigms, CompiledExceptions, Budget)` wybiera komórkę, jawne principal parts, wykonuje plan i rozstrzyga wyjątki. Zwraca `generated`, `blocked`, `unavailable` albo `unknown`; błędne, niekompletne i przekraczające limit żądania pozostają typowanymi błędami.
 
 Reguły sprawdzają POS, profil, dostępność komórki i zgodność wyjątków. Kiedy forma jest zablokowana, generator **nie może** wrócić do regularnej postaci przez obejście. Gdy jej nie znamy, odpowiedź brzmi `unknown/unavailable`, nie wymyślona forma. Pusta końcówka (zero exponent) nie jest brakującą komórką.
 
@@ -39,7 +39,9 @@ Precedence: jawna hierarchia zakresów + deklaracja nadpisania, **nie** kolejno�
 
 ## Analizator form
 
-`Analyze("read")` powinien móc zwrócić wiele interpretacji dla jednego zapisu, np. formy odpowiadające różnym komórkom. Generator i analyzer korzystają z tych samych reguł, ale nie muszą działać przez ten sam algorytm. Na początek wystarczy prosta, ograniczona finite relation table + reverse index.
+`BuildFiniteRelationTable` waliduje odczyty, zapisuje relację deterministycznie i wiąże ją z SHA-256. `BuildInverseIndex` tworzy indeks powierzchnia→odczyty; `Analyze(surface)` zwraca wszystkie licencjonowane homografy i synkretyczne interpretacje z leksymem, POS, paradygmatem, komórką, cechami, źródłem, provenance i śladem.
+
+Powierzchnia jest normalizowana wyłącznie do Unicode NFC. Wielkość liter i diakrytyki pozostają bez zmian; nie ma case folding ani usuwania akcentów. Odczyt wyjątkowy wymaga zgodnego ID reguły, provenance i śladu źródła. Blokada nie dopuszcza regularnego fallbacku. Tabela oraz zapytania mają jawne limity bajtów, liczby odczytów i długości powierzchni.
 
 Ani FST, ani lazy backend nie są obowiązkowym warunkiem. Nie udowadniamy teraz przewagi wydajności nad starym JavaScriptem.
 
