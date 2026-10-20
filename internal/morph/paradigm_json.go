@@ -35,7 +35,7 @@ func (cell *ParadigmCell) UnmarshalJSON(data []byte) error {
 func (rule *CellRule) UnmarshalJSON(data []byte) error {
 	type wireRule CellRule
 	var decoded wireRule
-	if err := decodeMorphObject(data, map[string]bool{"cell_id": true, "steps": true}, []string{"cell_id", "steps"}, []string{"steps"}, &decoded); err != nil {
+	if err := decodeMorphObject(data, map[string]bool{"cell_id": true, "procedure_id": true, "provenance": true, "steps": true}, []string{"cell_id", "steps"}, []string{"procedure_id", "provenance", "steps"}, &decoded); err != nil {
 		return err
 	}
 	*rule = CellRule(decoded)

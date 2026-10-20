@@ -7,6 +7,7 @@ import (
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/lexicon"
 	"github.com/clickbytes/golingua/internal/procedure"
+	"github.com/clickbytes/golingua/internal/provenance"
 )
 
 type ParadigmID string
@@ -27,8 +28,10 @@ type ParadigmCell struct {
 }
 
 type CellRule struct {
-	CellID CellID                `json:"cell_id"`
-	Steps  []procedure.Operation `json:"steps"`
+	CellID      CellID                `json:"cell_id"`
+	ProcedureID string                `json:"procedure_id,omitempty"`
+	Provenance  provenance.SourceRef  `json:"provenance,omitempty"`
+	Steps       []procedure.Operation `json:"steps"`
 }
 
 type Paradigm struct {

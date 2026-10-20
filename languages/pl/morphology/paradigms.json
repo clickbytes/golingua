@@ -25,20 +25,20 @@
       {"id": "pl_voc", "features": [{"feature": "number", "state": "known", "value": "plural"}, {"feature": "case", "state": "known", "value": "vocative"}, {"feature": "gender", "state": "known", "value": "masculine_personal"}]}
     ],
     "rules": [
-      {"cell_id": "sg_nom", "steps": [{"kind": "select_stem", "stem_id": "root"}]},
-      {"cell_id": "sg_gen", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "a"}]},
-      {"cell_id": "sg_dat", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "owi"}]},
-      {"cell_id": "sg_acc", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "a"}]},
-      {"cell_id": "sg_inst", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "em"}]},
-      {"cell_id": "sg_loc", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "alternation", "from": "ent", "to": "encie"}]},
-      {"cell_id": "sg_voc", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "alternation", "from": "ent", "to": "encie"}]},
-      {"cell_id": "pl_nom", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "alternation", "from": "ent", "to": "enci"}]},
-      {"cell_id": "pl_gen", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "ów"}]},
-      {"cell_id": "pl_dat", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "om"}]},
-      {"cell_id": "pl_acc", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "ów"}]},
-      {"cell_id": "pl_inst", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "ami"}]},
-      {"cell_id": "pl_loc", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "ach"}]},
-      {"cell_id": "pl_voc", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "alternation", "from": "ent", "to": "enci"}]}
+      {"cell_id": "sg_nom", "procedure_id": "procedure:pl_masc_personal_student.sg_nom", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}]},
+      {"cell_id": "sg_gen", "procedure_id": "procedure:pl_masc_personal_student.sg_gen", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "a"}]},
+      {"cell_id": "sg_dat", "procedure_id": "procedure:pl_masc_personal_student.sg_dat", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "owi"}]},
+      {"cell_id": "sg_acc", "procedure_id": "procedure:pl_masc_personal_student.sg_acc", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "a"}]},
+      {"cell_id": "sg_inst", "procedure_id": "procedure:pl_masc_personal_student.sg_inst", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "em"}]},
+      {"cell_id": "sg_loc", "procedure_id": "procedure:pl_masc_personal_student.sg_loc", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "alternation", "from": "ent", "to": "encie"}]},
+      {"cell_id": "sg_voc", "procedure_id": "procedure:pl_masc_personal_student.sg_voc", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "alternation", "from": "ent", "to": "encie"}]},
+      {"cell_id": "pl_nom", "procedure_id": "procedure:pl_masc_personal_student.pl_nom", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "alternation", "from": "ent", "to": "enci"}]},
+      {"cell_id": "pl_gen", "procedure_id": "procedure:pl_masc_personal_student.pl_gen", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "ów"}]},
+      {"cell_id": "pl_dat", "procedure_id": "procedure:pl_masc_personal_student.pl_dat", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "om"}]},
+      {"cell_id": "pl_acc", "procedure_id": "procedure:pl_masc_personal_student.pl_acc", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "ów"}]},
+      {"cell_id": "pl_inst", "procedure_id": "procedure:pl_masc_personal_student.pl_inst", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "ami"}]},
+      {"cell_id": "pl_loc", "procedure_id": "procedure:pl_masc_personal_student.pl_loc", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "ach"}]},
+      {"cell_id": "pl_voc", "procedure_id": "procedure:pl_masc_personal_student.pl_voc", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "alternation", "from": "ent", "to": "enci"}]}
     ]
   },
   {
@@ -59,12 +59,12 @@
       {"id": "pres_3pl", "features": [{"feature": "verb_form", "state": "known", "value": "finite"}, {"feature": "tense", "state": "known", "value": "present"}, {"feature": "mood", "state": "known", "value": "indicative"}, {"feature": "voice", "state": "known", "value": "active"}, {"feature": "person", "state": "known", "value": "third"}, {"feature": "number", "state": "known", "value": "plural"}]}
     ],
     "rules": [
-      {"cell_id": "pres_1sg", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "am"}]},
-      {"cell_id": "pres_2sg", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "asz"}]},
-      {"cell_id": "pres_3sg", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "a"}]},
-      {"cell_id": "pres_1pl", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "amy"}]},
-      {"cell_id": "pres_2pl", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "acie"}]},
-      {"cell_id": "pres_3pl", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "ają"}]}
+      {"cell_id": "pres_1sg", "procedure_id": "procedure:pl_verb_czytac_present.pres_1sg", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "am"}]},
+      {"cell_id": "pres_2sg", "procedure_id": "procedure:pl_verb_czytac_present.pres_2sg", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "asz"}]},
+      {"cell_id": "pres_3sg", "procedure_id": "procedure:pl_verb_czytac_present.pres_3sg", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "a"}]},
+      {"cell_id": "pres_1pl", "procedure_id": "procedure:pl_verb_czytac_present.pres_1pl", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "amy"}]},
+      {"cell_id": "pres_2pl", "procedure_id": "procedure:pl_verb_czytac_present.pres_2pl", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "acie"}]},
+      {"cell_id": "pres_3pl", "procedure_id": "procedure:pl_verb_czytac_present.pres_3pl", "provenance": {"id":"golingua-pl-morphology-seed","path":"languages/pl/morphology/paradigms.json","version":"1","license":"internal"}, "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "ają"}]}
     ]
   }
 ]
