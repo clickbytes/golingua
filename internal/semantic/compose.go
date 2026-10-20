@@ -243,6 +243,12 @@ func validateCompositionInputs(input CompositionInput, sourceBytes int) error {
 		}
 		return nil
 	}
+	checkInventory := func(path string) error {
+		if alternatives > maxAlternatives || nestedItems > maxNestedItems {
+			return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", path, "nested semantic input exceeds its bounded inventory")
+		}
+		return nil
+	}
 	for i, node := range input.Forest.Nodes {
 		if !addText(string(node.ID), string(node.Category)) {
 			return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "forest", "nested parser text exceeds the semantic text budget")
@@ -250,18 +256,24 @@ func validateCompositionInputs(input CompositionInput, sourceBytes int) error {
 		if err := checkSpan(node.Span, fmt.Sprintf("forest.nodes[%d].span", i)); err != nil {
 			return err
 		}
+		alternatives += len(node.Alternatives)
+		nestedItems += len(node.CandidateIDs) + len(node.Alternatives)
+		if err := checkInventory("forest"); err != nil {
+			return err
+		}
 		for _, candidateID := range node.CandidateIDs {
 			if !addText(candidateID) {
 				return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "forest", "nested parser text exceeds the semantic text budget")
 			}
 		}
-		alternatives += len(node.Alternatives)
-		nestedItems += len(node.CandidateIDs) + len(node.Alternatives)
 		for j, alternative := range node.Alternatives {
 			if !addText(string(alternative.PlanID), alternative.FamilyID.String(), string(alternative.VariantID), alternative.Permission.SenseID.String(), string(alternative.Permission.FrameID), alternative.DerivationID) {
 				return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "forest", "nested parser text exceeds the semantic text budget")
 			}
 			nestedItems += len(alternative.Slots) + len(alternative.Unresolved)
+			if err := checkInventory("forest"); err != nil {
+				return err
+			}
 			for _, unresolved := range alternative.Unresolved {
 				if !addText(unresolved) {
 					return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "forest", "nested parser text exceeds the semantic text budget")
@@ -274,6 +286,10 @@ func validateCompositionInputs(input CompositionInput, sourceBytes int) error {
 				if slot.WHGap != nil && !addText(slot.WHGap.SlotID, string(slot.WHGap.Role), string(slot.WHGap.ScopeNodeID)) {
 					return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "forest", "nested parser text exceeds the semantic text budget")
 				}
+				nestedItems += len(slot.CandidateIDs) + len(slot.NodeIDs)
+				if err := checkInventory("forest"); err != nil {
+					return err
+				}
 				for _, candidateID := range slot.CandidateIDs {
 					if !addText(candidateID) {
 						return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "forest", "nested parser text exceeds the semantic text budget")
@@ -284,14 +300,10 @@ func validateCompositionInputs(input CompositionInput, sourceBytes int) error {
 						return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "forest", "nested parser text exceeds the semantic text budget")
 					}
 				}
-				nestedItems += len(slot.CandidateIDs) + len(slot.NodeIDs)
 				if slot.WHGap != nil && (len(slot.WHGap.SlotID)+len(slot.WHGap.ScopeNodeID)) > 512 {
 					return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", fmt.Sprintf("forest.nodes[%d].alternatives[%d].slots[%d]", i, j, k), "nested parser metadata exceeds its text bound")
 				}
 			}
-		}
-		if alternatives > maxAlternatives || nestedItems > maxNestedItems {
-			return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "forest", "nested parser alternatives exceed the bounded inventory")
 		}
 	}
 	for _, rootID := range input.Forest.Roots {
@@ -315,6 +327,9 @@ func validateCompositionInputs(input CompositionInput, sourceBytes int) error {
 			return err
 		}
 		nestedItems += len(candidate.ReadingIDs) + len(candidate.SenseIDs) + len(candidate.Features)
+		if err := checkInventory("candidates"); err != nil {
+			return err
+		}
 		for _, value := range candidate.ReadingIDs {
 			if !addText(value) {
 				return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "candidates", "nested candidate text exceeds the semantic text budget")
@@ -330,9 +345,6 @@ func validateCompositionInputs(input CompositionInput, sourceBytes int) error {
 				return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "candidates", "candidate feature text exceeds the semantic text budget")
 			}
 		}
-		if nestedItems > maxNestedItems {
-			return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "candidates", "nested candidate metadata exceeds the bounded inventory")
-		}
 	}
 	for i, token := range input.Lattice.Tokens {
 		if !addText(token.Token.Surface, token.Token.Normalized, token.Token.Folded, string(token.Token.Kind)) {
@@ -342,8 +354,8 @@ func validateCompositionInputs(input CompositionInput, sourceBytes int) error {
 			return err
 		}
 		nestedItems += len(token.Readings)
-		if nestedItems > maxNestedItems {
-			return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "lattice", "nested lexical readings exceed the bounded inventory")
+		if err := checkInventory("lattice"); err != nil {
+			return err
 		}
 	}
 	for i, unmatched := range input.Forest.Unmatched {
