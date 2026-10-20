@@ -118,6 +118,7 @@ func Disambiguate(candidates []MeaningCandidate, inputOutcome status.OutcomeKind
 				return Result{}, disambiguationError("MISSING_MEANING_CONTEXT", fmt.Sprintf("candidates[%d].request_contexts", i), "a meaning graph requires its request-local reference context")
 			}
 			var representativeContext *MeaningContext
+			representativeIndex := -1
 			for contextIndex, context := range candidate.Contexts {
 				if err := meaning.ValidateMeaning(context.Meaning, ontology, meaning.DefaultBudget()); err != nil {
 					return Result{}, disambiguationError("INVALID_CONTEXT_MEANING", fmt.Sprintf("candidates[%d].request_contexts[%d].meaning", i, contextIndex), err.Error())
@@ -129,6 +130,7 @@ func Disambiguate(candidates []MeaningCandidate, inputOutcome status.OutcomeKind
 				if structurallyEqual && representativeContext == nil {
 					contextCopy := context
 					representativeContext = &contextCopy
+					representativeIndex = contextIndex
 				}
 				contextItems, contextText := contextSize(context.Context)
 				graphCount, graphText, exceeds := meaningSize(context.Meaning, budget.MaxRecords-graphItems)
@@ -147,6 +149,12 @@ func Disambiguate(candidates []MeaningCandidate, inputOutcome status.OutcomeKind
 				return Result{}, disambiguationError("CONTEXT_MEANING_MISMATCH", fmt.Sprintf("candidates[%d].request_contexts", i), "candidate graph must be retained beside at least one context that identifies its local referent nodes")
 			}
 			for contextIndex, context := range candidate.Contexts {
+				if contextIndex == representativeIndex {
+					// Canonical structural equality and ValidateReferences above
+					// establish this exact graph/context pair. Requiring semantic
+					// identity here would incorrectly reject unresolved referents.
+					continue
+				}
 				equivalent, err := meaning.SemanticEquivalence(representativeContext.Meaning, context.Meaning, representativeContext.Context, context.Context, meaning.DefaultBudget())
 				if err != nil || !equivalent {
 					return Result{}, disambiguationError("CONTEXT_MEANING_MISMATCH", fmt.Sprintf("candidates[%d].request_contexts[%d]", i, contextIndex), "every retained request context must identify the candidate's semantic meaning")
