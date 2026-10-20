@@ -6,13 +6,15 @@
 
 `MorphLexeme`: lemat, POS, język, cechy własne i przypisana klasa. Nie wymaga zatwierdzonego `CoreRef`, aby generator mógł go odmienić.
 
-`Paradigm`: typowana klasa komórek cech i operacji; może dziedziczyć wspólne przepisy.
+`Paradigm`: typowana, lokalna dla języka klasa stabilnych komórek cech i operacji; może dziedziczyć wspólne przepisy. Implementacja Go znajduje się w `internal/morph`. Komórka ma stabilny `CellID` oraz jawny zestaw znanych wartości z `FeatureProfile`. Reguła wskazuje komórkę i deklaratywny plan.
 
-`StemSet / PrincipalParts`: tematy i dodatkowe formy diagnostyczne dla nieregularności (np. `go → went`). Nie udawaj, że każdą formę można wywnioskować z samego lematu.
+`StemSet / PrincipalParts`: tematy i dodatkowe formy diagnostyczne dla nieregularności (np. `go → went`). `ResolveStem` zwraca wyłącznie formę podaną jawnie dla wymaganego principal part; brak wymaganej formy daje `unknown`. Nie udawaj, że każdą formę można wywnioskować z samego lematu.
 
 `FeatureProfile`: dopuszczone pola i wartości należą do **języka**, a nie do wspólnego CORE. Neutralna unifikacja cech w `internal/features`.
 
-`ProcedurePlan`: wspólny, ograniczony zestaw kroków (np. append, stripSuffix, replaceSuffix, selectStem, alternation); deklaracje nie są wykonywalnym kodem z JSON.
+`ProcedurePlan`: wspólny, ograniczony i zamknięty zestaw kroków (`select_stem`, `append`, `prepend`, `strip_suffix`, `replace_suffix`, `alternation`). Nieznane operacje i niezadeklarowane warianty są odrzucane; nie ma `eval`, poleceń powłoki ani kodu z JSON. Interpreter liczy limity wejścia/wyjścia w punktach kodowych oraz bajtach, waliduje guardy cech i zwraca ślad kroków. Znana cecha niedopasowana do guarda pomija krok; brak cechy kończy się `unknown`, a nierozstrzygnięta wartość `incomplete`. Operacje `strip_suffix`, `replace_suffix` i `alternation` wymagają dokładnego dopasowania; brak dopasowania nie jest cichym fallbackiem. Obecna alternacja oznacza jedno literalne zastąpienie pierwszego wystąpienia, nie ogólną obsługę procesów fonologicznych.
+
+Kompilator sprawdza wersję profilu, komórki i reguły, cykle dziedziczenia, konflikty oraz wymagania form diagnostycznych. JSON paradygmatu ma jawne wymagane pola, odrzuca nieznane lub błędnie zapisane klucze oraz ogranicza dokument do 1 MiB. Dziedziczenie zachowuje stabilne sloty; wspólny identyczny przodek w diamencie jest scalany raz, a sprzeczne definicje są błędem. Interpretor pozostaje niezależny od języka, zaś `Paradigm` i jego etykiety należą do języka i wersji profilu.
 
 `ExceptionRule`: tylko potrzebny wyjątek z określonym zakresem i efektem.
 
