@@ -18,14 +18,33 @@ const (
 
 // Dataset is a fully decoded and validated offline source dataset.
 type Dataset struct {
-	Manifest Manifest
-	Concepts []ConceptFile
-	Lexicons []LexiconFile
+	Manifest    Manifest
+	Concepts    []ConceptFile
+	Lexicons    []LexiconFile
+	LoadedFiles []LoadedFile
+}
+
+// LoadedFile contains the exact bytes read and validated from one declared
+// manifest file. Consumers can stage or persist the validated input without
+// reopening its path and introducing a time-of-check/time-of-use race.
+type LoadedFile struct {
+	ManifestFile ManifestFile
+	Contents     []byte
 }
 
 // LoadDataset reads only declared files rooted beneath root, rejects symlink
 // escape, enforces aggregate/per-file bounds, then validates all references.
 func LoadDataset(root string, manifest Manifest) (Dataset, error) {
+	return loadDataset(root, manifest, false)
+}
+
+// LoadDatasetWithFiles is LoadDataset with exact validated file bytes retained
+// for callers that need to stage the input without reopening source paths.
+func LoadDatasetWithFiles(root string, manifest Manifest) (Dataset, error) {
+	return loadDataset(root, manifest, true)
+}
+
+func loadDataset(root string, manifest Manifest, retainFiles bool) (Dataset, error) {
 	if err := manifest.Validate(); err != nil {
 		return Dataset{}, err
 	}
@@ -86,6 +105,12 @@ func LoadDataset(root string, manifest Manifest) (Dataset, error) {
 			if hex.EncodeToString(digest[:]) != file.ChecksumSHA256 {
 				return Dataset{}, invalid("DATA_CHECKSUM_MISMATCH", file.ID, "actual file checksum differs from manifest")
 			}
+		}
+		if retainFiles {
+			result.LoadedFiles = append(result.LoadedFiles, LoadedFile{
+				ManifestFile: file,
+				Contents:     contents,
+			})
 		}
 		if file.ID == "concepts" || filepath.Ext(file.Path) == ".concepts.json" {
 			conceptFiles++
