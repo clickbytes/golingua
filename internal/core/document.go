@@ -71,19 +71,21 @@ func (definition *ConceptDefinition) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return fmt.Errorf("id: %w", err)
 	}
-	definition.ID = id
-	definition.Kind = source.Kind
-	definition.RoleTypes = source.RoleTypes
-	definition.SemanticEffects = source.SemanticEffects
-	definition.Definition = source.Definition
+	result := ConceptDefinition{
+		ID:              id,
+		Kind:            source.Kind,
+		RoleTypes:       source.RoleTypes,
+		SemanticEffects: source.SemanticEffects,
+		Definition:      source.Definition,
+	}
 	if source.Parent != nil {
 		parent, err := ids.ParseConceptID(*source.Parent)
 		if err != nil {
 			return fmt.Errorf("parent: %w", err)
 		}
-		definition.Parent = &parent
+		result.Parent = &parent
 	}
-	definition.DefinitionEdges = make([]DefinitionEdge, len(source.DefinitionEdges))
+	result.DefinitionEdges = make([]DefinitionEdge, len(source.DefinitionEdges))
 	for index, edge := range source.DefinitionEdges {
 		relation, err := ParseRelationID(edge.Relation)
 		if err != nil {
@@ -93,8 +95,9 @@ func (definition *ConceptDefinition) UnmarshalJSON(data []byte) error {
 		if err != nil {
 			return fmt.Errorf("definition_edges[%d].target: %w", index, err)
 		}
-		definition.DefinitionEdges[index] = DefinitionEdge{Relation: relation, Target: target, Strength: edge.Strength, Role: edge.Role}
+		result.DefinitionEdges[index] = DefinitionEdge{Relation: relation, Target: target, Strength: edge.Strength, Role: edge.Role}
 	}
+	*definition = result
 	return nil
 }
 
