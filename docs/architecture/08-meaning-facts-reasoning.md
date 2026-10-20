@@ -1,89 +1,35 @@
-# 08 — MeaningGraph, semantyka, instancje i mały reasoner
+# 08 — MeaningGraph, wiedza i docelowe rozmowy
 
-**Status:** PROPOSED. Issues: [G01 #2](https://github.com/clickbytes/golingua/issues/2), [G05-04 #47](https://github.com/clickbytes/golingua/issues/47), [G06 #7](https://github.com/clickbytes/golingua/issues/7). Source: `js/core/meaning-graph.js`, `ontology.js`, `typed-graph-match.js`, `semantic-composition.js`, `response-planner.js` oraz źródłowe ADRs.
+**PROPOSED, G01/G05/G06.** Koncept to typ znaczenia, a MeaningGraph to konkretna interpretacja zdania.
 
-## 1. Statyczna wiedza językowa vs znaczenie wypowiedzi vs fakty świata
+## Oddzielne pojęcia
 
-- `ConceptDefinition(event.read)` definiuje znaczenie typu i wymagane role oraz role type signatures.
-- `MeaningGraph(Event{concept:event.read,agent:girl_1,theme:book_2})` jest interpretacją pojedynczej konkretnej wypowiedzi; sam fakt obecności graph nie jest jeszcze twierdzeniem.
-- `DialogueAct(Assert,MeaningGraph)` wyraża intencję asercji, którą można ewentualnie przyjąć jako fakt, jeżeli trust/provenance dopuszcza.
-- `WorldFact` to źródłowo przypisane twierdzenie o referentach, czasie, zakresie i polaryzacji; w Go v0 podawane jawnie per request.
-- `Proof` pokazuje dozwolone wnioskowanie z WorldFact i reguł, nie „podobieństwo” do konceptu.
+- `ConceptDefinition(event.read)`: definicja sensu i ról, nie zdarzenie w świecie.
+- `LexicalSense`: znaczenie słowa w języku, związane z konceptem.
+- `MeaningGraph(Event(concept:event.read,agent:person_1,theme:book_2))`: opis *tej wypowiedzi*.
+- `DialogueAct`: czy użytkownik pyta, stwierdza, prosi o informację, odmawia itd.
+- `FactSet` (później): fakty podane jawnie w request, nie pamięć długoterminowa, nie twierdzenie o całym świecie.
 
-Nie dodajemy `dog_1` jako nowego ConceptDefinition. Węzeł `animal.dog` to *typ*, referent to *instancja*. Dwa psy = dwa ReferentID, nawet jeśli mają wspólne cechy i lemma.
+## Operator scope
 
-## 2. Algebra dokumentów znaczenia
+Negacja, pytanie, możliwość i zdanie warunkowe **nie** są automatycznymi asercjami dodatnimi. `Not(Possible(A))` nie musi znaczyć `Possible(Not(A))`. Uzgodnienie powierzchni PL/EN nie może zmienić operatora semantycznego, referenta, czasu ani przypisania ról.
 
-Potrzebny bounded AST/tagged union: `Event, State, Participant, Referent, Question, Negation/Scope, Modality, Coordination, Conditional, Temporal, Quantifier, DialogueAct, Discourse`, ale tylko subset faktycznie potwierdzony Go fixtures jest IMPLEMENTED. Żaden rodzaj nie może być reprezentowany „pustym stringiem fallback”.
+Osoba/zwierzę/obiekt `animal.dog` jest pojęciem, a `dog_1` i `dog_2` to dwie możliwe instancje. Identyczna nazwa leksemu lub koncept nie jest dowodem tożsamości. Nie domyślamy się bez danych, do kogo odnosi się zaimek.
 
-Przykład **Proposed, nie obecny wire format**:
+## Dopasowanie znaczenia
 
-```json
-{
-  "kind":"event",
-  "concept":"event.visual_perception",
-  "roles":{
-    "agent":{"referent":"girl_1","concept":"person.girl"},
-    "theme":{"referent":"dog_2","concept":"animal.dog"}
-  },
-  "features":{"tense":"present","polarity":"positive"}
-}
-```
+Twarde typy i wymagane relacje mogą odrzucać niezgodny sens. Relacje `typical` mogą co najwyżej porządkować kandydatów; nie powinny tworzyć pewnego faktu ani usuwać innych legalnych sensów. Niepełne poszukiwanie ma pozostać niepełne.
 
-Konkretne enumy, formaty JSON i wymagane pola muszą zostać potwierdzone w G01-04/G00-03; nie kopiuj z przykładów schematu bez walidatora. Na poziomie semantycznym **roles i referents muszą być zachowane** przy reordering i roundtrip.
+Przy PL szyku OVS i SVO role uczestników mogą pozostać identyczne, gdy rozróżnia je fleksja. EN nie ma tych samych swobód. To trzeba uwzględnić przy budowaniu MeaningGraph.
 
-## 3. Zakres operatora ma znaczenie logiczne
+## Plan późniejszego reasoning i odpowiedzi
 
-`Negation(Event)` to inny znaczeniowo graf niż `Event(polarity=positive)`. `Question(Event)` **nie** wprowadza dodatniej asercji. W `Conditional(if A, then B)` nie wolno utworzyć pewnej asercji ani dla A, ani dla B bez dodatkowej reguły. `Modality(possibility, A)` nie jest dowodem rzeczywistego A.
+`Pytanie + jawnie dostarczony FactSet → mały ograniczony reasoner → ContentPlanner → MeaningGraph odpowiedzi → LanguageConstruction → tekst`.
 
-Zasięg i precedence operatorów muszą być jawnie reprezentowane, np. `Not(Possible(A))` ≠ `Possible(Not(A))`. Nie zakładać, że dwie permutacje operatorów są równoważne. W przypadku braku licencjonowanej konstrukcji do ich realizacji w EN/PL → `unsupported` lub ślad informationLoss, nie pomijanie znaku/argumentu.
+Odpowiedź `true` tylko gdy wynika z jawnego faktu/dozwolonej reguły, `false` wymaga dowodu negatywnego, brak faktu daje `unknown`; sprzeczności ujawniają konflikt. Reasoner nie musi teraz znać historii rozmowy ani wyszukiwać faktów w internecie.
 
-Temporalia: odróżniaj `event.tense` od `timeReference(today/tomorrow)`, `clockTime` i `calendarDate` oraz jawnych kotwic czasu stwierdzenia. Nie wybieraj tense wyłącznie po „jutro” i nie pomijaj daty przy porównywaniu MeaningGraph.
+`ContentPlanner` wybiera, co powiedzieć; `ConstructionGraph` wybiera jak sformułować. Nie umieszczaj słów polskich/angielskich w neutralnym planowaniu znaczenia.
 
-Kwantyfikacja: liczba `exact N` jest znaczeniem, a forma NP, przypadek i zgoda są kwestią języka. Nie pozwalaj na niejawne `N=singular` w CORE, jeśli wynika to tylko z polskiej reguły zgodności.
+## Polityka ręcznej pracy
 
-## 4. Tożsamość wzmianki i niepewność
-
-`MentionID` to pozycja/odniesienie w zdaniu; `ReferentID` oznacza tożsamość instancji w zdefiniowanym scope. Ponowne wystąpienie `pies` nie identyfikuje tego samego psa. Deiktyczne `speaker/addressee` wymagają uprawomocnionego kontekstu; anafora może pozostać unresolved. Brak resolved reference ≠ losowo wybrany najbliższy participant.
-
-Source `referent-vs-mention.md` dopuszcza lokalne ID w dyskursie i jawne koreferencje. Go v0 nie utrwala tożsamości między niezależnymi requestami bez jawnego inputu.
-
-## 5. Ontologia i matching
-
-`parent/is_a` twardy i acykliczny; `definitionGraph` zawiera typed `required` lub `typical`. Typical w źródłowym ADR ma wagę salience, **nie prawdopodobieństwo prawdziwości**. Nie wykluczaj zgodnego sensu na podstawie braku typowej relacji; soft ranking nigdy nie zamienia kilku licencjonowanych odczytań w dowiedzione unique.
-
-Wynik matching musi móc zwrócić:
-- hard-compatible candidates;
-- hard-violations z source path;
-- unresolved wymagany edge przy braku obserwacji;
-- `complete: false` po zakończeniu budżetu;
-- alternatives z odrębnymi `MeaningGraph`.
-
-Wszystkie przypadki muszą być typowane; nie dopasowywać tylko nazw etykiet i powierzchniowych stringów.
-
-## 6. Request-scoped FactSet, proof i truth values
-
-Fakty G06: `(FactID,subjectReferent,relation,objectReferent,polarity,validTime,source/assertionScope)` z walidacją subject/object types i trust. Brak danego fact oznacza `unknown`; odpowiedź false na yes/no wymaga jawnego przeciwnego faktu lub dozwolonej reguły negacji, nigdy open-world absence. Sprzeczne poparte facts dają `conflict/ambiguous`.
-
-Proposed: `ProofStep{RuleID,PremiseFactIDs,ConclusionFactID/Proposition,Context,SourceRefs}`. Reguły jawne, monotoniczne/typowane w początkowym subset, z zamkniętym DSL i ograniczeniami rozgałęzień. Nie aktywować ogólnego wnioskowania `located_in` transitive, dopóki dokładnie ta relacja, jej czas i scope nie są do tego zatwierdzone.
-
-**Pytanie przykładowe:**
-- FactSet: `dog_1 located_in room_3` i `room_3 located_in house_4`.
-- Query: `Is dog_1 in house_4?`
-- Dopóki nie ma jawnie zatwierdzonej reguły właściwego zasięgu `located_in`, odpowiedź **unknown**, nie automatyczne true. Po dodaniu licencjonowanej reguły, wszystkie kroki inference mają zawierać ProofStep.
-
-## 7. Planner treści, nie tylko generowanie tekstu
-
-`QuestionMeaning + QueryResult + evidence → ContentPlan{Goal,DialogueAct,Proposition,SelectedFacts,ProofRefs,RequiredConstructionCapability}`. Cele v0: yes/no answer, ograniczone WH answer, clarify/refuse/unknown. PL/EN realization jest osobnym krokiem licencjonowanych konstrukcji.
-
-Kontrole negatywne:
-- Pytanie użytkownika samo w sobie wytwarza fakt → FAIL.
-- Dostępny tylko `typical` z ontology i odpowiedź pewna „tak” → FAIL.
-- Dwa różne `dog` referenty utożsamione z jednym → FAIL.
-- Wiele konfliktowych faktów i planner wybiera pierwszy po kolejności JSON → FAIL.
-- Niewspierany WH gap lub brak dowodu skutkuje pewnym wygenerowanym zdaniem → FAIL.
-- Zmiana stylu/personality zmienia role/polarity/referent/date → FAIL.
-
-## 8. Bez pamięci i uczenia
-
-Go v0 nie ma session/episodic memory ani online learning. Source JS **ma ograniczoną SessionMemory i planner**, więc sformułowanie „flexLingua nie ma w ogóle pamięci” jest nieprecyzyjne. W nowym Go v0 te możliwości są świadomie **wyłączone**; G09 opisuje przyszłe rozszerzenia bez aktywacji i bez uczenia reguł w locie.
+Nie twórz teraz danych sytuacyjnych, dziesiątek sztucznych pytań ani automatycznej macierzy reasoning. Dopiero gdy właściciel zechce sprawdzić rozmowę, poda pytanie i fakty, a agent pokaże aktualne działanie CLI. To nie zwalnia z walidacji operatorów i ograniczenia kosztu parsera/reasonera. Go v0 **nie posiada samouczenia ani pamięci**.
