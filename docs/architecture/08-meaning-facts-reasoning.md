@@ -1,6 +1,6 @@
 # 08 — MeaningGraph, wiedza i docelowe rozmowy
 
-**PROPOSED, G01/G05/G06.** Koncept to typ znaczenia, a MeaningGraph to konkretna interpretacja zdania.
+**Częściowo wdrożone (G01-04).** `internal/meaning` definiuje bounded request-scoped Meaning IR i cross-CORE role validation. Parser, leksyka, asserted-fact projection, reasoner i rozmowa pozostają poza zakresem tego kroku. Koncept to typ znaczenia, a MeaningGraph to konkretna interpretacja zdania.
 
 ## Oddzielne pojęcia
 

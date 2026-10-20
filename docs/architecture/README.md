@@ -1,6 +1,6 @@
 # Architektura golingua — Go od zera, ocena ręczna
 
-**Status architektury: częściowo wdrożone typy danych, nie wdrożony silnik.** Bieżący runtime ma CLI/bootstrap, typowane statusy, metadane źródeł, stable symbols, snapshot-local table NodeID, kompilowany ConceptGraph i bounded adjacency/traversal. Nie ma jeszcze leksykonu, MeaningGraph, parsera ani realizera. Wyjście `translate` pozostaje unsupported dopóki realizer/parsing nie powstanie.
+**Status architektury: częściowo wdrożone typy danych, nie wdrożony silnik.** Bieżący runtime ma CLI/bootstrap, typowane statusy, metadane źródeł, stable symbols, snapshot-local table NodeID, kompilowany ConceptGraph, bounded adjacency/traversal i versioned Meaning IR. Nie ma jeszcze leksykonu, parsera ani realizera. Wyjście `translate` pozostaje unsupported dopóki realizer/parsing nie powstanie.
 
 ## Fundamentalna decyzja (2026-10-20)
 
@@ -15,19 +15,20 @@ Minimalne CI: formatowanie, vet, build, start CLI. Nie używamy CI jako językow
 3. [IDs — stable symbols i dense runtime IDs](ids.md)
 4. [ConceptGraph — typed concepts and relations](concepts.md)
 5. [Runtime graph — adjacency and bounded traversal](runtime-graph.md)
-6. [02 — przepływ analizy/realizacji](02-runtime-pipeline.md)
-7. [03 — format źródła i runtime](03-data-decisions.md)
-8. [04 — wyniki, diagnostyki i limity](04-results-and-limits.md) — kontrakt informacyjny, bez bramek testowych
-9. [05 — źródła danych i manifesty](05-data-sources.md) — otoczka źródeł, bez importera i parity gate
-10. [06 — walencja i ConstructionGraph](06-constructions-and-valency.md)
-11. [07 — generatory, paradygmaty i wyjątki](07-morphology-procedures-exceptions.md)
-12. [08 — MeaningGraph, fakty i rozumowanie](08-meaning-facts-reasoning.md)
-13. [09 — kontrakt pluginów językowych](09-language-plugin-contract.md)
-14. [10 — dane, słowniki i źródła](10-import-provenance.md)
-15. [11 — minimalne kontrole i ręczny review](11-manual-review.md)
-16. [12 — decyzje/ryzyka](12-decisions-and-risks.md)
-17. [13 — EPIC-i i kolejność](13-issue-traceability.md)
-18. [14 — przykładowe przebiegi projektowe](14-worked-vertical-slices.md)
+6. [Meaning IR v1](meaning-ir.md)
+7. [02 — przepływ analizy/realizacji](02-runtime-pipeline.md)
+8. [03 — format źródła i runtime](03-data-decisions.md)
+9. [04 — wyniki, diagnostyki i limity](04-results-and-limits.md) — kontrakt informacyjny, bez bramek testowych
+10. [05 — źródła danych i manifesty](05-data-sources.md) — otoczka źródeł, bez importera i parity gate
+11. [06 — walencja i ConstructionGraph](06-constructions-and-valency.md)
+12. [07 — generatory, paradygmaty i wyjątki](07-morphology-procedures-exceptions.md)
+13. [08 — MeaningGraph, fakty i rozumowanie](08-meaning-facts-reasoning.md)
+14. [09 — kontrakt pluginów językowych](09-language-plugin-contract.md)
+15. [10 — dane, słowniki i źródła](10-import-provenance.md)
+16. [11 — minimalne kontrole i ręczny review](11-manual-review.md)
+17. [12 — decyzje/ryzyka](12-decisions-and-risks.md)
+18. [13 — EPIC-i i kolejność](13-issue-traceability.md)
+19. [14 — przykładowe przebiegi projektowe](14-worked-vertical-slices.md)
 
 Dokumenty 04 i 05 opisują typy/statusy oraz manifesty/pochodzenie; nie są bramkami do testów, goldów ani parity. G00-03 dodaje `04-results-and-limits.md`, a G00-04 dodaje `05-data-sources.md`. Nie tworzymy dokumentu `05-parity-policy.md`, generatorów raportów ani oracli.
 
