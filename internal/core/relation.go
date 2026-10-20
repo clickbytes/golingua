@@ -3,6 +3,7 @@ package core
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/clickbytes/golingua/internal/ids"
 )
@@ -47,11 +48,17 @@ func ParseRelationID(value string) (RelationID, error) {
 }
 
 func (id RelationID) String() string { value, _ := id.symbol.Canonical(); return value }
-func (id RelationID) IsZero() bool   { return id.symbol.Name == "" }
+
+// Symbol returns the stable value used by typed indexes.
+func (id RelationID) Symbol() ids.Symbol { return id.symbol }
+func (id RelationID) IsZero() bool       { return id.symbol.Name == "" }
 func (id RelationID) valid() bool {
 	canonical, err := id.symbol.Canonical()
 	return err == nil && id.symbol.Namespace == ids.NamespaceRelation && canonical != ""
 }
+
+// Valid reports whether id has a canonical relation namespace and name.
+func (id RelationID) Valid() bool { return id.valid() }
 
 // EdgeStrength preserves the distinction between asserted required structure
 // and typical descriptions. Typical edges never entail a required fact.
@@ -87,6 +94,24 @@ func (graph *ConceptGraph) Relation(id RelationID) (RelationType, bool) {
 		return RelationType{}, false
 	}
 	return cloneRelationType(relation), true
+}
+
+// RelationTypes returns relation schemas in canonical ID order with copies of
+// their kind signatures.
+func (graph *ConceptGraph) RelationTypes() []RelationType {
+	if graph == nil {
+		return nil
+	}
+	keys := make([]string, 0, len(graph.relations))
+	for key := range graph.relations {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	result := make([]RelationType, len(keys))
+	for index, key := range keys {
+		result[index] = cloneRelationType(graph.relations[key])
+	}
+	return result
 }
 
 // RoleType is a named semantic role and its allowed target kinds.
