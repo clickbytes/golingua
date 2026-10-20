@@ -4,6 +4,12 @@
 
 > Status: BOOTSTRAP. No PL/EN translation, dialogue, morphology or graph-learning capability is claimed until backed by code, accepted examples and CI. This repository does **not** contain a port of the JavaScript runtime.
 
+## Canonical architecture contracts (design, NOT YET IMPLEMENTED)
+
+Read [docs/architecture/README.md](docs/architecture/README.md) first. It links the full [graph-layer design](docs/architecture/01-graph-layers.md), [ConstructionGraph and ValencyGraph](docs/architecture/06-constructions-and-valency.md), [procedural morphology and exceptions](docs/architecture/07-morphology-procedures-exceptions.md), [semantic proof/reasoning](docs/architecture/08-meaning-facts-reasoning.md), [safe imports](docs/architecture/10-import-provenance.md), and the [EPIC/issue implementation map](docs/architecture/13-issue-traceability.md).
+
+The docs are **PROPOSED contracts**, not currently shipped language capabilities. Only G00-01 (CLI bootstrap + Go CI) has been implemented at this documentation baseline. Later EPICs must deliver actual code, independent reviewed golds and CI before any capability is advertised.
+
 ## Project goal
 
 Build a small, auditable, procedural Graph Language Engine with:
@@ -14,7 +20,7 @@ Build a small, auditable, procedural Graph Language Engine with:
 - **PL ↔ EN** as initial languages; target **1,000 reviewed bilingual concept mappings**, not unrestricted CEFR or LLM-level language coverage;
 - controlled reasoning and response planning from explicitly provided facts, *not* default memory, learning, or external world facts.
 
-A concept is **not a word**. Lexical senses map to concepts; construction families belong to language plugins. Paths such as `EN.ROCK.VERB.MORPH.PAST` are navigation/API syntax, **not** one stored semantic graph node per inflectional form.
+A concept is **not a word**. Lexical senses map to concepts; construction families belong to language plugins. **No mandatory `ROCK.VERB.MORPH.PAST` or fluent property tree API.** Concept IDs, lexical senses, construction IDs, procedure plans and language-local morphology are typed and referenced through ordinary Go interfaces. Do not store a separate graph node for each inflectional form.
 
 ## Migration anchor
 
