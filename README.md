@@ -15,6 +15,7 @@ Istniejące źródło [clickbytes/flexLingua](https://github.com/clickbytes/flex
 ## Dokumentacja
 
 - [Architektura golingua](docs/architecture/README.md) — kontrakty i kolejność projektowania.
+- [Generator i finite relation table](docs/architecture/morph-backends.md) — API ograniczonego generowania i analizy morfologicznej.
 - [Protokół ręcznego sprawdzania](docs/manual-review.md) — użytkownik podaje wejścia, agent pokazuje faktyczny output.
 - [CLI](docs/cli.md) — rzeczywiste komendy bootstrapu i jawne granice obecnej obsługi.
 - [Przykłady ręczne](examples/manual/README.md) — na razie bez domyślnych zdań.

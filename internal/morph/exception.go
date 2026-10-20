@@ -343,8 +343,14 @@ func applyExceptionRules(rules []ExceptionRule, base []string) (ExceptionResolut
 			}
 			return dedupeResolutionForms(result), nil
 		case ExceptionEffectStemOverride:
-			result.RequiresRegeneration = true
 			result.StemOverrides = map[procedure.StemID]string{rule.Effect.StemID: rule.Effect.StemForm}
+			if len(base) == 0 {
+				result.RequiresRegeneration = true
+				return result, nil
+			}
+			for _, form := range base {
+				result.Forms = append(result.Forms, exceptionForm(rule, form))
+			}
 			return result, nil
 		}
 	}
