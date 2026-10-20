@@ -1,6 +1,6 @@
 # 01 — Warstwy grafowe i granice typów
 
-**Częściowo wdrożone.** `internal/core` kompiluje i waliduje language-neutral ConceptGraph oraz relacje; pozostałe warstwy niżej są proponowanym zakresem, dopóki ich issue nie zostaną scalone. Jeden proces Go; logiczne grafy nie muszą być osobnymi bazami danych.
+**Częściowo wdrożone.** `internal/core` kompiluje i waliduje language-neutral ConceptGraph oraz relacje; `internal/graph` buduje snapshot-local adjacency i bounded traversal. Pozostałe warstwy niżej są proponowanym zakresem, dopóki ich issue nie zostaną scalone. Jeden proces Go; logiczne grafy nie muszą być osobnymi bazami danych.
 
 | Warstwa | Właściciel (proponowany) | Odpowiedzialność |
 | --- | --- | --- |

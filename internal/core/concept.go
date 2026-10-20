@@ -50,6 +50,14 @@ type Concept struct {
 	Definition      string
 }
 
+// GraphNode is the minimal defensive view needed by graph index builders.
+type GraphNode struct {
+	ID              ids.ConceptID
+	Kind            ConceptKind
+	Parent          *ids.ConceptID
+	DefinitionEdges []DefinitionEdge
+}
+
 type compiledConcept struct {
 	id         ids.ConceptID
 	kind       ConceptKind
@@ -86,6 +94,53 @@ func (graph *ConceptGraph) Len() int {
 		return 0
 	}
 	return len(graph.concepts)
+}
+
+// Concepts returns all concept values in canonical ID order. Every value is a
+// defensive copy, so callers can build immutable indexes without accessing the
+// graph's private storage.
+func (graph *ConceptGraph) Concepts() []Concept {
+	if graph == nil {
+		return nil
+	}
+	result := make([]Concept, len(graph.concepts))
+	for index, concept := range graph.concepts {
+		result[index] = concept.view()
+	}
+	return result
+}
+
+// GraphSize reports concept and stored definition-edge counts without making
+// copies. Parent links are taxonomy edges and are counted separately by indexers.
+func (graph *ConceptGraph) GraphSize() (concepts, definitionEdges, parentLinks int) {
+	if graph == nil {
+		return 0, 0, 0
+	}
+	for _, concept := range graph.concepts {
+		definitionEdges += len(concept.edges)
+		if concept.parent != nil {
+			parentLinks++
+		}
+	}
+	return len(graph.concepts), definitionEdges, parentLinks
+}
+
+// GraphNodes returns minimal nodes in canonical ID order without copying
+// unrelated role or semantic-effect data.
+func (graph *ConceptGraph) GraphNodes() []GraphNode {
+	if graph == nil {
+		return nil
+	}
+	result := make([]GraphNode, len(graph.concepts))
+	for index, concept := range graph.concepts {
+		node := GraphNode{ID: concept.id, Kind: concept.kind, DefinitionEdges: append([]DefinitionEdge(nil), concept.edges...)}
+		if concept.parent != nil {
+			parent := *concept.parent
+			node.Parent = &parent
+		}
+		result[index] = node
+	}
+	return result
 }
 
 func (concept compiledConcept) view() Concept {
