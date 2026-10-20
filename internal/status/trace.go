@@ -24,6 +24,10 @@ type Trace struct {
 // construction used by an operation. It does not carry arbitrary log text.
 type TraceStep struct {
 	RuleID         string `json:"rule_id,omitempty"`
+	ProcedureID    string `json:"procedure_id,omitempty"`
+	ParadigmID     string `json:"paradigm_id,omitempty"`
+	CellID         string `json:"cell_id,omitempty"`
+	SourceID       string `json:"source_id,omitempty"`
 	SenseID        string `json:"sense_id,omitempty"`
 	ConstructionID string `json:"construction_id,omitempty"`
 }
@@ -35,7 +39,7 @@ func (t Trace) Validate() error {
 		return fmt.Errorf("%w: %d steps exceeds limit %d", ErrInvalidTrace, len(t.Steps), MaxTraceSteps)
 	}
 	for i, step := range t.Steps {
-		ids := [...]string{step.RuleID, step.SenseID, step.ConstructionID}
+		ids := [...]string{step.RuleID, step.ProcedureID, step.ParadigmID, step.CellID, step.SourceID, step.SenseID, step.ConstructionID}
 		hasID := false
 		for _, id := range ids {
 			if id == "" {

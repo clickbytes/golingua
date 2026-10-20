@@ -355,8 +355,23 @@ func readingFeatureSignature(values []features.FeatureValue) string {
 func validateReadingSource(reading Reading) error {
 	switch reading.Source {
 	case ExceptionSourceRegular:
-		if reading.ExceptionID != "" || reading.Provenance != nil {
-			return fmt.Errorf("regular reading cannot carry exception identity or provenance")
+		if reading.ExceptionID != "" {
+			return fmt.Errorf("regular reading cannot carry an exception identity")
+		}
+		if reading.Provenance != nil {
+			if err := reading.Provenance.Validate(); err != nil {
+				return err
+			}
+			foundTrace := false
+			for _, step := range reading.Trace {
+				if step.Operation != "" && step.SourceID == reading.Provenance.ID {
+					foundTrace = true
+					break
+				}
+			}
+			if !foundTrace {
+				return fmt.Errorf("regular reading provenance must be retained in a procedure trace")
+			}
 		}
 	case ExceptionSource:
 		if !validMorphToken(string(reading.ExceptionID)) || reading.Provenance == nil {
@@ -383,8 +398,11 @@ func validateReadingSource(reading Reading) error {
 
 func validateReadingTrace(trace []GenerationTraceStep) error {
 	for index, step := range trace {
+		if err := validateTraceContext(step); err != nil {
+			return fmt.Errorf("trace step %d: %w", index, err)
+		}
 		if step.Operation != "" {
-			if !step.Operation.Valid() || step.Applied == nil || step.OutputSize < 0 || step.OutputSize > procedure.MaxOutputBytes || step.Exception != "" || step.Effect != "" || step.SourceID != "" {
+			if !step.Operation.Valid() || step.Applied == nil || step.OutputSize < 0 || step.OutputSize > procedure.MaxOutputBytes || step.Exception != "" || step.Effect != "" {
 				return fmt.Errorf("trace operation %d is malformed", index)
 			}
 			continue
@@ -395,6 +413,34 @@ func validateReadingTrace(trace []GenerationTraceStep) error {
 		if strings.TrimSpace(step.SourceID) != step.SourceID {
 			return fmt.Errorf("trace exception %d source ID is malformed", index)
 		}
+	}
+	return nil
+}
+
+func validateTraceContext(step GenerationTraceStep) error {
+	if step.ProcedureID != "" {
+		if len(step.ProcedureID) > status.MaxTraceIDBytes {
+			return fmt.Errorf("procedure ID exceeds trace limit")
+		}
+		procedureID, err := ids.ParseProcedureID(step.ProcedureID)
+		if err != nil || procedureID.String() != step.ProcedureID {
+			return fmt.Errorf("procedure ID is malformed")
+		}
+	}
+	if step.ParadigmID != "" && !validMorphToken(string(step.ParadigmID)) {
+		return fmt.Errorf("paradigm ID is malformed")
+	}
+	if step.CellID != "" && !validMorphToken(string(step.CellID)) {
+		return fmt.Errorf("cell ID is malformed")
+	}
+	if (step.ParadigmID == "") != (step.CellID == "") {
+		return fmt.Errorf("paradigm and cell IDs must be provided together")
+	}
+	if step.SourceID != "" && (len(step.SourceID) > provenance.MaxSourceIDBytes || strings.TrimSpace(step.SourceID) != step.SourceID) {
+		return fmt.Errorf("source ID is malformed")
+	}
+	if step.Operation != "" && step.ProcedureID != "" && step.ParadigmID == "" {
+		return fmt.Errorf("procedure trace requires paradigm and cell IDs")
 	}
 	return nil
 }

@@ -7,7 +7,9 @@ import (
 	"strings"
 
 	"github.com/clickbytes/golingua/internal/features"
+	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/procedure"
+	"github.com/clickbytes/golingua/internal/provenance"
 	"github.com/clickbytes/golingua/internal/status"
 )
 
@@ -304,6 +306,23 @@ func validateLocalParadigm(paradigm Paradigm, profile *features.LanguageFeatureP
 	ruleCells := make(map[CellID]struct{}, len(paradigm.Rules))
 	for index, rule := range paradigm.Rules {
 		path := fmt.Sprintf("paradigm.rules[%d]", index)
+		if rule.ProcedureID != "" {
+			if len(rule.ProcedureID) > status.MaxTraceIDBytes {
+				return morphError(status.OutcomeInvalid, "INVALID_PROCEDURE_ID", path+".procedure_id", "procedure ID exceeds the trace identifier limit")
+			}
+			procedureID, err := ids.ParseProcedureID(rule.ProcedureID)
+			if err != nil || procedureID.String() != rule.ProcedureID {
+				return morphError(status.OutcomeInvalid, "INVALID_PROCEDURE_ID", path+".procedure_id", "procedure ID must be a canonical procedure symbol")
+			}
+		}
+		if rule.Provenance != (provenance.SourceRef{}) {
+			if rule.ProcedureID == "" {
+				return morphError(status.OutcomeInvalid, "MISSING_PROCEDURE_ID", path+".procedure_id", "a source-attributed rule requires a procedure ID")
+			}
+			if err := rule.Provenance.Validate(); err != nil {
+				return morphError(status.OutcomeInvalid, "INVALID_PROCEDURE_PROVENANCE", path+".provenance", err.Error())
+			}
+		}
 		if _, exists := cellIDs[rule.CellID]; !exists {
 			return morphError(status.OutcomeUnknown, "UNKNOWN_PARADIGM_CELL", path+".cell_id", "rule cell does not resolve in this paradigm")
 		}

@@ -14,6 +14,7 @@ type GenerationState string
 const (
 	GenerationGenerated   GenerationState = "generated"
 	GenerationBlocked     GenerationState = "blocked"
+	GenerationIncomplete  GenerationState = "incomplete"
 	GenerationUnavailable GenerationState = "unavailable"
 	GenerationUnknown     GenerationState = "unknown"
 )
@@ -24,12 +25,15 @@ const (
 )
 
 type GenerationTraceStep struct {
-	Operation  procedure.OperationKind `json:"operation,omitempty"`
-	Applied    *bool                   `json:"applied,omitempty"`
-	OutputSize int                     `json:"output_size,omitempty"`
-	Exception  ExceptionID             `json:"exception_id,omitempty"`
-	Effect     ExceptionEffectKind     `json:"effect,omitempty"`
-	SourceID   string                  `json:"source_id,omitempty"`
+	Operation   procedure.OperationKind `json:"operation,omitempty"`
+	Applied     *bool                   `json:"applied,omitempty"`
+	OutputSize  int                     `json:"output_size,omitempty"`
+	ProcedureID string                  `json:"procedure_id,omitempty"`
+	ParadigmID  ParadigmID              `json:"paradigm_id,omitempty"`
+	CellID      CellID                  `json:"cell_id,omitempty"`
+	Exception   ExceptionID             `json:"exception_id,omitempty"`
+	Effect      ExceptionEffectKind     `json:"effect,omitempty"`
+	SourceID    string                  `json:"source_id,omitempty"`
 }
 
 type GeneratedForm struct {
@@ -96,7 +100,7 @@ func Generate(lexeme lexicon.MorphLexeme, parts PrincipalParts, bundle features.
 		return GenerationResult{}, morphError(status.OutcomeInvalid, "PRINCIPAL_PART_LEXEME_MISMATCH", "principal_parts.lexeme_id", "principal parts belong to a different lexeme")
 	}
 	if lexeme.ParadigmID == "" {
-		return GenerationResult{State: GenerationUnavailable, Forms: []GeneratedForm{}}, nil
+		return generationWithDiagnostic(GenerationUnknown, "PARADIGM_UNAVAILABLE", "lexeme has no assigned paradigm", "lexeme.paradigm_id"), nil
 	}
 	paradigm, exists := paradigms.Lookup(ParadigmID(lexeme.ParadigmID))
 	if !exists {
@@ -123,13 +127,13 @@ func Generate(lexeme lexicon.MorphLexeme, parts PrincipalParts, bundle features.
 		if err == nil {
 			preMatched = true
 			if preResolved.Blocked {
-				return GenerationResult{State: GenerationBlocked, Forms: []GeneratedForm{}, Trace: exceptionGenerationTrace(preResolved.Trace)}, nil
+				return GenerationResult{State: GenerationBlocked, Forms: []GeneratedForm{}, Trace: exceptionGenerationTrace(preResolved.Trace, paradigm.ID, cell.ID)}, nil
 			}
 			if !preResolved.RequiresRegeneration && !allTraceEffects(preResolved.Trace, ExceptionEffectAddVariant) {
 				if err := normalizeResolutionForms(&preResolved); err != nil {
 					return GenerationResult{}, err
 				}
-				return generatedResult(lexeme, paradigm, cell, bundle, preResolved, nil), nil
+				return generatedResult(lexeme, paradigm, cell, bundle, preResolved, nil, nil), nil
 			}
 		} else if !isNoMatchingException(err) {
 			if isOutcome(err, status.OutcomeUnknown) {
@@ -147,7 +151,8 @@ func Generate(lexeme lexicon.MorphLexeme, parts PrincipalParts, bundle features.
 		}
 	}
 	if rule == nil {
-		return GenerationResult{State: GenerationUnavailable, Forms: []GeneratedForm{}}, nil
+		path := "paradigms." + string(paradigm.ID) + ".cells." + string(cell.ID) + ".rule"
+		return generationWithDiagnostic(GenerationIncomplete, "CELL_RULE_UNAVAILABLE", "selected paradigm cell has no generation rule", path), nil
 	}
 	if len(paradigm.PrincipalPartRequirements) > MaxPrincipalParts {
 		return GenerationResult{}, morphLimit("principal_part_requirements", len(paradigm.PrincipalPartRequirements), MaxPrincipalParts)
@@ -206,7 +211,7 @@ func Generate(lexeme lexicon.MorphLexeme, parts PrincipalParts, bundle features.
 	if len(resolution.Forms) > MaxGeneratedForms {
 		return GenerationResult{}, morphLimit("generated_forms", len(resolution.Forms), MaxGeneratedForms)
 	}
-	return generatedResult(lexeme, paradigm, cell, bundle, resolution, execution.Trace), nil
+	return generatedResult(lexeme, paradigm, cell, bundle, resolution, execution.Trace, rule), nil
 }
 
 func normalizeResolutionForms(resolution *ExceptionResolution) error {
@@ -266,29 +271,30 @@ func resolveGenerationStems(parts PrincipalParts, requirements []PrincipalPartRe
 	return stems, nil
 }
 
-func generatedResult(lexeme lexicon.MorphLexeme, paradigm Paradigm, cell ParadigmCell, bundle features.FeatureBundle, resolution ExceptionResolution, operationTrace []procedure.StepTrace) GenerationResult {
+func generatedResult(lexeme lexicon.MorphLexeme, paradigm Paradigm, cell ParadigmCell, bundle features.FeatureBundle, resolution ExceptionResolution, operationTrace []procedure.StepTrace, rule *CellRule) GenerationResult {
 	forms := make([]GeneratedForm, len(resolution.Forms))
+	procedureID, sourceID := "", ""
+	if rule != nil {
+		procedureID, sourceID = rule.ProcedureID, rule.Provenance.ID
+	}
+	trace := generationTrace(operationTrace, resolution.Trace, paradigm.ID, cell.ID, procedureID, sourceID)
 	for index, form := range resolution.Forms {
-		trace := make([]GenerationTraceStep, 0, len(operationTrace)+len(resolution.Trace))
-		for _, step := range operationTrace {
-			applied := step.Applied
-			trace = append(trace, GenerationTraceStep{Operation: step.Operation, Applied: &applied, OutputSize: step.OutputSize})
-		}
-		for _, step := range resolution.Trace {
-			trace = append(trace, GenerationTraceStep{Exception: step.RuleID, Effect: step.Effect, SourceID: step.SourceID})
-		}
+		formTrace := cloneGenerationTrace(trace)
 		var provenanceCopy *provenance.SourceRef
 		if form.Provenance != nil {
 			copy := *form.Provenance
 			provenanceCopy = &copy
+		} else if form.Source == ExceptionSourceRegular && rule != nil && rule.Provenance.ID != "" {
+			copy := rule.Provenance
+			provenanceCopy = &copy
 		}
-		forms[index] = GeneratedForm{Surface: form.Form, LexemeID: lexeme.ID.String(), Language: features.LanguageID(lexeme.Language), ProfileVersion: bundle.ProfileVersion, POS: string(lexeme.POS), ParadigmID: paradigm.ID, CellID: cell.ID, Features: cloneFeatureValues(bundle.Values), Source: form.Source, ExceptionID: form.ExceptionID, Provenance: provenanceCopy, Trace: trace}
+		forms[index] = GeneratedForm{Surface: form.Form, LexemeID: lexeme.ID.String(), Language: features.LanguageID(lexeme.Language), ProfileVersion: bundle.ProfileVersion, POS: string(lexeme.POS), ParadigmID: paradigm.ID, CellID: cell.ID, Features: cloneFeatureValues(bundle.Values), Source: form.Source, ExceptionID: form.ExceptionID, Provenance: provenanceCopy, Trace: formTrace}
 	}
 	state := GenerationGenerated
 	if resolution.Blocked {
 		state = GenerationBlocked
 	}
-	return GenerationResult{State: state, Forms: forms, Trace: generationTrace(operationTrace, resolution.Trace)}
+	return GenerationResult{State: state, Forms: forms, Trace: trace}
 }
 
 func unknownGeneration(err error) GenerationResult {
@@ -325,20 +331,40 @@ func allTraceEffects(trace []ExceptionTraceStep, effect ExceptionEffectKind) boo
 	return true
 }
 
-func exceptionGenerationTrace(trace []ExceptionTraceStep) []GenerationTraceStep {
-	return generationTrace(nil, trace)
+func exceptionGenerationTrace(trace []ExceptionTraceStep, paradigmID ParadigmID, cellID CellID) []GenerationTraceStep {
+	return generationTrace(nil, trace, paradigmID, cellID, "", "")
 }
 
-func generationTrace(operations []procedure.StepTrace, exceptions []ExceptionTraceStep) []GenerationTraceStep {
+func generationTrace(operations []procedure.StepTrace, exceptions []ExceptionTraceStep, paradigmID ParadigmID, cellID CellID, procedureID, sourceID string) []GenerationTraceStep {
 	result := make([]GenerationTraceStep, 0, len(operations)+len(exceptions))
 	for _, step := range operations {
 		applied := step.Applied
-		result = append(result, GenerationTraceStep{Operation: step.Operation, Applied: &applied, OutputSize: step.OutputSize})
+		result = append(result, GenerationTraceStep{Operation: step.Operation, Applied: &applied, OutputSize: step.OutputSize, ProcedureID: procedureID, ParadigmID: paradigmID, CellID: cellID, SourceID: sourceID})
 	}
 	for _, step := range exceptions {
-		result = append(result, GenerationTraceStep{Exception: step.RuleID, Effect: step.Effect, SourceID: step.SourceID})
+		result = append(result, GenerationTraceStep{Exception: step.RuleID, Effect: step.Effect, ParadigmID: paradigmID, CellID: cellID, SourceID: step.SourceID})
 	}
 	return result
+}
+
+func generationWithDiagnostic(state GenerationState, code, message, path string) GenerationResult {
+	diagnostic := status.Diagnostic{Code: code, Message: message, Path: path, Severity: status.SeverityWarning}
+	return GenerationResult{State: state, Forms: []GeneratedForm{}, Diagnostics: []status.Diagnostic{diagnostic}}
+}
+
+// BoundedTrace converts the detailed morphology trace to the shared bounded
+// status trace, marking truncation when the morphology trace is longer.
+func (result GenerationResult) BoundedTrace() status.Trace {
+	count := min(len(result.Trace), status.MaxTraceSteps)
+	trace := status.Trace{Steps: make([]status.TraceStep, 0, count), Truncated: len(result.Trace) > count}
+	for _, step := range result.Trace[:count] {
+		trace.Steps = append(trace.Steps, status.TraceStep{
+			RuleID: string(step.Exception), ProcedureID: step.ProcedureID,
+			ParadigmID: string(step.ParadigmID), CellID: string(step.CellID),
+			SourceID: step.SourceID,
+		})
+	}
+	return trace
 }
 
 func (form GeneratedForm) Reading() Reading {

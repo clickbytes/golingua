@@ -13,6 +13,7 @@ import (
 	"github.com/clickbytes/golingua/internal/lexicon"
 	"github.com/clickbytes/golingua/internal/morph"
 	"github.com/clickbytes/golingua/internal/procedure"
+	"github.com/clickbytes/golingua/internal/provenance"
 )
 
 //go:embed features.json
@@ -61,6 +62,7 @@ type Seed struct {
 	lexemes    []lexicon.MorphLexeme
 	paradigms  *morph.CompiledParadigms
 	exceptions *morph.CompiledExceptions
+	provenance *provenance.Index
 	parts      map[string]morph.PrincipalParts
 	index      *morph.InverseIndex
 }
@@ -126,7 +128,19 @@ func Load() (*Seed, error) {
 	if err != nil {
 		return nil, fmt.Errorf("compile English exceptions: %w", err)
 	}
-	seed := &Seed{profile: profile, lexicon: compiledLexicon, lexemes: lexemes, paradigms: compiledParadigms, exceptions: exceptions, parts: parts}
+	provenanceRecords := make([]provenance.RecordRef, 0)
+	for _, paradigm := range paradigms {
+		for _, rule := range paradigm.Rules {
+			if rule.ProcedureID != "" && rule.Provenance.ID != "" {
+				provenanceRecords = append(provenanceRecords, provenance.RecordRef{Kind: provenance.RecordProcedure, ID: rule.ProcedureID, Source: rule.Provenance})
+			}
+		}
+	}
+	provenanceIndex, err := provenance.BuildIndex(provenanceRecords)
+	if err != nil {
+		return nil, fmt.Errorf("build English provenance index: %w", err)
+	}
+	seed := &Seed{profile: profile, lexicon: compiledLexicon, lexemes: lexemes, paradigms: compiledParadigms, exceptions: exceptions, provenance: provenanceIndex, parts: parts}
 	readings := make([]morph.Reading, 0, 64)
 	for _, sourceLexeme := range lexemes {
 		lexeme, exists := compiledLexicon.LookupLexeme(sourceLexeme.ID)
@@ -205,4 +219,12 @@ func (seed *Seed) Lexemes() []lexicon.MorphLexeme {
 		result[index].Properties = append([]lexicon.Property(nil), lexeme.Properties...)
 	}
 	return result
+}
+
+// Provenance returns the immutable source index for bundled procedures.
+func (seed *Seed) Provenance() *provenance.Index {
+	if seed == nil {
+		return nil
+	}
+	return seed.provenance
 }
