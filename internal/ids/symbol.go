@@ -23,6 +23,7 @@ const (
 	NamespaceConcept      Namespace = "concept"
 	NamespaceLexeme       Namespace = "lexeme"
 	NamespaceSense        Namespace = "sense"
+	NamespaceRelation     Namespace = "relation"
 	NamespaceConstruction Namespace = "construction"
 	NamespaceProcedure    Namespace = "procedure"
 )

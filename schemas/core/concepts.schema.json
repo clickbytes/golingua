@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://clickbytes.github.io/golingua/schemas/core/concepts.schema.json",
+  "title": "Golingua CORE concept definitions",
+  "description": "Language-neutral concept and relation definitions. Lexical and grammatical data belong to language modules.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "relations", "concepts"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "relations": {
+      "type": "array",
+      "maxItems": 1024,
+      "items": { "$ref": "#/$defs/relation" }
+    },
+    "concepts": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": { "$ref": "#/$defs/concept" }
+    }
+  },
+  "$defs": {
+    "conceptId": { "type": "string", "pattern": "^concept:(?!(?:__proto__|prototype|constructor)(?:\\.|$))[a-z0-9_-]{1,64}(?:\\.(?!(?:__proto__|prototype|constructor)(?:\\.|$))[a-z0-9_-]{1,64}){0,15}$", "maxLength": 264 },
+    "relationId": { "type": "string", "pattern": "^relation:(?!(?:__proto__|prototype|constructor)(?:\\.|$))[a-z0-9_-]{1,64}(?:\\.(?!(?:__proto__|prototype|constructor)(?:\\.|$))[a-z0-9_-]{1,64}){0,15}$", "maxLength": 265 },
+    "kind": { "enum": ["entity", "event", "property", "relation", "abstract"] },
+    "role": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "allowed_kinds"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z][a-z0-9_-]{0,63}$" },
+        "allowed_kinds": { "type": "array", "maxItems": 5, "uniqueItems": true, "items": { "$ref": "#/$defs/kind" } }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relation", "target", "strength"],
+      "properties": {
+        "relation": { "$ref": "#/$defs/relationId" },
+        "target": { "$ref": "#/$defs/conceptId" },
+        "strength": { "enum": ["required", "typical"] },
+        "role": { "type": "string", "pattern": "^[a-z][a-z0-9_-]{0,63}$" }
+      }
+    },
+    "effect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "value"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z][a-z0-9_-]{0,63}$" },
+        "value": { "type": "string", "maxLength": 1024 }
+      }
+    },
+    "relation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "subject_kinds", "object_kinds"],
+      "properties": {
+        "id": { "$ref": "#/$defs/relationId" },
+        "subject_kinds": { "type": "array", "maxItems": 5, "uniqueItems": true, "items": { "$ref": "#/$defs/kind" } },
+        "object_kinds": { "type": "array", "maxItems": 5, "uniqueItems": true, "items": { "$ref": "#/$defs/kind" } },
+        "symmetric": { "type": "boolean", "default": false },
+        "transitive": { "type": "boolean", "default": false }
+      }
+    },
+    "concept": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind"],
+      "properties": {
+        "id": { "$ref": "#/$defs/conceptId" },
+        "kind": { "$ref": "#/$defs/kind" },
+        "parent": { "$ref": "#/$defs/conceptId" },
+        "role_types": { "type": "array", "maxItems": 64, "items": { "$ref": "#/$defs/role" } },
+        "definition_edges": { "type": "array", "maxItems": 256, "items": { "$ref": "#/$defs/edge" } },
+        "semantic_effects": { "type": "array", "maxItems": 64, "items": { "$ref": "#/$defs/effect" } },
+        "definition": { "type": "string", "maxLength": 1024 }
+      }
+    }
+  }
+}
