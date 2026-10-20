@@ -238,8 +238,22 @@ func resourceLimit(resource string, value, maximum int) error {
 }
 
 func newManifestError(kind status.OutcomeKind, code, path, message string) error {
-	diagnostic := status.Diagnostic{Code: code, Path: path, Message: message, Severity: status.SeverityError}
+	diagnostic := status.Diagnostic{Code: boundedDiagnosticText(code, status.MaxDiagnosticCodeBytes), Path: boundedDiagnosticText(path, status.MaxDiagnosticPathBytes), Message: boundedDiagnosticText(message, status.MaxDiagnosticMessageBytes), Severity: status.SeverityError}
 	return &ManifestError{result: status.Result{Status: kind, Diagnostics: []status.Diagnostic{diagnostic}}}
+}
+
+func boundedDiagnosticText(value string, maximum int) string {
+	if !utf8.ValidString(value) {
+		value = strings.ToValidUTF8(value, "�")
+	}
+	if len(value) <= maximum {
+		return value
+	}
+	value = value[:maximum]
+	for !utf8.ValidString(value) {
+		value = value[:len(value)-1]
+	}
+	return value
 }
 
 type ManifestError struct {
