@@ -54,6 +54,9 @@ func DecodePhraseProfile(data []byte, featureProfile *features.LanguageFeaturePr
 			if !validToken(input.Role) || (input.Kind != PhraseInputLexical && input.Kind != PhraseInputNP && input.Kind != PhraseInputVP && input.Kind != PhraseInputPP) {
 				return PhraseProfile{}, invalid("INVALID_PHRASE_TEMPLATE_INPUT", path+".inputs", "input role and kind must be supported")
 			}
+			if !validTemplateInputShape(template.Kind, input) {
+				return PhraseProfile{}, invalid("INVALID_PHRASE_TEMPLATE_INPUT_SHAPE", path+".inputs", "input role, kind, and requiredness are incompatible with this phrase kind")
+			}
 			if _, ok := roles[input.Role]; ok {
 				return PhraseProfile{}, invalid("DUPLICATE_PHRASE_TEMPLATE_INPUT", path+".inputs", "input role is duplicated")
 			}
@@ -87,6 +90,12 @@ func DecodePhraseProfile(data []byte, featureProfile *features.LanguageFeaturePr
 			if template.Kind == PhrasePP && (child.Role != "complement" || child.Kind != PhraseNP || !child.Required) {
 				return PhraseProfile{}, invalid("INVALID_PP_TEMPLATE_COMPLEMENT", path+".children", "PP template requires one required NP complement")
 			}
+			if template.Kind == PhraseNP && ((child.Role != "modifier" && child.Role != "quantity") || (child.Kind != PhraseNP && child.Kind != PhrasePP)) {
+				return PhraseProfile{}, invalid("INVALID_NP_TEMPLATE_CHILD", path+".children", "NP child must be a modifier or quantity phrase")
+			}
+			if template.Kind == PhraseVP && (child.Role != "auxiliary" || child.Kind != PhraseVP || child.Required) {
+				return PhraseProfile{}, invalid("INVALID_VP_TEMPLATE_CHILD", path+".children", "VP auxiliary placeholder must be optional and VP typed")
+			}
 		}
 		if template.Kind == PhrasePP {
 			if _, ok := childRoles["complement"]; !ok {
@@ -105,6 +114,30 @@ func DecodePhraseProfile(data []byte, featureProfile *features.LanguageFeaturePr
 		}
 	}
 	return profile, nil
+}
+
+func validTemplateInputShape(kind PhraseKind, input PhraseTemplateInput) bool {
+	switch kind {
+	case PhraseNP:
+		switch input.Role {
+		case "head":
+			return input.Kind == PhraseInputLexical && input.Required
+		case "determiner", "quantity":
+			return input.Kind == PhraseInputLexical && !input.Required
+		case "modifier":
+			return input.Kind == PhraseInputNP && !input.Required
+		}
+	case PhraseVP:
+		switch input.Role {
+		case "verb":
+			return input.Kind == PhraseInputLexical && input.Required
+		case "auxiliary":
+			return input.Kind == PhraseInputLexical && !input.Required
+		}
+	case PhrasePP:
+		return input.Role == "preposition" && input.Kind == PhraseInputLexical && input.Required
+	}
+	return false
 }
 
 // ValidatePhraseProfile rechecks an in-memory profile through the same schema
