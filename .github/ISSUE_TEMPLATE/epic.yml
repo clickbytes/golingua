@@ -1,0 +1,42 @@
+name: Epic
+description: Plan a serial, bounded project milestone
+title: "[EPIC][G00] "
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal and observable outcome
+      description: State what will exist when the epic is complete.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope and boundaries
+      description: List included work and important exclusions.
+    validations:
+      required: true
+  - type: textarea
+    id: children
+    attributes:
+      label: Ordered child issues
+      description: Keep future tasks queued; complete and merge one task before activating the next.
+      value: "1. [ ] First task — QUEUED\n2. [ ] Next task — QUEUED"
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Mark each criterion PASS, FAIL, INFRA, or NOT RUN with evidence. Do not close an epic while any required criterion is NOT RUN.
+    validations:
+      required: true
+  - type: checkboxes
+    id: policy
+    attributes:
+      label: Work policy
+      options:
+        - label: One active epic, task, working branch, and implementation PR at a time.
+          required: true
+        - label: Go unit tests, golds, and automated language-quality gates are not implied.
+          required: true
