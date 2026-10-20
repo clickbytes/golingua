@@ -3,6 +3,7 @@
 package provenance
 
 import (
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"net/url"
@@ -17,6 +18,8 @@ const (
 	MaxSourceLocationBytes = 2048
 	MaxSourceVersionBytes  = 128
 	MaxSourceLicenseBytes  = 256
+	MaxSourceAuthorBytes   = 256
+	SHA256HexBytes         = 64
 )
 
 var ErrInvalidSourceRef = errors.New("invalid source reference")
@@ -30,6 +33,9 @@ type SourceRef struct {
 	URI     string `json:"uri,omitempty"`
 	Version string `json:"version"`
 	License string `json:"license"`
+	Author  string `json:"author,omitempty"`
+	// ChecksumSHA256 is an optional lowercase SHA-256 of the exact source bytes.
+	ChecksumSHA256 string `json:"checksum_sha256,omitempty"`
 }
 
 // Validate checks the reference's structure and bounded fields. It does not
@@ -57,7 +63,28 @@ func (source SourceRef) Validate() error {
 	if !validMetadata(source.License, MaxSourceLicenseBytes) {
 		return fmt.Errorf("%w: license is empty, invalid, or too long", ErrInvalidSourceRef)
 	}
+	if source.Author != "" && !validMetadata(source.Author, MaxSourceAuthorBytes) {
+		return fmt.Errorf("%w: author is invalid or too long", ErrInvalidSourceRef)
+	}
+	if source.ChecksumSHA256 != "" && !validSHA256(source.ChecksumSHA256) {
+		return fmt.Errorf("%w: checksum_sha256 must be lowercase hexadecimal SHA-256", ErrInvalidSourceRef)
+	}
 	return nil
+}
+
+// ValidateRelativeDataPath applies the same traversal-resistant path rules used
+// by SourceRef without requiring fabricated attribution metadata.
+func ValidateRelativeDataPath(value string) error { return validatePath(value) }
+
+// ValidSHA256 reports whether value is a canonical lowercase SHA-256 digest.
+func ValidSHA256(value string) bool { return validSHA256(value) }
+
+func validSHA256(value string) bool {
+	if len(value) != SHA256HexBytes || strings.ToLower(value) != value {
+		return false
+	}
+	_, err := hex.DecodeString(value)
+	return err == nil
 }
 
 func validID(value string) bool {
