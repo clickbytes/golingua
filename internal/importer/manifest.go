@@ -233,6 +233,14 @@ func unknown(code, path, message string) error {
 	return newManifestError(status.OutcomeUnknown, code, path, message)
 }
 
+func unsupported(code, path, message string) error {
+	return newManifestError(status.OutcomeUnsupported, code, path, message)
+}
+
+func incomplete(code, path, message string) error {
+	return newManifestError(status.OutcomeIncomplete, code, path, message)
+}
+
 func resourceLimit(resource string, value, maximum int) error {
 	return newManifestError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "budget."+resource, fmt.Sprintf("manifest %s limit exceeded: %d > %d", resource, value, maximum))
 }

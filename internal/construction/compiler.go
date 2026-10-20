@@ -47,7 +47,7 @@ func CompileConstruction(input CompileInput) (CompiledConstructionPlan, error) {
 	if err := profile.Provenance.Validate(); err != nil {
 		return CompiledConstructionPlan{}, invalid("INVALID_PROFILE_PROVENANCE", "profile.provenance", "profile requires valid provenance")
 	}
-	if !validLanguage(profile.Language) || !validToken(string(profile.Version)) {
+	if !validLanguage(profile.Language) || !validProfileVersion(string(profile.Version)) {
 		return CompiledConstructionPlan{}, invalid("INVALID_CONSTRUCTION_PROFILE", "profile", "profile requires canonical language and version")
 	}
 	if profile.Language != family.Language {
@@ -163,6 +163,18 @@ func CompileConstruction(input CompileInput) (CompiledConstructionPlan, error) {
 	plan.ID = canonicalPlanID(plan)
 	plan.PermissionDigest = permissionDigest(plan.Permissions)
 	return plan, nil
+}
+
+func validProfileVersion(value string) bool {
+	if len(value) == 0 || len(value) > features.MaxTokenBytes || value[0] < 'a' || value[0] > 'z' {
+		return false
+	}
+	for _, character := range value {
+		if !(character >= 'a' && character <= 'z') && !(character >= '0' && character <= '9') && character != '_' && character != '-' && character != '.' {
+			return false
+		}
+	}
+	return true
 }
 
 func argumentIDs(frame valency.ValencyFrame) []string {
