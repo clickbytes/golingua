@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "language": "pl",
+  "version": "1",
+  "quantifier_kinds": ["some", "all", "exactly", "at_least", "at_most"],
+  "grammatical_feature_ids": ["case", "gender", "number"],
+  "temporal_kinds": ["calendar_date", "clock_time", "duration", "relative_day"],
+  "mwe_component_kinds": ["fixed", "inflected", "input"],
+  "max_mwe_components": 64
+}
