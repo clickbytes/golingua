@@ -8,14 +8,17 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/importer"
 	"github.com/clickbytes/golingua/internal/provenance"
+	"github.com/clickbytes/golingua/internal/staging"
 	"github.com/clickbytes/golingua/internal/status"
 )
 
 const maxManifestInput = importer.MaxManifestBytes
+const maxCLIPathBytes = 4096
 
 func run(args []string, stdout, stderr io.Writer) int {
 	if len(args) > 0 && args[0] == "unimorph" {
@@ -24,8 +27,11 @@ func run(args []string, stdout, stderr io.Writer) int {
 	if len(args) > 0 && args[0] == "constructions" {
 		return runConstructions(args[1:], stdout, stderr)
 	}
+	if len(args) > 0 && args[0] == "snapshot" {
+		return runSnapshot(args[1:], stdout, stderr)
+	}
 	if len(args) == 1 && (args[0] == "--help" || args[0] == "-h" || args[0] == "help") {
-		fmt.Fprintln(stdout, "golingua-import --manifest PATH --data-dir DIR\n        golingua-import unimorph --input PATH --mapping PATH --features PATH --source-id ID --source-version VERSION --license LABEL (--source-path PATH | --source-uri URI)\n        golingua-import constructions --input PATH --features PATH\nValidates offline data and emits non-activated morphology or construction plans.")
+		fmt.Fprintln(stdout, "golingua-import --manifest PATH --data-dir DIR\n        golingua-import snapshot preview --manifest PATH --data-dir DIR --store DIR\n        golingua-import snapshot apply --manifest PATH --data-dir DIR --store DIR\n        golingua-import unimorph --input PATH --mapping PATH --features PATH --source-id ID --source-version VERSION --license LABEL (--source-path PATH | --source-uri URI)\n        golingua-import constructions --input PATH --features PATH\nValidates offline data and emits non-activated proposals; snapshot activation is local and explicit.")
 		return 0
 	}
 	if len(args) == 1 && args[0] == "--version" {
@@ -74,6 +80,115 @@ func run(args []string, stdout, stderr io.Writer) int {
 		Bindings int    `json:"bindings"`
 	}{"valid", manifest.DatasetID, conceptCount, lexemeCount, senseCount, bindingCount})
 	return 0
+}
+
+func runSnapshot(args []string, stdout, stderr io.Writer) int {
+	if (len(args) == 1 && (args[0] == "--help" || args[0] == "-h")) ||
+		(len(args) == 2 && (args[1] == "--help" || args[1] == "-h") && (args[0] == "preview" || args[0] == "apply")) {
+		fmt.Fprintln(stdout, "Usage: golingua-import snapshot preview|apply --manifest PATH --data-dir DIR --store DIR")
+		return 0
+	}
+	if len(args) == 0 || (args[0] != "preview" && args[0] != "apply") {
+		fmt.Fprintln(stderr, "usage: golingua-import snapshot preview|apply --manifest PATH --data-dir DIR --store DIR")
+		return 2
+	}
+	action := args[0]
+	if len(args) == 2 && (args[1] == "--help" || args[1] == "-h") {
+		fmt.Fprintln(stdout, "Usage: golingua-import snapshot "+action+" --manifest PATH --data-dir DIR --store DIR")
+		return 0
+	}
+	flags := flag.NewFlagSet("snapshot "+action, flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	manifestPath := flags.String("manifest", "", "bounded dataset manifest JSON")
+	dataRoot := flags.String("data-dir", "", "root directory containing manifest files")
+	storeRoot := flags.String("store", "", "local active snapshot store directory")
+	if err := flags.Parse(args[1:]); err != nil {
+		return 2
+	}
+	if flags.NArg() != 0 || !validCLIPath(*manifestPath) || !validCLIPath(*dataRoot) || !validCLIPath(*storeRoot) {
+		fmt.Fprintln(stderr, "usage: golingua-import snapshot preview|apply --manifest PATH --data-dir DIR --store DIR")
+		return 2
+	}
+	manifestBytes, err := readFileBounded(*manifestPath, maxManifestInput)
+	if err != nil {
+		printFailure(stdout, stderr, inputReadError("manifest", maxManifestInput, err))
+		return 1
+	}
+	manifest, err := importer.DecodeManifest(manifestBytes)
+	if err != nil {
+		printFailure(stdout, stderr, err)
+		return 1
+	}
+	candidate, err := staging.BuildCandidate(*dataRoot, manifest)
+	if err != nil {
+		printFailure(stdout, stderr, err)
+		return 1
+	}
+	store, err := staging.OpenStore(*storeRoot)
+	if err != nil {
+		printFailure(stdout, stderr, storeInputError(*storeRoot, err))
+		return 1
+	}
+	var result staging.Preview
+	if action == "preview" {
+		result, err = store.Preview(candidate)
+	} else {
+		result, err = store.Apply(candidate)
+	}
+	if err != nil {
+		printFailure(stdout, stderr, err)
+		return 1
+	}
+	activation := "not_applied"
+	resultStatus := "previewed"
+	if result.Applied {
+		activation = "local_only"
+		resultStatus = "applied"
+		if !result.DurabilityConfirmed {
+			resultStatus = "applied_durability_unconfirmed"
+		}
+	}
+	report := struct {
+		Status              string `json:"status"`
+		Operation           string `json:"operation"`
+		DatasetID           string `json:"dataset_id"`
+		Version             string `json:"version"`
+		Digest              string `json:"digest"`
+		ActiveDigest        string `json:"active_digest,omitempty"`
+		Changed             bool   `json:"changed"`
+		Applied             bool   `json:"applied"`
+		Activation          string `json:"activation"`
+		DurabilityConfirmed bool   `json:"durability_confirmed"`
+		Warning             string `json:"warning,omitempty"`
+		Summary             struct {
+			Files    int `json:"files"`
+			Concepts int `json:"concepts"`
+			Lexemes  int `json:"lexemes"`
+			Senses   int `json:"senses"`
+			Bindings int `json:"bindings"`
+		} `json:"summary"`
+	}{
+		Status: resultStatus, Operation: action, DatasetID: result.DatasetID, Version: result.Version,
+		Digest: result.Digest, ActiveDigest: result.ActiveDigest, Changed: result.Changed,
+		Applied: result.Applied, Activation: activation,
+		DurabilityConfirmed: result.DurabilityConfirmed, Warning: result.Warning,
+		Summary: struct {
+			Files    int `json:"files"`
+			Concepts int `json:"concepts"`
+			Lexemes  int `json:"lexemes"`
+			Senses   int `json:"senses"`
+			Bindings int `json:"bindings"`
+		}{result.Summary.Files, result.Summary.Concepts, result.Summary.Lexemes, result.Summary.Senses, result.Summary.Bindings},
+	}
+	if err := json.NewEncoder(stdout).Encode(report); err != nil {
+		fmt.Fprintf(stderr, "cannot write snapshot report: %v\n", err)
+		return 1
+	}
+	return 0
+}
+
+func validCLIPath(value string) bool {
+	return value != "" && len(value) <= maxCLIPathBytes && !strings.ContainsRune(value, '\x00')
 }
 
 func runConstructions(args []string, stdout, stderr io.Writer) int {
@@ -241,6 +356,33 @@ func constructionInputError(label string, maximum int64, cause error) error {
 	result, err := status.NewResult(kind, "", []status.Diagnostic{diagnostic}, nil)
 	if err != nil {
 		return &cliFailure{result: status.Result{Status: status.OutcomeError, Diagnostics: []status.Diagnostic{{Code: "INPUT_READ_FAILED", Path: label, Message: "cannot read construction input file", Severity: status.SeverityError}}}}
+	}
+	return &cliFailure{result: result}
+}
+
+func inputReadError(label string, maximum int64, cause error) error {
+	kind := status.OutcomeError
+	code, message := "INPUT_READ_FAILED", "cannot read input file"
+	if errors.Is(cause, errInputFileTooLarge) {
+		kind, code = status.OutcomeResourceLimit, "RESOURCE_LIMIT"
+		message = fmt.Sprintf("input exceeds configured byte limit of %d", maximum)
+	}
+	return newCLIFailure(kind, code, label, message)
+}
+
+func storeInputError(_ string, cause error) error {
+	var typed interface{ Result() status.Result }
+	if errors.As(cause, &typed) && typed.Result().Validate() == nil {
+		return cause
+	}
+	return newCLIFailure(status.OutcomeError, "SNAPSHOT_STORE_OPEN_FAILED", "store", "cannot open local snapshot store")
+}
+
+func newCLIFailure(kind status.OutcomeKind, code, path, message string) error {
+	diagnostic := status.Diagnostic{Code: code, Path: path, Message: message, Severity: status.SeverityError}
+	result, err := status.NewResult(kind, "", []status.Diagnostic{diagnostic}, nil)
+	if err != nil {
+		return &cliFailure{result: status.Result{Status: status.OutcomeError, Diagnostics: []status.Diagnostic{{Code: "CLI_ERROR", Path: path, Message: "command failed", Severity: status.SeverityError}}}}
 	}
 	return &cliFailure{result: result}
 }
