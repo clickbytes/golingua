@@ -26,6 +26,7 @@ Minimalne CI: formatowanie, vet, build, start CLI. Nie używamy CI jako językow
 14. [05 — źródła danych i manifesty](05-data-sources.md) — otoczka źródeł, bez importera i parity gate
 15. [06 — walencja i ConstructionGraph](06-constructions-and-valency.md)
 16. [07 — generatory, paradygmaty i wyjątki](07-morphology-procedures-exceptions.md)
+   - [Kontrakt formalnych wyjątków morfologicznych](morph-exceptions.md)
 17. [08 — MeaningGraph, fakty i rozumowanie](08-meaning-facts-reasoning.md)
 18. [09 — kontrakt pluginów językowych](09-language-plugin-contract.md)
 19. [10 — dane, słowniki i źródła](10-import-provenance.md)
