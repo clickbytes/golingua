@@ -1,38 +1,40 @@
-# golingua agent execution contract
+# golingua — jednoosobowy tryb pracy
 
-## Project boundary
+## Nadrzędna decyzja właściciela (2026-10-20)
 
-Target repository `clickbytes/golingua` only. Read-only migration source: [`clickbytes/flexLingua@79c4a9586f7f94b6065da12dc25c4cb272ebdc92`](https://github.com/clickbytes/flexLingua/tree/79c4a9586f7f94b6065da12dc25c4cb272ebdc92). Go-first independent successor. The old JavaScript runtime is **not** a code-generation template and may have bugs; approved, independently reviewed golds are the semantic oracle.
+**Nowy Go od zera. Bez obowiązku odtwarzania starego JavaScriptu. Bez porównań wyjść do flexLingua. Bez rozbudowanych testów automatycznych.** Przez bieżące etapy jedyną oceną jakości językowej jest **ręczne sprawdzenie wyników tłumaczeń i form dostarczonych przez właściciela projektu**. Nie generuj sam masowych zestawów zdaniowych, nie dodawaj test runnerów, goldów, fixture-gates, automatycznej akceptacji expected ani metryk procentowych poprawności na tej podstawie.
 
-## Exactly one delivery lane
+Źródło `clickbytes/flexLingua` można czytać dla inspiracji lub metadanych i licencji, nie kopiować kodu ani zmuszać Go do powtarzania zachowania JS.
 
-- ONE implementing agent total; do not ask a second agent to work in parallel.
-- At most ONE ACTIVE epic, ONE ACTIVE task, ONE working branch and ONE implementation PR at a time **across this repository**. All future epics/tasks remain QUEUED.
-- Finish and review the current task and merge its PR before starting the next. Re-read `main`, active GitHub issues and open PRs each time. Do not auto-close an epic while any acceptance criterion is NOT RUN.
-- Before editing: post the active task's owner, base main SHA, file-by-file plan, expected positive/negative behavior and test commands to its issue. Scope the PR to that issue. No parallel PRs or agent worktrees.
-- A GitHub connector is not a local filesystem or terminal. Never claim tests, vet or manual CLI were executed by a connector call. Note PASS/FAIL/INFRA/NOT RUN precisely, with real CI run links, SHA, review and source provenance.
+## Bramka szeregowa
 
-## Semantic integrity
+- Dokładnie jeden wykonujący agent. Najwyżej jeden ACTIVE EPIC, jedno ACTIVE child issue, jedna gałąź i jeden implementacyjny PR. Wszystkie przyszłe issues QUEUED.
+- Zanim edytujesz kod: sprawdź main SHA, otwarte PR i status epiców. W komentarzu issue podaj owner, pliki/symbole, plan, oczekiwany rezultat obserwowalny w CLI.
+- Twórz jeden PR na issue. Przeglądaj diff, rzeczywisty CI i ręcznie obserwowane wyniki. Po merge sprawdź main i dopiero rozpocznij następny task.
+- Connector GitHub nie jest terminalem użytkownika. Nie podawaj fikcyjnego lokalnego PASS. Zapisz NOT RUN, jeśli nie uruchomiono CLI na rzeczywistym środowisku.
 
-- Concept != Lexeme != Sense != MorphLexeme != Valency != Construction != Procedure. Language-specific grammar never enters the language-neutral ConceptGraph.
-- Source incomplete != unique; unknown != false; absent != unknown; ambiguous != unsupported; resource_limit != controlled refusal; invalid != infrastructure failure. Never guess a missing interpretation or fact to make CI pass.
-- Morphology may operate on unmapped lexical items. Bilingual semantic transfer requires approved LexicalSense→CORE mapping and a licensed ConstructionBinding.
-- Every interpreted claim, meaning, transfer, utterance and rule needs bounded structure, validity checks and provenance. Hard/typical relation distinctions matter; no fact may be asserted from a negation, question or hypothetical.
-- Never change an approved oracle to fit observed output. All new sentence/fact oracles require independent review with named case IDs. Keep refusal and ambiguity separate from translation PASS.
+## Minimalny CI, niemal zero testów
 
-## Build and release rules
+- Wymagamy `gofmt`, `go vet ./...`, `go build ./cmd/golingua` i lekkiego smoke `--help`/`--version`.
+- **Nie ma obligatoryjnego `go test ./...`, automatycznych testów gramatycznych, fixtures, formalnych goldów, matrix runnera, porównywania z JS, fuzzy benchmark gate ani liczby zdań do zdania.**
+- Nie dodawaj plików `*_test.go` w bieżącej fazie, chyba że właściciel wyraźnie zmieni tę politykę.
+- Po implementacji funkcji językowej zgłoś właścicielowi gotowe komendy CLI i wynik uruchomienia; właściciel poda zdania PL/EN i oceni output. Jeśli nie ma dostępnego lokalnego runtime, dokumentuj, że ocena ręczna pozostaje otwarta, nie zgaduj.
+- Nie zmieniaj implementacji wyłącznie po to, by dopasować output do starej wersji JS.
 
-- Standard Go tools (`go test ./...`, `go vet ./...`, `go build ./cmd/golingua`), fixed module path, Go 1.27, gofmt. CI `go-ci` is mandatory before merge. Prefer stdlib initially; new dependencies require an issue with justification/license.
-- Target first: bounded PL↔EN with ~1,000 approved bilingual concept bindings; no claim of unrestricted translation, CEFR certification, learned intelligence or general-purpose LLM.
-- No memory, auto-learning, UI, external network, FST, SQL or native `.so` language plugins in bootstrap. Future acceptance may revisit those explicitly and with evidence.
-- Handoff lives in GitHub issue/PR with result classes and proofs, not `HANDOFF.MD`.
+## Architektura
 
-## Canonical design and implementation readiness
+Czytaj [`docs/architecture/README.md`](docs/architecture/README.md), właściwy kontrakt i aktywne issue. Concept ≠ leksem ≠ sens ≠ walencja ≠ konstrukcja ≠ procedura; MeaningGraph jest znaczeniem wypowiedzi, a nie przechowywaną ontologią. Gramatyka i profile cech są lokalne dla języka.
 
-Before changing a Go package, read [`docs/architecture/README.md`](docs/architecture/README.md), the relevant layer contract(s), the current EPIC and the active task. **Every module has one owner**: ``internal/core`` concepts, ``internal/lexicon`` lexemes/senses, ``internal/features`` neutral feature mechanism, ``internal/morph`` forms, ``internal/valency`` sense frames, ``internal/construction`` language construction and phrase plans, ``internal/procedure`` typed operations, ``internal/meaning`` sentence semantics, ``internal/facts`` request facts, ``internal/reason`` evidence-based inference. No cyclic Go imports, and language packages never mutate CORE.
+Wspólne typy cech → `internal/features`; CORE nie importuje pluginów PL/EN; parser i realizer używają skompilowanych planów konstrukcji; morfologia korzysta z paradygmatów oraz jawnych wyjątków. Do sprawdzenia po implementacji należą realne przypadki negacji, zamiany ról, polisemii i odmiany, **ręcznie**, na przykładach właściciela.
 
-**No required `ROCK.VERB.MORPH.PAST` navigation API**: it was a discarded sketch, not a product requirement. Use stable typed SymbolIDs and snapshot-local dense runtime IDs. A generated form is not a new ConceptGraph node.
+Nawigacja `ROCK.VERB.MORPH.PAST` nie jest wymaganiem. Trzymamy stabilne ConceptID/LexemeID/ConstructionID i opcjonalne gęste ID runtime.
 
-The design docs are **PROPOSED**, not evidence of shipped translation, memory, learning, reasoning or 1,000 bilingual concepts. If an issue, source contract or implementation contradicts the docs, reconcile in the active GitHub task and update the canonical design before proceeding. Never silently reinterpret a Go interface, let a typical relation prove truth, or promote a staged import as approved.
+## Rozwój danych
 
-Each PR requires the **relevant cross-layer invariants and negative witnesses** (scope, referent identity, incomplete search, exceptional forms, provenance, capabilities). G00-03 and G00-04 will implement the authoritative status-result schema and parity-source manifest; current examples are conceptual. See [`docs/architecture/13-issue-traceability.md`](docs/architecture/13-issue-traceability.md) for per-EPIC contract links.
+1000 konceptów PL i EN jest celem docelowym, nie wymogiem, aby w każdym PR generować ogromny słownik. Dodawaj tylko dane potrzebne do bieżącej fazy. Provenance i licencje danych zewnętrznych zachowuj; automatyczne importy nie mogą tworzyć niezatwierdzonych faktów ani uruchamiać kodu.
+
+Brak pamięci i samouczenia w Go v0. Bez własnego serwera, FST, grafowej bazy i pluginów `.so`, dopóki rzeczywiste potrzeby ich nie uzasadnią.
+
+## Zmiana zakresu
+
+Jeśli stare issue nadal mówi o goldach, niezależnym oracle, matrycy testowej, test_*.go czy regresji względem flexLingua, jest to **stare wymaganie zastąpione decyzją 2026-10-20**. Takie issue musi zostać poprawione przed implementacją, nie wykonywane literalnie. Nie wolno rozszerzać zakresu bez zgody właściciela.

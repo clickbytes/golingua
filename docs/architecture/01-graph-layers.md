@@ -1,69 +1,45 @@
-# 01 — Granulacja grafów, identyfikatory i zależności Go
+# 01 — Warstwy grafowe i granice typów
 
-**Status:** PROPOSED. Zasada: **grafy są warstwami logicznymi jednego procesu**, nie osobnymi bazami, mikroserwisami ani fizycznymi tablicami na każdy człon ścieżki.
+**PROPOSED.** Jeden proces Go; logiczne grafy nie muszą być osobnymi bazami danych.
 
-## Węzły i odpowiedzialność
-
-| Węzeł / struktura | Jeden rekord reprezentuje | Właściciel | NIE wolno w nim umieścić |
-| --- | --- | --- | --- |
-| `ConceptDefinition` / ConceptGraph | znaczenie typu: `animal.dog`, `event.read`, role i relacje | `internal/core` | lemma, case, surface order, user facts |
-| `MorphLexeme` / LexicalGraph | leksem w jednym języku, lemma/POS i inherent features | `internal/lexicon` | niezatwierdzony CoreRef jako automatyczny fakt |
-| `LexicalSense` | jedno znaczenie konkretnego leksemu, nawet jeśli jest wieloznaczny | `internal/lexicon` | składni każdej realizacji jako globalnego CORE |
-| `SemanticBinding` | `SenseID → CoreRef`, typ mapowania, review/provenance | `internal/lexicon` | utożsamienia `related` z `equivalent` |
-| `ValencyFrame` / ValencyGraph | dopuszczone argumenty, ich role/funkcje/rekcję danego `SenseID` | `internal/valency` | reguł słowotwórczych i faktów świata |
-| `ConstructionFamily` | wspólny, językowy wzór składni, np. transitive / intransitive | `internal/construction` | kopii każdego konceptu i leksemu |
-| `ConstructionVariant` | konkretną dopuszczoną sekwencję/scope/markedness, np. PL OVS | `internal/construction` | nowego sensu tylko dlatego, że zmienił się szyk |
-| `ProcedurePlan` / ProcedureGraph | mały typowany plan generowania, rozpoznania lub transformacji | `internal/procedure` | arbitralnego kodu z JSON, I/O, mutacji CORE |
-| `Paradigm` / MorphologyGraph | klasy odmiany i reguły komórek + wyjątki per leksem | `internal/morph` | konceptów jako obowiązkowej morfologii |
-| `EvidenceRecord` / EvidenceGraph | świadectwo: source, review, fixture, capability, reguła, wynik | `internal/evidence` planowane lub `internal/provenance` staging | twierdzenia „implemented” bez testu |
-| `MeaningGraph` | **instancję interpretacji zdania**: event/state/question/operator/roles/referents | `internal/meaning` | polskiego przypadku, angielskiego szyku, inferred world fact |
-| `WorldFact` / request FactSet | pojedynczy, czasowo ugruntowany fakt o **konkretnych referentach** | `internal/facts` w G06 | definicji słownikowej jako zastępnika faktu użytkownika |
-
-Nazwa `EvidenceGraph` oznacza sieć stabilnych, typowanych referencji między dowodami i produktami; na poziomie v0 można ją przechowywać jako indeksowane rekordy, nie potrzebuje grafowej bazy. Source `languages/<code>/graph.json` w flexLingua jest *grafem topologii pluginu*, nie semantycznym ConceptGraph. Nie kopiować tych typów 1:1.
-
-## Typowane krawędzie; relacja nie jest dowolnym stringiem
-
-| Od → do | Relacja (proposed) | Wymagany dowód/ograniczenie |
+| Warstwa | Właściciel (proponowany) | Odpowiedzialność |
 | --- | --- | --- |
-| Concept → Concept | `is_a`, required definition relation / typical link | valid typowanie, jawna transitivity/symmetry, typical nigdy nie dowodzi |
-| MorphLexeme → Paradigm | `inflects_by` | morphology ready, zgodny POS i feature profile |
-| MorphLexeme → LexicalSense | `has_sense` | SenseID unikalny, wszystkie sense niezależne |
-| LexicalSense → Concept | `maps_to` (SemanticBinding) | `approved equivalent` dla bezstratnego transferu; broader/narrower jako informacja, nie substitution |
-| LexicalSense → ValencyFrame | `licenses_frame` | sense-specific, stabilne role i selekcja typów |
-| ValencyFrame → ConstructionFamily | `licenses_family` | frame/language/role cardinality compatible |
-| ConstructionFamily → ConstructionVariant | `allows_variant` | all slots bound, negation/question/voice conditions |
-| ConstructionPlan → ProcedurePlan / Paradigm | `invokes` | poprawne typowane argumenty, bound cost |
-| Evidence → {Binding, Plan, Rule, Fact, Case} | `supports` lub `tests` | reviewed source ID, immutable evidence and rev |
+| ConceptGraph | `internal/core` | znaczenia, ontologia, typy relacji, `is_a` |
+| LexicalGraph | `internal/lexicon` | MorphLexeme, LexicalSense, sense↔concept |
+| ValencyGraph | `internal/valency` | wymagane/optional role per sens, case/adposition/rekcja |
+| ConstructionGraph | `internal/construction` | familie konstrukcji, warianty, operatory i podkonstrukcje NP/VP/PP |
+| MorphologyGraph | `internal/morph` | cechy, paradygmaty, tematy, komórki, wyjątki, inverse lookup |
+| ProcedureGraph | `internal/procedure` | ograniczony interpreter typowanych, współdzielonych operacji |
+| Evidence/Provenance | `internal/provenance` | źródła danych, ręczne adnotacje, identyfikatory reguł w diagnostyce |
+| MeaningGraph | `internal/meaning` | znaczenie jednego zdania, role, referenty, operatory |
+| FactSet (później) | `internal/facts` | jawnie podane fakty o konkretnych instancjach, nie konceptach |
 
-Nie tworzyć stałych grafowych ścieżek `ROCK.VERB.MORPH.PAST`. Past to **cecha wejścia generatora**, nie obiekt ontologiczny ani węzeł przechowywany pod każdym słowem.
+## ID
 
-## Identyfikatory — trzy odrębne przestrzenie
+Stabilne symboliczne `ConceptID, LexemeID, SenseID, FamilyID, VariantID, ProcedureID`. Wewnątrz niemutowalnego pack można używać gęstych `NodeID`; nie powinny być identyfikatorami trwałymi między wersjami. Hash nie jest tożsamością.
 
-- **SymbolID** stabilny i zewnętrzny, np. `animal.dog`, `en.go.1`, `pl.transitive.active`. Tożsamość zależy od jawnego namespace i nie może być zgadywana po części tekstowej nazwy.
-- **Typed ID**: `ConceptID`, `LexemeID`, `SenseID`, `ValencyID`, `ConstructionID`, `ProcedureID`, `EvidenceID`. Nieakceptowalne są porównania ID różnych typów na podstawie samego stringa.
-- **Runtime NodeID (uint32 lub równoważny)**: lokalny dla **jednego immutable pack snapshotu**, wyznaczany deterministycznie podczas kompilacji. Nie zapisuje się go jako trwałej semantycznej referencji; dodanie nowego symbolu może zmienić indeksy wszystkich kolejnych.
+**Ważna zmiana względem wygodnej nawigacji:** `PAST` to cecha/komórka generatora, nie węzeł ConceptGraph pod każdym czasownikiem. Nie trzeba implementować fluent API.
 
-Dedup, sort i canonicalization muszą działać bez kolizji; hash może być indeksem pomocniczym, **nie dowodem tożsamości**. Zachowaj publiczny SymbolID w trace.
+## Typowane krawędzie
 
-## Kierunki zależności pakietów — DAG bez cykli
+- `Concept is_a Concept` i inne typowane relacje, required/typical nie są równoważne.
+- `MorphLexeme has_sense LexicalSense`; `LexicalSense maps_to Concept` z jawnym typem zgodności.
+- `LexicalSense licenses ValencyFrame`; `ValencyFrame licenses ConstructionFamily/Variant`.
+- `ConstructionPlan invokes ProcedurePlan/Paradigm`; wyjątki mogą zastępować wynik tylko w deklarowanym zakresie.
+- `MeaningGraph` tworzy konkretne participant/referent instancje; nie duplikuje definicji konceptu.
 
-`internal/ids`, `internal/status` i `internal/provenance` to liście bazowe. **Proponowana korekta issue G02-02:** współdzielona unifikacja cech nie powinna leżeć tylko w `internal/morph/features.go`, bo jest wykorzystywana również przez `construction` i `valency`. Neutralne, typowane mechanizmy umieścić w `internal/features`, językowe profile w pluginach; morfologia importuje ten pakiet, nie odwrotnie.
+## Zależności Go
 
-`internal/core` zawiera typy i definicje, nie importuje `internal/graph`; `internal/graph` zależy od `core`. `internal/meaning` może walidować względem `core`; `core` nigdy nie importuje `meaning`. `internal/procedure` implementuje bezpieczne, generyczne operacje i **nie importuje `morph` ani `construction`**. Zależności:
+Proponowany kierunek: `internal/ids` i `internal/status` → neutralne `internal/features` i `internal/core` → `internal/lexicon`/`internal/meaning` → `internal/morph`/`internal/valency` → `internal/construction` → `internal/parser`/`internal/realizer` → `internal/engine`/CLI. `internal/procedure` nie może importować `construction` i `morph`, bo te dwa korzystają z procedur. Osobny kompilator/loader zasobów pracuje offline.
 
-`ids/status/features → core → graph,meaning,lexicon; lexicon+features+procedure → morph; meaning+lexicon+features → valency; valency+features+procedure → construction; all validated data → pack; pack + analyzer/parser/realizer → engine; meaning+facts → reason → planner → dialogue; engine → cli`.
+Nie wkładaj polskiej fleksji do `core`, nie implementuj transferu parami języków w `engine` i nie twórz jednego `if concept == X` per wyraz.
 
-`internal/importer` zapisuje kandydujące schematy i staging, ale nie może modyfikować aktywnego `pack`; pack compiler czyta wyłącznie zatwierdzone dane. Żaden komponent CORE nie importuje `languages/pl` ani `languages/en`.
+## Właściwości zachowania, sprawdzane teraz ręcznie
 
-## Własności grafu
+- Typ `dog` to nie konkretny pies; dwa referenty mogą należeć do jednej kategorii.
+- `agent` to semantyczna rola, nie synonim podmiotu i przypadku mianownika.
+- Przypadek gramatyczny/szyk powierzchniowy należy do pluginu, nie do MeaningGraph.
+- Multiple readings pozostają alternatywami, nie pierwszym znalezionym wynikiem.
+- Ograniczenia i brak danych skutkują jawnym komunikatem, nie automatycznym „best guess”.
 
-1. Ontology `parent`/`is_a` acykliczne i twarde; inne relacje mogą tworzyć cykle, wymagają visited set i budżetu.
-2. Role `agent/theme/recipient` są semantyczne; `subject/object` i przypadek wyznacza wyłącznie konstrukcja+walencja.
-3. `definitionGraph.required` jest ograniczeniem typu, `typical` to sygnał preferencji **bez siły logicznej**. Brak obserwacji nie jest sprzecznością.
-4. Dwa referenty tego samego konceptu nie stają się automatycznie jedną instancją. Identity wymaga dowodu.
-5. Tylko jawnie licencjonowane alternacje konstrukcji mogą zamieniać realization plan; negacja/pytanie/warunek nie zmienia się w assertion.
-6. Powtarzalny porządek ID/edge/trace i jawny resource_limit. Żaden limit nie może po cichu usunąć alternatyw przy komunikacie `unique`.
-
-### Minimalny przykład
-
-`event.visual_perception` to ConceptID; `en.see.1` to MorphLexeme; `en.see.1.sense.1` to LexicalSense związany z konceptem; ValencyFrame podaje, że sense dopuszcza obserwującego i postrzeganą encję; `en.construction.transitive.active` określa SVO; ProcedurePlan dobiera `sees`; konkretne `girl_1` i `dog_2` istnieją dopiero w MeaningGraph/FactSet, nie jako nowe słownikowe koncepty.
+Te inwarianty mają być zakodowane, ale nie wymagamy na tym etapie formalnej macierzy testowej.

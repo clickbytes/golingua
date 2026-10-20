@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -17,13 +17,21 @@ jobs:
         with:
           go-version: '1.27.x'
           cache: false
-      - name: Unit and contract checks
-        run: go test ./...
+      - name: Go formatting
+        run: |
+          files="$(git ls-files '*.go')"
+          if [ -n "$files" ]; then
+            unformatted="$(gofmt -l $files)"
+            if [ -n "$unformatted" ]; then
+              printf 'Unformatted files:\n%s\n' "$unformatted"
+              exit 1
+            fi
+          fi
       - name: Vet
         run: go vet ./...
-      - name: Compile CLI
+      - name: Build
         run: go build -o golingua ./cmd/golingua
-      - name: CLI smoke
+      - name: CLI starts
         run: |
           ./golingua --version
-          ./golingua capabilities --json
+          ./golingua --help

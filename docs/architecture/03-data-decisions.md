@@ -1,58 +1,38 @@
-# 03 — Źródła danych, etap redakcyjny i runtime pack
+# 03 — Dane, kompilacja i format runtime
 
-**Status:** PROPOSED; kontrakty szczegółowe G04. Początkowa decyzja: **nie wybieramy bazy danych, FST ani własnego binarnego protokołu jako warunku v0**. Optymalizacja ma wynikać z profili i parity, nie z estetyki reprezentacji grafu.
+**PROPOSED.** Źródłem prawdy nowego silnika są nowe struktury Go i jego nowe, proste dane. Nie przenosimy starego kodu JS. Wcześniejsze leksykony/koncepcje mogą być pomocniczym źródłem wiedzy lub opcjonalnym zbiorem do importu, lecz **nie ma obowiązku ich kopiowania ani porównywania wyników**.
 
-## Trzy artefakty o trzech celach
+## Docelowe poziomy danych
 
-| Warstwa | Postać v0 | Cel | Czy runtime modyfikuje? |
-| --- | --- | --- | --- |
-| Repo source of truth | czytelne JSON (ze schema) + reviewed source IDs | edycja paradygmatów, konstrukcji, sensów i wyjątków | nie |
-| Import staging | lokalne wersjonowane rekordy kandydatów + review manifest i atomic promotion | import masowy, konflikty, provenance, licencje | nie, to oddzielne narzędzie offline |
-| Compiled pack | zwalidowany immutable snapshot z indeksami liczbowymi i checksums; fizyczny format ustala G04-06 | szybki `Analyze/Generate/Realize/Reason` | nie |
+| Poziom | Rola | Przykładowe pliki |
+| --- | --- | --- |
+| Definicje | małe, czytelne, wersjonowane deklaracje znaczeń, klas odmiany, konstrukcji, operatorów i wyjątków | `data/core/*.json`, `languages/pl/**`, `languages/en/**` |
+| Opcjonalny import | narzędzie do przetwarzania dodatkowych słowników PL/EN bez włączania ich automatycznie | `internal/importer/*`, `imports/*` |
+| Pakiet runtime | skompilowane, walidowane, niemutowalne indeksy i plany | `internal/pack/*` |
+| Wyniki ręczne | tekst/diagnostyka z faktycznego wywołania Go CLI; opcjonalne notatki | `examples/manual/*.md` lub komentarz issue |
 
-SQLite jest **opcją edytorskiego staging**, jeśli potrzebna transakcyjność, nie podstawową grafową bazą ani hot-path runtime. FST/two-level morphology to osobny kandydat porównywany w G08; obecne JS ADR `morphology-backend-scaling` świadomie odkłada FST/lazy. W Go zaczynamy od skończonych relacji i indeksów odwróconych, ale nie projektujemy publicznego API uzależnionego od reprezentacji.
+Brak `tests/cases`, masowego importu starych expected, obowiązkowego gold-index i runnera. Nie wybieramy od razu SQLite, FST ani specjalnego binarnego formatu pakietu.
 
-## Przykładowa *docelowa* topologia języka
+## Własności kompilatora
 
-```text
-data/core/concepts.json
-languages/pl/manifest.json
-languages/pl/features.json
-languages/pl/lexicon/{lexemes,senses,bindings}.json
-languages/pl/morphology/{paradigms,lexemes}.json
-languages/pl/valency/*.json
-languages/pl/constructions/{families,variants,operators}.json
-languages/pl/import/unimorph-profile.json
-languages/en/... (symetryczna struktura, INNE reguły)
-imports/manifests/{source,review}.json
-fixtures/{core,morph,sentences,reasoning,coverage}/...
-```
+1. Definicje mają jawny typ i symbol, np. `ConceptID`, `LexemeID`, `SenseID`, `ParadigmID`, `ConstructionID`. Nazwa nie określa automatycznie ontologii ani POS.
+2. Powiązania do nieistniejących symboli są błędami danych; nie zgaduj brakujących mapowań.
+3. Rozpoznawanie wyjątku nie zależy od kolejności JSON. Konflikty muszą powodować czytelną diagnostykę.
+4. Rzeczywiście wspólne paradygmaty i konstrukcje dzielą plany; nie materializujemy ich oddzielnie dla każdego czasownika.
+5. Indeks odwrócony form zachowuje wszystkie legalne odczytania. Usuwanie alternatyw nie jest optymalizacją.
+6. Staged data może być niekompletne; nie powinno po cichu stać się aktywną wiedzą.
+7. Zmiana danych tworzy nowy snapshot pakietu; istniejący runtime nie powinien mieć mutowanych globalnych map.
 
-Nie są to istniejące pliki w bootstrap, a ścieżki docs i issues wyznaczają obowiązki przyszłych PR-ów. Odpowiedniki językowe nie mają wymuszonej symetrii reguł. Semantyka CORE jest wspólna, a POS, case, agreement i word order pozostają językowe.
+## Wydajność i magazyn
 
-## Wersjonowanie i unikanie mieszania ID
+W nowym prototypie Go najpierw proste struktury: tablice i mapy numerycznych ID, indeksy `surface→readings`, `lemma→lexemes`, `concept→senses`, `sense→valency` i `construction→plans`. Liczne relacje ontologiczne mogą korzystać z indeksu sąsiedztwa, ale nie potrzeba grafowej bazy do 1000 konceptów.
 
-- Stable SymbolID i odrębne namespace dla concept, lexeme, sense, valency, construction, procedure i evidence; rozszerzanie CORE nie zmienia znaczenia istniejącego ID bez kontrolowanej migracji.
-- `packHash` hash kanonicznych, posortowanych wejść (plus wersja kompilatora i schematów), nie zegar systemowy. ID typu `uint32` to tylko snapshot-local offsets i mogą zmienić się po dodaniu rekordu.
-- Parser gotowego pakietu odrzuca nieznane wersje, checksum mismatch, dangling relation, niezatwierdzoną mapę i unsupported operator.
-- Każdy import ma `sourceRepo/URI + version/revision + checksum + author + license + review`. Jeśli którykolwiek wymagany element jest nieznany, status jest `pending/unverified`, nie domyślne „approved”.
+Baza SQLite mogłaby pomóc redaktorowi danych, nie musi być w runtime. FST/lazy morphology są odroczone: nie przenoś wymagań porównawczych ze starego engine. Benchmark optymalizacyjny wolno uruchomić później, gdy użytkownik wyraźnie go potrzebuje; nie jest standardowym gate przed PR.
 
-## Migracja pinned source
+## Projekt od zera, licencje
 
-Przed implementacją importu wszystkie reguły schema i pliki weryfikować na [source anchor](https://github.com/clickbytes/flexLingua/tree/79c4a9586f7f94b6065da12dc25c4cb272ebdc92). Na tym SHA: CORE 1002, PL lexical items 1005, EN 1006, PL morphological bindings 465, EN 462, PL/EN source frame 51/51. Ta statystyka to **próg kontroli kompletności odczytu**; nie znaczy zatwierdzonej semantycznej zgodności nowego modelu.
+Do rozwoju PL/EN można wykorzystać projektowo własne definicje i ręczne reguły. Źródła zewnętrzne wymagają odnotowania licencji i pochodzenia; to **kwestia jakości danych**, a nie automatyczna ścieżka testowa. Zweryfikuj konkretne wydanie, jeśli importujesz obce zasoby. Nie pobieraj danych z internetu w czasie obsługi zdań.
 
-Import istniejących `forms`: traktować je jako obserwacje/test material. Docelowa definicja regularnej formy to lemma+paradigm+principal parts; jeżeli reguła nie odtwarza obserwacji, kandydat konfliktuje lub wymaga wyjątków. Nie usuwać zatwierdzonych explicit form, dopóki odpowiednik proceduralny nie ma niezależnego pokrycia. Nie utożsamiać lemma spelling z concept ID.
+## Aktualny status
 
-## Strategia wydajności
-
-Indeksować:
-1. `ConceptID → type/parent/relations` (dense immutable arrays / typed adjacency).
-2. `normalizedSurface → []MorphReading` (wszystkie homografy).
-3. `(Language,Lemma,POS) → []LexemeID`.
-4. `ConceptID → []approved SenseBinding`.
-5. `SenseID → []ValencyFrameID`.
-6. `(Language,FamilyID,VariantID) → compiled ConstructionPlanID`.
-7. `RelationType + subject/object → indexed WorldFact candidates`.
-8. `CapabilityID → evidence/review/source/test IDs`.
-
-Jeden proces Go, bez request-time SQL lub reparsing source grammar JSON. Nie budować specjalnego indeksu `Past` jako nowego węzła dla każdego leksemu. Cache tylko pure/immutable i wersjonowany hash pack; per-request fakty izolowane. Optymalizować dopiero po tym samym workload i bez spadku semantycznego pokrycia.
+Bootstrap posiada tylko `go.mod` i CLI. Wszystkie planowane struktury leksykalne, grafowe, składniowe i pakiety są **PROPOSED**, dopóki ich implementacyjne issue nie zakończy się rzeczywistym scaleniem. Nie powołuj się na procenty pokrycia, jeśli nie ustaliliśmy jeszcze docelowej zawartości nowego słownika.

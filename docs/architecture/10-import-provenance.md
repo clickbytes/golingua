@@ -1,66 +1,33 @@
-# 10 — Import leksykonów, conceptów i konstrukcji: staging/review/promote
+# 10 — Tworzenie danych i opcjonalny import
 
-**Status:** PROPOSED. EPIC [G04 #5](https://github.com/clickbytes/golingua/issues/5); docelowe 1000 conceptów [G07 #8](https://github.com/clickbytes/golingua/issues/8). Legacy baseline [flexLingua@79c4a958](https://github.com/clickbytes/flexLingua/tree/79c4a9586f7f94b6065da12dc25c4cb272ebdc92).
+**PROPOSED, G04/G07.** Piszemy **nowy** system leksykalny i gramatyczny w Go. Nie ma obowiązku importowania obecnych słowników flexLingua ani jego testów. Celem jest około 1000 konceptów z sensami PL/EN, ale najpierw prosty działający model i ręcznie oceniane tłumaczenia.
 
-## 1. Co importujemy osobno
+## Format logiczny danych
 
-| Strumień | Rekord staging | Po zatwierdzeniu |
-| --- | --- | --- |
-| CORE definicje | `ConceptCandidate` + typed relation edges | ConceptDefinition/ConceptGraph |
-| Słownik PL/EN | `MorphLexemeCandidate`, `LexicalSenseCandidate` | LexicalGraph i MorphLexeme |
-| Mapowanie sensu | `SemanticBindingCandidate` (equivalent/broader/narrower/related) | approved binding lub pending; **bez auto-equivalence** |
-| Odmiana | `FormEvidence`, `ParadigmCandidate`, `Stem/ExceptionCandidate` | MorphologyGraph i finite relation table |
-| Walencja | `ValencyFrameCandidate`, source frame/role constraints | ValencyGraph dla zatwierdzonego SenseID |
-| Konstrukcja | `ConstructionFamily/VariantCandidate`, bridge mapping | ConstructionGraph i compiled plans |
-| QA | `EvidenceRecord`, human-reviewed independent expected | evidence index, case audit, capability gating |
+1. `ConceptDefinition`: znaczenie, typ, rolę i relacje pojęć.
+2. `MorphLexeme`: jeden leksem z lematem, POS i klasą odmiany; działa niezależnie od konceptu.
+3. `LexicalSense`: oddzielna jednostka semantyczna, bo jedno słowo może znaczyć wiele rzeczy.
+4. `SemanticBinding`: łącze sensu z ConceptID, różne jakości mapowania: exact, broader, narrower, related, candidate. Nie utożsamiaj ich.
+5. `Paradigm / PrincipalParts / Exception`: przepis do generowania form.
+6. `ValencyFrame / ConstructionBinding`: rekcja sensu i dopuszczone konstrukcje.
+7. `ConstructionFamily / Variant / Operator`: deklaracje językowe wielokrotnego użytku.
 
-**Morfologia działa bez SemanticBinding.** Import nie może odrzucać prawidłowego lematu tylko dlatego, że CORE go jeszcze nie zna. I odwrotnie: żadna zatwierdzona forma nie jest dowodem konkretnego konceptu.
+## Importer to narzędzie, nie wyrocznia
 
-## 2. Siedem etapów importu (deterministycznie i atomowo)
+Dopuszczamy w przyszłości import TSV/UniMorph, wybranych otwartych źródeł leksykalnych i ręcznych deklaracji JSON. Obce dane mają **provenance, wersję, licencję i źródło**. Etapy są proste:
 
-1. **Snapshot source**: wskazane repo/URL, commit/revision, exact path i sha256 contents, źródło/autor, licencja i terms. Jeżeli brak praw do redystrybucji — staging-only / blocked. Rozróżnij własny source JS i external provider; każdy ma własne licencje.
-2. **Parse + normalize**: strumieniowo, limity bytes/rows/codepoints, UTF-8/NFC, oryginalne tagi i linie, parser bez wykonywania kodu. Dysk zewnętrzny i ścieżki nie mogą przejść poza staging root.
-3. **Map schema**: stable lexical IDs i źródłowe semantics. Zachowaj rozdzielenie forms/sense/valency/construction. Unknown field/unknown tag → reject candidate z diagnostyką, nie hidden delete.
-4. **Suggest proceduralization**: form evidence vs current paradygmaty, candidate principal parts, dodatkowe tematy i wyjątki. Dopasuj wszystkie potwierdzone komórki, pokaż konflikty i kilka równie dobrych klas. **Suggest ≠ approve**.
-5. **Validate cross refs**: symbol collisions, dangling SenseID/CoreRef, typeof expected role, language profiles, license conflicts, feature cardinality i malformed definitions.
-6. **Review/approve**: zatwierdź konkretne candidate IDs i exact input hashes plus niezależne pozytywne/negatywne witness IDs. Zamknięty stan: `unverified → proposed → reviewed-approved / reviewed-rejected`. Review to zapis autora decyzji i treści, nie automatyczny podpis kryptograficzny; jeśli potrzebny cryptographic signature, wymaga osobnej, rzeczywistej implementacji key management.
-7. **Promote/compile**: transakcja waliduje cały zbiór, dopiero potem tworzy nowy immutable pack snapshot i atomowo aktualizuje aktywny reference. Nie mutuj live graph in place. Failed promote leaves previous pack intact; run comparison report.
+`source → bounded parse → normalizacja → propozycja leksemu/sensu/paradygmatu → sprawdzenie spójności → decyzja czy aktywować → immutable snapshot`.
 
-**Idempotentność:** ponowny import identycznych rekordów nie powiela leksemów ani zmienia referencji. Wersje źródeł są jawne, conflict nie jest rozstrzygany „ostatni import wygrywa”.
+Import słowa bez mapy CORE nie jest błędem: może ono być dostępne w morfologii, a niedostępne w tłumaczeniu. Formy obserwowane ze źródła mogą pomóc zasugerować paradygmat i wyjątek, **ale nie muszą być kopiowane do zbioru „expected”**. Brak komórki w słowniku nie oznacza zakazanej formy. Dwie możliwe klasy odmiany pozostają propozycjami, dopóki nie rozstrzygniemy konfliktu.
 
-## 3. Algorytm przypisania paradygmatu: proposal, nie magiczne lematyzowanie
+Nie ma automatycznego zaakceptowania zdania albo jego tłumaczenia na podstawie danych importera. Właściciel może sam sprawdzić wynik Go i zdecydować o poprawce.
 
-Dla `lemma+POS+observed forms`:
-1. Znajdź kandydatów dozwolonych dla języka i POS w indeksie klas.
-2. Sprawdź zgodność wszystkich zaobserwowanych komórek; brak komórki w źródle nie znaczy, że forma nie istnieje.
-3. Wylicz minimalny jawny zestaw principal parts, które rozróżniają kandydatów; uwzględnij alternacje tematu.
-4. Zaproponuj dozwolone `replace/addVariant/block` tylko z dowodem licencji. **Brak formy w UniMorph nie pozwala zaproponować block jako fakt.**
-5. Pozostaw kilku kandydatów, jeśli dane nie rozstrzygają; ograniczenie automatyczne nie może wytworzyć pewności.
-6. Przechowuj `FormEvidence` z provenance jako niezależną kontrolę po kompilacji i analizy odwrotnej.
+## Licencje i atomowość
 
-Koszt/score dopasowania paradygmatu służy wyłącznie do priorytetyzacji pracy redakcyjnej, nie do auto-activation regularizacji nieznanych leksemów.
+Wersje źródeł i warunki redystrybucji są realnymi ograniczeniami. Nie kopiuj zewnętrznych tekstów/definicji bez prawa. Import nie może wykonywać kodu z danych, pisać poza staging root ani częściowo aktualizować aktywnego pakietu w razie awarii.
 
-## 4. Źródła zewnętrzne i granica licencji
+Do redagowania niewielkich zasobów wystarczy JSON i weryfikacja struktury. SQLite jest opcją późniejszego narzędzia edytorskiego, nie obowiązkiem ani runtime backendem.
 
-Rozważane źródła specjalistyczne: dla PL morfologia (SGJP/PoliMorf/Morfeusz), walencja (Walenty), semantyka (Słowosieć); EN morphology UniMorph, walencja VerbNet, sensy Open English WordNet. Sam fakt, że materiał jest dostępny publicznie, **nie daje automatycznie prawa importu/redistribucji**. Przed aktywacją wskazać konkretną wersję, licencję, atrybucję i zakres użycia; np. dane fleksyjne a pełny SGJP mogą mieć różne warunki. Nie wstawiaj żadnych zewnętrznych definicji słownikowych bez sprawdzenia praw. Zewnętrzne synsety to kandydaci na mapowanie, nie gwarantowane tożsame koncepty.
+## Koniec zadania G04
 
-## 5. Import source pinned i rozliczenie liczebności
-
-Statyczny anchor: source CORE 1002 IDs / PL 1005 / EN 1006 lexeme entries / PL 465 / EN 462 morphology bindings / 51 event grammar frames per language / 943 common lexically referenced concept IDs. Import raportuje:
-- `sourceRead`, `staged`, `rejected`, `needsReview`, `approved`, `packCompiled`;
-- count per language/POS/semantic equivalence kind;
-- lost/unsupported source fields by exact source JSON pointer;
-- side-by-side link źródłowe `forms`→paradigm/exception/evidence;
-- constructor plan dedup only after structural and valency differences checked (PL structural shapes != EN).
-
-**Nie** raportować przetworzenia 1002 CORE nodes jako 1002 approved bilingual concept mapping. Cel 1000 jest osobną bramką G07; nie wolno dosztukować 57 dowolnych concept nodes.
-
-## 6. Negative tests
-
-- Nieznane znaczenie słowa z poprawną fleksją zostaje w morfologicznym katalogu, ale nie może być tłumaczone jako losowy concept.
-- Dwa synsety powiązane relation `related` nie uzyskują `equivalent`.
-- Brak, konflikt lub nieważna licencja → rekord nie zostaje zatwierdzony.
-- Import A zakończył się z błędem na ostatnim rekordzie → aktywny pack pozostaje poprzedni, bez fragmentów A.
-- Nieznany tag UniMorph i brak odpowiadającego dimension → rejected/staged review; nie znika.
-- Zmiana source checksum/revision musi skutkować odmową lub jawnym oddzielnym importem; nie hidden refresh.
-- Dwa bridge frames podobne lecz o różnym case/PP/roleScope nie są zmergowane jako ten sam plan.
+Rozróżnione typy danych, prosty konfigurowalny importer (gdy jest potrzebny), walidowane i powtarzalne generowanie niemutowalnego pakietu językowego. Nie wymagamy importu dawnych 1002 konceptów, 593 zdań, formalnych reviewer IDs lub test runnera. Językowe wyjścia kontrolujemy później ręcznie z użytkownikiem.
