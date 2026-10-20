@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "language": "pl",
+  "family": {
+    "id": "construction:pl.transitive",
+    "language": "pl",
+    "slot_specs": [
+      {"id":"subject","position":0,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"},
+      {"id":"verb","position":1,"category":"VP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"},
+      {"id":"object","position":2,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"}
+    ],
+    "provenance":{"id":"golingua-structural-template","path":"languages/pl/constructions/transitive.json","version":"1","license":"internal"}
+  },
+  "variants": [
+    {"id":"construction:pl.transitive.svo","family_id":"construction:pl.transitive","sequence":[{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"slot","slot_id":"object"}],"markedness":"neutral","priority":0,"direction_policy":"both","provenance":{"id":"golingua-structural-template","path":"languages/pl/constructions/transitive.json","version":"1","license":"internal"}},
+    {"id":"construction:pl.transitive.ovs","family_id":"construction:pl.transitive","sequence":[{"kind":"slot","slot_id":"object"},{"kind":"slot","slot_id":"verb"},{"kind":"slot","slot_id":"subject"}],"markedness":"marked","priority":0,"direction_policy":"both","provenance":{"id":"golingua-structural-template","path":"languages/pl/constructions/transitive.json","version":"1","license":"internal"}}
+  ]
+}
