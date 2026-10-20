@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "version": "1",
+  "templates": [
+    {"id":"np-base","kind":"np","inputs":[{"role":"head","kind":"lexical","required":true},{"role":"determiner","kind":"lexical","required":false},{"role":"modifier","kind":"np","required":false},{"role":"quantity","kind":"lexical","required":false}],"children":[{"role":"modifier","kind":"np","required":false},{"role":"quantity","kind":"np","required":false}],"feature_ids":["noun_number"]},
+    {"id":"vp-base","kind":"vp","inputs":[{"role":"verb","kind":"lexical","required":true},{"role":"auxiliary","kind":"lexical","required":false}],"children":[{"role":"auxiliary","kind":"vp","required":false}],"feature_ids":["mood","person","tense","verb_number"]},
+    {"id":"pp-base","kind":"pp","inputs":[{"role":"preposition","kind":"lexical","required":true}],"children":[{"role":"complement","kind":"np","required":true}],"feature_ids":[]}
+  ]
+}
