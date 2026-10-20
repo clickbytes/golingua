@@ -154,6 +154,7 @@ type SlotBinding struct {
 // treating them as complete.
 type ParseAlternative struct {
 	PlanID       construction.ConstructionPlanID
+	FamilyID     ids.ConstructionID
 	VariantID    construction.VariantID
 	Permission   construction.SensePermission
 	Slots        []SlotBinding
