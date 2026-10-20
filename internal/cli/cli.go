@@ -110,7 +110,7 @@ func RunWithInput(args []string, input io.Reader, stdout, stderr io.Writer) int 
 		stderr = io.Discard
 	}
 	if len(args) == 0 || (len(args) == 1 && (args[0] == "--help" || args[0] == "-h" || args[0] == "help")) {
-		_, _ = fmt.Fprint(stdout, "golingua bootstrap\nUsage: golingua --help | --version | capabilities --json | meaning canonicalize --json < meaning.json\nTranslation and language plugins: NOT IMPLEMENTED\n")
+		_, _ = fmt.Fprint(stdout, "golingua bootstrap\nUsage: golingua --help | --version | capabilities --json | meaning canonicalize --json < meaning.json | meaning project --json < meaning.json\nTranslation and language plugins: NOT IMPLEMENTED\n")
 		return ExitOK
 	}
 	if len(args) == 1 && args[0] == "--version" {
@@ -154,6 +154,40 @@ func RunWithInput(args []string, input io.Reader, stdout, stderr io.Writer) int 
 		}
 		if _, err := fmt.Fprintln(stdout, string(canonical)); err != nil {
 			_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not write canonical meaning: %v\n", err)
+			return ExitError
+		}
+		return ExitOK
+	}
+	if len(args) == 3 && args[0] == "meaning" && args[1] == "project" && args[2] == "--json" {
+		if input == nil {
+			result := diagnosticResult(status.OutcomeError, "INPUT_UNAVAILABLE", "stdin reader is unavailable", "meaning")
+			return writeResult(stdout, stderr, result)
+		}
+		data, err := io.ReadAll(io.LimitReader(input, meaning.MaxMeaningBytes+1))
+		if err != nil {
+			_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not read meaning JSON: %v\n", err)
+			return ExitError
+		}
+		parsed, err := meaning.DecodeMeaning(data, meaning.DefaultBudget())
+		if err != nil {
+			var typed *meaning.StatusError
+			if errors.As(err, &typed) {
+				return writeResult(stdout, stderr, typed.Result())
+			}
+			result := diagnosticResult(status.OutcomeError, "MEANING_RUNTIME_ERROR", "meaning validation failed unexpectedly", "meaning")
+			return writeResult(stdout, stderr, result)
+		}
+		projection, err := meaning.ProjectAsserted(parsed, meaning.DefaultBudget())
+		if err != nil {
+			var typed *meaning.StatusError
+			if errors.As(err, &typed) {
+				return writeResult(stdout, stderr, typed.Result())
+			}
+			result := diagnosticResult(status.OutcomeError, "MEANING_PROJECTION_ERROR", "asserted projection failed unexpectedly", "meaning")
+			return writeResult(stdout, stderr, result)
+		}
+		if err := writeJSON(stdout, projection); err != nil {
+			_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not serialize meaning projection: %v\n", err)
 			return ExitError
 		}
 		return ExitOK

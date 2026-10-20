@@ -276,6 +276,13 @@ func validateNodeShape(node Node, path string) error {
 		if !node.Modality.Valid() || !validNodeID(node.Target) {
 			return invalid("INVALID_MODALITY", path, "modality requires a supported value and one valid target")
 		}
+	case KindQuantifier:
+		if !validNodeID(node.Target) || node.Quantifier == nil {
+			return invalid("INVALID_QUANTIFIER", path, "quantifier requires one valid target and typed quantity")
+		}
+		if err := node.Quantifier.Validate(); err != nil {
+			return err
+		}
 	case KindDiscourse:
 		if !node.Act.Valid() || len(node.Content) == 0 {
 			return invalid("INVALID_DISCOURSE", path, "discourse node requires a supported act and content")
@@ -309,6 +316,11 @@ func validateNodeShape(node Node, path string) error {
 			return invalid("UNEXPECTED_NODE_FIELD", path+".modality", "field does not belong to this node kind")
 		}
 	}
+	if node.Quantifier != nil {
+		if _, allowedField := allowed["quantifier"]; !allowedField {
+			return invalid("UNEXPECTED_NODE_FIELD", path+".quantifier", "field does not belong to this node kind")
+		}
+	}
 	if node.Act != "" {
 		if _, allowedField := allowed["act"]; !allowedField {
 			return invalid("UNEXPECTED_NODE_FIELD", path+".act", "field does not belong to this node kind")
@@ -335,7 +347,7 @@ func nodeTargets(node Node) []NodeID {
 			result[index] = participant.Target
 		}
 		return result
-	case KindQuestion, KindScope, KindModality:
+	case KindQuestion, KindScope, KindModality, KindQuantifier:
 		return []NodeID{node.Target}
 	case KindDiscourse:
 		return append([]NodeID(nil), node.Content...)

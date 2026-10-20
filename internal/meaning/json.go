@@ -46,6 +46,24 @@ func (participant *Participant) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// UnmarshalJSON enforces exact quantifier fields and rejects explicit null counts.
+func (quantifier *Quantifier) UnmarshalJSON(data []byte) error {
+	var fields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &fields); err != nil || fields == nil {
+		return fmt.Errorf("quantifier must be a JSON object")
+	}
+	if count, exists := fields["count"]; exists && bytes.Equal(bytes.TrimSpace(count), []byte("null")) {
+		return fmt.Errorf("quantifier.count cannot be null")
+	}
+	type wireQuantifier Quantifier
+	var decoded wireQuantifier
+	if err := decodeExactObject(data, map[string]bool{"kind": true, "count": true}, &decoded); err != nil {
+		return err
+	}
+	*quantifier = Quantifier(decoded)
+	return nil
+}
+
 // UnmarshalJSON requires the exact top-level schema field spellings.
 func (meaning *Meaning) UnmarshalJSON(data []byte) error {
 	type wireMeaning Meaning
@@ -173,6 +191,10 @@ func cloneMeaning(source Meaning) Meaning {
 		result.Nodes[index] = node
 		result.Nodes[index].Participants = append([]Participant(nil), node.Participants...)
 		result.Nodes[index].Content = append([]NodeID(nil), node.Content...)
+		if node.Quantifier != nil {
+			quantifier := cloneQuantifier(*node.Quantifier)
+			result.Nodes[index].Quantifier = &quantifier
+		}
 	}
 	return result
 }
