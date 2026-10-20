@@ -95,7 +95,7 @@ func BuildLattice(
 	if err != nil {
 		return LexicalLattice{}, err
 	}
-	if inputLimitHit && len(tokens) != 0 && tokens[len(tokens)-1].Span.End == len(scanInput) && !nextRuneIsDelimiter(input, len(scanInput), tokenOptions.Profile) {
+	if inputLimitHit && len(tokens) != 0 && tokens[len(tokens)-1].Span.End == len(scanInput) && !nextRuneIsDelimiter(input, len(scanInput), tokenOptions.Profile, configuredApostrophes(tokenOptions)) {
 		// The final token may have been cut mid-surface. Do not invent a
 		// morphology candidate from that incomplete surface.
 		tokens = tokens[:len(tokens)-1]
@@ -258,13 +258,29 @@ func BuildLattice(
 	return lattice, nil
 }
 
-func nextRuneIsDelimiter(input string, offset int, profile *text.TokenizerProfile) bool {
+func configuredApostrophes(options text.TokenizeOptions) string {
+	if options.Apostrophes != "" {
+		return options.Apostrophes
+	}
+	if options.Profile != nil {
+		return options.Profile.Apostrophes
+	}
+	return "'’ʼ"
+}
+
+func nextRuneIsDelimiter(input string, offset int, profile *text.TokenizerProfile, apostrophes string) bool {
 	if offset >= len(input) {
 		return false
 	}
-	next, _ := utf8.DecodeRuneInString(input[offset:])
+	next, size := utf8.DecodeRuneInString(input[offset:])
 	if !unicode.IsSpace(next) {
 		return false
+	}
+	if strings.ContainsRune(apostrophes, next) && offset+size < len(input) {
+		following, _ := utf8.DecodeRuneInString(input[offset+size:])
+		if unicode.IsLetter(following) {
+			return false
+		}
 	}
 	return profile == nil || profile.WordRune == nil || !profile.WordRune(next)
 }
