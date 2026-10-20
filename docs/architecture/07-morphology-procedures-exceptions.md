@@ -1,6 +1,6 @@
 # 07 — Proceduralna morfologia, generatory i wyjątki
 
-**PROPOSED, G02.** Podstawowa zasada: opisujemy **klasy i reguły**, a nie przechowujemy wszystkich regularnych form pojedynczych słów.
+**Częściowo wdrożone w G02.** Typowane operacje, kompilator paradygmatów i formalny kompilator wyjątków istnieją w `internal/procedure` oraz `internal/morph`. Pełny generator/analyzer pozostaje w kolejce G02. Podstawowa zasada: opisujemy **klasy i reguły**, a nie przechowujemy wszystkich regularnych form pojedynczych słów.
 
 ## Osobne komponenty
 
@@ -16,7 +16,7 @@
 
 Kompilator sprawdza wersję profilu, komórki i reguły, cykle dziedziczenia, konflikty oraz wymagania form diagnostycznych. JSON paradygmatu ma jawne wymagane pola, odrzuca nieznane lub błędnie zapisane klucze oraz ogranicza dokument do 1 MiB. Dziedziczenie zachowuje stabilne sloty; wspólny identyczny przodek w diamencie jest scalany raz, a sprzeczne definicje są błędem. Interpretor pozostaje niezależny od języka, zaś `Paradigm` i jego etykiety należą do języka i wersji profilu.
 
-`ExceptionRule`: tylko potrzebny wyjątek z określonym zakresem i efektem.
+`ExceptionRule`: tylko potrzebny, recenzowany wyjątek z określonym zakresem i efektem. Dokładna precedencja, kontrola konfliktów i provenance są opisane w [kontrakcie wyjątków](morph-exceptions.md).
 
 ## Generator
 
