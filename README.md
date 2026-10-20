@@ -16,6 +16,7 @@ Istniejące źródło [clickbytes/flexLingua](https://github.com/clickbytes/flex
 
 - [Architektura golingua](docs/architecture/README.md) — kontrakty i kolejność projektowania.
 - [Protokół ręcznego sprawdzania](docs/manual-review.md) — użytkownik podaje wejścia, agent pokazuje faktyczny output.
+- [CLI](docs/cli.md) — rzeczywiste komendy bootstrapu i jawne granice obecnej obsługi.
 - [Przykłady ręczne](examples/manual/README.md) — na razie bez domyślnych zdań.
 - [EPIC G00](https://github.com/clickbytes/golingua/issues/1) — aktywny etap; następne etapy czekają.
 
