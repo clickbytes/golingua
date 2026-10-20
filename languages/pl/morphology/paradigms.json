@@ -1,0 +1,70 @@
+[
+  {
+    "schema_version": 1,
+    "id": "pl_masc_personal_student",
+    "language": "pl",
+    "profile_version": "v2026-10-20.1",
+    "pos": "noun",
+    "principal_part_requirements": [
+      {"stem_id": "root", "part_id": "base", "required": true}
+    ],
+    "cells": [
+      {"id": "sg_nom", "features": [{"feature": "number", "state": "known", "value": "singular"}, {"feature": "case", "state": "known", "value": "nominative"}, {"feature": "gender", "state": "known", "value": "masculine_personal"}]},
+      {"id": "sg_gen", "features": [{"feature": "number", "state": "known", "value": "singular"}, {"feature": "case", "state": "known", "value": "genitive"}, {"feature": "gender", "state": "known", "value": "masculine_personal"}]},
+      {"id": "sg_dat", "features": [{"feature": "number", "state": "known", "value": "singular"}, {"feature": "case", "state": "known", "value": "dative"}, {"feature": "gender", "state": "known", "value": "masculine_personal"}]},
+      {"id": "sg_acc", "features": [{"feature": "number", "state": "known", "value": "singular"}, {"feature": "case", "state": "known", "value": "accusative"}, {"feature": "gender", "state": "known", "value": "masculine_personal"}]},
+      {"id": "sg_inst", "features": [{"feature": "number", "state": "known", "value": "singular"}, {"feature": "case", "state": "known", "value": "instrumental"}, {"feature": "gender", "state": "known", "value": "masculine_personal"}]},
+      {"id": "sg_loc", "features": [{"feature": "number", "state": "known", "value": "singular"}, {"feature": "case", "state": "known", "value": "locative"}, {"feature": "gender", "state": "known", "value": "masculine_personal"}]},
+      {"id": "sg_voc", "features": [{"feature": "number", "state": "known", "value": "singular"}, {"feature": "case", "state": "known", "value": "vocative"}, {"feature": "gender", "state": "known", "value": "masculine_personal"}]},
+      {"id": "pl_nom", "features": [{"feature": "number", "state": "known", "value": "plural"}, {"feature": "case", "state": "known", "value": "nominative"}, {"feature": "gender", "state": "known", "value": "masculine_personal"}]},
+      {"id": "pl_gen", "features": [{"feature": "number", "state": "known", "value": "plural"}, {"feature": "case", "state": "known", "value": "genitive"}, {"feature": "gender", "state": "known", "value": "masculine_personal"}]},
+      {"id": "pl_dat", "features": [{"feature": "number", "state": "known", "value": "plural"}, {"feature": "case", "state": "known", "value": "dative"}, {"feature": "gender", "state": "known", "value": "masculine_personal"}]},
+      {"id": "pl_acc", "features": [{"feature": "number", "state": "known", "value": "plural"}, {"feature": "case", "state": "known", "value": "accusative"}, {"feature": "gender", "state": "known", "value": "masculine_personal"}]},
+      {"id": "pl_inst", "features": [{"feature": "number", "state": "known", "value": "plural"}, {"feature": "case", "state": "known", "value": "instrumental"}, {"feature": "gender", "state": "known", "value": "masculine_personal"}]},
+      {"id": "pl_loc", "features": [{"feature": "number", "state": "known", "value": "plural"}, {"feature": "case", "state": "known", "value": "locative"}, {"feature": "gender", "state": "known", "value": "masculine_personal"}]},
+      {"id": "pl_voc", "features": [{"feature": "number", "state": "known", "value": "plural"}, {"feature": "case", "state": "known", "value": "vocative"}, {"feature": "gender", "state": "known", "value": "masculine_personal"}]}
+    ],
+    "rules": [
+      {"cell_id": "sg_nom", "steps": [{"kind": "select_stem", "stem_id": "root"}]},
+      {"cell_id": "sg_gen", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "a"}]},
+      {"cell_id": "sg_dat", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "owi"}]},
+      {"cell_id": "sg_acc", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "a"}]},
+      {"cell_id": "sg_inst", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "em"}]},
+      {"cell_id": "sg_loc", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "alternation", "from": "ent", "to": "encie"}]},
+      {"cell_id": "sg_voc", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "alternation", "from": "ent", "to": "encie"}]},
+      {"cell_id": "pl_nom", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "alternation", "from": "ent", "to": "enci"}]},
+      {"cell_id": "pl_gen", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "ów"}]},
+      {"cell_id": "pl_dat", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "om"}]},
+      {"cell_id": "pl_acc", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "ów"}]},
+      {"cell_id": "pl_inst", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "ami"}]},
+      {"cell_id": "pl_loc", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "ach"}]},
+      {"cell_id": "pl_voc", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "alternation", "from": "ent", "to": "enci"}]}
+    ]
+  },
+  {
+    "schema_version": 1,
+    "id": "pl_verb_czytac_present",
+    "language": "pl",
+    "profile_version": "v2026-10-20.1",
+    "pos": "verb",
+    "principal_part_requirements": [
+      {"stem_id": "root", "part_id": "present_stem", "required": true}
+    ],
+    "cells": [
+      {"id": "pres_1sg", "features": [{"feature": "verb_form", "state": "known", "value": "finite"}, {"feature": "tense", "state": "known", "value": "present"}, {"feature": "mood", "state": "known", "value": "indicative"}, {"feature": "voice", "state": "known", "value": "active"}, {"feature": "person", "state": "known", "value": "first"}, {"feature": "number", "state": "known", "value": "singular"}]},
+      {"id": "pres_2sg", "features": [{"feature": "verb_form", "state": "known", "value": "finite"}, {"feature": "tense", "state": "known", "value": "present"}, {"feature": "mood", "state": "known", "value": "indicative"}, {"feature": "voice", "state": "known", "value": "active"}, {"feature": "person", "state": "known", "value": "second"}, {"feature": "number", "state": "known", "value": "singular"}]},
+      {"id": "pres_3sg", "features": [{"feature": "verb_form", "state": "known", "value": "finite"}, {"feature": "tense", "state": "known", "value": "present"}, {"feature": "mood", "state": "known", "value": "indicative"}, {"feature": "voice", "state": "known", "value": "active"}, {"feature": "person", "state": "known", "value": "third"}, {"feature": "number", "state": "known", "value": "singular"}]},
+      {"id": "pres_1pl", "features": [{"feature": "verb_form", "state": "known", "value": "finite"}, {"feature": "tense", "state": "known", "value": "present"}, {"feature": "mood", "state": "known", "value": "indicative"}, {"feature": "voice", "state": "known", "value": "active"}, {"feature": "person", "state": "known", "value": "first"}, {"feature": "number", "state": "known", "value": "plural"}]},
+      {"id": "pres_2pl", "features": [{"feature": "verb_form", "state": "known", "value": "finite"}, {"feature": "tense", "state": "known", "value": "present"}, {"feature": "mood", "state": "known", "value": "indicative"}, {"feature": "voice", "state": "known", "value": "active"}, {"feature": "person", "state": "known", "value": "second"}, {"feature": "number", "state": "known", "value": "plural"}]},
+      {"id": "pres_3pl", "features": [{"feature": "verb_form", "state": "known", "value": "finite"}, {"feature": "tense", "state": "known", "value": "present"}, {"feature": "mood", "state": "known", "value": "indicative"}, {"feature": "voice", "state": "known", "value": "active"}, {"feature": "person", "state": "known", "value": "third"}, {"feature": "number", "state": "known", "value": "plural"}]}
+    ],
+    "rules": [
+      {"cell_id": "pres_1sg", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "am"}]},
+      {"cell_id": "pres_2sg", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "asz"}]},
+      {"cell_id": "pres_3sg", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "a"}]},
+      {"cell_id": "pres_1pl", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "amy"}]},
+      {"cell_id": "pres_2pl", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "acie"}]},
+      {"cell_id": "pres_3pl", "steps": [{"kind": "select_stem", "stem_id": "root"}, {"kind": "append", "text": "ają"}]}
+    ]
+  }
+]

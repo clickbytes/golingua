@@ -1,0 +1,12 @@
+# Polish morphology seed
+
+The Go package `github.com/clickbytes/golingua/languages/pl` loads the bundled Polish profile, manifest, paradigms, and lexical principal parts. `pl.Load()` compiles the seed into the shared generator and finite relation analyzer. `Seed.Generate(lexemeID, featureValues)` and `Seed.Analyze(surface)` are Go APIs; the CLI has no `forms` command and this package does not realize sentences.
+
+## Included classes
+
+- One explicitly scoped masculine personal noun pattern, represented by `student`, for singular and plural across the seven profile cases. It uses the `t → ci` alternation in locative/vocative singular and nominative/vocative plural.
+- One present indicative active finite verb pattern represented by `czytać`, with all person/number endings and explicit principal stem `czyt`.
+
+The finite relation table retains syncretic readings. For `studenta`, analysis returns both singular genitive and accusative; for plural `studentów`, it returns plural genitive and accusative. NFC is the only surface normalization; case and diacritics remain significant.
+
+This seed does not define a general Polish declension/conjugation system. It does not cover other noun stem alternations, adjective agreement, past/future/conditional forms, aspect, stress, phonology, or lexemes outside the listed patterns. `morphology/exceptions.json` is an empty array; the loader validates and compiles formal exception records when independently reviewed rules are added. No exception/block rule is claimed by this seed. Missing or unsupported cells do not get guessed forms. No owner-selected manual example has been reviewed yet; local API smoke is implementation verification only.

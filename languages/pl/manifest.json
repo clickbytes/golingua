@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "dataset_id": "golingua-pl-seed-v1",
+  "language": "pl",
+  "profile": "features.json",
+  "morphology": {
+    "paradigms": "morphology/paradigms.json",
+    "lexemes": "morphology/lexemes.json",
+    "exceptions": "morphology/exceptions.json"
+  },
+  "capabilities": {
+    "morphology_generate": "implemented",
+    "morphology_analyze": "implemented",
+    "sentence_analysis": "unsupported",
+    "meaning_realization": "unsupported"
+  }
+}

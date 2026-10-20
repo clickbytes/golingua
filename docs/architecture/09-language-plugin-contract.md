@@ -6,7 +6,7 @@
 
 Każdy pakiet języka dostarcza lokalne profile cech, tokenizację/ortografię, MorphLexemes, SenseBindings, paradygmaty i wyjątki, walencję, rodziny konstrukcji/operatory oraz możliwe do wywołania procedury.
 
-`languages/en` obecnie dostarcza wersjonowany profil, manifest, ograniczone paradygmaty oraz seed MorphLexemes z principal parts i Go API `Generate`/`Analyze`. To pakiet morfologii, nie pełny plugin językowy: manifest deklaruje sentence analysis i meaning realization jako unsupported. PL ma profil cech, ale nie ma jeszcze aktywnego seed generatora.
+`languages/en` i `languages/pl` dostarczają wersjonowane profile, manifesty, ograniczone paradygmaty, seed MorphLexemes z principal parts oraz Go API `Generate`/`Analyze`. To pakiety morfologii, nie pełne pluginy językowe: oba manifesty deklarują sentence analysis i meaning realization jako unsupported.
 
 Język udostępnia deklaracje możliwości dla:
 - analizy morfologicznej,
