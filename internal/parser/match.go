@@ -748,7 +748,7 @@ func (m *matcher) retain(p compiledPlan, part partial) {
 		}
 		bindings = append(bindings, binding)
 	}
-	alt := ParseAlternative{PlanID: p.plan.ID, VariantID: p.variant.ID, Permission: p.permission, Slots: bindings, Unresolved: append([]string(nil), part.unresolved...), DerivationID: derivationID(p, bindings)}
+	alt := ParseAlternative{PlanID: p.plan.ID, FamilyID: p.family.ID, VariantID: p.variant.ID, Permission: p.permission, Slots: bindings, Unresolved: append([]string(nil), part.unresolved...), DerivationID: derivationID(p, bindings)}
 	root := &m.forest.Nodes[rootIndex]
 	root.Alternatives = append(root.Alternatives, alt)
 	m.retainedAlternatives++
