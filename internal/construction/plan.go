@@ -32,6 +32,7 @@ type CompiledConstructionPlan struct {
 	ProfileVersion    features.ProfileVersion   `json:"profile_version"`
 	ProfileProvenance provenance.SourceRef      `json:"profile_provenance"`
 	Permissions       []SensePermission         `json:"sense_permissions"`
+	PermissionDigest  string                    `json:"permission_digest"`
 	FamilyID          ids.ConstructionID        `json:"family_id"`
 	VariantID         VariantID                 `json:"variant_id"`
 	ArgumentBindings  []CompiledArgumentBinding `json:"argument_bindings"`
@@ -40,10 +41,16 @@ type CompiledConstructionPlan struct {
 	ProcedureIDs      []string                  `json:"procedure_ids,omitempty"`
 }
 
+// ValidateIdentity verifies that the plan ID matches its canonical content.
+func (plan CompiledConstructionPlan) ValidateIdentity() bool {
+	return plan.ID.Valid() && canonicalPlanID(plan) == plan.ID && permissionDigest(plan.Permissions) == plan.PermissionDigest
+}
+
 func canonicalPlanID(plan CompiledConstructionPlan) ConstructionPlanID {
 	canonical := plan
 	canonical.ID = ""
 	canonical.Permissions = nil
+	canonical.PermissionDigest = ""
 	canonical.ArgumentBindings = append([]CompiledArgumentBinding(nil), plan.ArgumentBindings...)
 	sort.Slice(canonical.ArgumentBindings, func(i, j int) bool {
 		return canonical.ArgumentBindings[i].ArgumentID < canonical.ArgumentBindings[j].ArgumentID
@@ -61,6 +68,19 @@ func canonicalPlanID(plan CompiledConstructionPlan) ConstructionPlanID {
 	data, _ := json.Marshal(canonical)
 	digest := sha256.Sum256(data)
 	return ConstructionPlanID("plan:" + hex.EncodeToString(digest[:]))
+}
+
+func permissionDigest(permissions []SensePermission) string {
+	canonical := append([]SensePermission(nil), permissions...)
+	sort.Slice(canonical, func(i, j int) bool {
+		if canonical[i].SenseID != canonical[j].SenseID {
+			return canonical[i].SenseID.String() < canonical[j].SenseID.String()
+		}
+		return canonical[i].FrameID < canonical[j].FrameID
+	})
+	data, _ := json.Marshal(canonical)
+	digest := sha256.Sum256(data)
+	return hex.EncodeToString(digest[:])
 }
 
 func normalizeProcedureID(value string) string { return value }
