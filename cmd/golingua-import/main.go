@@ -21,8 +21,11 @@ func run(args []string, stdout, stderr io.Writer) int {
 	if len(args) > 0 && args[0] == "unimorph" {
 		return runUniMorph(args[1:], stdout, stderr)
 	}
+	if len(args) > 0 && args[0] == "constructions" {
+		return runConstructions(args[1:], stdout, stderr)
+	}
 	if len(args) == 1 && (args[0] == "--help" || args[0] == "-h" || args[0] == "help") {
-		fmt.Fprintln(stdout, "golingua-import --manifest PATH --data-dir DIR\n        golingua-import unimorph --input PATH --mapping PATH --features PATH --source-id ID --source-version VERSION --license LABEL (--source-path PATH | --source-uri URI)\nValidates offline data and emits non-activated morphology import proposals.")
+		fmt.Fprintln(stdout, "golingua-import --manifest PATH --data-dir DIR\n        golingua-import unimorph --input PATH --mapping PATH --features PATH --source-id ID --source-version VERSION --license LABEL (--source-path PATH | --source-uri URI)\n        golingua-import constructions --input PATH --features PATH\nValidates offline data and emits non-activated morphology or construction plans.")
 		return 0
 	}
 	if len(args) == 1 && args[0] == "--version" {
@@ -70,6 +73,67 @@ func run(args []string, stdout, stderr io.Writer) int {
 		Senses   int    `json:"senses"`
 		Bindings int    `json:"bindings"`
 	}{"valid", manifest.DatasetID, conceptCount, lexemeCount, senseCount, bindingCount})
+	return 0
+}
+
+func runConstructions(args []string, stdout, stderr io.Writer) int {
+	if len(args) == 1 && (args[0] == "--help" || args[0] == "-h") {
+		fmt.Fprintln(stdout, "Usage: golingua-import constructions --input PATH --features PATH")
+		return 0
+	}
+	flags := flag.NewFlagSet("constructions", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	inputPath := flags.String("input", "", "versioned construction and valency JSON dataset")
+	featuresPath := flags.String("features", "", "matching language feature profile JSON")
+	if err := flags.Parse(args); err != nil {
+		return 2
+	}
+	if flags.NArg() != 0 || *inputPath == "" || *featuresPath == "" {
+		fmt.Fprintln(stderr, "usage: golingua-import constructions --input PATH --features PATH")
+		return 2
+	}
+	data, err := readFileBounded(*inputPath, importer.MaxConstructionDatasetBytes)
+	if err != nil {
+		printFailure(stdout, stderr, constructionInputError("input", importer.MaxConstructionDatasetBytes, err))
+		return 1
+	}
+	profileData, err := readFileBounded(*featuresPath, features.MaxProfileBytes)
+	if err != nil {
+		printFailure(stdout, stderr, constructionInputError("features", features.MaxProfileBytes, err))
+		return 1
+	}
+	profile, err := features.DecodeProfile(profileData)
+	if err != nil {
+		printFailure(stdout, stderr, err)
+		return 1
+	}
+	compiled, err := importer.DecodeConstructionDataset(data, profile)
+	if err != nil {
+		printFailure(stdout, stderr, err)
+		return 1
+	}
+	plans := compiled.Plans.Plans()
+	planIDs := make([]string, 0, 16)
+	for index, plan := range plans {
+		if index == 16 {
+			break
+		}
+		planIDs = append(planIDs, string(plan.ID))
+	}
+	result := struct {
+		Status            string   `json:"status"`
+		Language          string   `json:"language"`
+		Families          int      `json:"families"`
+		ValencyFrames     int      `json:"valency_frames"`
+		Operators         int      `json:"operators"`
+		PlanCount         int      `json:"compiled_plan_count"`
+		SamplePlanIDs     []string `json:"sample_plan_ids"`
+		RuntimeActivation string   `json:"runtime_activation"`
+	}{"compiled_not_activated", string(compiled.Dataset.Language), len(compiled.Dataset.Packages), len(compiled.Dataset.Frames), len(compiled.Dataset.Operators), len(plans), planIDs, "not_activated"}
+	if err := json.NewEncoder(stdout).Encode(result); err != nil {
+		fmt.Fprintf(stderr, "cannot write compile report: %v\n", err)
+		return 1
+	}
 	return 0
 }
 
@@ -154,9 +218,31 @@ func readFileBounded(path string, maximum int64) ([]byte, error) {
 		return nil, err
 	}
 	if int64(len(data)) > maximum {
-		return nil, fmt.Errorf("manifest exceeds %d bytes", maximum)
+		return nil, errInputFileTooLarge
 	}
 	return data, nil
+}
+
+var errInputFileTooLarge = errors.New("input file exceeds configured limit")
+
+type cliFailure struct{ result status.Result }
+
+func (failure *cliFailure) Error() string         { return failure.result.Diagnostics[0].Message }
+func (failure *cliFailure) Result() status.Result { return failure.result }
+
+func constructionInputError(label string, maximum int64, cause error) error {
+	kind := status.OutcomeError
+	code, message := "INPUT_READ_FAILED", "cannot read construction input file"
+	if errors.Is(cause, errInputFileTooLarge) {
+		kind, code = status.OutcomeResourceLimit, "RESOURCE_LIMIT"
+		message = fmt.Sprintf("construction input exceeds configured byte limit of %d", maximum)
+	}
+	diagnostic := status.Diagnostic{Code: code, Path: label, Message: message, Severity: status.SeverityError}
+	result, err := status.NewResult(kind, "", []status.Diagnostic{diagnostic}, nil)
+	if err != nil {
+		return &cliFailure{result: status.Result{Status: status.OutcomeError, Diagnostics: []status.Diagnostic{{Code: "INPUT_READ_FAILED", Path: label, Message: "cannot read construction input file", Severity: status.SeverityError}}}}
+	}
+	return &cliFailure{result: result}
 }
 
 func printFailure(stdout, stderr io.Writer, err error) {
