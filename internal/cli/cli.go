@@ -3,10 +3,13 @@
 package cli
 
 import (
+	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 
+	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/status"
 )
 
@@ -91,6 +94,12 @@ func diagnosticResult(kind status.OutcomeKind, code, message, path string) statu
 
 // Run returns a process exit code without mutating global state.
 func Run(args []string, stdout, stderr io.Writer) int {
+	return RunWithInput(args, bytes.NewReader(nil), stdout, stderr)
+}
+
+// RunWithInput is Run with an explicit stdin reader for commands that consume
+// bounded JSON documents.
+func RunWithInput(args []string, input io.Reader, stdout, stderr io.Writer) int {
 	if stdout == nil {
 		if stderr != nil {
 			_, _ = fmt.Fprintln(stderr, "INFRASTRUCTURE_ERROR: stdout writer is nil")
@@ -101,7 +110,7 @@ func Run(args []string, stdout, stderr io.Writer) int {
 		stderr = io.Discard
 	}
 	if len(args) == 0 || (len(args) == 1 && (args[0] == "--help" || args[0] == "-h" || args[0] == "help")) {
-		_, _ = fmt.Fprint(stdout, "golingua bootstrap\nUsage: golingua --help | --version | capabilities --json\nTranslation and language plugins: NOT IMPLEMENTED\n")
+		_, _ = fmt.Fprint(stdout, "golingua bootstrap\nUsage: golingua --help | --version | capabilities --json | meaning canonicalize --json < meaning.json\nTranslation and language plugins: NOT IMPLEMENTED\n")
 		return ExitOK
 	}
 	if len(args) == 1 && args[0] == "--version" {
@@ -111,6 +120,40 @@ func Run(args []string, stdout, stderr io.Writer) int {
 	if len(args) == 2 && args[0] == "capabilities" && args[1] == "--json" {
 		if err := writeJSON(stdout, capabilities{Version: Version, Status: "unsupported", Languages: []string{}, Features: []string{}, Ready: false}); err != nil {
 			_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not serialize capabilities: %v\n", err)
+			return ExitError
+		}
+		return ExitOK
+	}
+	if len(args) == 3 && args[0] == "meaning" && args[1] == "canonicalize" && args[2] == "--json" {
+		if input == nil {
+			result := diagnosticResult(status.OutcomeError, "INPUT_UNAVAILABLE", "stdin reader is unavailable", "meaning")
+			return writeResult(stdout, stderr, result)
+		}
+		data, err := io.ReadAll(io.LimitReader(input, meaning.MaxMeaningBytes+1))
+		if err != nil {
+			_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not read meaning JSON: %v\n", err)
+			return ExitError
+		}
+		parsed, err := meaning.DecodeMeaning(data, meaning.DefaultBudget())
+		if err != nil {
+			var typed *meaning.StatusError
+			if errors.As(err, &typed) {
+				return writeResult(stdout, stderr, typed.Result())
+			}
+			result := diagnosticResult(status.OutcomeError, "MEANING_RUNTIME_ERROR", "meaning validation failed unexpectedly", "meaning")
+			return writeResult(stdout, stderr, result)
+		}
+		canonical, err := meaning.CanonicalJSON(parsed, meaning.DefaultBudget())
+		if err != nil {
+			var typed *meaning.StatusError
+			if errors.As(err, &typed) {
+				return writeResult(stdout, stderr, typed.Result())
+			}
+			result := diagnosticResult(status.OutcomeError, "MEANING_RUNTIME_ERROR", "meaning canonicalization failed unexpectedly", "meaning")
+			return writeResult(stdout, stderr, result)
+		}
+		if _, err := fmt.Fprintln(stdout, string(canonical)); err != nil {
+			_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not write canonical meaning: %v\n", err)
 			return ExitError
 		}
 		return ExitOK
