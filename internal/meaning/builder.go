@@ -22,6 +22,10 @@ func Build(roots []NodeID, nodes []Node, budget Budget) (Meaning, error) {
 		meaning.Nodes[index] = node
 		meaning.Nodes[index].Participants = cloneParticipants(node.Participants)
 		meaning.Nodes[index].Content = append([]NodeID(nil), node.Content...)
+		if node.Quantifier != nil {
+			quantifier := cloneQuantifier(*node.Quantifier)
+			meaning.Nodes[index].Quantifier = &quantifier
+		}
 	}
 	return meaning, nil
 }

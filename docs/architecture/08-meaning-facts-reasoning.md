@@ -1,6 +1,6 @@
 # 08 — MeaningGraph, wiedza i docelowe rozmowy
 
-**Częściowo wdrożone (G01-04).** `internal/meaning` definiuje bounded request-scoped Meaning IR i cross-CORE role validation. Parser, leksyka, asserted-fact projection, reasoner i rozmowa pozostają poza zakresem tego kroku. Koncept to typ znaczenia, a MeaningGraph to konkretna interpretacja zdania.
+**Częściowo wdrożone (G01-04/G01-05).** `internal/meaning` definiuje bounded request-scoped Meaning IR, cross-CORE role validation i fail-closed asserted projection. Parser, leksyka, pełny reasoner i rozmowa pozostają poza zakresem tych kroków. Koncept to typ znaczenia, a MeaningGraph to konkretna interpretacja zdania.
 
 ## Oddzielne pojęcia
 

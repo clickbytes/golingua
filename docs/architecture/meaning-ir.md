@@ -4,7 +4,7 @@
 
 ## Shape and identity
 
-The JSON envelope has `schema_version`, `roots` and tagged `nodes`. Node IDs are bounded, local identifiers for one graph. Concept fields use stable `concept:*` IDs. Events and states hold explicit role-to-node participants. Questions, scopes and modalities point to one target; discourse nodes preserve ordered content. The v1 node kinds are `event`, `state`, `referent`, `question`, `scope`, `modality` and `discourse`.
+The JSON envelope has `schema_version`, `roots` and tagged `nodes`. Node IDs are bounded, local identifiers for one graph. Concept fields use stable `concept:*` IDs. Events and states hold explicit role-to-node participants. Questions, scopes, modalities and quantifiers point to one target; discourse nodes preserve ordered content. The v1 node kinds are `event`, `state`, `referent`, `question`, `scope`, `modality`, `quantifier` and `discourse`.
 
 ```json
 {
@@ -27,7 +27,7 @@ The sample illustrates shape only; it does not add lexical data or claim an appr
 
 Strict JSON decoding rejects unknown fields, extra JSON values, unsupported schema versions and oversized input. Invalid data returns `invalid`; unresolved node/concept references return `unknown`; exhausted work returns `resource_limit`. Errors carry the shared typed status plus bounded diagnostics. Canonical JSON, equality and SHA-256 hash use no pointer addresses.
 
-There are no grammatical case, gender, inflection, tense morphology or surface-order fields. Semantic time and richer quantification/operator inventories can be added in later scoped issues. A `question` node is an information-seeking wrapper, and `scope` nodes keep negation or hypothetical operators attached to their target. The IR has no truth/assertion field, so questions and negative scopes do not become positive asserted facts. Discourse act labels do not certify that content is true.
+There are no grammatical case, gender, inflection, tense morphology or surface-order fields. Quantifiers express semantic cardinality (`some`, `all`, `exactly`, `at_least`, `at_most`) and remain explicit scopes; numeric values require an explicit bounded count and do not encode grammatical number. A `question` node is an information-seeking wrapper, and `scope` nodes keep negation or hypothetical operators attached to their target. The IR has no truth/assertion field, so questions and negative scopes do not become positive asserted facts. Discourse act labels do not certify that content is true.
 
 The graph is a bounded semantic representation, not a parser, translator, persistent world model or evidence store. No language-specific data belongs in CORE.
 
@@ -38,3 +38,5 @@ The graph is a bounded semantic representation, not a parser, translator, persis
 ```sh
 golingua meaning canonicalize --json < meaning.json
 ```
+
+`golingua meaning project --json` emits separate asserted and unresolved items. Only content under an explicit statement act is eligible for assertion; negation, question, hypothetical, modality and quantifier scopes produce unresolved reasons with source paths. The projection is semantic evidence supplied by the input Meaning, not a claim that the event is true in the world. Unlicensed double negation returns `unsupported`.

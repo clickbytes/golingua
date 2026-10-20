@@ -20,19 +20,20 @@ type Role string
 type NodeKind string
 
 const (
-	KindEvent     NodeKind = "event"
-	KindState     NodeKind = "state"
-	KindReferent  NodeKind = "referent"
-	KindQuestion  NodeKind = "question"
-	KindScope     NodeKind = "scope"
-	KindModality  NodeKind = "modality"
-	KindDiscourse NodeKind = "discourse"
+	KindEvent      NodeKind = "event"
+	KindState      NodeKind = "state"
+	KindReferent   NodeKind = "referent"
+	KindQuestion   NodeKind = "question"
+	KindScope      NodeKind = "scope"
+	KindModality   NodeKind = "modality"
+	KindQuantifier NodeKind = "quantifier"
+	KindDiscourse  NodeKind = "discourse"
 )
 
 // Valid reports whether kind is a supported Meaning node variant.
 func (kind NodeKind) Valid() bool {
 	switch kind {
-	case KindEvent, KindState, KindReferent, KindQuestion, KindScope, KindModality, KindDiscourse:
+	case KindEvent, KindState, KindReferent, KindQuestion, KindScope, KindModality, KindQuantifier, KindDiscourse:
 		return true
 	default:
 		return false
@@ -53,6 +54,8 @@ func nodeFieldsForKind(kind NodeKind) map[string]bool {
 		specific = []string{"target", "operator"}
 	case KindModality:
 		specific = []string{"target", "modality"}
+	case KindQuantifier:
+		specific = []string{"target", "quantifier"}
 	case KindDiscourse:
 		specific = []string{"act", "content"}
 	}
@@ -137,6 +140,7 @@ type Node struct {
 	Target       NodeID        `json:"target,omitempty"`
 	Operator     Operator      `json:"operator,omitempty"`
 	Modality     Modality      `json:"modality,omitempty"`
+	Quantifier   *Quantifier   `json:"quantifier,omitempty"`
 	Act          DialogueAct   `json:"act,omitempty"`
 	Content      []NodeID      `json:"content,omitempty"`
 }
