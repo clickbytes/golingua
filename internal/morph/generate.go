@@ -254,6 +254,9 @@ func resolveGenerationStems(parts PrincipalParts, requirements []PrincipalPartRe
 			continue
 		}
 		if isOutcome(err, status.OutcomeUnknown) {
+			if !requirement.Required {
+				continue
+			}
 			if _, replaced := overrides[requirement.StemID]; replaced {
 				continue
 			}

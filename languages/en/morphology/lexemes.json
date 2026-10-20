@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "records": [
+    {
+      "lexeme": {"id": "lexeme:book-n", "language": "en", "lemma": "book", "pos": "noun", "paradigm_id": "en_noun_regular"},
+      "principal_parts": {"lexeme_id": "lexeme:book-n", "parts": [{"id": "base", "form": "book"}]}
+    },
+    {
+      "lexeme": {"id": "lexeme:cat-n", "language": "en", "lemma": "cat", "pos": "noun", "paradigm_id": "en_noun_regular"},
+      "principal_parts": {"lexeme_id": "lexeme:cat-n", "parts": [{"id": "base", "form": "cat"}]}
+    },
+    {
+      "lexeme": {"id": "lexeme:walk-v", "language": "en", "lemma": "walk", "pos": "verb", "paradigm_id": "en_verb_regular"},
+      "principal_parts": {"lexeme_id": "lexeme:walk-v", "parts": [{"id": "base", "form": "walk"}]}
+    },
+    {
+      "lexeme": {"id": "lexeme:go-v", "language": "en", "lemma": "go", "pos": "verb", "paradigm_id": "en_verb_principal_parts"},
+      "principal_parts": {"lexeme_id": "lexeme:go-v", "parts": [
+        {"id": "base", "form": "go"},
+        {"id": "third_person_singular", "form": "goes"},
+        {"id": "past", "form": "went"},
+        {"id": "past_participle", "form": "gone"},
+        {"id": "present_participle", "form": "going"}
+      ]}
+    },
+    {
+      "lexeme": {"id": "lexeme:bright-adj", "language": "en", "lemma": "bright", "pos": "adjective", "paradigm_id": "en_adjective_regular"},
+      "principal_parts": {"lexeme_id": "lexeme:bright-adj", "parts": [{"id": "base", "form": "bright"}]}
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 
 **Nowy, niezależny prototyp silnika językowego w Go.** Koncepty, gramatyka, walencja, procedury i wyjątki są projektowane od zera. Polski i angielski pozostają osobnymi pakietami językowymi.
 
-**Status:** obecnie działa tylko bootstrap CLI, nie ma jeszcze tłumaczenia PL↔EN, rozumowania ani generowania zdań. Docelowo: około 1000 konceptów z leksyką w obu językach, bez pamięci i uczenia w v0.
+**Status:** CLI pozostaje bootstrapem bez tłumaczenia PL↔EN, rozumowania ani generowania zdań. Biblioteka udostępnia już ograniczoną morfologię oraz mały seed EN przez Go API (bez CLI `forms`). Docelowo: około 1000 konceptów z leksyką w obu językach, bez pamięci i uczenia w v0.
 
 ## Jak rozwijamy
 
@@ -16,6 +16,7 @@ Istniejące źródło [clickbytes/flexLingua](https://github.com/clickbytes/flex
 
 - [Architektura golingua](docs/architecture/README.md) — kontrakty i kolejność projektowania.
 - [Generator i finite relation table](docs/architecture/morph-backends.md) — API ograniczonego generowania i analizy morfologicznej.
+- [English morphology seed](docs/languages/en.md) — obecne klasy, API i ograniczenia EN.
 - [Protokół ręcznego sprawdzania](docs/manual-review.md) — użytkownik podaje wejścia, agent pokazuje faktyczny output.
 - [CLI](docs/cli.md) — rzeczywiste komendy bootstrapu i jawne granice obecnej obsługi.
 - [Przykłady ręczne](examples/manual/README.md) — na razie bez domyślnych zdań.

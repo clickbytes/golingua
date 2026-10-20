@@ -1,10 +1,12 @@
 # 09 — PL i EN jako niezależne pluginy danych
 
-**PROPOSED, G03-06.** Jeden silnik, dwa języki. Nie pisz `TranslatePolishToEnglish` jako osobnego kompilatora w `core`.
+**Częściowo wdrożone.** Jeden silnik, dwa języki. W G02 dodano mały pakiet EN dla generowania i analizy morfologicznej; rejestr pluginów runtime, parser i realizacja zdań pozostają przyszłym zakresem. Nie pisz `TranslatePolishToEnglish` jako osobnego kompilatora w `core`.
 
 ## Kontrakt logiczny pluginu
 
 Każdy pakiet języka dostarcza lokalne profile cech, tokenizację/ortografię, MorphLexemes, SenseBindings, paradygmaty i wyjątki, walencję, rodziny konstrukcji/operatory oraz możliwe do wywołania procedury.
+
+`languages/en` obecnie dostarcza wersjonowany profil, manifest, ograniczone paradygmaty oraz seed MorphLexemes z principal parts i Go API `Generate`/`Analyze`. To pakiet morfologii, nie pełny plugin językowy: manifest deklaruje sentence analysis i meaning realization jako unsupported. PL ma profil cech, ale nie ma jeszcze aktywnego seed generatora.
 
 Język udostępnia deklaracje możliwości dla:
 - analizy morfologicznej,

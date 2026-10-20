@@ -1,6 +1,6 @@
 # Architektura golingua — Go od zera, ocena ręczna
 
-**Status architektury: częściowo wdrożony runtime.** Bieżący runtime ma CLI/bootstrap, typowane statusy, metadane źródeł, stable symbols, snapshot-local table NodeID, kompilowany ConceptGraph, bounded adjacency/traversal, versioned Meaning IR, fail-closed asserted projection oraz ograniczony generator i analyzer morfologiczny. Nie ma jeszcze zintegrowanego leksykonu, parsera ani realizera. Wyjście `translate` pozostaje unsupported dopóki realizer/parsing nie powstanie.
+**Status architektury: częściowo wdrożony runtime.** Bieżący runtime ma CLI/bootstrap, typowane statusy, metadane źródeł, stable symbols, snapshot-local table NodeID, kompilowany ConceptGraph, bounded adjacency/traversal, versioned Meaning IR, fail-closed asserted projection, wspólny generator/analyzer morfologiczny oraz mały seed EN. Nie ma rejestru pluginów runtime, parsera ani realizera zdań. Wyjście `translate` pozostaje unsupported dopóki realizer/parsing nie powstanie.
 
 ## Fundamentalna decyzja (2026-10-20)
 
