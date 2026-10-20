@@ -161,6 +161,7 @@ func CompileConstruction(input CompileInput) (CompiledConstructionPlan, error) {
 	}
 	plan := CompiledConstructionPlan{Language: string(family.Language), ProfileVersion: profile.Version, ProfileProvenance: profile.Provenance, Permissions: []SensePermission{{SenseID: frame.SenseID, FrameID: frame.ID}}, FamilyID: family.ID, VariantID: compiled.Variant.ID, ArgumentBindings: bindings, Constraints: cloneConstraints(input.Constraints), Linearization: append([]SequenceToken(nil), compiled.Variant.Sequence...), ProcedureIDs: procedureIDs}
 	plan.ID = canonicalPlanID(plan)
+	plan.PermissionDigest = permissionDigest(plan.Permissions)
 	return plan, nil
 }
 
@@ -223,6 +224,7 @@ func CompilePlanIndex(inputs []CompileInput) (*PlanIndex, error) {
 			return left.FrameID < right.FrameID
 		})
 		plans[i].Permissions = deduplicatePermissions(plans[i].Permissions)
+		plans[i].PermissionDigest = permissionDigest(plans[i].Permissions)
 	}
 	sort.Slice(plans, func(i, j int) bool { return plans[i].ID < plans[j].ID })
 	byID = make(map[ConstructionPlanID]int, len(plans))
