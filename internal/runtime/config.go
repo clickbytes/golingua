@@ -41,11 +41,23 @@ type Config struct {
 // Options supplies trusted compiled providers and the engine stage adapters
 // that are available in this application build.
 type Options struct {
-	Providers []language.LanguageProvider
+	Providers    []language.LanguageProvider
+	Analyzers    map[features.LanguageID]engine.SourceAnalyzer
+	Realizers    map[features.LanguageID]engine.TargetRealizer
+	StageFactory StageFactory
+	Budget       engine.Budget
+}
+
+// StageAdapters are compiled, language-specific engine stages constructed
+// against the exact pack and verified language registry selected by Config.
+type StageAdapters struct {
 	Analyzers map[features.LanguageID]engine.SourceAnalyzer
 	Realizers map[features.LanguageID]engine.TargetRealizer
-	Budget    engine.Budget
 }
+
+// StageFactory runs only after the configured data and language packages have
+// been verified. It is supplied by the application binary, never by JSON.
+type StageFactory func(*pack.Pack, *language.Registry) (StageAdapters, error)
 
 // LoadConfigFile reads a bounded regular JSON config. It does not create or
 // activate datasets and does not load code from configured paths.
@@ -170,11 +182,46 @@ func LoadEngineFile(path string, options Options) (*engine.Engine, error) {
 	if err != nil {
 		return nil, preserveError(err, "RUNTIME_LANGUAGE_REGISTRY_INVALID", "language_package_dirs")
 	}
+	if options.StageFactory != nil {
+		stages, err := options.StageFactory(snapshot, registry)
+		if err != nil {
+			return nil, preserveError(err, "RUNTIME_STAGE_FACTORY_FAILED", "stage_factory")
+		}
+		if err := mergeStageAdapters(&options, stages); err != nil {
+			return nil, err
+		}
+	}
 	analyzers, realizers := providerStages(registry, options)
 	return engine.New(engine.Config{
 		Core: snapshot.CoreGraph(), LanguageRegistry: registry, PackSnapshot: snapshot,
 		Analyzers: analyzers, Realizers: realizers, Budget: options.Budget,
 	})
+}
+
+func mergeStageAdapters(options *Options, stages StageAdapters) error {
+	analyzers := make(map[features.LanguageID]engine.SourceAnalyzer, len(options.Analyzers)+len(stages.Analyzers))
+	for id, adapter := range options.Analyzers {
+		analyzers[id] = adapter
+	}
+	for id, adapter := range stages.Analyzers {
+		if _, exists := analyzers[id]; exists {
+			return runtimeError(status.OutcomeInvalid, "DUPLICATE_SOURCE_STAGE", "stage_factory.analyzers", "source stage is already registered for this language")
+		}
+		analyzers[id] = adapter
+	}
+	realizers := make(map[features.LanguageID]engine.TargetRealizer, len(options.Realizers)+len(stages.Realizers))
+	for id, adapter := range options.Realizers {
+		realizers[id] = adapter
+	}
+	for id, adapter := range stages.Realizers {
+		if _, exists := realizers[id]; exists {
+			return runtimeError(status.OutcomeInvalid, "DUPLICATE_TARGET_STAGE", "stage_factory.realizers", "target stage is already registered for this language")
+		}
+		realizers[id] = adapter
+	}
+	options.Analyzers = analyzers
+	options.Realizers = realizers
+	return nil
 }
 
 // providerStages connects compiled language providers that implement the

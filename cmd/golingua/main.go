@@ -10,7 +10,7 @@ import (
 
 func main() {
 	loadEngine := func(path string) (*engine.Engine, error) {
-		return runtime.LoadEngineFile(path, runtime.Options{})
+		return runtime.LoadEngineFile(path, compiledRuntimeOptions())
 	}
 	os.Exit(cli.RunWithInputAndEngineLoader(os.Args[1:], os.Stdin, os.Stdout, os.Stderr, loadEngine))
 }
