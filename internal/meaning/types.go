@@ -106,15 +106,17 @@ func (modality Modality) Valid() bool {
 type DialogueAct string
 
 const (
-	ActStatement DialogueAct = "statement"
-	ActQuestion  DialogueAct = "question"
-	ActRequest   DialogueAct = "request"
+	ActStatement   DialogueAct = "statement"
+	ActQuestion    DialogueAct = "question"
+	ActRequest     DialogueAct = "request"
+	ActRefusal     DialogueAct = "refusal"
+	ActExplanation DialogueAct = "explanation"
 )
 
 // Valid reports whether act is supported by the v1 discourse node.
 func (act DialogueAct) Valid() bool {
 	switch act {
-	case ActStatement, ActQuestion, ActRequest:
+	case ActStatement, ActQuestion, ActRequest, ActRefusal, ActExplanation:
 		return true
 	default:
 		return false
