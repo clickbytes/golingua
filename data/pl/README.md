@@ -69,8 +69,17 @@ siedmiu czasowników rdzeniowych (`pytać`, `odpowiadać`, `czytać`, `uczyć`,
 `uczyć się`, `jeść`, `spać`) w `lexicon_core_verbs.go`. Batch 5 rozpatrzył
 54 kolejne wiersze DEFERRED: 18 rzeczowników substancji i korzenia
 (implementacja w grupie nature) oraz 36 czasowników lokomocji (decyzje
-w worklist bez ram walencji). Pozostałe 467 wierszy DEFERRED czeka na
-redakcję kolejnych batchów.
+w worklist bez ram walencji). Batch 6 domknął redakcję worklistu: całe
+1000 wierszy jest rozpatrzonych (0 `DEFERRED`). Decyzje obejmują cechy i
+jakości, emocje i stany, kalendarz i czas abstrakcyjny, pojazdy, dokumenty,
+media, pieniądze, łazienkę, dishware i miejsca usługowe, relacje
+przestrzenne/czasowe/logiczne/strukturalne/społeczne, abstrakty
+informacyjno-modalne, manipulację, wymianę, percepcję i myślenie, mowę,
+fizjologię, produkcję oraz motywację — rzeczowniki i frazy jako decyzje
+worklistowe (implementacja wymagałaby nowych grup domenowych), a czasowniki
+**bez ram walencji** nie wchodzą do Go (jak lokomocje z batcha 5).
+Aktualizacje Go w tym batchu: brak; stan leksykonu nie zmienia się względem
+main sprzed batcha 6.
 
 Znane przypadki jawne, do decyzji właściciela, bez wymuszonej decyzji
 automatycznej:
