@@ -10,7 +10,12 @@
 4. Diagnozuj błąd programu osobno od złej fleksji, sensu lub tłumaczenia. Błąd uruchomienia, parsowania argumentów, panic, serializacji lub niezgodny kontrakt to problem programu. Niepoprawna forma językowa przy działającym CLI to obserwacja językowa, nie awaria builda.
 5. Jeśli potrzebna jest poprawka, zmień właściwą leksykę/morfologię/konstrukcję/CORE. Nie zapisuj całej pary zdaniowej jako wyjątku. To samo wejście można uruchomić ponownie ręcznie; żaden wynik nie trafia automatycznie do CI.
 
-### Status bieżącego bootstrapu
+### Status technicznego podglądu v0
+
+W technicznym podglądzie v0 `forms` i `catalog` są dostępne lokalnie. Właściciel
+może podać słowo PL/EN do oceny odmiany; agent uruchomi dokładnie tę formę
+przez `forms` i zapisze literalne wyjście. Ocena translacji zdania pozostaje
+`NOT RUN` do czasu zatwierdzenia danych i uruchomienia providerów zdań.
 
 CLI przyjmuje `translate --from <lang> --to <lang> --text <text> --json`, waliduje żądanie i zwraca typowy JSON. Domyślna konfiguracja nie zawiera jednak providerów językowych, więc poprawnie sformułowane żądanie zwraca `unsupported` i exit code 3. Taki wynik potwierdza tylko uczciwą odmowę; nie jest wynikiem translacji ani podstawą do oceny PL/EN. Błędne flagi lub para językowa zwracają `invalid` i exit code 2. `forms` udostępnia ograniczoną odmianę i analizę obecnych seedów PL/EN; ocena na wejściu właściciela pozostaje `NOT RUN`.
 
