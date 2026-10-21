@@ -1,0 +1,45 @@
+package catalog
+
+import "github.com/clickbytes/golingua/internal/core"
+
+// eventsMotionDeclarations returns the reviewed, typed concepts in editorial order.
+func eventsMotionDeclarations() []declaration {
+	return []declaration{
+		{"locomotion", "movement", "Movement accomplished primarily by an organism using its own body.", core.KindEvent, []core.RoleType{{Name: "mover", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"walking", "locomotion", "Locomotion on foot by alternating steps while maintaining ground contact.", core.KindEvent, []core.RoleType{{Name: "walker", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"running", "locomotion", "Rapid locomotion on foot involving intervals without ground contact.", core.KindEvent, []core.RoleType{{Name: "runner", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"crawling", "locomotion", "Locomotion supported by hands, knees, or the body close to a surface.", core.KindEvent, []core.RoleType{{Name: "mover", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"jumping", "locomotion", "Propelled movement in which a body temporarily leaves its support surface.", core.KindEvent, []core.RoleType{{Name: "jumper", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"climbing", "locomotion", "Movement gaining height along a slope or structure by active effort.", core.KindEvent, []core.RoleType{{Name: "climber", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "surface", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"swimming_motion", "locomotion", "Propelled travel through liquid by coordinated body movements.", core.KindEvent, []core.RoleType{{Name: "swimmer", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"flying_motion", "movement", "Travel through air while supported by aerodynamic or powered lift.", core.KindEvent, []core.RoleType{{Name: "mover", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"falling", "movement", "Predominantly downward movement under gravity without sustained support.", core.KindEvent, []core.RoleType{{Name: "mover", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"rising_motion", "movement", "Movement from a lower spatial position to a higher one.", core.KindEvent, []core.RoleType{{Name: "mover", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"entering", "movement", "Movement crossing a boundary from outside to inside a region.", core.KindEvent, []core.RoleType{{Name: "mover", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "destination", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"exiting", "movement", "Movement crossing a boundary from inside to outside a region.", core.KindEvent, []core.RoleType{{Name: "mover", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "source", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"crossing", "movement", "Movement from one side of an obstacle or region to the other.", core.KindEvent, []core.RoleType{{Name: "mover", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "region", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"approaching", "movement", "Movement reducing distance between a mover and a target.", core.KindEvent, []core.RoleType{{Name: "mover", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "target", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"moving_away", "movement", "Movement increasing distance between a mover and a reference.", core.KindEvent, []core.RoleType{{Name: "mover", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "reference", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"returning_to_place", "movement", "Movement to a location where the mover was previously present.", core.KindEvent, []core.RoleType{{Name: "mover", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "destination", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"following_motion", "movement", "Movement along the route of another moving participant.", core.KindEvent, []core.RoleType{{Name: "follower", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "leader", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"chasing", "movement", "Intentional movement attempting to catch a moving target.", core.KindEvent, []core.RoleType{{Name: "pursuer", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "target", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"turning_direction", "movement", "Change in the direction of a moving entity's path.", core.KindEvent, []core.RoleType{{Name: "mover", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"starting_motion", "movement", "Transition from stationary condition to spatial movement.", core.KindEvent, []core.RoleType{{Name: "mover", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"stopping_motion", "movement", "Transition from spatial movement to a stationary condition.", core.KindEvent, []core.RoleType{{Name: "mover", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"traveling", "movement", "Sustained movement between places with a destination or route.", core.KindEvent, []core.RoleType{{Name: "traveler", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"commuting", "traveling", "Regular travel between a home and a work or study location.", core.KindEvent, []core.RoleType{{Name: "traveler", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "workplace", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"transporting", "movement", "Causing a passenger or item to change location by carrying or conveyance.", core.KindEvent, []core.RoleType{{Name: "carrier", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "passenger_or_load", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"carrying", "transporting", "Moving an object while physically supporting its weight during travel.", core.KindEvent, []core.RoleType{{Name: "carrier", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "load", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"driving_vehicle", "transporting", "Controlling a motor vehicle while it travels.", core.KindEvent, []core.RoleType{{Name: "driver", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "vehicle", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"riding_as_passenger", "transporting", "Traveling in a vehicle without controlling its propulsion or route.", core.KindEvent, []core.RoleType{{Name: "passenger", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "vehicle", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"boarding_vehicle", "movement", "Entering a vehicle in preparation for travel.", core.KindEvent, []core.RoleType{{Name: "passenger", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "vehicle", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"leaving_vehicle", "movement", "Exiting a vehicle after or during a journey.", core.KindEvent, []core.RoleType{{Name: "passenger", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "vehicle", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"parking_vehicle", "movement", "Bringing a vehicle into a designated place and leaving it stationary.", core.KindEvent, []core.RoleType{{Name: "driver", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "vehicle", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "location", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"taking_off", "departure", "A flying vehicle becoming airborne from a supporting surface.", core.KindEvent, []core.RoleType{{Name: "vehicle", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "origin", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"landing", "arrival", "A flying vehicle making contact with a supporting surface after flight.", core.KindEvent, []core.RoleType{{Name: "vehicle", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "destination", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"waiting", "event", "Remaining ready or inactive until an anticipated condition or event occurs.", core.KindEvent, []core.RoleType{{Name: "waiter", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "anticipated", AllowedKinds: []core.ConceptKind{core.KindEvent, core.KindAbstract}}}},
+		{"staying_at_place", "event", "Maintaining presence at a location without an implied change of position.", core.KindEvent, []core.RoleType{{Name: "occupant", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "location", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"resting", "event", "Temporarily reducing activity to recover energy or comfort.", core.KindEvent, []core.RoleType{{Name: "participant", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"navigation", "event", "Choosing or following a route to reach a spatial destination.", core.KindEvent, []core.RoleType{{Name: "navigator", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "destination", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+	}
+}
