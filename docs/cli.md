@@ -39,6 +39,14 @@ go run ./cmd/golingua forms --language en --surface dogs --json
 
 Wynik zawiera status oraz `forms` lub `readings`. Brak leksemu albo odczytu daje `unknown`. To nie jest translacja ani ocena jakości językowej. Ocena na słowach właściciela pozostaje `NOT RUN`.
 
+## Inwentarz katalogu
+
+`catalog --summary --json` kompiluje obecne dane Go CORE, PL i EN i pokazuje
+oddzielne liczby konceptów, leksemów, sensów oraz statusy bindingów.
+`catalog --details --json` dodaje listę stabilnych ConceptID ze statusami PL/EN. `pending`
+nie upoważnia do tłumaczenia. Liczba 1000 jest celem redakcyjnym, a raport nie
+mierzy poprawności językowej.
+
 ## Pytania na faktach z żądania
 
 Komenda `question` wykonuje typowane zapytanie na `MeaningGraph` i `FactSet` podanych w jednym żądaniu. Nie parsuje polskiego ani angielskiego tekstu i nie realizuje odpowiedzi powierzchniowej.
