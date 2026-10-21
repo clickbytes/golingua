@@ -33,6 +33,7 @@ Minimalne CI: formatowanie, vet, build, start CLI. Nie używamy CI jako językow
     - [Bounded request reasoning](reasoning.md)
     - [Typed question execution](questions.md)
     - [Content planning](content-planning.md)
+    - [Dialogue response realization](dialogue-realization.md)
 18. [09 — kontrakt pluginów językowych](09-language-plugin-contract.md)
 19. [10 — dane, słowniki i źródła](10-import-provenance.md)
 20. [11 — minimalne kontrole i ręczny review](11-manual-review.md)

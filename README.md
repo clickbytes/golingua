@@ -20,6 +20,7 @@ Istniejące źródło [clickbytes/flexLingua](https://github.com/clickbytes/flex
 - [Polish morphology seed](docs/languages/pl.md) — obecne klasy, API i ograniczenia PL.
 - [Protokół ręcznego sprawdzania](docs/manual-review.md) — użytkownik podaje wejścia, agent pokazuje faktyczny output.
 - [Planowanie treści odpowiedzi](docs/architecture/content-planning.md) — wybór aktu i treści odpowiedzi na podstawie typowanego wyniku zapytania.
+- [Realizacja odpowiedzi dialogowej](docs/architecture/dialogue-realization.md) — bezpieczny most do wspólnego pipeline’u konstrukcji, morfologii i linearyzacji.
 - [CLI](docs/cli.md) — rzeczywiste komendy bootstrapu i jawne granice obecnej obsługi.
 - [Przykłady ręczne](examples/manual/README.md) — na razie bez domyślnych zdań.
 - [EPIC G00](https://github.com/clickbytes/golingua/issues/1) — aktywny etap; następne etapy czekają.
