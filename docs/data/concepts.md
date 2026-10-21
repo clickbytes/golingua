@@ -1,9 +1,10 @@
 # CORE catalog authored in Go
 
-`internal/catalog` holds language-neutral concept definitions. The first batch
-contains 49 distinct definitions from the candidate areas in G07 issue #59.
-`catalog.Count()` compiles the definitions and reports the actual count beside
-the editorial target of approximately 1000. The target is not a build gate.
+`internal/catalog` holds language-neutral concept definitions. The initial
+batch contained 49 definitions. The first growth batch adds 187 distinct
+definitions from the working concept areas in G07 issue #59. `catalog.Count()`
+compiles the definitions and reports the actual count beside the editorial
+target of approximately 1000. The target is not a build gate.
 
 Each entry has a stable `ConceptID`, kind, short distinguishing definition,
 optional parent and semantic role signatures. The source metadata identifies
