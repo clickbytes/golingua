@@ -1,6 +1,6 @@
 # Opcjonalne notatki ręcznego przeglądu
 
-**Na start brak wpisanych przykładów.** Zdania, słowa i kierunki PL↔EN podaje właściciel projektu w trakcie prac. Nie kopiować tutaj dawnej macierzy JS ani nie generować automatycznych „golden” zdań.
+**Na start brak wpisanych przykładów.** Zdania, słowa i kierunki PL↔EN podaje właściciel projektu w trakcie prac. Nie kopiować tutaj dawnej macierzy JS ani nie generować automatycznych „golden” zdań. Domyślny CLI przyjmuje już komendę `translate`, ale bez providerów zwraca `unsupported`; taki techniczny smoke nie jest przykładem językowym ani oceną PL↔EN.
 
 Jeżeli właściciel chce zachować wynik z sesji, można utworzyć krótki plik `.md` z pełnym SHA, trybem uruchomienia, kierunkiem, dokładnym wejściem albo prywatnym odnośnikiem, dokładną komendą, exit code, literalnym stdout/stderr i oceną właściciela. Jeśli nie uruchomiono CLI, zapisz `NOT RUN`; jeśli nie oceniono językowo, zapisz `NOT EVALUATED`. Nie wypełniaj pliku wymyślonym tekstem lub oczekiwanym wynikiem.
 
