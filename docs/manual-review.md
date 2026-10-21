@@ -14,6 +14,8 @@
 
 CLI przyjmuje `translate --from <lang> --to <lang> --text <text> --json`, waliduje żądanie i zwraca typowy JSON. Domyślna konfiguracja nie zawiera jednak providerów językowych, więc poprawnie sformułowane żądanie zwraca `unsupported` i exit code 3. Taki wynik potwierdza tylko uczciwą odmowę; nie jest wynikiem translacji ani podstawą do oceny PL/EN. Błędne flagi lub para językowa zwracają `invalid` i exit code 2. Nie ma komendy `forms`.
 
+Komenda `question --runtime-config <path> --json` przyjmuje typowany MeaningGraph, jawny FactSet oraz mapowanie ról. Nie przyjmuje zdania w języku naturalnym ani nie realizuje odpowiedzi tekstowej. Jej wynik można ręcznie ocenić jako rozumowanie wyłącznie na wejściach dostarczonych przez właściciela. Bez takich wejść, aktywnego CORE snapshotu i uruchomienia konkretnej komendy wpisz **NOT RUN**; nie twórz przykładowych faktów ani twierdzeń.
+
 Bez tekstu dostarczonego przez właściciela oznacz ocenę językową **NOT EVALUATED**. Jeśli nie uruchomiono konkretnej próby na wejściu właściciela, oznacz ją **NOT RUN**. Smoki techniczne z tekstem zastępczym nie są wejściem do oceny językowej. Dokładny kontrakt i przykład komendy opisuje [docs/cli.md](cli.md); nie przedstawiaj go jako dowodu, że provider jest skonfigurowany.
 
 Nie ma obowiązku zapisywania każdego outputu do pliku. Jeśli zapis jest przydatny, prowadź opcjonalnie krótką notatkę w issue lub `examples/manual/`:

@@ -224,6 +224,12 @@ func RunWithInput(args []string, input io.Reader, stdout, stderr io.Writer) int 
 // RunWithInputAndEngineLoader is RunWithInput with an optional trusted loader
 // for explicitly configured language runtimes.
 func RunWithInputAndEngineLoader(args []string, input io.Reader, stdout, stderr io.Writer, loadEngine EngineLoader) int {
+	return RunWithInputAndLoaders(args, input, stdout, stderr, loadEngine, nil)
+}
+
+// RunWithInputAndLoaders adds an optional CORE loader for typed question
+// execution while keeping language runtime loading behind EngineLoader.
+func RunWithInputAndLoaders(args []string, input io.Reader, stdout, stderr io.Writer, loadEngine EngineLoader, loadCore CoreLoader) int {
 	if stdout == nil {
 		if stderr != nil {
 			_, _ = fmt.Fprintln(stderr, "INFRASTRUCTURE_ERROR: stdout writer is nil")
@@ -234,7 +240,7 @@ func RunWithInputAndEngineLoader(args []string, input io.Reader, stdout, stderr 
 		stderr = io.Discard
 	}
 	if len(args) == 0 || (len(args) == 1 && (args[0] == "--help" || args[0] == "-h" || args[0] == "help")) {
-		_, _ = fmt.Fprint(stdout, "golingua bootstrap\nUsage: golingua --help | --version | capabilities --json | meaning canonicalize --json < meaning.json | meaning project --json < meaning.json | translate --from <lang> --to <lang> --text <text> --json [--preview-id <id>] [--runtime-config <path>]\nNo language providers are configured by default; translate returns unsupported until runtimes are configured.\n")
+		_, _ = fmt.Fprint(stdout, "golingua bootstrap\nUsage: golingua --help | --version | capabilities --json | meaning canonicalize --json < meaning.json | meaning project --json < meaning.json | question --runtime-config <path> --json < question.json | translate --from <lang> --to <lang> --text <text> --json [--preview-id <id>] [--runtime-config <path>]\nquestion executes typed MeaningGraph requests against caller-supplied FactSets; it does not parse natural language.\nNo language providers are configured by default; translate returns unsupported until runtimes are configured.\n")
 		return ExitOK
 	}
 	if len(args) == 1 && args[0] == "--version" {
@@ -318,6 +324,9 @@ func RunWithInputAndEngineLoader(args []string, input io.Reader, stdout, stderr 
 	}
 	if len(args) > 0 && args[0] == "translate" {
 		return runTranslate(args, stdout, stderr, loadEngine)
+	}
+	if len(args) > 0 && args[0] == "question" {
+		return runQuestion(args, input, stdout, stderr, loadCore)
 	}
 	result := diagnosticResult(status.OutcomeInvalid, "INVALID_COMMAND", "unknown or invalid command", "command")
 	return writeResult(stdout, stderr, result)

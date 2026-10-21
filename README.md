@@ -2,7 +2,7 @@
 
 **Nowy, niezależny prototyp silnika językowego w Go.** Koncepty, gramatyka, walencja, procedury i wyjątki są projektowane od zera. Polski i angielski pozostają osobnymi pakietami językowymi.
 
-**Status:** CLI pozostaje bootstrapem bez tłumaczenia PL↔EN, rozumowania ani generowania zdań. Biblioteka udostępnia już ograniczoną morfologię oraz mały seed EN przez Go API (bez CLI `forms`). Docelowo: około 1000 konceptów z leksyką w obu językach, bez pamięci i uczenia w v0.
+**Status:** CLI nie tłumaczy PL↔EN ani nie analizuje/realizuje zdań w języku naturalnym. Komenda `question` wykonuje typowane zapytania na MeaningGraph i faktach podanych jawnie w JSON. Biblioteka udostępnia ograniczoną morfologię oraz małe seedy przez Go API (bez CLI `forms`). Docelowo: około 1000 konceptów z leksyką w obu językach, bez pamięci i uczenia w v0.
 
 ## Jak rozwijamy
 
