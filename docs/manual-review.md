@@ -1,10 +1,10 @@
 # Ręczny przegląd outputu golingua
 
-**Obowiązuje od 2026-10-20.** Na tym etapie **nie ma automatycznej macierzy translacji**, porównania z flexLingua, niezależnych goldów ani liczby przypadków wymaganej przed PR/merge. Gdy funkcja językowa będzie zaimplementowana, właściciel może przekazać dowolne słowo lub zdanie; agent uruchamia dostępne CLI i relacjonuje *zaobserwowany* wynik, bez zgadywania. Aktualny bootstrap nie ma takiej funkcji, co opisuje sekcja niżej.
+**Obowiązuje od 2026-10-20.** Nie ma automatycznej macierzy translacji, porównania z flexLingua, niezależnych goldów ani liczby przypadków wymaganej przed PR/merge. Właściciel może przekazać dowolne słowo lub zdanie; agent uruchamia dostępne CLI i relacjonuje *zaobserwowany* wynik, bez zgadywania. Sama dostępność komendy nie oznacza, że skonfigurowano runtime językowy.
 
 ## Jeden przypadek — prosta procedura
 
-1. Właściciel podaje dowolny tekst i kierunek (`pl→en` albo `en→pl`) po tym, jak odpowiednia funkcja jest rzeczywiście zaimplementowana. Może wskazać akceptowalny wariant, lecz nie musi.
+1. Właściciel podaje dowolny tekst i kierunek (`pl→en` albo `en→pl`). Może wskazać akceptowalny wariant, lecz nie musi. Nie wymyślaj tekstu właściciela, jeśli go nie podał.
 2. Zapisz pełny SHA, dokładną komendę, surowe stdout, stderr i exit code z uruchomienia. Nie poprawiaj ani nie parafrazuj outputu. Jeśli komenda nie została uruchomiona, wpisz **NOT RUN** i nie twórz przykładowego wyniku.
 3. Właściciel ocenia output jako `OK`, `BŁĄD`, `NIEPEWNE` albo `BRAK OBSŁUGI`. Krótkie uzasadnienie wystarczy. Status techniczny uruchomienia (PASS/FAIL/INFRA/NOT RUN) zapisuje się oddzielnie od oceny językowej.
 4. Diagnozuj błąd programu osobno od złej fleksji, sensu lub tłumaczenia. Błąd uruchomienia, parsowania argumentów, panic, serializacji lub niezgodny kontrakt to problem programu. Niepoprawna forma językowa przy działającym CLI to obserwacja językowa, nie awaria builda.
@@ -12,7 +12,9 @@
 
 ### Status bieżącego bootstrapu
 
-Obecne CLI **nie przyjmuje jeszcze tekstu językowego**: `translate` zwraca `unsupported` i exit code 3 bez względu na przekazane argumenty. Nie ma działającej komendy `forms`. W tej wersji nie można wykonać ręcznej oceny PL/EN; zapisz **NOT EVALUATED** (oraz **NOT RUN** dla próby językowej). Dokładny kontrakt obecnego CLI opisuje [docs/cli.md](cli.md). Przykład przyszłego wywołania można dodać dopiero wtedy, gdy taka komenda faktycznie istnieje; nie wpisuj jej jako działającej teraz.
+CLI przyjmuje `translate --from <lang> --to <lang> --text <text> --json`, waliduje żądanie i zwraca typowy JSON. Domyślna konfiguracja nie zawiera jednak providerów językowych, więc poprawnie sformułowane żądanie zwraca `unsupported` i exit code 3. Taki wynik potwierdza tylko uczciwą odmowę; nie jest wynikiem translacji ani podstawą do oceny PL/EN. Błędne flagi lub para językowa zwracają `invalid` i exit code 2. Nie ma komendy `forms`.
+
+Bez tekstu dostarczonego przez właściciela oznacz ocenę językową **NOT EVALUATED**. Jeśli nie uruchomiono konkretnej próby na wejściu właściciela, oznacz ją **NOT RUN**. Smoki techniczne z tekstem zastępczym nie są wejściem do oceny językowej. Dokładny kontrakt i przykład komendy opisuje [docs/cli.md](cli.md); nie przedstawiaj go jako dowodu, że provider jest skonfigurowany.
 
 Nie ma obowiązku zapisywania każdego outputu do pliku. Jeśli zapis jest przydatny, prowadź opcjonalnie krótką notatkę w issue lub `examples/manual/`:
 
