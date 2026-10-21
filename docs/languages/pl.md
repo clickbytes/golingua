@@ -24,8 +24,11 @@ buildings, rooms, routes), the objects group (domestic objects, tools,
 machines, technology), the food group (food, beverages, garments) and the
 basics group (resolved original-49 nouns, leftover person entries and
 property nouns). Reviewable verbs stay worklist-only until valency batches.
-The remaining reviewed rows are 566 absent concepts; re-check the totals
-with `catalog --summary --json` before each further batch.
+The remaining reviewed rows are 541 absent concepts; re-check the totals
+with `catalog --summary --json` before each further batch. The locomotion
+verb decisions are recorded in the worklist but stay worklist-only until
+their per-sense frames are authored; batch 5 additionally implemented the
+deferred substance/plant nouns in the nature group.
 
 The full editorial decision record behind this slice and the rest of the
 1000 concepts is `data/pl/1000-core-review.tsv`; see `data/pl/README.md`.

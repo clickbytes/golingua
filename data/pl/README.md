@@ -66,9 +66,11 @@ Dla homonimu `staw` wyodrębniono osobny leksem `pl.staw_zbiornik.n`
 (zbiornik wodny), a polisemiczny leksem `pl.skora.n` łączy sens `part`
 (organ) i `material` (surowiec). Batch 4 autorsko dopisał ramy walencji i leksemy dla
 siedmiu czasowników rdzeniowych (`pytać`, `odpowiadać`, `czytać`, `uczyć`,
-`uczyć się`, `jeść`, `spać`) w `lexicon_core_verbs.go`. Zredagowane
-kolejne czasowniki pozostają w worklist do momentu autorskich ram
-walencji; 521 wierszy DEFERRED czeka na redakcję kolejnych batchów.
+`uczyć się`, `jeść`, `spać`) w `lexicon_core_verbs.go`. Batch 5 rozpatrzył
+54 kolejne wiersze DEFERRED: 18 rzeczowników substancji i korzenia
+(implementacja w grupie nature) oraz 36 czasowników lokomocji (decyzje
+w worklist bez ram walencji). Pozostałe 467 wierszy DEFERRED czeka na
+redakcję kolejnych batchów.
 
 Znane przypadki jawne, do decyzji właściciela, bez wymuszonej decyzji
 automatycznej:
