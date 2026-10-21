@@ -33,25 +33,31 @@ type TargetExecutionBuilder interface {
 	Build(context.Context, semantic.MeaningCandidate, realizer.TargetCandidate, realizer.RealizationPlan) (realizer.ExecuteInput, error)
 }
 
+// TargetOperatorBuilder returns only operator evidence licensed for this exact
+// Meaning candidate. The completeness bit must be false when coverage is not
+// established; the pipeline never reuses request evidence across candidates.
+type TargetOperatorBuilder interface {
+	Build(context.Context, semantic.MeaningCandidate) ([]construction.Operator, bool, error)
+}
+
 // TargetPipeline adapts selection, planning, morphology execution and
 // linearization to engine.TargetRealizer. Slot feature planning is language
 // local and therefore required as an explicit compiled dependency.
 type TargetPipeline struct {
-	Language                 features.LanguageID
-	LanguageRegistry         *language.Registry
-	Lexicon                  *lexicon.Index
-	Valency                  *valency.Index
-	Constructions            *construction.Registry
-	Variants                 map[ids.ConstructionID]*construction.VariantIndex
-	Core                     *core.ConceptGraph
-	Operators                []construction.Operator
-	OperatorCoverageComplete bool
-	SelectionBudget          realizer.Budget
-	PlanBudget               realizer.PlanBudget
-	ExecuteBudget            realizer.ExecuteBudget
-	LinearizeBudget          realizer.LinearizeBudget
-	PlanBuilder              TargetPlanBuilder
-	ExecutionBuilder         TargetExecutionBuilder
+	Language         features.LanguageID
+	LanguageRegistry *language.Registry
+	Lexicon          *lexicon.Index
+	Valency          *valency.Index
+	Constructions    *construction.Registry
+	Variants         map[ids.ConstructionID]*construction.VariantIndex
+	Core             *core.ConceptGraph
+	OperatorBuilder  TargetOperatorBuilder
+	SelectionBudget  realizer.Budget
+	PlanBudget       realizer.PlanBudget
+	ExecuteBudget    realizer.ExecuteBudget
+	LinearizeBudget  realizer.LinearizeBudget
+	PlanBuilder      TargetPlanBuilder
+	ExecutionBuilder TargetExecutionBuilder
 }
 
 var _ engine.TargetRealizer = (*TargetPipeline)(nil)
@@ -68,10 +74,22 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 	if err := ctx.Err(); err != nil {
 		return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
 	}
+	var operators []construction.Operator
+	operatorCoverageComplete := false
+	var err error
+	if pipeline.OperatorBuilder != nil {
+		operators, operatorCoverageComplete, err = pipeline.OperatorBuilder.Build(ctx, source)
+		if err != nil {
+			return engine.SurfaceResult{}, err
+		}
+		if err := ctx.Err(); err != nil {
+			return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
+		}
+	}
 	selection, err := realizer.SelectTargets(realizer.Input{
 		Candidates: []semantic.MeaningCandidate{source}, Outcome: source.Status,
-		Diagnostics: source.Evidence.Diagnostics, Operators: pipeline.Operators,
-		OperatorCoverageComplete: pipeline.OperatorCoverageComplete,
+		Diagnostics: source.Evidence.Diagnostics, Operators: operators,
+		OperatorCoverageComplete: operatorCoverageComplete,
 		Language:                 lexicon.LanguageID(pipeline.Language), Lexicon: pipeline.Lexicon,
 		Valency: pipeline.Valency, Constructions: pipeline.Constructions,
 		Variants: pipeline.Variants, Core: pipeline.Core, Budget: pipeline.SelectionBudget,
