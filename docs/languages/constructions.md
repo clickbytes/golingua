@@ -1,27 +1,27 @@
-# Construction templates
+# Construction coverage of the first PL/EN catalog batch
 
-The files under `languages/{pl,en}/constructions/` are language-local,
-structural templates. They describe NP, VP, and PP slots and permitted slot
-orders. They do not contain lexemes, sentence examples, semantic roles, or
-sense-specific valency frames. A family is shared independently of any one
-lexeme or sense.
+The catalog now exposes `catalog.ResolveApprovedPlans`: it follows a CORE
+concept through an **approved equivalent** lexical binding, a sense-specific
+valency frame, an **approved** construction binding and the exact compiled
+family/variant plan. It returns `unsupported` at the first missing license.
+Multiple matching paths remain separate and ordered; the resolver does not
+choose a meaning or produce surface text.
 
-`internal/construction.DecodeConstructionPackage` reads schema version 1 JSON,
-rejects unknown and duplicate object fields, checks its declared language
-against the family, and compiles the variants into a deterministic
-`VariantIndex`. Compilation proves only that the structure is well formed.
-These files are not loaded by the application runtime today.
+The PL and EN packages have independently declared transitive families and
+variants in `languages/*/constructions/transitive.json`. PL also declares an
+intransitive family. The four current PL and five current EN valency frames
+name allowed families, but `CompileValency` supplies no approved construction
+bindings. All sense-to-CORE links in the in-code lexical batches are pending.
+Therefore the current catalog has **zero authorized construction paths**, and
+the CLI `translate` remains unsupported.
 
-No package currently has an approved `LexicalSense` to CORE mapping, a
-sense-specific valency frame binding, or an analysis/realization provider.
-Therefore none of these templates licenses translation or produces sentence
-output. In particular, the Polish OVS order is a marked structural option; it
-does not assert case marking, topic/focus, or interchangeable grammatical
-roles. The English auxiliary-question and Polish `czy` templates represent
-limited orders, not complete question grammars. A polarity operator and
-meaning evidence must be supplied explicitly by a future planner.
+Structural templates can be shared by compatible senses only after their
+roles, grammatical functions, case or adposition policy, variant and operator
+constraints are reviewed for each language. In particular `patrzeć na` and
+`look at` have oblique target arguments; a generic direct object template
+must not silently stand in for those frames. A frame's `AllowedFamilyIDs` is
+only a candidate family reference. It is never treated as approval.
 
-When approved bindings and providers exist, they can refer to the same family
-and variant data without copying a construction per lexeme. No external
-lexical or linguistic source is claimed by the current structural templates;
-their provenance records identify them as internal project data.
+The owner's sentence-level review has not run. Future review should add
+explicit construction bindings and compiled plans before advertising any
+sentence analysis or realization capability in the language manifests.
