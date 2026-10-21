@@ -89,7 +89,7 @@ func LoadConfigFile(path string) (Config, error) {
 	if err := decoder.Decode(&trailing); err != io.EOF {
 		return Config{}, runtimeError(status.OutcomeInvalid, "TRAILING_RUNTIME_CONFIG_DATA", "runtime_config", "runtime config must contain exactly one JSON value")
 	}
-	if err := config.Validate(); err != nil {
+	if err := config.validateFields(); err != nil {
 		return Config{}, err
 	}
 	base, err := filepath.Abs(filepath.Dir(path))
@@ -100,11 +100,32 @@ func LoadConfigFile(path string) (Config, error) {
 	for index, directory := range config.LanguagePackageDirs {
 		config.LanguagePackageDirs[index] = resolvePath(base, directory)
 	}
+	if err := config.Validate(); err != nil {
+		return Config{}, err
+	}
 	return config, nil
 }
 
 // Validate rejects unbounded, ambiguous, or incomplete runtime selections.
 func (config Config) Validate() error {
+	if err := config.validateFields(); err != nil {
+		return err
+	}
+	seen := make(map[string]struct{}, len(config.LanguagePackageDirs))
+	for index, directory := range config.LanguagePackageDirs {
+		canonical, err := filepath.Abs(directory)
+		if err != nil {
+			return runtimeError(status.OutcomeInvalid, "INVALID_LANGUAGE_PACKAGE_PATH", fmt.Sprintf("language_package_dirs[%d]", index), "language package path could not be resolved")
+		}
+		if _, exists := seen[canonical]; exists {
+			return runtimeError(status.OutcomeInvalid, "DUPLICATE_LANGUAGE_PACKAGE_PATH", fmt.Sprintf("language_package_dirs[%d]", index), "language package path is duplicated")
+		}
+		seen[canonical] = struct{}{}
+	}
+	return nil
+}
+
+func (config Config) validateFields() error {
 	if config.SchemaVersion != ConfigSchemaVersion {
 		return runtimeError(status.OutcomeInvalid, "RUNTIME_CONFIG_SCHEMA_VERSION", "schema_version", "unsupported runtime config schema version")
 	}
@@ -114,19 +135,10 @@ func (config Config) Validate() error {
 	if len(config.LanguagePackageDirs) == 0 || len(config.LanguagePackageDirs) > MaxPackagePaths {
 		return runtimeError(status.OutcomeInvalid, "INVALID_LANGUAGE_PACKAGE_PATHS", "language_package_dirs", "runtime config requires a bounded non-empty language package list")
 	}
-	seen := make(map[string]struct{}, len(config.LanguagePackageDirs))
 	for index, directory := range config.LanguagePackageDirs {
 		if strings.TrimSpace(directory) == "" || strings.TrimSpace(directory) != directory {
 			return runtimeError(status.OutcomeInvalid, "INVALID_LANGUAGE_PACKAGE_PATH", fmt.Sprintf("language_package_dirs[%d]", index), "language package path must be non-empty and trimmed")
 		}
-		canonical, err := filepath.Abs(directory)
-		if err != nil {
-			return runtimeError(status.OutcomeInvalid, "INVALID_LANGUAGE_PACKAGE_PATH", fmt.Sprintf("language_package_dirs[%d]", index), "language package path could not be resolved")
-		}
-		if _, exists := seen[canonical]; exists {
-			return runtimeError(status.OutcomeInvalid, "DUPLICATE_LANGUAGE_PACKAGE_PATH", fmt.Sprintf("language_package_dirs[%d]", index), "language package path is duplicated")
-		}
-		seen[canonical] = struct{}{}
 	}
 	return nil
 }
