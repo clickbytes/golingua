@@ -97,8 +97,14 @@ func diagnosticResult(kind status.OutcomeKind, code, message, path string) statu
 
 type translateOptions struct {
 	from, to, text, previewID string
+	runtimeConfig             string
 	json                      bool
 }
+
+// EngineLoader loads one explicitly selected runtime configuration. The
+// executable supplies trusted, compiled providers and stage adapters through
+// this boundary; JSON data cannot install code.
+type EngineLoader func(string) (*engine.Engine, error)
 
 func parseTranslate(args []string) (translateOptions, string) {
 	var options translateOptions
@@ -113,14 +119,14 @@ func parseTranslate(args []string) (translateOptions, string) {
 			options.json = true
 			continue
 		}
-		if flag != "--from" && flag != "--to" && flag != "--text" && flag != "--preview-id" {
+		if flag != "--from" && flag != "--to" && flag != "--text" && flag != "--preview-id" && flag != "--runtime-config" {
 			return options, fmt.Sprintf("unknown or malformed translate argument %q", flag)
 		}
 		if seen[flag] {
 			return options, fmt.Sprintf("duplicate %s flag", flag)
 		}
 		seen[flag] = true
-		if i+1 >= len(args) || args[i+1] == "--json" || args[i+1] == "--from" || args[i+1] == "--to" || args[i+1] == "--text" || args[i+1] == "--preview-id" {
+		if i+1 >= len(args) || args[i+1] == "--json" || args[i+1] == "--from" || args[i+1] == "--to" || args[i+1] == "--text" || args[i+1] == "--preview-id" || args[i+1] == "--runtime-config" {
 			return options, fmt.Sprintf("missing value for %s", flag)
 		}
 		i++
@@ -134,6 +140,8 @@ func parseTranslate(args []string) (translateOptions, string) {
 			options.text = value
 		case "--preview-id":
 			options.previewID = value
+		case "--runtime-config":
+			options.runtimeConfig = value
 		}
 	}
 	if !options.json {
@@ -150,16 +158,28 @@ func parseTranslate(args []string) (translateOptions, string) {
 	if seen["--preview-id"] && options.previewID == "" {
 		return options, "--preview-id value must not be empty"
 	}
+	if seen["--runtime-config"] && options.runtimeConfig == "" {
+		return options, "--runtime-config value must not be empty"
+	}
 	return options, ""
 }
 
-func runTranslate(args []string, stdout, stderr io.Writer) int {
+func runTranslate(args []string, stdout, stderr io.Writer, loadEngine EngineLoader) int {
 	options, parseError := parseTranslate(args)
 	if parseError != "" {
 		result := diagnosticResult(status.OutcomeInvalid, "INVALID_TRANSLATE_ARGUMENTS", parseError, "translate")
 		return writeResult(stdout, stderr, result)
 	}
-	translator, err := engine.New(engine.Config{})
+	var translator *engine.Engine
+	var err error
+	if options.runtimeConfig != "" {
+		if loadEngine == nil {
+			return writeResult(stdout, stderr, diagnosticResult(status.OutcomeUnsupported, "RUNTIME_LOADER_UNAVAILABLE", "this executable cannot load configured language runtimes", "runtime_config"))
+		}
+		translator, err = loadEngine(options.runtimeConfig)
+	} else {
+		translator, err = engine.New(engine.Config{})
+	}
 	if err != nil {
 		var resultError interface{ Result() status.Result }
 		if errors.As(err, &resultError) {
@@ -198,6 +218,12 @@ func Run(args []string, stdout, stderr io.Writer) int {
 // RunWithInput is Run with an explicit stdin reader for commands that consume
 // bounded JSON documents.
 func RunWithInput(args []string, input io.Reader, stdout, stderr io.Writer) int {
+	return RunWithInputAndEngineLoader(args, input, stdout, stderr, nil)
+}
+
+// RunWithInputAndEngineLoader is RunWithInput with an optional trusted loader
+// for explicitly configured language runtimes.
+func RunWithInputAndEngineLoader(args []string, input io.Reader, stdout, stderr io.Writer, loadEngine EngineLoader) int {
 	if stdout == nil {
 		if stderr != nil {
 			_, _ = fmt.Fprintln(stderr, "INFRASTRUCTURE_ERROR: stdout writer is nil")
@@ -208,7 +234,7 @@ func RunWithInput(args []string, input io.Reader, stdout, stderr io.Writer) int 
 		stderr = io.Discard
 	}
 	if len(args) == 0 || (len(args) == 1 && (args[0] == "--help" || args[0] == "-h" || args[0] == "help")) {
-		_, _ = fmt.Fprint(stdout, "golingua bootstrap\nUsage: golingua --help | --version | capabilities --json | meaning canonicalize --json < meaning.json | meaning project --json < meaning.json | translate --from <lang> --to <lang> --text <text> --json [--preview-id <id>]\nNo language providers are configured by default; translate returns unsupported until runtimes are configured.\n")
+		_, _ = fmt.Fprint(stdout, "golingua bootstrap\nUsage: golingua --help | --version | capabilities --json | meaning canonicalize --json < meaning.json | meaning project --json < meaning.json | translate --from <lang> --to <lang> --text <text> --json [--preview-id <id>] [--runtime-config <path>]\nNo language providers are configured by default; translate returns unsupported until runtimes are configured.\n")
 		return ExitOK
 	}
 	if len(args) == 1 && args[0] == "--version" {
@@ -291,7 +317,7 @@ func RunWithInput(args []string, input io.Reader, stdout, stderr io.Writer) int 
 		return ExitOK
 	}
 	if len(args) > 0 && args[0] == "translate" {
-		return runTranslate(args, stdout, stderr)
+		return runTranslate(args, stdout, stderr, loadEngine)
 	}
 	result := diagnosticResult(status.OutcomeInvalid, "INVALID_COMMAND", "unknown or invalid command", "command")
 	return writeResult(stdout, stderr, result)

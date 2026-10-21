@@ -76,6 +76,16 @@ func (pack *Pack) Graph() *conceptgraph.GraphReader {
 	return pack.adjacency
 }
 
+// CoreGraph returns the immutable CORE graph pinned to this pack snapshot.
+// The graph exposes only lookup and defensive-copy methods, so sharing it with
+// the request engine cannot mutate the compiled snapshot.
+func (pack *Pack) CoreGraph() *core.ConceptGraph {
+	if pack == nil {
+		return nil
+	}
+	return pack.graph
+}
+
 // Concepts returns defensive copies in canonical ID order.
 func (pack *Pack) Concepts() []core.Concept {
 	if pack == nil {
