@@ -29,6 +29,7 @@ Minimalne CI: formatowanie, vet, build, start CLI. Nie używamy CI jako językow
    - [Kontrakt formalnych wyjątków morfologicznych](morph-exceptions.md)
    - [Generator i finite relation table](morph-backends.md)
 17. [08 — MeaningGraph, fakty i rozumowanie](08-meaning-facts-reasoning.md)
+    - [Request-scoped world facts](world-facts.md)
 18. [09 — kontrakt pluginów językowych](09-language-plugin-contract.md)
 19. [10 — dane, słowniki i źródła](10-import-provenance.md)
 20. [11 — minimalne kontrole i ręczny review](11-manual-review.md)
