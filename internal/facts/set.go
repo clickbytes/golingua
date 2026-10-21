@@ -18,9 +18,10 @@ func DefaultBudget() Budget { return Budget{MaxFacts: MaxFacts, MaxReferents: me
 // Set owns defensive copies of one request context and its assertions. It
 // does not persist or amend the ontology. Conflicting facts retain both IDs.
 type Set struct {
-	context meaning.RequestContext
-	facts   []Fact
-	byID    map[string]int
+	ontology *core.ConceptGraph
+	context  meaning.RequestContext
+	facts    []Fact
+	byID     map[string]int
 }
 
 // Build checks the input schema before constructing an immutable Set.
@@ -45,7 +46,7 @@ func NewSet(ontology *core.ConceptGraph, context meaning.RequestContext, input [
 	if err := validateContext(ontology, context); err != nil {
 		return nil, err
 	}
-	result := &Set{context: cloneContext(context), facts: make([]Fact, 0, len(input)), byID: make(map[string]int, len(input))}
+	result := &Set{ontology: ontology, context: cloneContext(context), facts: make([]Fact, 0, len(input)), byID: make(map[string]int, len(input))}
 	for index, item := range input {
 		if err := validateFact(ontology, context, item, index); err != nil {
 			return nil, err
@@ -57,6 +58,14 @@ func NewSet(ontology *core.ConceptGraph, context meaning.RequestContext, input [
 		result.facts = append(result.facts, cloneFact(item))
 	}
 	return result, nil
+}
+
+// CoreGraph is the immutable ontology snapshot used to validate this set.
+func (set *Set) CoreGraph() *core.ConceptGraph {
+	if set == nil {
+		return nil
+	}
+	return set.ontology
 }
 
 func (set *Set) Context() meaning.RequestContext {
