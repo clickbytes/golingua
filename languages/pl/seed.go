@@ -98,6 +98,7 @@ func Load() (*Seed, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Polish paradigms: %w", err)
 	}
+	paradigms = append(paradigms, inCodeParadigms(profile)...)
 	compiledParadigms, err := morph.CompileParadigms(paradigms, profile, morph.DefaultCompilerBudget(), procedure.DefaultBudget())
 	if err != nil {
 		return nil, fmt.Errorf("compile Polish paradigms: %w", err)
@@ -115,6 +116,14 @@ func Load() (*Seed, error) {
 	if document.SchemaVersion != 1 || document.Records == nil || len(document.Records) == 0 || len(document.Records) > 128 {
 		return nil, fmt.Errorf("Polish lexeme document has unsupported schema or record count")
 	}
+	additionalRecords, err := inCodeMorphRecords()
+	if err != nil {
+		return nil, err
+	}
+	if len(document.Records)+len(additionalRecords) > 128 {
+		return nil, fmt.Errorf("Polish lexeme count exceeds seed limit")
+	}
+	document.Records = append(document.Records, additionalRecords...)
 	lexemes := make([]lexicon.MorphLexeme, len(document.Records))
 	parts := make(map[string]morph.PrincipalParts, len(document.Records))
 	for index, record := range document.Records {

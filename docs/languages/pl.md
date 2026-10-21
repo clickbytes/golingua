@@ -13,18 +13,20 @@ links are not approved semantic bindings and cannot authorize translation.
 for `widzieć`, `patrzeć na`, `słyszeć` and `dostać`. The frames record Polish
 case and the preposition `na`; they have no approved construction binding.
 
-This lexical catalog is separate from the existing two-entry morphology seed.
-It does not provide new inflection paradigms or sentence constructions. Source
+The lexical catalog supplies one additional in-code morphology entry, `kot`,
+with six explicitly declared cells for a masculine animal noun. It supplies no
+sentence constructions. Source
 metadata points to the project-authored Go declarations
 and records the license as `unknown` until the project establishes one.
 Counts refer only to this initial batch, not to all Polish vocabulary.
 
-The Go package `github.com/clickbytes/golingua/languages/pl` loads the bundled Polish profile, manifest, paradigms, and lexical principal parts. `pl.Load()` compiles the seed into the shared generator and finite relation analyzer. `Seed.Generate(lexemeID, featureValues)` and `Seed.Analyze(surface)` are Go APIs; the CLI has no `forms` command and this package does not realize sentences.
+The Go package `github.com/clickbytes/golingua/languages/pl` loads the bundled Polish profile, manifest, paradigms, and lexical principal parts. `pl.Load()` compiles the seed into the shared generator and finite relation analyzer. `Seed.Generate(lexemeID, featureValues)` and `Seed.Analyze(surface)` are Go APIs; the CLI exposes them through `forms`, but this package does not realize sentences.
 
 ## Included classes
 
 - One explicitly scoped masculine personal noun pattern, represented by `student`, for singular and plural across the seven profile cases. It uses the `t → ci` alternation in locative/vocative singular and nominative/vocative plural.
 - One present indicative active finite verb pattern represented by `czytać`, with all person/number endings and explicit principal stem `czyt`.
+- An in-code masculine animal noun pattern for `kot`: singular nominative, genitive, accusative and instrumental; plural nominative and genitive. Other cells remain unsupported.
 
 The finite relation table retains syncretic readings. For `studenta`, analysis returns both singular genitive and accusative; for plural `studentów`, it returns plural genitive and accusative. NFC is the only surface normalization; case and diacritics remain significant.
 

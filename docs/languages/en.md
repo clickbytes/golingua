@@ -16,10 +16,11 @@ direct object. There are no approved construction bindings. Candidate links
 cannot authorize translation. Source metadata points to the project-authored
 Go files and records the license as `unknown` until established.
 
-This catalog is separate from the five-entry morphology seed below. It does
-not add inflection paradigms, auxiliaries or sentence realization.
+This catalog assigns existing regular paradigms to seven additional entries:
+`dog`, `teacher`, `doctor`, `school`, `hand`, `eye` and `look`. It does not add
+auxiliaries or sentence realization.
 
-The Go package `github.com/clickbytes/golingua/languages/en` loads the bundled `features.json`, `manifest.json`, `morphology/paradigms.json`, and `morphology/lexemes.json`. `en.Load()` validates and compiles the package into a shared morphology engine, then builds a finite relation table for inverse analysis. Its `Seed.Generate(lexemeID, featureValues)` and `Seed.Analyze(surface)` methods expose morphology from Go. The repository CLI has no `forms` command, so this seed does not claim CLI integration or sentence translation.
+The Go package `github.com/clickbytes/golingua/languages/en` loads the bundled `features.json`, `manifest.json`, `morphology/paradigms.json`, and `morphology/lexemes.json`, plus in-code entries. `en.Load()` validates and compiles the package into a shared morphology engine, then builds a finite relation table for inverse analysis. Its `Seed.Generate(lexemeID, featureValues)` and `Seed.Analyze(surface)` methods are available through CLI `forms`. This seed does not claim sentence translation.
 
 ## Included classes
 
