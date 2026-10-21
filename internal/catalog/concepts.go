@@ -130,13 +130,3 @@ func Compile() (*core.ConceptGraph, error) {
 	}
 	return core.CompileConceptGraph(definitions, nil)
 }
-
-// Count reports the number of actually compiled concepts and the editorial
-// target. It never treats a candidate label as a defined concept.
-func Count() (actual, target int, err error) {
-	graph, err := Compile()
-	if err != nil {
-		return 0, TargetConcepts, err
-	}
-	return graph.Len(), TargetConcepts, nil
-}
