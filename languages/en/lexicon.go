@@ -56,6 +56,13 @@ var englishFrameBySense = map[string]lexicon.ValencyID{
 	"en.read.text":     "en.read.text.transitive",
 }
 
+var englishParadigmByLexeme = map[string]string{
+	"en.dog.n": "en_noun_regular", "en.teacher.n": "en_noun_regular",
+	"en.doctor.n": "en_noun_regular", "en.school.n": "en_noun_regular",
+	"en.hand.n": "en_noun_regular", "en.eye.n": "en_noun_regular",
+	"en.look.v": "en_verb_regular",
+}
+
 // LexicalDocument builds the English lexical records from Go declarations.
 // It keeps polysemous senses distinct and leaves unmapped meanings unresolved.
 func LexicalDocument() (lexicon.Document, error) {
@@ -68,7 +75,10 @@ func LexicalDocument() (lexicon.Document, error) {
 		if err != nil {
 			return lexicon.Document{}, fmt.Errorf("English lexeme %s: %w", entry.id, err)
 		}
-		document.Lexemes = append(document.Lexemes, lexicon.MorphLexeme{ID: lexemeID, Language: "en", Lemma: entry.lemma, POS: entry.pos})
+		document.Lexemes = append(document.Lexemes, lexicon.MorphLexeme{
+			ID: lexemeID, Language: "en", Lemma: entry.lemma, POS: entry.pos,
+			ParadigmID: englishParadigmByLexeme[entry.id],
+		})
 		for _, meaning := range entry.meanings {
 			senseID, err := ids.NewSenseID(meaning.id)
 			if err != nil {

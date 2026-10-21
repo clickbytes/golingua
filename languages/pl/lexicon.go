@@ -52,6 +52,10 @@ var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.dostac.receive":   "pl.dostac.receive.transitive",
 }
 
+var polishParadigmByLexeme = map[string]string{
+	"pl.kot.n": "pl_masc_animal_regular",
+}
+
 // LexicalDocument constructs the Polish lexical data from Go declarations.
 // Pending candidate links preserve possible CORE relationships without
 // licensing translation. This function does not invent inflection or valency.
@@ -65,7 +69,11 @@ func LexicalDocument() (lexicon.Document, error) {
 		if err != nil {
 			return lexicon.Document{}, fmt.Errorf("Polish lexeme %s: %w", entry.id, err)
 		}
-		document.Lexemes = append(document.Lexemes, lexicon.MorphLexeme{ID: lexemeID, Language: "pl", Lemma: entry.lemma, POS: entry.pos})
+		lexeme := lexicon.MorphLexeme{ID: lexemeID, Language: "pl", Lemma: entry.lemma, POS: entry.pos, ParadigmID: polishParadigmByLexeme[entry.id]}
+		if entry.id == "pl.kot.n" {
+			lexeme.Properties = []lexicon.Property{{Key: "gender", Value: "masculine_animal"}}
+		}
+		document.Lexemes = append(document.Lexemes, lexeme)
 		for _, meaning := range entry.meanings {
 			senseID, err := ids.NewSenseID(meaning.id)
 			if err != nil {

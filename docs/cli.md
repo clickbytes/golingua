@@ -1,6 +1,6 @@
 # Bieżące CLI
 
-CLI udostępnia wersję, pomoc, deklarowane capabilities, operacje na Meaning JSON, typowane `question` i komendę `translate`. Samo istnienie komendy `translate` nie oznacza, że środowisko ma zainstalowane języki lub może wykonać translację.
+CLI udostępnia wersję, pomoc, deklarowane capabilities, operacje na Meaning JSON, typowane `question`, komendę `translate` oraz odmianę `forms`. Samo istnienie komendy `translate` nie oznacza, że środowisko ma zainstalowane języki lub może wykonać translację.
 
 ## Działające polecenia
 
@@ -26,7 +26,18 @@ Opcjonalny `--preview-id <id>` wybiera podgląd wskazanego kandydata, jeśli sil
 
 Wynik translacji ma pola `status`, `from`, `to`, opcjonalne `text`, opcjonalne `preview_id`, `candidates` oraz `diagnostics`. Niepoprawne żądanie zwraca te same pola z `status: "invalid"`; błędna składnia samych flag jest raportowana jako JSON `status`/`diagnostics`, bo nie powstało jeszcze żądanie do silnika. Przy pustej domyślnej konfiguracji CLI nie ładuje providerów językowych. Dlatego obecnie prawidłowo sformowane żądanie zwraca jawny wynik `unsupported` z diagnostyką; nie jest to próba tłumaczenia ani wynik PL↔EN do oceny. CLI nie obiecuje poprawnego tłumaczenia. Dostępne są statusy `ok`, `unsupported`, `unknown`, `ambiguous`, `incomplete`, `invalid`, `resource_limit` i `error`; `ok` będzie zwracane wyłącznie po rzeczywistym wyniku silnika.
 
-Tekst wejściowy ma limit 64 KiB, a każdy tekst wyjściowy również 64 KiB; łączny tekst alternatyw ma limit 64 KiB. Silnik ogranicza rozmiar całego wyniku do 4 MiB oraz liczbę kandydatów do 256. Identyfikatory języków mają maksymalnie 35 znaków, a identyfikator podglądu maksymalnie 256 bajtów. Przekroczenie limitu wejścia lub retencji alternatyw zwraca `resource_limit`, a nie obcięty tekst. Niepoprawny albo zbyt duży serializowany wynik zwraca `invalid`. Nie ma komendy `forms`.
+Tekst wejściowy ma limit 64 KiB, a każdy tekst wyjściowy również 64 KiB; łączny tekst alternatyw ma limit 64 KiB. Silnik ogranicza rozmiar całego wyniku do 4 MiB oraz liczbę kandydatów do 256. Identyfikatory języków mają maksymalnie 35 znaków, a identyfikator podglądu maksymalnie 256 bajtów. Przekroczenie limitu wejścia lub retencji alternatyw zwraca `resource_limit`, a nie obcięty tekst. Niepoprawny albo zbyt duży serializowany wynik zwraca `invalid`.
+
+## Odmiana i analiza form
+
+`forms` ładuje obecny ograniczony seed morfologiczny PL albo EN. Generacja wymaga identyfikatora leksemu i cech językowych; analiza przyjmuje formę powierzchniową:
+
+```sh
+go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.kot.n --feature number=singular --feature case=nominative --feature gender=masculine_animal --json
+go run ./cmd/golingua forms --language en --surface dogs --json
+```
+
+Wynik zawiera status oraz `forms` lub `readings`. Brak leksemu albo odczytu daje `unknown`. To nie jest translacja ani ocena jakości językowej. Ocena na słowach właściciela pozostaje `NOT RUN`.
 
 ## Pytania na faktach z żądania
 
