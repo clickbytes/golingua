@@ -190,6 +190,7 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 			alternative.Evidence.Outcome = alternative.Outcome
 			alternative.Evidence.Diagnostics = append([]status.Diagnostic(nil), alternative.Diagnostics...)
 		}
+		result.Outcome = combineTargetOutcomes(result.Outcome, alternative.Outcome)
 		result.Alternatives = append(result.Alternatives, alternative)
 	}
 	if len(result.Alternatives) == 0 && result.Outcome == status.OutcomeOK {
