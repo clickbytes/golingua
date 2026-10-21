@@ -64,7 +64,7 @@ var natureEntries = []lexicalEntry{
 	{"pl.dym.n", "dym", "noun", []lexicalMeaning{{"pl.dym.substance", "Airborne particles and gases produced by combustion or heating", "smoke"}}},
 	{"pl.popiol.n", "popiół", "noun", []lexicalMeaning{{"pl.popiol.substance", "Solid residue remaining after material has burned", "ash"}}},
 	{"pl.kurz.n", "kurz", "noun", []lexicalMeaning{{"pl.kurz.substance", "Fine loose solid particles that can settle or become airborne", "dust"}}},
-	{"pl.powierzchnia.n", "powierzchnia", "noun", []lexicalMeaning{{"pl.powierzchnia.region", "An identifiable exterior boundary of an object or region", "surface"}}},
+	{"pl.powierzchnia.n", "powierzchnia", "noun", []lexicalMeaning{{"pl.powierzchnia.region", "An identifiable exterior boundary of an object or region", "surface"}, {"pl.powierzchnia.area", "Extent of the two-dimensional region enclosed by a shape or surface.", "area"}}},
 	{"pl.grunt.n", "grunt", "noun", []lexicalMeaning{{"pl.grunt.surface", "The outer surface of terrain on which a person or object can stand", "ground_surface"}}},
 	{"pl.wzgorze.n", "wzgórze", "noun", []lexicalMeaning{{"pl.wzgorze.place", "A raised landform smaller or less dominant than a mountain", "hill"}}},
 	{"pl.gora.n", "góra", "noun", []lexicalMeaning{{"pl.gora.place", "A substantial elevation of Earth's surface rising above surrounding terrain", "mountain"}}},

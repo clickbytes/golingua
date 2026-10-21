@@ -14,5 +14,11 @@ func lexicalGroups() [][]lexicalEntry {
 		foodEntries,
 		coreVerbsEntries,
 		basicsEntries,
+		qualitiesEntries,
+		abstractsEntries,
+		relationsEntries,
+		transportEntries,
+		mediaEntries,
+		suppliesEntries,
 	}
 }

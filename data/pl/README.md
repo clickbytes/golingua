@@ -79,7 +79,18 @@ fizjologię, produkcję oraz motywację — rzeczowniki i frazy jako decyzje
 worklistowe (implementacja wymagałaby nowych grup domenowych), a czasowniki
 **bez ram walencji** nie wchodzą do Go (jak lokomocje z batcha 5).
 Aktualizacje Go w tym batchu: brak; stan leksykonu nie zmienia się względem
-main sprzed batcha 6.
+main sprzed batcha 6. Batch 7 (implementacja) dopisał do Go sześć nowych
+grup domenowych z decyzji batcha 6: qualities (73 leksemy — właściwości,
+emocje, stany), abstracts (55 — kalendarz i abstrakty informacyjno-modalne),
+relations (50 — relacje przestrzenne/czasowe/logiczne/strukturalne/
+społeczne), transport (13), media (29 — dokumenty/media/papiery pieniężne)
+oraz supplies (9 — łazienka i domowe akcesoria); ponadto 5 fraz z domeny
+dishware/miejsca usługowch trafiło do istniejących grup food i places.
+Polisemie: `pl.powierzchnia.n` wzbogacił się o sens `area` (wymiarowy),
+a `pl.faktura.n` w qualities łączy sensy `surface` (faktura malarska,
+concept:texture) i `document` (dokument sprzedaży, concept:invoice)
+jako homonimia w jednym leksemie. Czasowniki stricte bez ram walencji
+pozostają poza Go.
 
 Znane przypadki jawne, do decyzji właściciela, bez wymuszonej decyzji
 automatycznej:
