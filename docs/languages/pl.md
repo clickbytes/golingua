@@ -2,12 +2,22 @@
 
 ## In-code lexical catalog
 
-`pl.LexicalDocument()` now declares a first Polish lexical batch in Go:
-16 lexemes, 20 separate senses and 16 **pending** candidate links to the
-neutral CORE catalog. `pl.CompileLexicon(coreGraph)` validates and freezes
+`pl.LexicalDocument()` declares a first Polish lexical slice in Go, grown in
+the G07-03 batch for the People domain: 75 lexemes, 81 separate senses and
+80 **pending** candidate links to the neutral CORE catalog (files
+`lexicon.go`, `lexicon_people.go` and the group aggregator
+`lexicon_groups.go`). `pl.CompileLexicon(coreGraph)` validates and freezes
 them against the exact supplied CORE graph. The second senses of `dom`,
-`szkoła`, `książka` and `ręka` deliberately have no CORE link yet. Candidate
-links are not approved semantic bindings and cannot authorize translation.
+`szkoła`, `książka` and `ręka` deliberately have no CORE link yet; the
+new `dom.household`, `szkola.institution`, `reka.arm` and
+`dziecko.kinship` senses do use `candidate` links to at most one CORE
+concept each. Candidate links are not approved semantic bindings and
+cannot authorize translation.
+
+The full editorial decision record behind this slice and the rest of the
+1000 concepts is `data/pl/1000-core-review.tsv`; see `data/pl/README.md`.
+Rows marked there as reviewed but not yet implemented in Go are
+worklist-only and add nothing to the compiled catalog.
 
 `pl.CompileValency()` separately compiles four sense-specific argument frames
 for `widzieć`, `patrzeć na`, `słyszeć` and `dostać`. The frames record Polish
@@ -18,7 +28,8 @@ with six explicitly declared cells for a masculine animal noun. It supplies no
 sentence constructions. Source
 metadata points to the project-authored Go declarations
 and records the license as `unknown` until the project establishes one.
-Counts refer only to this initial batch, not to all Polish vocabulary.
+Counts refer only to the declared in-code slices, not to all Polish
+vocabulary.
 
 The Go package `github.com/clickbytes/golingua/languages/pl` loads the bundled Polish profile, manifest, paradigms, and lexical principal parts. `pl.Load()` compiles the seed into the shared generator and finite relation analyzer. `Seed.Generate(lexemeID, featureValues)` and `Seed.Analyze(surface)` are Go APIs; the CLI exposes them through `forms`, but this package does not realize sentences.
 

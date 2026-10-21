@@ -24,13 +24,13 @@ type lexicalEntry struct {
 var polishEntries = []lexicalEntry{
 	{"pl.pies.n", "pies", "noun", []lexicalMeaning{{"pl.pies.animal", "domestic dog", "dog"}}},
 	{"pl.kot.n", "kot", "noun", []lexicalMeaning{{"pl.kot.animal", "domestic cat", "cat"}}},
-	{"pl.dziecko.n", "dziecko", "noun", []lexicalMeaning{{"pl.dziecko.person", "young person", "child"}}},
+	{"pl.dziecko.n", "dziecko", "noun", []lexicalMeaning{{"pl.dziecko.person", "young person", "child"}, {"pl.dziecko.kinship", "a person in relation to their own parent, at any age", "child_of_person"}}},
 	{"pl.nauczyciel.n", "nauczyciel", "noun", []lexicalMeaning{{"pl.nauczyciel.role", "person acting as instructor", "teacher"}}},
 	{"pl.lekarz.n", "lekarz", "noun", []lexicalMeaning{{"pl.lekarz.role", "medical practitioner", "doctor"}}},
-	{"pl.dom.n", "dom", "noun", []lexicalMeaning{{"pl.dom.building", "residential building", "house"}, {"pl.dom.household", "people living together as a household", ""}}},
-	{"pl.szkola.n", "szkoła", "noun", []lexicalMeaning{{"pl.szkola.facility", "building used for instruction", "school"}, {"pl.szkola.institution", "institution providing instruction", ""}}},
+	{"pl.dom.n", "dom", "noun", []lexicalMeaning{{"pl.dom.building", "residential building", "house"}, {"pl.dom.household", "people living together as a household", "household"}}},
+	{"pl.szkola.n", "szkoła", "noun", []lexicalMeaning{{"pl.szkola.facility", "building used for instruction", "school"}, {"pl.szkola.institution", "organization conducting structured teaching", "school_institution"}}},
 	{"pl.ksiazka.n", "książka", "noun", []lexicalMeaning{{"pl.ksiazka.physical", "physical book for reading", "book"}, {"pl.ksiazka.work", "written work regardless of physical carrier", ""}}},
-	{"pl.reka.n", "ręka", "noun", []lexicalMeaning{{"pl.reka.hand", "terminal grasping part", "hand"}, {"pl.reka.arm", "arm including more than the hand", ""}}},
+	{"pl.reka.n", "ręka", "noun", []lexicalMeaning{{"pl.reka.hand", "terminal grasping part", "hand"}, {"pl.reka.arm", "upper limb from shoulder to hand inclusive", "arm"}}},
 	{"pl.oko.n", "oko", "noun", []lexicalMeaning{{"pl.oko.organ", "organ for vision", "eye"}}},
 	{"pl.woda.n", "woda", "noun", []lexicalMeaning{{"pl.woda.substance", "water as a substance", "water"}}},
 	{"pl.widziec.v", "widzieć", "verb", []lexicalMeaning{{"pl.widziec.visual", "perceive visually", "seeing"}}},
@@ -64,37 +64,40 @@ func LexicalDocument() (lexicon.Document, error) {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical source: %w", err)
 	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
-	for _, entry := range polishEntries {
-		lexemeID, err := ids.NewLexemeID(entry.id)
-		if err != nil {
-			return lexicon.Document{}, fmt.Errorf("Polish lexeme %s: %w", entry.id, err)
-		}
-		lexeme := lexicon.MorphLexeme{ID: lexemeID, Language: "pl", Lemma: entry.lemma, POS: entry.pos, ParadigmID: polishParadigmByLexeme[entry.id]}
-		if entry.id == "pl.kot.n" {
-			lexeme.Properties = []lexicon.Property{{Key: "gender", Value: "masculine_animal"}}
-		}
-		document.Lexemes = append(document.Lexemes, lexeme)
-		for _, meaning := range entry.meanings {
-			senseID, err := ids.NewSenseID(meaning.id)
+	groups := append([][]lexicalEntry{polishEntries}, lexicalGroups()...)
+	for _, group := range groups {
+		for _, entry := range group {
+			lexemeID, err := ids.NewLexemeID(entry.id)
 			if err != nil {
-				return lexicon.Document{}, fmt.Errorf("Polish sense %s: %w", meaning.id, err)
+				return lexicon.Document{}, fmt.Errorf("Polish lexeme %s: %w", entry.id, err)
 			}
-			sense := lexicon.LexicalSense{ID: senseID, LexemeID: lexemeID, Usage: []string{meaning.description}}
-			if frameID, ok := polishFrameBySense[meaning.id]; ok {
-				sense.ValencyIDs = []lexicon.ValencyID{frameID}
+			lexeme := lexicon.MorphLexeme{ID: lexemeID, Language: "pl", Lemma: entry.lemma, POS: entry.pos, ParadigmID: polishParadigmByLexeme[entry.id]}
+			if entry.id == "pl.kot.n" {
+				lexeme.Properties = []lexicon.Property{{Key: "gender", Value: "masculine_animal"}}
 			}
-			document.Senses = append(document.Senses, sense)
-			if meaning.candidateCore == "" {
-				continue
+			document.Lexemes = append(document.Lexemes, lexeme)
+			for _, meaning := range entry.meanings {
+				senseID, err := ids.NewSenseID(meaning.id)
+				if err != nil {
+					return lexicon.Document{}, fmt.Errorf("Polish sense %s: %w", meaning.id, err)
+				}
+				sense := lexicon.LexicalSense{ID: senseID, LexemeID: lexemeID, Usage: []string{meaning.description}}
+				if frameID, ok := polishFrameBySense[meaning.id]; ok {
+					sense.ValencyIDs = []lexicon.ValencyID{frameID}
+				}
+				document.Senses = append(document.Senses, sense)
+				if meaning.candidateCore == "" {
+					continue
+				}
+				conceptID, err := ids.NewConceptID(meaning.candidateCore)
+				if err != nil {
+					return lexicon.Document{}, fmt.Errorf("Polish candidate %s: %w", meaning.candidateCore, err)
+				}
+				document.Bindings = append(document.Bindings, lexicon.SemanticBinding{
+					SenseID: senseID, CoreRef: conceptID, Mapping: lexicon.MappingCandidate,
+					Status: lexicon.BindingPending, Provenance: polishLexicalSource,
+				})
 			}
-			conceptID, err := ids.NewConceptID(meaning.candidateCore)
-			if err != nil {
-				return lexicon.Document{}, fmt.Errorf("Polish candidate %s: %w", meaning.candidateCore, err)
-			}
-			document.Bindings = append(document.Bindings, lexicon.SemanticBinding{
-				SenseID: senseID, CoreRef: conceptID, Mapping: lexicon.MappingCandidate,
-				Status: lexicon.BindingPending, Provenance: polishLexicalSource,
-			})
 		}
 	}
 	return document, nil
