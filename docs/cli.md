@@ -12,7 +12,7 @@ go run ./cmd/golingua --help
 go run ./cmd/golingua capabilities --json
 ```
 
-`--version` zwraca wersję bootstrapu. `--help` pokazuje dostępne komendy. `capabilities --json` obecnie zwraca `status: "unsupported"`, puste tablice `languages` i `features`, oraz `ready: false`; sama komenda kończy się kodem 0.
+`--version` zwraca wersję technicznego podglądu v0. `--help` pokazuje dostępne komendy. `capabilities --json` obecnie zwraca `status: "unsupported"`, puste tablice `languages` i `features`, oraz `ready: false` dla translacji; sama komenda kończy się kodem 0. `forms` i `catalog` mają własne komendy opisane poniżej.
 
 ## Translacja
 

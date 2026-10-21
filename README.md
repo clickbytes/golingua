@@ -2,7 +2,7 @@
 
 **Nowy, niezależny prototyp silnika językowego w Go.** Koncepty, gramatyka, walencja, procedury i wyjątki są projektowane od zera. Polski i angielski pozostają osobnymi pakietami językowymi.
 
-**Status:** CLI nie tłumaczy PL↔EN ani nie analizuje/realizuje zdań w języku naturalnym. Komenda `question` wykonuje typowane zapytania na MeaningGraph i faktach podanych jawnie w JSON. Biblioteka udostępnia ograniczoną morfologię oraz małe seedy przez Go API (bez CLI `forms`). Docelowo: około 1000 konceptów z leksyką w obu językach, bez pamięci i uczenia w v0.
+**Status technicznego podglądu v0:** CLI nie tłumaczy PL↔EN ani nie analizuje/realizuje swobodnych zdań. `forms` generuje i analizuje wybrane formy z małych seedów PL/EN, `catalog` raportuje stan danych Go, a `question` wykonuje typowane zapytania na MeaningGraph i faktach podanych jawnie w JSON. Docelowo: około 1000 opisanych konceptów CORE; obecnie 49. Brak pamięci i uczenia w v0.
 
 ## Jak rozwijamy
 
@@ -23,16 +23,20 @@ Istniejące źródło [clickbytes/flexLingua](https://github.com/clickbytes/flex
 - [Realizacja odpowiedzi dialogowej](docs/architecture/dialogue-realization.md) — bezpieczny most do wspólnego pipeline’u konstrukcji, morfologii i linearyzacji.
 - [CLI](docs/cli.md) — rzeczywiste komendy bootstrapu i jawne granice obecnej obsługi.
 - [Przykłady ręczne](examples/manual/README.md) — na razie bez domyślnych zdań.
-- [EPIC G00](https://github.com/clickbytes/golingua/issues/1) — aktywny etap; następne etapy czekają.
+- [Status katalogu](docs/data/catalog-status.md) — bieżące liczby CORE/PL/EN i status zatwierdzenia bindingów.
+- [Granice bezpieczeństwa](docs/security.md) — walidacja wejścia i importów.
+- [Podgląd v0](docs/release/v0.md) — możliwości i ograniczenia tego wydania.
 
 Typowane węzły: ConceptDefinition, MorphLexeme, LexicalSense, SemanticBinding, ValencyFrame, ConstructionFamily/Variant, ProcedurePlan, Paradigm, MeaningGraph. Wspólna reprezentacja znaczenia niezależna od PL/EN. **Nie implementujemy wymaganego API `ROCK.VERB.MORPH.PAST`**; wystarczają typowane identyfikatory i zwykłe wywołania Go.
 
-## Uruchomienie aktualnego bootstrapu
+## Uruchomienie podglądu v0
 
 ```sh
 go run ./cmd/golingua --version
 go run ./cmd/golingua --help
 go run ./cmd/golingua capabilities --json
+go run ./cmd/golingua catalog --summary --json
+go run ./cmd/golingua forms --language en --surface dogs --json
 ```
 
-Na dziś `translate` zwraca jawne `LANGUAGE_RUNTIME_UNAVAILABLE`. Nie ma TUI, serwera, bazy, FST, pamięci ani uczenia.
+`capabilities --json` raportuje `ready: false` dla translacji. `translate` bez zatwierdzonych danych i providerów zwraca jawne `unsupported`. Dla odmiany własnego słowa użyj `forms --language pl|en --surface <forma> --json`; wymagane cechy generacji są opisane w [CLI](docs/cli.md). Nie ma TUI, serwera, bazy, FST, pamięci ani uczenia.
