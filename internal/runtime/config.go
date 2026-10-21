@@ -170,10 +170,47 @@ func LoadEngineFile(path string, options Options) (*engine.Engine, error) {
 	if err != nil {
 		return nil, preserveError(err, "RUNTIME_LANGUAGE_REGISTRY_INVALID", "language_package_dirs")
 	}
+	analyzers, realizers := providerStages(registry, options)
 	return engine.New(engine.Config{
 		Core: snapshot.CoreGraph(), LanguageRegistry: registry, PackSnapshot: snapshot,
-		Analyzers: options.Analyzers, Realizers: options.Realizers, Budget: options.Budget,
+		Analyzers: analyzers, Realizers: realizers, Budget: options.Budget,
 	})
+}
+
+// providerStages connects compiled language providers that implement the
+// engine's full source/target stage contracts. Language data alone cannot
+// install either interface. Explicit application adapters in Options take
+// precedence for the same language.
+func providerStages(registry *language.Registry, options Options) (map[features.LanguageID]engine.SourceAnalyzer, map[features.LanguageID]engine.TargetRealizer) {
+	analyzers := make(map[features.LanguageID]engine.SourceAnalyzer, len(options.Analyzers))
+	for id, adapter := range options.Analyzers {
+		analyzers[id] = adapter
+	}
+	realizers := make(map[features.LanguageID]engine.TargetRealizer, len(options.Realizers))
+	for id, adapter := range options.Realizers {
+		realizers[id] = adapter
+	}
+	if registry == nil {
+		return analyzers, realizers
+	}
+	for _, registered := range registry.Languages() {
+		id := registered.Manifest.Language
+		provider, exists := registry.Provider(id)
+		if !exists {
+			continue
+		}
+		if _, configured := analyzers[id]; !configured {
+			if adapter, implements := provider.(engine.SourceAnalyzer); implements {
+				analyzers[id] = adapter
+			}
+		}
+		if _, configured := realizers[id]; !configured {
+			if adapter, implements := provider.(engine.TargetRealizer); implements {
+				realizers[id] = adapter
+			}
+		}
+	}
+	return analyzers, realizers
 }
 
 func resolvePath(base, value string) string {
