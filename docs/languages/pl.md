@@ -32,9 +32,14 @@ The full editorial decision record behind this slice and the rest of the
 Rows marked there as reviewed but not yet implemented in Go are
 worklist-only and add nothing to the compiled catalog.
 
-`pl.CompileValency()` separately compiles four sense-specific argument frames
-for `widzieć`, `patrzeć na`, `słyszeć` and `dostać`. The frames record Polish
-case and the preposition `na`; they have no approved construction binding.
+`pl.CompileValency()` separately compiles the initial four sense-specific
+argument frames (`widzieć`, `patrzeć na`, `słyszeć`, `dostać`) and the
+batch-4 core-verb frames for `pytać` (addressee accusative, topic with
+`o`), `odpowiadać na` (content with `na`), `czytać` (theme accusative),
+`uczyć` (learner accusative, discipline genitive), `uczyć się` (content
+genitive), `jeść` (theme accusative) and one-agent `spać`. The frames
+record Polish case and prepositions but have no approved construction
+binding, and none of these verbs has a seed paradigm yet.
 
 The lexical catalog supplies one additional in-code morphology entry, `kot`,
 with six explicitly declared cells for a masculine animal noun. It supplies no

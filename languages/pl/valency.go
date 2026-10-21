@@ -37,6 +37,39 @@ var polishFrames = []frameDeclaration{
 		{ID: "subject", Role: "recipient", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "object", Role: "theme", Required: true, GrammaticalFunction: "object", Case: "accusative"},
 	}},
+	// Batch-4 frame declarations for reviewed Polish verbs. Each frame records
+	// the minimal core argument shape; additional optional adjuncts are not
+	// asserted. "uczyć" keeps the genitive discipline complement; frames do
+	// not license constructions or transfer.
+	{"pl.pytac.request_info.frame", "pl.pytac.request_info", []meaning.Role{"agent", "addressee", "topic"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "addressee", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+		{ID: "oblique", Role: "topic", Required: true, GrammaticalFunction: "oblique", Case: "accusative", Adposition: "o"},
+	}},
+	{"pl.odpowiadac.answer.frame", "pl.odpowiadac.answer", []meaning.Role{"agent", "content"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "oblique", Role: "content", Required: true, GrammaticalFunction: "oblique", Case: "accusative", Adposition: "na"},
+	}},
+	{"pl.czytac.interpret.frame", "pl.czytac.interpret", []meaning.Role{"agent", "theme"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "theme", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+	}},
+	{"pl.uczyc.instruct.frame", "pl.uczyc.instruct", []meaning.Role{"agent", "learner", "content"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "learner", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+		{ID: "oblique", Role: "content", Required: true, GrammaticalFunction: "oblique", Case: "genitive"},
+	}},
+	{"pl.uczyc_sie.acquire.frame", "pl.uczyc_sie.acquire", []meaning.Role{"agent", "content"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "content", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+	}},
+	{"pl.jesc.eat.frame", "pl.jesc.eat", []meaning.Role{"agent", "theme"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "theme", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+	}},
+	{"pl.spac.sleep.frame", "pl.spac.sleep", []meaning.Role{"agent"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+	}},
 }
 
 // CompileValency compiles sense-specific Polish frames. No construction

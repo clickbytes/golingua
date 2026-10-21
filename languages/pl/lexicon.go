@@ -46,10 +46,17 @@ var polishLexicalSource = provenance.SourceRef{
 }
 
 var polishFrameBySense = map[string]lexicon.ValencyID{
-	"pl.widziec.visual":   "pl.widziec.visual.transitive",
-	"pl.patrzec.directed": "pl.patrzec.directed.na",
-	"pl.slyszec.auditory": "pl.slyszec.auditory.transitive",
-	"pl.dostac.receive":   "pl.dostac.receive.transitive",
+	"pl.widziec.visual":     "pl.widziec.visual.transitive",
+	"pl.patrzec.directed":   "pl.patrzec.directed.na",
+	"pl.slyszec.auditory":   "pl.slyszec.auditory.transitive",
+	"pl.dostac.receive":     "pl.dostac.receive.transitive",
+	"pl.pytac.request_info": "pl.pytac.request_info.frame",
+	"pl.odpowiadac.answer":  "pl.odpowiadac.answer.frame",
+	"pl.czytac.interpret":   "pl.czytac.interpret.frame",
+	"pl.uczyc.instruct":     "pl.uczyc.instruct.frame",
+	"pl.uczyc_sie.acquire":  "pl.uczyc_sie.acquire.frame",
+	"pl.jesc.eat":           "pl.jesc.eat.frame",
+	"pl.spac.sleep":         "pl.spac.sleep.frame",
 }
 
 var polishParadigmByLexeme = map[string]string{

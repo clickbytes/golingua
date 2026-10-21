@@ -64,9 +64,11 @@ food (jedzenie/napoje/okrycia, 58) oraz basics (23: resztka oryginalnych 49,
 pozycje osobowe `kurier`/`wolontariusz`, rzeczowniki właściwości).
 Dla homonimu `staw` wyodrębniono osobny leksem `pl.staw_zbiornik.n`
 (zbiornik wodny), a polisemiczny leksem `pl.skora.n` łączy sens `part`
-(organ) i `material` (surowiec). Zredagowane czasowniki pozostają w
-worklist do momentu autorskich ram walencji; 521 wierszy DEFERRED czeka na
-redakcję kolejnych batchów.
+(organ) i `material` (surowiec). Batch 4 autorsko dopisał ramy walencji i leksemy dla
+siedmiu czasowników rdzeniowych (`pytać`, `odpowiadać`, `czytać`, `uczyć`,
+`uczyć się`, `jeść`, `spać`) w `lexicon_core_verbs.go`. Zredagowane
+kolejne czasowniki pozostają w worklist do momentu autorskich ram
+walencji; 521 wierszy DEFERRED czeka na redakcję kolejnych batchów.
 
 Znane przypadki jawne, do decyzji właściciela, bez wymuszonej decyzji
 automatycznej:

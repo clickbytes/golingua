@@ -7,7 +7,7 @@ package pl
 var natureEntries = []lexicalEntry{
 	{"pl.ssak.n", "ssak", "noun", []lexicalMeaning{{"pl.ssak.animal", "A vertebrate of the mammalian class, typically nursing its young with milk", "mammal"}}},
 	{"pl.ptak.n", "ptak", "noun", []lexicalMeaning{{"pl.ptak.animal", "A feathered vertebrate of the bird class; flight ability is not required", "bird"}}},
-	{"pl.ryba.n", "ryba", "noun", []lexicalMeaning{{"pl.ryba.animal", "An aquatic gill-breathing vertebrate; not a prepared food item", "fish_animal"}}},
+	{"pl.ryba.n", "ryba", "noun", []lexicalMeaning{{"pl.ryba.animal", "An aquatic gill-breathing vertebrate; not a prepared food item", "fish_animal"}, {"pl.ryba.food", "Fish flesh considered as food, distinct from the live fish", "fish_meat"}}},
 	{"pl.gad.n", "gad", "noun", []lexicalMeaning{{"pl.gad.animal", "A vertebrate in a reptilian lineage, generally bearing dry scales", "reptile"}}},
 	{"pl.plaz.n", "płaz", "noun", []lexicalMeaning{{"pl.plaz.animal", "A vertebrate of the amphibian class, often using both aquatic and terrestrial habitats", "amphibian"}}},
 	{"pl.owad.n", "owad", "noun", []lexicalMeaning{{"pl.owad.animal", "An arthropod with a six-legged adult body plan", "insect"}}},
@@ -44,7 +44,7 @@ var natureEntries = []lexicalEntry{
 	{"pl.lisc.n", "liść", "noun", []lexicalMeaning{{"pl.lisc.plant", "A plant organ specialized primarily for photosynthesis and gas exchange", "leaf_plant"}}},
 	{"pl.kwiat.n", "kwiat", "noun", []lexicalMeaning{{"pl.kwiat.organ", "The reproductive structure of a flowering plant, distinct from a whole plant", "flower_organ"}}},
 	{"pl.nasienie.n", "nasienie", "noun", []lexicalMeaning{{"pl.nasienie.plant", "A plant reproductive unit containing an embryo and stored or protective material", "seed"}}},
-	{"pl.owoc.n", "owoc", "noun", []lexicalMeaning{{"pl.owoc.organ", "A seed-bearing structure developing from a flowering plant's ovary", "fruit_botanical"}}},
+	{"pl.owoc.n", "owoc", "noun", []lexicalMeaning{{"pl.owoc.organ", "A seed-bearing structure developing from a flowering plant's ovary", "fruit_botanical"}, {"pl.owoc.food", "An edible sweet or tart plant product treated as fruit in food contexts", "fruit_food"}}},
 	{"pl.kora.n", "kora", "noun", []lexicalMeaning{{"pl.kora.plant", "The protective outer tissue layers of a woody stem", "bark_tree"}}},
 	{"pl.pien.n", "pień", "noun", []lexicalMeaning{{"pl.pien.plant", "A tree's main upright woody stem from which branches grow", "trunk_tree"}}},
 	{"pl.srebro.n", "srebro", "noun", []lexicalMeaning{{"pl.srebro.material", "The metallic element silver considered as material", "silver_material"}}},
