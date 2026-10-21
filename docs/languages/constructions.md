@@ -1,4 +1,24 @@
-# Construction coverage of the first PL/EN catalog batch
+# Construction templates
+
+The files under `languages/{pl,en}/constructions/` are language-local,
+structural templates. They describe NP, VP, and PP slots and permitted slot
+orders. They do not contain lexemes, sentence examples, semantic roles, or
+sense-specific valency frames. A family is shared independently of any one
+lexeme or sense.
+
+`internal/construction.DecodeConstructionPackage` reads schema version 1 JSON,
+rejects unknown and duplicate object fields, checks its declared language
+against the family, and compiles the variants into a deterministic
+`VariantIndex`. Compilation proves only that the structure is well formed.
+These files are not loaded by the application runtime today.
+
+In particular, the Polish OVS order is a marked structural option; it does
+not assert case marking, topic/focus, or interchangeable grammatical roles.
+The English auxiliary-question and Polish `czy` templates represent limited
+orders, not complete question grammars. A polarity operator and meaning
+evidence must be supplied explicitly by a future planner.
+
+## Current catalog coverage
 
 The catalog now exposes `catalog.ResolveApprovedPlans`: it follows a CORE
 concept through an **approved equivalent** lexical binding, a sense-specific
@@ -25,3 +45,5 @@ only a candidate family reference. It is never treated as approval.
 The owner's sentence-level review has not run. Future review should add
 explicit construction bindings and compiled plans before advertising any
 sentence analysis or realization capability in the language manifests.
+No external lexical or linguistic source is claimed by the current structural
+templates; their provenance records identify them as internal project data.
