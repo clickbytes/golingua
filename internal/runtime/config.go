@@ -13,6 +13,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/clickbytes/golingua/internal/core"
 	"github.com/clickbytes/golingua/internal/engine"
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/language"
@@ -118,7 +119,8 @@ func LoadConfigFile(path string) (Config, error) {
 	return config, nil
 }
 
-// Validate rejects unbounded, ambiguous, or incomplete runtime selections.
+// Validate rejects unbounded or ambiguous runtime selections. Language
+// packages are optional for callers that only need the selected CORE snapshot.
 func (config Config) Validate() error {
 	if err := config.validateFields(); err != nil {
 		return err
@@ -144,8 +146,8 @@ func (config Config) validateFields() error {
 	if !safeIdentifier(config.DatasetID) || strings.TrimSpace(config.DatasetStore) != config.DatasetStore || config.DatasetStore == "" {
 		return runtimeError(status.OutcomeInvalid, "INVALID_RUNTIME_DATASET", "dataset", "runtime config requires a dataset ID and store path")
 	}
-	if len(config.LanguagePackageDirs) == 0 || len(config.LanguagePackageDirs) > MaxPackagePaths {
-		return runtimeError(status.OutcomeInvalid, "INVALID_LANGUAGE_PACKAGE_PATHS", "language_package_dirs", "runtime config requires a bounded non-empty language package list")
+	if len(config.LanguagePackageDirs) > MaxPackagePaths {
+		return runtimeError(status.OutcomeInvalid, "INVALID_LANGUAGE_PACKAGE_PATHS", "language_package_dirs", "runtime config contains too many language package paths")
 	}
 	for index, directory := range config.LanguagePackageDirs {
 		if strings.TrimSpace(directory) == "" || strings.TrimSpace(directory) != directory {
@@ -163,20 +165,12 @@ func LoadEngineFile(path string, options Options) (*engine.Engine, error) {
 	if err != nil {
 		return nil, err
 	}
-	storeInfo, err := os.Stat(config.DatasetStore)
+	snapshot, err := loadActivePack(config)
 	if err != nil {
-		return nil, runtimeError(status.OutcomeUnknown, "RUNTIME_DATASET_STORE_UNAVAILABLE", "dataset_store", "configured dataset store does not exist")
+		return nil, err
 	}
-	if !storeInfo.IsDir() {
-		return nil, runtimeError(status.OutcomeInvalid, "INVALID_RUNTIME_DATASET_STORE", "dataset_store", "configured dataset store must be a directory")
-	}
-	store, err := staging.OpenStore(config.DatasetStore)
-	if err != nil {
-		return nil, preserveError(err, "RUNTIME_DATASET_STORE_UNAVAILABLE", "dataset_store")
-	}
-	snapshot, err := pack.LoadActive(store, config.DatasetID)
-	if err != nil {
-		return nil, preserveError(err, "RUNTIME_DATASET_UNAVAILABLE", "dataset_id")
+	if len(config.LanguagePackageDirs) == 0 {
+		return nil, runtimeError(status.OutcomeInvalid, "LANGUAGE_PACKAGES_REQUIRED", "language_package_dirs", "translation runtime requires at least one language package")
 	}
 	registry, err := language.LoadRegistry(config.LanguagePackageDirs, options.Providers)
 	if err != nil {
@@ -196,6 +190,39 @@ func LoadEngineFile(path string, options Options) (*engine.Engine, error) {
 		Core: snapshot.CoreGraph(), LanguageRegistry: registry, PackSnapshot: snapshot,
 		Analyzers: analyzers, Realizers: realizers, Budget: options.Budget,
 	})
+}
+
+// LoadCoreFile loads only the active CORE snapshot selected by a runtime
+// configuration. Querying request facts does not require language packages.
+func LoadCoreFile(path string) (*core.ConceptGraph, error) {
+	config, err := LoadConfigFile(path)
+	if err != nil {
+		return nil, err
+	}
+	snapshot, err := loadActivePack(config)
+	if err != nil {
+		return nil, err
+	}
+	return snapshot.CoreGraph(), nil
+}
+
+func loadActivePack(config Config) (*pack.Pack, error) {
+	storeInfo, err := os.Stat(config.DatasetStore)
+	if err != nil {
+		return nil, runtimeError(status.OutcomeUnknown, "RUNTIME_DATASET_STORE_UNAVAILABLE", "dataset_store", "configured dataset store does not exist")
+	}
+	if !storeInfo.IsDir() {
+		return nil, runtimeError(status.OutcomeInvalid, "INVALID_RUNTIME_DATASET_STORE", "dataset_store", "configured dataset store must be a directory")
+	}
+	store, err := staging.OpenStore(config.DatasetStore)
+	if err != nil {
+		return nil, preserveError(err, "RUNTIME_DATASET_STORE_UNAVAILABLE", "dataset_store")
+	}
+	snapshot, err := pack.LoadActive(store, config.DatasetID)
+	if err != nil {
+		return nil, preserveError(err, "RUNTIME_DATASET_UNAVAILABLE", "dataset_id")
+	}
+	return snapshot, nil
 }
 
 func mergeStageAdapters(options *Options, stages StageAdapters) error {

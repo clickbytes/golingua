@@ -1,6 +1,6 @@
 # Bieżące CLI
 
-CLI udostępnia wersję, pomoc, deklarowane capabilities, operacje na Meaning JSON i komendę `translate`. Samo istnienie komendy `translate` nie oznacza, że środowisko ma zainstalowane języki lub może wykonać translację.
+CLI udostępnia wersję, pomoc, deklarowane capabilities, operacje na Meaning JSON, typowane `question` i komendę `translate`. Samo istnienie komendy `translate` nie oznacza, że środowisko ma zainstalowane języki lub może wykonać translację.
 
 ## Działające polecenia
 
@@ -27,6 +27,22 @@ Opcjonalny `--preview-id <id>` wybiera podgląd wskazanego kandydata, jeśli sil
 Wynik translacji ma pola `status`, `from`, `to`, opcjonalne `text`, opcjonalne `preview_id`, `candidates` oraz `diagnostics`. Niepoprawne żądanie zwraca te same pola z `status: "invalid"`; błędna składnia samych flag jest raportowana jako JSON `status`/`diagnostics`, bo nie powstało jeszcze żądanie do silnika. Przy pustej domyślnej konfiguracji CLI nie ładuje providerów językowych. Dlatego obecnie prawidłowo sformowane żądanie zwraca jawny wynik `unsupported` z diagnostyką; nie jest to próba tłumaczenia ani wynik PL↔EN do oceny. CLI nie obiecuje poprawnego tłumaczenia. Dostępne są statusy `ok`, `unsupported`, `unknown`, `ambiguous`, `incomplete`, `invalid`, `resource_limit` i `error`; `ok` będzie zwracane wyłącznie po rzeczywistym wyniku silnika.
 
 Tekst wejściowy ma limit 64 KiB, a każdy tekst wyjściowy również 64 KiB; łączny tekst alternatyw ma limit 64 KiB. Silnik ogranicza rozmiar całego wyniku do 4 MiB oraz liczbę kandydatów do 256. Identyfikatory języków mają maksymalnie 35 znaków, a identyfikator podglądu maksymalnie 256 bajtów. Przekroczenie limitu wejścia lub retencji alternatyw zwraca `resource_limit`, a nie obcięty tekst. Niepoprawny albo zbyt duży serializowany wynik zwraca `invalid`. Nie ma komendy `forms`.
+
+## Pytania na faktach z żądania
+
+Komenda `question` wykonuje typowane zapytanie na `MeaningGraph` i `FactSet` podanych w jednym żądaniu. Nie parsuje polskiego ani angielskiego tekstu i nie realizuje odpowiedzi powierzchniowej.
+
+```sh
+go run ./cmd/golingua question --runtime-config <runtime.json> --json < question-request.json
+```
+
+Runtime config wybiera aktywny CORE/dataset snapshot. Do samego `question` można pominąć `language_package_dirs`; konfiguracja `translate` nadal wymaga co najmniej jednego pakietu językowego. JSON ze standardowego wejścia ma limit 4 MiB, schemat zamknięty i wersję `schema_version: 1`:
+
+- `question`: `reason.QuestionInput` — typowany `meaning`, request-scoped `context`, `kind` (`yes_no` albo `wh`), jawne `mapping` relacji i ról, opcjonalne `gap_role` i `at`.
+- `facts`: tablica `facts.Fact` dla tego samego request context; każdy fakt wymaga jawnego źródła i polaryzacji.
+- `rules`: opcjonalne reguły `symmetry`/`transitivity`, które CORE jawnie deklaruje. Są walidowane względem wybranego snapshotu.
+
+Wynik JSON zawiera `status`, wybrany `goal`, zaplanowane `question`, `answer` z prawdą/kandydatami i proof IDs, oraz tylko te fakty/źródła, które stanowią dowód. Brak dowodu daje `unknown`; nie tworzy faktu negatywnego. Niepoprawny snapshot, Meaning, FactSet lub mapowanie daje typowany status błędu. `question` nie jest dowodem jakości językowej; ręczny odbiór wymaga wejść dostarczonych przez właściciela.
 
 Wyjście sukcesu i błędów domenowych jest pojedynczym obiektem JSON na stdout. Exit code odpowiada statusowi: `ok` 0, `invalid` 2, `unsupported` 3, `resource_limit` 4, `unknown` 5, `ambiguous` 6, `incomplete` 7; `error` i błędy infrastruktury używają kodu 1. Komenda `capabilities --json` sama kończy się 0 i opisuje gotowość przez pole `ready`.
 
