@@ -1,0 +1,48 @@
+package pl
+
+// bodyEntries is the batch-2 Polish body lexical group.
+// Every entry is an authored editorial decision recorded in
+// data/pl/1000-core-review.tsv; senses link to CORE as pending candidates
+// without transfer authority. No paradigm is asserted for new lexemes yet.
+var bodyEntries = []lexicalEntry{
+	{"pl.cialo.n", "ciało", "noun", []lexicalMeaning{{"pl.cialo.body", "The integrated physical structure of an organism, distinct from its individual parts", "body"}}},
+	{"pl.glowa.n", "głowa", "noun", []lexicalMeaning{{"pl.glowa.part", "The upper or front body region containing the brain and principal sensory organs", "head"}}},
+	{"pl.twarz.n", "twarz", "noun", []lexicalMeaning{{"pl.twarz.part", "The front surface of a human head bearing the eyes, nose, and mouth", "face"}}},
+	{"pl.wlosy.n", "włosy", "noun", []lexicalMeaning{{"pl.wlosy.part", "Filamentous keratin structures growing from the skin of a mammal", "hair_body"}}},
+	{"pl.ucho.n", "ucho", "noun", []lexicalMeaning{{"pl.ucho.part", "An organ system or external structure associated with hearing and balance", "ear"}}},
+	{"pl.nos.n", "nos", "noun", []lexicalMeaning{{"pl.nos.part", "The projecting facial structure housing the external passages of breathing and smell", "nose"}}},
+	{"pl.usta.n", "usta", "noun", []lexicalMeaning{{"pl.usta.part", "The opening and cavity used for eating and speech production", "mouth"}}},
+	{"pl.warga.n", "warga", "noun", []lexicalMeaning{{"pl.warga.part", "A soft movable boundary of the mouth opening", "lip"}}},
+	{"pl.jezyk.n", "język", "noun", []lexicalMeaning{{"pl.jezyk.part", "A muscular organ in the mouth used in taste, swallowing, and articulation", "tongue"}}},
+	{"pl.zab.n", "ząb", "noun", []lexicalMeaning{{"pl.zab.part", "A hard structure in the jaws used to bite or grind food", "tooth"}}},
+	{"pl.szyja.n", "szyja", "noun", []lexicalMeaning{{"pl.szyja.part", "The region connecting the head to the torso", "neck"}}},
+	{"pl.ramie.n", "ramię", "noun", []lexicalMeaning{{"pl.ramie.part", "The body region joining an upper limb to the torso", "shoulder"}}},
+	{"pl.lokiec.n", "łokieć", "noun", []lexicalMeaning{{"pl.lokiec.part", "The joint region between upper arm and forearm", "elbow"}}},
+	{"pl.palec.n", "palec", "noun", []lexicalMeaning{{"pl.palec.part", "One of the articulated digits of a hand", "finger"}}},
+	{"pl.kciuk.n", "kciuk", "noun", []lexicalMeaning{{"pl.kciuk.part", "The first opposable digit of the human hand", "thumb"}}},
+	{"pl.klatka_piersiowa.n", "klatka piersiowa", "noun", []lexicalMeaning{{"pl.klatka_piersiowa.part", "The front and sides of the torso enclosing heart and lungs", "chest"}}},
+	{"pl.plecy.n", "plecy", "noun", []lexicalMeaning{{"pl.plecy.part", "The rear region of the torso, not a direction in space", "back_body"}}},
+	{"pl.brzuch.n", "brzuch", "noun", []lexicalMeaning{{"pl.brzuch.part", "The torso region between the chest and pelvis containing digestive organs", "abdomen"}}},
+	{"pl.biodro.n", "biodro", "noun", []lexicalMeaning{{"pl.biodro.part", "The lateral pelvic region joining the torso and upper leg", "hip"}}},
+	{"pl.noga.n", "noga", "noun", []lexicalMeaning{{"pl.noga.part", "A lower limb used for standing and locomotion", "leg"}}},
+	{"pl.kolano.n", "kolano", "noun", []lexicalMeaning{{"pl.kolano.part", "The joint region linking thigh and lower leg", "knee"}}},
+	{"pl.kostka.n", "kostka", "noun", []lexicalMeaning{{"pl.kostka.part", "The joint region connecting lower leg to foot", "ankle"}}},
+	{"pl.stopa.n", "stopa", "noun", []lexicalMeaning{{"pl.stopa.part", "The terminal weight-bearing part of a leg", "foot"}}},
+	{"pl.palec_u_nogi.n", "palec u nogi", "noun", []lexicalMeaning{{"pl.palec_u_nogi.part", "One articulated digit of a foot", "toe"}}},
+	{"pl.skora.n", "skóra", "noun", []lexicalMeaning{{"pl.skora.part", "The outer protective tissue covering the body", "skin"}, {"pl.skora.material", "Animal hide processed into a durable flexible material", "leather_material"}}},
+	{"pl.miesien.n", "mięsień", "noun", []lexicalMeaning{{"pl.miesien.part", "Contractile body tissue capable of generating force and movement", "muscle"}}},
+	{"pl.kosc.n", "kość", "noun", []lexicalMeaning{{"pl.kosc.part", "A rigid mineralized organ forming part of the skeleton", "bone"}}},
+	{"pl.staw.n", "staw", "noun", []lexicalMeaning{{"pl.staw.part", "A structural connection between bones allowing support or movement", "joint_body"}}},
+	{"pl.serce.n", "serce", "noun", []lexicalMeaning{{"pl.serce.organ", "A muscular organ pumping blood through the circulatory system", "heart"}}},
+	{"pl.pluco.n", "płuco", "noun", []lexicalMeaning{{"pl.pluco.organ", "An organ responsible for exchanging respiratory gases with the environment", "lung"}}},
+	{"pl.mozg.n", "mózg", "noun", []lexicalMeaning{{"pl.mozg.organ", "The central nervous organ coordinating cognition and body functions", "brain"}}},
+	{"pl.zoladek.n", "żołądek", "noun", []lexicalMeaning{{"pl.zoladek.organ", "An organ receiving and mechanically or chemically processing swallowed food", "stomach_organ"}}},
+	{"pl.jelito.n", "jelito", "noun", []lexicalMeaning{{"pl.jelito.organ", "A tubular digestive organ absorbing nutrients or processing waste", "intestine"}}},
+	{"pl.watroba.n", "wątroba", "noun", []lexicalMeaning{{"pl.watroba.organ", "A large abdominal organ with metabolic and detoxification functions", "liver"}}},
+	{"pl.nerka.n", "nerka", "noun", []lexicalMeaning{{"pl.nerka.organ", "An organ filtering blood and regulating fluid and solute balance", "kidney"}}},
+	{"pl.pecherz.n", "pęcherz", "noun", []lexicalMeaning{{"pl.pecherz.organ", "An organ temporarily storing urine before excretion", "bladder"}}},
+	{"pl.krew.n", "krew", "noun", []lexicalMeaning{{"pl.krew.substance", "The circulating body fluid transporting gases, nutrients, and other substances", "blood"}}},
+	{"pl.zyla.n", "żyła", "noun", []lexicalMeaning{{"pl.zyla.part", "A blood vessel carrying blood toward the heart", "vein"}}},
+	{"pl.arteria.n", "arteria", "noun", []lexicalMeaning{{"pl.arteria.part", "A blood vessel carrying blood away from the heart", "artery"}}},
+	{"pl.nerw.n", "nerw", "noun", []lexicalMeaning{{"pl.nerw.part", "A bundle of fibers transmitting signals in the peripheral nervous system", "nerve"}}},
+}

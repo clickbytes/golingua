@@ -7,5 +7,7 @@ package pl
 func lexicalGroups() [][]lexicalEntry {
 	return [][]lexicalEntry{
 		peopleEntries,
+		natureEntries,
+		bodyEntries,
 	}
 }

@@ -56,11 +56,15 @@ Na 1000 wierszy:
 
 ## Zakres implementacji Go w tym batchu
 
-Go w `languages/pl/` w tej turze obejmuje wyłącznie domenę People:
-59 leksemów / 60 sensów (w tym 20 sensów istniejących wcześniej),
-w plikach `lexicon_people.go` i `lexicon_groups.go`. Pozostałe zredagowane
-wiersze są tylko w worklist; czasowniki czekają na walencję per sens
-(przegląd `VALENCY_FRAME_IDS`), a rzeczowniki na zaplanowany slice Go.
+Go w `languages/pl/` obecnie obejmuje trzy grupy domenowe: People (59
+leksemów / 60 sensów w `lexicon_people.go`), nature (95 leksemów: zwierzęta,
+rośliny, substancje, landforms, w `lexicon_nature.go`) oraz body (40
+leksemów / 41 sensów w `lexicon_body.go`). Dla homonimu `staw` wyodrębniono
+osobny leksem `pl.staw_zbiornik.n` (staw jako zbiornik wodny), a polisemiczny
+leksem `pl.skora.n` łączy sens `part` (organ) i `material` (surowiec).
+Pozostałe zredagowane wiersze są tylko w worklist; czasowniki czekają na
+walencję per sens (przegląd `VALENCY_FRAME_IDS`), a rzeczowniki kolejnych
+domen na zaplanowane slice'y Go.
 
 Znane przypadki jawne, do decyzji właściciela, bez wymuszonej decyzji
 automatycznej:

@@ -2,17 +2,20 @@
 
 ## In-code lexical catalog
 
-`pl.LexicalDocument()` declares a first Polish lexical slice in Go, grown in
-the G07-03 batch for the People domain: 75 lexemes, 81 separate senses and
-80 **pending** candidate links to the neutral CORE catalog (files
-`lexicon.go`, `lexicon_people.go` and the group aggregator
-`lexicon_groups.go`). `pl.CompileLexicon(coreGraph)` validates and freezes
-them against the exact supplied CORE graph. The second senses of `dom`,
-`szkoła`, `książka` and `ręka` deliberately have no CORE link yet; the
-new `dom.household`, `szkola.institution`, `reka.arm` and
+`pl.LexicalDocument()` declares Polish lexical slices in Go, authored in
+G07-03 batches: 210 lexemes, 217 separate senses and 216 **pending**
+candidate links to the neutral CORE catalog (files
+`lexicon.go`, `lexicon_people.go`, `lexicon_nature.go`, `lexicon_body.go`
+and the group aggregator `lexicon_groups.go`). `pl.CompileLexicon(coreGraph)`
+validates and freezes them against the exact supplied CORE graph. The second
+sense of `ksiazka.work` deliberately has no CORE link. The new
+`dom.household`, `szkola.institution`, `reka.arm` and
 `dziecko.kinship` senses do use `candidate` links to at most one CORE
 concept each. Candidate links are not approved semantic bindings and
-cannot authorize translation.
+cannot authorize translation. Batch 2 adds the nature group (animals,
+plants, substances, landforms; `staw` for the water body is a separate
+lexeme `pl.staw_zbiornik.n`) and the body group (`skóra` is one lexeme
+with the `part` and `material` senses of the polysemy).
 
 The full editorial decision record behind this slice and the rest of the
 1000 concepts is `data/pl/1000-core-review.tsv`; see `data/pl/README.md`.
