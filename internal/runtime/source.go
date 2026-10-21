@@ -7,6 +7,7 @@ import (
 	"github.com/clickbytes/golingua/internal/analyzer"
 	"github.com/clickbytes/golingua/internal/construction"
 	"github.com/clickbytes/golingua/internal/core"
+	"github.com/clickbytes/golingua/internal/engine"
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/lexicon"
 	"github.com/clickbytes/golingua/internal/morph"
@@ -58,6 +59,8 @@ type SourcePipeline struct {
 	EvidenceBuilder CompositionEvidenceBuilder
 }
 
+var _ engine.SourceAnalyzer = (*SourcePipeline)(nil)
+
 // Analyze executes lexical analysis, phrase parsing, semantic composition and
 // semantic validation without selecting among competing meanings.
 func (pipeline *SourcePipeline) Analyze(ctx context.Context, input string) (semantic.Result, error) {
@@ -85,6 +88,9 @@ func (pipeline *SourcePipeline) Analyze(ctx context.Context, input string) (sema
 	if err != nil {
 		return semantic.Result{}, err
 	}
+	if err := ctx.Err(); err != nil {
+		return semantic.Result{}, pipelineError(status.OutcomeResourceLimit, "SOURCE_ANALYSIS_CANCELED", "context", "source analysis was canceled or timed out")
+	}
 	parseBudget := pipeline.ParseBudget
 	if parseBudget == (parser.Budget{}) {
 		parseBudget = parser.DefaultBudget()
@@ -101,6 +107,9 @@ func (pipeline *SourcePipeline) Analyze(ctx context.Context, input string) (sema
 		compositionEvidence, err = pipeline.EvidenceBuilder.Build(ctx, lattice, candidates, forest)
 		if err != nil {
 			return semantic.Result{}, err
+		}
+		if err := ctx.Err(); err != nil {
+			return semantic.Result{}, pipelineError(status.OutcomeResourceLimit, "SOURCE_ANALYSIS_CANCELED", "context", "source analysis was canceled or timed out")
 		}
 	}
 	semanticBudget := pipeline.SemanticBudget
