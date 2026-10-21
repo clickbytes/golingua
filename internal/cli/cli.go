@@ -240,7 +240,7 @@ func RunWithInputAndLoaders(args []string, input io.Reader, stdout, stderr io.Wr
 		stderr = io.Discard
 	}
 	if len(args) == 0 || (len(args) == 1 && (args[0] == "--help" || args[0] == "-h" || args[0] == "help")) {
-		_, _ = fmt.Fprint(stdout, "golingua bootstrap\nUsage: golingua --help | --version | capabilities --json | meaning canonicalize --json < meaning.json | meaning project --json < meaning.json | question --runtime-config <path> --json < question.json | translate --from <lang> --to <lang> --text <text> --json [--preview-id <id>] [--runtime-config <path>] | forms --language pl|en (--lexeme <id> --feature name=value... | --surface <form>) --json\nquestion executes typed MeaningGraph requests against caller-supplied FactSets; it does not parse natural language.\nNo language providers are configured by default; translate returns unsupported until runtimes are configured.\n")
+		_, _ = fmt.Fprint(stdout, "golingua bootstrap\nUsage: golingua --help | --version | capabilities --json | meaning canonicalize --json < meaning.json | meaning project --json < meaning.json | question --runtime-config <path> --json < question.json | translate --from <lang> --to <lang> --text <text> --json [--preview-id <id>] [--runtime-config <path>] | forms --language pl|en (--lexeme <id> --feature name=value... | --surface <form>) --json | catalog --summary|--details --json\nquestion executes typed MeaningGraph requests against caller-supplied FactSets; it does not parse natural language.\nNo language providers are configured by default; translate returns unsupported until runtimes are configured.\n")
 		return ExitOK
 	}
 	if len(args) == 1 && args[0] == "--version" {
