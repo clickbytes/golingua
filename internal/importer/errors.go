@@ -7,10 +7,7 @@ import (
 	"github.com/clickbytes/golingua/internal/status"
 )
 
-var (
-	ErrInvalidDataset = errors.New("invalid dataset")
-	errSizeLimit      = errors.New("size limit exceeded")
-)
+var ErrInvalidDataset = errors.New("invalid dataset")
 
 type DatasetError struct{ result status.Result }
 
@@ -37,5 +34,3 @@ func infrastructure(code string, err error) error {
 func datasetError(kind status.OutcomeKind, code, path, message string) error {
 	return &DatasetError{result: status.Result{Status: kind, Diagnostics: []status.Diagnostic{{Code: boundedDiagnosticText(code, status.MaxDiagnosticCodeBytes), Path: boundedDiagnosticText(path, status.MaxDiagnosticPathBytes), Message: boundedDiagnosticText(message, status.MaxDiagnosticMessageBytes), Severity: status.SeverityError}}}}
 }
-
-func isLimitError(err error) bool { return errors.Is(err, errSizeLimit) }

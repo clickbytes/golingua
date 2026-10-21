@@ -51,14 +51,11 @@ func loadDataset(root string, manifest Manifest, retainFiles bool) (Dataset, err
 	if len(manifest.Files) > MaxDatasetFiles {
 		return Dataset{}, resourceLimit("dataset_files", len(manifest.Files), MaxDatasetFiles)
 	}
-	rootPath, err := filepath.Abs(root)
+	rootHandle, err := os.OpenRoot(root)
 	if err != nil {
 		return Dataset{}, infrastructure("DATA_ROOT_UNAVAILABLE", err)
 	}
-	rootReal, err := filepath.EvalSymlinks(rootPath)
-	if err != nil {
-		return Dataset{}, infrastructure("DATA_ROOT_UNAVAILABLE", err)
-	}
+	defer rootHandle.Close()
 	conceptBytes, lexiconBytes := []byte(nil), []byte(nil)
 	conceptFiles, lexiconFiles := 0, 0
 	result := Dataset{Manifest: cloneManifest(manifest)}
@@ -70,34 +67,9 @@ func loadDataset(root string, manifest Manifest, retainFiles bool) (Dataset, err
 		if err := provenance.ValidateRelativeDataPath(file.Path); err != nil {
 			return Dataset{}, invalid("INVALID_DATA_PATH", file.ID, err.Error())
 		}
-		candidate := filepath.Join(rootPath, filepath.FromSlash(file.Path))
-		resolved, err := filepath.EvalSymlinks(candidate)
+		contents, err := readManifestFile(rootHandle, file, total)
 		if err != nil {
-			return Dataset{}, infrastructure("DATA_FILE_UNAVAILABLE", err)
-		}
-		relative, err := filepath.Rel(rootReal, resolved)
-		if err != nil || relative == ".." || filepath.IsAbs(relative) || len(relative) >= 3 && relative[:3] == ".."+string(filepath.Separator) {
-			return Dataset{}, invalid("DATA_PATH_ESCAPE", file.ID, "resolved data path escapes the configured root")
-		}
-		info, err := os.Stat(resolved)
-		if err != nil {
-			return Dataset{}, infrastructure("DATA_FILE_UNAVAILABLE", err)
-		}
-		if !info.Mode().IsRegular() {
-			return Dataset{}, invalid("INVALID_DATA_FILE", file.ID, "data file must be a regular file")
-		}
-		if info.Size() > MaxManifestFileBytes || total > MaxDatasetBytes-info.Size() {
-			return Dataset{}, resourceLimit("dataset_bytes", MaxDatasetBytes+1, MaxDatasetBytes)
-		}
-		if file.SizeBytes > 0 && file.SizeBytes != info.Size() {
-			return Dataset{}, invalid("DATA_SIZE_MISMATCH", file.ID, "actual file size differs from manifest")
-		}
-		contents, err := readBounded(resolved, MaxManifestFileBytes)
-		if err != nil {
-			if isLimitError(err) {
-				return Dataset{}, resourceLimit("file_bytes", MaxManifestFileBytes+1, MaxManifestFileBytes)
-			}
-			return Dataset{}, infrastructure("DATA_FILE_READ_FAILED", err)
+			return Dataset{}, err
 		}
 		total += int64(len(contents))
 		if file.ChecksumSHA256 != "" {
@@ -153,18 +125,40 @@ func loadDataset(root string, manifest Manifest, retainFiles bool) (Dataset, err
 	return result, nil
 }
 
-func readBounded(path string, maximum int64) ([]byte, error) {
-	file, err := os.Open(path)
+// readManifestFile resolves and opens the declared path inside one open root.
+// Stat and read use the same descriptor, so replacing a path after validation
+// cannot redirect the read to a different file.
+func readManifestFile(root *os.Root, declared ManifestFile, total int64) ([]byte, error) {
+	file, err := root.Open(filepath.FromSlash(declared.Path))
 	if err != nil {
-		return nil, err
+		return nil, infrastructure("DATA_FILE_UNAVAILABLE", err)
 	}
 	defer file.Close()
-	contents, err := io.ReadAll(io.LimitReader(file, maximum+1))
+	info, err := file.Stat()
 	if err != nil {
-		return nil, err
+		return nil, infrastructure("DATA_FILE_UNAVAILABLE", err)
 	}
-	if int64(len(contents)) > maximum {
-		return nil, errSizeLimit
+	if !info.Mode().IsRegular() {
+		return nil, invalid("INVALID_DATA_FILE", declared.ID, "data file must be a regular file")
+	}
+	if info.Size() > MaxManifestFileBytes || total > MaxDatasetBytes-info.Size() {
+		return nil, resourceLimit("dataset_bytes", MaxDatasetBytes+1, MaxDatasetBytes)
+	}
+	if declared.SizeBytes > 0 && declared.SizeBytes != info.Size() {
+		return nil, invalid("DATA_SIZE_MISMATCH", declared.ID, "actual file size differs from manifest")
+	}
+	contents, err := io.ReadAll(io.LimitReader(file, MaxManifestFileBytes+1))
+	if err != nil {
+		return nil, infrastructure("DATA_FILE_READ_FAILED", err)
+	}
+	if len(contents) > MaxManifestFileBytes {
+		return nil, resourceLimit("file_bytes", len(contents), MaxManifestFileBytes)
+	}
+	if total > MaxDatasetBytes-int64(len(contents)) {
+		return nil, resourceLimit("dataset_bytes", MaxDatasetBytes+1, MaxDatasetBytes)
+	}
+	if declared.SizeBytes > 0 && declared.SizeBytes != int64(len(contents)) {
+		return nil, invalid("DATA_SIZE_MISMATCH", declared.ID, "read file size differs from manifest")
 	}
 	return contents, nil
 }
