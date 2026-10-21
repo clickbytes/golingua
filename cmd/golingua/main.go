@@ -4,8 +4,13 @@ import (
 	"os"
 
 	"github.com/clickbytes/golingua/internal/cli"
+	"github.com/clickbytes/golingua/internal/engine"
+	"github.com/clickbytes/golingua/internal/runtime"
 )
 
 func main() {
-	os.Exit(cli.RunWithInput(os.Args[1:], os.Stdin, os.Stdout, os.Stderr))
+	loadEngine := func(path string) (*engine.Engine, error) {
+		return runtime.LoadEngineFile(path, runtime.Options{})
+	}
+	os.Exit(cli.RunWithInputAndEngineLoader(os.Args[1:], os.Stdin, os.Stdout, os.Stderr, loadEngine))
 }

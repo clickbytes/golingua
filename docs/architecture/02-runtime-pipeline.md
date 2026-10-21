@@ -31,3 +31,20 @@ Brak FactSet nie jest dowodem fałszu; świat nie jest zamkniętą tabelą. Nie 
 Po dodaniu operacji Go udostępni przykładowo `golingua translate --from pl --to en --text "..."` i `golingua forms --language pl --word "..."`. Dokładne flagi ustali issue wprowadzające funkcję; nie należy ich na razie reklamować jako zaimplementowanych. Właściciel podaje wejścia, agent pokazuje wyniki, a korekty przeprowadzamy na regułach.
 
 **Nie ma skryptu sprawdzającego setki zdań, założeń procentowych ani porównania do starego JS.** Minimalny CI tylko buduje Go. Ograniczenia runtime (maksymalna liczba kandydatów/węzłów) są cechą bezpieczeństwa, a nie celem generowania automatycznych testów.
+
+## Jawna konfiguracja runtime
+
+`translate` może przyjąć `--runtime-config <path>`. Wersjonowany plik JSON wskazuje istniejący aktywny dataset store i katalogi pakietów językowych. Ścieżki względne liczone są od katalogu pliku konfiguracji. Store musi już zawierać aktywny snapshot wskazany przez `dataset_id`; CLI nie importuje ani nie aktywuje danych.
+
+```json
+{
+  "schema_version": 1,
+  "dataset_store": "./store",
+  "dataset_id": "<approved-dataset-id>",
+  "language_package_dirs": ["./languages/pl-runtime", "./languages/en-runtime"]
+}
+```
+
+`<approved-dataset-id>` is a placeholder; the example does not refer to an included dataset.
+
+CLI odrzuca pliki konfiguracyjne z nieznanymi lub powtórzonymi kluczami, dodatkowymi wartościami JSON i przekroczonym limitem rozmiaru. Pakiety są weryfikowane przez `internal/language`; kod providerów i adapterów musi być skompilowany w aplikacji. Brak zatwierdzonego providera, danych lub stage adaptera pozostaje `unsupported`. Sama konfiguracja nie deklaruje capability i nie stanowi językowego odbioru.
