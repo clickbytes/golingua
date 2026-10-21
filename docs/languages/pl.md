@@ -1,5 +1,24 @@
 # Polish morphology seed
 
+## In-code lexical catalog
+
+`pl.LexicalDocument()` now declares a first Polish lexical batch in Go:
+16 lexemes, 20 separate senses and 16 **pending** candidate links to the
+neutral CORE catalog. `pl.CompileLexicon(coreGraph)` validates and freezes
+them against the exact supplied CORE graph. The second senses of `dom`,
+`szkoła`, `książka` and `ręka` deliberately have no CORE link yet. Candidate
+links are not approved semantic bindings and cannot authorize translation.
+
+`pl.CompileValency()` separately compiles four sense-specific argument frames
+for `widzieć`, `patrzeć na`, `słyszeć` and `dostać`. The frames record Polish
+case and the preposition `na`; they have no approved construction binding.
+
+This lexical catalog is separate from the existing two-entry morphology seed.
+It does not provide new inflection paradigms or sentence constructions. Source
+metadata points to the project-authored Go declarations
+and records the license as `unknown` until the project establishes one.
+Counts refer only to this initial batch, not to all Polish vocabulary.
+
 The Go package `github.com/clickbytes/golingua/languages/pl` loads the bundled Polish profile, manifest, paradigms, and lexical principal parts. `pl.Load()` compiles the seed into the shared generator and finite relation analyzer. `Seed.Generate(lexemeID, featureValues)` and `Seed.Analyze(surface)` are Go APIs; the CLI has no `forms` command and this package does not realize sentences.
 
 ## Included classes
