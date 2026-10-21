@@ -1,14 +1,17 @@
 // Package cli provides a deliberately small, fail-closed bootstrap CLI.
-// No language plugin, translation, generation, or inference is available yet.
+// Translation is available only when verified language runtimes are configured.
 package cli
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 
+	"github.com/clickbytes/golingua/internal/engine"
+	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/status"
 )
@@ -92,6 +95,101 @@ func diagnosticResult(kind status.OutcomeKind, code, message, path string) statu
 	return result
 }
 
+type translateOptions struct {
+	from, to, text, previewID string
+	json                      bool
+}
+
+func parseTranslate(args []string) (translateOptions, string) {
+	var options translateOptions
+	seen := make(map[string]bool, 5)
+	for i := 1; i < len(args); i++ {
+		flag := args[i]
+		if flag == "--json" {
+			if seen[flag] {
+				return options, "duplicate --json flag"
+			}
+			seen[flag] = true
+			options.json = true
+			continue
+		}
+		if flag != "--from" && flag != "--to" && flag != "--text" && flag != "--preview-id" {
+			return options, fmt.Sprintf("unknown or malformed translate argument %q", flag)
+		}
+		if seen[flag] {
+			return options, fmt.Sprintf("duplicate %s flag", flag)
+		}
+		seen[flag] = true
+		if i+1 >= len(args) || args[i+1] == "--json" || args[i+1] == "--from" || args[i+1] == "--to" || args[i+1] == "--text" || args[i+1] == "--preview-id" {
+			return options, fmt.Sprintf("missing value for %s", flag)
+		}
+		i++
+		value := args[i]
+		switch flag {
+		case "--from":
+			options.from = value
+		case "--to":
+			options.to = value
+		case "--text":
+			options.text = value
+		case "--preview-id":
+			options.previewID = value
+		}
+	}
+	if !options.json {
+		return options, "translate requires --json"
+	}
+	for _, flag := range []string{"--from", "--to", "--text"} {
+		if !seen[flag] {
+			return options, fmt.Sprintf("missing required %s flag", flag)
+		}
+	}
+	if options.from == "" || options.to == "" || options.text == "" {
+		return options, "--from, --to, and --text values must not be empty"
+	}
+	if seen["--preview-id"] && options.previewID == "" {
+		return options, "--preview-id value must not be empty"
+	}
+	return options, ""
+}
+
+func runTranslate(args []string, stdout, stderr io.Writer) int {
+	options, parseError := parseTranslate(args)
+	if parseError != "" {
+		result := diagnosticResult(status.OutcomeInvalid, "INVALID_TRANSLATE_ARGUMENTS", parseError, "translate")
+		return writeResult(stdout, stderr, result)
+	}
+	translator, err := engine.New(engine.Config{})
+	if err != nil {
+		var resultError interface{ Result() status.Result }
+		if errors.As(err, &resultError) {
+			return writeResult(stdout, stderr, resultError.Result())
+		}
+		failure := diagnosticResult(status.OutcomeError, "ENGINE_SETUP_ERROR", "translation engine setup failed unexpectedly", "translate")
+		return writeResult(stdout, stderr, failure)
+	}
+	result, err := translator.Translate(context.Background(), engine.Request{
+		From: features.LanguageID(options.from), To: features.LanguageID(options.to), Text: options.text, PreviewID: options.previewID,
+	})
+	if err != nil {
+		var resultError interface{ Result() status.Result }
+		if errors.As(err, &resultError) {
+			return writeResult(stdout, stderr, resultError.Result())
+		}
+		failure := diagnosticResult(status.OutcomeError, "TRANSLATION_RUNTIME_ERROR", "translation failed unexpectedly", "translate")
+		return writeResult(stdout, stderr, failure)
+	}
+	if err := result.Validate(); err != nil {
+		_, _ = fmt.Fprintf(stderr, "INTERNAL_RESULT_ERROR: %v\n", err)
+		return ExitError
+	}
+	if err := writeJSON(stdout, result); err != nil {
+		_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not serialize translation result: %v\n", err)
+		return ExitError
+	}
+	return exitCode(result.Status)
+}
+
 // Run returns a process exit code without mutating global state.
 func Run(args []string, stdout, stderr io.Writer) int {
 	return RunWithInput(args, bytes.NewReader(nil), stdout, stderr)
@@ -110,7 +208,7 @@ func RunWithInput(args []string, input io.Reader, stdout, stderr io.Writer) int 
 		stderr = io.Discard
 	}
 	if len(args) == 0 || (len(args) == 1 && (args[0] == "--help" || args[0] == "-h" || args[0] == "help")) {
-		_, _ = fmt.Fprint(stdout, "golingua bootstrap\nUsage: golingua --help | --version | capabilities --json | meaning canonicalize --json < meaning.json | meaning project --json < meaning.json\nTranslation and language plugins: NOT IMPLEMENTED\n")
+		_, _ = fmt.Fprint(stdout, "golingua bootstrap\nUsage: golingua --help | --version | capabilities --json | meaning canonicalize --json < meaning.json | meaning project --json < meaning.json | translate --from <lang> --to <lang> --text <text> --json [--preview-id <id>]\nNo language providers are configured by default; translate returns unsupported until runtimes are configured.\n")
 		return ExitOK
 	}
 	if len(args) == 1 && args[0] == "--version" {
@@ -193,8 +291,7 @@ func RunWithInput(args []string, input io.Reader, stdout, stderr io.Writer) int 
 		return ExitOK
 	}
 	if len(args) > 0 && args[0] == "translate" {
-		result := diagnosticResult(status.OutcomeUnsupported, "LANGUAGE_RUNTIME_UNAVAILABLE", "sentence translation is not implemented in the bootstrap", "translate")
-		return writeResult(stdout, stderr, result)
+		return runTranslate(args, stdout, stderr)
 	}
 	result := diagnosticResult(status.OutcomeInvalid, "INVALID_COMMAND", "unknown or invalid command", "command")
 	return writeResult(stdout, stderr, result)
