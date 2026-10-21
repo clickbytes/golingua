@@ -3,19 +3,29 @@
 ## In-code lexical catalog
 
 `pl.LexicalDocument()` declares Polish lexical slices in Go, authored in
-G07-03 batches: 210 lexemes, 217 separate senses and 216 **pending**
+G07-03 batches: 426 lexemes, 435 separate senses and 434 **pending**
 candidate links to the neutral CORE catalog (files
-`lexicon.go`, `lexicon_people.go`, `lexicon_nature.go`, `lexicon_body.go`
-and the group aggregator `lexicon_groups.go`). `pl.CompileLexicon(coreGraph)`
+`lexicon.go`, `lexicon_people.go`, `lexicon_nature.go`, `lexicon_body.go`,
+`lexicon_places.go`, `lexicon_objects.go`, `lexicon_food.go`,
+`lexicon_basics.go` and the group aggregator `lexicon_groups.go`).
+`pl.CompileLexicon(coreGraph)`
 validates and freezes them against the exact supplied CORE graph. The second
 sense of `ksiazka.work` deliberately has no CORE link. The new
 `dom.household`, `szkola.institution`, `reka.arm` and
 `dziecko.kinship` senses do use `candidate` links to at most one CORE
 concept each. Candidate links are not approved semantic bindings and
-cannot authorize translation. Batch 2 adds the nature group (animals,
-plants, substances, landforms; `staw` for the water body is a separate
-lexeme `pl.staw_zbiornik.n`) and the body group (`skóra` is one lexeme
-with the `part` and `material` senses of the polysemy).
+cannot authorize translation.
+Batch 2 authored the nature group (animals, plants, substances, landforms;
+`staw` for the water body is a separate lexeme `pl.staw_zbiornik.n`) and the
+body group (`skóra` is one lexeme with the `part` and `material` senses of
+the polysemy; `ryba` and `owoc` gained second food senses merged manually).
+Batch 3 adds the places group (settlements,
+buildings, rooms, routes), the objects group (domestic objects, tools,
+machines, technology), the food group (food, beverages, garments) and the
+basics group (resolved original-49 nouns, leftover person entries and
+property nouns). Reviewable verbs stay worklist-only until valency batches.
+The remaining reviewed rows are 566 absent concepts; re-check the totals
+with `catalog --summary --json` before each further batch.
 
 The full editorial decision record behind this slice and the rest of the
 1000 concepts is `data/pl/1000-core-review.tsv`; see `data/pl/README.md`.

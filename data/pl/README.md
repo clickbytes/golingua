@@ -56,15 +56,17 @@ Na 1000 wierszy:
 
 ## Zakres implementacji Go w tym batchu
 
-Go w `languages/pl/` obecnie obejmuje trzy grupy domenowe: People (59
-leksemów / 60 sensów w `lexicon_people.go`), nature (95 leksemów: zwierzęta,
-rośliny, substancje, landforms, w `lexicon_nature.go`) oraz body (40
-leksemów / 41 sensów w `lexicon_body.go`). Dla homonimu `staw` wyodrębniono
-osobny leksem `pl.staw_zbiornik.n` (staw jako zbiornik wodny), a polisemiczny
-leksem `pl.skora.n` łączy sens `part` (organ) i `material` (surowiec).
-Pozostałe zredagowane wiersze są tylko w worklist; czasowniki czekają na
-walencję per sens (przegląd `VALENCY_FRAME_IDS`), a rzeczowniki kolejnych
-domen na zaplanowane slice'y Go.
+Go w `languages/pl/` obejmuje siedem grup domenowych: People (59 leksemów /
+60 sensów), nature (95 leksemów; ręcznie dopisane sensy polisemii
+`ryba.food` i `owoc.food`), body (40/41), places (osady/budynki/
+pomieszczenia/trasy, 56), objects (obiekty domowe/narzędzia/maszyny, 79),
+food (jedzenie/napoje/okrycia, 58) oraz basics (23: resztka oryginalnych 49,
+pozycje osobowe `kurier`/`wolontariusz`, rzeczowniki właściwości).
+Dla homonimu `staw` wyodrębniono osobny leksem `pl.staw_zbiornik.n`
+(zbiornik wodny), a polisemiczny leksem `pl.skora.n` łączy sens `part`
+(organ) i `material` (surowiec). Zredagowane czasowniki pozostają w
+worklist do momentu autorskich ram walencji; 521 wierszy DEFERRED czeka na
+redakcję kolejnych batchów.
 
 Znane przypadki jawne, do decyzji właściciela, bez wymuszonej decyzji
 automatycznej:

@@ -9,5 +9,9 @@ func lexicalGroups() [][]lexicalEntry {
 		peopleEntries,
 		natureEntries,
 		bodyEntries,
+		placesEntries,
+		objectsEntries,
+		foodEntries,
+		basicsEntries,
 	}
 }
