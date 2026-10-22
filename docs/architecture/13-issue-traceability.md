@@ -1,6 +1,6 @@
 # 13 — Mapa pracy szeregowej po resecie testów
 
-**Status: żywa mapa etapów, aktualizacja 2026-10-22.** G00–G03 zamknięte, G09 zamknięty dokumentacyjnie, G07 #8 aktywny: CORE #145 zakończone (1000), PL #60 aktywne (980 leksemów / 1005 sensów / 1004 pending binding records na 998 konceptach), EN #61 w kolejce (19/28/19). G04–G06 i G08 mają otwarte zależności danych i ręcznego odbioru. Historyczne G00 #78 nie jest obecnym aktywnym zadaniem. Bazowy stan batcha 27 to `8182692`; plan zapisano w #60, bez otwartych PR.
+**Status: żywa mapa etapów, aktualizacja 2026-10-22.** G00–G03 zamknięte, G09 zamknięty dokumentacyjnie, G07 #8 aktywny: CORE #145 zakończone (1000), PL #60 aktywne (981 leksemów / 1006 sensów / 1005 pending binding records na 999 konceptach), EN #61 w kolejce (19/28/19). G04–G06 i G08 mają otwarte zależności danych i ręcznego odbioru. Historyczne G00 #78 nie jest obecnym aktywnym zadaniem. Bazowy stan batcha 28 to `c081ca7`; plan zapisano w #60, bez otwartych PR.
 
 | Kolejność | EPIC | Co zbudować | Jak oceniamy na tym etapie |
 | --- | --- | --- | --- |
@@ -26,7 +26,7 @@
 
 ## Bieżący ręczny odbiór PL
 
-Lokalny stan po batchu 27 zawiera 980 leksemów PL, 1005 sensów, 1004 pending binding records pokrywających 998 konceptów i 273 ramy walencji; 2 CORE concepts nie mają PL bindingu. Nie ma propozycji worklist-only: `intentional_action` otrzymał kandydata event noun `celowe działanie`; `entity` i `communication` pozostają bez proponowanych bindingów. Żaden binding nie jest zatwierdzony, a ręczna ocena właściciela pozostaje **NOT RUN**. Przed rozpoczęciem EN #61 trzeba ręcznie przedstawić właścicielowi konkretne formy i sensy PL oraz zapisać jego uwagi; nie wyciągać wniosków o akceptacji z samej kompilacji katalogu.
+Lokalny stan po batchu 28 zawiera 981 leksemów PL, 1006 sensów, 1005 pending binding records pokrywających 999 konceptów i 273 ramy walencji; `entity` pozostaje bez PL bindingu. Kandydatami event nouns są `celowe działanie` dla `intentional_action` i `komunikowanie` dla `communication`; szersze `komunikacja` pozostaje powiązane jedynie jako related. Żaden binding nie jest zatwierdzony, a ręczna ocena właściciela pozostaje **NOT RUN**. Przed rozpoczęciem EN #61 trzeba ręcznie przedstawić właścicielowi konkretne formy i sensy PL oraz zapisać jego uwagi; nie wyciągać wniosków o akceptacji z samej kompilacji katalogu.
 
 ## Co zostało świadomie usunięte
 

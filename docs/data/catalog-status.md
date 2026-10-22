@@ -12,16 +12,16 @@ The CLI compiles the current CORE, lexical and language-specific valency snapsho
 | Inventory | CORE | PL | EN |
 | --- | ---: | ---: | ---: |
 | CORE concepts | 1000 | — | — |
-| Lexemes | — | 980 | 19 |
-| Lexical senses | — | 1005 | 28 |
-| Pending concept binding records | — | 1004 | 19 |
+| Lexemes | — | 981 | 19 |
+| Lexical senses | — | 1006 | 28 |
+| Pending concept binding records | — | 1005 | 19 |
 | Approved concept bindings | — | 0 | 0 |
-| Concepts without a binding | — | 2 | 981 |
+| Concepts without a binding | — | 1 | 981 |
 | Authored valency frames | — | 273 | 5 |
 
 Approved PL+EN pairs: **0**. The `valency_frames` field is separately compiled from `pl.CompileValency()` and `en.CompileValency()`. `catalog --details` has one per-concept row per CORE ID, including true pending/absent/approved states.
 
-The Polish editorial `data/pl/1000-core-review.tsv` contains 1000 proposed decisions, 999 pending candidate rows and 2 decisions without bindings. These rows produce 1004 typed pending binding records over 998 concepts. Candidate mappings, approved mappings, linguistic quality, and morphological coverage must not be conflated.
+The Polish editorial `data/pl/1000-core-review.tsv` contains 1000 proposed decisions, 999 pending candidate rows and 1 decision without a binding. These rows produce 1005 typed pending binding records over 999 concepts. Candidate mappings, approved mappings, linguistic quality, and morphological coverage must not be conflated.
 
 Polish `forms` is a separate partial subsystem: **15 newly supplied noun inventories with 14 explicitly declared case/number forms each**, plus the pre-existing narrow seed. These form strings are not mechanically generated from an inflection class, but selected from declared principal parts through five shared morphology paradigms. No reviewed sentence construction, analyzed clause or generated PL↔EN translation is activated. Current language manifests keep sentence analysis/realization unsupported.
 

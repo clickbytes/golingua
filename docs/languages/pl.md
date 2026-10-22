@@ -2,7 +2,7 @@
 
 ## Current scope
 
-The executable `languages/pl` package builds **980 typed Polish lexemes, 1005 distinct lexical senses, 1004 pending binding records covering 998 CORE concepts**; 2 CORE concepts have no PL binding. `pl.LexicalDocument()` assembles `lexicon_*.go` domains in deterministic order and `pl.CompileLexicon(coreGraph)` validates the candidate graph. The editorial worklist `data/pl/1000-core-review.tsv` records 999 proposed pending candidates; all have typed PL lexical entries. The two concepts without bindings remain intentionally unresolved.
+The executable `languages/pl` package builds **981 typed Polish lexemes, 1006 distinct lexical senses, 1005 pending binding records covering 999 CORE concepts**; 1 CORE concept has no PL binding. `pl.LexicalDocument()` assembles `lexicon_*.go` domains in deterministic order and `pl.CompileLexicon(coreGraph)` validates the candidate graph. The editorial worklist `data/pl/1000-core-review.tsv` records 999 proposed pending candidates, all with typed PL lexical entries; `entity` remains without a direct lexical binding.
 
 Polish lemmas are distinct from CORE concepts. Examples of polysemy include `szkoła` facility/institution, `bank` institution/office, `ryba` animal/food, `skóra` organ/material. Many verbs have sense-specific cases and prepositions in `ValencyFrame`. They do **not** have automatic morphology or authorized construction paths.
 
@@ -47,6 +47,8 @@ Batch 24 adds twelve gender-specific lexical senses for six kinship concepts. Ex
 Batch 25 adds `małe dziecko` as a broad candidate for toddler and the event noun `przekazanie` as a narrow candidate for transfer. No morphology, valency frames or construction bindings are added.
 
 Batch 26 adds pending lexical category senses for `część ciała` and `zdarzenie`. No morphology, valency frames or construction bindings are added.
+
+Batch 27 adds `celowe działanie` as a pending event noun for intentional action. Batch 28 adds `komunikowanie` as a pending event noun for communication. Neither adds morphology, noun valency or construction bindings.
 
 ## Morphological subset — shared class templates, explicit forms
 

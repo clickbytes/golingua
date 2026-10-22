@@ -6,19 +6,19 @@
 
 | Editorial state | Rows |
 | --- | ---: |
-| REVIEWED_LEXICALIZED | 978 |
+| REVIEWED_LEXICALIZED | 979 |
 | REVIEWED_BROADER_NARROWER | 19 |
-| REVIEWED_RELATED | 2 |
+| REVIEWED_RELATED | 1 |
 | REVIEWED_NO_DIRECT_FORM | 1 |
 | DEFERRED / UNREVIEWED | 0 |
 | **Total** | **1000** |
 
-Proposed semantic candidate rows: **999 pending**, **2 without a proposed binding**. This row count is independent of compiled bindings: **1004 typed pending binding records cover 998 CORE concepts**, because six concepts each have two gender-specific lexical senses. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. No mapping is `approved`.
+Proposed semantic candidate rows: **999 pending**, **1 without a proposed binding**. This row count is independent of compiled bindings: **1005 typed pending binding records cover 999 CORE concepts**, because six concepts each have two gender-specific lexical senses. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. No mapping is `approved`.
 
 ## Compiled state after G07-03 batches (2026-10-22)
 
 - CORE: **1000** compiled concept definitions.
-- PL: **980 lexemes**, **1005 senses**, **1004 pending semantic bindings over 998 pending concepts**, **2 CORE absent**.
+- PL: **981 lexemes**, **1006 senses**, **1005 pending semantic bindings over 999 pending concepts**, **1 CORE absent**.
 - EN unchanged: **19 lexemes**, **28 senses**, **19 pending bindings**.
 - PL valency: **273 authored, compiled frames**, some single-role, some NP/PP/recipient-based. No approved construction binding.
 - Polish morphology: **15 selected noun lexemes** supplied with 14 explicit form strings each (7 cases × 2 numbers), using five shared gender-class selection paradigms. Previous `kot`, `student`, `czytać` seeds remain. No automatic inflection for the remaining lexical inventory.
@@ -66,6 +66,8 @@ Batch 25 adds `małe dziecko` as a broader pending candidate for toddler and `pr
 Batch 26 adds pending category senses for `część ciała` and `zdarzenie`. These transparent labels have no inferred morphology, valency or construction bindings.
 
 Batch 27 adds `celowe działanie` as a pending event-noun candidate for intentional action, replacing the overly broad worklist proposal `dokonywać`. No morphology, valency or construction binding is declared.
+
+Batch 28 adds `komunikowanie` as a pending event noun for the sender-to-addressee communication event; the broader polysemous `komunikacja` remains noted as a related term. No morphology, noun valency or construction binding is declared.
 
 ## Licensing and manual review
 
