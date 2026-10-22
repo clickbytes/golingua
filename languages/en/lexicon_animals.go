@@ -7,7 +7,7 @@ import (
 
 var englishAnimalSource = provenance.SourceRef{
 	ID: "golingua-en-authored", Path: "languages/en/lexicon_animals.go",
-	Version: "2026-10-22-batch-14", License: "unknown", Author: "golingua contributors",
+	Version: "2026-10-22-batch-15", License: "unknown", Author: "golingua contributors",
 }
 
 // These candidates distinguish animal classes and selected domestic species.
@@ -25,4 +25,16 @@ var englishAnimalEntries = []lexicalEntry{
 	{"en.cow.n", "cow", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.cow.adult_female_bovine", "an adult female of domestic cattle, not cattle in general", "cow"}}},
 	{"en.pig.n", "pig", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.pig.domestic_animal", "an individual domestic pig raised or kept by people", "pig"}}},
 	{"en.sheep.n", "sheep", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.sheep.domestic_animal", "an individual domestic sheep of either sex", "sheep"}}},
+	{"en.rabbit.n", "rabbit", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.rabbit.lagomorph", "a small lagomorph of the rabbit type, distinct from a hare", "rabbit"}}},
+	{"en.mouse_animal.n", "mouse", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.mouse_animal.small_rodent", "a small rodent of a mouse type, not a computer device", "mouse_animal"}}},
+	{"en.rat.n", "rat", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.rat.rodent", "a rodent of a rat type, distinct from a mouse", "rat"}}},
+	{"en.bear.n", "bear", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.bear.ursid", "a large omnivorous or carnivorous mammal of the bear family", "bear"}}},
+	{"en.monkey.n", "monkey", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.monkey.non_ape_primate", "a non-ape simian primate, without restricting to one species", "monkey"}}},
+	{"en.chicken_animal.n", "chicken", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.chicken_animal.domestic_bird", "an individual domestic chicken, rather than its meat", "chicken_animal"}}},
+	{"en.duck.n", "duck", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.duck.waterfowl", "a waterfowl bird of the duck type", "duck"}}},
+	{"en.goose.n", "goose", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.goose.waterfowl", "a large waterfowl bird of the goose type", "goose"}}},
+	{"en.frog.n", "frog", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.frog.amphibian", "a usually tailless adult amphibian of the frog group", "frog"}}},
+	{"en.snake.n", "snake", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.snake.limbless_reptile", "an elongated limbless reptile of the snake lineage", "snake"}}},
+	{"en.lizard.n", "lizard", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.lizard.squamate", "a typically four-legged squamate reptile, distinct from snakes", "lizard"}}},
+	{"en.turtle.n", "turtle", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.turtle.shelled_reptile", "a reptile with a protective bony shell of the turtle group", "turtle"}}},
 }
