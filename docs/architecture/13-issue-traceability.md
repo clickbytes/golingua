@@ -26,7 +26,7 @@
 
 ## Bieżący ręczny odbiór PL
 
-Lokalny stan po batchu 29 zawiera 982 leksemy PL, 1007 sensów, 1006 pending lexical binding records pokrywających wszystkie 1000 konceptów i 273 ramy walencji. Owner-directed Codex lexical assessment ocenił `celowe działanie` i `komunikowanie` jako trafne pending candidates oraz sklasyfikował `byt` jako szeroki, rejestrowo ograniczony pending candidate; `komunikacja` pozostaje related. Żaden lexical binding nie jest zatwierdzony. Osiem sense/frame/family/variant construction bindings (4 PL, 4 EN) zatwierdzono po delegowanym przeglądzie #63. Ocena translacji CLI pozostaje **NOT RUN** na poziomie językowym, bo runtime zdaniowy nadal jest unsupported. EN #61 może pracować na danych PL pending; nie wyciągać wniosków o akceptacji leksyki z samej kompilacji katalogu.
+Lokalny stan po batchu 29 zawiera 982 leksemy PL, 1007 sensów, 1006 pending lexical binding records pokrywających wszystkie 1000 konceptów i 273 ramy walencji. Owner-directed Codex lexical assessment ocenił `celowe działanie` i `komunikowanie` jako trafne pending candidates oraz sklasyfikował `byt` jako szeroki, rejestrowo ograniczony pending candidate; `komunikacja` pozostaje related. Delegowany review #61 zatwierdził 989 exact English equivalents w dwudziestu partiach; 11 konceptów EN pozostaje pending, podobnie wszystkie bindingi leksykalne PL. Osiem sense/frame/family/variant construction bindings (4 PL, 4 EN) zatwierdzono po delegowanym przeglądzie #63. Ocena translacji CLI pozostaje **NOT RUN** na poziomie językowym, bo runtime zdaniowy nadal jest unsupported. Nie wyciągać wniosków o akceptacji leksyki z samej kompilacji katalogu.
 
 ## Co zostało świadomie usunięte
 
