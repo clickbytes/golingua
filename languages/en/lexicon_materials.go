@@ -46,4 +46,5 @@ var englishMaterialEntries = []lexicalEntry{
 	{"en.flame.n", "flame", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.flame.combustion_region", "a visible region of combustion with hot reacting gases", "flame"}}},
 	{"en.smoke.n", "smoke", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.smoke.combustion_emission", "airborne particles and gases produced by combustion or heating", "smoke"}}},
 	{"en.ash.n", "ash", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.ash.burn_residue", "solid residue remaining after material has burned", "ash"}}},
+	{"en.dust.n", "dust", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.dust.fine_particles", "fine loose solid particles that can settle or become airborne", "dust"}}},
 }
