@@ -30,5 +30,7 @@ func englishLexiconGroups() []lexicalGroup {
 		{source: englishSettlementSource, entries: englishSettlementEntries},
 		{source: englishPlaceSource, entries: englishPlaceEntries},
 		{source: englishLandformSource, entries: englishLandformEntries},
+		{source: englishLandformMoreSource, entries: englishLandformMoreEntries},
+		{source: englishDocumentSource, entries: englishDocumentEntries},
 	}
 }

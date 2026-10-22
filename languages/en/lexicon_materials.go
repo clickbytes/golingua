@@ -45,4 +45,5 @@ var englishMaterialEntries = []lexicalEntry{
 	{"en.shadow.n", "shadow", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.shadow.occluded_region", "a region receiving less illumination because an object obstructs light", "shadow"}}},
 	{"en.flame.n", "flame", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.flame.combustion_region", "a visible region of combustion with hot reacting gases", "flame"}}},
 	{"en.smoke.n", "smoke", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.smoke.combustion_emission", "airborne particles and gases produced by combustion or heating", "smoke"}}},
+	{"en.ash.n", "ash", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.ash.burn_residue", "solid residue remaining after material has burned", "ash"}}},
 }
