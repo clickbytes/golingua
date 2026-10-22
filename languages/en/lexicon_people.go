@@ -7,7 +7,7 @@ import (
 
 var englishPeopleSource = provenance.SourceRef{
 	ID: "golingua-en-authored", Path: "languages/en/lexicon_people.go",
-	Version: "2026-10-22-batch-03", License: "unknown", Author: "golingua contributors",
+	Version: "2026-10-22-batch-04", License: "unknown", Author: "golingua contributors",
 }
 
 // These common person and relationship nouns have distinct English senses.
@@ -35,4 +35,11 @@ var englishPeopleEntries = []lexicalEntry{
 	{"en.grandchild.n", "grandchild", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.grandchild.kinship", "a child of a person's child", "grandchild"}}},
 	{"en.cousin.n", "cousin", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.cousin.kinship", "a person related through collateral kinship rather than direct descent or siblinghood", "cousin"}}},
 	{"en.offspring.n", "offspring", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.offspring.child", "a person's child, considered in relation to that parent", "child_of_person"}}},
+	{"en.infant.n", "infant", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.infant.early_child", "a child at the earliest stage of life who depends on others for basic care", "infant"}}},
+	{"en.toddler.n", "toddler", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.toddler.early_walker", "a young child beginning independent walking and exploration", "toddler"}}},
+	{"en.adolescent.n", "adolescent", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.adolescent.developmental_stage", "a person undergoing the transition from childhood to adulthood", "adolescent"}}},
+	{"en.older_adult.n", "older adult", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.older_adult.later_life", "an adult in a later stage of life without a specific age threshold", "elderly_person"}}},
+	{"en.stepparent.n", "stepparent", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.stepparent.family_role", "a person recognized as a parent through partnership with a child's parent", "stepparent"}}},
+	{"en.adoptive_parent.n", "adoptive parent", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.adoptive_parent.family_role", "a person whose parental status is established through adoption", "adoptive_parent"}}},
+	{"en.host_person.n", "host", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.host_person.guest_role", "a person who receives guests or facilitates an event for participants", "host_person"}}},
 }
