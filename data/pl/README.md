@@ -69,8 +69,10 @@ Batch 27 adds `celowe działanie` as a pending event-noun candidate for intentio
 
 Batch 28 adds `komunikowanie` as a pending event noun for the sender-to-addressee communication event; the broader polysemous `komunikacja` remains noted as a related term. No morphology, noun valency or construction binding is declared.
 
-Batch 29 adds `byt` as a pending, narrow, register-limited candidate for the CORE continuant category `entity`, based on the philosophical noun sense documented by WSJP PAN. The external definition is not copied; the source's licensing remains unknown. No morphology, valency or construction binding is declared.
+Batch 29 adds `byt` as a pending, broad, register-limited candidate for the CORE continuant category `entity`, based on the philosophical noun sense documented by WSJP PAN. The external definition is not copied; the source's licensing remains unknown. No morphology, valency or construction binding is declared.
 
 ## Licensing and manual review
 
 `SourceRef` uses project-authored references and `License: unknown` where no explicit license decision exists. This is **not** permission to copy third-party dictionaries. There are no newly approved PL↔EN mappings; the owner-selected manual linguistic acceptance of these new batches remains **NOT RUN**.
+
+Owner-directed lexical assessment (Codex, 2026-10-22) checked three pending candidates against WSJP PAN entries: `celowe działanie` matches the recorded sense of `celowy` and the collocation `celowe działanie`; `komunikowanie` is the gerund of `komunikować` (“convey information”) and fits the sender-to-addressee event; `byt` is documented in a philosophical sense as anything existing in some way, so its mapping to CORE `entity` is broad, register-limited and must remain pending. These checks assess lexical fit only: they do not approve bindings or validate inflection, noun argument realization, or sentence translations. External source licensing remains unknown, and no dictionary definitions or inflection tables were copied.

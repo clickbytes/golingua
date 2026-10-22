@@ -2,7 +2,7 @@
 
 ## Current scope
 
-The executable `languages/pl` package builds **982 typed Polish lexemes, 1007 distinct lexical senses, 1006 pending binding records covering all 1000 CORE concepts**; no CORE concept is absent. `pl.LexicalDocument()` assembles `lexicon_*.go` domains in deterministic order and `pl.CompileLexicon(coreGraph)` validates the candidate graph. The editorial worklist `data/pl/1000-core-review.tsv` records 1000 proposed pending candidates. `entity` is represented by the register-limited narrow candidate `byt`; its binding remains pending.
+The executable `languages/pl` package builds **982 typed Polish lexemes, 1007 distinct lexical senses, 1006 pending binding records covering all 1000 CORE concepts**; no CORE concept is absent. `pl.LexicalDocument()` assembles `lexicon_*.go` domains in deterministic order and `pl.CompileLexicon(coreGraph)` validates the candidate graph. The editorial worklist `data/pl/1000-core-review.tsv` records 1000 proposed pending candidates. `entity` is represented by the register-limited broad candidate `byt`; its binding remains pending.
 
 Polish lemmas are distinct from CORE concepts. Examples of polysemy include `szkoła` facility/institution, `bank` institution/office, `ryba` animal/food, `skóra` organ/material. Many verbs have sense-specific cases and prepositions in `ValencyFrame`. They do **not** have automatic morphology or authorized construction paths.
 
@@ -48,7 +48,7 @@ Batch 25 adds `małe dziecko` as a broad candidate for toddler and the event nou
 
 Batch 26 adds pending lexical category senses for `część ciała` and `zdarzenie`. No morphology, valency frames or construction bindings are added.
 
-Batch 27 adds `celowe działanie` as a pending event noun for intentional action. Batch 28 adds `komunikowanie` as a pending event noun for communication. Batch 29 adds `byt` as a pending, narrow candidate for the entity category. None adds morphology, noun valency or construction bindings.
+Batch 27 adds `celowe działanie` as a pending event noun for intentional action. Batch 28 adds `komunikowanie` as a pending event noun for communication. Batch 29 adds `byt` as a pending, broad, register-limited candidate for the entity category. None adds morphology, noun valency or construction bindings.
 
 ## Morphological subset — shared class templates, explicit forms
 
