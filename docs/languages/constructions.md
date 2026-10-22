@@ -30,18 +30,20 @@ choose a meaning or produce surface text.
 The PL and EN packages have independently declared transitive families and
 variants in `languages/*/constructions/transitive.json`. PL also declares an
 intransitive family. `CompileValency` exposes pending construction candidates
-separately from approved bindings. The current owner-supplied review handoff
-lists four PL candidates (`widzieć`, `słyszeć`, `dostać`, `patrzeć na`) and
-four EN candidates (`see`, `hear`, `get`, `read`). The EN `look at` frame has
-no oblique family/variant; it has no candidate route, and generic SVO is not a
-substitute. These eight candidates remain unapproved.
+separately from approved bindings. Following the owner's delegated review, the
+index contains four approved PL routes (`widzieć`, `słyszeć`, `dostać`,
+`patrzeć na`) and four approved EN routes (`see`, `hear`, `get`, `read`). The
+EN `look at` frame has no oblique family/variant and no binding; generic SVO is
+not a substitute.
 
 `catalog --summary --json` reports candidate and approved construction-binding
-counts separately. Current approved counts are **zero for both languages**;
-`catalog.ResolveApprovedPlans` therefore still returns `unsupported` for all
-current concepts, and CLI `translate` remains unsupported. `Bindings()` only
-returns approved records; `Candidates()` is review input and never licenses a
-runtime path.
+counts separately. Current counts are **zero pending candidates and four
+approved construction bindings per language**. These bindings license only
+their exact sense/frame/family/variant routes. No lexical CORE bindings are
+approved and no verified language registry is configured, so the full
+`catalog.ResolveApprovedPlans` path and CLI `translate` remain unsupported.
+`Bindings()` returns only approved records; `Candidates()` is review input and
+never licenses a runtime path.
 
 Structural templates can be shared by compatible senses only after their
 roles, grammatical functions, case or adposition policy, variant and operator
@@ -50,9 +52,10 @@ constraints are reviewed for each language. In particular `patrzeć na` and
 must not silently stand in for those frames. A frame's `AllowedFamilyIDs` is
 only a candidate family reference. It is never treated as approval.
 
-The owner's sentence-level review has not run. Future review should add
-explicit construction bindings and compiled plans before advertising any
-sentence analysis or realization capability in the language manifests.
+The owner's sentence-level review has not run. The delegated route review adds
+eight explicit construction bindings; compiled plans and a configured runtime
+are still required before advertising sentence analysis or realization in the
+language manifests.
 No external lexical or linguistic source is claimed by the current structural
 templates; their provenance records identify them as internal project data.
 
@@ -70,4 +73,4 @@ The G07-03 motion batch adds 24 reviewed `LexicalSense` candidates with 24 autho
 
 `languages/pl/constructions/transitive_oblique.json` and `double_np.json` provide structural slots, respectively (subject NP + verb VP + object NP + oblique PP) and (subject NP + verb VP + object NP + complement NP). `ditransitive.json` now has consistent `recipient` and `object` slot identifiers, matching the corresponding PL valency frames. Sense-specific cases such as `z`+genitive, `do`+genitive or dative recipient are stored in `valency_actions_multirole.go`, **not** in CORE.
 
-All new PL valency records are pending and the structural packages are not approved construction bindings. Template validity alone does not imply parsing, realization or PL↔EN transfer.
+Other new PL valency records remain without approved construction bindings. Template validity alone does not imply parsing, realization or PL↔EN transfer.

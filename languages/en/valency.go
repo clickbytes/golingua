@@ -14,10 +14,10 @@ var englishValencySource = provenance.SourceRef{
 	Version: "2026-10-21-initial", License: "unknown", Author: "golingua contributors",
 }
 
-var englishConstructionCandidateSource = provenance.SourceRef{
-	ID:      "golingua-owner-construction-review",
-	URI:     "https://github.com/clickbytes/golingua/issues/63#issuecomment-6313628091",
-	Version: "2026-10-21", License: "unknown", Author: "clickbytes",
+var englishConstructionReviewSource = provenance.SourceRef{
+	ID:      "golingua-delegated-construction-review",
+	URI:     "https://github.com/clickbytes/golingua/issues/63#issuecomment-6351925853",
+	Version: "2026-10-22", License: "unknown", Author: "Codex by owner delegation",
 }
 
 type frameDeclaration struct {
@@ -26,11 +26,11 @@ type frameDeclaration struct {
 	arguments []valency.ArgumentSlot
 }
 
-type constructionCandidateDeclaration struct {
+type constructionBindingDeclaration struct {
 	sense, frame, family, variant string
 }
 
-var englishConstructionCandidateDeclarations = []constructionCandidateDeclaration{
+var englishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo"},
@@ -61,8 +61,8 @@ var englishFrames = []frameDeclaration{
 }
 
 // CompileValency constructs independently authored English argument frames
-// and pending construction candidates. No candidate is an approved binding,
-// so this index cannot license realization.
+// and the construction bindings approved in the delegated review. The routes
+// alone do not activate sentence realization.
 func CompileValency() (*valency.Index, error) {
 	if err := englishValencySource.Validate(); err != nil {
 		return nil, fmt.Errorf("English valency source: %w", err)
@@ -96,24 +96,25 @@ func CompileValency() (*valency.Index, error) {
 		}
 		frames = append(frames, frame)
 	}
-	candidates := make([]valency.ConstructionCandidate, 0, len(englishConstructionCandidateDeclarations))
-	for _, item := range englishConstructionCandidateDeclarations {
+	bindings := make([]valency.ConstructionBinding, 0, len(englishConstructionBindingDeclarations))
+	for _, item := range englishConstructionBindingDeclarations {
 		senseID, err := ids.NewSenseID(item.sense)
 		if err != nil {
-			return nil, fmt.Errorf("English construction candidate sense: %w", err)
+			return nil, fmt.Errorf("English construction binding sense: %w", err)
 		}
 		familyID, err := ids.NewConstructionID(item.family)
 		if err != nil {
-			return nil, fmt.Errorf("English construction candidate family: %w", err)
+			return nil, fmt.Errorf("English construction binding family: %w", err)
 		}
 		variantID, err := ids.NewConstructionID(item.variant)
 		if err != nil {
-			return nil, fmt.Errorf("English construction candidate variant: %w", err)
+			return nil, fmt.Errorf("English construction binding variant: %w", err)
 		}
-		candidates = append(candidates, valency.ConstructionCandidate{
+		bindings = append(bindings, valency.ConstructionBinding{
 			SenseID: senseID, ValencyFrameID: valency.FrameID(item.frame),
-			FamilyID: familyID, VariantID: variantID, Provenance: englishConstructionCandidateSource,
+			FamilyID: familyID, VariantID: variantID, Approved: true,
+			Provenance: englishConstructionReviewSource,
 		})
 	}
-	return valency.BuildIndexWithCandidates(frames, nil, candidates)
+	return valency.BuildIndexWithCandidates(frames, bindings, nil)
 }

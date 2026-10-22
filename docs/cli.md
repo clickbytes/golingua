@@ -49,9 +49,10 @@ oddzielne liczby konceptów, leksemów, sensów oraz statusy bindingów.
 nie upoważnia do tłumaczenia. Liczba 1000 jest celem redakcyjnym, a raport nie
 mierzy poprawności językowej.
 
-`catalog --summary` raportuje też liczbę pending construction candidates i
-approved construction bindings oddzielnie dla PL i EN. Kandydat nie jest
-bindingiem runtime i nie aktywuje tłumaczenia.
+`catalog --summary` raportuje liczbę pending construction candidates i
+approved construction bindings oddzielnie dla PL i EN. Tylko approved binding
+licencjonuje dokładną trasę sense/frame/family/variant; sam nie wystarcza do
+tłumaczenia zdania bez zatwierdzonych powiązań leksykalnych i runtime.
 
 ## Pytania na faktach z żądania
 
