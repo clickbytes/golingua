@@ -7,7 +7,7 @@ import (
 
 var englishPeopleSource = provenance.SourceRef{
 	ID: "golingua-en-authored", Path: "languages/en/lexicon_people.go",
-	Version: "2026-10-22-batch-05", License: "unknown", Author: "golingua contributors",
+	Version: "2026-10-22-batch-06", License: "unknown", Author: "golingua contributors",
 }
 
 // These common person and relationship nouns have distinct English senses.
@@ -54,4 +54,13 @@ var englishPeopleEntries = []lexicalEntry{
 	{"en.farmer.n", "farmer", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.farmer.agriculture", "a person cultivating crops or raising animals for production", "farmer"}}},
 	{"en.cook.n", "cook", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.cook.food_preparation", "a person who prepares food as a practical or occupational activity", "cook_person"}}},
 	{"en.waiter.n", "waiter", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.waiter.food_service", "a person serving food or drinks to customers at a dining establishment", "waiter"}}},
+	{"en.cleaner.n", "cleaner", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.cleaner.occupation", "a person whose work includes removing dirt and maintaining cleanliness", "cleaner_person"}}},
+	{"en.builder.n", "builder", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.builder.construction", "a person who constructs or repairs physical structures", "builder_person"}}},
+	{"en.carpenter.n", "carpenter", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.carpenter.woodworking", "a craftsperson who shapes and joins wood to make or repair objects", "carpenter"}}},
+	{"en.electrician.n", "electrician", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.electrician.trade", "a person who installs or repairs electrical systems", "electrician"}}},
+	{"en.plumber.n", "plumber", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.plumber.trade", "a person who installs or repairs water supply and drainage systems", "plumber"}}},
+	{"en.engineer.n", "engineer", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.engineer.technical_design", "a person applying scientific and technical principles to design systems or structures", "engineer"}}},
+	{"en.programmer.n", "programmer", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.programmer.software", "a person who writes or maintains computer programs", "programmer"}}},
+	{"en.librarian.n", "librarian", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.librarian.library_work", "a person who organizes or facilitates access to library resources", "librarian"}}},
+	{"en.police_officer.n", "police officer", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.police_officer.policing", "a person exercising an authorized policing role", "police_officer"}}},
 }
