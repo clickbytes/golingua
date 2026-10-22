@@ -50,6 +50,7 @@ var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.patrzec.directed":   "pl.patrzec.directed.na",
 	"pl.slyszec.auditory":   "pl.slyszec.auditory.transitive",
 	"pl.dostac.receive":     "pl.dostac.receive.transitive",
+	"pl.dac.transfer":        "pl.dac.transfer.ditransitive",
 	"pl.pytac.request_info": "pl.pytac.request_info.frame",
 	"pl.odpowiadac.answer":  "pl.odpowiadac.answer.frame",
 	"pl.czytac.interpret":   "pl.czytac.interpret.frame",
