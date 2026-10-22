@@ -36,7 +36,7 @@
         "optionality": "required"
       },
       {
-        "id": "theme",
+        "id": "object",
         "position": 3,
         "category": "NP",
         "cardinality": {
@@ -72,7 +72,7 @@
         },
         {
           "kind": "slot",
-          "slot_id": "theme"
+          "slot_id": "object"
         }
       ],
       "markedness": "neutral",

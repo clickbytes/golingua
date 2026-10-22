@@ -96,6 +96,8 @@ func LexicalDocument() (lexicon.Document, error) {
 					sense.ValencyIDs = []lexicon.ValencyID{lexicon.ValencyID(frameID)}
 				} else if frameID, ok := actionFrameForSense(meaning.id); ok {
 					sense.ValencyIDs = []lexicon.ValencyID{lexicon.ValencyID(frameID)}
+				} else if frameID, ok := additionalFrameForSense(meaning.id); ok {
+					sense.ValencyIDs = []lexicon.ValencyID{lexicon.ValencyID(frameID)}
 				}
 				document.Senses = append(document.Senses, sense)
 				if meaning.candidateCore == "" {

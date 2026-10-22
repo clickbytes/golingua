@@ -91,6 +91,8 @@ func CompileValency() (*valency.Index, error) {
 	declarations = append(declarations, physicalActionFrames...)
 	declarations = append(declarations, lifeActionFrames...)
 	declarations = append(declarations, socialActionFrames...)
+	declarations = append(declarations, cognitionActionFrames...)
+	declarations = append(declarations, multiRoleActionFrames...)
 	frames := make([]valency.ValencyFrame, 0, len(declarations))
 	for _, item := range declarations {
 		senseID, err := ids.NewSenseID(item.sense)
