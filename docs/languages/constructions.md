@@ -47,3 +47,9 @@ explicit construction bindings and compiled plans before advertising any
 sentence analysis or realization capability in the language manifests.
 No external lexical or linguistic source is claimed by the current structural
 templates; their provenance records identify them as internal project data.
+
+## Polish structural family correction — G07-03
+
+`languages/pl/valency.go` now assigns a compatible construction family per sense instead of marking all frames `pl.transitive`. `pl.intransitive` applies to `spać` and the currently modeled `uczyć się`; `pl.oblique` (new `languages/pl/constructions/oblique.json`) describes a PP complement for `patrzeć na`; `pl.ditransitive` (new `ditransitive.json`) can describe a dative recipient and accusative theme for `dać`. Remaining listed transitive frames have a single NP complement. Semantic participant names match their referenced CORE concepts.
+
+These declarations are **not** approved sense-to-family bindings. Optional `o co` (`pytać`), `na co` (`odpowiadać`), and discipline/content complements (`uczyć`/`uczyć się`) remain out of scope until semantic roles and language-local arguments are reviewed. No sentence capability was activated.

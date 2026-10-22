@@ -1,65 +1,27 @@
-# Polish morphology seed
+# Polish Go lexicon and limited morphology
 
-## In-code lexical catalog
+The Polish semantic source is `languages/pl/lexicon.go` plus the explicitly ordered, typed `lexicon_*.go` groups. `pl.LexicalDocument()` constructs separate `MorphLexeme`, `LexicalSense` and pending `SemanticBinding` objects; `pl.CompileLexicon(coreGraph)` freezes them after validation against the supplied compiled CORE.
 
-`pl.LexicalDocument()` declares Polish lexical slices in Go, authored in
-G07-03 batches: 426 lexemes, 435 separate senses and 434 **pending**
-candidate links to the neutral CORE catalog (files
-`lexicon.go`, `lexicon_people.go`, `lexicon_nature.go`, `lexicon_body.go`,
-`lexicon_places.go`, `lexicon_objects.go`, `lexicon_food.go`,
-`lexicon_basics.go` and the group aggregator `lexicon_groups.go`).
-`pl.CompileLexicon(coreGraph)`
-validates and freezes them against the exact supplied CORE graph. The second
-sense of `ksiazka.work` deliberately has no CORE link. The new
-`dom.household`, `szkola.institution`, `reka.arm` and
-`dziecko.kinship` senses do use `candidate` links to at most one CORE
-concept each. Candidate links are not approved semantic bindings and
-cannot authorize translation.
-Batch 2 authored the nature group (animals, plants, substances, landforms;
-`staw` for the water body is a separate lexeme `pl.staw_zbiornik.n`) and the
-body group (`skóra` is one lexeme with the `part` and `material` senses of
-the polysemy; `ryba` and `owoc` gained second food senses merged manually).
-Batch 3 adds the places group (settlements,
-buildings, rooms, routes), the objects group (domestic objects, tools,
-machines, technology), the food group (food, beverages, garments) and the
-basics group (resolved original-49 nouns, leftover person entries and
-property nouns). Reviewable verbs stay worklist-only until valency batches.
-The remaining reviewed rows are 541 absent concepts; re-check the totals
-with `catalog --summary --json` before each further batch. The locomotion
-verb decisions are recorded in the worklist but stay worklist-only until
-their per-sense frames are authored; batch 5 additionally implemented the
-deferred substance/plant nouns in the nature group.
+## Source inventory (after G07-03 entity and valency fix)
 
-The full editorial decision record behind this slice and the rest of the
-1000 concepts is `data/pl/1000-core-review.tsv`; see `data/pl/README.md`.
-Rows marked there as reviewed but not yet implemented in Go are
-worklist-only and add nothing to the compiled catalog.
+**704 Polish lexemes, 720 senses and 719 pending candidate bindings** cover 719 of 1000 CORE concepts. **281 CORE remain absent from the Polish compiled lexicon.** Approved bindings: **0**. The editorial ledger `data/pl/1000-core-review.tsv` has 983 proposed candidate mappings; **264 event candidate meanings are worklist-only** and have no Go lexical binding yet. Counts are source-derived; run `golingua catalog --summary --json` to verify the observed snapshot.
 
-`pl.CompileValency()` separately compiles the initial four sense-specific
-argument frames (`widzieć`, `patrzeć na`, `słyszeć`, `dostać`) and the
-batch-4 core-verb frames for `pytać` (addressee accusative, topic with
-`o`), `odpowiadać na` (content with `na`), `czytać` (theme accusative),
-`uczyć` (learner accusative, discipline genitive), `uczyć się` (content
-genitive), `jeść` (theme accusative) and one-agent `spać`. The frames
-record Polish case and prepositions but have no approved construction
-binding, and none of these verbs has a seed paradigm yet.
+The lexicon preserves polysemy: `skóra` (body/material), `ryba` (animal/food), `bank` (institution/premises), `szkoła` (building/institution), `sklep`, `restauracja`, `szpital`, `biblioteka` (place/organization). Equal lemmas may have multiple senses; no implied equivalence is licensed by their shared string. New institution and food senses live in `lexicon_institutions_food.go` or were appended to their existing lemma in `lexicon_places.go`.
 
-The lexical catalog supplies one additional in-code morphology entry, `kot`,
-with six explicitly declared cells for a masculine animal noun. It supplies no
-sentence constructions. Source
-metadata points to the project-authored Go declarations
-and records the license as `unknown` until the project establishes one.
-Counts refer only to the declared in-code slices, not to all Polish
-vocabulary.
+`pl.CompileValency()` provides **12** explicitly scoped frames: `widzieć`, `patrzeć na`, `słyszeć`, `dostać`, `dać`, `pytać`, `odpowiadać`, `czytać`, `uczyć`, `uczyć się`, `jeść`, `spać`. Semantic roles use actual CORE signatures: e.g. `sleeper`, `reader/material`, `sender/addressee`, `instructor/learner`. `patrzeć na` uses the oblique PP family, `dać` a ditransitive structure, `uczyć się` and `spać` the intransitive family, not a generic accusative transitive family. Only currently supportable core roles are licensed; optional topic/content complements not represented in CORE require future separate review.
 
-The Go package `github.com/clickbytes/golingua/languages/pl` loads the bundled Polish profile, manifest, paradigms, and lexical principal parts. `pl.Load()` compiles the seed into the shared generator and finite relation analyzer. `Seed.Generate(lexemeID, featureValues)` and `Seed.Analyze(surface)` are Go APIs; the CLI exposes them through `forms`, but this package does not realize sentences.
+All these valency frame families are **structural declarations without approved construction bindings**. `pl.transitive`, `pl.intransitive`, `pl.oblique` and `pl.ditransitive` do not imply working sentence generation or a runtime plugin.
 
-## Included classes
+## Morphology seed versus full lexicon
 
-- One explicitly scoped masculine personal noun pattern, represented by `student`, for singular and plural across the seven profile cases. It uses the `t → ci` alternation in locative/vocative singular and nominative/vocative plural.
-- One present indicative active finite verb pattern represented by `czytać`, with all person/number endings and explicit principal stem `czyt`.
-- An in-code masculine animal noun pattern for `kot`: singular nominative, genitive, accusative and instrumental; plural nominative and genitive. Other cells remain unsupported.
+The existing `pl.Load()` builds a separate small seed of authored morphology and an inverse index; it does **not** make all 704 semantic lexemes inflectable. Only declared cells work:
 
-The finite relation table retains syncretic readings. For `studenta`, analysis returns both singular genitive and accusative; for plural `studentów`, it returns plural genitive and accusative. NFC is the only surface normalization; case and diacritics remain significant.
+- `student`: masculine-personal noun selected case/number cells.
+- `czytać`: selected present indicative person/number cells.
+- `kot`: 6 masculine-animal noun cells.
 
-This seed does not define a general Polish declension/conjugation system. It does not cover other noun stem alternations, adjective agreement, past/future/conditional forms, aspect, stress, phonology, or lexemes outside the listed patterns. `morphology/exceptions.json` is an empty array; the loader validates and compiles formal exception records when independently reviewed rules are added. No exception/block rule is claimed by this seed. Missing or unsupported cells do not get guessed forms. No owner-selected manual example has been reviewed yet; local API smoke is implementation verification only.
+`lexeme:czytac-v` is a separate morphology seed ID from `lexeme:pl.czytac.v`; do not unify them without an explicit migration and a real review of paradigms. The seed lacks general noun paradigms, adjective agreement, past/future/conditional, aspect realizations, and irregulars. Unknown forms return typed `unknown`/`unsupported`; inverse analysis keeps all distinct readings. The seed loader's 128-record limit does not determine lexical inventory size; finite table defaults to 100000 readings/32 MiB.
+
+`languages/pl/manifest.json` correctly retains `sentence_analysis: unsupported` and `meaning_realization: unsupported`. For owner evaluation use `golingua forms --language pl ... --json` or the `catalog` commands; translation remains unavailable without separately approved data and adapters.
+
+**Owner manual linguistic acceptance: NOT RUN.** No CI green check replaces semantic/inflection review.

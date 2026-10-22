@@ -16,8 +16,8 @@ var polishValencySource = provenance.SourceRef{
 
 type frameDeclaration struct {
 	id, sense, family string
-	roles     []meaning.Role
-	arguments []valency.ArgumentSlot
+	roles             []meaning.Role
+	arguments         []valency.ArgumentSlot
 }
 
 // Families are explicit per frame, never silently assumed transitive.
@@ -42,7 +42,7 @@ var polishFrames = []frameDeclaration{
 	{"pl.dac.transfer.ditransitive", "pl.dac.transfer", "pl.ditransitive", []meaning.Role{"giver", "recipient", "theme"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "giver", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "recipient", Role: "recipient", Required: true, GrammaticalFunction: "indirect_object", Case: "dative"},
-		{ID: "object", Role: "theme", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+		{ID: "theme", Role: "theme", Required: true, GrammaticalFunction: "object", Case: "accusative"},
 	}},
 	{"pl.pytac.request_info.frame", "pl.pytac.request_info", "pl.transitive", []meaning.Role{"sender", "addressee"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "sender", Required: true, GrammaticalFunction: "subject", Case: "nominative"},

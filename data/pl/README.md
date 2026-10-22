@@ -1,109 +1,31 @@
-# Recenzja PL leksykalizacji CORE
+# Polish review of the 1000 CORE concepts
 
-`data/pl/1000-core-review.tsv` jest redakcyjnym zapisem pracy nad issue
-G07-03 (pełna polska warstwa językowa na 1000 CORE). Plik ma 1000 wierszy,
-po jednym na każdy aktywny `ConceptID` z `internal/catalog/concepts.go`, w tej
-samej kolejności co katalog. Jest to artefakt redakcyjny: **nie jest** czytany
-przy starcie, nie generuje deklaracji Go i nie jest formą testu ani golda.
-Wykonywalnym źródłem prawdy pozostaje typowany Go w `languages/pl/`.
+`data/pl/1000-core-review.tsv` contains **1000** different CORE IDs, language-specific candidate lemmas and editorial rationales. It is an **editorial worklist only**: never compiled at runtime, never an approved bilingual dictionary, and not an automated quality oracle.
 
-Licencja metadanych: brak importu słowników zewnętrznych. `SOURCE_REF`
-wskazuje na autorską decyzję redakcyjną projektu
-(`golingua-pl-authored/unknown`), `REVIEWER` to agent wykonujący (codex),
-`REVIEW_DATE` to 2026-10-21. Wartość licencji `unknown` pozostaje jawnym
-brakiem ustalenia i nie daje prawa do kopiowania danych zewnętrznych.
+## Editorial inventory
 
-## Statusy pracy (kolumna `PL_WORK_STATUS`)
+| PL_WORK_STATUS | Rows |
+| --- | ---: |
+| REVIEWED_LEXICALIZED | 965 |
+| REVIEWED_BROADER_NARROWER | 18 |
+| REVIEWED_RELATED | 2 |
+| REVIEWED_NO_DIRECT_FORM | 15 |
+| DEFERRED / UNREVIEWED | 0 |
+| **Total** | **1000** |
 
-Na 1000 wierszy:
+983 worklist rows name a proposed sense/binding; 17 have no binding. All 983 proposed connections are **pending**. The ledger's status `REVIEWED` means that an agent has written a candidate decision; it does NOT certify correctness by the project owner, an authoritative dictionary or an executable grammar. In particular, `MAPPING_KIND=equivalent` in TSV is not `lexicon.BindingApproved`.
 
-- `REVIEWED_LEXICALIZED` — **448**; jest naturalny polski odpowiednik,
-  zwykle jednowyrazowy (dla rzeczowników dopuszczalny lekki frazemat).
-- `REVIEWED_BROADER_NARROWER` — **14**; polski wyraz jest trwale
-  szerszy albo węższy niż definicja CORE (np. gatunkowe zawężenie).
-- `REVIEWED_RELATED` — **2**; bez bezpośredniej formy, wiążący jest tylko
-  pokrewny wyraz; jawnie bez bindingu do czasu decyzji właściciela.
-- `REVIEWED_NO_DIRECT_FORM` — **15**; CORE concept bez jednowyrazowej
-  polskiej formy (metakategorie, wyrażenia opisowe, nazwy relacji).
-- `DEFERRED` — **521**; wiersz bez decyzji PL w tym batchu, z powodem
-  `Redakcja PL przesunieta do kolejnego batcha G07-03`. DEFERRED nie znaczy
-  „brak translacji"; znaczy „nie rozpatrzono jeszcze".
+## Current compiled Go scope
 
-## Kolumny
+After adding the institution/food entity candidates:
 
-- `CORE_ID`, `CORE_KIND`, `CORE_DEFINITION` — skopiowane z katalogu CORE.
-- `DOMAIN` — domena z katalogu (dla 49 wierszy oryginalnych brak domeny
-  dziedzinowej; widać to jako `Existing typed CORE definitions`).
-- `PL_WORK_STATUS` — status z listy powyżej.
-- `PL_LEMMAS` — `lemma:pos`, razem ze śladami homonimii POS (np. `kot:noun`).
-- `LEXEME_SENSE_IDS` — pary `lexeme:<id>|sense:<id>` ze stabilnymi
-  ASCII slugami (spacje w MWE → `_`, np. `pl.kropla_deszczu.n`).
-  Wiersze bez PL lub bez bindingu mają `-`.
-- `MAPPING_KIND` — `equivalent` / `broad` / `narrow` / `related` /
-  puste (`none`). Nigdy nie jest to zgoda na approved binding.
-- `BINDING_STATUS` — `pending` dla sensów z kandydaturą; `none` bez niej.
-  **Nie ma żadnego `approved`.** Awans wymaga ręcznej akceptacji właściciela.
-- `VALENCY_FRAME_IDS` — identyfikatory ram z `languages/pl/valency.go`
-  dla czasowników z istniejącą ramą (`widzieć`, `patrzeć na`, `słyszeć`,
-  `dostać`). Inne czasowniki wymagają ram przed dopisaniem do Go.
-- `MORPHOLOGY_COVERAGE` — `seed morfologiczny: brak paradygmatu czasownika`
-  w znanych przypadkach; pełna morfologia jest seeded tylko dla
-  `kot` (rzeczownik męski, zwierzęcy) i patternów seedu.
-- `CONSTRUCTION_COVERAGE` — zawsze `-`; seed nie definiuje konstrukcji.
-- `SOURCE_REF/LICENSE/REVIEW_DATE/REVIEWER/DECISION_RATIONALE` —
-  provenance decyzji + uzasadnienie po polsku (uzasadnienia zapisano
-  bez diakrytyków, ASCII).
+- Typed Polish lexicon: **704 lexemes / 720 lexical senses / 719 pending bindings** (281 CORE absent).
+- Worklist-only: **264 event concept proposals** without fully authored Polish sense-specific valency; do not claim these as runtime bindings.
+- Compiled valency: **12** semantically role-aligned Polish frames; no approved construction bindings or sentence realization.
+- Morpho-phonological coverage: small separate seed, not the 704-lexeme vocabulary; unimplemented cells have no generated forms.
 
-## Zakres implementacji Go w tym batchu
+`PL_LEMMAS`, `LEXEME_SENSE_IDS`, `MAPPING_KIND`, `BINDING_STATUS`, `VALENCY_FRAME_IDS`, `MORPHOLOGY_COVERAGE`, `CONSTRUCTION_COVERAGE` and provenance fields may refer to worklist-only candidates. Inspect `catalog --summary --json` to see compiled runtime data; the ledger alone cannot establish runtime coverage.
 
-Go w `languages/pl/` obejmuje siedem grup domenowych: People (59 leksemów /
-60 sensów), nature (95 leksemów; ręcznie dopisane sensy polisemii
-`ryba.food` i `owoc.food`), body (40/41), places (osady/budynki/
-pomieszczenia/trasy, 56), objects (obiekty domowe/narzędzia/maszyny, 79),
-food (jedzenie/napoje/okrycia, 58) oraz basics (23: resztka oryginalnych 49,
-pozycje osobowe `kurier`/`wolontariusz`, rzeczowniki właściwości).
-Dla homonimu `staw` wyodrębniono osobny leksem `pl.staw_zbiornik.n`
-(zbiornik wodny), a polisemiczny leksem `pl.skora.n` łączy sens `part`
-(organ) i `material` (surowiec). Batch 4 autorsko dopisał ramy walencji i leksemy dla
-siedmiu czasowników rdzeniowych (`pytać`, `odpowiadać`, `czytać`, `uczyć`,
-`uczyć się`, `jeść`, `spać`) w `lexicon_core_verbs.go`. Batch 5 rozpatrzył
-54 kolejne wiersze DEFERRED: 18 rzeczowników substancji i korzenia
-(implementacja w grupie nature) oraz 36 czasowników lokomocji (decyzje
-w worklist bez ram walencji). Batch 6 domknął redakcję worklistu: całe
-1000 wierszy jest rozpatrzonych (0 `DEFERRED`). Decyzje obejmują cechy i
-jakości, emocje i stany, kalendarz i czas abstrakcyjny, pojazdy, dokumenty,
-media, pieniądze, łazienkę, dishware i miejsca usługowe, relacje
-przestrzenne/czasowe/logiczne/strukturalne/społeczne, abstrakty
-informacyjno-modalne, manipulację, wymianę, percepcję i myślenie, mowę,
-fizjologię, produkcję oraz motywację — rzeczowniki i frazy jako decyzje
-worklistowe (implementacja wymagałaby nowych grup domenowych), a czasowniki
-**bez ram walencji** nie wchodzą do Go (jak lokomocje z batcha 5).
-Aktualizacje Go w tym batchu: brak; stan leksykonu nie zmienia się względem
-main sprzed batcha 6. Batch 7 (implementacja) dopisał do Go sześć nowych
-grup domenowych z decyzji batcha 6: qualities (73 leksemy — właściwości,
-emocje, stany), abstracts (55 — kalendarz i abstrakty informacyjno-modalne),
-relations (50 — relacje przestrzenne/czasowe/logiczne/strukturalne/
-społeczne), transport (13), media (29 — dokumenty/media/papiery pieniężne)
-oraz supplies (9 — łazienka i domowe akcesoria); ponadto 5 fraz z domeny
-dishware/miejsca usługowch trafiło do istniejących grup food i places.
-Polisemie: `pl.powierzchnia.n` wzbogacił się o sens `area` (wymiarowy),
-a `pl.faktura.n` w qualities łączy sensy `surface` (faktura malarska,
-concept:texture) i `document` (dokument sprzedaży, concept:invoice)
-jako homonimia w jednym leksemie. Czasowniki stricte bez ram walencji
-pozostają poza Go.
+All new data is project-authored candidate metadata, sources have `unknown` licence unless a definite licence is recorded. `unknown` is not permission to copy any outside lexicon. Disputed forms (including inflection, homonymy, dialect and semantic narrowing) require a separate owner decision. `winogrono` is not pluralia tantum; `lody` in its food sense uses plural form. Nominalized relation labels are not functional adpositions or syntactic operators.
 
-Znane przypadki jawne, do decyzji właściciela, bez wymuszonej decyzji
-automatycznej:
-
-- `pl.ksiazka.work` (drugi sens „książki", = dzieło) nie ma pasującego
-  conceptu CORE i w Go pozostaje bez bindingu.
-- `pl.dom.household`, `pl.szkola.institution`, `pl.reka.arm`,
-  `pl.dziecko.kinship` mają binding `candidate`/`pending` do dopuszczalnych
-  CORE conceptów (w tym `concept:child_of_person`), „candidate" nie uprawnia
-  do tłumaczenia.
-
-## Ocena ręczna
-
-Ręczny przegląd wyników tłumaczeń i form na przykładach właściciela jest
-**NOT RUN** dla tego batcha. Liczby w worklist opisują decyzje redakcyjne,
-nie poprawność językową.
+**Manual linguistic acceptance: NOT RUN.** Owner-supplied examples are needed before approving bindings or declaring any PL↔EN translation readiness.

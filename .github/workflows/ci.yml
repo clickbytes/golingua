@@ -35,3 +35,7 @@ jobs:
         run: |
           ./golingua --version
           ./golingua --help
+      - name: Catalog compilation smoke
+        run: |
+          ./golingua catalog --summary --json > /tmp/catalog-summary.json
+          ./golingua catalog --details --json > /tmp/catalog-details.json

@@ -1,34 +1,27 @@
 # Catalog status
 
-Run the compiled in-code inventory from the repository root:
+Compilable inventory from the current typed Go source:
 
 ```sh
-golingua catalog --summary --json
-golingua catalog --details --json
+go run ./cmd/golingua catalog --summary --json
+go run ./cmd/golingua catalog --details --json
 ```
 
-The summary compiles the actual CORE and PL/EN indexes. The details view includes one `per_concept` row per active stable ConceptID and its real `pl`/`en` states (`approved`, `pending`, `non_transferable`, or `absent`). The summary omits per-concept rows. Neither view treats candidates as approved.
+After G07-03's institutional/food entities and revised frames, expected structural inventory (verify by executing CLI and CI, not by assuming linguistic accuracy):
 
-## Observed on main after the G07-03 batch-7 noun groups
+| Measure | CORE | PL | EN |
+| --- | ---: | ---: | ---: |
+| Concept definitions | 1000 | — | — |
+| Lexemes | — | 704 | 19 |
+| Lexical senses | — | 720 | 28 |
+| Pending bindings | — | 719 | 19 |
+| Approved bindings | — | 0 | 0 |
+| CORE concepts absent from local bindings | — | 281 | 981 |
 
-The CLI returned `status: ok`, **1000 CORE concepts / target 1000**, PL **680
-lexemes, 691 senses, 690 bindings** and EN unchanged (**19/28/19**). PL has
-**690 pending, 0 approved, 0 non-transferable, 310 absent** concepts.
-Approved PL+EN pairs: **0**. `catalog --details --json` has one row for each
-of the 1000 compiled IDs.
+Approved concept pairs PL+EN: **0**. `catalog --details --json` reports 1000 per-concept rows and does not treat pending candidates as approved.
 
-The editorial worklist `data/pl/1000-core-review.tsv` covers all 1000 rows
-after the closing editorial pass — **1000 resolved, 0 `DEFERRED`**. Decisions
-include nouns, abstracts and relations plus all remaining verb domains;
-verbs without per-sense valency frames stay worklist-only and are not
-compiled into Go (same rule as the locomotion batch). Compiled Go so far
-cover the reviewed People, nature (animals/plants/substances/landforms),
-body, places, objects, food, original-49 basics noun domains, the seven
-core verbs behind explicit valency frames, and the batch-7 noun groups
-(qualities, abstracts, relations, transport, media, supplies plus the
-dishware/service-place fractions routed into food and places). Worklist
-decisions are not catalog bindings until they exist as typed Go data;
-further verb frames and morphology are separate decisions after the
-owner's first manual review.
+Separate Polish editorial worklist: **1000 rows** with 983 proposed pending binding candidates and 17 records with no candidate; **264 event candidates not yet compiled in the PL Go lexicon**. These numbers must not be mixed with `catalog.Inspect()` counters. PL has 12 authored valency frames; existence of frames or templates alone is not an approved construction path. The PL morphology generator is a tiny independent seed, not a generator for the 704 lexical entries.
 
-These values are catalog inventory counts. Lexemes, senses, bindings, inflected forms, constructions, and translation capability are separate layers; `catalog` does not count forms or constructions. The CORE proposals do not add language data or activate translation. Manual evaluation on owner-supplied examples remains **NOT RUN**.
+English remains the original 19-lexeme/28-sense starter layer until #61 starts. Both PL/EN manifests still report unsupported sentence analysis and realization. Translating text requires independently approved bindings and runtime providers (#63/#123).
+
+Manual linguistic acceptance on owner-supplied inputs remains **NOT RUN**.
