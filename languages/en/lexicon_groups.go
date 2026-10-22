@@ -44,5 +44,8 @@ func englishLexiconGroups() []lexicalGroup {
 		{source: englishMovementVerbSource, entries: englishMovementVerbEntries},
 		{source: englishPerceptionVerbSource, entries: englishPerceptionVerbEntries},
 		{source: englishInformationSource, entries: englishInformationEntries},
+		{source: englishInformationTermSource, entries: englishInformationTermEntries},
+		{source: englishQualityNounSource, entries: englishQualityNounEntries},
+		{source: englishProductionVerbSource, entries: englishProductionVerbEntries},
 	}
 }
