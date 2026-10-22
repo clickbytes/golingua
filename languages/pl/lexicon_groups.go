@@ -25,6 +25,7 @@ func lexicalGroups() [][]lexicalEntry {
 		physicalActionEntries,
 		lifeActionEntries,
 		socialActionEntries,
+		communicationActionEntries,
 		cognitionActionEntries,
 		multiRoleActionEntries,
 	}
