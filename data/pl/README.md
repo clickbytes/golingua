@@ -13,14 +13,14 @@
 | DEFERRED / UNREVIEWED | 0 |
 | **Total** | **1000** |
 
-Proposed semantic candidate rows: **983 pending**, **17 without a proposed binding**. This total is independent of the compiled `catalog` counts: **924 pending PL candidates have typed Go declarations**, and **59 event candidates remain worklist-only**, requiring individual lexical and valency review. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. No mapping is `approved`.
+Proposed semantic candidate rows: **983 pending**, **17 without a proposed binding**. This total is independent of the compiled `catalog` counts: **930 pending PL candidates have typed Go declarations**, and **53 event candidates remain worklist-only**, requiring individual lexical and valency review. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. No mapping is `approved`.
 
 ## Compiled state after G07-03 batches (2026-10-22)
 
 - CORE: **1000** compiled concept definitions.
-- PL: **909 lexemes**, **925 senses**, **924 pending semantic bindings**, **76 CORE absent**.
+- PL: **915 lexemes**, **931 senses**, **930 pending semantic bindings**, **70 CORE absent**.
 - EN unchanged: **19 lexemes**, **28 senses**, **19 pending bindings**.
-- PL valency: **217 authored, compiled frames**, some single-role, some NP/PP/recipient-based. No approved construction binding.
+- PL valency: **223 authored, compiled frames**, some single-role, some NP/PP/recipient-based. No approved construction binding.
 - Polish morphology: **15 selected noun lexemes** supplied with 14 explicit form strings each (7 cases × 2 numbers), using five shared gender-class selection paradigms. Previous `kot`, `student`, `czytać` seeds remain. No automatic inflection for the remaining lexical inventory.
 
 `MORPHOLOGY_COVERAGE=attested_14_case_number_cells_pending_owner_review` in the TSV identifies the noun slice, including multiple senses of the same lexeme. `no_authorized_paradigm` identifies new verb entries without inflection. Missing cells and lexemes must not be filled through speculative analogy. Inverse analysis preserves distinct syncretic readings, with normalization constrained to NFC.
@@ -32,6 +32,8 @@ Batch 8 adds pending lexical senses and explicit accusative transitive frames fo
 Batch 9 adds pending senses and role-specific frames for `informować`, `wyjaśniać`, `opisywać`, `przedstawiać`, `prosić`, `zapraszać`, `oferować` and `obiecywać`. The dative, accusative and selected prepositional complements are explicit; `rozkazywać` stays outside the compiled lexicon because its requested-action clause needs a construction-level representation. No new verb morphology or construction binding is declared.
 
 Batch 10 adds pending senses for `porównywać`, `ranić`, `sadzić`, `ostrzegać`, `polecać`, `zaczynać`, `kończyć` and `kontynuować`, with selected case frames. Infinitival complements for the activity verbs are outside these frames. No new verb morphology or construction binding is declared.
+
+Batch 11 adds six pending candidates: `kraść` (correcting the worklist typo), `kategoryzować`, `rysować`, `nagrywać`, `współpracować` and `ubierać się`, with selected case and adposition frames. Their bindings remain pending; no morphology or construction binding is declared.
 
 ## Licensing and manual review
 

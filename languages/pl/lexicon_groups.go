@@ -24,6 +24,7 @@ func lexicalGroups() [][]lexicalEntry {
 		motionEntries,
 		physicalActionEntries,
 		activityActionEntries,
+		productionActionEntries,
 		lifeActionEntries,
 		socialActionEntries,
 		communicationActionEntries,
