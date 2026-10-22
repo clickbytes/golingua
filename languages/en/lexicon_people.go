@@ -7,7 +7,7 @@ import (
 
 var englishPeopleSource = provenance.SourceRef{
 	ID: "golingua-en-authored", Path: "languages/en/lexicon_people.go",
-	Version: "2026-10-22-batch-07", License: "unknown", Author: "golingua contributors",
+	Version: "2026-10-22-batch-08", License: "unknown", Author: "golingua contributors",
 }
 
 // These common person and relationship nouns have distinct English senses.
@@ -75,4 +75,16 @@ var englishPeopleEntries = []lexicalEntry{
 	{"en.musician.n", "musician", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.musician.music_work", "a person performing or creating music", "musician"}}},
 	{"en.singer.n", "singer", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.singer.vocal_music", "a musician who produces organized musical sound with the voice", "singer"}}},
 	{"en.author.n", "author", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.author.written_work", "a person responsible for creating the content of a written work", "author_person"}}},
+	{"en.journalist.n", "journalist", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.journalist.news_reporting", "a person gathering and communicating information as news reporting", "journalist"}}},
+	{"en.firefighter.n", "firefighter", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.firefighter.emergency_response", "a person trained and tasked to respond to fires and related emergencies", "firefighter"}}},
+	{"en.soldier.n", "soldier", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.soldier.military_service", "a person serving in an organized military force", "soldier"}}},
+	{"en.athlete.n", "athlete", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.athlete.sport", "a person participating in sport with developed physical skill", "athlete"}}},
+	{"en.caregiver.n", "caregiver", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.caregiver.daily_support", "a person providing ongoing practical support for another's daily needs", "caregiver"}}},
+	{"en.nurse.n", "nurse", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.nurse.professional_care", "a professional providing nursing assessment and patient care", "nurse"}}},
+	{"en.dentist.n", "dentist", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.dentist.dental_care", "a professional qualified to diagnose and treat conditions of the teeth and mouth", "dentist"}}},
+	{"en.interpreter_person.n", "interpreter", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.interpreter_person.spoken_translation", "a person transferring spoken or signed communication between languages", "interpreter_person"}}},
+	{"en.translator_person.n", "translator", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.translator_person.written_translation", "a person transferring written content between languages", "translator_person"}}},
+	{"en.technician.n", "technician", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.technician.equipment", "a person installing, operating, or repairing specialized technical equipment", "technician"}}},
+	{"en.courier.n", "courier", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.courier.delivery", "a person transporting items for delivery to a recipient", "courier"}}},
+	{"en.volunteer.n", "volunteer", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.volunteer.unpaid_contribution", "a person contributing labor without an ordinary employment obligation for that contribution", "volunteer_person"}}},
 }
