@@ -1,6 +1,6 @@
 # 13 — Mapa pracy szeregowej po resecie testów
 
-**Status: żywa mapa etapów, aktualizacja 2026-10-22.** G00–G03 zamknięte, G09 zamknięty dokumentacyjnie, G07 #8 aktywny: CORE #145 zakończone (1000), PL #60 aktywne (975 leksemów / 1000 sensów / 999 pending binding records na 993 konceptach), EN #61 w kolejce (19/28/19). G04–G06 i G08 mają otwarte zależności danych i ręcznego odbioru. Historyczne G00 #78 nie jest obecnym aktywnym zadaniem. Bazowy stan batcha 24 to `d141500`; plan zapisano w #60, bez otwartych PR.
+**Status: żywa mapa etapów, aktualizacja 2026-10-22.** G00–G03 zamknięte, G09 zamknięty dokumentacyjnie, G07 #8 aktywny: CORE #145 zakończone (1000), PL #60 aktywne (977 leksemów / 1002 sensy / 1001 pending binding records na 995 konceptach), EN #61 w kolejce (19/28/19). G04–G06 i G08 mają otwarte zależności danych i ręcznego odbioru. Historyczne G00 #78 nie jest obecnym aktywnym zadaniem. Bazowy stan batcha 25 to `15a6f81`; plan zapisano w #60, bez otwartych PR.
 
 | Kolejność | EPIC | Co zbudować | Jak oceniamy na tym etapie |
 | --- | --- | --- | --- |
@@ -26,7 +26,7 @@
 
 ## Bieżący ręczny odbiór PL
 
-Lokalny stan po batchu 24 zawiera 975 leksemów PL, 1000 sensów, 999 pending binding records pokrywających 993 koncepty i 273 ramy walencji; 7 CORE concepts nie ma PL bindingu. Z tych 7 brakujących powiązań 1 ma propozycję w workliście (`intentional_action`, świadomie odłożony jako zbyt szeroki), a pozostałe 6 nie ma proponowanych bindingów. Żaden binding nie jest zatwierdzony, a ręczna ocena właściciela pozostaje **NOT RUN**. Przed rozpoczęciem EN #61 trzeba ręcznie przedstawić właścicielowi konkretne formy i sensy PL oraz zapisać jego uwagi; nie wyciągać wniosków o akceptacji z samej kompilacji katalogu.
+Lokalny stan po batchu 25 zawiera 977 leksemów PL, 1002 sensy, 1001 pending binding records pokrywających 995 konceptów i 273 ramy walencji; 5 CORE concepts nie ma PL bindingu. Z tych 5 brakujących powiązań 1 ma propozycję w workliście (`intentional_action`, świadomie odłożony jako zbyt szeroki), a pozostałe 4 nie mają proponowanych bindingów. Żaden binding nie jest zatwierdzony, a ręczna ocena właściciela pozostaje **NOT RUN**. Przed rozpoczęciem EN #61 trzeba ręcznie przedstawić właścicielowi konkretne formy i sensy PL oraz zapisać jego uwagi; nie wyciągać wniosków o akceptacji z samej kompilacji katalogu.
 
 ## Co zostało świadomie usunięte
 

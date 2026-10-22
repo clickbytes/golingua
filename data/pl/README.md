@@ -7,18 +7,18 @@
 | Editorial state | Rows |
 | --- | ---: |
 | REVIEWED_LEXICALIZED | 976 |
-| REVIEWED_BROADER_NARROWER | 18 |
+| REVIEWED_BROADER_NARROWER | 19 |
 | REVIEWED_RELATED | 2 |
-| REVIEWED_NO_DIRECT_FORM | 4 |
+| REVIEWED_NO_DIRECT_FORM | 3 |
 | DEFERRED / UNREVIEWED | 0 |
 | **Total** | **1000** |
 
-Proposed semantic candidate rows: **994 pending**, **6 without a proposed binding**. This row count is independent of compiled bindings: **999 typed pending binding records cover 993 CORE concepts**, because six concepts each have two gender-specific lexical senses. One event candidate remains worklist-only, requiring individual lexical and valency review. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. No mapping is `approved`.
+Proposed semantic candidate rows: **996 pending**, **4 without a proposed binding**. This row count is independent of compiled bindings: **1001 typed pending binding records cover 995 CORE concepts**, because six concepts each have two gender-specific lexical senses. One event candidate remains worklist-only, requiring individual lexical and valency review. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. No mapping is `approved`.
 
 ## Compiled state after G07-03 batches (2026-10-22)
 
 - CORE: **1000** compiled concept definitions.
-- PL: **975 lexemes**, **1000 senses**, **999 pending semantic bindings over 993 pending concepts**, **7 CORE absent**.
+- PL: **977 lexemes**, **1002 senses**, **1001 pending semantic bindings over 995 pending concepts**, **5 CORE absent**.
 - EN unchanged: **19 lexemes**, **28 senses**, **19 pending bindings**.
 - PL valency: **273 authored, compiled frames**, some single-role, some NP/PP/recipient-based. No approved construction binding.
 - Polish morphology: **15 selected noun lexemes** supplied with 14 explicit form strings each (7 cases × 2 numbers), using five shared gender-class selection paradigms. Previous `kot`, `student`, `czytać` seeds remain. No automatic inflection for the remaining lexical inventory.
@@ -60,6 +60,8 @@ Batch 22 adds pending candidates for commanding, succeeding and failing. The two
 Batch 23 adds five pending multiword candidates already identified in the ledger: `osoba starsza`, `rodzic adopcyjny`, `członek zespołu`, `roślina kwitnąca` and `grunt rolny`. They have no inferred morphology, valency or construction bindings.
 
 Batch 24 adds gendered lexical variants for stepparent, sibling, grandparent, grandchild, aunt/uncle and cousin. The paired senses remain separate pending narrow candidates; they share six CORE concepts. No morphology, valency or construction binding is added.
+
+Batch 25 adds `małe dziecko` as a broader pending candidate for toddler and `przekazanie` as a narrower event noun for transfer. Neither adds morphology, valency or construction bindings.
 
 ## Licensing and manual review
 

@@ -12,16 +12,16 @@ The CLI compiles the current CORE, lexical and language-specific valency snapsho
 | Inventory | CORE | PL | EN |
 | --- | ---: | ---: | ---: |
 | CORE concepts | 1000 | — | — |
-| Lexemes | — | 975 | 19 |
-| Lexical senses | — | 1000 | 28 |
-| Pending concept binding records | — | 999 | 19 |
+| Lexemes | — | 977 | 19 |
+| Lexical senses | — | 1002 | 28 |
+| Pending concept binding records | — | 1001 | 19 |
 | Approved concept bindings | — | 0 | 0 |
-| Concepts without a binding | — | 7 | 981 |
+| Concepts without a binding | — | 5 | 981 |
 | Authored valency frames | — | 273 | 5 |
 
 Approved PL+EN pairs: **0**. The `valency_frames` field is separately compiled from `pl.CompileValency()` and `en.CompileValency()`. `catalog --details` has one per-concept row per CORE ID, including true pending/absent/approved states.
 
-The Polish editorial `data/pl/1000-core-review.tsv` contains 1000 proposed decisions, 994 pending candidate rows and 6 decisions without bindings. These rows produce 999 typed pending binding records over 993 concepts; 1 event proposal still lacks typed Go lexical/frame entries. Candidate mappings, approved mappings, linguistic quality, and morphological coverage must not be conflated.
+The Polish editorial `data/pl/1000-core-review.tsv` contains 1000 proposed decisions, 996 pending candidate rows and 4 decisions without bindings. These rows produce 1001 typed pending binding records over 995 concepts; 1 event proposal still lacks typed Go lexical/frame entries. Candidate mappings, approved mappings, linguistic quality, and morphological coverage must not be conflated.
 
 Polish `forms` is a separate partial subsystem: **15 newly supplied noun inventories with 14 explicitly declared case/number forms each**, plus the pre-existing narrow seed. These form strings are not mechanically generated from an inflection class, but selected from declared principal parts through five shared morphology paradigms. No reviewed sentence construction, analyzed clause or generated PL↔EN translation is activated. Current language manifests keep sentence analysis/realization unsupported.
 
