@@ -26,4 +26,4 @@ Jeśli użytkownik dostarczy fakt `dog_1 located_in room_3` i pyta „Gdzie jest
 
 ## Jak z nich korzystać
 
-Nie dodawaj tych zdań jako masowego zestawu automatycznych sprawdzianów. Po wdrożeniu odpowiedniej funkcjonalności właściciel poda konkretne PL/EN wejście, uruchomimy aktualne Go CLI i ocenimy obserwowany rezultat. Jeśli potrzebna jest poprawka, modyfikujemy leksem, walencję, konstrukcję lub generator zamiast dodawać całe zapamiętane tłumaczenie.
+Nie dodawaj tych ilustracji jako automatycznego sprawdzianu. Na wyraźne polecenie właściciela z 2026-10-23 powstały osobne [100 par zdań PL/EN](../../data/sentences/README.md), przypisane do przykładowych `MeaningGraph`. Są propozycjami do dalszej pracy, nie goldami ani zatwierdzeniem językowym. Jeśli potrzebna jest poprawka runtime, modyfikujemy leksem, walencję, konstrukcję lub generator zamiast dodawać zapamiętane tłumaczenie całego zdania.
