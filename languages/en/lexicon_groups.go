@@ -40,5 +40,7 @@ func englishLexiconGroups() []lexicalGroup {
 		{source: englishExchangeVerbSource, entries: englishExchangeVerbEntries},
 		{source: englishMotivationVerbSource, entries: englishMotivationVerbEntries},
 		{source: englishPhysiologyVerbSource, entries: englishPhysiologyVerbEntries},
+		{source: englishPhysiologyMoreVerbSource, entries: englishPhysiologyMoreVerbEntries},
+		{source: englishMovementVerbSource, entries: englishMovementVerbEntries},
 	}
 }
