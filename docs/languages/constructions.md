@@ -29,11 +29,19 @@ choose a meaning or produce surface text.
 
 The PL and EN packages have independently declared transitive families and
 variants in `languages/*/constructions/transitive.json`. PL also declares an
-intransitive family. The four current PL and five current EN valency frames
-name allowed families, but `CompileValency` supplies no approved construction
-bindings. All sense-to-CORE links in the in-code lexical batches are pending.
-Therefore the current catalog has **zero authorized construction paths**, and
-the CLI `translate` remains unsupported.
+intransitive family. `CompileValency` exposes pending construction candidates
+separately from approved bindings. The current owner-supplied review handoff
+lists four PL candidates (`widzieć`, `słyszeć`, `dostać`, `patrzeć na`) and
+four EN candidates (`see`, `hear`, `get`, `read`). The EN `look at` frame has
+no oblique family/variant; it has no candidate route, and generic SVO is not a
+substitute. These eight candidates remain unapproved.
+
+`catalog --summary --json` reports candidate and approved construction-binding
+counts separately. Current approved counts are **zero for both languages**;
+`catalog.ResolveApprovedPlans` therefore still returns `unsupported` for all
+current concepts, and CLI `translate` remains unsupported. `Bindings()` only
+returns approved records; `Candidates()` is review input and never licenses a
+runtime path.
 
 Structural templates can be shared by compatible senses only after their
 roles, grammatical functions, case or adposition policy, variant and operator

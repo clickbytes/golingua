@@ -89,6 +89,17 @@ type ConstructionBinding struct {
 	Provenance     provenance.SourceRef `json:"provenance"`
 }
 
+// ConstructionCandidate is an unapproved proposal for a sense/frame/family/
+// variant route. It is stored separately from ConstructionBinding and can
+// never authorize parsing or realization.
+type ConstructionCandidate struct {
+	SenseID        ids.SenseID          `json:"sense_id"`
+	ValencyFrameID FrameID              `json:"valency_frame_id"`
+	FamilyID       ids.ConstructionID   `json:"family_id"`
+	VariantID      ids.ConstructionID   `json:"variant_id"`
+	Provenance     provenance.SourceRef `json:"provenance"`
+}
+
 // SoftConstraintMiss records a preference mismatch without treating it as a
 // refusal or changing the selected frame.
 type SoftConstraintMiss struct {
@@ -299,6 +310,8 @@ func cloneFrame(frame ValencyFrame) ValencyFrame {
 }
 
 func cloneBinding(binding ConstructionBinding) ConstructionBinding { return binding }
+
+func cloneCandidate(candidate ConstructionCandidate) ConstructionCandidate { return candidate }
 
 func resourceLimitOrInvalid(name string, count, maximum int) error {
 	if count > maximum {

@@ -21,6 +21,8 @@ The CLI compiles the current CORE, lexical and language-specific valency snapsho
 
 Approved PL+EN pairs: **0**. The `valency_frames` field is separately compiled from `pl.CompileValency()` and `en.CompileValency()`. `catalog --details` has one per-concept row per CORE ID, including true pending/absent/approved states.
 
+The construction index contains four pending review candidates per language (PL 4, EN 4) from the owner handoff for #63, and zero approved construction bindings. `catalog --summary` reports these separately; candidate routes do not authorize a plan or sentence translation.
+
 The Polish editorial `data/pl/1000-core-review.tsv` contains 1000 proposed decisions and 1000 pending candidate rows. These rows produce 1006 typed pending binding records over all 1000 concepts. Candidate mappings, approved mappings, linguistic quality, and morphological coverage must not be conflated.
 
 The English ledger `data/en/1000-core-review.tsv` covers the exact 1000 compiled CORE IDs. It records 19 existing pending candidates and 981 newly assessed concepts, including 694 noun, 264 verb and 23 preposition candidates, with no `UNREVIEWED` concepts; it does not infer lemmas from CORE definitions. The existing `en.school.institution` sense is now linked as a pending candidate; eight pre-existing English senses remain unmapped and are listed in `docs/languages/en.md`. The current EN increments add 694 noun, 264 verb and 23 preposition lexemes, with no new morphology, valency, or construction coverage.

@@ -49,6 +49,10 @@ oddzielne liczby konceptów, leksemów, sensów oraz statusy bindingów.
 nie upoważnia do tłumaczenia. Liczba 1000 jest celem redakcyjnym, a raport nie
 mierzy poprawności językowej.
 
+`catalog --summary` raportuje też liczbę pending construction candidates i
+approved construction bindings oddzielnie dla PL i EN. Kandydat nie jest
+bindingiem runtime i nie aktywuje tłumaczenia.
+
 ## Pytania na faktach z żądania
 
 Komenda `question` wykonuje typowane zapytanie na `MeaningGraph` i `FactSet` podanych w jednym żądaniu. Nie parsuje polskiego ani angielskiego tekstu i nie realizuje odpowiedzi powierzchniowej.

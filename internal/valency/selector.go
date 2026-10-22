@@ -204,3 +204,13 @@ func validateBindingStructure(binding ConstructionBinding) error {
 	}
 	return nil
 }
+
+func validateCandidateStructure(candidate ConstructionCandidate) error {
+	if !validSenseID(candidate.SenseID) || !validFrameID(candidate.ValencyFrameID) || !validConstructionID(candidate.FamilyID) || !validConstructionID(candidate.VariantID) {
+		return invalid("INVALID_CONSTRUCTION_CANDIDATE", "candidate", "candidate requires canonical sense, frame, family and variant IDs")
+	}
+	if err := candidate.Provenance.Validate(); err != nil {
+		return invalid("INVALID_CONSTRUCTION_CANDIDATE_PROVENANCE", "candidate.provenance", fmt.Sprintf("construction candidate provenance is invalid: %v", err))
+	}
+	return nil
+}
