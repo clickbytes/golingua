@@ -1,6 +1,6 @@
 # 13 — Mapa pracy szeregowej po resecie testów
 
-**Status: żywa mapa etapów, aktualizacja 2026-10-23.** G00–G03 zamknięte, G09 zamknięty dokumentacyjnie, G07 #8 aktywny: CORE #145 zakończone (1000), PL #60 zakończone; aktywny PL review #152 (982 leksemy / 1007 sensów / 43 approved + 963 pending binding records), EN #61 zakończone (989 approved / 12 pending records na 11 konceptach). G04–G06 i G08 mają otwarte zależności danych i ręcznego odbioru. Historyczne G00 #78 nie jest obecnym aktywnym zadaniem. Bazowy stan batcha 29 to `18950ad`; aktywna praca #152 jest w toku.
+**Status: żywa mapa etapów, aktualizacja 2026-10-23.** G00–G03 zamknięte, G09 zamknięty dokumentacyjnie, G07 #8 aktywny: CORE #145 zakończone (1000), PL #60 zakończone; PL review #152 batch 1 DONE i #154 batch 2 aktywny (982 leksemy / 1007 sensów / 76 approved + 930 pending binding records), EN #61 zakończone (989 approved / 12 pending records na 11 konceptach). G04–G06 i G08 mają otwarte zależności danych i ręcznego odbioru. Historyczne G00 #78 nie jest obecnym aktywnym zadaniem. Bazowy stan batcha 29 to `18950ad`; batch 2 jest w toku.
 
 | Kolejność | EPIC | Co zbudować | Jak oceniamy na tym etapie |
 | --- | --- | --- | --- |
@@ -26,7 +26,7 @@
 
 ## Bieżący ręczny odbiór PL
 
-Lokalny stan po batchu 29 zawiera 982 leksemy PL, 1007 sensów, 1006 bindingów (43 approved i 963 pending) pokrywających wszystkie 1000 konceptów oraz 273 ramy walencji. Pierwszy delegowany batch #152 zatwierdził 43 polskie równoważniki; 957 konceptów PL pozostaje pending. `byt` pozostaje szeroki i rejestrowo ograniczony; pozostałe nierozstrzygnięte kwestie są opisane w komentarzu batcha. Delegowany review #61 zatwierdził 989 exact English equivalents w dwudziestu partiach; 11 konceptów EN pozostaje pending. Osiem sense/frame/family/variant construction bindings (4 PL, 4 EN) zatwierdzono po delegowanym przeglądzie #63. Katalog raportuje 38 PL+EN approved pairs. Ocena translacji CLI pozostaje **NOT RUN** na poziomie językowym, bo runtime zdaniowy nadal jest unsupported. Nie wyciągać wniosków o akceptacji jakości językowej z samej kompilacji katalogu.
+Lokalny stan po batchu 29 zawiera 982 leksemy PL, 1007 sensów, 1006 bindingów (76 approved i 930 pending) pokrywających wszystkie 1000 konceptów oraz 273 ramy walencji. Delegowane batch 1 (#152) i batch 2 (#154) zatwierdziły 76 polskich równoważników; 924 koncepty PL pozostają pending. `byt` pozostaje szeroki i rejestrowo ograniczony; siedemnaście nierozstrzygniętych pozycji batcha 2 opisano w komentarzu #154. Delegowany review #61 zatwierdził 989 exact English equivalents w dwudziestu partiach; 11 konceptów EN pozostaje pending. Osiem sense/frame/family/variant construction bindings (4 PL, 4 EN) zatwierdzono po delegowanym przeglądzie #63. Katalog raportuje 69 PL+EN approved pairs. Ocena translacji CLI pozostaje **NOT RUN** na poziomie językowym, bo runtime zdaniowy nadal jest unsupported. Nie wyciągać wniosków o akceptacji jakości językowej z samej kompilacji katalogu.
 
 ## Co zostało świadomie usunięte
 
