@@ -7,7 +7,7 @@ import (
 
 var englishAnimalSource = provenance.SourceRef{
 	ID: "golingua-en-authored", Path: "languages/en/lexicon_animals.go",
-	Version: "2026-10-22-batch-15", License: "unknown", Author: "golingua contributors",
+	Version: "2026-10-22-batch-16", License: "unknown", Author: "golingua contributors",
 }
 
 // These candidates distinguish animal classes and selected domestic species.
@@ -37,4 +37,11 @@ var englishAnimalEntries = []lexicalEntry{
 	{"en.snake.n", "snake", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.snake.limbless_reptile", "an elongated limbless reptile of the snake lineage", "snake"}}},
 	{"en.lizard.n", "lizard", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.lizard.squamate", "a typically four-legged squamate reptile, distinct from snakes", "lizard"}}},
 	{"en.turtle.n", "turtle", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.turtle.shelled_reptile", "a reptile with a protective bony shell of the turtle group", "turtle"}}},
+	{"en.cattle.n", "cattle", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.cattle.domestic_bovine", "domestic bovines collectively, distinct from an individual cow or bull", "cattle"}}},
+	{"en.goat.n", "goat", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.goat.domestic_caprine", "an individual domestic goat of either sex", "goat"}}},
+	{"en.butterfly.n", "butterfly", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.butterfly.insect", "a winged insect of the butterfly group with a complete metamorphosis", "butterfly"}}},
+	{"en.bee.n", "bee", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.bee.insect", "a flower-visiting insect belonging to the bee group, often a pollinator", "bee"}}},
+	{"en.ant.n", "ant", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.ant.social_insect", "a social insect of the ant family living in organized colonies", "ant"}}},
+	{"en.fly_insect.n", "fly", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.fly_insect.true_fly", "a two-winged true fly, not an event of flying", "fly_insect"}}},
+	{"en.mosquito.n", "mosquito", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.mosquito.insect", "a slender fly of the mosquito family whose females in many species take blood meals", "mosquito"}}},
 }
