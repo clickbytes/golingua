@@ -2,7 +2,7 @@
 
 ## Current scope
 
-The executable `languages/pl` package builds **979 typed Polish lexemes, 1004 distinct lexical senses, 1003 pending binding records covering 997 CORE concepts**; 3 CORE concepts have no PL binding. `pl.LexicalDocument()` assembles `lexicon_*.go` domains in deterministic order and `pl.CompileLexicon(coreGraph)` validates the candidate graph. The editorial worklist `data/pl/1000-core-review.tsv` records 998 proposed pending candidates, **1 of which remains outside the compiled PL lexicon**, chiefly complex events or difficult lexicalizations.
+The executable `languages/pl` package builds **980 typed Polish lexemes, 1005 distinct lexical senses, 1004 pending binding records covering 998 CORE concepts**; 2 CORE concepts have no PL binding. `pl.LexicalDocument()` assembles `lexicon_*.go` domains in deterministic order and `pl.CompileLexicon(coreGraph)` validates the candidate graph. The editorial worklist `data/pl/1000-core-review.tsv` records 999 proposed pending candidates; all have typed PL lexical entries. The two concepts without bindings remain intentionally unresolved.
 
 Polish lemmas are distinct from CORE concepts. Examples of polysemy include `szkoła` facility/institution, `bank` institution/office, `ryba` animal/food, `skóra` organ/material. Many verbs have sense-specific cases and prepositions in `ValencyFrame`. They do **not** have automatic morphology or authorized construction paths.
 
