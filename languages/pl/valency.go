@@ -14,10 +14,27 @@ var polishValencySource = provenance.SourceRef{
 	Version: "2026-10-21-initial", License: "unknown", Author: "golingua contributors",
 }
 
+var polishConstructionCandidateSource = provenance.SourceRef{
+	ID:      "golingua-owner-construction-review",
+	URI:     "https://github.com/clickbytes/golingua/issues/63#issuecomment-6313628091",
+	Version: "2026-10-21", License: "unknown", Author: "clickbytes",
+}
+
 type frameDeclaration struct {
 	id, sense, family string
 	roles             []meaning.Role
 	arguments         []valency.ArgumentSlot
+}
+
+type constructionCandidateDeclaration struct {
+	sense, frame, family, variant string
+}
+
+var polishConstructionCandidateDeclarations = []constructionCandidateDeclaration{
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.transitive", "pl.transitive.svo"},
+	{"pl.slyszec.auditory", "pl.slyszec.auditory.transitive", "pl.transitive", "pl.transitive.svo"},
+	{"pl.dostac.receive", "pl.dostac.receive.transitive", "pl.transitive", "pl.transitive.svo"},
+	{"pl.patrzec.directed", "pl.patrzec.directed.na", "pl.oblique", "pl.oblique.svo"},
 }
 
 // Families are explicit per frame, never silently assumed transitive.
@@ -72,9 +89,9 @@ var polishFrames = []frameDeclaration{
 	}},
 }
 
-// CompileValency compiles sense-specific Polish frames. No construction
-// binding is activated here; the family reference only names a possible
-// shape and does not license transfer or surface realization.
+// CompileValency compiles sense-specific Polish frames and pending construction
+// candidates. Neither the family references nor candidates license transfer
+// or surface realization.
 func CompileValency() (*valency.Index, error) {
 	if err := polishValencySource.Validate(); err != nil {
 		return nil, fmt.Errorf("Polish valency source: %w", err)
@@ -128,5 +145,24 @@ func CompileValency() (*valency.Index, error) {
 		}
 		frames = append(frames, frame)
 	}
-	return valency.BuildIndex(frames, nil)
+	candidates := make([]valency.ConstructionCandidate, 0, len(polishConstructionCandidateDeclarations))
+	for _, item := range polishConstructionCandidateDeclarations {
+		senseID, err := ids.NewSenseID(item.sense)
+		if err != nil {
+			return nil, fmt.Errorf("Polish construction candidate sense: %w", err)
+		}
+		familyID, err := ids.NewConstructionID(item.family)
+		if err != nil {
+			return nil, fmt.Errorf("Polish construction candidate family: %w", err)
+		}
+		variantID, err := ids.NewConstructionID(item.variant)
+		if err != nil {
+			return nil, fmt.Errorf("Polish construction candidate variant: %w", err)
+		}
+		candidates = append(candidates, valency.ConstructionCandidate{
+			SenseID: senseID, ValencyFrameID: valency.FrameID(item.frame),
+			FamilyID: familyID, VariantID: variantID, Provenance: polishConstructionCandidateSource,
+		})
+	}
+	return valency.BuildIndexWithCandidates(frames, nil, candidates)
 }

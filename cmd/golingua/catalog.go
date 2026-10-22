@@ -12,15 +12,23 @@ import (
 )
 
 type catalogResponse struct {
-	Status        status.OutcomeKind  `json:"status"`
-	Inventory     *catalog.Inventory  `json:"inventory,omitempty"`
-	ValencyFrames *catalogFrameCounts `json:"valency_frames,omitempty"`
-	Diagnostics   []status.Diagnostic `json:"diagnostics,omitempty"`
+	Status               status.OutcomeKind                `json:"status"`
+	Inventory            *catalog.Inventory                `json:"inventory,omitempty"`
+	ValencyFrames        *catalogFrameCounts               `json:"valency_frames,omitempty"`
+	ConstructionBindings *catalogConstructionBindingCounts `json:"construction_bindings,omitempty"`
+	Diagnostics          []status.Diagnostic               `json:"diagnostics,omitempty"`
 }
 
 type catalogFrameCounts struct {
 	PL int `json:"pl"`
 	EN int `json:"en"`
+}
+
+type catalogConstructionBindingCounts struct {
+	PLPendingCandidates int `json:"pl_pending_candidates"`
+	ENPendingCandidates int `json:"en_pending_candidates"`
+	PLApproved          int `json:"pl_approved"`
+	ENApproved          int `json:"en_approved"`
 }
 
 // runCatalog reports only compiled Go catalog data. --details includes one
@@ -54,10 +62,19 @@ func runCatalog(args []string, stdout, stderr io.Writer) int {
 		return catalogLoadError(stdout, stderr)
 	}
 	frameCounts := &catalogFrameCounts{PL: len(polishValency.Frames()), EN: len(englishValency.Frames())}
+	constructionBindingCounts := &catalogConstructionBindingCounts{
+		PLPendingCandidates: len(polishValency.Candidates()),
+		ENPendingCandidates: len(englishValency.Candidates()),
+		PLApproved:          len(polishValency.Bindings()),
+		ENApproved:          len(englishValency.Bindings()),
+	}
 	if args[0] == "--summary" {
 		inventory.PerConcept = []catalog.ConceptCoverage{}
 	}
-	return writeCatalog(stdout, stderr, catalogResponse{Status: status.OutcomeOK, Inventory: &inventory, ValencyFrames: frameCounts})
+	return writeCatalog(stdout, stderr, catalogResponse{
+		Status: status.OutcomeOK, Inventory: &inventory, ValencyFrames: frameCounts,
+		ConstructionBindings: constructionBindingCounts,
+	})
 }
 
 func catalogLoadError(stdout, stderr io.Writer) int {

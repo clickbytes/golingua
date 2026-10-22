@@ -14,10 +14,27 @@ var englishValencySource = provenance.SourceRef{
 	Version: "2026-10-21-initial", License: "unknown", Author: "golingua contributors",
 }
 
+var englishConstructionCandidateSource = provenance.SourceRef{
+	ID:      "golingua-owner-construction-review",
+	URI:     "https://github.com/clickbytes/golingua/issues/63#issuecomment-6313628091",
+	Version: "2026-10-21", License: "unknown", Author: "clickbytes",
+}
+
 type frameDeclaration struct {
 	id, sense string
 	roles     []meaning.Role
 	arguments []valency.ArgumentSlot
+}
+
+type constructionCandidateDeclaration struct {
+	sense, frame, family, variant string
+}
+
+var englishConstructionCandidateDeclarations = []constructionCandidateDeclaration{
+	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.read.text", "en.read.text.transitive", "en.transitive", "en.transitive.svo"},
 }
 
 var englishFrames = []frameDeclaration{
@@ -43,8 +60,9 @@ var englishFrames = []frameDeclaration{
 	}},
 }
 
-// CompileValency constructs independently authored English argument frames.
-// No construction binding is approved, so this cannot license realization.
+// CompileValency constructs independently authored English argument frames
+// and pending construction candidates. No candidate is an approved binding,
+// so this index cannot license realization.
 func CompileValency() (*valency.Index, error) {
 	if err := englishValencySource.Validate(); err != nil {
 		return nil, fmt.Errorf("English valency source: %w", err)
@@ -78,5 +96,24 @@ func CompileValency() (*valency.Index, error) {
 		}
 		frames = append(frames, frame)
 	}
-	return valency.BuildIndex(frames, nil)
+	candidates := make([]valency.ConstructionCandidate, 0, len(englishConstructionCandidateDeclarations))
+	for _, item := range englishConstructionCandidateDeclarations {
+		senseID, err := ids.NewSenseID(item.sense)
+		if err != nil {
+			return nil, fmt.Errorf("English construction candidate sense: %w", err)
+		}
+		familyID, err := ids.NewConstructionID(item.family)
+		if err != nil {
+			return nil, fmt.Errorf("English construction candidate family: %w", err)
+		}
+		variantID, err := ids.NewConstructionID(item.variant)
+		if err != nil {
+			return nil, fmt.Errorf("English construction candidate variant: %w", err)
+		}
+		candidates = append(candidates, valency.ConstructionCandidate{
+			SenseID: senseID, ValencyFrameID: valency.FrameID(item.frame),
+			FamilyID: familyID, VariantID: variantID, Provenance: englishConstructionCandidateSource,
+		})
+	}
+	return valency.BuildIndexWithCandidates(frames, nil, candidates)
 }

@@ -6,11 +6,12 @@ import (
 	"github.com/clickbytes/golingua/internal/ids"
 )
 
-// Index is an immutable, deterministic view of validated sense frames and
-// approved construction bindings.
+// Index is an immutable, deterministic view of validated sense frames,
+// approved construction bindings, and separately stored pending candidates.
 type Index struct {
 	frames     []ValencyFrame
 	bindings   []ConstructionBinding
+	candidates []ConstructionCandidate
 	bySenseID  map[string][]int
 	byFamilyID map[string][]int
 }
@@ -19,6 +20,13 @@ type Index struct {
 // paths. Pending/unapproved bindings are rejected and never become licensed
 // runtime data.
 func BuildIndex(frames []ValencyFrame, bindings []ConstructionBinding) (*Index, error) {
+	return BuildIndexWithCandidates(frames, bindings, nil)
+}
+
+// BuildIndexWithCandidates compiles approved runtime bindings and pending
+// construction candidates into separate immutable collections. Candidates
+// are validated for references but never enter Bindings() or runtime paths.
+func BuildIndexWithCandidates(frames []ValencyFrame, bindings []ConstructionBinding, candidates []ConstructionCandidate) (*Index, error) {
 	if len(frames) == 0 {
 		return nil, invalid("EMPTY_VALENCY_INDEX", "frames", "valency index requires at least one frame")
 	}
@@ -27,6 +35,9 @@ func BuildIndex(frames []ValencyFrame, bindings []ConstructionBinding) (*Index, 
 	}
 	if len(bindings) > MaxBindings {
 		return nil, resourceLimit("bindings", len(bindings), MaxBindings)
+	}
+	if len(candidates) > MaxBindings {
+		return nil, resourceLimit("construction_candidates", len(candidates), MaxBindings)
 	}
 	canonicalFrames := make([]ValencyFrame, len(frames))
 	framePositions := make(map[string]int, len(frames))
@@ -81,8 +92,41 @@ func BuildIndex(frames []ValencyFrame, bindings []ConstructionBinding) (*Index, 
 		canonicalBindings[index] = cloneBinding(binding)
 		byFamily[binding.FamilyID.String()] = append(byFamily[binding.FamilyID.String()], index)
 	}
+	canonicalCandidates := make([]ConstructionCandidate, len(candidates))
+	seenCandidates := make(map[string]struct{}, len(candidates))
+	for index, candidate := range candidates {
+		if err := validateCandidateStructure(candidate); err != nil {
+			return nil, err
+		}
+		indexItems += 4
+		if indexItems > MaxIndexItems {
+			return nil, resourceLimit("index_items", indexItems, MaxIndexItems)
+		}
+		framePosition, exists := framePositions[string(candidate.ValencyFrameID)]
+		if !exists {
+			return nil, unknown("UNKNOWN_CANDIDATE_VALENCY_FRAME", "candidates["+itoa(index)+"].valency_frame_id", "construction candidate refers to no indexed frame")
+		}
+		frame := canonicalFrames[framePosition]
+		if candidate.SenseID != frame.SenseID {
+			return nil, invalid("CANDIDATE_SENSE_FRAME_IDENTITY_MISMATCH", "candidates["+itoa(index)+"].sense_id", "candidate sense must match the referenced frame")
+		}
+		if !containsConstruction(frame.AllowedFamilyIDs, candidate.FamilyID) {
+			return nil, unsupported("CANDIDATE_FAMILY_NOT_LICENSED_BY_FRAME", "candidates["+itoa(index)+"].family_id", "frame does not list the proposed construction family")
+		}
+		bindingLike := ConstructionBinding{SenseID: candidate.SenseID, ValencyFrameID: candidate.ValencyFrameID, FamilyID: candidate.FamilyID, VariantID: candidate.VariantID}
+		key := bindingKey(bindingLike)
+		if _, exists := seenCandidates[key]; exists {
+			return nil, invalid("DUPLICATE_CONSTRUCTION_CANDIDATE", "candidates", "construction candidate is duplicated")
+		}
+		if _, exists := seenBindings[key]; exists {
+			return nil, invalid("CANDIDATE_ALREADY_APPROVED", "candidates", "an approved binding already exists for this route")
+		}
+		seenCandidates[key] = struct{}{}
+		canonicalCandidates[index] = cloneCandidate(candidate)
+	}
 	orderFrames(canonicalFrames)
 	orderBindings(canonicalBindings)
+	orderCandidates(canonicalCandidates)
 	// Rebuild positions after sorting so all index values refer to canonical
 	// backing slices and accessor order is stable regardless of input order.
 	framePositions = make(map[string]int, len(canonicalFrames))
@@ -101,7 +145,7 @@ func BuildIndex(frames []ValencyFrame, bindings []ConstructionBinding) (*Index, 
 	for index, binding := range canonicalBindings {
 		byFamily[binding.FamilyID.String()] = append(byFamily[binding.FamilyID.String()], index)
 	}
-	return &Index{frames: canonicalFrames, bindings: canonicalBindings, bySenseID: bySense, byFamilyID: byFamily}, nil
+	return &Index{frames: canonicalFrames, bindings: canonicalBindings, candidates: canonicalCandidates, bySenseID: bySense, byFamilyID: byFamily}, nil
 }
 
 // FramesBySenseID returns every frame for a sense in stable ID order. It does
@@ -156,6 +200,15 @@ func (index *Index) Bindings() []ConstructionBinding {
 	return result
 }
 
+// Candidates returns pending review proposals in stable identity order.
+// They are not construction bindings and do not authorize runtime use.
+func (index *Index) Candidates() []ConstructionCandidate {
+	if index == nil {
+		return []ConstructionCandidate{}
+	}
+	return append([]ConstructionCandidate(nil), index.candidates...)
+}
+
 func bindingKey(binding ConstructionBinding) string {
 	return binding.SenseID.String() + "\x00" + string(binding.ValencyFrameID) + "\x00" + binding.FamilyID.String() + "\x00" + binding.VariantID.String()
 }
@@ -172,6 +225,22 @@ func orderFrames(frames []ValencyFrame) {
 func orderBindings(bindings []ConstructionBinding) {
 	sort.Slice(bindings, func(i, j int) bool {
 		left, right := bindings[i], bindings[j]
+		if left.SenseID.String() != right.SenseID.String() {
+			return left.SenseID.String() < right.SenseID.String()
+		}
+		if left.ValencyFrameID != right.ValencyFrameID {
+			return left.ValencyFrameID < right.ValencyFrameID
+		}
+		if left.FamilyID.String() != right.FamilyID.String() {
+			return left.FamilyID.String() < right.FamilyID.String()
+		}
+		return left.VariantID.String() < right.VariantID.String()
+	})
+}
+
+func orderCandidates(candidates []ConstructionCandidate) {
+	sort.Slice(candidates, func(i, j int) bool {
+		left, right := candidates[i], candidates[j]
 		if left.SenseID.String() != right.SenseID.String() {
 			return left.SenseID.String() < right.SenseID.String()
 		}
