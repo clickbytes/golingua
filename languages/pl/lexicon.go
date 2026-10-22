@@ -134,6 +134,30 @@ var polishApprovedLexicalBatch4Senses = map[string]struct{}{
 	"pl.szyja.part": {},
 }
 
+var polishLexicalReviewBatch5Source = provenance.SourceRef{
+	ID: "golingua-pl-delegated-lexical-review", URI: "https://github.com/clickbytes/golingua/issues/160#issuecomment-6352533739",
+	Version: "2026-10-23-batch-05", License: "unknown", Author: "codex-owner-delegated",
+}
+
+var polishApprovedLexicalBatch5Senses = map[string]struct{}{
+	"pl.ramie.part": {}, "pl.reka.arm": {}, "pl.lokiec.part": {}, "pl.palec.part": {},
+	"pl.kciuk.part": {}, "pl.klatka_piersiowa.part": {}, "pl.plecy.part": {},
+	"pl.brzuch.part": {}, "pl.biodro.part": {}, "pl.noga.part": {},
+	"pl.kolano.part": {}, "pl.kostka.part": {}, "pl.stopa.part": {},
+	"pl.palec_u_nogi.part": {}, "pl.skora.part": {}, "pl.miesien.part": {},
+	"pl.kosc.part": {}, "pl.staw.part": {}, "pl.serce.organ": {},
+	"pl.pluco.organ": {}, "pl.mozg.organ": {}, "pl.zoladek.organ": {},
+	"pl.jelito.organ": {}, "pl.watroba.organ": {}, "pl.nerka.organ": {},
+	"pl.pecherz.organ": {}, "pl.krew.substance": {}, "pl.zyla.part": {},
+	"pl.arteria.part": {}, "pl.nerw.part": {}, "pl.powietrze.substance": {},
+	"pl.tlen.element": {}, "pl.para.steam": {}, "pl.lod.state": {},
+	"pl.woda_slodka.fresh": {}, "pl.woda_slona.saline": {}, "pl.gleba.soil": {},
+	"pl.piasek.material": {}, "pl.bloto.mixture": {}, "pl.skala.material": {},
+	"pl.kamien.jednostka": {}, "pl.drewno.material": {}, "pl.metal.material": {},
+	"pl.zelazo.element": {}, "pl.miedz.element": {}, "pl.zloto.material": {},
+	"pl.srebro.material": {}, "pl.szklo.material": {}, "pl.plastik.material": {},
+}
+
 var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.widziec.visual":     "pl.widziec.visual.transitive",
 	"pl.patrzec.directed":   "pl.patrzec.directed.na",
@@ -170,6 +194,9 @@ func LexicalDocument() (lexicon.Document, error) {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	if err := polishLexicalReviewBatch4Source.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
+	}
+	if err := polishLexicalReviewBatch5Source.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
@@ -234,6 +261,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishLexicalReviewBatch4Source
+				}
+				if _, approved := polishApprovedLexicalBatch5Senses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishLexicalReviewBatch5Source
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}
