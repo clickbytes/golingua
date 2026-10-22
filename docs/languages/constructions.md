@@ -57,3 +57,9 @@ These declarations are **not** approved sense-to-family bindings. Optional `o co
 ## Polish movement and transport sense frames
 
 The G07-03 motion batch adds 24 reviewed `LexicalSense` candidates with 24 authored `ValencyFrame` declarations. Each frame uses exactly its CORE role signature, while Polish case and adpositions stay local. One-role motions use `pl.intransitive`, direct-object frames use `pl.transitive`, and PP complements use `pl.oblique`. The families are only structural; `Approved` binding count remains zero, and the motion verbs have no asserted morphology paradigms or sentence capabilities.
+
+## New PL families for reviewed multi-argument verbs
+
+`languages/pl/constructions/transitive_oblique.json` and `double_np.json` provide structural slots, respectively (subject NP + verb VP + object NP + oblique PP) and (subject NP + verb VP + object NP + complement NP). `ditransitive.json` now has consistent `recipient` and `object` slot identifiers, matching the corresponding PL valency frames. Sense-specific cases such as `z`+genitive, `do`+genitive or dative recipient are stored in `valency_actions_multirole.go`, **not** in CORE.
+
+All new PL valency records are pending and the structural packages are not approved construction bindings. Template validity alone does not imply parsing, realization or PL↔EN transfer.

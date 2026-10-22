@@ -1,10 +1,10 @@
-# Polish review of the 1000 CORE concepts
+# Polish editorial worklist — 1000 CORE meanings
 
-`data/pl/1000-core-review.tsv` contains **1000** different CORE IDs, language-specific candidate lemmas and editorial rationales. It is an **editorial worklist only**: never compiled at runtime, never an approved bilingual dictionary, and not an automated quality oracle.
+`data/pl/1000-core-review.tsv` is a project-authored **editorial ledger**, not executable runtime data or an approved translation table. Exactly 1000 distinct CORE IDs are represented. Each row carries the proposed PL lemma, sense identity, mapping relationship, provenance note, valency frame reference where implemented, and morphology scope. An entry flagged `REVIEWED` describes an **agent's draft choice**, not linguistic acceptance by the owner.
 
-## Editorial inventory
+## Worklist status
 
-| PL_WORK_STATUS | Rows |
+| Editorial state | Rows |
 | --- | ---: |
 | REVIEWED_LEXICALIZED | 965 |
 | REVIEWED_BROADER_NARROWER | 18 |
@@ -13,19 +13,20 @@
 | DEFERRED / UNREVIEWED | 0 |
 | **Total** | **1000** |
 
-983 worklist rows name a proposed sense/binding; 17 have no binding. All 983 proposed connections are **pending**. The ledger's status `REVIEWED` means that an agent has written a candidate decision; it does NOT certify correctness by the project owner, an authoritative dictionary or an executable grammar. In particular, `MAPPING_KIND=equivalent` in TSV is not `lexicon.BindingApproved`.
+Proposed semantic candidate rows: **983 pending**, **17 without a proposed binding**. This total is independent of the compiled `catalog` counts: **900 pending PL candidates have typed Go declarations**, and **83 event candidates remain worklist-only**, requiring individual lexical and valency review. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. No mapping is `approved`.
 
-## Current compiled Go scope
+## Compiled state after G07-03 batches (2026-10-22)
 
-After adding the institution/food entity candidates:
+- CORE: **1000** compiled concept definitions.
+- PL: **885 lexemes**, **901 senses**, **900 pending semantic bindings**, **100 CORE absent**.
+- EN unchanged: **19 lexemes**, **28 senses**, **19 pending bindings**.
+- PL valency: **193 authored, compiled frames**, some single-role, some NP/PP/recipient-based. No approved construction binding.
+- Polish morphology: **15 selected noun lexemes** supplied with 14 explicit form strings each (7 cases × 2 numbers), using five shared gender-class selection paradigms. Previous `kot`, `student`, `czytać` seeds remain. No automatic inflection for the remaining lexical inventory.
 
-- Typed Polish lexicon: **728 lexemes / 744 lexical senses / 743 pending bindings** (257 CORE absent).
-- Worklist-only: **240 event concept proposals** without fully authored Polish sense-specific valency; do not claim these as runtime bindings.
-- Compiled valency: **12** semantically role-aligned Polish frames; no approved construction bindings or sentence realization.
-- Morpho-phonological coverage: small separate seed, not the 704-lexeme vocabulary; unimplemented cells have no generated forms.
+`MORPHOLOGY_COVERAGE=attested_14_case_number_cells_pending_owner_review` in the TSV identifies the noun slice, including multiple senses of the same lexeme. `no_authorized_paradigm` identifies new verb entries without inflection. Missing cells and lexemes must not be filled through speculative analogy. Inverse analysis preserves distinct syncretic readings, with normalization constrained to NFC.
 
-`PL_LEMMAS`, `LEXEME_SENSE_IDS`, `MAPPING_KIND`, `BINDING_STATUS`, `VALENCY_FRAME_IDS`, `MORPHOLOGY_COVERAGE`, `CONSTRUCTION_COVERAGE` and provenance fields may refer to worklist-only candidates. Inspect `catalog --summary --json` to see compiled runtime data; the ledger alone cannot establish runtime coverage.
+Selected spelling/semantic corrections were made explicitly in the worklist (such as `kaszleć`, `popychać`, `odblokowywać`, `zamarzać`, `topnieć`, `palić się`). These are candidate decisions, not approved lemma/sense transfers. Certain nominalized relation labels are metadata labels, not working prepositions or constructions. Disputed broad/narrow mappings need language review.
 
-All new data is project-authored candidate metadata, sources have `unknown` licence unless a definite licence is recorded. `unknown` is not permission to copy any outside lexicon. Disputed forms (including inflection, homonymy, dialect and semantic narrowing) require a separate owner decision. `winogrono` is not pluralia tantum; `lody` in its food sense uses plural form. Nominalized relation labels are not functional adpositions or syntactic operators.
+## Licensing and manual review
 
-**Manual linguistic acceptance: NOT RUN.** Owner-supplied examples are needed before approving bindings or declaring any PL↔EN translation readiness.
+`SourceRef` uses project-authored references and `License: unknown` where no explicit license decision exists. This is **not** permission to copy third-party dictionaries. There are no newly approved PL↔EN mappings; the owner-selected manual linguistic acceptance of these new batches remains **NOT RUN**.
