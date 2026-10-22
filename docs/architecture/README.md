@@ -1,6 +1,6 @@
 # Architektura golingua — Go od zera, ocena ręczna
 
-**Status architektury: techniczne komponenty zaimplementowane, językowy runtime nieaktywny.** Istnieją CLI/bootstrap, typowane identyfikatory, 1000-komponentowy ConceptGraph, Meaning IR, graph indexes, parser/realizer/planery jako biblioteki, małe seedy morfologii i niezależne leksykony PL/EN. Osiem dokładnych konstrukcyjnych tras PL/EN ma zatwierdzone bindingi, a 989 EN Sense→CORE links przeszło delegowany przegląd w dwudziestu partiach; brak zatwierdzonych PL lexical links i skonfigurowanych providerów językowych, więc nie ma zatwierdzonych par PL+EN i `translate` poprawnie zwraca `unsupported`. Implementacja technicznego parsera/realizera nie jest równoznaczna z możliwością generowania polskiego lub angielskiego zdania.
+**Status architektury: techniczne komponenty zaimplementowane, językowy runtime nieaktywny.** Istnieją CLI/bootstrap, typowane identyfikatory, 1000-komponentowy ConceptGraph, Meaning IR, graph indexes, parser/realizer/planery jako biblioteki, małe seedy morfologii i niezależne leksykony PL/EN. Osiem dokładnych konstrukcyjnych tras PL/EN ma zatwierdzone bindingi, 989 EN i 665 PL Sense→CORE links przeszło delegowany przegląd; katalog wykazuje 658 par PL+EN. Brakuje skonfigurowanych providerów językowych, więc `translate` nadal zwraca `unsupported`. Implementacja technicznego parsera/realizera nie jest równoznaczna z możliwością generowania polskiego lub angielskiego zdania.
 
 ## Fundamentalna decyzja (2026-10-20)
 
