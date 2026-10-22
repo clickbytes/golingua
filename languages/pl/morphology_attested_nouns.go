@@ -11,11 +11,11 @@ import (
 )
 
 var attestedNounSource = provenance.SourceRef{
-	ID: "golingua-pl-noun-forms-authored",
-	Path: "languages/pl/morphology_attested_nouns.go",
+	ID:      "golingua-pl-noun-forms-authored",
+	Path:    "languages/pl/morphology_attested_nouns.go",
 	Version: "2026-10-22-reviewed-candidates-v1",
 	License: "unknown",
-	Author: "golingua contributors",
+	Author:  "golingua contributors",
 }
 
 // attestedNounForms contains every declared case/number form explicitly.
@@ -23,7 +23,7 @@ var attestedNounSource = provenance.SourceRef{
 // sound change, missing form or an unreviewed alternate reading.
 type attestedNounEntry struct {
 	id, lemma, gender string
-	singular, plural [7]string
+	singular, plural  [7]string
 }
 
 var attestedNounForms = []attestedNounEntry{
@@ -88,11 +88,11 @@ func attestedNounParadigms(profile *features.LanguageFeatureProfile) []morph.Par
 	result := make([]morph.Paradigm, 0, len(genders))
 	for _, gender := range genders {
 		paradigm := morph.Paradigm{
-			SchemaVersion: morph.ParadigmSchemaVersion,
-			ID: morph.ParadigmID("pl_noun_attested_" + gender),
-			Language: "pl",
+			SchemaVersion:  morph.ParadigmSchemaVersion,
+			ID:             morph.ParadigmID("pl_noun_attested_" + gender),
+			Language:       "pl",
 			ProfileVersion: profile.Version(),
-			POS: "noun",
+			POS:            "noun",
 		}
 		for _, number := range []string{"singular", "plural"} {
 			prefix := "sg"
@@ -115,10 +115,10 @@ func attestedNounParadigms(profile *features.LanguageFeatureProfile) []morph.Par
 					},
 				})
 				paradigm.Rules = append(paradigm.Rules, morph.CellRule{
-					CellID: cellID,
+					CellID:      cellID,
 					ProcedureID: "procedure:" + string(paradigm.ID) + "." + string(cellID),
-					Provenance: attestedNounSource,
-					Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: stemID}},
+					Provenance:  attestedNounSource,
+					Steps:       []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: stemID}},
 				})
 			}
 		}

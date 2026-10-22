@@ -64,7 +64,7 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 	for _, lexeme := range document.Lexemes {
 		if lexeme.ID.String() == "lexeme:pl.kot.n" {
 			records := []lexemeRecord{{
-				Lexeme: lexeme,
+				Lexeme:         lexeme,
 				PrincipalParts: morph.PrincipalParts{
 					LexemeID: lexeme.ID,
 					Parts: []morph.PrincipalPart{{ID: "base", Form: lexeme.Lemma}},
