@@ -13,12 +13,12 @@
 | DEFERRED / UNREVIEWED | 0 |
 | **Total** | **1000** |
 
-Proposed semantic rows: **582 approved and 418 pending**, **0 without a proposed binding**. This row count is independent of compiled bindings: **1006 typed binding records cover 1000 CORE concepts**, because six concepts each have two gender-specific lexical senses. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. The 582 individually approved equivalents are recorded in delegated review issues #152, #154, #156, #158, #160, #162, #164, #166, #168, #170, #172, #174, and #176 (batches 1–13).
+Proposed semantic rows: **631 approved and 369 pending**, **0 without a proposed binding**. This row count is independent of compiled bindings: **1006 typed binding records cover 1000 CORE concepts**, because six concepts each have two gender-specific lexical senses. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. The 631 individually approved equivalents are recorded in delegated review issues #152, #154, #156, #158, #160, #162, #164, #166, #168, #170, #172, #174, #176, and #178 (batches 1–14).
 
-## Compiled state after G07-09 batch 13 (2026-10-23)
+## Compiled state after G07-09 batch 14 (2026-10-23)
 
 - CORE: **1000** compiled concept definitions.
-- PL: **982 lexemes**, **1007 senses**, **1006 semantic bindings (582 approved; 424 pending) over 1000 concepts**, **0 CORE absent**.
+- PL: **982 lexemes**, **1007 senses**, **1006 semantic bindings (631 approved; 375 pending) over 1000 concepts**, **0 CORE absent**.
 - EN: **1000 lexemes**, **1009 senses**, **989 approved and 12 pending binding records** over 1000 concepts.
 - PL valency: **273 authored, compiled frames**, some single-role, some NP/PP/recipient-based; four separately approved construction bindings.
 - Polish morphology: **15 selected noun lexemes** supplied with 14 explicit form strings each (7 cases × 2 numbers), using five shared gender-class selection paradigms. Previous `kot`, `student`, `czytać` seeds remain. No automatic inflection for the remaining lexical inventory.

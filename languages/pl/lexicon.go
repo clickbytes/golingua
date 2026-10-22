@@ -347,6 +347,31 @@ var polishApprovedLexicalBatch13Senses = map[string]struct{}{
 	"pl.miec_nadzieje.hope": {}, "pl.mowic.speak": {}, "pl.stwierdzac.state": {},
 }
 
+var polishLexicalReviewBatch14Source = provenance.SourceRef{
+	ID: "golingua-pl-delegated-lexical-review", URI: "https://github.com/clickbytes/golingua/issues/178#issuecomment-6352966221",
+	Version: "2026-10-23-batch-14", License: "unknown", Author: "codex-owner-delegated",
+}
+
+var polishApprovedLexicalBatch14Senses = map[string]struct{}{
+	"pl.opowiadac.narrate": {}, "pl.oglaszac.announce": {}, "pl.informowac.inform": {},
+	"pl.wyjasniac.explain": {}, "pl.opisywac.describe": {}, "pl.nazywac.name": {},
+	"pl.przedstawiac.introduce": {}, "pl.witac.greet": {}, "pl.dziekowac.thank": {},
+	"pl.przepraszac.apologize": {}, "pl.prosic.request": {}, "pl.rozkazywac.command": {},
+	"pl.zapraszac.invite": {}, "pl.oferowac.offer": {}, "pl.obiecywac.promise": {},
+	"pl.zgadzac_sie.agree": {}, "pl.nie_zgadzac_sie.disagree": {}, "pl.odmawiac.refuse": {},
+	"pl.przyjmowac.accept_offer": {}, "pl.sprzeczac_sie.argue": {}, "pl.dyskutowac.discuss": {},
+	"pl.przekonywac.persuade": {}, "pl.ostrzegac.warn": {}, "pl.doradzac.advise": {},
+	"pl.polecac.recommend": {}, "pl.skarzyc_sie.complain": {}, "pl.chwalic.praise": {},
+	"pl.krytykowac.criticize": {}, "pl.zartowac.joke": {}, "pl.szeptac.whisper": {},
+	"pl.krzyczec.shout": {}, "pl.pisac.write": {}, "pl.wysylac.send_message": {},
+	"pl.dostac.receive_message": {}, "pl.dzwonic.call": {}, "pl.tlumaczyc.translate": {},
+	"pl.tlumaczyc_ustnie.interpret": {}, "pl.oddychac.breathe": {}, "pl.wdychac.inhale": {},
+	"pl.wydychac.exhale": {}, "pl.kaszlec.cough": {}, "pl.kichac.sneeze": {},
+	"pl.polykac.swallow": {}, "pl.pic.drink": {}, "pl.zuc.chew": {},
+	"pl.trawic.digest": {}, "pl.pocic_sie.sweat": {}, "pl.krwawic.bleed": {},
+	"pl.goic_sie.heal": {},
+}
+
 var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.widziec.visual":     "pl.widziec.visual.transitive",
 	"pl.patrzec.directed":   "pl.patrzec.directed.na",
@@ -410,6 +435,9 @@ func LexicalDocument() (lexicon.Document, error) {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	if err := polishLexicalReviewBatch13Source.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
+	}
+	if err := polishLexicalReviewBatch14Source.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
@@ -519,6 +547,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishLexicalReviewBatch13Source
+				}
+				if _, approved := polishApprovedLexicalBatch14Senses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishLexicalReviewBatch14Source
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}
