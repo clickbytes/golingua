@@ -1,0 +1,101 @@
+id	event_concept	arg1_role	arg1_concept	arg2_role	arg2_concept	pl_event_sense	en_event_sense	pl	en	editorial_status
+S001	concept:seeing	experiencer	concept:teacher	stimulus	concept:dog	sense:pl.widziec.visual	sense:en.see.visual	Nauczyciel widzi psa.	The teacher sees the dog.	draft_unreviewed
+S002	concept:seeing	experiencer	concept:teacher	stimulus	concept:cat	sense:pl.widziec.visual	sense:en.see.visual	Nauczyciel widzi kota.	The teacher sees the cat.	draft_unreviewed
+S003	concept:seeing	experiencer	concept:teacher	stimulus	concept:book	sense:pl.widziec.visual	sense:en.see.visual	Nauczyciel widzi książkę.	The teacher sees the book.	draft_unreviewed
+S004	concept:seeing	experiencer	concept:teacher	stimulus	concept:house	sense:pl.widziec.visual	sense:en.see.visual	Nauczyciel widzi dom.	The teacher sees the house.	draft_unreviewed
+S005	concept:seeing	experiencer	concept:teacher	stimulus	concept:car	sense:pl.widziec.visual	sense:en.see.visual	Nauczyciel widzi samochód.	The teacher sees the car.	draft_unreviewed
+S006	concept:seeing	experiencer	concept:doctor	stimulus	concept:dog	sense:pl.widziec.visual	sense:en.see.visual	Lekarz widzi psa.	The doctor sees the dog.	draft_unreviewed
+S007	concept:seeing	experiencer	concept:doctor	stimulus	concept:cat	sense:pl.widziec.visual	sense:en.see.visual	Lekarz widzi kota.	The doctor sees the cat.	draft_unreviewed
+S008	concept:seeing	experiencer	concept:doctor	stimulus	concept:book	sense:pl.widziec.visual	sense:en.see.visual	Lekarz widzi książkę.	The doctor sees the book.	draft_unreviewed
+S009	concept:seeing	experiencer	concept:doctor	stimulus	concept:house	sense:pl.widziec.visual	sense:en.see.visual	Lekarz widzi dom.	The doctor sees the house.	draft_unreviewed
+S010	concept:seeing	experiencer	concept:doctor	stimulus	concept:car	sense:pl.widziec.visual	sense:en.see.visual	Lekarz widzi samochód.	The doctor sees the car.	draft_unreviewed
+S011	concept:seeing	experiencer	concept:mother	stimulus	concept:dog	sense:pl.widziec.visual	sense:en.see.visual	Matka widzi psa.	The mother sees the dog.	draft_unreviewed
+S012	concept:seeing	experiencer	concept:mother	stimulus	concept:cat	sense:pl.widziec.visual	sense:en.see.visual	Matka widzi kota.	The mother sees the cat.	draft_unreviewed
+S013	concept:seeing	experiencer	concept:mother	stimulus	concept:book	sense:pl.widziec.visual	sense:en.see.visual	Matka widzi książkę.	The mother sees the book.	draft_unreviewed
+S014	concept:seeing	experiencer	concept:mother	stimulus	concept:house	sense:pl.widziec.visual	sense:en.see.visual	Matka widzi dom.	The mother sees the house.	draft_unreviewed
+S015	concept:seeing	experiencer	concept:mother	stimulus	concept:car	sense:pl.widziec.visual	sense:en.see.visual	Matka widzi samochód.	The mother sees the car.	draft_unreviewed
+S016	concept:seeing	experiencer	concept:father	stimulus	concept:dog	sense:pl.widziec.visual	sense:en.see.visual	Ojciec widzi psa.	The father sees the dog.	draft_unreviewed
+S017	concept:seeing	experiencer	concept:father	stimulus	concept:cat	sense:pl.widziec.visual	sense:en.see.visual	Ojciec widzi kota.	The father sees the cat.	draft_unreviewed
+S018	concept:seeing	experiencer	concept:father	stimulus	concept:book	sense:pl.widziec.visual	sense:en.see.visual	Ojciec widzi książkę.	The father sees the book.	draft_unreviewed
+S019	concept:seeing	experiencer	concept:father	stimulus	concept:house	sense:pl.widziec.visual	sense:en.see.visual	Ojciec widzi dom.	The father sees the house.	draft_unreviewed
+S020	concept:seeing	experiencer	concept:father	stimulus	concept:car	sense:pl.widziec.visual	sense:en.see.visual	Ojciec widzi samochód.	The father sees the car.	draft_unreviewed
+S021	concept:seeing	experiencer	concept:child	stimulus	concept:dog	sense:pl.widziec.visual	sense:en.see.visual	Dziecko widzi psa.	The child sees the dog.	draft_unreviewed
+S022	concept:seeing	experiencer	concept:child	stimulus	concept:cat	sense:pl.widziec.visual	sense:en.see.visual	Dziecko widzi kota.	The child sees the cat.	draft_unreviewed
+S023	concept:seeing	experiencer	concept:child	stimulus	concept:book	sense:pl.widziec.visual	sense:en.see.visual	Dziecko widzi książkę.	The child sees the book.	draft_unreviewed
+S024	concept:seeing	experiencer	concept:child	stimulus	concept:house	sense:pl.widziec.visual	sense:en.see.visual	Dziecko widzi dom.	The child sees the house.	draft_unreviewed
+S025	concept:seeing	experiencer	concept:child	stimulus	concept:car	sense:pl.widziec.visual	sense:en.see.visual	Dziecko widzi samochód.	The child sees the car.	draft_unreviewed
+S026	concept:hearing	experiencer	concept:teacher	stimulus	concept:dog	sense:pl.slyszec.auditory	sense:en.hear.auditory	Nauczyciel słyszy psa.	The teacher hears the dog.	draft_unreviewed
+S027	concept:hearing	experiencer	concept:teacher	stimulus	concept:cat	sense:pl.slyszec.auditory	sense:en.hear.auditory	Nauczyciel słyszy kota.	The teacher hears the cat.	draft_unreviewed
+S028	concept:hearing	experiencer	concept:teacher	stimulus	concept:bird	sense:pl.slyszec.auditory	sense:en.hear.auditory	Nauczyciel słyszy ptaka.	The teacher hears the bird.	draft_unreviewed
+S029	concept:hearing	experiencer	concept:teacher	stimulus	concept:mother	sense:pl.slyszec.auditory	sense:en.hear.auditory	Nauczyciel słyszy matkę.	The teacher hears the mother.	draft_unreviewed
+S030	concept:hearing	experiencer	concept:teacher	stimulus	concept:father	sense:pl.slyszec.auditory	sense:en.hear.auditory	Nauczyciel słyszy ojca.	The teacher hears the father.	draft_unreviewed
+S031	concept:hearing	experiencer	concept:doctor	stimulus	concept:dog	sense:pl.slyszec.auditory	sense:en.hear.auditory	Lekarz słyszy psa.	The doctor hears the dog.	draft_unreviewed
+S032	concept:hearing	experiencer	concept:doctor	stimulus	concept:cat	sense:pl.slyszec.auditory	sense:en.hear.auditory	Lekarz słyszy kota.	The doctor hears the cat.	draft_unreviewed
+S033	concept:hearing	experiencer	concept:doctor	stimulus	concept:bird	sense:pl.slyszec.auditory	sense:en.hear.auditory	Lekarz słyszy ptaka.	The doctor hears the bird.	draft_unreviewed
+S034	concept:hearing	experiencer	concept:doctor	stimulus	concept:mother	sense:pl.slyszec.auditory	sense:en.hear.auditory	Lekarz słyszy matkę.	The doctor hears the mother.	draft_unreviewed
+S035	concept:hearing	experiencer	concept:doctor	stimulus	concept:father	sense:pl.slyszec.auditory	sense:en.hear.auditory	Lekarz słyszy ojca.	The doctor hears the father.	draft_unreviewed
+S036	concept:hearing	experiencer	concept:child	stimulus	concept:dog	sense:pl.slyszec.auditory	sense:en.hear.auditory	Dziecko słyszy psa.	The child hears the dog.	draft_unreviewed
+S037	concept:hearing	experiencer	concept:child	stimulus	concept:cat	sense:pl.slyszec.auditory	sense:en.hear.auditory	Dziecko słyszy kota.	The child hears the cat.	draft_unreviewed
+S038	concept:hearing	experiencer	concept:child	stimulus	concept:bird	sense:pl.slyszec.auditory	sense:en.hear.auditory	Dziecko słyszy ptaka.	The child hears the bird.	draft_unreviewed
+S039	concept:hearing	experiencer	concept:child	stimulus	concept:mother	sense:pl.slyszec.auditory	sense:en.hear.auditory	Dziecko słyszy matkę.	The child hears the mother.	draft_unreviewed
+S040	concept:hearing	experiencer	concept:child	stimulus	concept:father	sense:pl.slyszec.auditory	sense:en.hear.auditory	Dziecko słyszy ojca.	The child hears the father.	draft_unreviewed
+S041	concept:hearing	experiencer	concept:neighbor	stimulus	concept:dog	sense:pl.slyszec.auditory	sense:en.hear.auditory	Sąsiad słyszy psa.	The neighbor hears the dog.	draft_unreviewed
+S042	concept:hearing	experiencer	concept:neighbor	stimulus	concept:cat	sense:pl.slyszec.auditory	sense:en.hear.auditory	Sąsiad słyszy kota.	The neighbor hears the cat.	draft_unreviewed
+S043	concept:hearing	experiencer	concept:neighbor	stimulus	concept:bird	sense:pl.slyszec.auditory	sense:en.hear.auditory	Sąsiad słyszy ptaka.	The neighbor hears the bird.	draft_unreviewed
+S044	concept:hearing	experiencer	concept:neighbor	stimulus	concept:mother	sense:pl.slyszec.auditory	sense:en.hear.auditory	Sąsiad słyszy matkę.	The neighbor hears the mother.	draft_unreviewed
+S045	concept:hearing	experiencer	concept:neighbor	stimulus	concept:father	sense:pl.slyszec.auditory	sense:en.hear.auditory	Sąsiad słyszy ojca.	The neighbor hears the father.	draft_unreviewed
+S046	concept:hearing	experiencer	concept:customer	stimulus	concept:dog	sense:pl.slyszec.auditory	sense:en.hear.auditory	Klient słyszy psa.	The customer hears the dog.	draft_unreviewed
+S047	concept:hearing	experiencer	concept:customer	stimulus	concept:cat	sense:pl.slyszec.auditory	sense:en.hear.auditory	Klient słyszy kota.	The customer hears the cat.	draft_unreviewed
+S048	concept:hearing	experiencer	concept:customer	stimulus	concept:bird	sense:pl.slyszec.auditory	sense:en.hear.auditory	Klient słyszy ptaka.	The customer hears the bird.	draft_unreviewed
+S049	concept:hearing	experiencer	concept:customer	stimulus	concept:mother	sense:pl.slyszec.auditory	sense:en.hear.auditory	Klient słyszy matkę.	The customer hears the mother.	draft_unreviewed
+S050	concept:hearing	experiencer	concept:customer	stimulus	concept:father	sense:pl.slyszec.auditory	sense:en.hear.auditory	Klient słyszy ojca.	The customer hears the father.	draft_unreviewed
+S051	concept:looking	agent	concept:teacher	target	concept:book	sense:pl.patrzec.directed	sense:en.look.directed	Nauczyciel patrzy na książkę.	The teacher looks at the book.	draft_unreviewed
+S052	concept:looking	agent	concept:teacher	target	concept:house	sense:pl.patrzec.directed	sense:en.look.directed	Nauczyciel patrzy na dom.	The teacher looks at the house.	draft_unreviewed
+S053	concept:looking	agent	concept:teacher	target	concept:dog	sense:pl.patrzec.directed	sense:en.look.directed	Nauczyciel patrzy na psa.	The teacher looks at the dog.	draft_unreviewed
+S054	concept:looking	agent	concept:teacher	target	concept:car	sense:pl.patrzec.directed	sense:en.look.directed	Nauczyciel patrzy na samochód.	The teacher looks at the car.	draft_unreviewed
+S055	concept:looking	agent	concept:teacher	target	concept:tree	sense:pl.patrzec.directed	sense:en.look.directed	Nauczyciel patrzy na drzewo.	The teacher looks at the tree.	draft_unreviewed
+S056	concept:looking	agent	concept:doctor	target	concept:book	sense:pl.patrzec.directed	sense:en.look.directed	Lekarz patrzy na książkę.	The doctor looks at the book.	draft_unreviewed
+S057	concept:looking	agent	concept:doctor	target	concept:house	sense:pl.patrzec.directed	sense:en.look.directed	Lekarz patrzy na dom.	The doctor looks at the house.	draft_unreviewed
+S058	concept:looking	agent	concept:doctor	target	concept:dog	sense:pl.patrzec.directed	sense:en.look.directed	Lekarz patrzy na psa.	The doctor looks at the dog.	draft_unreviewed
+S059	concept:looking	agent	concept:doctor	target	concept:car	sense:pl.patrzec.directed	sense:en.look.directed	Lekarz patrzy na samochód.	The doctor looks at the car.	draft_unreviewed
+S060	concept:looking	agent	concept:doctor	target	concept:tree	sense:pl.patrzec.directed	sense:en.look.directed	Lekarz patrzy na drzewo.	The doctor looks at the tree.	draft_unreviewed
+S061	concept:looking	agent	concept:mother	target	concept:book	sense:pl.patrzec.directed	sense:en.look.directed	Matka patrzy na książkę.	The mother looks at the book.	draft_unreviewed
+S062	concept:looking	agent	concept:mother	target	concept:house	sense:pl.patrzec.directed	sense:en.look.directed	Matka patrzy na dom.	The mother looks at the house.	draft_unreviewed
+S063	concept:looking	agent	concept:mother	target	concept:dog	sense:pl.patrzec.directed	sense:en.look.directed	Matka patrzy na psa.	The mother looks at the dog.	draft_unreviewed
+S064	concept:looking	agent	concept:mother	target	concept:car	sense:pl.patrzec.directed	sense:en.look.directed	Matka patrzy na samochód.	The mother looks at the car.	draft_unreviewed
+S065	concept:looking	agent	concept:mother	target	concept:tree	sense:pl.patrzec.directed	sense:en.look.directed	Matka patrzy na drzewo.	The mother looks at the tree.	draft_unreviewed
+S066	concept:looking	agent	concept:father	target	concept:book	sense:pl.patrzec.directed	sense:en.look.directed	Ojciec patrzy na książkę.	The father looks at the book.	draft_unreviewed
+S067	concept:looking	agent	concept:father	target	concept:house	sense:pl.patrzec.directed	sense:en.look.directed	Ojciec patrzy na dom.	The father looks at the house.	draft_unreviewed
+S068	concept:looking	agent	concept:father	target	concept:dog	sense:pl.patrzec.directed	sense:en.look.directed	Ojciec patrzy na psa.	The father looks at the dog.	draft_unreviewed
+S069	concept:looking	agent	concept:father	target	concept:car	sense:pl.patrzec.directed	sense:en.look.directed	Ojciec patrzy na samochód.	The father looks at the car.	draft_unreviewed
+S070	concept:looking	agent	concept:father	target	concept:tree	sense:pl.patrzec.directed	sense:en.look.directed	Ojciec patrzy na drzewo.	The father looks at the tree.	draft_unreviewed
+S071	concept:looking	agent	concept:child	target	concept:book	sense:pl.patrzec.directed	sense:en.look.directed	Dziecko patrzy na książkę.	The child looks at the book.	draft_unreviewed
+S072	concept:looking	agent	concept:child	target	concept:house	sense:pl.patrzec.directed	sense:en.look.directed	Dziecko patrzy na dom.	The child looks at the house.	draft_unreviewed
+S073	concept:looking	agent	concept:child	target	concept:dog	sense:pl.patrzec.directed	sense:en.look.directed	Dziecko patrzy na psa.	The child looks at the dog.	draft_unreviewed
+S074	concept:looking	agent	concept:child	target	concept:car	sense:pl.patrzec.directed	sense:en.look.directed	Dziecko patrzy na samochód.	The child looks at the car.	draft_unreviewed
+S075	concept:looking	agent	concept:child	target	concept:tree	sense:pl.patrzec.directed	sense:en.look.directed	Dziecko patrzy na drzewo.	The child looks at the tree.	draft_unreviewed
+S076	concept:receiving	recipient	concept:teacher	theme	concept:book	sense:pl.dostac.receive	sense:en.get.receive	Nauczyciel dostał książkę.	The teacher got a book.	draft_unreviewed
+S077	concept:receiving	recipient	concept:teacher	theme	concept:water	sense:pl.dostac.receive	sense:en.get.receive	Nauczyciel dostał wodę.	The teacher got water.	draft_unreviewed
+S078	concept:receiving	recipient	concept:teacher	theme	concept:food	sense:pl.dostac.receive	sense:en.get.receive	Nauczyciel dostał jedzenie.	The teacher got food.	draft_unreviewed
+S079	concept:receiving	recipient	concept:teacher	theme	concept:message	sense:pl.dostac.receive	sense:en.get.receive	Nauczyciel dostał wiadomość.	The teacher got a message.	draft_unreviewed
+S080	concept:receiving	recipient	concept:teacher	theme	concept:money	sense:pl.dostac.receive	sense:en.get.receive	Nauczyciel dostał pieniądze.	The teacher got money.	draft_unreviewed
+S081	concept:receiving	recipient	concept:doctor	theme	concept:book	sense:pl.dostac.receive	sense:en.get.receive	Lekarz dostał książkę.	The doctor got a book.	draft_unreviewed
+S082	concept:receiving	recipient	concept:doctor	theme	concept:water	sense:pl.dostac.receive	sense:en.get.receive	Lekarz dostał wodę.	The doctor got water.	draft_unreviewed
+S083	concept:receiving	recipient	concept:doctor	theme	concept:food	sense:pl.dostac.receive	sense:en.get.receive	Lekarz dostał jedzenie.	The doctor got food.	draft_unreviewed
+S084	concept:receiving	recipient	concept:doctor	theme	concept:message	sense:pl.dostac.receive	sense:en.get.receive	Lekarz dostał wiadomość.	The doctor got a message.	draft_unreviewed
+S085	concept:receiving	recipient	concept:doctor	theme	concept:money	sense:pl.dostac.receive	sense:en.get.receive	Lekarz dostał pieniądze.	The doctor got money.	draft_unreviewed
+S086	concept:receiving	recipient	concept:mother	theme	concept:book	sense:pl.dostac.receive	sense:en.get.receive	Matka dostała książkę.	The mother got a book.	draft_unreviewed
+S087	concept:receiving	recipient	concept:mother	theme	concept:water	sense:pl.dostac.receive	sense:en.get.receive	Matka dostała wodę.	The mother got water.	draft_unreviewed
+S088	concept:receiving	recipient	concept:mother	theme	concept:food	sense:pl.dostac.receive	sense:en.get.receive	Matka dostała jedzenie.	The mother got food.	draft_unreviewed
+S089	concept:receiving	recipient	concept:mother	theme	concept:message	sense:pl.dostac.receive	sense:en.get.receive	Matka dostała wiadomość.	The mother got a message.	draft_unreviewed
+S090	concept:receiving	recipient	concept:mother	theme	concept:money	sense:pl.dostac.receive	sense:en.get.receive	Matka dostała pieniądze.	The mother got money.	draft_unreviewed
+S091	concept:receiving	recipient	concept:father	theme	concept:book	sense:pl.dostac.receive	sense:en.get.receive	Ojciec dostał książkę.	The father got a book.	draft_unreviewed
+S092	concept:receiving	recipient	concept:father	theme	concept:water	sense:pl.dostac.receive	sense:en.get.receive	Ojciec dostał wodę.	The father got water.	draft_unreviewed
+S093	concept:receiving	recipient	concept:father	theme	concept:food	sense:pl.dostac.receive	sense:en.get.receive	Ojciec dostał jedzenie.	The father got food.	draft_unreviewed
+S094	concept:receiving	recipient	concept:father	theme	concept:message	sense:pl.dostac.receive	sense:en.get.receive	Ojciec dostał wiadomość.	The father got a message.	draft_unreviewed
+S095	concept:receiving	recipient	concept:father	theme	concept:money	sense:pl.dostac.receive	sense:en.get.receive	Ojciec dostał pieniądze.	The father got money.	draft_unreviewed
+S096	concept:receiving	recipient	concept:child	theme	concept:book	sense:pl.dostac.receive	sense:en.get.receive	Dziecko dostało książkę.	The child got a book.	draft_unreviewed
+S097	concept:receiving	recipient	concept:child	theme	concept:water	sense:pl.dostac.receive	sense:en.get.receive	Dziecko dostało wodę.	The child got water.	draft_unreviewed
+S098	concept:receiving	recipient	concept:child	theme	concept:food	sense:pl.dostac.receive	sense:en.get.receive	Dziecko dostało jedzenie.	The child got food.	draft_unreviewed
+S099	concept:receiving	recipient	concept:child	theme	concept:message	sense:pl.dostac.receive	sense:en.get.receive	Dziecko dostało wiadomość.	The child got a message.	draft_unreviewed
+S100	concept:receiving	recipient	concept:child	theme	concept:money	sense:pl.dostac.receive	sense:en.get.receive	Dziecko dostało pieniądze.	The child got money.	draft_unreviewed

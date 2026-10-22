@@ -54,6 +54,23 @@ approved construction bindings oddzielnie dla PL i EN. Tylko approved binding
 licencjonuje dokładną trasę sense/frame/family/variant; sam nie wystarcza do
 tłumaczenia zdania bez zatwierdzonych powiązań leksykalnych i runtime.
 
+## Snapshot katalogu Go
+
+`snapshot` buduje walidowane pliki CORE i wspólnego leksykonu PL/EN z bieżących
+deklaracji Go. Podgląd podaje skrót i liczności; aktywacja zapisuje te same dane
+do wskazanego lokalnego magazynu i ustawia jego aktywny wskaźnik:
+
+```sh
+go run ./cmd/golingua snapshot --preview --store <katalog-magazynu> --json
+go run ./cmd/golingua snapshot --apply --store <katalog-magazynu> --json
+```
+
+Obie komendy wymagają jawnej ścieżki i mogą utworzyć katalog magazynu. Snapshot
+zachowuje `pending` i pochodzenie każdego bindingu. Nie zawiera walencji,
+konstrukcji ani reguł tworzenia zdań, więc jego aktywacja nie włącza translacji.
+Do użycia CORE przez `question` skonfiguruj `dataset_store` na ten katalog i
+`dataset_id` na `golingua-authored`.
+
 ## Pytania na faktach z żądania
 
 Komenda `question` wykonuje typowane zapytanie na `MeaningGraph` i `FactSet` podanych w jednym żądaniu. Nie parsuje polskiego ani angielskiego tekstu i nie realizuje odpowiedzi powierzchniowej.
