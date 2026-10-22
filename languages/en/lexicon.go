@@ -66,40 +66,42 @@ var englishParadigmByLexeme = map[string]string{
 // LexicalDocument builds the English lexical records from Go declarations.
 // It keeps polysemous senses distinct and leaves unmapped meanings unresolved.
 func LexicalDocument() (lexicon.Document, error) {
-	if err := englishLexicalSource.Validate(); err != nil {
-		return lexicon.Document{}, fmt.Errorf("English lexical source: %w", err)
-	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
-	for _, entry := range englishEntries {
-		lexemeID, err := ids.NewLexemeID(entry.id)
-		if err != nil {
-			return lexicon.Document{}, fmt.Errorf("English lexeme %s: %w", entry.id, err)
+	for _, group := range englishLexiconGroups() {
+		if err := group.source.Validate(); err != nil {
+			return lexicon.Document{}, fmt.Errorf("English lexical source %q: %w", group.source.ID, err)
 		}
-		document.Lexemes = append(document.Lexemes, lexicon.MorphLexeme{
-			ID: lexemeID, Language: "en", Lemma: entry.lemma, POS: entry.pos,
-			ParadigmID: englishParadigmByLexeme[entry.id],
-		})
-		for _, meaning := range entry.meanings {
-			senseID, err := ids.NewSenseID(meaning.id)
+		for _, entry := range group.entries {
+			lexemeID, err := ids.NewLexemeID(entry.id)
 			if err != nil {
-				return lexicon.Document{}, fmt.Errorf("English sense %s: %w", meaning.id, err)
+				return lexicon.Document{}, fmt.Errorf("English lexeme %s: %w", entry.id, err)
 			}
-			sense := lexicon.LexicalSense{ID: senseID, LexemeID: lexemeID, Usage: []string{meaning.description}}
-			if frameID, ok := englishFrameBySense[meaning.id]; ok {
-				sense.ValencyIDs = []lexicon.ValencyID{frameID}
-			}
-			document.Senses = append(document.Senses, sense)
-			if meaning.candidateCore == "" {
-				continue
-			}
-			conceptID, err := ids.NewConceptID(meaning.candidateCore)
-			if err != nil {
-				return lexicon.Document{}, fmt.Errorf("English candidate %s: %w", meaning.candidateCore, err)
-			}
-			document.Bindings = append(document.Bindings, lexicon.SemanticBinding{
-				SenseID: senseID, CoreRef: conceptID, Mapping: lexicon.MappingCandidate,
-				Status: lexicon.BindingPending, Provenance: englishLexicalSource,
+			document.Lexemes = append(document.Lexemes, lexicon.MorphLexeme{
+				ID: lexemeID, Language: "en", Lemma: entry.lemma, POS: entry.pos,
+				ParadigmID: englishParadigmByLexeme[entry.id],
 			})
+			for _, meaning := range entry.meanings {
+				senseID, err := ids.NewSenseID(meaning.id)
+				if err != nil {
+					return lexicon.Document{}, fmt.Errorf("English sense %s: %w", meaning.id, err)
+				}
+				sense := lexicon.LexicalSense{ID: senseID, LexemeID: lexemeID, Usage: []string{meaning.description}}
+				if frameID, ok := englishFrameBySense[meaning.id]; ok {
+					sense.ValencyIDs = []lexicon.ValencyID{frameID}
+				}
+				document.Senses = append(document.Senses, sense)
+				if meaning.candidateCore == "" {
+					continue
+				}
+				conceptID, err := ids.NewConceptID(meaning.candidateCore)
+				if err != nil {
+					return lexicon.Document{}, fmt.Errorf("English candidate %s: %w", meaning.candidateCore, err)
+				}
+				document.Bindings = append(document.Bindings, lexicon.SemanticBinding{
+					SenseID: senseID, CoreRef: conceptID, Mapping: lexicon.MappingCandidate,
+					Status: lexicon.BindingPending, Provenance: group.source,
+				})
+			}
 		}
 	}
 	return document, nil
