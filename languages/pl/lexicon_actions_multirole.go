@@ -24,5 +24,5 @@ var multiRoleActionEntries = []lexicalEntry{
 	{"pl.wynajmowac.v", "wynajmować", "verb", []lexicalMeaning{{"pl.wynajmowac.rent", "An independently authored Polish candidate for Obtaining temporary use of property in exchange for periodic or agreed payment.", "renting_property"}}},
 	{"pl.darowac.v", "darować", "verb", []lexicalMeaning{{"pl.darowac.donate", "An independently authored Polish candidate for Giving resources voluntarily to support a cause or recipient without equivalent compensation.", "making_donation"}}},
 	{"pl.dostarczac.v", "dostarczać", "verb", []lexicalMeaning{{"pl.dostarczac.deliver", "An independently authored Polish candidate for Transporting an item to an intended recipient and making it available to them.", "delivering_goods"}}},
-	{"pl.wysylac.v", "wysyłać", "verb", []lexicalMeaning{{"pl.wysylac.ship", "An independently authored Polish candidate for Dispatching goods through a transport system for delivery elsewhere.", "shipping_goods"}}},
+	{"pl.wysylac.v", "wysyłać", "verb", []lexicalMeaning{{"pl.wysylac.ship", "An independently authored Polish candidate for Dispatching goods through a transport system for delivery elsewhere.", "shipping_goods"}, {"pl.wysylac.send_message", "Dispatching a message through a physical or electronic channel.", "sending_message"}}},
 }

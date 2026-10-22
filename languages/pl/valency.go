@@ -94,6 +94,7 @@ func CompileValency() (*valency.Index, error) {
 	declarations = append(declarations, lifeActionFrames...)
 	declarations = append(declarations, socialActionFrames...)
 	declarations = append(declarations, communicationActionFrames...)
+	declarations = append(declarations, communicationMoreFrames...)
 	declarations = append(declarations, abstractActionFrames...)
 	declarations = append(declarations, remainingActionFrames...)
 	declarations = append(declarations, cognitionActionFrames...)
