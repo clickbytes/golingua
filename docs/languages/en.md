@@ -2,9 +2,9 @@
 
 ## In-code lexical catalog
 
-`en.LexicalDocument()` declares 926 English lexemes, 935 distinct senses and 927
-**pending** candidate links to neutral CORE (19 original lexemes plus 667 noun
-and 240 verb candidates).
+`en.LexicalDocument()` declares 976 English lexemes, 985 distinct senses and 977
+**pending** candidate links to neutral CORE (19 original lexemes plus 688 noun, 254 verb
+and 15 preposition candidates).
 `en.CompileLexicon(coreGraph)` validates those records against the exact CORE
 snapshot. Meanings such as the institutional sense of `school` and the
 understanding sense of `see` remain separate and unmapped. English records are
@@ -21,21 +21,21 @@ The morphology catalog assigns existing regular paradigms to seven additional en
 `dog`, `teacher`, `doctor`, `school`, `hand`, `eye` and `look`. It does not add
 auxiliaries or sentence realization.
 
-The 907 newly lexicalized entries cover people and social roles, organizations, basic concepts,
+The 957 newly lexicalized entries cover people and social roles, organizations, basic concepts,
 animals, plants, body parts, materials, vehicles, household objects, communication verbs
 and physical action verbs. Examples
 include `person`, `friend`, `company`, `communication`, `turtle`, `root`, `heart`,
 `air`, `glass`, `car`, `table`, `bottle`, `hammer`, `computer`, `breakfast`, `beef`, `shirt`, `shoe`, `village`, `room`, `road`, `airport`, `bridge`, `hill`, `valley`, `island`, `river`, `cloud`, `document`, `message`, `map`, `website`, `length`, `mass`, `pitch`, `joy`, `anxiety`, and verbs such as `speak`, `explain`, `thank`, `send`, `translate`, `act`, `lift`, `buy`, `sell`, `pay`, `donate`, `search`, `desire`, `prefer`, `breathe`, `swallow`, `walk`, `run`, `swim`, `drive`, `listen`, `remember`, `decide`, `hope`, `permit`, `quantity`, `accuracy`, and `manufacture`, `money`, `passport`, `toilet`, `pizza`, `friendship`, and `ownership`. Noun candidates have
 no assigned paradigm, form inventory, valency frame, or construction binding. Verb candidates likewise have no assigned morphology or valency. They are lexical candidates only. The complete editorial ledger is
 [`data/en/1000-core-review.tsv`](../../data/en/1000-core-review.tsv): it has
-1000 exact current CORE IDs, 19 `EXISTING_PENDING`, 907 `REVIEWED_LEXICALIZED` rows and 74
+1000 exact current CORE IDs, 19 `EXISTING_PENDING`, 957 `REVIEWED_LEXICALIZED` rows and 24
 `UNREVIEWED` rows. The eight existing unmapped senses are `en.doctor.academic`,
 `en.house.institution`, `en.school.fish`,
 `en.book.work`, `en.hand.worker`, `en.see.understand`, `en.look.appear`, and
 `en.get.understand`. Their mappings still need separate lexical decisions.
 
 This remains an incremental data update, not completion of the 1000-concept English
-editorial review. The existing `en.school.institution` sense is linked as a pending candidate; eight existing senses remain unmapped. All 927 bindings remain pending; none is owner-approved.
+editorial review. The existing `en.school.institution` sense is linked as a pending candidate; eight existing senses remain unmapped. All 977 bindings remain pending; none is owner-approved.
 
 The Go package `github.com/clickbytes/golingua/languages/en` loads the bundled `features.json`, `manifest.json`, `morphology/paradigms.json`, and `morphology/lexemes.json`, plus in-code entries. `en.Load()` validates and compiles the package into a shared morphology engine, then builds a finite relation table for inverse analysis. Its `Seed.Generate(lexemeID, featureValues)` and `Seed.Analyze(surface)` methods are available through CLI `forms`. This seed does not claim sentence translation.
 

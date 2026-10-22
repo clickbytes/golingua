@@ -52,5 +52,8 @@ func englishLexiconGroups() []lexicalGroup {
 		{source: englishPublicFoodSource, entries: englishPublicFoodEntries},
 		{source: englishSocialRelationSource, entries: englishSocialRelationEntries},
 		{source: englishStructuralRelationSource, entries: englishStructuralRelationEntries},
+		{source: englishSpatialRelationSource, entries: englishSpatialRelationEntries},
+		{source: englishTimeNounSource, entries: englishTimeNounEntries},
+		{source: englishDailyVerbSource, entries: englishDailyVerbEntries},
 	}
 }
