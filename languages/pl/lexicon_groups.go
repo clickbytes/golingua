@@ -41,5 +41,6 @@ func lexicalGroups() [][]lexicalEntry {
 		multiRoleActionEntries,
 		communicationLastEntries,
 		outcomeActionEntries,
+		peoplePhraseEntries,
 	}
 }

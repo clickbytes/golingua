@@ -6,19 +6,19 @@
 
 | Editorial state | Rows |
 | --- | ---: |
-| REVIEWED_LEXICALIZED | 965 |
+| REVIEWED_LEXICALIZED | 970 |
 | REVIEWED_BROADER_NARROWER | 18 |
 | REVIEWED_RELATED | 2 |
-| REVIEWED_NO_DIRECT_FORM | 15 |
+| REVIEWED_NO_DIRECT_FORM | 10 |
 | DEFERRED / UNREVIEWED | 0 |
 | **Total** | **1000** |
 
-Proposed semantic candidate rows: **983 pending**, **17 without a proposed binding**. This total is independent of the compiled `catalog` counts: **982 pending PL candidates have typed Go declarations**, and **1 event candidate remains worklist-only**, requiring individual lexical and valency review. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. No mapping is `approved`.
+Proposed semantic candidate rows: **988 pending**, **12 without a proposed binding**. This total is independent of the compiled `catalog` counts: **987 pending PL candidates have typed Go declarations**, and **1 event candidate remains worklist-only**, requiring individual lexical and valency review. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. No mapping is `approved`.
 
 ## Compiled state after G07-03 batches (2026-10-22)
 
 - CORE: **1000** compiled concept definitions.
-- PL: **960 lexemes**, **983 senses**, **982 pending semantic bindings**, **18 CORE absent**.
+- PL: **965 lexemes**, **988 senses**, **987 pending semantic bindings**, **13 CORE absent**.
 - EN unchanged: **19 lexemes**, **28 senses**, **19 pending bindings**.
 - PL valency: **273 authored, compiled frames**, some single-role, some NP/PP/recipient-based. No approved construction binding.
 - Polish morphology: **15 selected noun lexemes** supplied with 14 explicit form strings each (7 cases × 2 numbers), using five shared gender-class selection paradigms. Previous `kot`, `student`, `czytać` seeds remain. No automatic inflection for the remaining lexical inventory.
@@ -29,7 +29,7 @@ Selected spelling/semantic corrections were made explicitly in the worklist (suc
 
 Batch 8 adds pending lexical senses and explicit accusative transitive frames for `otwierać`, `zamykać`, `łamać`, `podgrzewać`, `chłodzić`, `podpalać`, `gasić` and the battery sense of `ładować`. It corrects the battery lexeme ID to `pl.ladowac_baterie.v`, distinct from the existing `pl.ladowac.v` (`lądować`). No verb morphology is declared.
 
-Batch 9 adds pending senses and role-specific frames for `informować`, `wyjaśniać`, `opisywać`, `przedstawiać`, `prosić`, `zapraszać`, `oferować` and `obiecywać`. The dative, accusative and selected prepositional complements are explicit; `rozkazywać` stays outside the compiled lexicon because its requested-action clause needs a construction-level representation. No new verb morphology or construction binding is declared.
+Batch 9 added pending senses and role-specific frames for `informować`, `wyjaśniać`, `opisywać`, `przedstawiać`, `prosić`, `zapraszać`, `oferować` and `obiecywać`. At that stage `rozkazywać` stayed outside the compiled lexicon because its requested-action clause needed a construction-level representation; batch 22 later added a bounded nominal frame (`rozkazywać komuś coś`) without licensing a clause construction. No new verb morphology or construction binding is declared.
 
 Batch 10 adds pending senses for `porównywać`, `ranić`, `sadzić`, `ostrzegać`, `polecać`, `zaczynać`, `kończyć` and `kontynuować`, with selected case frames. Infinitival complements for the activity verbs are outside these frames. No new verb morphology or construction binding is declared.
 
@@ -55,7 +55,9 @@ Batch 20 adds pending senses for `zachorować`, brushing teeth, exchanging goods
 
 Batch 21 adds pending candidates for service hiring, misunderstanding (`źle zrozumieć`) and spoken interpreting. Their selected argument frames are explicit; no morphology or construction bindings are declared.
 
-Batch 22 adds pending candidates for commanding, succeeding and failing. The two outcome senses use dative experiencer/agent and nominative goal; no morphology or construction bindings are declared. The broader `dokonywać` candidate remains worklist-only.
+Batch 22 adds pending candidates for commanding, succeeding and failing. The two outcome senses use dative experiencer and nominative goal; no morphology or construction bindings are declared. The broader `dokonywać` candidate remains worklist-only.
+
+Batch 23 adds five pending multiword candidates already identified in the ledger: `osoba starsza`, `rodzic adopcyjny`, `członek zespołu`, `roślina kwitnąca` and `grunt rolny`. They have no inferred morphology, valency or construction bindings.
 
 ## Licensing and manual review
 
