@@ -12,9 +12,15 @@ import (
 )
 
 type catalogResponse struct {
-	Status      status.OutcomeKind  `json:"status"`
-	Inventory   *catalog.Inventory  `json:"inventory,omitempty"`
-	Diagnostics []status.Diagnostic `json:"diagnostics,omitempty"`
+	Status        status.OutcomeKind  `json:"status"`
+	Inventory     *catalog.Inventory  `json:"inventory,omitempty"`
+	ValencyFrames *catalogFrameCounts `json:"valency_frames,omitempty"`
+	Diagnostics   []status.Diagnostic `json:"diagnostics,omitempty"`
+}
+
+type catalogFrameCounts struct {
+	PL int `json:"pl"`
+	EN int `json:"en"`
 }
 
 // runCatalog reports only compiled Go catalog data. --details includes one
@@ -39,10 +45,19 @@ func runCatalog(args []string, stdout, stderr io.Writer) int {
 	if err != nil {
 		return catalogLoadError(stdout, stderr)
 	}
+	polishValency, err := pl.CompileValency()
+	if err != nil {
+		return catalogLoadError(stdout, stderr)
+	}
+	englishValency, err := en.CompileValency()
+	if err != nil {
+		return catalogLoadError(stdout, stderr)
+	}
+	frameCounts := &catalogFrameCounts{PL: len(polishValency.Frames()), EN: len(englishValency.Frames())}
 	if args[0] == "--summary" {
 		inventory.PerConcept = []catalog.ConceptCoverage{}
 	}
-	return writeCatalog(stdout, stderr, catalogResponse{Status: status.OutcomeOK, Inventory: &inventory})
+	return writeCatalog(stdout, stderr, catalogResponse{Status: status.OutcomeOK, Inventory: &inventory, ValencyFrames: frameCounts})
 }
 
 func catalogLoadError(stdout, stderr io.Writer) int {

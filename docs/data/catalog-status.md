@@ -22,6 +22,8 @@ Approved concept pairs PL+EN: **0**. `catalog --details --json` reports 1000 per
 
 Separate Polish editorial worklist: **1000 rows** with 983 proposed pending binding candidates and 17 records with no candidate; **240 event candidates not yet compiled in the PL Go lexicon**. These numbers must not be mixed with `catalog.Inspect()` counters. PL has 36 authored valency frames; existence of frames or templates alone is not an approved construction path. The PL morphology generator is a tiny independent seed, not a generator for the 704 lexical entries.
 
+The `catalog` CLI also compiles both language-specific valency indexes and emits a top-level `valency_frames` object. The expected counts in this snapshot are **PL 36 / EN 5**. This detects malformed frames during ordinary CLI catalog smoke, but does not check whether grammar is linguistically correct. A `catalog.Inspect` Go caller only counts lexical indices and does not implicitly compile valency.
+
 English remains the original 19-lexeme/28-sense starter layer until #61 starts. Both PL/EN manifests still report unsupported sentence analysis and realization. Translating text requires independently approved bindings and runtime providers (#63/#123).
 
 Manual linguistic acceptance on owner-supplied inputs remains **NOT RUN**.
