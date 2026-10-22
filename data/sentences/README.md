@@ -28,6 +28,15 @@ zgodnie z przypadkami. `Nauczyciel słyszy psa.` pozostało `unsupported`, bo
 brakuje jawnej formy `słyszy` w seedzie. Ta obserwacja dotyczy analizy PL,
 nie przekładu w CLI ani ręcznej oceny jakości.
 
+W lokalnym przebiegu `SelectTargets` dla pierwszego znaczenia wybrał
+osobno angielski sens zdarzenia oraz sensy obu uczestników. Po przekazaniu
+tych wyborów do `BuildPlan`, `Execute` i `Linearize` otrzymano surową
+sekwencję `teacher sees dog`. To potwierdza połączenie slotów i jawnej
+morfologii w tym wąskim przypadku. Sekwencja nie ma rodzajników, więc nie
+jest zaakceptowanym tłumaczeniem angielskim. Adapter celu zachowuje wybory
+uczestników jako wejście realizacji jednego zdania, zamiast wyświetlać je
+jako osobne zdania. CLI nadal zwraca `unsupported`.
+
 Na kodzie `d05212e` zbudowano `go build -o /tmp/golingua-g05 ./cmd/golingua` i dla każdego z 100 wierszy uruchomiono obie komendy:
 
 ```sh
