@@ -21,7 +21,7 @@ The CLI compiles the current CORE, lexical and language-specific valency snapsho
 
 Approved PL+EN pairs: **0**. The `valency_frames` field is separately compiled from `pl.CompileValency()` and `en.CompileValency()`. `catalog --details` has one per-concept row per CORE ID, including true pending/absent/approved states.
 
-The Polish editorial `data/pl/1000-core-review.tsv` contains 1000 proposed decisions, 983 pending candidate links and 17 decisions without links; 7 event proposals still lack typed Go lexical/frame entries. Candidate mappings, approved mappings, linguistic quality, and morphological coverage must not be conflated.
+The Polish editorial `data/pl/1000-core-review.tsv` contains 1000 proposed decisions, 983 pending candidate links and 17 decisions without links; 1 event proposal still lacks typed Go lexical/frame entries. Candidate mappings, approved mappings, linguistic quality, and morphological coverage must not be conflated.
 
 Polish `forms` is a separate partial subsystem: **15 newly supplied noun inventories with 14 explicitly declared case/number forms each**, plus the pre-existing narrow seed. These form strings are not mechanically generated from an inflection class, but selected from declared principal parts through five shared morphology paradigms. No reviewed sentence construction, analyzed clause or generated PL↔EN translation is activated. Current language manifests keep sentence analysis/realization unsupported.
 
