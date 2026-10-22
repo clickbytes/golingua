@@ -417,6 +417,25 @@ var polishApprovedLexicalBatch16Senses = map[string]struct{}{
 	"pl.zawieranie_przestrzenne.link": {},
 }
 
+var polishLexicalReviewBatch17Source = provenance.SourceRef{
+	ID: "golingua-pl-delegated-lexical-review", URI: "https://github.com/clickbytes/golingua/issues/184#issuecomment-6353162926",
+	Version: "2026-10-23-batch-17", License: "unknown", Author: "codex-owner-delegated",
+}
+
+var polishApprovedLexicalBatch17Senses = map[string]struct{}{
+	"pl.sasiedztwo.link": {}, "pl.stycznosc.link": {}, "pl.polozenie_pomiedzy.link": {},
+	"pl.odleglosc.link": {}, "pl.bliskosc.link": {}, "pl.podpieranie.link": {},
+	"pl.relacja_strukturalna.link": {}, "pl.przynaleznosc_czesci.link": {}, "pl.sklad_materialowy.link": {},
+	"pl.rola_komponentu.link": {}, "pl.prawo_wlasnosci.link": {}, "pl.posiadanie_tymczasowe.link": {},
+	"pl.pochodzenie.link": {}, "pl.relacja_spoleczna.link": {}, "pl.rodzicielstwo_biologiczne.link": {},
+	"pl.rodzicielstwo_uznane.link": {}, "pl.rodzenstwo.link": {}, "pl.malzenstwo.link": {},
+	"pl.przyjazn.link": {}, "pl.czlonkostwo.link": {}, "pl.zatrudnienie.link": {},
+	"pl.relacja_czasowa.link": {}, "pl.rownoczesnosc.link": {}, "pl.nakladanie_czasowe.link": {},
+	"pl.relacja_logiczna.link": {}, "pl.zaleznosc_przyczynowa.link": {}, "pl.zaleznosc_warunkowa.link": {},
+	"pl.relacja_celu.link": {}, "pl.tresc_informacji.content": {}, "pl.tresc_twierdzenia.content": {},
+	"pl.tresc_pytania.content": {},
+}
+
 var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.widziec.visual":     "pl.widziec.visual.transitive",
 	"pl.patrzec.directed":   "pl.patrzec.directed.na",
@@ -489,6 +508,9 @@ func LexicalDocument() (lexicon.Document, error) {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	if err := polishLexicalReviewBatch16Source.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
+	}
+	if err := polishLexicalReviewBatch17Source.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
@@ -613,6 +635,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishLexicalReviewBatch16Source
+				}
+				if _, approved := polishApprovedLexicalBatch17Senses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishLexicalReviewBatch17Source
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}
