@@ -183,6 +183,29 @@ var polishApprovedLexicalBatch6Senses = map[string]struct{}{
 	"pl.planeta.body": {},
 }
 
+var polishLexicalReviewBatch7Source = provenance.SourceRef{
+	ID: "golingua-pl-delegated-lexical-review", URI: "https://github.com/clickbytes/golingua/issues/164#issuecomment-6352606332",
+	Version: "2026-10-23-batch-07", License: "unknown", Author: "codex-owner-delegated",
+}
+
+var polishApprovedLexicalBatch7Senses = map[string]struct{}{
+	"pl.atmosfera.region": {}, "pl.ziemia_planeta.body": {}, "pl.wies.place": {},
+	"pl.miasto.place": {}, "pl.kraj.territory": {}, "pl.region.area": {},
+	"pl.dzielnica.area": {}, "pl.adres.location": {}, "pl.budynek.artifact": {},
+	"pl.mieszkanie.place": {}, "pl.pokoj.place": {}, "pl.sypialnia.place": {},
+	"pl.salon.place": {}, "pl.kuchnia.place": {}, "pl.lazienka.place": {},
+	"pl.toaleta.place": {}, "pl.jadalnia.place": {}, "pl.sala_lekcyjna.place": {},
+	"pl.poczekalnia.place": {}, "pl.korytarz.place": {}, "pl.wejscie.place": {},
+	"pl.wyjscie.place": {}, "pl.schody.artifact": {}, "pl.winda.artifact": {},
+	"pl.dach.artifact": {}, "pl.sciana.artifact": {}, "pl.sufit.artifact": {},
+	"pl.podloga.artifact": {}, "pl.okno.artifact": {}, "pl.garaz.building": {},
+	"pl.sklep.building": {}, "pl.szpital.building": {}, "pl.biblioteka.building": {},
+	"pl.restauracja.building": {}, "pl.hotel.building": {}, "pl.muzeum.building": {},
+	"pl.teatr.building": {}, "pl.kino.building": {}, "pl.kosciol.building": {},
+	"pl.lotnisko.place": {}, "pl.dworzec.place": {}, "pl.parking.place": {},
+	"pl.plac_zabaw.place": {}, "pl.boisko.place": {}, "pl.basen.artifact": {},
+}
+
 var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.widziec.visual":     "pl.widziec.visual.transitive",
 	"pl.patrzec.directed":   "pl.patrzec.directed.na",
@@ -225,6 +248,9 @@ func LexicalDocument() (lexicon.Document, error) {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	if err := polishLexicalReviewBatch6Source.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
+	}
+	if err := polishLexicalReviewBatch7Source.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
@@ -299,6 +325,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishLexicalReviewBatch6Source
+				}
+				if _, approved := polishApprovedLexicalBatch7Senses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishLexicalReviewBatch7Source
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}
