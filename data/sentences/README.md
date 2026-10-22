@@ -37,6 +37,12 @@ jest zaakceptowanym tłumaczeniem angielskim. Adapter celu zachowuje wybory
 uczestników jako wejście realizacji jednego zdania, zamiast wyświetlać je
 jako osobne zdania. CLI nadal zwraca `unsupported`.
 
+Skompilowany `en.NewSentenceSource` rozpoznał `Teacher sees dog.` i
+`Dog sees teacher.` jako `ok` z odpowiednią zamianą ról. Są to fragmenty
+bez angielskich rodzajników, więc wynik dotyczy wyłącznie struktury.
+`The teacher sees the dog.` pozostało `unsupported`: budowniczy fraz
+obsługuje obecnie pojedynczy token NP i nie ma reguły determinera.
+
 Na kodzie `d05212e` zbudowano `go build -o /tmp/golingua-g05 ./cmd/golingua` i dla każdego z 100 wierszy uruchomiono obie komendy:
 
 ```sh
