@@ -49,7 +49,7 @@ func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm 
 			Provenance: polishNounSource, Steps: steps,
 		})
 	}
-	return []morph.Paradigm{paradigm}
+	return append([]morph.Paradigm{paradigm}, attestedNounParadigms(profile)...)
 }
 
 func inCodeMorphRecords() ([]lexemeRecord, error) {
@@ -57,12 +57,20 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 	if err != nil {
 		return nil, err
 	}
+	attested, err := attestedNounRecords(document.Lexemes)
+	if err != nil {
+		return nil, err
+	}
 	for _, lexeme := range document.Lexemes {
 		if lexeme.ID.String() == "lexeme:pl.kot.n" {
-			return []lexemeRecord{{
-				Lexeme:         lexeme,
-				PrincipalParts: morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "base", Form: lexeme.Lemma}}},
-			}}, nil
+			records := []lexemeRecord{{
+				Lexeme: lexeme,
+				PrincipalParts: morph.PrincipalParts{
+					LexemeID: lexeme.ID,
+					Parts: []morph.PrincipalPart{{ID: "base", Form: lexeme.Lemma}},
+				},
+			}}
+			return append(records, attested...), nil
 		}
 	}
 	return nil, fmt.Errorf("Polish in-code morphology lexeme is missing")

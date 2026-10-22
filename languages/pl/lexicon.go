@@ -80,7 +80,10 @@ func LexicalDocument() (lexicon.Document, error) {
 				return lexicon.Document{}, fmt.Errorf("Polish lexeme %s: %w", entry.id, err)
 			}
 			lexeme := lexicon.MorphLexeme{ID: lexemeID, Language: "pl", Lemma: entry.lemma, POS: entry.pos, ParadigmID: polishParadigmByLexeme[entry.id]}
-			if entry.id == "pl.kot.n" {
+			if gender, ok := attestedNounGender(entry.id); ok {
+				lexeme.ParadigmID = "pl_noun_attested_" + gender
+				lexeme.Properties = []lexicon.Property{{Key: "gender", Value: gender}}
+			} else if entry.id == "pl.kot.n" {
 				lexeme.Properties = []lexicon.Property{{Key: "gender", Value: "masculine_animal"}}
 			}
 			document.Lexemes = append(document.Lexemes, lexeme)
