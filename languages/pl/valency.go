@@ -88,6 +88,9 @@ func CompileValency() (*valency.Index, error) {
 		senses[sense.ID.String()] = struct{}{}
 	}
 	declarations := append(append([]frameDeclaration(nil), polishFrames...), polishMotionFrames...)
+	declarations = append(declarations, physicalActionFrames...)
+	declarations = append(declarations, lifeActionFrames...)
+	declarations = append(declarations, socialActionFrames...)
 	frames := make([]valency.ValencyFrame, 0, len(declarations))
 	for _, item := range declarations {
 		senseID, err := ids.NewSenseID(item.sense)

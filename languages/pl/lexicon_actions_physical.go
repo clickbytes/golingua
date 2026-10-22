@@ -1,0 +1,34 @@
+package pl
+
+// physicalActionEntries is a selected, explicitly authored semantic batch.
+// No inflection paradigm, approved binding or sentence construction is inferred.
+var physicalActionEntries = []lexicalEntry{
+	{"pl.dotykac_obj.v", "dotykać", "verb", []lexicalMeaning{{"pl.dotykac_obj.touch", "Making physical surface contact with an object, without requiring movement of it.", "touching_object"}}},
+	{"pl.chwycic.v", "chwycić", "verb", []lexicalMeaning{{"pl.chwycic.grasp", "Closing a hand or implement around an object to hold it securely.", "grasping"}}},
+	{"pl.trzymac.v", "trzymać", "verb", []lexicalMeaning{{"pl.trzymac.hold", "Maintaining physical support or control of an object without releasing it.", "holding_object"}}},
+	{"pl.puszczac.v", "puszczać", "verb", []lexicalMeaning{{"pl.puszczac.release", "Ending a maintained physical hold or restraint on an object.", "releasing_object"}}},
+	{"pl.podnosic.v", "podnosić", "verb", []lexicalMeaning{{"pl.podnosic.lift", "Moving a supported object to a higher position.", "lifting_object"}}},
+	{"pl.opuszczac.v", "opuszczać", "verb", []lexicalMeaning{{"pl.opuszczac.lower", "Moving a supported object to a lower position deliberately.", "lowering_object"}}},
+	{"pl.popychac.v", "popychać", "verb", []lexicalMeaning{{"pl.popychac.push", "Applying force directed away from the acting participant to move or press an object.", "pushing_object"}}},
+	{"pl.ciagnac.v", "ciągnąć", "verb", []lexicalMeaning{{"pl.ciagnac.pull", "Applying force directed toward the acting participant to move or draw an object.", "pulling_object"}}},
+	{"pl.obracac.v", "obracać", "verb", []lexicalMeaning{{"pl.obracac.rotate", "Turning an object around an axis without requiring it to change location.", "rotating_object"}}},
+	{"pl.uderzac.v", "uderzać", "verb", []lexicalMeaning{{"pl.uderzac.hit", "Delivering a discrete physical impact to an object or person.", "hitting_object"}}},
+	{"pl.rzucac.v", "rzucać", "verb", []lexicalMeaning{{"pl.rzucac.throw", "Propelling an object into free motion by releasing it after exerting force.", "throwing_object"}}},
+	{"pl.lapac.v", "łapać", "verb", []lexicalMeaning{{"pl.lapac.catch", "Intercepting and securing an object while it is moving freely.", "catching_object"}}},
+	{"pl.upuszczac.v", "upuszczać", "verb", []lexicalMeaning{{"pl.upuszczac.drop", "Causing a held object to fall by letting it go.", "dropping_object"}}},
+	{"pl.kopac.v", "kopać", "verb", []lexicalMeaning{{"pl.kopac.kick", "Striking an object or participant with a foot.", "kicking_object"}}},
+	{"pl.ciac.v", "ciąć", "verb", []lexicalMeaning{{"pl.ciac.cut", "Separating material using a sharp edge or equivalent concentrated force.", "cutting_object"}}},
+	{"pl.drzec.v", "drzeć", "verb", []lexicalMeaning{{"pl.drzec.tear", "Separating flexible material by pulling it until it ruptures.", "tearing_object"}}},
+	{"pl.skladac.v", "składać", "verb", []lexicalMeaning{{"pl.skladac.fold", "Bending flexible material to bring parts of it over one another.", "folding_object"}}},
+	{"pl.zaginac.v", "zaginać", "verb", []lexicalMeaning{{"pl.zaginac.bend", "Changing an object's shape into a curve or angle without necessary separation.", "bending_object"}}},
+	{"pl.rozciagac.v", "rozciągać", "verb", []lexicalMeaning{{"pl.rozciagac.stretch", "Increasing a material's length or area by tension.", "stretching_material"}}},
+	{"pl.naprawiac.v", "naprawiać", "verb", []lexicalMeaning{{"pl.naprawiac.repair", "Restoring a damaged or malfunctioning object toward its intended function.", "repairing_object"}}},
+	{"pl.rozbierac.v", "rozbierać", "verb", []lexicalMeaning{{"pl.rozbierac.disassemble", "Separating a structured artifact into its components.", "disassembling_object"}}},
+	{"pl.przecierac.v", "przecierać", "verb", []lexicalMeaning{{"pl.przecierac.wipe", "Passing a cloth or implement over a surface to remove material or moisture.", "wiping_surface"}}},
+	{"pl.szorowac.v", "szorować", "verb", []lexicalMeaning{{"pl.szorowac.scrub", "Cleaning a surface by repeated forceful rubbing.", "scrubbing_surface"}}},
+	{"pl.myc.v", "myć", "verb", []lexicalMeaning{{"pl.myc.wash", "Applying water or cleaning liquid to remove unwanted matter from an object.", "washing_object"}}},
+	{"pl.suszyc.v", "suszyć", "verb", []lexicalMeaning{{"pl.suszyc.dry", "Reducing moisture in or on an object through heat, air, or absorbent material.", "drying_object"}}},
+	{"pl.wlaczac.v", "włączać", "verb", []lexicalMeaning{{"pl.wlaczac.power_on", "Moving an apparatus from an off state into an operating or enabled state.", "switching_on_device"}}},
+	{"pl.wylaczac.v", "wyłączać", "verb", []lexicalMeaning{{"pl.wylaczac.power_off", "Moving an apparatus from an operating or enabled state into an off state.", "switching_off_device"}}},
+	{"pl.wyrzucac.v", "wyrzucać", "verb", []lexicalMeaning{{"pl.wyrzucac.discard", "Discarding an object because the disposer no longer intends to retain it.", "throwing_away"}}},
+}
