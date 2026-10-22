@@ -279,6 +279,29 @@ var polishApprovedLexicalBatch10Senses = map[string]struct{}{
 	"pl.przemieszczanie_sie.motion": {}, "pl.biec.run": {},
 }
 
+var polishLexicalReviewBatch11Source = provenance.SourceRef{
+	ID: "golingua-pl-delegated-lexical-review", URI: "https://github.com/clickbytes/golingua/issues/172#issuecomment-6352712039",
+	Version: "2026-10-23-batch-11", License: "unknown", Author: "codex-owner-delegated",
+}
+
+var polishApprovedLexicalBatch11Senses = map[string]struct{}{
+	"pl.czolgac_sie.crawl": {}, "pl.skakac.jump": {}, "pl.wspinac_sie.climb": {},
+	"pl.leiec.fly": {}, "pl.spadac.fall": {}, "pl.podnosic_sie.rise": {},
+	"pl.wchodzic.enter": {}, "pl.wychodzic.exit": {}, "pl.przechodzic.cross": {},
+	"pl.zblizac_sie.approach": {}, "pl.oddalac_sie.recede": {}, "pl.wracac.return": {},
+	"pl.podazac.follow": {}, "pl.gonic.chase": {}, "pl.skrecac.turn": {},
+	"pl.ruszac.start": {}, "pl.zatrzymywac_sie.stop": {}, "pl.podrozowac.travel": {},
+	"pl.przewozic.transport": {}, "pl.niesc.carry": {}, "pl.prowadzic.drive": {},
+	"pl.wsiadac.board": {}, "pl.wysiadac.alight": {}, "pl.parkowac.park": {},
+	"pl.startowac.takeoff": {}, "pl.ladowac.land": {}, "pl.czekac.wait": {},
+	"pl.odpoczywac.rest": {}, "pl.celowe_dzialanie.intentional_action": {}, "pl.manipulowac.manipulate": {},
+	"pl.dotykac_obj.touch": {}, "pl.chwycic.grasp": {}, "pl.trzymac.hold": {},
+	"pl.puszczac.release": {}, "pl.podnosic.lift": {}, "pl.opuszczac.lower": {},
+	"pl.klac.place": {}, "pl.wkladac.insert": {}, "pl.wyjmowac.extract": {},
+	"pl.popychac.push": {}, "pl.ciagnac.pull": {}, "pl.obracac.rotate": {},
+	"pl.uderzac.hit": {}, "pl.rzucac.throw": {}, "pl.lapac.catch": {},
+}
+
 var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.widziec.visual":     "pl.widziec.visual.transitive",
 	"pl.patrzec.directed":   "pl.patrzec.directed.na",
@@ -333,6 +356,9 @@ func LexicalDocument() (lexicon.Document, error) {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	if err := polishLexicalReviewBatch10Source.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
+	}
+	if err := polishLexicalReviewBatch11Source.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
@@ -427,6 +453,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishLexicalReviewBatch10Source
+				}
+				if _, approved := polishApprovedLexicalBatch11Senses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishLexicalReviewBatch11Source
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}
