@@ -19,8 +19,8 @@
 
 After adding the institution/food entity candidates:
 
-- Typed Polish lexicon: **704 lexemes / 720 lexical senses / 719 pending bindings** (281 CORE absent).
-- Worklist-only: **264 event concept proposals** without fully authored Polish sense-specific valency; do not claim these as runtime bindings.
+- Typed Polish lexicon: **728 lexemes / 744 lexical senses / 743 pending bindings** (257 CORE absent).
+- Worklist-only: **240 event concept proposals** without fully authored Polish sense-specific valency; do not claim these as runtime bindings.
 - Compiled valency: **12** semantically role-aligned Polish frames; no approved construction bindings or sentence realization.
 - Morpho-phonological coverage: small separate seed, not the 704-lexeme vocabulary; unimplemented cells have no generated forms.
 

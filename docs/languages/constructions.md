@@ -53,3 +53,7 @@ templates; their provenance records identify them as internal project data.
 `languages/pl/valency.go` now assigns a compatible construction family per sense instead of marking all frames `pl.transitive`. `pl.intransitive` applies to `spać` and the currently modeled `uczyć się`; `pl.oblique` (new `languages/pl/constructions/oblique.json`) describes a PP complement for `patrzeć na`; `pl.ditransitive` (new `ditransitive.json`) can describe a dative recipient and accusative theme for `dać`. Remaining listed transitive frames have a single NP complement. Semantic participant names match their referenced CORE concepts.
 
 These declarations are **not** approved sense-to-family bindings. Optional `o co` (`pytać`), `na co` (`odpowiadać`), and discipline/content complements (`uczyć`/`uczyć się`) remain out of scope until semantic roles and language-local arguments are reviewed. No sentence capability was activated.
+
+## Polish movement and transport sense frames
+
+The G07-03 motion batch adds 24 reviewed `LexicalSense` candidates with 24 authored `ValencyFrame` declarations. Each frame uses exactly its CORE role signature, while Polish case and adpositions stay local. One-role motions use `pl.intransitive`, direct-object frames use `pl.transitive`, and PP complements use `pl.oblique`. The families are only structural; `Approved` binding count remains zero, and the motion verbs have no asserted morphology paradigms or sentence capabilities.
