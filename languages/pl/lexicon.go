@@ -68,6 +68,25 @@ var polishApprovedLexicalSenses = map[string]struct{}{
 	"pl.niemowle.infant": {},
 }
 
+var polishLexicalReviewBatch2Source = provenance.SourceRef{
+	ID: "golingua-pl-delegated-lexical-review", URI: "https://github.com/clickbytes/golingua/issues/154#issuecomment-6352384524",
+	Version: "2026-10-23-batch-02", License: "unknown", Author: "codex-owner-delegated",
+}
+
+var polishApprovedLexicalBatch2Senses = map[string]struct{}{
+	"pl.nastolatek.person": {}, "pl.osoba_starsza.elderly": {}, "pl.rodzic.kinship": {},
+	"pl.matka.kinship": {}, "pl.ojciec.kinship": {}, "pl.rodzic_adopcyjny.parent": {},
+	"pl.dziecko.kinship": {}, "pl.brat.kinship": {}, "pl.siostra.kinship": {},
+	"pl.sasiad.person": {}, "pl.znajomy.person": {}, "pl.nieznajomy.person": {},
+	"pl.gosc.person": {}, "pl.gospodarz.person": {}, "pl.mieszkaniec.person": {},
+	"pl.obywatel.person": {}, "pl.odwiedzajacy.person": {}, "pl.turysta.person": {},
+	"pl.podroznik.person": {}, "pl.pasazer.person": {}, "pl.kierowca.person": {},
+	"pl.zatrudniony.person": {}, "pl.pracodawca.person": {}, "pl.kierownik.manager": {},
+	"pl.czlonek_zespolu.member": {}, "pl.klient.person": {}, "pl.nabywca.person": {},
+	"pl.sprzedawca.person": {}, "pl.rolnik.person": {}, "pl.ogrodnik.person": {},
+	"pl.kelner.person": {}, "pl.sprzatacz.person": {}, "pl.stolarz.craft": {},
+}
+
 var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.widziec.visual":     "pl.widziec.visual.transitive",
 	"pl.patrzec.directed":   "pl.patrzec.directed.na",
@@ -95,6 +114,9 @@ func LexicalDocument() (lexicon.Document, error) {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical source: %w", err)
 	}
 	if err := polishLexicalReviewBatch1Source.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
+	}
+	if err := polishLexicalReviewBatch2Source.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
@@ -144,6 +166,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishLexicalReviewBatch1Source
+				}
+				if _, approved := polishApprovedLexicalBatch2Senses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishLexicalReviewBatch2Source
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}

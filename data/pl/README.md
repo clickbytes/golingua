@@ -13,14 +13,14 @@
 | DEFERRED / UNREVIEWED | 0 |
 | **Total** | **1000** |
 
-Proposed semantic rows: **43 approved and 957 pending**, **0 without a proposed binding**. This row count is independent of compiled bindings: **1006 typed binding records cover 1000 CORE concepts**, because six concepts each have two gender-specific lexical senses. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. The 43 individually approved equivalents are recorded in delegated review issue #152, batch 1.
+Proposed semantic rows: **76 approved and 924 pending**, **0 without a proposed binding**. This row count is independent of compiled bindings: **1006 typed binding records cover 1000 CORE concepts**, because six concepts each have two gender-specific lexical senses. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. The 76 individually approved equivalents are recorded in delegated review issues #152 and #154, batches 1–2.
 
-## Compiled state after G07-05 batch 1 (2026-10-23)
+## Compiled state after G07-06 batch 2 (2026-10-23)
 
 - CORE: **1000** compiled concept definitions.
-- PL: **982 lexemes**, **1007 senses**, **1006 semantic bindings (43 approved; 963 pending) over 1000 concepts**, **0 CORE absent**.
+- PL: **982 lexemes**, **1007 senses**, **1006 semantic bindings (76 approved; 930 pending) over 1000 concepts**, **0 CORE absent**.
 - EN: **1000 lexemes**, **1009 senses**, **989 approved and 12 pending binding records** over 1000 concepts.
-- PL valency: **273 authored, compiled frames**, some single-role, some NP/PP/recipient-based. No approved construction binding.
+- PL valency: **273 authored, compiled frames**, some single-role, some NP/PP/recipient-based; four separately approved construction bindings.
 - Polish morphology: **15 selected noun lexemes** supplied with 14 explicit form strings each (7 cases × 2 numbers), using five shared gender-class selection paradigms. Previous `kot`, `student`, `czytać` seeds remain. No automatic inflection for the remaining lexical inventory.
 
 `MORPHOLOGY_COVERAGE=attested_14_case_number_cells_pending_owner_review` in the TSV identifies the noun slice, including multiple senses of the same lexeme. `no_authorized_paradigm` identifies new verb entries without inflection. Missing cells and lexemes must not be filled through speculative analogy. Inverse analysis preserves distinct syncretic readings, with normalization constrained to NFC.
