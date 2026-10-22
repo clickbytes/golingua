@@ -2,13 +2,13 @@
 
 ## Current scope
 
-The executable `languages/pl` package builds **954 typed Polish lexemes, 977 distinct lexical senses, 976 pending bindings** to the 1000-concept CORE catalog; 24 CORE concepts have no PL binding. `pl.LexicalDocument()` assembles `lexicon_*.go` domains in deterministic order and `pl.CompileLexicon(coreGraph)` validates the candidate graph. The editorial worklist `data/pl/1000-core-review.tsv` records 983 proposed pending candidates, **7 of which remain outside the compiled PL lexicon**, chiefly complex events or difficult lexicalizations.
+The executable `languages/pl` package builds **957 typed Polish lexemes, 980 distinct lexical senses, 979 pending bindings** to the 1000-concept CORE catalog; 21 CORE concepts have no PL binding. `pl.LexicalDocument()` assembles `lexicon_*.go` domains in deterministic order and `pl.CompileLexicon(coreGraph)` validates the candidate graph. The editorial worklist `data/pl/1000-core-review.tsv` records 983 proposed pending candidates, **4 of which remain outside the compiled PL lexicon**, chiefly complex events or difficult lexicalizations.
 
 Polish lemmas are distinct from CORE concepts. Examples of polysemy include `szkoła` facility/institution, `bank` institution/office, `ryba` animal/food, `skóra` organ/material. Many verbs have sense-specific cases and prepositions in `ValencyFrame`. They do **not** have automatic morphology or authorized construction paths.
 
-## Valency — 267 frames
+## Valency — 270 frames
 
-`pl.CompileValency()` builds 267 frames with roles copied from actual CORE definitions and separately authored Polish case/adposition constraints. The active source files include `valency.go`, `valency_motion.go`, `valency_actions_physical.go`, `valency_actions_communication.go`, `valency_actions_communication_more.go`, `valency_actions_health_routine.go`, `valency_actions_phrase_level.go`, `valency_actions_transfer_cognition.go`, `valency_actions_remaining_2.go`, `valency_actions_exchange.go`, `valency_actions_health_remaining.go`, `valency_actions_abstract.go`, `valency_actions_remaining.go`, `valency_actions_activity.go`, `valency_actions_production.go`, `valency_actions_life.go`, `valency_actions_social.go`, `valency_actions_cognition.go` and `valency_actions_multirole.go`. Frame families include `pl.intransitive`, `pl.transitive`, `pl.oblique`, `pl.ditransitive`, `pl.transitive_oblique` and `pl.double_np`. These structural family references are **not approved `ConstructionBinding` records** and do not activate translation.
+`pl.CompileValency()` builds 270 frames with roles copied from actual CORE definitions and separately authored Polish case/adposition constraints. The active source files include `valency.go`, `valency_motion.go`, `valency_actions_physical.go`, `valency_actions_communication.go`, `valency_actions_communication_more.go`, `valency_actions_communication_last.go`, `valency_actions_health_routine.go`, `valency_actions_phrase_level.go`, `valency_actions_transfer_cognition.go`, `valency_actions_remaining_2.go`, `valency_actions_exchange.go`, `valency_actions_health_remaining.go`, `valency_actions_abstract.go`, `valency_actions_remaining.go`, `valency_actions_activity.go`, `valency_actions_production.go`, `valency_actions_life.go`, `valency_actions_social.go`, `valency_actions_cognition.go` and `valency_actions_multirole.go`. Frame families include `pl.intransitive`, `pl.transitive`, `pl.oblique`, `pl.ditransitive`, `pl.transitive_oblique` and `pl.double_np`. These structural family references are **not approved `ConstructionBinding` records** and do not activate translation.
 
 Batch 8 adds pending senses and transitive frames for opening/closing objects, breaking, heating/cooling, ignition/extinguishing and battery charging. The charging sense uses the distinct lexeme ID `pl.ladowac_baterie.v`; `pl.ladowac.v` remains `lądować`. The current batch corrects several questionable editorial choices and retains each decision in the TSV. Entries with phrasal or context-sensitive realizations may require different roles or optionality after owner review. This is an authoring prototype, not exhaustive Polish valency.
 
@@ -35,6 +35,8 @@ Batch 18 adds verbal frames for lending, ordering goods, typing and desiring, al
 Batch 19 adds pending frames for locking, assembling, bargaining, gifting and sharing. It adds a distinct knowledge-acquisition sense to existing `uczyć się`; none of these candidates adds morphology or construction approval.
 
 Batch 20 adds pending senses for `zachorować`, brushing teeth, exchanging goods and tissue healing, with selected argument frames. No morphology or construction binding is added.
+
+Batch 21 adds pending senses for hiring a service, misunderstanding and spoken interpreting, with selected argument frames. No morphology or construction binding is added.
 
 ## Morphological subset — shared class templates, explicit forms
 

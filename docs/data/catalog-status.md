@@ -12,12 +12,12 @@ The CLI compiles the current CORE, lexical and language-specific valency snapsho
 | Inventory | CORE | PL | EN |
 | --- | ---: | ---: | ---: |
 | CORE concepts | 1000 | — | — |
-| Lexemes | — | 954 | 19 |
-| Lexical senses | — | 977 | 28 |
-| Pending concept bindings | — | 976 | 19 |
+| Lexemes | — | 957 | 19 |
+| Lexical senses | — | 980 | 28 |
+| Pending concept bindings | — | 979 | 19 |
 | Approved concept bindings | — | 0 | 0 |
 | Concepts without a binding | — | 24 | 981 |
-| Authored valency frames | — | 267 | 5 |
+| Authored valency frames | — | 270 | 5 |
 
 Approved PL+EN pairs: **0**. The `valency_frames` field is separately compiled from `pl.CompileValency()` and `en.CompileValency()`. `catalog --details` has one per-concept row per CORE ID, including true pending/absent/approved states.
 
