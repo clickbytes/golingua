@@ -7,7 +7,7 @@ import (
 
 var englishCoreTermsSource = provenance.SourceRef{
 	ID: "golingua-en-authored", Path: "languages/en/lexicon_core_terms.go",
-	Version: "2026-10-22-batch-12", License: "unknown", Author: "golingua contributors",
+	Version: "2026-10-22-batch-13", License: "unknown", Author: "golingua contributors",
 }
 
 // These broad English nouns are pending lexical candidates for CORE meanings.
@@ -23,4 +23,13 @@ var englishCoreTermEntries = []lexicalEntry{
 	{"en.departure.n", "departure", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.departure.source_event", "movement beginning at a source location", "departure"}}},
 	{"en.transfer.n", "transfer", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.transfer.possession_event", "a change in control or possession of a theme between participants", "transfer"}}},
 	{"en.communication.n", "communication", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.communication.message_event", "an event in which a sender conveys communicative content to an addressee", "communication"}}},
+	{"en.question.n", "question", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.question.information_request", "a communicative act requesting information from an addressee", "asking"}}},
+	{"en.answer.n", "answer", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.answer.response", "a communicative act supplying information in response to a prior request", "answering"}}},
+	{"en.teaching.n", "teaching", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.teaching.instruction_event", "an event in which an instructor intentionally supports another's learning", "teaching"}}},
+	{"en.eating.n", "eating", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.eating.ingestion_event", "an event of taking food into a body for nourishment", "eating"}}},
+	{"en.attribute.n", "attribute", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.attribute.quality", "a quality that can be attributed to a bearer without identifying a particular bearer", "property"}}},
+	{"en.size.n", "size", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.size.extent", "the extent of a bearer along one or more spatial dimensions", "size"}}},
+	{"en.temperature.n", "temperature", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.temperature.thermal_state", "the thermal state of a bearer on a temperature scale", "temperature"}}},
+	{"en.color.n", "color", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.color.visual_quality", "a visual quality of a bearer associated with perceived light", "color"}}},
+	{"en.speed.n", "speed", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.speed.movement_rate", "the rate of a participant's movement relative to time", "speed"}}},
 }
