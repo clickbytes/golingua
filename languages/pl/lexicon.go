@@ -508,6 +508,16 @@ var polishApprovedLexicalBatch20Senses = map[string]struct{}{
 	"pl.pora_roku.interval": {}, "pl.jednostka_waluty.value": {},
 }
 
+var polishPendingAuditSource = provenance.SourceRef{
+	ID: "golingua-pl-delegated-pending-audit", URI: "https://github.com/clickbytes/golingua/issues/192#issuecomment-6353300680",
+	Version: "2026-10-23-pending-audit", License: "unknown", Author: "codex-owner-delegated",
+}
+
+var polishApprovedPendingAuditSenses = map[string]struct{}{
+	"pl.nauczyciel.role": {}, "pl.ruch.motion": {}, "pl.malzonek.spouse": {},
+	"pl.partner.romantic": {}, "pl.pieszy.person": {}, "pl.slodycz.quality": {},
+}
+
 var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.widziec.visual":     "pl.widziec.visual.transitive",
 	"pl.patrzec.directed":   "pl.patrzec.directed.na",
@@ -593,6 +603,9 @@ func LexicalDocument() (lexicon.Document, error) {
 	}
 	if err := polishLexicalReviewBatch20Source.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
+	}
+	if err := polishPendingAuditSource.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish pending audit source: %w", err)
 	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
 	groups := append([][]lexicalEntry{polishEntries}, lexicalGroups()...)
@@ -736,6 +749,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishLexicalReviewBatch20Source
+				}
+				if _, approved := polishApprovedPendingAuditSenses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishPendingAuditSource
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}

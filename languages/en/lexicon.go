@@ -149,7 +149,19 @@ var englishLexicalReviewBatch20Source = provenance.SourceRef{
 	URI:     "https://github.com/clickbytes/golingua/issues/61#issuecomment-6352214892",
 	Version: "2026-10-22-batch-20", License: "unknown", Author: "Codex by owner delegation",
 }
+var englishPendingAuditSource = provenance.SourceRef{
+	ID:      "golingua-en-delegated-pending-audit",
+	URI:     "https://github.com/clickbytes/golingua/issues/192#issuecomment-6353300680",
+	Version: "2026-10-23-pending-audit", License: "unknown", Author: "codex-owner-delegated",
+}
 var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
+	"en.adult.person":                              englishPendingAuditSource,
+	"en.teacher.role":                              englishPendingAuditSource,
+	"en.student.learner":                           englishPendingAuditSource,
+	"en.doctor.role":                               englishPendingAuditSource,
+	"en.patient.care_recipient":                    englishPendingAuditSource,
+	"en.location.place":                            englishPendingAuditSource,
+	"en.infant.early_child":                        englishPendingAuditSource,
 	"en.person.human":                              englishLexicalReviewBatch1Source,
 	"en.child.person":                              englishLexicalReviewBatch1Source,
 	"en.animal.organism":                           englishLexicalReviewBatch1Source,

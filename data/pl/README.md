@@ -6,26 +6,26 @@
 
 | Editorial state | Rows |
 | --- | ---: |
-| REVIEWED_LEXICALIZED | 979 |
-| REVIEWED_BROADER_NARROWER | 20 |
+| REVIEWED_LEXICALIZED | 980 |
+| REVIEWED_BROADER_NARROWER | 19 |
 | REVIEWED_RELATED | 1 |
 | REVIEWED_NO_DIRECT_FORM | 0 |
 | DEFERRED / UNREVIEWED | 0 |
 | **Total** | **1000** |
 
-Proposed semantic rows: **876 approved and 124 pending**, **0 without a proposed binding**. This row count is independent of compiled bindings: **1006 typed binding records cover 1000 CORE concepts**, because six concepts each have two gender-specific lexical senses. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. The 876 individually approved equivalents are recorded in delegated review issues #152, #154, #156, #158, #160, #162, #164, #166, #168, #170, #172, #174, #176, #178, #180, #182, #184, #186, #188, and #190 (batches 1–20).
+Proposed semantic rows: **882 approved and 118 pending**, **0 without a proposed binding**. This row count is independent of compiled bindings: **1006 typed binding records cover 1000 CORE concepts**, because six concepts each have two gender-specific lexical senses. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. The 882 individually approved equivalents are recorded in delegated review issues #152, #154, #156, #158, #160, #162, #164, #166, #168, #170, #172, #174, #176, #178, #180, #182, #184, #186, #188, and #190 (batches 1–20), followed by six PL approvals in #192.
 
-## Compiled state after G07-09 batch 20 (2026-10-23)
+## Compiled state after pending audit #192 (2026-10-23)
 
 - CORE: **1000** compiled concept definitions.
-- PL: **982 lexemes**, **1007 senses**, **1006 semantic bindings (876 approved; 130 pending) over 1000 concepts**, **0 CORE absent**.
-- EN: **1000 lexemes**, **1009 senses**, **989 approved and 12 pending binding records** over 1000 concepts.
+- PL: **982 lexemes**, **1007 senses**, **1006 semantic bindings (882 approved; 124 pending) over 1000 concepts**, **0 CORE absent**.
+- EN: **1000 lexemes**, **1009 senses**, **996 approved and 5 pending binding records** over 1000 concepts.
 - PL valency: **273 authored, compiled frames**, some single-role, some NP/PP/recipient-based; four separately approved construction bindings.
 - Polish morphology: **15 selected noun lexemes** supplied with 14 explicit form strings each (7 cases × 2 numbers), using five shared gender-class selection paradigms. Previous `kot`, `student`, `czytać` seeds remain. No automatic inflection for the remaining lexical inventory.
 
 `MORPHOLOGY_COVERAGE=attested_14_case_number_cells_pending_owner_review` in the TSV identifies the noun slice, including multiple senses of the same lexeme. `no_authorized_paradigm` identifies new verb entries without inflection. Missing cells and lexemes must not be filled through speculative analogy. Inverse analysis preserves distinct syncretic readings, with normalization constrained to NFC.
 
-Selected spelling/semantic corrections were made explicitly in the worklist (such as `kaszleć`, `popychać`, `odblokowywać`, `zamarzać`, `topnieć`, `palić się`). These are candidate decisions, not approved lemma/sense transfers. Certain nominalized relation labels are metadata labels, not working prepositions or constructions. Disputed broad/narrow mappings need language review.
+Selected spelling/semantic corrections were made explicitly in the worklist (such as `kaszleć`, `popychać`, `odblokowywać`, `zamarzać`, `topnieć`, `palić się`). The #192 correction from `slodycz` to `słodycz` has an approved dedicated sense. Each other lexical binding keeps its recorded status. Certain nominalized relation labels are metadata labels, not working prepositions or constructions. Disputed broad/narrow mappings need language review.
 
 Batch 8 adds pending lexical senses and explicit accusative transitive frames for `otwierać`, `zamykać`, `łamać`, `podgrzewać`, `chłodzić`, `podpalać`, `gasić` and the battery sense of `ładować`. It corrects the battery lexeme ID to `pl.ladowac_baterie.v`, distinct from the existing `pl.ladowac.v` (`lądować`). No verb morphology is declared.
 
