@@ -2,6 +2,8 @@
 
 **Status architektury: techniczne komponenty zaimplementowane, językowy runtime nieaktywny.** Istnieją CLI/bootstrap, typowane identyfikatory, 1000-komponentowy ConceptGraph, Meaning IR, graph indexes, parser/realizer/planery jako biblioteki, małe seedy morfologii i niezależne leksykony PL/EN. Osiem dokładnych konstrukcyjnych tras PL/EN ma zatwierdzone bindingi, 996 EN i 882 PL Sense→CORE links przeszło delegowany przegląd; katalog wykazuje 880 par PL+EN. Brakuje skonfigurowanych providerów językowych, więc `translate` nadal zwraca `unsupported`. Implementacja technicznego parsera/realizera nie jest równoznaczna z możliwością generowania polskiego lub angielskiego zdania.
 
+Katalog Go można teraz zapisać jako walidowany snapshot poleceniem `golingua snapshot --apply --store <katalog> --json`. `--preview` pokazuje skrót i liczności przed aktywacją. Snapshot obejmuje CORE oraz leksemy, sensy i bindingi PL/EN z ich obecnymi statusami i pochodzeniem; nie zawiera morfologii, walencji ani planów konstrukcji. Samo aktywowanie snapshotu nie włącza `translate`.
+
 ## Fundamentalna decyzja (2026-10-20)
 
 Właściciel zrezygnował z dotychczasowego podejścia do porównywania ze starym JavaScriptem, z obowiązkowych goldów i automatycznej macierzy. **Pisze się nowy silnik Go od zera**: źródło flexLingua może pomóc zrozumieć domenę i później dostarczyć opcjonalne dane, ale nie narzuca zachowania ani planu kodu. Przez pierwsze etapy efekty tłumaczeń i odmiany sprawdzane są **wyłącznie ręcznie**, na wejściach właściciela, przez [procedurę](../manual-review.md). Nie dopisuj `*_test.go`, nowych test runnerów lub fixture trees.
