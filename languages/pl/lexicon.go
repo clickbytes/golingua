@@ -37,7 +37,7 @@ var polishEntries = []lexicalEntry{
 	{"pl.patrzec.v", "patrzeć", "verb", []lexicalMeaning{{"pl.patrzec.directed", "direct visual attention to a target", "looking"}}},
 	{"pl.slyszec.v", "słyszeć", "verb", []lexicalMeaning{{"pl.slyszec.auditory", "perceive through hearing", "hearing"}}},
 	{"pl.dac.v", "dać", "verb", []lexicalMeaning{{"pl.dac.transfer", "initiate transfer to a recipient", "giving"}}},
-	{"pl.dostac.v", "dostać", "verb", []lexicalMeaning{{"pl.dostac.receive", "become recipient of a theme", "receiving"}}},
+	{"pl.dostac.v", "dostać", "verb", []lexicalMeaning{{"pl.dostac.receive", "become recipient of a theme", "receiving"}, {"pl.dostac.receive_message", "Obtaining a message delivered from another participant.", "receiving_message"}}},
 }
 
 var polishLexicalSource = provenance.SourceRef{

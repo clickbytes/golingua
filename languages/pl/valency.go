@@ -90,6 +90,7 @@ func CompileValency() (*valency.Index, error) {
 	declarations := append(append([]frameDeclaration(nil), polishFrames...), polishMotionFrames...)
 	declarations = append(declarations, physicalActionFrames...)
 	declarations = append(declarations, activityActionFrames...)
+	declarations = append(declarations, healthRoutineActionFrames...)
 	declarations = append(declarations, productionActionFrames...)
 	declarations = append(declarations, lifeActionFrames...)
 	declarations = append(declarations, socialActionFrames...)

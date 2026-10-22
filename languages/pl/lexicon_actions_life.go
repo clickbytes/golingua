@@ -28,7 +28,7 @@ var lifeActionEntries = []lexicalEntry{
 	{"pl.fotografowac.v", "fotografować", "verb", []lexicalMeaning{{"pl.fotografowac.photograph", "Capturing a still image of a subject using a camera.", "photographing"}}},
 	{"pl.edytowac.v", "edytować", "verb", []lexicalMeaning{{"pl.edytowac.edit", "Changing existing document content to improve or alter its form or meaning.", "editing_document"}}},
 	{"pl.drukowac.v", "drukować", "verb", []lexicalMeaning{{"pl.drukowac.print", "Producing a physical copy of document content with printing equipment.", "printing_document"}}},
-	{"pl.gotowac.v", "gotować", "verb", []lexicalMeaning{{"pl.gotowac.cook", "Preparing food by combining ingredients and applying kitchen processes.", "cooking_food"}}},
+	{"pl.gotowac.v", "gotować", "verb", []lexicalMeaning{{"pl.gotowac.cook", "Preparing food by combining ingredients and applying kitchen processes.", "cooking_food"}, {"pl.gotowac.boil", "Cooking food by immersing it in boiling liquid.", "boiling_food"}}},
 	{"pl.piec.v", "piec", "verb", []lexicalMeaning{{"pl.piec.bake", "Cooking food using sustained dry heat in an enclosed oven.", "baking_food"}}},
 	{"pl.smazyc.v", "smażyć", "verb", []lexicalMeaning{{"pl.smazyc.fry", "Cooking food using hot fat or oil in contact with its surface.", "frying_food"}}},
 	{"pl.sprzatac.v", "sprzątać", "verb", []lexicalMeaning{{"pl.sprzatac.clean", "Removing dirt and restoring order or cleanliness in a dwelling.", "cleaning_home"}}},
@@ -38,4 +38,6 @@ var lifeActionEntries = []lexicalEntry{
 	{"pl.plakac.v", "płakać", "verb", []lexicalMeaning{{"pl.plakac.cry", "Expressing distress or emotion with tears or associated vocalizations.", "crying_emotionally"}}},
 	{"pl.usmiechac_sie.v", "uśmiechać się", "verb_reflexive", []lexicalMeaning{{"pl.usmiechac_sie.smile", "Raising the corners of the mouth in a facial expression often linked to positive affect.", "smiling"}}},
 	{"pl.tanczyc.v", "tańczyć", "verb", []lexicalMeaning{{"pl.tanczyc.dance", "Performing patterned expressive body movements, often coordinated with music.", "dancing"}}},
+	{"pl.zazywac.v", "zażywać", "verb", []lexicalMeaning{{"pl.zazywac.medicine", "Administering a medicinal substance to oneself or receiving its administration.", "taking_medicine"}}},
+	{"pl.zbierac.v", "zbierać", "verb", []lexicalMeaning{{"pl.zbierac.harvest", "Collecting cultivated plants or plant products when ready for use.", "harvesting_crop"}}},
 }
