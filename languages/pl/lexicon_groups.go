@@ -31,6 +31,7 @@ func lexicalGroups() [][]lexicalEntry {
 		communicationMoreEntries,
 		abstractActionEntries,
 		remainingActionEntries,
+		phraseLevelActionEntries,
 		cognitionActionEntries,
 		multiRoleActionEntries,
 	}

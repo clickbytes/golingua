@@ -194,6 +194,14 @@ func actionFrameForSense(sense string) (string, bool) {
 		return "pl.gasic.extinguish.action", true
 	case "pl.ladowac_baterie.charge":
 		return "pl.ladowac_baterie.charge.action", true
+	case "pl.nie_lubic.dislike":
+		return "pl.nie_lubic.dislike.action", true
+	case "pl.czerpac_przyjemnosc.enjoy":
+		return "pl.czerpac_przyjemnosc.enjoy.action", true
+	case "pl.dochodzic_do_siebie.recover":
+		return "pl.dochodzic_do_siebie.recover.action", true
+	case "pl.robic_zakupy.shop":
+		return "pl.robic_zakupy.shop.action", true
 	case "pl.dostac.receive_message":
 		return "pl.dostac.receive_message.action", true
 	case "pl.zazywac.medicine":

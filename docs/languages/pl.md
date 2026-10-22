@@ -2,13 +2,13 @@
 
 ## Current scope
 
-The executable `languages/pl` package builds **930 typed Polish lexemes, 951 distinct lexical senses, 950 pending bindings** to the 1000-concept CORE catalog; 50 CORE concepts have no PL binding. `pl.LexicalDocument()` assembles `lexicon_*.go` domains in deterministic order and `pl.CompileLexicon(coreGraph)` validates the candidate graph. The editorial worklist `data/pl/1000-core-review.tsv` records 983 proposed pending candidates, **33 of which remain outside the compiled PL lexicon**, chiefly complex events or difficult lexicalizations.
+The executable `languages/pl` package builds **934 typed Polish lexemes, 955 distinct lexical senses, 954 pending bindings** to the 1000-concept CORE catalog; 46 CORE concepts have no PL binding. `pl.LexicalDocument()` assembles `lexicon_*.go` domains in deterministic order and `pl.CompileLexicon(coreGraph)` validates the candidate graph. The editorial worklist `data/pl/1000-core-review.tsv` records 983 proposed pending candidates, **29 of which remain outside the compiled PL lexicon**, chiefly complex events or difficult lexicalizations.
 
 Polish lemmas are distinct from CORE concepts. Examples of polysemy include `szkoła` facility/institution, `bank` institution/office, `ryba` animal/food, `skóra` organ/material. Many verbs have sense-specific cases and prepositions in `ValencyFrame`. They do **not** have automatic morphology or authorized construction paths.
 
-## Valency — 243 frames
+## Valency — 247 frames
 
-`pl.CompileValency()` builds 243 frames with roles copied from actual CORE definitions and separately authored Polish case/adposition constraints. The active source files include `valency.go`, `valency_motion.go`, `valency_actions_physical.go`, `valency_actions_communication.go`, `valency_actions_communication_more.go`, `valency_actions_health_routine.go`, `valency_actions_abstract.go`, `valency_actions_remaining.go`, `valency_actions_activity.go`, `valency_actions_production.go`, `valency_actions_life.go`, `valency_actions_social.go`, `valency_actions_cognition.go` and `valency_actions_multirole.go`. Frame families include `pl.intransitive`, `pl.transitive`, `pl.oblique`, `pl.ditransitive`, `pl.transitive_oblique` and `pl.double_np`. These structural family references are **not approved `ConstructionBinding` records** and do not activate translation.
+`pl.CompileValency()` builds 247 frames with roles copied from actual CORE definitions and separately authored Polish case/adposition constraints. The active source files include `valency.go`, `valency_motion.go`, `valency_actions_physical.go`, `valency_actions_communication.go`, `valency_actions_communication_more.go`, `valency_actions_health_routine.go`, `valency_actions_phrase_level.go`, `valency_actions_abstract.go`, `valency_actions_remaining.go`, `valency_actions_activity.go`, `valency_actions_production.go`, `valency_actions_life.go`, `valency_actions_social.go`, `valency_actions_cognition.go` and `valency_actions_multirole.go`. Frame families include `pl.intransitive`, `pl.transitive`, `pl.oblique`, `pl.ditransitive`, `pl.transitive_oblique` and `pl.double_np`. These structural family references are **not approved `ConstructionBinding` records** and do not activate translation.
 
 Batch 8 adds pending senses and transitive frames for opening/closing objects, breaking, heating/cooling, ignition/extinguishing and battery charging. The charging sense uses the distinct lexeme ID `pl.ladowac_baterie.v`; `pl.ladowac.v` remains `lądować`. The current batch corrects several questionable editorial choices and retains each decision in the TSV. Entries with phrasal or context-sensitive realizations may require different roles or optionality after owner review. This is an authoring prototype, not exhaustive Polish valency.
 
@@ -25,6 +25,8 @@ Batch 13 adds four pending senses: `skarżyć się`, `żartować`, `wolać` and 
 Batch 14 adds four pending communication senses: `stwierdzać`, `nie zgadzać się`, `przyjmować` an offer, and `wysyłać` a message. The message sense shares a lexeme with goods shipping while keeping a separate meaning and frame.
 
 Batch 15 adds five pending senses: receiving a message, taking medicine, writing a document, boiling food and harvesting a crop. The message, writing and boiling senses reuse existing lexical lemmas where appropriate.
+
+Batch 16 adds four pending multiword senses: `nie lubić`, `czerpać przyjemność`, `dochodzić do siebie` and `robić zakupy`. Frames record their selected case patterns; multiword lexical entries have no inferred morphology.
 
 ## Morphological subset — shared class templates, explicit forms
 
