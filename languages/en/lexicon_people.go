@@ -7,7 +7,7 @@ import (
 
 var englishPeopleSource = provenance.SourceRef{
 	ID: "golingua-en-authored", Path: "languages/en/lexicon_people.go",
-	Version: "2026-10-22-batch-02", License: "unknown", Author: "golingua contributors",
+	Version: "2026-10-22-batch-03", License: "unknown", Author: "golingua contributors",
 }
 
 // These common person and relationship nouns have distinct English senses.
@@ -25,4 +25,14 @@ var englishPeopleEntries = []lexicalEntry{
 	{"en.visitor.n", "visitor", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.visitor.temporary_presence", "a person who visits a place or another person", "visitor"}}},
 	{"en.tourist.n", "tourist", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.tourist.leisure_travel", "a person traveling to places for interest or pleasure", "tourist"}}},
 	{"en.traveler.n", "traveler", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.traveler.journey", "a person undertaking a journey", "traveler"}}},
+	{"en.parent.n", "parent", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.parent.kinship", "a person in a parental relationship to a child", "parent"}}},
+	{"en.mother.n", "mother", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.mother.parent", "a parent identified as a mother in a kinship or caregiving relationship", "mother"}}},
+	{"en.father.n", "father", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.father.parent", "a parent identified as a father in a kinship or caregiving relationship", "father"}}},
+	{"en.sibling.n", "sibling", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.sibling.kinship", "a person sharing at least one parent or a recognized sibling relationship", "sibling"}}},
+	{"en.brother.n", "brother", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.brother.sibling", "a sibling identified as a brother", "brother"}}},
+	{"en.sister.n", "sister", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.sister.sibling", "a sibling identified as a sister", "sister"}}},
+	{"en.grandparent.n", "grandparent", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.grandparent.kinship", "a parent of a person's parent", "grandparent"}}},
+	{"en.grandchild.n", "grandchild", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.grandchild.kinship", "a child of a person's child", "grandchild"}}},
+	{"en.cousin.n", "cousin", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.cousin.kinship", "a person related through collateral kinship rather than direct descent or siblinghood", "cousin"}}},
+	{"en.offspring.n", "offspring", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.offspring.child", "a person's child, considered in relation to that parent", "child_of_person"}}},
 }
