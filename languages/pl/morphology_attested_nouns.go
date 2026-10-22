@@ -13,7 +13,7 @@ import (
 var attestedNounSource = provenance.SourceRef{
 	ID:      "golingua-pl-noun-forms-authored",
 	Path:    "languages/pl/morphology_attested_nouns.go",
-	Version: "2026-10-22-reviewed-candidates-v1",
+	Version: "2026-10-23-authored-v2",
 	License: "unknown",
 	Author:  "golingua contributors",
 }
@@ -27,6 +27,8 @@ type attestedNounEntry struct {
 }
 
 var attestedNounForms = []attestedNounEntry{
+	{"pl.matka.n", "matka", "feminine", [7]string{"matka", "matki", "matce", "matkę", "matką", "matce", "matko"}, [7]string{"matki", "matek", "matkom", "matki", "matkami", "matkach", "matki"}},
+	{"pl.ojciec.n", "ojciec", "masculine_personal", [7]string{"ojciec", "ojca", "ojcu", "ojca", "ojcem", "ojcu", "ojcze"}, [7]string{"ojcowie", "ojców", "ojcom", "ojców", "ojcami", "ojcach", "ojcowie"}},
 	{"pl.pies.n", "pies", "masculine_animal", [7]string{"pies", "psa", "psu", "psa", "psem", "psie", "psie"}, [7]string{"psy", "psów", "psom", "psy", "psami", "psach", "psy"}},
 	{"pl.dom.n", "dom", "masculine_inanimate", [7]string{"dom", "domu", "domowi", "dom", "domem", "domu", "domu"}, [7]string{"domy", "domów", "domom", "domy", "domami", "domach", "domy"}},
 	{"pl.woda.n", "woda", "feminine", [7]string{"woda", "wody", "wodzie", "wodę", "wodą", "wodzie", "wodo"}, [7]string{"wody", "wód", "wodom", "wody", "wodami", "wodach", "wody"}},
@@ -48,6 +50,10 @@ var attestedNounCases = [7]string{"nominative", "genitive", "dative", "accusativ
 
 func attestedNounGender(lexemeID string) (string, bool) {
 	switch lexemeID {
+	case "pl.matka.n":
+		return "feminine", true
+	case "pl.ojciec.n":
+		return "masculine_personal", true
 	case "pl.pies.n":
 		return "masculine_animal", true
 	case "pl.dom.n":

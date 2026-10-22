@@ -10,6 +10,16 @@ Status wszystkich wierszy to `draft_unreviewed`. Autorem powierzchni PL/EN jest 
 
 ## Obserwacja CLI
 
+W roboczej gałęzi #195 dodano jawne, ograniczone formy potrzebne dla grupy `seeing`:
+`widzi` i `sees`, polskie paradygmaty `matka` i `ojciec` oraz angielskie
+formy liczby pojedynczej uczestników. Komenda `forms` potwierdza analizę tych
+form. Nie daje to jeszcze wyników `translate`: zatwierdzone szablony
+`pl.transitive` i `en.transitive` mają sloty `subject`/`object`, lecz nie
+wiążą ich z rolami `experiencer`/`stimulus`. Kompilator planów zdań wymaga
+takich jawnych powiązań. Angielskie rodzajniki dodatkowo wymagają osobnej
+analizy frazy i reprezentacji określoności; przykładowy MeaningGraph jej nie
+przechowuje. Ręczna ocena jakości zdań pozostaje **NOT RUN**.
+
 Na kodzie `d05212e` zbudowano `go build -o /tmp/golingua-g05 ./cmd/golingua` i dla każdego z 100 wierszy uruchomiono obie komendy:
 
 ```sh

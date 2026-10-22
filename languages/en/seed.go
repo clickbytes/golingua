@@ -94,6 +94,7 @@ func Load() (*Seed, error) {
 	if err != nil {
 		return nil, fmt.Errorf("English paradigms: %w", err)
 	}
+	paradigms = append(paradigms, inCodeParadigms(profile)...)
 	compiledParadigms, err := morph.CompileParadigms(paradigms, profile, morph.DefaultCompilerBudget(), procedure.DefaultBudget())
 	if err != nil {
 		return nil, fmt.Errorf("compile English paradigms: %w", err)

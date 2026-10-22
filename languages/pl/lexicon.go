@@ -534,7 +534,8 @@ var polishFrameBySense = map[string]lexicon.ValencyID{
 }
 
 var polishParadigmByLexeme = map[string]string{
-	"pl.kot.n": "pl_masc_animal_regular",
+	"pl.kot.n":     "pl_masc_animal_regular",
+	"pl.widziec.v": "pl_widziec_present_third_singular",
 }
 
 // LexicalDocument constructs the Polish lexical data from Go declarations.
