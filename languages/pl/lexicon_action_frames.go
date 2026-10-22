@@ -4,6 +4,12 @@ package pl
 // A lexical declaration alone never authorizes a surface construction.
 func actionFrameForSense(sense string) (string, bool) {
 	switch sense {
+	case "pl.rozkazywac.command":
+		return "pl.rozkazywac.command.action", true
+	case "pl.udac_sie.succeed":
+		return "pl.udac_sie.succeed.action", true
+	case "pl.nie_udac_sie.fail":
+		return "pl.nie_udac_sie.fail.action", true
 	case "pl.zamawiac_usluge.hire":
 		return "pl.zamawiac_usluge.hire.action", true
 	case "pl.zle_zrozumiec.misunderstand":
