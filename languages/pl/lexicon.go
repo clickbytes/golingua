@@ -484,6 +484,30 @@ var polishApprovedLexicalBatch19Senses = map[string]struct{}{
 	"pl.potrzebowac.need": {}, "pl.wolac.prefer": {},
 }
 
+var polishLexicalReviewBatch20Source = provenance.SourceRef{
+	ID: "golingua-pl-delegated-lexical-review", URI: "https://github.com/clickbytes/golingua/issues/190#issuecomment-6353253949",
+	Version: "2026-10-23-batch-20", License: "unknown", Author: "codex-owner-delegated",
+}
+
+var polishApprovedLexicalBatch20Senses = map[string]struct{}{
+	"pl.kochac.love": {}, "pl.bac_sie.fear": {}, "pl.martwic_sie.worry": {},
+	"pl.czerpac_przyjemnosc.enjoy": {}, "pl.pomagac.help": {}, "pl.wspolpracowac.cooperate": {},
+	"pl.probowac.try": {}, "pl.udac_sie.succeed": {}, "pl.nie_udac_sie.fail": {},
+	"pl.zaczynac.start": {}, "pl.konczyc.finish": {}, "pl.kontynuowac.continue": {},
+	"pl.zmieniac_sie.change": {}, "pl.wzrastac.increase": {}, "pl.spadac.reduce": {},
+	"pl.smiac_sie.laugh": {}, "pl.plakac.cry": {}, "pl.usmiechac_sie.smile": {},
+	"pl.zyc.live": {}, "pl.tanczyc.dance": {}, "pl.stan_emocjonalny.state": {},
+	"pl.radosc.state": {}, "pl.smutek.state": {}, "pl.strach.state": {},
+	"pl.gniew.state": {}, "pl.milosc.state": {}, "pl.zaskoczenie.state": {},
+	"pl.wstret.state": {}, "pl.nuda.state": {}, "pl.ciekawosc.state": {},
+	"pl.glod.state": {}, "pl.pragnienie.state": {}, "pl.zmeczenie.state": {},
+	"pl.bol.state": {}, "pl.istnienie.state": {}, "pl.opis_stanu.content": {},
+	"pl.opis_zmiany.content": {}, "pl.dzien.interval": {}, "pl.tydzien.interval": {},
+	"pl.miesiac.interval": {}, "pl.rok.interval": {}, "pl.poranek.interval": {},
+	"pl.wieczor.interval": {}, "pl.noc.interval": {}, "pl.data.value": {},
+	"pl.pora_roku.interval": {}, "pl.jednostka_waluty.value": {},
+}
+
 var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.widziec.visual":     "pl.widziec.visual.transitive",
 	"pl.patrzec.directed":   "pl.patrzec.directed.na",
@@ -565,6 +589,9 @@ func LexicalDocument() (lexicon.Document, error) {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	if err := polishLexicalReviewBatch19Source.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
+	}
+	if err := polishLexicalReviewBatch20Source.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
@@ -704,6 +731,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishLexicalReviewBatch19Source
+				}
+				if _, approved := polishApprovedLexicalBatch20Senses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishLexicalReviewBatch20Source
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}
