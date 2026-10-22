@@ -372,6 +372,29 @@ var polishApprovedLexicalBatch14Senses = map[string]struct{}{
 	"pl.goic_sie.heal": {},
 }
 
+var polishLexicalReviewBatch15Source = provenance.SourceRef{
+	ID: "golingua-pl-delegated-lexical-review", URI: "https://github.com/clickbytes/golingua/issues/180#issuecomment-6353080488",
+	Version: "2026-10-23-batch-15", License: "unknown", Author: "codex-owner-delegated",
+}
+
+var polishApprovedLexicalBatch15Senses = map[string]struct{}{
+	"pl.zasypiac.sleep": {}, "pl.budzic_sie.wake": {}, "pl.starzec_sie.aging": {},
+	"pl.umierac.die": {}, "pl.ranic.injure": {}, "pl.leczyc.treat": {},
+	"pl.diagnozowac.diagnose": {}, "pl.dochodzic_do_siebie.recover": {},
+	"pl.pracowac.work": {}, "pl.produkowac.manufacture": {},
+	"pl.projektowac.design": {}, "pl.rysowac.draw": {},
+	"pl.fotografowac.photograph": {}, "pl.edytowac.edit": {},
+	"pl.smazyc.fry": {}, "pl.sprzatac.clean": {}, "pl.ubierac_sie.dress": {},
+	"pl.kapac_sie.bathe": {}, "pl.sadzic.plant": {},
+	"pl.podlewac.water": {}, "pl.zbierac.harvest": {},
+	"pl.dlugosc.measure": {}, "pl.szerokosc.measure": {},
+	"pl.wysokosc.measure": {}, "pl.glebokosc.measure": {},
+	"pl.grubosc.measure": {}, "pl.powierzchnia.area": {},
+	"pl.objetosc.measure": {}, "pl.masa.measure": {}, "pl.ciezar.force": {},
+	"pl.ksztalt.form": {}, "pl.krzywizna.form": {},
+	"pl.okraglosc.form": {}, "pl.symetria.form": {},
+}
+
 var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.widziec.visual":     "pl.widziec.visual.transitive",
 	"pl.patrzec.directed":   "pl.patrzec.directed.na",
@@ -438,6 +461,9 @@ func LexicalDocument() (lexicon.Document, error) {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	if err := polishLexicalReviewBatch14Source.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
+	}
+	if err := polishLexicalReviewBatch15Source.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
@@ -552,6 +578,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishLexicalReviewBatch14Source
+				}
+				if _, approved := polishApprovedLexicalBatch15Senses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishLexicalReviewBatch15Source
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}
