@@ -3,8 +3,9 @@
 ## In-code lexical catalog
 
 `en.LexicalDocument()` declares 1000 English lexemes, 1009 distinct senses and 1001
-**pending** candidate links to neutral CORE (19 original lexemes plus 694 noun, 264 verb
-and 23 preposition candidates).
+CORE binding records (19 original lexemes plus 694 noun, 264 verb and 23
+preposition candidates). Twenty delegated review batches approved 989 exact
+equivalent links; 12 records remain pending.
 `en.CompileLexicon(coreGraph)` validates those records against the exact CORE
 snapshot. Meanings such as the institutional sense of `school` and the
 understanding sense of `see` remain separate and unmapped. English records are
@@ -16,7 +17,8 @@ directed `look` uses an `at` oblique argument, whereas visual `see` uses a
 direct object. Four exact EN sense/frame/family/variant routes (`see`, `hear`,
 `get` in its receive sense, and `read` with text) have approved construction
 bindings after delegated review. `look at` remains without an oblique binding.
-Candidate lexical links remain pending and cannot authorize translation.
+Remaining candidate lexical links stay pending; neither they nor the approved
+EN links alone authorize translation.
 Source metadata points to the project-authored Go files and records the license
 as `unknown` until established.
 
@@ -37,7 +39,11 @@ no assigned paradigm, form inventory, valency frame, or construction binding. Ve
 `en.book.work`, `en.hand.worker`, `en.see.understand`, `en.look.appear`, and
 `en.get.understand`. Their mappings still need separate lexical decisions.
 
-The ledger now has a lexical candidate for every current CORE concept; owner review and approval remain open. The existing `en.school.institution` sense is linked as a pending candidate; eight existing senses remain unmapped. All 1001 bindings remain pending; none is owner-approved.
+The ledger has a lexical candidate for every current CORE concept. Twenty delegated review batches approved 989 exact equivalents across 989 concepts and
+retained 12 pending binding records across 11 concepts. The remaining candidates
+are listed in issue #61. The existing
+`en.school.institution` sense is a pending candidate; eight existing senses
+remain unmapped. Construction approvals do not imply these lexical decisions.
 
 The Go package `github.com/clickbytes/golingua/languages/en` loads the bundled `features.json`, `manifest.json`, `morphology/paradigms.json`, and `morphology/lexemes.json`, plus in-code entries. `en.Load()` validates and compiles the package into a shared morphology engine, then builds a finite relation table for inverse analysis. Its `Seed.Generate(lexemeID, featureValues)` and `Seed.Analyze(surface)` methods are available through CLI `forms`. This seed does not claim sentence translation.
 
