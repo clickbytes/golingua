@@ -7,7 +7,7 @@ import (
 
 var englishPeopleSource = provenance.SourceRef{
 	ID: "golingua-en-authored", Path: "languages/en/lexicon_people.go",
-	Version: "2026-10-22-batch-04", License: "unknown", Author: "golingua contributors",
+	Version: "2026-10-22-batch-05", License: "unknown", Author: "golingua contributors",
 }
 
 // These common person and relationship nouns have distinct English senses.
@@ -42,4 +42,16 @@ var englishPeopleEntries = []lexicalEntry{
 	{"en.stepparent.n", "stepparent", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.stepparent.family_role", "a person recognized as a parent through partnership with a child's parent", "stepparent"}}},
 	{"en.adoptive_parent.n", "adoptive parent", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.adoptive_parent.family_role", "a person whose parental status is established through adoption", "adoptive_parent"}}},
 	{"en.host_person.n", "host", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.host_person.guest_role", "a person who receives guests or facilitates an event for participants", "host_person"}}},
+	{"en.aunt.n", "aunt", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.aunt.kinship", "a parent's sister or a woman recognized in an equivalent kinship role", "aunt_uncle"}}},
+	{"en.uncle.n", "uncle", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.uncle.kinship", "a parent's brother or a man recognized in an equivalent kinship role", "aunt_uncle"}}},
+	{"en.passenger.n", "passenger", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.passenger.vehicle_rider", "a person carried by a vehicle without controlling its operation", "passenger"}}},
+	{"en.driver.n", "driver", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.driver.road_vehicle", "a person controlling a road vehicle during a journey", "driver"}}},
+	{"en.pedestrian.n", "pedestrian", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.pedestrian.road_user", "a person traveling on foot in a space shared with traffic", "pedestrian"}}},
+	{"en.worker.n", "worker", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.worker.labor", "a person engaged in labor or productive activity", "worker"}}},
+	{"en.employee.n", "employee", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.employee.employment", "a person who works under an employment relationship with an employer", "employee"}}},
+	{"en.employer.n", "employer", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.employer.hiring_party", "a person or organization that hires another to perform work for compensation", "employer"}}},
+	{"en.manager.n", "manager", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.manager.supervisor", "a person responsible for coordinating work and supervising resources or staff", "manager"}}},
+	{"en.farmer.n", "farmer", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.farmer.agriculture", "a person cultivating crops or raising animals for production", "farmer"}}},
+	{"en.cook.n", "cook", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.cook.food_preparation", "a person who prepares food as a practical or occupational activity", "cook_person"}}},
+	{"en.waiter.n", "waiter", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.waiter.food_service", "a person serving food or drinks to customers at a dining establishment", "waiter"}}},
 }
