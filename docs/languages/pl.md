@@ -76,4 +76,4 @@ These calls must use the actual bundled seed, not the editorial TSV. A technical
 
 ## Hard boundaries
 
-`languages/pl/manifest.json` still declares `sentence_analysis` and `meaning_realization` as `unsupported`. The `catalog` command separately reports the CORE, lexical and valency indexes; it is not a translation result. No binding is approved and no language provider is installed in the CLI. Owner manual review remains **NOT RUN**.
+`languages/pl/manifest.json` still declares `sentence_analysis` and `meaning_realization` as `unsupported`. The `catalog` command separately reports the CORE, lexical and valency indexes; it is not a translation result. No binding is approved and no language provider is installed in the CLI. The owner-directed Codex lexical assessment of `byt`, `komunikowanie` and `celowe działanie` is recorded in `data/pl/README.md`; owner approval of bindings and CLI inflection/translation review remain **NOT RUN**.

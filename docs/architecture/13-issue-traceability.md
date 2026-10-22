@@ -26,7 +26,7 @@
 
 ## Bieżący ręczny odbiór PL
 
-Lokalny stan po batchu 29 zawiera 982 leksemy PL, 1007 sensów, 1006 pending binding records pokrywających wszystkie 1000 konceptów i 273 ramy walencji. `entity` ma szeroki, rejestrowo ograniczony kandydujący sens `byt`; jego binding pozostaje pending. Kandydatami event nouns są `celowe działanie` dla `intentional_action` i `komunikowanie` dla `communication`, a szersze `komunikacja` pozostaje related. Żaden binding nie jest zatwierdzony, a ręczna ocena właściciela pozostaje **NOT RUN**. Przed rozpoczęciem EN #61 trzeba ręcznie przedstawić właścicielowi konkretne formy i sensy PL oraz zapisać jego uwagi; nie wyciągać wniosków o akceptacji z samej kompilacji katalogu.
+Lokalny stan po batchu 29 zawiera 982 leksemy PL, 1007 sensów, 1006 pending binding records pokrywających wszystkie 1000 konceptów i 273 ramy walencji. Owner-directed Codex lexical assessment ocenił `celowe działanie` i `komunikowanie` jako trafne pending candidates oraz sklasyfikował `byt` jako szeroki, rejestrowo ograniczony pending candidate; `komunikacja` pozostaje related. Żaden binding nie jest zatwierdzony. Ocena odmiany i wyników translacji CLI pozostaje **NOT RUN**, bo runtime zdaniowy nadal jest unsupported. EN #61 może rozpocząć pracę na danych PL pending; nie wyciągać wniosków o akceptacji z samej kompilacji katalogu.
 
 ## Co zostało świadomie usunięte
 
