@@ -31,4 +31,12 @@ var physicalActionEntries = []lexicalEntry{
 	{"pl.wlaczac.v", "włączać", "verb", []lexicalMeaning{{"pl.wlaczac.power_on", "Moving an apparatus from an off state into an operating or enabled state.", "switching_on_device"}}},
 	{"pl.wylaczac.v", "wyłączać", "verb", []lexicalMeaning{{"pl.wylaczac.power_off", "Moving an apparatus from an operating or enabled state into an off state.", "switching_off_device"}}},
 	{"pl.wyrzucac.v", "wyrzucać", "verb", []lexicalMeaning{{"pl.wyrzucac.discard", "Discarding an object because the disposer no longer intends to retain it.", "throwing_away"}}},
+	{"pl.otwierac_obiekt.v", "otwierać", "verb", []lexicalMeaning{{"pl.otwierac_obiekt.open", "Moving an obstruction or mechanism so access to an interior becomes possible.", "opening_object"}}},
+	{"pl.zamykac_obiekt.v", "zamykać", "verb", []lexicalMeaning{{"pl.zamykac_obiekt.close", "Moving an obstruction or mechanism to prevent ordinary access through an opening.", "closing_object"}}},
+	{"pl.lamac.v", "łamać", "verb", []lexicalMeaning{{"pl.lamac.break", "Causing a physical object to lose structural integrity or function.", "breaking_object"}}},
+	{"pl.podgrzewac.v", "podgrzewać", "verb", []lexicalMeaning{{"pl.podgrzewac.heat", "Causing the temperature of an object or substance to increase.", "heating_object"}}},
+	{"pl.chlodzic.v", "chłodzić", "verb", []lexicalMeaning{{"pl.chlodzic.cool", "Causing the temperature of an object or substance to decrease.", "cooling_object"}}},
+	{"pl.podpalac.v", "podpalać", "verb", []lexicalMeaning{{"pl.podpalac.ignite", "Causing combustion to begin in a combustible material.", "igniting_material"}}},
+	{"pl.gasic.v", "gasić", "verb", []lexicalMeaning{{"pl.gasic.extinguish", "Ending an existing combustion process by removing conditions needed for burning.", "extinguishing_fire"}}},
+	{"pl.ladowac_baterie.v", "ładować", "verb", []lexicalMeaning{{"pl.ladowac_baterie.charge", "Transferring electrical energy into a battery for later use.", "charging_battery"}}},
 }

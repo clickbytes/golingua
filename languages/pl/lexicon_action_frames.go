@@ -178,6 +178,22 @@ func actionFrameForSense(sense string) (string, bool) {
 		return "pl.wydawac.spend.action", true
 	case "pl.zarabiac.earn":
 		return "pl.zarabiac.earn.action", true
+	case "pl.otwierac_obiekt.open":
+		return "pl.otwierac_obiekt.open.action", true
+	case "pl.zamykac_obiekt.close":
+		return "pl.zamykac_obiekt.close.action", true
+	case "pl.lamac.break":
+		return "pl.lamac.break.action", true
+	case "pl.podgrzewac.heat":
+		return "pl.podgrzewac.heat.action", true
+	case "pl.chlodzic.cool":
+		return "pl.chlodzic.cool.action", true
+	case "pl.podpalac.ignite":
+		return "pl.podpalac.ignite.action", true
+	case "pl.gasic.extinguish":
+		return "pl.gasic.extinguish.action", true
+	case "pl.ladowac_baterie.charge":
+		return "pl.ladowac_baterie.charge.action", true
 	default:
 		return "", false
 	}

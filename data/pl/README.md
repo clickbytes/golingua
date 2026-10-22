@@ -13,19 +13,21 @@
 | DEFERRED / UNREVIEWED | 0 |
 | **Total** | **1000** |
 
-Proposed semantic candidate rows: **983 pending**, **17 without a proposed binding**. This total is independent of the compiled `catalog` counts: **900 pending PL candidates have typed Go declarations**, and **83 event candidates remain worklist-only**, requiring individual lexical and valency review. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. No mapping is `approved`.
+Proposed semantic candidate rows: **983 pending**, **17 without a proposed binding**. This total is independent of the compiled `catalog` counts: **908 pending PL candidates have typed Go declarations**, and **75 event candidates remain worklist-only**, requiring individual lexical and valency review. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. No mapping is `approved`.
 
 ## Compiled state after G07-03 batches (2026-10-22)
 
 - CORE: **1000** compiled concept definitions.
-- PL: **885 lexemes**, **901 senses**, **900 pending semantic bindings**, **100 CORE absent**.
+- PL: **893 lexemes**, **909 senses**, **908 pending semantic bindings**, **92 CORE absent**.
 - EN unchanged: **19 lexemes**, **28 senses**, **19 pending bindings**.
-- PL valency: **193 authored, compiled frames**, some single-role, some NP/PP/recipient-based. No approved construction binding.
+- PL valency: **201 authored, compiled frames**, some single-role, some NP/PP/recipient-based. No approved construction binding.
 - Polish morphology: **15 selected noun lexemes** supplied with 14 explicit form strings each (7 cases × 2 numbers), using five shared gender-class selection paradigms. Previous `kot`, `student`, `czytać` seeds remain. No automatic inflection for the remaining lexical inventory.
 
 `MORPHOLOGY_COVERAGE=attested_14_case_number_cells_pending_owner_review` in the TSV identifies the noun slice, including multiple senses of the same lexeme. `no_authorized_paradigm` identifies new verb entries without inflection. Missing cells and lexemes must not be filled through speculative analogy. Inverse analysis preserves distinct syncretic readings, with normalization constrained to NFC.
 
 Selected spelling/semantic corrections were made explicitly in the worklist (such as `kaszleć`, `popychać`, `odblokowywać`, `zamarzać`, `topnieć`, `palić się`). These are candidate decisions, not approved lemma/sense transfers. Certain nominalized relation labels are metadata labels, not working prepositions or constructions. Disputed broad/narrow mappings need language review.
+
+Batch 8 adds pending lexical senses and explicit accusative transitive frames for `otwierać`, `zamykać`, `łamać`, `podgrzewać`, `chłodzić`, `podpalać`, `gasić` and the battery sense of `ładować`. It corrects the battery lexeme ID to `pl.ladowac_baterie.v`, distinct from the existing `pl.ladowac.v` (`lądować`). No verb morphology is declared.
 
 ## Licensing and manual review
 

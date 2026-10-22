@@ -120,4 +120,36 @@ var physicalActionFrames = []frameDeclaration{
 		{ID: "subject", Role: "disposer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "object", Role: "object", Required: true, GrammaticalFunction: "object", Case: "accusative"},
 	}},
+	{"pl.otwierac_obiekt.open.action", "pl.otwierac_obiekt.open", "pl.transitive", []meaning.Role{"agent", "object"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "object", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+	}},
+	{"pl.zamykac_obiekt.close.action", "pl.zamykac_obiekt.close", "pl.transitive", []meaning.Role{"agent", "object"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "object", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+	}},
+	{"pl.lamac.break.action", "pl.lamac.break", "pl.transitive", []meaning.Role{"cause", "theme"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "cause", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "theme", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+	}},
+	{"pl.podgrzewac.heat.action", "pl.podgrzewac.heat", "pl.transitive", []meaning.Role{"cause", "theme"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "cause", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "theme", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+	}},
+	{"pl.chlodzic.cool.action", "pl.chlodzic.cool", "pl.transitive", []meaning.Role{"cause", "theme"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "cause", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "theme", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+	}},
+	{"pl.podpalac.ignite.action", "pl.podpalac.ignite", "pl.transitive", []meaning.Role{"agent_or_cause", "material"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent_or_cause", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "material", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+	}},
+	{"pl.gasic.extinguish.action", "pl.gasic.extinguish", "pl.transitive", []meaning.Role{"agent_or_cause", "fire"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent_or_cause", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "fire", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+	}},
+	{"pl.ladowac_baterie.charge.action", "pl.ladowac_baterie.charge", "pl.transitive", []meaning.Role{"source", "battery"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "source", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "battery", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+	}},
 }
