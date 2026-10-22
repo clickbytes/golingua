@@ -13,12 +13,12 @@
 | DEFERRED / UNREVIEWED | 0 |
 | **Total** | **1000** |
 
-Proposed semantic rows: **665 approved and 335 pending**, **0 without a proposed binding**. This row count is independent of compiled bindings: **1006 typed binding records cover 1000 CORE concepts**, because six concepts each have two gender-specific lexical senses. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. The 665 individually approved equivalents are recorded in delegated review issues #152, #154, #156, #158, #160, #162, #164, #166, #168, #170, #172, #174, #176, #178, and #180 (batches 1–15).
+Proposed semantic rows: **705 approved and 295 pending**, **0 without a proposed binding**. This row count is independent of compiled bindings: **1006 typed binding records cover 1000 CORE concepts**, because six concepts each have two gender-specific lexical senses. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. The 705 individually approved equivalents are recorded in delegated review issues #152, #154, #156, #158, #160, #162, #164, #166, #168, #170, #172, #174, #176, #178, #180, and #182 (batches 1–16).
 
-## Compiled state after G07-09 batch 15 (2026-10-23)
+## Compiled state after G07-09 batch 16 (2026-10-23)
 
 - CORE: **1000** compiled concept definitions.
-- PL: **982 lexemes**, **1007 senses**, **1006 semantic bindings (665 approved; 341 pending) over 1000 concepts**, **0 CORE absent**.
+- PL: **982 lexemes**, **1007 senses**, **1006 semantic bindings (705 approved; 301 pending) over 1000 concepts**, **0 CORE absent**.
 - EN: **1000 lexemes**, **1009 senses**, **989 approved and 12 pending binding records** over 1000 concepts.
 - PL valency: **273 authored, compiled frames**, some single-role, some NP/PP/recipient-based; four separately approved construction bindings.
 - Polish morphology: **15 selected noun lexemes** supplied with 14 explicit form strings each (7 cases × 2 numbers), using five shared gender-class selection paradigms. Previous `kot`, `student`, `czytać` seeds remain. No automatic inflection for the remaining lexical inventory.
