@@ -4,8 +4,8 @@
 
 `en.LexicalDocument()` declares 1000 English lexemes, 1009 distinct senses and 1001
 CORE binding records (19 original lexemes plus 694 noun, 264 verb and 23
-preposition candidates). Twenty delegated review batches approved 989 exact
-equivalent links; 12 records remain pending.
+preposition candidates). Twenty delegated review batches and audit #192 approved 996 exact
+equivalent links; 5 records remain pending.
 `en.CompileLexicon(coreGraph)` validates those records against the exact CORE
 snapshot. Meanings such as the institutional sense of `school` and the
 understanding sense of `see` remain separate and unmapped. English records are
@@ -39,9 +39,8 @@ no assigned paradigm, form inventory, valency frame, or construction binding. Ve
 `en.book.work`, `en.hand.worker`, `en.see.understand`, `en.look.appear`, and
 `en.get.understand`. Their mappings still need separate lexical decisions.
 
-The ledger has a lexical candidate for every current CORE concept. Twenty delegated review batches approved 989 exact equivalents across 989 concepts and
-retained 12 pending binding records across 11 concepts. The remaining candidates
-are listed in issue #61. The existing
+The ledger has a lexical candidate for every current CORE concept. Twenty delegated review batches and audit #192 approved 996 exact equivalents across 996 concepts and
+retained 5 pending binding records across 4 concepts. The remaining candidates are recorded in issue #192. The existing
 `en.school.institution` sense is a pending candidate; eight existing senses
 remain unmapped. Construction approvals do not imply these lexical decisions.
 

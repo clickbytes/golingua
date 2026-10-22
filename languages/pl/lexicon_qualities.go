@@ -34,7 +34,7 @@ var qualitiesEntries = []lexicalEntry{
 	{"pl.tymbr.n", "tymbr", "noun", []lexicalMeaning{{"pl.tymbr.quality", "Qualitative tone character distinguishing sounds of similar pitch and loudness", "sound_timbre"}}},
 	{"pl.won.n", "won", "noun", []lexicalMeaning{{"pl.won.character", "Qualitative sensory character of an odor, distinct from its intensity", "smell_character"}}},
 	{"pl.posmak.n", "posmak", "noun", []lexicalMeaning{{"pl.posmak.character", "Qualitative gustatory character of a substance", "taste_character"}}},
-	{"pl.slodycz.n", "slodycz", "noun", []lexicalMeaning{{"pl.slodycz.quality", "Perceived intensity of a sweet taste component", "sweetness"}}},
+	{"pl.slodycz.n", "słodycz", "noun", []lexicalMeaning{{"pl.slodycz.quality", "Perceived intensity of a sweet taste component", "sweetness"}}},
 	{"pl.kwasnosc.n", "kwasność", "noun", []lexicalMeaning{{"pl.kwasnosc.quality", "Perceived intensity of an acidic or sour taste component", "sourness"}}},
 	{"pl.gorzkosc.n", "gorzkość", "noun", []lexicalMeaning{{"pl.gorzkosc.quality", "Perceived intensity of a bitter taste component", "bitterness"}}},
 	{"pl.slonosc.n", "słoność", "noun", []lexicalMeaning{{"pl.slonosc.quality", "Perceived intensity of a salty taste component", "saltiness"}}},
