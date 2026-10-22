@@ -158,6 +158,31 @@ var polishApprovedLexicalBatch5Senses = map[string]struct{}{
 	"pl.srebro.material": {}, "pl.szklo.material": {}, "pl.plastik.material": {},
 }
 
+var polishLexicalReviewBatch6Source = provenance.SourceRef{
+	ID: "golingua-pl-delegated-lexical-review", URI: "https://github.com/clickbytes/golingua/issues/162#issuecomment-6352575592",
+	Version: "2026-10-23-batch-06", License: "unknown", Author: "codex-owner-delegated",
+}
+
+var polishApprovedLexicalBatch6Senses = map[string]struct{}{
+	"pl.guma.material": {}, "pl.papier.material": {}, "pl.tkanina.material": {},
+	"pl.skora.material": {}, "pl.olej.substance": {}, "pl.paliwo.substance": {},
+	"pl.wegiel.fuel": {}, "pl.benzyna.fuel": {}, "pl.swiatlo.physical": {},
+	"pl.cien.region": {}, "pl.plomien.region": {}, "pl.dym.substance": {},
+	"pl.popiol.substance": {}, "pl.kurz.substance": {}, "pl.powierzchnia.region": {},
+	"pl.grunt.surface": {}, "pl.wzgorze.place": {}, "pl.gora.place": {},
+	"pl.dolina.place": {}, "pl.wyspa.place": {}, "pl.kontynent.place": {},
+	"pl.wybrzeze.place": {}, "pl.plaza.place": {}, "pl.pustynia.place": {},
+	"pl.las.place": {}, "pl.laka.place": {}, "pl.pole.land": {},
+	"pl.grunt_rolny.farmland": {}, "pl.ogrod.place": {}, "pl.park.place": {},
+	"pl.rzeka.place": {}, "pl.strumien.place": {}, "pl.jezioro.place": {},
+	"pl.staw_zbiornik.place": {}, "pl.morze.place": {}, "pl.ocean.place": {},
+	"pl.wodospad.place": {}, "pl.studnia.artifact": {}, "pl.brzeg.place": {},
+	"pl.niebo.region": {}, "pl.chmura.region": {}, "pl.kropla_deszczu.entity": {},
+	"pl.platek_sniegu.entity": {}, "pl.gradzina.entity": {}, "pl.mgla.region": {},
+	"pl.slonce.body": {}, "pl.ksiezyc.body": {}, "pl.gwiazda.body": {},
+	"pl.planeta.body": {},
+}
+
 var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.widziec.visual":     "pl.widziec.visual.transitive",
 	"pl.patrzec.directed":   "pl.patrzec.directed.na",
@@ -197,6 +222,9 @@ func LexicalDocument() (lexicon.Document, error) {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	if err := polishLexicalReviewBatch5Source.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
+	}
+	if err := polishLexicalReviewBatch6Source.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
@@ -266,6 +294,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishLexicalReviewBatch5Source
+				}
+				if _, approved := polishApprovedLexicalBatch6Senses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishLexicalReviewBatch6Source
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}
