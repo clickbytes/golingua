@@ -217,6 +217,25 @@ func (seed *Seed) Analyze(surface string) ([]morph.Reading, error) {
 	return seed.index.Analyze(surface)
 }
 
+// RuntimeMorphology exposes immutable compiled indexes to the trusted Go
+// sentence adapter. The profile and indexes have no mutating API.
+func (seed *Seed) RuntimeMorphology() (*features.LanguageFeatureProfile, *morph.InverseIndex, *morph.CompiledParadigms, *morph.CompiledExceptions) {
+	if seed == nil {
+		return nil, nil, nil, nil
+	}
+	return seed.profile, seed.index, seed.paradigms, seed.exceptions
+}
+
+// PrincipalParts returns a defensive copy for one attested lexeme.
+func (seed *Seed) PrincipalParts(id string) (morph.PrincipalParts, bool) {
+	if seed == nil {
+		return morph.PrincipalParts{}, false
+	}
+	parts, found := seed.parts[id]
+	parts.Parts = append([]morph.PrincipalPart(nil), parts.Parts...)
+	return parts, found
+}
+
 // Lexemes returns the immutable seed's lexemes as defensive copies.
 func (seed *Seed) Lexemes() []lexicon.MorphLexeme {
 	if seed == nil || seed.lexicon == nil {

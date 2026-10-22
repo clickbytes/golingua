@@ -483,6 +483,13 @@ func SelectTargets(input Input) (Result, error) {
 								result.Diagnostics = appendDiagnostic(result.Diagnostics, "TARGET_VARIANT_INDEX_STALE", "target variant index was compiled from a different construction family plan", "constructions."+familyID.String())
 								continue
 							}
+							family, err = construction.BindFrame(family, frame)
+							if err != nil {
+								licensed = true
+								result.Outcome = mergeOutcome(result.Outcome, outcomeFromError(err))
+								result.Diagnostics = appendDiagnostic(result.Diagnostics, "TARGET_FRAME_FAMILY_MISMATCH", err.Error(), "constructions."+familyID.String())
+								continue
+							}
 							if compiledVariant.Variant.DirectionPolicy != construction.DirectionBoth && compiledVariant.Variant.DirectionPolicy != construction.DirectionRealize {
 								licensed = true
 								result.Outcome = mergeOutcome(result.Outcome, status.OutcomeUnsupported)

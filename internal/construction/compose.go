@@ -45,6 +45,10 @@ func Compose(registry *Registry, frame valency.ValencyFrame, initialFamilyID ids
 	if !frameAllowsFamily(frame, initial.Family.ID) {
 		return ConstructionPlan{}, unsupported("FRAME_FAMILY_NOT_LICENSED", "input_family_id", "selected sense frame does not license the initial family")
 	}
+	initial, err := BindFrame(initial, frame)
+	if err != nil {
+		return ConstructionPlan{}, err
+	}
 	if err := validateFamilyFrameRoles(initial.Family, frame); err != nil {
 		return ConstructionPlan{}, err
 	}
@@ -88,6 +92,10 @@ func Compose(registry *Registry, frame valency.ValencyFrame, initialFamilyID ids
 		}
 		if !frameAllowsFamily(frame, output.Family.ID) {
 			return ConstructionPlan{}, unsupported("FRAME_FAMILY_NOT_LICENSED", path+".output_family_id", "selected sense frame does not license the operator output family")
+		}
+		output, err = BindFrame(output, frame)
+		if err != nil {
+			return ConstructionPlan{}, err
 		}
 		if err := validateFamilyFrameRoles(output.Family, frame); err != nil {
 			return ConstructionPlan{}, err

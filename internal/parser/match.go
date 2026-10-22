@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"sort"
 	"strings"
@@ -774,7 +776,21 @@ func (m *matcher) finishUnmatched() {
 	if used == nil {
 		used = map[string]bool{}
 	}
+	usedNouns := make(map[string]bool)
+	for _, candidate := range m.candidates {
+		if used[candidate.ID] && candidate.Category == construction.CategoryNP {
+			usedNouns[fmt.Sprintf("%d:%d:%s:%s", candidate.TokenStart, candidate.TokenEnd, candidate.LexemeID, senseSetKey(candidate.SenseIDs))] = true
+		}
+	}
 	for _, c := range m.candidates {
+		if used[c.ID] {
+			continue
+		}
+		if c.Category == construction.CategoryNP && usedNouns[fmt.Sprintf("%d:%d:%s:%s", c.TokenStart, c.TokenEnd, c.LexemeID, senseSetKey(c.SenseIDs))] {
+			// A different case reading for the same noun and sense is
+			// rejected by the frame, not an unresolved lexical meaning.
+			continue
+		}
 		reason := "not selected by a retained complete derivation"
 		if m.unsupportedHeads[c.ID] {
 			reason = "candidate lacks the plan's licensed predicate sense"
@@ -782,10 +798,17 @@ func (m *matcher) finishUnmatched() {
 				m.markIncomplete("UNSUPPORTED_COMPETING_HEAD", "overlapping predicate evidence lacks an authorized plan sense")
 			}
 		}
-		if !used[c.ID] {
-			m.forest.Unmatched = append(m.forest.Unmatched, UnmatchedCandidate{CandidateID: c.ID, TokenStart: c.TokenStart, TokenEnd: c.TokenEnd, Reason: reason})
-		}
+		m.forest.Unmatched = append(m.forest.Unmatched, UnmatchedCandidate{CandidateID: c.ID, TokenStart: c.TokenStart, TokenEnd: c.TokenEnd, Reason: reason})
 	}
+}
+
+func senseSetKey(senses []ids.SenseID) string {
+	values := make([]string, len(senses))
+	for index, sense := range senses {
+		values[index] = sense.String()
+	}
+	sort.Strings(values)
+	return strings.Join(values, "\x00")
 }
 func (m *matcher) overlapsMatchedHead(start, end int) bool {
 	for span := range m.matchedHeadRanges {
@@ -940,7 +963,8 @@ func derivationID(p compiledPlan, slots []SlotBinding) string {
 			b.WriteString(string(s.WHGap.ScopeNodeID))
 		}
 	}
-	return b.String()
+	digest := sha256.Sum256([]byte(b.String()))
+	return "derivation:" + hex.EncodeToString(digest[:])
 }
 func semanticKey(p compiledPlan, slots []SlotBinding) string {
 	var b strings.Builder

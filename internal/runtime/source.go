@@ -3,6 +3,7 @@ package runtime
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/clickbytes/golingua/internal/analyzer"
 	"github.com/clickbytes/golingua/internal/construction"
@@ -43,20 +44,21 @@ type CompositionEvidenceBuilder interface {
 // SourcePipeline adapts the existing bounded source stages to engine.SourceAnalyzer.
 // Language-specific phrase analysis remains an explicit compiled dependency.
 type SourcePipeline struct {
-	Language        features.LanguageID
-	Tokenize        text.TokenizeOptions
-	Morphology      *morph.InverseIndex
-	Lexicon         *lexicon.Index
-	MWEPlans        []construction.CompiledMWEPlan
-	LatticeBudget   analyzer.Budget
-	PhraseBuilder   PhraseEvidenceBuilder
-	ParserIndex     *parser.Index
-	ParseBudget     parser.Budget
-	Valency         *valency.Index
-	Core            *core.ConceptGraph
-	Constructions   *construction.Registry
-	SemanticBudget  semantic.Budget
-	EvidenceBuilder CompositionEvidenceBuilder
+	Language         features.LanguageID
+	Tokenize         text.TokenizeOptions
+	AllowFinalPeriod bool
+	Morphology       *morph.InverseIndex
+	Lexicon          *lexicon.Index
+	MWEPlans         []construction.CompiledMWEPlan
+	LatticeBudget    analyzer.Budget
+	PhraseBuilder    PhraseEvidenceBuilder
+	ParserIndex      *parser.Index
+	ParseBudget      parser.Budget
+	Valency          *valency.Index
+	Core             *core.ConceptGraph
+	Constructions    *construction.Registry
+	SemanticBudget   semantic.Budget
+	EvidenceBuilder  CompositionEvidenceBuilder
 }
 
 var _ engine.SourceAnalyzer = (*SourcePipeline)(nil)
@@ -77,7 +79,11 @@ func (pipeline *SourcePipeline) Analyze(ctx context.Context, input string) (sema
 	if latticeBudget == (analyzer.Budget{}) {
 		latticeBudget = analyzer.DefaultBudget()
 	}
-	lattice, err := analyzer.BuildLattice(input, pipeline.Language, pipeline.Tokenize, pipeline.Morphology, pipeline.Lexicon, pipeline.MWEPlans, latticeBudget)
+	scanInput := input
+	if pipeline.AllowFinalPeriod && strings.HasSuffix(input, ".") && len(input) > 1 && !strings.ContainsAny(input[:len(input)-1], ".?!") {
+		scanInput = input[:len(input)-1]
+	}
+	lattice, err := analyzer.BuildLattice(scanInput, pipeline.Language, pipeline.Tokenize, pipeline.Morphology, pipeline.Lexicon, pipeline.MWEPlans, latticeBudget)
 	if err != nil {
 		return semantic.Result{}, err
 	}

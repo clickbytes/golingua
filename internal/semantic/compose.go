@@ -169,19 +169,12 @@ func Compose(input CompositionInput) (ComposeResult, error) {
 	}
 	work := 0
 	rootByID := make(map[parser.NodeID]parser.PackedNode, len(input.Forest.Nodes))
-	predicateByAlternative := make(map[string][]parser.PackedNode)
 	phraseNodeByCandidate := make(map[string]parser.NodeID)
 	for _, node := range input.Forest.Nodes {
 		rootByID[node.ID] = node
 		for _, candidateID := range node.CandidateIDs {
 			if _, exists := phraseNodeByCandidate[candidateID]; !exists {
 				phraseNodeByCandidate[candidateID] = node.ID
-			}
-		}
-		if node.Category == construction.CategoryVP {
-			for _, alternative := range node.Alternatives {
-				key := alternativeKey(alternative)
-				predicateByAlternative[key] = append(predicateByAlternative[key], node)
 			}
 		}
 	}
@@ -191,13 +184,21 @@ func Compose(input CompositionInput) (ComposeResult, error) {
 			return ComposeResult{}, semanticError(status.OutcomeInvalid, "UNKNOWN_FOREST_ROOT", "forest.roots", "parser root does not resolve")
 		}
 		for _, alternative := range root.Alternatives {
+			predicateNodes := make([]parser.PackedNode, 0, 1)
+			for _, slot := range alternative.Slots {
+				for _, nodeID := range slot.NodeIDs {
+					if node, found := rootByID[nodeID]; found && node.Category == construction.CategoryVP {
+						predicateNodes = append(predicateNodes, node)
+					}
+				}
+			}
 			work++
 			if work > budget.MaxExpansions || len(result.Candidates) >= budget.MaxAlternatives {
 				result.Outcome = status.OutcomeResourceLimit
 				result.Diagnostics = appendDiagnostic(result.Diagnostics, semanticDiagnostic("RESOURCE_LIMIT", "semantic alternative or expansion budget exhausted", "budget"))
 				return finalizeComposition(result, input.Core, budget)
 			}
-			if err := composeAlternative(&result, input, alternative, root.Span, sourceBytes, candidateByID, referenceByCandidate, predicateByAlternative[alternativeKey(alternative)], phraseNodeByCandidate, &work, budget); err != nil {
+			if err := composeAlternative(&result, input, alternative, root.Span, sourceBytes, candidateByID, referenceByCandidate, predicateNodes, phraseNodeByCandidate, &work, budget); err != nil {
 				return ComposeResult{}, err
 			}
 		}
@@ -1103,9 +1104,6 @@ func evidenceOnlyMeaningCandidate(id string, outcome status.OutcomeKind, records
 	return MeaningCandidate{ID: id, SemanticID: id, Status: outcome, Evidence: trace}
 }
 
-func alternativeKey(alternative parser.ParseAlternative) string {
-	return fmt.Sprintf("%#v", alternative)
-}
 func stableHash(value string) string {
 	sum := sha256.Sum256([]byte(value))
 	return hex.EncodeToString(sum[:])
