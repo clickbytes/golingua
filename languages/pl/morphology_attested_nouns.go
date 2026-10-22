@@ -140,8 +140,8 @@ func attestedNounRecords(lexemes []lexicon.MorphLexeme) ([]lexemeRecord, error) 
 		}
 		parts := morph.PrincipalParts{LexemeID: lexeme.ID, Parts: make([]morph.PrincipalPart, 0, 14)}
 		for caseIndex, grammaticalCase := range attestedNounCases {
-			parts.Parts = append(parts.Parts, morph.PrincipalPart{ID: morph.PrincipalPartID("sg_"+grammaticalCase), Form: entry.singular[caseIndex]})
-			parts.Parts = append(parts.Parts, morph.PrincipalPart{ID: morph.PrincipalPartID("pl_"+grammaticalCase), Form: entry.plural[caseIndex]})
+			parts.Parts = append(parts.Parts, morph.PrincipalPart{ID: morph.PrincipalPartID("sg_" + grammaticalCase), Form: entry.singular[caseIndex]})
+			parts.Parts = append(parts.Parts, morph.PrincipalPart{ID: morph.PrincipalPartID("pl_" + grammaticalCase), Form: entry.plural[caseIndex]})
 		}
 		result = append(result, lexemeRecord{Lexeme: lexeme, PrincipalParts: parts})
 	}
