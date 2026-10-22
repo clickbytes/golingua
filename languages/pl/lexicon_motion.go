@@ -8,7 +8,7 @@ var motionEntries = []lexicalEntry{
 	{"pl.biec.v", "biec", "verb", []lexicalMeaning{{"pl.biec.run", "Rapid locomotion on foot involving intervals without ground contact.", "running"}}},
 	{"pl.czolgac_sie.v", "czołgać się", "verb_reflexive", []lexicalMeaning{{"pl.czolgac_sie.crawl", "Locomotion supported by hands, knees, or the body close to a surface.", "crawling"}}},
 	{"pl.skakac.v", "skakać", "verb", []lexicalMeaning{{"pl.skakac.jump", "Propelled movement in which a body temporarily leaves its support surface.", "jumping"}}},
-	{"pl.spadac.v", "spadać", "verb", []lexicalMeaning{{"pl.spadac.fall", "Predominantly downward movement under gravity without sustained support.", "falling"}}},
+	{"pl.spadac.v", "spadać", "verb", []lexicalMeaning{{"pl.spadac.fall", "Predominantly downward movement under gravity without sustained support.", "falling"}, {"pl.spadac.reduce", "A measurable magnitude becoming smaller between two observations.", "reducing_quantity"}}},
 	{"pl.skrecac.v", "skręcać", "verb", []lexicalMeaning{{"pl.skrecac.turn", "Change in the direction of a moving entity's path.", "turning_direction"}}},
 	{"pl.ruszac.v", "ruszać", "verb", []lexicalMeaning{{"pl.ruszac.start", "Transition from stationary condition to spatial movement.", "starting_motion"}}},
 	{"pl.zatrzymywac_sie.v", "zatrzymywać się", "verb_reflexive", []lexicalMeaning{{"pl.zatrzymywac_sie.stop", "Transition from spatial movement to a stationary condition.", "stopping_motion"}}},
