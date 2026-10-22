@@ -13,14 +13,14 @@
 | DEFERRED / UNREVIEWED | 0 |
 | **Total** | **1000** |
 
-Proposed semantic candidate rows: **983 pending**, **17 without a proposed binding**. This total is independent of the compiled `catalog` counts: **972 pending PL candidates have typed Go declarations**, and **11 event candidates remain worklist-only**, requiring individual lexical and valency review. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. No mapping is `approved`.
+Proposed semantic candidate rows: **983 pending**, **17 without a proposed binding**. This total is independent of the compiled `catalog` counts: **976 pending PL candidates have typed Go declarations**, and **7 event candidates remain worklist-only**, requiring individual lexical and valency review. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. No mapping is `approved`.
 
 ## Compiled state after G07-03 batches (2026-10-22)
 
 - CORE: **1000** compiled concept definitions.
-- PL: **950 lexemes**, **973 senses**, **972 pending semantic bindings**, **28 CORE absent**.
+- PL: **954 lexemes**, **977 senses**, **976 pending semantic bindings**, **24 CORE absent**.
 - EN unchanged: **19 lexemes**, **28 senses**, **19 pending bindings**.
-- PL valency: **263 authored, compiled frames**, some single-role, some NP/PP/recipient-based. No approved construction binding.
+- PL valency: **267 authored, compiled frames**, some single-role, some NP/PP/recipient-based. No approved construction binding.
 - Polish morphology: **15 selected noun lexemes** supplied with 14 explicit form strings each (7 cases × 2 numbers), using five shared gender-class selection paradigms. Previous `kot`, `student`, `czytać` seeds remain. No automatic inflection for the remaining lexical inventory.
 
 `MORPHOLOGY_COVERAGE=attested_14_case_number_cells_pending_owner_review` in the TSV identifies the noun slice, including multiple senses of the same lexeme. `no_authorized_paradigm` identifies new verb entries without inflection. Missing cells and lexemes must not be filled through speculative analogy. Inverse analysis preserves distinct syncretic readings, with normalization constrained to NFC.
@@ -50,6 +50,8 @@ Batch 17 adds six pending senses for watching a screen, imagining, hoping, recei
 Batch 18 adds four verbal candidates for lending, ordering goods, typing and desiring, plus event nouns for locomotion and navigation. Only the verbal entries receive valency frames; the event nouns have no verbal valency. The TSV `giving` frame reference was synchronized with its existing compiled frame, with its binding still pending.
 
 Batch 19 adds pending senses for locking, assembling, bargaining, gifting and sharing, plus an acquiring-knowledge sense on the existing `uczyć się` lexeme. All six verbal senses have selected frames; bindings remain pending and no morphology is added.
+
+Batch 20 adds pending senses for `zachorować`, brushing teeth, exchanging goods and tissue healing. Their selected argument frames are explicit; no morphology or construction bindings are declared.
 
 ## Licensing and manual review
 
