@@ -28,7 +28,7 @@ var englishEntries = []lexicalEntry{
 	{"en.teacher.n", "teacher", "noun", []lexicalMeaning{{"en.teacher.role", "person acting as instructor", "teacher"}}},
 	{"en.doctor.n", "doctor", "noun", []lexicalMeaning{{"en.doctor.role", "medical practitioner", "doctor"}, {"en.doctor.academic", "holder of a doctoral degree", ""}}},
 	{"en.house.n", "house", "noun", []lexicalMeaning{{"en.house.building", "residential building", "house"}, {"en.house.institution", "legislative or other institutional body", ""}}},
-	{"en.school.n", "school", "noun", []lexicalMeaning{{"en.school.facility", "place built for instruction", "school"}, {"en.school.institution", "organization providing instruction", ""}, {"en.school.fish", "group of fish moving together", ""}}},
+	{"en.school.n", "school", "noun", []lexicalMeaning{{"en.school.facility", "place built for instruction", "school"}, {"en.school.institution", "organization providing instruction", "school_institution"}, {"en.school.fish", "group of fish moving together", ""}}},
 	{"en.book.n", "book", "noun", []lexicalMeaning{{"en.book.physical", "physical bound reading material", "book"}, {"en.book.work", "written work regardless of carrier", ""}}},
 	{"en.hand.n", "hand", "noun", []lexicalMeaning{{"en.hand.body", "terminal grasping part of an arm", "hand"}, {"en.hand.worker", "person employed for manual work", ""}}},
 	{"en.eye.n", "eye", "noun", []lexicalMeaning{{"en.eye.organ", "organ of visual perception", "eye"}}},

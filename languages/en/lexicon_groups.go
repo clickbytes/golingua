@@ -14,5 +14,6 @@ func englishLexiconGroups() []lexicalGroup {
 		{source: englishNounSource, entries: englishNounEntries},
 		{source: englishPeopleSource, entries: englishPeopleEntries},
 		{source: englishSocialGroupsSource, entries: englishSocialGroupEntries},
+		{source: englishOrganizationSource, entries: englishOrganizationEntries},
 	}
 }
