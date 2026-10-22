@@ -87,8 +87,9 @@ func CompileValency() (*valency.Index, error) {
 	for _, sense := range document.Senses {
 		senses[sense.ID.String()] = struct{}{}
 	}
-	frames := make([]valency.ValencyFrame, 0, len(polishFrames))
-	for _, item := range polishFrames {
+	declarations := append(append([]frameDeclaration(nil), polishFrames...), polishMotionFrames...)
+	frames := make([]valency.ValencyFrame, 0, len(declarations))
+	for _, item := range declarations {
 		senseID, err := ids.NewSenseID(item.sense)
 		if err != nil {
 			return nil, fmt.Errorf("Polish frame %s: %w", item.id, err)

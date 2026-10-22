@@ -21,5 +21,6 @@ func lexicalGroups() [][]lexicalEntry {
 		mediaEntries,
 		suppliesEntries,
 		institutionFoodEntries,
+		motionEntries,
 	}
 }

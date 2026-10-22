@@ -92,6 +92,8 @@ func LexicalDocument() (lexicon.Document, error) {
 				sense := lexicon.LexicalSense{ID: senseID, LexemeID: lexemeID, Usage: []string{meaning.description}}
 				if frameID, ok := polishFrameBySense[meaning.id]; ok {
 					sense.ValencyIDs = []lexicon.ValencyID{frameID}
+				} else if frameID, ok := motionFrameForSense(meaning.id); ok {
+					sense.ValencyIDs = []lexicon.ValencyID{lexicon.ValencyID(frameID)}
 				}
 				document.Senses = append(document.Senses, sense)
 				if meaning.candidateCore == "" {
