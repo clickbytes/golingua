@@ -45,6 +45,29 @@ var polishLexicalSource = provenance.SourceRef{
 	Version: "2026-10-21-initial", License: "unknown", Author: "golingua contributors",
 }
 
+var polishLexicalReviewBatch1Source = provenance.SourceRef{
+	ID: "golingua-pl-delegated-lexical-review", URI: "https://github.com/clickbytes/golingua/issues/152#issuecomment-6352315888",
+	Version: "2026-10-23-batch-01", License: "unknown", Author: "codex-owner-delegated",
+}
+
+var polishApprovedLexicalSenses = map[string]struct{}{
+	"pl.osoba.person": {}, "pl.dziecko.person": {}, "pl.dorosly.person": {},
+	"pl.lekarz.role": {}, "pl.pacjent.medical": {}, "pl.zwierze.animal": {},
+	"pl.pies.animal": {}, "pl.kot.animal": {}, "pl.roslina.organism": {},
+	"pl.drzewo.plant": {}, "pl.ksiazka.physical": {}, "pl.drzwi.barrier": {},
+	"pl.pojazd.conveyance": {}, "pl.miejsce.location": {}, "pl.dom.building": {},
+	"pl.szkola.facility": {}, "pl.czesc_ciala.body_part": {}, "pl.reka.hand": {},
+	"pl.oko.organ": {}, "pl.woda.substance": {}, "pl.jedzenie.food": {},
+	"pl.zdarzenie.event": {}, "pl.percepcja.sense": {}, "pl.widziec.visual": {},
+	"pl.patrzec.directed": {}, "pl.slyszec.auditory": {}, "pl.przybycie.arrival": {},
+	"pl.dac.transfer": {}, "pl.dostac.receive": {}, "pl.komunikowanie.communication": {},
+	"pl.pytac.request_info": {}, "pl.odpowiadac.answer": {}, "pl.czytac.interpret": {},
+	"pl.uczyc_sie.acquire": {}, "pl.uczyc.instruct": {}, "pl.jesc.eat": {},
+	"pl.spac.sleep": {}, "pl.cecha.property": {}, "pl.wielkosc.size": {},
+	"pl.temperatura.thermal": {}, "pl.kolor.visual": {}, "pl.predkosc.movement": {},
+	"pl.niemowle.infant": {},
+}
+
 var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.widziec.visual":     "pl.widziec.visual.transitive",
 	"pl.patrzec.directed":   "pl.patrzec.directed.na",
@@ -70,6 +93,9 @@ var polishParadigmByLexeme = map[string]string{
 func LexicalDocument() (lexicon.Document, error) {
 	if err := polishLexicalSource.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical source: %w", err)
+	}
+	if err := polishLexicalReviewBatch1Source.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
 	groups := append([][]lexicalEntry{polishEntries}, lexicalGroups()...)
@@ -110,10 +136,16 @@ func LexicalDocument() (lexicon.Document, error) {
 				if err != nil {
 					return lexicon.Document{}, fmt.Errorf("Polish candidate %s: %w", meaning.candidateCore, err)
 				}
-				document.Bindings = append(document.Bindings, lexicon.SemanticBinding{
+				binding := lexicon.SemanticBinding{
 					SenseID: senseID, CoreRef: conceptID, Mapping: lexicon.MappingCandidate,
 					Status: lexicon.BindingPending, Provenance: polishLexicalSource,
-				})
+				}
+				if _, approved := polishApprovedLexicalSenses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishLexicalReviewBatch1Source
+				}
+				document.Bindings = append(document.Bindings, binding)
 			}
 		}
 	}

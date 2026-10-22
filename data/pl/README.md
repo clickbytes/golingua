@@ -13,13 +13,13 @@
 | DEFERRED / UNREVIEWED | 0 |
 | **Total** | **1000** |
 
-Proposed semantic candidate rows: **1000 pending**, **0 without a proposed binding**. This row count is independent of compiled bindings: **1006 typed pending binding records cover 1000 CORE concepts**, because six concepts each have two gender-specific lexical senses. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. No mapping is `approved`.
+Proposed semantic rows: **43 approved and 957 pending**, **0 without a proposed binding**. This row count is independent of compiled bindings: **1006 typed binding records cover 1000 CORE concepts**, because six concepts each have two gender-specific lexical senses. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. The 43 individually approved equivalents are recorded in delegated review issue #152, batch 1.
 
-## Compiled state after G07-03 batches (2026-10-22)
+## Compiled state after G07-05 batch 1 (2026-10-23)
 
 - CORE: **1000** compiled concept definitions.
-- PL: **982 lexemes**, **1007 senses**, **1006 pending semantic bindings over 1000 pending concepts**, **0 CORE absent**.
-- EN unchanged: **19 lexemes**, **28 senses**, **19 pending bindings**.
+- PL: **982 lexemes**, **1007 senses**, **1006 semantic bindings (43 approved; 963 pending) over 1000 concepts**, **0 CORE absent**.
+- EN: **1000 lexemes**, **1009 senses**, **989 approved and 12 pending binding records** over 1000 concepts.
 - PL valency: **273 authored, compiled frames**, some single-role, some NP/PP/recipient-based. No approved construction binding.
 - Polish morphology: **15 selected noun lexemes** supplied with 14 explicit form strings each (7 cases × 2 numbers), using five shared gender-class selection paradigms. Previous `kot`, `student`, `czytać` seeds remain. No automatic inflection for the remaining lexical inventory.
 
