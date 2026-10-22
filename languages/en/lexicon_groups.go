@@ -36,5 +36,6 @@ func englishLexiconGroups() []lexicalGroup {
 		{source: englishEmotionSource, entries: englishEmotionEntries},
 		{source: englishSpeechVerbSource, entries: englishSpeechVerbEntries},
 		{source: englishManipulationVerbSource, entries: englishManipulationVerbEntries},
+		{source: englishCommerceVerbSource, entries: englishCommerceVerbEntries},
 	}
 }
