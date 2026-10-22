@@ -87,6 +87,29 @@ var polishApprovedLexicalBatch2Senses = map[string]struct{}{
 	"pl.kelner.person": {}, "pl.sprzatacz.person": {}, "pl.stolarz.craft": {},
 }
 
+var polishLexicalReviewBatch3Source = provenance.SourceRef{
+	ID: "golingua-pl-delegated-lexical-review", URI: "https://github.com/clickbytes/golingua/issues/156#issuecomment-6352443719",
+	Version: "2026-10-23-batch-03", License: "unknown", Author: "codex-owner-delegated",
+}
+
+var polishApprovedLexicalBatch3Senses = map[string]struct{}{
+	"pl.elektryk.role": {}, "pl.inzynier.role": {}, "pl.programista.role": {},
+	"pl.artysta.role": {}, "pl.muzyk.role": {}, "pl.autor.work": {},
+	"pl.dziennikarz.role": {}, "pl.bibliotekarz.role": {}, "pl.policjant.role": {},
+	"pl.strazak.role": {}, "pl.zolnierz.role": {}, "pl.sportowiec.role": {},
+	"pl.opiekun.role": {}, "pl.dentysta.role": {}, "pl.tlumacz.interpreter": {},
+	"pl.tlumacz.written": {}, "pl.technik.role": {}, "pl.kurier.role": {},
+	"pl.grupa.people": {}, "pl.rodzina.group": {}, "pl.dom.household": {},
+	"pl.spolecznosc.group": {}, "pl.tlum.people": {}, "pl.publicznosc.people": {},
+	"pl.zespol.group": {}, "pl.klasa.group": {}, "pl.komisja.group": {},
+	"pl.organizacja.group": {}, "pl.firma.company": {}, "pl.restauracja.business": {},
+	"pl.bank.institution": {}, "pl.rzad.government": {}, "pl.szkola.institution": {},
+	"pl.uniwersytet.institution": {}, "pl.szpital.institution": {},
+	"pl.stowarzyszenie.group": {}, "pl.klub.group": {}, "pl.biblioteka.institution": {},
+	"pl.policja.department": {}, "pl.ssak.animal": {}, "pl.ptak.animal": {},
+	"pl.ryba.animal": {}, "pl.gad.animal": {}, "pl.plaz.animal": {},
+}
+
 var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.widziec.visual":     "pl.widziec.visual.transitive",
 	"pl.patrzec.directed":   "pl.patrzec.directed.na",
@@ -117,6 +140,9 @@ func LexicalDocument() (lexicon.Document, error) {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	if err := polishLexicalReviewBatch2Source.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
+	}
+	if err := polishLexicalReviewBatch3Source.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
@@ -171,6 +197,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishLexicalReviewBatch2Source
+				}
+				if _, approved := polishApprovedLexicalBatch3Senses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishLexicalReviewBatch3Source
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}
