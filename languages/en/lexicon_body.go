@@ -49,4 +49,8 @@ var englishBodyEntries = []lexicalEntry{
 	{"en.liver.n", "liver", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.liver.metabolic_organ", "a large abdominal organ with metabolic and detoxification functions", "liver"}}},
 	{"en.kidney.n", "kidney", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.kidney.filtering_organ", "an organ filtering blood and regulating fluid and solute balance", "kidney"}}},
 	{"en.bladder.n", "bladder", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.bladder.urinary_storage_organ", "an organ temporarily storing urine before excretion", "bladder"}}},
+	{"en.blood.n", "blood", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.blood.circulating_fluid", "the circulating body fluid transporting gases, nutrients, and other substances", "blood"}}},
+	{"en.vein.n", "vein", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.vein.vessel_to_heart", "a blood vessel carrying blood toward the heart", "vein"}}},
+	{"en.artery.n", "artery", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.artery.vessel_from_heart", "a blood vessel carrying blood away from the heart", "artery"}}},
+	{"en.nerve.n", "nerve", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.nerve.peripheral_signal_bundle", "a bundle of fibers transmitting signals in the peripheral nervous system", "nerve"}}},
 }
