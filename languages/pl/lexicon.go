@@ -395,6 +395,28 @@ var polishApprovedLexicalBatch15Senses = map[string]struct{}{
 	"pl.okraglosc.form": {}, "pl.symetria.form": {},
 }
 
+var polishLexicalReviewBatch16Source = provenance.SourceRef{
+	ID: "golingua-pl-delegated-lexical-review", URI: "https://github.com/clickbytes/golingua/issues/182#issuecomment-6353127583",
+	Version: "2026-10-23-batch-16", License: "unknown", Author: "codex-owner-delegated",
+}
+
+var polishApprovedLexicalBatch16Senses = map[string]struct{}{
+	"pl.gestosc.measure": {}, "pl.faktura.surface": {}, "pl.twardosc.hardness": {},
+	"pl.elastycznosc.form": {}, "pl.przezroczystosc.form": {}, "pl.jasnosc.measure": {},
+	"pl.glosnosc.measure": {}, "pl.wysokosc_dzwieku.measure": {}, "pl.gorzkosc.quality": {},
+	"pl.slonosc.quality": {}, "pl.ostry_smak.quality": {}, "pl.wilgotnosc.measure": {},
+	"pl.wilgotnosc_powietrza.measure": {}, "pl.czystosc.quality": {}, "pl.ostrosc.quality": {},
+	"pl.palnosc.quality": {}, "pl.kwasowosc.quality": {}, "pl.cisnienie.measure": {},
+	"pl.zawartosc_energii.measure": {}, "pl.trwalosc.quality": {}, "pl.wiek.quality": {},
+	"pl.stan_zdrowia.quality": {}, "pl.sila.body": {}, "pl.koordynacja.quality": {},
+	"pl.poziom_umiejetnosci.quality": {}, "pl.poziom_wiedzy.quality": {}, "pl.poziom_uwagi.quality": {},
+	"pl.pewnosc_siebie.quality": {}, "pl.poziom_satysfakcji.quality": {}, "pl.znaczenie.quality": {},
+	"pl.przydatnosc.quality": {}, "pl.trudnosc.quality": {}, "pl.dostepnosc.quality": {},
+	"pl.poziom_bezpieczenstwa.quality": {}, "pl.dostepnosc_zasobu.quality": {}, "pl.niezawodnosc.quality": {},
+	"pl.dokladnosc.quality": {}, "pl.kompletnosc.quality": {}, "pl.relacja_przestrzenna.link": {},
+	"pl.zawieranie_przestrzenne.link": {},
+}
+
 var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.widziec.visual":     "pl.widziec.visual.transitive",
 	"pl.patrzec.directed":   "pl.patrzec.directed.na",
@@ -464,6 +486,9 @@ func LexicalDocument() (lexicon.Document, error) {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	if err := polishLexicalReviewBatch15Source.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
+	}
+	if err := polishLexicalReviewBatch16Source.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
@@ -583,6 +608,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishLexicalReviewBatch15Source
+				}
+				if _, approved := polishApprovedLexicalBatch16Senses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishLexicalReviewBatch16Source
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}
