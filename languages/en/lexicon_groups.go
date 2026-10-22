@@ -55,5 +55,10 @@ func englishLexiconGroups() []lexicalGroup {
 		{source: englishSpatialRelationSource, entries: englishSpatialRelationEntries},
 		{source: englishTimeNounSource, entries: englishTimeNounEntries},
 		{source: englishDailyVerbSource, entries: englishDailyVerbEntries},
+		{source: englishMovementMoreSource, entries: englishMovementMoreEntries},
+		{source: englishDeviceVerbSource, entries: englishDeviceVerbEntries},
+		{source: englishTemporalRelationSource, entries: englishTemporalRelationEntries},
+		{source: englishLogicalRelationSource, entries: englishLogicalRelationEntries},
+		{source: englishExperienceNounSource, entries: englishExperienceNounEntries},
 	}
 }
