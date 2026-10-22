@@ -230,6 +230,31 @@ var polishApprovedLexicalBatch8Senses = map[string]struct{}{
 	"pl.pila.tool": {}, "pl.lina.artifact": {},
 }
 
+var polishLexicalReviewBatch9Source = provenance.SourceRef{
+	ID: "golingua-pl-delegated-lexical-review", URI: "https://github.com/clickbytes/golingua/issues/168#issuecomment-6352662804",
+	Version: "2026-10-23-batch-09", License: "unknown", Author: "codex-owner-delegated",
+}
+
+var polishApprovedLexicalBatch9Senses = map[string]struct{}{
+	"pl.klej.substance": {}, "pl.szczotka.tool": {}, "pl.szczoteczka_do_zebow.tool": {},
+	"pl.grzebien.tool": {}, "pl.recznik.artifact": {}, "pl.mydlo.substance": {},
+	"pl.miotla.tool": {}, "pl.odkurzacz.artifact": {}, "pl.lodowka.artifact": {},
+	"pl.zamrazarka.artifact": {}, "pl.kuchenka.artifact": {}, "pl.piekarnik.artifact": {},
+	"pl.kuchenka_mikrofalowa.artifact": {}, "pl.pralka.artifact": {}, "pl.zmywarka.artifact": {},
+	"pl.klimatyzator.artifact": {}, "pl.wentylator.artifact": {}, "pl.komputer.artifact": {},
+	"pl.laptop.artifact": {}, "pl.tablet.artifact": {}, "pl.smartfon.artifact": {},
+	"pl.telefon.device": {}, "pl.klawiatura.artifact": {}, "pl.myszka.device": {},
+	"pl.monitor.device": {}, "pl.drukarka.artifact": {}, "pl.aparat.device": {},
+	"pl.sluchawki.artifact": {}, "pl.mikrofon.artifact": {}, "pl.glosnik.device": {},
+	"pl.telewizor.artifact": {}, "pl.radio.device": {}, "pl.pilot.remote": {},
+	"pl.bateria.device": {}, "pl.kabel.artifact": {}, "pl.wtyczka.artifact": {},
+	"pl.napoj.food": {}, "pl.posilek.food": {}, "pl.sniadanie.food": {},
+	"pl.obiad.food": {}, "pl.kolacja.food": {}, "pl.chleb.food": {},
+	"pl.ryz.food": {}, "pl.makaron.food": {}, "pl.ziemniak.food": {},
+	"pl.warzywo.food": {}, "pl.owoc.food": {}, "pl.jablko.food": {},
+	"pl.banan.food": {},
+}
+
 var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.widziec.visual":     "pl.widziec.visual.transitive",
 	"pl.patrzec.directed":   "pl.patrzec.directed.na",
@@ -278,6 +303,9 @@ func LexicalDocument() (lexicon.Document, error) {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	if err := polishLexicalReviewBatch8Source.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
+	}
+	if err := polishLexicalReviewBatch9Source.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
@@ -362,6 +390,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishLexicalReviewBatch8Source
+				}
+				if _, approved := polishApprovedLexicalBatch9Senses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishLexicalReviewBatch9Source
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}
