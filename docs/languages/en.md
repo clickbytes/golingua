@@ -2,8 +2,8 @@
 
 ## In-code lexical catalog
 
-`en.LexicalDocument()` declares 104 English lexemes, 113 distinct senses and 104
-**pending** candidate links to neutral CORE (19 original lexemes plus 85
+`en.LexicalDocument()` declares 110 English lexemes, 119 distinct senses and 110
+**pending** candidate links to neutral CORE (19 original lexemes plus 91
 project-authored noun candidates).
 `en.CompileLexicon(coreGraph)` validates those records against the exact CORE
 snapshot. Meanings such as the institutional sense of `school` and the
@@ -21,7 +21,7 @@ The morphology catalog assigns existing regular paradigms to seven additional en
 `dog`, `teacher`, `doctor`, `school`, `hand`, `eye` and `look`. It does not add
 auxiliaries or sentence realization.
 
-The 85 new noun entries (including `person`, `adult`, `animal`, `plant`, `tree`,
+The 91 new noun entries (including `person`, `adult`, `animal`, `plant`, `tree`,
 `artifact`, `door`, `vehicle`, `location`, `body part`, `event`, `spouse`,
 `romantic partner`, `friend`, `acquaintance`, `neighbor`, `stranger`, `guest`,
 `resident`, `citizen`, `visitor`, `tourist`, `traveler`, `parent`, `mother`,
@@ -33,19 +33,19 @@ The 85 new noun entries (including `person`, `adult`, `animal`, `plant`, `tree`,
 `librarian`, `police officer`, `team leader`, `team member`, `customer`, `merchant`,
 `buyer`, `seller`, `gardener`, `shop clerk`, `artist`, `musician`, `singer`,
 `author`, `journalist`, `firefighter`, `soldier`, `athlete`, `caregiver`, `nurse`,
-`dentist`, `interpreter`, `translator`, `technician`, `courier`, and `volunteer`)
-currently have
+`dentist`, `interpreter`, `translator`, `technician`, `courier`, `volunteer`,
+`group`, `family`, `household`, `community`, `crowd`, and `audience`) currently have
 no assigned paradigm, form inventory, valency frame, or construction binding.
 They are lexical candidates only. The complete editorial ledger is
 [`data/en/1000-core-review.tsv`](../../data/en/1000-core-review.tsv): it has
-1000 exact current CORE IDs, 19 `EXISTING_PENDING`, 84 `REVIEWED_LEXICALIZED` rows and 897
+1000 exact current CORE IDs, 19 `EXISTING_PENDING`, 90 `REVIEWED_LEXICALIZED` rows and 891
 `UNREVIEWED` rows. The nine existing unmapped senses are `en.doctor.academic`,
 `en.house.institution`, `en.school.institution`, `en.school.fish`,
 `en.book.work`, `en.hand.worker`, `en.see.understand`, `en.look.appear`, and
 `en.get.understand`. Their mappings still need separate lexical decisions.
 
 This remains an incremental data update, not completion of the 1000-concept English
-editorial review. All 104 bindings remain pending; none is owner-approved.
+editorial review. All 110 bindings remain pending; none is owner-approved.
 
 The Go package `github.com/clickbytes/golingua/languages/en` loads the bundled `features.json`, `manifest.json`, `morphology/paradigms.json`, and `morphology/lexemes.json`, plus in-code entries. `en.Load()` validates and compiles the package into a shared morphology engine, then builds a finite relation table for inverse analysis. Its `Seed.Generate(lexemeID, featureValues)` and `Seed.Analyze(surface)` methods are available through CLI `forms`. This seed does not claim sentence translation.
 
