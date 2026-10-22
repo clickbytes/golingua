@@ -2,7 +2,7 @@
 
 ## Current scope
 
-The executable `languages/pl` package builds **982 typed Polish lexemes, 1007 distinct lexical senses, 1006 binding records covering all 1000 CORE concepts**: 120 approved equivalent bindings and 886 pending records across 880 pending concepts. No CORE concept is absent. `pl.LexicalDocument()` assembles `lexicon_*.go` domains in deterministic order and `pl.CompileLexicon(coreGraph)` validates the graph. The editorial worklist `data/pl/1000-core-review.tsv` records 120 approved rows and 880 pending rows. `entity` is represented by the register-limited broad candidate `byt`; its binding remains pending. The 120 lexical decisions are recorded in delegated review batches 1–3 for issues #152, #154, and #156; they do not approve morphology, valency, constructions or sentence translation.
+The executable `languages/pl` package builds **982 typed Polish lexemes, 1007 distinct lexical senses, 1006 binding records covering all 1000 CORE concepts**: 165 approved equivalent bindings and 841 pending records across 835 pending concepts. No CORE concept is absent. `pl.LexicalDocument()` assembles `lexicon_*.go` domains in deterministic order and `pl.CompileLexicon(coreGraph)` validates the graph. The editorial worklist `data/pl/1000-core-review.tsv` records 165 approved rows and 835 pending rows. `entity` is represented by the register-limited broad candidate `byt`; its binding remains pending. The 165 lexical decisions are recorded in delegated review batches 1–4 for issues #152, #154, #156, and #158; they do not approve morphology, valency, constructions or sentence translation.
 
 Polish lemmas are distinct from CORE concepts. Examples of polysemy include `szkoła` facility/institution, `bank` institution/office, `ryba` animal/food, `skóra` organ/material. Many verbs have sense-specific cases and prepositions in `ValencyFrame`. They do **not** have automatic morphology or authorized construction paths.
 
@@ -76,4 +76,4 @@ These calls must use the actual bundled seed, not the editorial TSV. A technical
 
 ## Hard boundaries
 
-`languages/pl/manifest.json` still declares `sentence_analysis` and `meaning_realization` as `unsupported`. The `catalog` command separately reports the CORE, lexical and valency indexes; it is not a translation result. No language provider is installed in the CLI. The owner-delegated lexical assessments are recorded in issues #152, #154, and #156 and the ledger; CLI sentence translation and owner inflection review remain **NOT RUN**.
+`languages/pl/manifest.json` still declares `sentence_analysis` and `meaning_realization` as `unsupported`. The `catalog` command separately reports the CORE, lexical and valency indexes; it is not a translation result. No language provider is installed in the CLI. The owner-delegated lexical assessments are recorded in issues #152, #154, #156, and #158 and the ledger; CLI sentence translation and owner inflection review remain **NOT RUN**.
