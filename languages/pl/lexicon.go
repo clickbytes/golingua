@@ -110,6 +110,30 @@ var polishApprovedLexicalBatch3Senses = map[string]struct{}{
 	"pl.ryba.animal": {}, "pl.gad.animal": {}, "pl.plaz.animal": {},
 }
 
+var polishLexicalReviewBatch4Source = provenance.SourceRef{
+	ID: "golingua-pl-delegated-lexical-review", URI: "https://github.com/clickbytes/golingua/issues/158#issuecomment-6352494254",
+	Version: "2026-10-23-batch-04", License: "unknown", Author: "codex-owner-delegated",
+}
+
+var polishApprovedLexicalBatch4Senses = map[string]struct{}{
+	"pl.owad.animal": {}, "pl.pajak.animal": {}, "pl.kon.animal": {},
+	"pl.krowa.animal": {}, "pl.swinia.animal": {}, "pl.owca.animal": {},
+	"pl.koza.animal": {}, "pl.krolik.animal": {}, "pl.mysz.animal": {},
+	"pl.szczur.animal": {}, "pl.niedzwiedz.animal": {}, "pl.kaczka.animal": {},
+	"pl.ges.animal": {}, "pl.zaba.animal": {}, "pl.waz.animal": {},
+	"pl.jaszczurka.animal": {}, "pl.zolw.animal": {}, "pl.motyl.animal": {},
+	"pl.pszczola.animal": {}, "pl.mrowka.animal": {}, "pl.mucha.animal": {},
+	"pl.komar.animal": {}, "pl.krzew.plant": {}, "pl.trawa.plant": {},
+	"pl.roslina_kwitnaca.flowering": {}, "pl.jablon.plant": {},
+	"pl.korzen.organ": {}, "pl.lodyga.plant": {}, "pl.lisc.plant": {},
+	"pl.kwiat.organ": {}, "pl.nasienie.plant": {}, "pl.owoc.organ": {},
+	"pl.kora.plant": {}, "pl.pien.plant": {}, "pl.cialo.body": {},
+	"pl.glowa.part": {}, "pl.twarz.part": {}, "pl.wlosy.part": {},
+	"pl.ucho.part": {}, "pl.nos.part": {}, "pl.usta.part": {},
+	"pl.warga.part": {}, "pl.jezyk.part": {}, "pl.zab.part": {},
+	"pl.szyja.part": {},
+}
+
 var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.widziec.visual":     "pl.widziec.visual.transitive",
 	"pl.patrzec.directed":   "pl.patrzec.directed.na",
@@ -143,6 +167,9 @@ func LexicalDocument() (lexicon.Document, error) {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	if err := polishLexicalReviewBatch3Source.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
+	}
+	if err := polishLexicalReviewBatch4Source.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
@@ -202,6 +229,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishLexicalReviewBatch3Source
+				}
+				if _, approved := polishApprovedLexicalBatch4Senses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishLexicalReviewBatch4Source
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}
