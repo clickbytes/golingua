@@ -436,6 +436,31 @@ var polishApprovedLexicalBatch17Senses = map[string]struct{}{
 	"pl.tresc_pytania.content": {},
 }
 
+var polishLexicalReviewBatch18Source = provenance.SourceRef{
+	ID: "golingua-pl-delegated-lexical-review", URI: "https://github.com/clickbytes/golingua/issues/186#issuecomment-6353193500",
+	Version: "2026-10-23-batch-18", License: "unknown", Author: "codex-owner-delegated",
+}
+
+var polishApprovedLexicalBatch18Senses = map[string]struct{}{
+	"pl.tresc_odpowiedzi.content": {}, "pl.hipoteza.content": {}, "pl.tresc_przekonania.content": {},
+	"pl.tresc_opinii.content": {}, "pl.tresc_instrukcji.content": {}, "pl.tresc_prosby.content": {},
+	"pl.tresc_zasady.content": {}, "pl.tresc_planu.content": {}, "pl.cel_do_osiagniecia.content": {},
+	"pl.tresc_dowodu.content": {}, "pl.tresc_wyjasnienia.content": {}, "pl.tresc_wiedzy.content": {},
+	"pl.tresc_pamieci.content": {}, "pl.mozliwosc.modality": {}, "pl.koniecznosc.modality": {},
+	"pl.zdolnosc.modality": {}, "pl.pozwolenie.modality": {}, "pl.obowiazek.modality": {},
+	"pl.prawo.modality": {}, "pl.odpowiedzialnosc.modality": {}, "pl.zobowiazanie.modality": {},
+	"pl.tresc_porozumienia.content": {}, "pl.tresc_umowy.content": {}, "pl.kategoria.class": {},
+	"pl.ilosc.quantity": {}, "pl.liczba.value": {}, "pl.wartosc_pomiaru.value": {},
+	"pl.jednostka_miary.unit": {}, "pl.czas_trwania.quantity": {}, "pl.moment.value": {},
+	"pl.przedzial_czasowy.value": {}, "pl.cena.value": {}, "pl.kwota_pieniedzy.value": {},
+	"pl.prawdopodobienstwo.value": {}, "pl.samochod.vehicle": {}, "pl.autobus.vehicle": {},
+	"pl.pociag.vehicle": {}, "pl.rower.vehicle": {}, "pl.motocykl.vehicle": {},
+	"pl.ciezarowka.vehicle": {}, "pl.samolot.vehicle": {}, "pl.lodz.vehicle": {},
+	"pl.statek.vehicle": {}, "pl.taksowka.vehicle": {}, "pl.tramwaj.vehicle": {},
+	"pl.metro.vehicle": {}, "pl.karetka.vehicle": {}, "pl.dokument.artifact": {},
+	"pl.wiadomosc.artifact": {},
+}
+
 var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.widziec.visual":     "pl.widziec.visual.transitive",
 	"pl.patrzec.directed":   "pl.patrzec.directed.na",
@@ -511,6 +536,9 @@ func LexicalDocument() (lexicon.Document, error) {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	if err := polishLexicalReviewBatch17Source.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
+	}
+	if err := polishLexicalReviewBatch18Source.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
 	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
@@ -640,6 +668,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishLexicalReviewBatch17Source
+				}
+				if _, approved := polishApprovedLexicalBatch18Senses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishLexicalReviewBatch18Source
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}
