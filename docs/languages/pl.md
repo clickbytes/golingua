@@ -2,13 +2,13 @@
 
 ## Current scope
 
-The executable `languages/pl` package builds **921 typed Polish lexemes, 938 distinct lexical senses, 937 pending bindings** to the 1000-concept CORE catalog; 63 CORE concepts have no PL binding. `pl.LexicalDocument()` assembles `lexicon_*.go` domains in deterministic order and `pl.CompileLexicon(coreGraph)` validates the candidate graph. The editorial worklist `data/pl/1000-core-review.tsv` records 983 proposed pending candidates, **46 of which remain outside the compiled PL lexicon**, chiefly complex events or difficult lexicalizations.
+The executable `languages/pl` package builds **925 typed Polish lexemes, 942 distinct lexical senses, 941 pending bindings** to the 1000-concept CORE catalog; 59 CORE concepts have no PL binding. `pl.LexicalDocument()` assembles `lexicon_*.go` domains in deterministic order and `pl.CompileLexicon(coreGraph)` validates the candidate graph. The editorial worklist `data/pl/1000-core-review.tsv` records 983 proposed pending candidates, **42 of which remain outside the compiled PL lexicon**, chiefly complex events or difficult lexicalizations.
 
 Polish lemmas are distinct from CORE concepts. Examples of polysemy include `szkoła` facility/institution, `bank` institution/office, `ryba` animal/food, `skóra` organ/material. Many verbs have sense-specific cases and prepositions in `ValencyFrame`. They do **not** have automatic morphology or authorized construction paths.
 
-## Valency — 230 frames
+## Valency — 234 frames
 
-`pl.CompileValency()` builds 230 frames with roles copied from actual CORE definitions and separately authored Polish case/adposition constraints. The active source files include `valency.go`, `valency_motion.go`, `valency_actions_physical.go`, `valency_actions_communication.go`, `valency_actions_abstract.go`, `valency_actions_activity.go`, `valency_actions_production.go`, `valency_actions_life.go`, `valency_actions_social.go`, `valency_actions_cognition.go` and `valency_actions_multirole.go`. Frame families include `pl.intransitive`, `pl.transitive`, `pl.oblique`, `pl.ditransitive`, `pl.transitive_oblique` and `pl.double_np`. These structural family references are **not approved `ConstructionBinding` records** and do not activate translation.
+`pl.CompileValency()` builds 234 frames with roles copied from actual CORE definitions and separately authored Polish case/adposition constraints. The active source files include `valency.go`, `valency_motion.go`, `valency_actions_physical.go`, `valency_actions_communication.go`, `valency_actions_abstract.go`, `valency_actions_remaining.go`, `valency_actions_activity.go`, `valency_actions_production.go`, `valency_actions_life.go`, `valency_actions_social.go`, `valency_actions_cognition.go` and `valency_actions_multirole.go`. Frame families include `pl.intransitive`, `pl.transitive`, `pl.oblique`, `pl.ditransitive`, `pl.transitive_oblique` and `pl.double_np`. These structural family references are **not approved `ConstructionBinding` records** and do not activate translation.
 
 Batch 8 adds pending senses and transitive frames for opening/closing objects, breaking, heating/cooling, ignition/extinguishing and battery charging. The charging sense uses the distinct lexeme ID `pl.ladowac_baterie.v`; `pl.ladowac.v` remains `lądować`. The current batch corrects several questionable editorial choices and retains each decision in the TSV. Entries with phrasal or context-sensitive realizations may require different roles or optionality after owner review. This is an authoring prototype, not exhaustive Polish valency.
 
@@ -19,6 +19,8 @@ Batch 10 adds eight pending activity/event candidates: `porównywać`, `ranić`,
 Batch 11 adds six pending candidates: `kraść`, `kategoryzować`, `rysować`, `nagrywać`, `współpracować` and `ubierać się`. Selected frames describe their accusative, dative and prepositional complements; these do not approve constructions or supply verb morphology.
 
 Batch 12 adds seven pending senses for `zgadzać się`, `odmawiać`, `dyskutować`, `uznawać`, `dziedziczyć`, `wzrastać` and the quantity-change sense of `spadać`. The existing downward-motion sense of `spadać` remains distinct; no verb morphology is added.
+
+Batch 13 adds four pending senses: `skarżyć się`, `żartować`, `wolać` and `próbować`. Frames record the selected dative, accusative, genitive and `z` patterns; infinitival complements remain unencoded.
 
 ## Morphological subset — shared class templates, explicit forms
 

@@ -2,7 +2,7 @@
 
 **Nowy, niezależny prototyp silnika językowego w Go.** Koncepty, gramatyka, walencja, procedury i wyjątki są projektowane od zera. Polski i angielski pozostają osobnymi pakietami językowymi.
 
-**Status technicznego podglądu v0:** CLI nie tłumaczy PL↔EN ani nie analizuje/realizuje swobodnych zdań. `forms` generuje i analizuje ograniczony, jawnie opisany zestaw form PL/EN (w PL dodatkowo 15 rzeczowników z 14 deklarowanymi formami każdy), `catalog` raportuje stan danych Go, a `question` wykonuje typowane zapytania na MeaningGraph i faktach podanych jawnie w JSON. CORE ma już 1000 skompilowanych konceptów. Stan Go: PL 921 leksemów / 938 sensów / 937 kandydackich bindingów (230 ram walencji), EN 19 leksemów / 28 sensów / 19 kandydatów (5 ram). Nie ma zatwierdzonych powiązań ani realizacji dowolnych zdań. Brak pamięci i uczenia w v0.
+**Status technicznego podglądu v0:** CLI nie tłumaczy PL↔EN ani nie analizuje/realizuje swobodnych zdań. `forms` generuje i analizuje ograniczony, jawnie opisany zestaw form PL/EN (w PL dodatkowo 15 rzeczowników z 14 deklarowanymi formami każdy), `catalog` raportuje stan danych Go, a `question` wykonuje typowane zapytania na MeaningGraph i faktach podanych jawnie w JSON. CORE ma już 1000 skompilowanych konceptów. Stan Go: PL 925 leksemów / 942 sensy / 941 kandydackich bindingów (234 ramy walencji), EN 19 leksemów / 28 sensów / 19 kandydatów (5 ram). Nie ma zatwierdzonych powiązań ani realizacji dowolnych zdań. Brak pamięci i uczenia w v0.
 
 ## Jak rozwijamy
 
