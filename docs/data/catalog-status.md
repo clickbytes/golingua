@@ -12,18 +12,18 @@ The CLI compiles the current CORE, lexical and language-specific valency snapsho
 | Inventory | CORE | PL | EN |
 | --- | ---: | ---: | ---: |
 | CORE concepts | 1000 | — | — |
-| Lexemes | — | 982 | 80 |
-| Lexical senses | — | 1007 | 89 |
-| Pending concept binding records | — | 1006 | 80 |
+| Lexemes | — | 982 | 92 |
+| Lexical senses | — | 1007 | 101 |
+| Pending concept binding records | — | 1006 | 92 |
 | Approved concept bindings | — | 0 | 0 |
-| Concepts without a binding | — | 0 | 921 |
+| Concepts without a binding | — | 0 | 909 |
 | Authored valency frames | — | 273 | 5 |
 
 Approved PL+EN pairs: **0**. The `valency_frames` field is separately compiled from `pl.CompileValency()` and `en.CompileValency()`. `catalog --details` has one per-concept row per CORE ID, including true pending/absent/approved states.
 
 The Polish editorial `data/pl/1000-core-review.tsv` contains 1000 proposed decisions and 1000 pending candidate rows. These rows produce 1006 typed pending binding records over all 1000 concepts. Candidate mappings, approved mappings, linguistic quality, and morphological coverage must not be conflated.
 
-The English ledger `data/en/1000-core-review.tsv` covers the exact 1000 compiled CORE IDs. It records 19 existing pending candidates, 60 newly assessed concepts with 61 English noun lemmas, and leaves 921 concepts `UNREVIEWED`; it does not infer lemmas from CORE definitions. The current EN increments add 61 noun lexemes, with no new morphology, valency, or construction coverage. Nine pre-existing English senses remain unmapped and are listed in `docs/languages/en.md`.
+The English ledger `data/en/1000-core-review.tsv` covers the exact 1000 compiled CORE IDs. It records 19 existing pending candidates, 72 newly assessed concepts with 73 English noun lemmas, and leaves 909 concepts `UNREVIEWED`; it does not infer lemmas from CORE definitions. The current EN increments add 73 noun lexemes, with no new morphology, valency, or construction coverage. Nine pre-existing English senses remain unmapped and are listed in `docs/languages/en.md`.
 
 Polish `forms` is a separate partial subsystem: **15 newly supplied noun inventories with 14 explicitly declared case/number forms each**, plus the pre-existing narrow seed. These form strings are not mechanically generated from an inflection class, but selected from declared principal parts through five shared morphology paradigms. No reviewed sentence construction, analyzed clause or generated PL↔EN translation is activated. Current language manifests keep sentence analysis/realization unsupported.
 

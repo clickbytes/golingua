@@ -7,7 +7,7 @@ import (
 
 var englishPeopleSource = provenance.SourceRef{
 	ID: "golingua-en-authored", Path: "languages/en/lexicon_people.go",
-	Version: "2026-10-22-batch-06", License: "unknown", Author: "golingua contributors",
+	Version: "2026-10-22-batch-07", License: "unknown", Author: "golingua contributors",
 }
 
 // These common person and relationship nouns have distinct English senses.
@@ -63,4 +63,16 @@ var englishPeopleEntries = []lexicalEntry{
 	{"en.programmer.n", "programmer", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.programmer.software", "a person who writes or maintains computer programs", "programmer"}}},
 	{"en.librarian.n", "librarian", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.librarian.library_work", "a person who organizes or facilitates access to library resources", "librarian"}}},
 	{"en.police_officer.n", "police officer", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.police_officer.policing", "a person exercising an authorized policing role", "police_officer"}}},
+	{"en.team_leader.n", "team leader", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.team_leader.coordinator", "a person authorized to coordinate the activity of a group", "team_leader"}}},
+	{"en.team_member.n", "team member", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.team_member.participant", "a person participating in a designated team", "team_member"}}},
+	{"en.customer.n", "customer", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.customer.goods_services", "a person obtaining or seeking goods or services from a provider", "customer"}}},
+	{"en.merchant.n", "merchant", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.merchant.commercial_seller", "a person supplying goods commercially to buyers", "merchant"}}},
+	{"en.buyer.n", "buyer", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.buyer.purchase_role", "a person taking the acquiring role in a purchase transaction", "buyer"}}},
+	{"en.seller.n", "seller", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.seller.sale_role", "a person taking the supplying role in a sale transaction", "seller"}}},
+	{"en.gardener.n", "gardener", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.gardener.plant_care", "a person caring for cultivated plants in a garden or landscape", "gardener"}}},
+	{"en.shop_clerk.n", "shop clerk", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.shop_clerk.retail_assistance", "a person assisting customers and handling sales in a retail shop", "shop_clerk"}}},
+	{"en.artist.n", "artist", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.artist.creative_work", "a person producing creative works for aesthetic or expressive engagement", "artist"}}},
+	{"en.musician.n", "musician", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.musician.music_work", "a person performing or creating music", "musician"}}},
+	{"en.singer.n", "singer", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.singer.vocal_music", "a musician who produces organized musical sound with the voice", "singer"}}},
+	{"en.author.n", "author", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.author.written_work", "a person responsible for creating the content of a written work", "author_person"}}},
 }
