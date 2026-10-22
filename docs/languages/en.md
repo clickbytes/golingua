@@ -13,9 +13,12 @@ assumed.
 
 `en.CompileValency()` compiles five sense-specific frames. In particular,
 directed `look` uses an `at` oblique argument, whereas visual `see` uses a
-direct object. There are no approved construction bindings. Candidate links
-cannot authorize translation. Source metadata points to the project-authored
-Go files and records the license as `unknown` until established.
+direct object. Four exact EN sense/frame/family/variant routes (`see`, `hear`,
+`get` in its receive sense, and `read` with text) have approved construction
+bindings after delegated review. `look at` remains without an oblique binding.
+Candidate lexical links remain pending and cannot authorize translation.
+Source metadata points to the project-authored Go files and records the license
+as `unknown` until established.
 
 The morphology catalog assigns existing regular paradigms to seven additional entries:
 `dog`, `teacher`, `doctor`, `school`, `hand`, `eye` and `look`. It does not add
