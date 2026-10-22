@@ -2,7 +2,7 @@
 
 ## Current scope
 
-The executable `languages/pl` package builds **965 typed Polish lexemes, 988 distinct lexical senses, 987 pending bindings** to the 1000-concept CORE catalog; 13 CORE concepts have no PL binding. `pl.LexicalDocument()` assembles `lexicon_*.go` domains in deterministic order and `pl.CompileLexicon(coreGraph)` validates the candidate graph. The editorial worklist `data/pl/1000-core-review.tsv` records 988 proposed pending candidates, **1 of which remains outside the compiled PL lexicon**, chiefly complex events or difficult lexicalizations.
+The executable `languages/pl` package builds **975 typed Polish lexemes, 1000 distinct lexical senses, 999 pending binding records covering 993 CORE concepts**; 7 CORE concepts have no PL binding. `pl.LexicalDocument()` assembles `lexicon_*.go` domains in deterministic order and `pl.CompileLexicon(coreGraph)` validates the candidate graph. The editorial worklist `data/pl/1000-core-review.tsv` records 994 proposed pending candidates, **1 of which remains outside the compiled PL lexicon**, chiefly complex events or difficult lexicalizations.
 
 Polish lemmas are distinct from CORE concepts. Examples of polysemy include `szkoła` facility/institution, `bank` institution/office, `ryba` animal/food, `skóra` organ/material. Many verbs have sense-specific cases and prepositions in `ValencyFrame`. They do **not** have automatic morphology or authorized construction paths.
 
@@ -41,6 +41,8 @@ Batch 21 adds pending senses for hiring a service, misunderstanding and spoken i
 Batch 22 adds pending senses for commanding, succeeding and failing, with selected argument frames. No morphology or construction binding is added.
 
 Batch 23 adds five pending multiword candidates: `osoba starsza`, `rodzic adopcyjny`, `członek zespołu`, `roślina kwitnąca` and `grunt rolny`. No morphology, valency frames or construction bindings are added.
+
+Batch 24 adds twelve gender-specific lexical senses for six kinship concepts. Existing `brat` and `siostra` lexemes receive additional sibling senses; the other ten forms are separate lexemes. The six concepts each have two pending candidate bindings; no morphology, valency frames or construction bindings are added.
 
 ## Morphological subset — shared class templates, explicit forms
 

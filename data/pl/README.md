@@ -6,19 +6,19 @@
 
 | Editorial state | Rows |
 | --- | ---: |
-| REVIEWED_LEXICALIZED | 970 |
+| REVIEWED_LEXICALIZED | 976 |
 | REVIEWED_BROADER_NARROWER | 18 |
 | REVIEWED_RELATED | 2 |
-| REVIEWED_NO_DIRECT_FORM | 10 |
+| REVIEWED_NO_DIRECT_FORM | 4 |
 | DEFERRED / UNREVIEWED | 0 |
 | **Total** | **1000** |
 
-Proposed semantic candidate rows: **988 pending**, **12 without a proposed binding**. This total is independent of the compiled `catalog` counts: **987 pending PL candidates have typed Go declarations**, and **1 event candidate remains worklist-only**, requiring individual lexical and valency review. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. No mapping is `approved`.
+Proposed semantic candidate rows: **994 pending**, **6 without a proposed binding**. This row count is independent of compiled bindings: **999 typed pending binding records cover 993 CORE concepts**, because six concepts each have two gender-specific lexical senses. One event candidate remains worklist-only, requiring individual lexical and valency review. `DEFERRED=0` means initial editorial triage is complete, not that every entry is executable or accepted. No mapping is `approved`.
 
 ## Compiled state after G07-03 batches (2026-10-22)
 
 - CORE: **1000** compiled concept definitions.
-- PL: **965 lexemes**, **988 senses**, **987 pending semantic bindings**, **13 CORE absent**.
+- PL: **975 lexemes**, **1000 senses**, **999 pending semantic bindings over 993 pending concepts**, **7 CORE absent**.
 - EN unchanged: **19 lexemes**, **28 senses**, **19 pending bindings**.
 - PL valency: **273 authored, compiled frames**, some single-role, some NP/PP/recipient-based. No approved construction binding.
 - Polish morphology: **15 selected noun lexemes** supplied with 14 explicit form strings each (7 cases × 2 numbers), using five shared gender-class selection paradigms. Previous `kot`, `student`, `czytać` seeds remain. No automatic inflection for the remaining lexical inventory.
@@ -58,6 +58,8 @@ Batch 21 adds pending candidates for service hiring, misunderstanding (`źle zro
 Batch 22 adds pending candidates for commanding, succeeding and failing. The two outcome senses use dative experiencer and nominative goal; no morphology or construction bindings are declared. The broader `dokonywać` candidate remains worklist-only.
 
 Batch 23 adds five pending multiword candidates already identified in the ledger: `osoba starsza`, `rodzic adopcyjny`, `członek zespołu`, `roślina kwitnąca` and `grunt rolny`. They have no inferred morphology, valency or construction bindings.
+
+Batch 24 adds gendered lexical variants for stepparent, sibling, grandparent, grandchild, aunt/uncle and cousin. The paired senses remain separate pending narrow candidates; they share six CORE concepts. No morphology, valency or construction binding is added.
 
 ## Licensing and manual review
 
