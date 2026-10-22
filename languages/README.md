@@ -6,4 +6,4 @@ Pakiet językowy może opisywać MorphLexeme, LexicalSense, paradygmaty, wyjątk
 
 Definicje ConceptID pozostają w neutralnym CORE. Lexeme może być znany morfologii, choć jego sens nie ma zatwierdzonego mapowania do konceptu. Nie przenoś polskiej fleksji, angielskiego szyku ani innych reguł gramatycznych do CORE; nie zgaduj SenseID lub SemanticBinding z pisowni.
 
-`pl/features.json` i `en/features.json` zawierają wersjonowane profile cech morfologicznych. Pakiety [EN](en.md) i [PL](../docs/languages/pl.md) udostępniają wąskie seedy generatora i analizatora przez Go API; nie ma komendy `forms` w CLI. Profile samodzielnie nie deklarują obsługi języka w CLI.
+`pl/features.json` i `en/features.json` zawierają wersjonowane profile cech morfologicznych. Pakiety [EN](../docs/languages/en.md) i [PL](../docs/languages/pl.md) udostępniają wąskie seedy generatora i analizatora przez Go API; działająca komenda `forms --language pl|en ... --json` obsługuje tylko te wąskie seedy, a `catalog` raportuje oddzielnie stan znaczeń Go. Profile samodzielnie nie deklarują obsługi języka w CLI.

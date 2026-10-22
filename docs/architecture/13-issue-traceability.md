@@ -1,6 +1,6 @@
 # 13 — Mapa pracy szeregowej po resecie testów
 
-**Status: plan.** Każdy task ma konkretne pliki i operacje. Obecne zadanie resetu to [G00-07 #78](https://github.com/clickbytes/golingua/issues/78), a wszystkie inne implementacje czekają. Przed pracą zawsze sprawdź stan issue i PR na GitHubie.
+**Status: żywa mapa etapów, aktualizacja 2026-10-22.** G00–G03 zamknięte, G09 zamknięty dokumentacyjnie, G07 #8 aktywny: CORE #145 zakończone (1000), PL #60 aktywne (728/744/743), EN #61 w kolejce (19/28/19). G04–G06 i G08 mają otwarte zależności danych i ręcznego odbioru. Historyczne G00 #78 nie jest obecnym aktywnym zadaniem. Przed pracą sprawdzaj faktyczny main i issue.
 
 | Kolejność | EPIC | Co zbudować | Jak oceniamy na tym etapie |
 | --- | --- | --- | --- |
@@ -17,7 +17,7 @@
 
 ## Kryterium wykonania tasku
 
-1. Jeden ACTIVE EPIC, jeden task, jeden agent, jeden PR.
+1. Jeden ACTIVE EPIC, jeden task i jeden agent; zwykle jeden PR. Wyjątek właściciela dla #60: sekwencyjne commity na main i CI.
 2. Wprowadź nazwane struktury/funkcje/pliki; nie rozbudowuj rozwiązania ponad granice etapu.
 3. CI Go: format, vet, build i start CLI. Brak obowiązkowych unit tests.
 4. Gdy funkcja wytwarza formy/zdania, daj właścicielowi możliwość ręcznego sprawdzenia dokładnego outputu. Jeśli nie ma inputu lub możliwości wykonania — oznacz „nie oceniono ręcznie”.
@@ -30,4 +30,4 @@ Nie istnieje obowiązek przeniesienia dawnych zdań, wejść oracli i spodziewan
 
 Po decyzji użytkownika przyjmujemy również, że nie ma wymaganego dotted/property API `ROCK.VERB...`. Typowanie i kompozycja pozostają kluczowe, sama nawigacja API nie.
 
-**Dodatkowe zadania G03-08 #74, G03-09 #75 i G04-07 #76 nadal w kolejce**, ale ich oczekiwania dotyczą implementacji funkcji, nie dopisania testów/Goldów.
+G03-08 #74, G03-09 #75 i G04-07 #76 są zamknięte historycznie. Obecna blokada jakości językowej to #60 (PL), #61 (EN), #63 (bindingi konstrukcji), #123 (dane i callbacki runtime) oraz manualne odbiory #65/#66/#130.

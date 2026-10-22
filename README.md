@@ -2,13 +2,13 @@
 
 **Nowy, niezależny prototyp silnika językowego w Go.** Koncepty, gramatyka, walencja, procedury i wyjątki są projektowane od zera. Polski i angielski pozostają osobnymi pakietami językowymi.
 
-**Status technicznego podglądu v0:** CLI nie tłumaczy PL↔EN ani nie analizuje/realizuje swobodnych zdań. `forms` generuje i analizuje wybrane formy z małych seedów PL/EN, `catalog` raportuje stan danych Go, a `question` wykonuje typowane zapytania na MeaningGraph i faktach podanych jawnie w JSON. Docelowo: około 1000 opisanych konceptów CORE; obecnie 49. Brak pamięci i uczenia w v0.
+**Status technicznego podglądu v0:** CLI nie tłumaczy PL↔EN ani nie analizuje/realizuje swobodnych zdań. `forms` generuje i analizuje wybrane formy z małych seedów PL/EN, `catalog` raportuje stan danych Go, a `question` wykonuje typowane zapytania na MeaningGraph i faktach podanych jawnie w JSON. CORE ma już 1000 skompilowanych konceptów. Stan Go: PL 728 leksemów / 744 sensy / 743 kandydackie bindingi (36 ram walencji), EN 19 leksemów / 28 sensów / 19 kandydatów (5 ram). Nie ma zatwierdzonych powiązań ani realizacji dowolnych zdań. Brak pamięci i uczenia w v0.
 
 ## Jak rozwijamy
 
-**Jedno zadanie, jeden agent, jeden PR; EPIC po EPIC-u.** Na tym etapie **nie przenosimy starej implementacji JavaScript i nie porównujemy zachowania Go do wyników starego silnika**. Nie prowadzimy masowej macierzy testów ani automatycznego testowania tłumaczeń. Właściciel projektu dostarcza zdania/słowa PL i EN; uruchamiamy Go CLI i oceniamy wyjście **ręcznie**. Zapisujemy tylko zauważone błędy i poprawki, bez obowiązkowych „goldów”, coverage %, test runnera czy progu liczby przykładów.
+**Jedno aktywne zadanie i jeden agent; domyślnie jeden PR.** W #60 właściciel dopuścił sekwencyjne commity bezpośrednio na main. Zmiany w Go nie są zatwierdzonymi tłumaczeniami. Na tym etapie **nie przenosimy starej implementacji JavaScript i nie porównujemy zachowania Go do wyników starego silnika**. Nie prowadzimy masowej macierzy testów ani automatycznego testowania tłumaczeń. Właściciel projektu dostarcza zdania/słowa PL i EN; uruchamiamy Go CLI i oceniamy wyjście **ręcznie**. Zapisujemy tylko zauważone błędy i poprawki, bez obowiązkowych „goldów”, coverage %, test runnera czy progu liczby przykładów.
 
-CI kontroluje jedynie, czy projekt jest sformatowany, kompiluje się oraz czy CLI startuje (gofmt, go vet, go build, --help/--version). **Zielone CI nie znaczy, że tłumaczenie działa poprawnie.**
+CI kontroluje gofmt, go vet, build, start CLI (--help/--version) oraz kompilację katalogu i obu indeksów walencji w smoke `catalog --summary/--details --json`. **Zielone CI nie znaczy, że tłumaczenie działa poprawnie.**
 
 Istniejące źródło [clickbytes/flexLingua](https://github.com/clickbytes/flexLingua) może być konsultowane przy projektowaniu i ewentualnym imporcie danych, lecz nie jest wzorcem API, kodu ani wyników. Nie ma obowiązku importu jego słowników lub wcześniejszych testów.
 

@@ -1,8 +1,10 @@
 # Workflow rozwoju
 
-Repozytorium jest rozwijane szeregowo: najwyżej jeden aktywny EPIC, child task, working branch i implementacyjny PR. Zanim zaczniesz task, odczytaj aktualny `main`, kolejkę issue i otwarte PR. W issue zapisz ownera, bazowy SHA, plany per plik/symbol, dodatnie i ujemne zachowanie oraz komendy weryfikacji. Nie aktywuj kolejnego taska, dopóki bieżący PR nie zostanie zreviewowany, scalony, a CI na `main` nie przejdzie.
+Repozytorium jest rozwijane szeregowo: najwyżej jeden aktywny EPIC i child task. Domyślnie korzystamy z jednej working branch i implementacyjnego PR; wyjątek zatwierdzony dla G07 #60 (2026-10-21) pozwala na sekwencyjne, zweryfikowane commity bezpośrednio na main. Zanim zaczniesz task, odczytaj aktualny `main`, kolejkę issue i otwarte PR. W issue zapisz ownera, bazowy SHA, plany per plik/symbol, dodatnie i ujemne zachowanie oraz komendy weryfikacji. Nie aktywuj kolejnego taska, dopóki bieżący PR nie zostanie zreviewowany, scalony, a CI na `main` nie przejdzie.
 
 ## Branch, commit, PR i merge
+
+W **G07 #60** obowiązuje wyjątek: nie twórz PR tylko dlatego, że wymaga go poniższy standard; sprawdź main SHA, brak konfliktującej pracy, dokonaj commit + push w jednym batchu, a następnie zweryfikuj rzeczywisty CI. Dla innych tasks wraca opisany niżej zwykły flow.
 
 1. Utwórz jedną gałąź od świeżego `main` i zmieniaj wyłącznie zakres aktywnego issue.
 2. Uruchom wymagane lokalne kontrole techniczne. Nie uruchamiaj ani nie dodawaj testów Go w ramach standardowej polityki projektu. Wyniki zapisuj jako PASS, FAIL, INFRA lub NOT RUN z komendą i dowodem.
@@ -20,7 +22,7 @@ go run ./cmd/golingua --version
 go run ./cmd/golingua --help
 ```
 
-Obowiązkowy CI to `go-ci` (`gofmt`, `vet`, `build`, start CLI). Nie dodawaj test runnera, goldów, zgodności z JavaScript ani ilościowego progu jakości języka.
+Obowiązkowy CI to `go-ci` (`gofmt`, `vet`, `build`, start CLI oraz smoke `catalog --summary/--details --json`, które kompilują CORE/PL/EN i walencję). Nie dodawaj test runnera, goldów, zgodności z JavaScript ani ilościowego progu jakości języka.
 
 ## Opcjonalne narzędzia agenta
 

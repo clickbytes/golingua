@@ -1,6 +1,6 @@
 # Data golingua
 
-Ten katalog jest przeznaczony na przyszłe neutralne dane CORE, wersjonowane manifesty i ręcznie zatwierdzone deklaracje. Aktualny bootstrap nie ładuje jeszcze danych z tego katalogu.
+Ten katalog zawiera redakcyjny zapis 1000 znaczeń CORE (`core/1000-concept-proposals.tsv`) oraz 1000 decyzji PL (`pl/1000-core-review.tsv`), obok materiałów do importu i manifestów. **TSV nie jest ładowane jako aktywny runtime source**; kompilowalne deklaracje CORE i PL znajdują się w `internal/catalog/` i `languages/pl/`.
 
 Planowany podział:
 
@@ -12,4 +12,4 @@ Leksemy i gramatyka języka należą do `languages/<kod>/`, nie do neutralnego C
 
 Każdy rekord danych powinien zachować identyfikator źródła, jego wersję i licencję. Wartość licencji `unknown` jest jawnym brakiem ustalenia, nie zgodą na kopiowanie. Nie dodawaj tu starych goldów, expected translations ani automatycznych danych z flexLingua.
 
-Na tym etapie katalog nie zawiera aktywnego słownika ani loadera. Pusta kategoria nie oznacza, że dane są fałszywe lub nieobsługiwane.
+Projekt ma kompilowany katalog CORE 1000 oraz kompilowany leksykon PL (728 leksemów) i EN (19 leksemów), ale nie ma aktywowanych, zatwierdzonych ścieżek tłumaczenia zdań. Ręczna ocena znaczeń i odmian nadal jest odrębnym warunkiem jakości.
