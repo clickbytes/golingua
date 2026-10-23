@@ -535,7 +535,11 @@ var polishFrameBySense = map[string]lexicon.ValencyID{
 
 var polishParadigmByLexeme = map[string]string{
 	"pl.kot.n":     "pl_masc_animal_regular",
+	"pl.ptak.n":    "pl_masc_animal_regular",
+	"pl.sasiad.n":  "pl_noun_attested_masculine_personal",
+	"pl.klient.n":  "pl_noun_attested_masculine_personal",
 	"pl.widziec.v": "pl_widziec_present_third_singular",
+	"pl.slyszec.v": "pl_slyszec_present_third_singular",
 }
 
 // LexicalDocument constructs the Polish lexical data from Go declarations.
@@ -620,7 +624,7 @@ func LexicalDocument() (lexicon.Document, error) {
 			if gender, ok := attestedNounGender(entry.id); ok {
 				lexeme.ParadigmID = "pl_noun_attested_" + gender
 				lexeme.Properties = []lexicon.Property{{Key: "gender", Value: gender}}
-			} else if entry.id == "pl.kot.n" {
+			} else if lexeme.ParadigmID == "pl_masc_animal_regular" {
 				lexeme.Properties = []lexicon.Property{{Key: "gender", Value: "masculine_animal"}}
 			}
 			document.Lexemes = append(document.Lexemes, lexeme)

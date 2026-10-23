@@ -1,6 +1,6 @@
 # 13 — Mapa pracy szeregowej po resecie testów
 
-**Status: żywa mapa etapów, aktualizacja 2026-10-23.** G00–G03 zamknięte, G09 zamknięty dokumentacyjnie, G07 #8 aktywny: CORE #145 i inwentarze PL #60 oraz EN #61 zakończone. Delegowany przegląd PL #152–#190 obejmował batch 1–20; audit #192 aktywny (982 leksemy / 1007 sensów / 882 approved + 124 pending binding records). EN ma 996 approved i 5 pending records na 4 konceptach. G04–G06 i G08 mają otwarte zależności danych i ręcznego odbioru. Historyczne G00 #78 nie jest obecnym aktywnym zadaniem.
+**Status: żywa mapa etapów, aktualizacja 2026-10-23.** G00–G03 zamknięte, G09 odroczony, G07 #8 oczekuje: CORE #145 i inwentarze PL #60 oraz EN #61 zakończone. Audyt #192 zakończony: lokalny `catalog --summary` raportuje PL 982 leksemy / 1007 sensów / 1006 bindingów (882 zatwierdzone koncepty, 118 pending) oraz EN 1001 leksemów / 1010 sensów / 1001 bindingów (996 zatwierdzonych konceptów, 4 pending). G05 #6 jest aktywny; #123 i #195 zakończono po merge, a jedynym aktywnym zadaniem jest #197. G04, G06 i G08 oczekują na swoje zależności i ręczny odbiór. Historyczne G00 #78 nie jest obecnym aktywnym zadaniem.
 
 | Kolejność | EPIC | Co zbudować | Jak oceniamy na tym etapie |
 | --- | --- | --- | --- |
@@ -26,7 +26,7 @@
 
 ## Bieżący ręczny odbiór PL
 
-Lokalny stan po audycie #192 zawiera 982 leksemy PL, 1007 sensów, 1006 bindingów (882 approved i 124 pending) pokrywających wszystkie 1000 konceptów oraz 273 ramy walencji. Delegowane batch 1–20 (#152–#190, co drugie issue) oraz audit #192 zatwierdziły 882 polskich równoważników; 118 konceptów PL pozostaje pending. `byt` pozostaje szeroki i rejestrowo ograniczony; powody oczekiwania opisano w komentarzach kolejnych issues. Delegowany review #61 i audit #192 zatwierdziły 996 angielskich odpowiedników; 4 koncepty EN pozostają pending. Osiem sense/frame/family/variant construction bindings (4 PL, 4 EN) zatwierdzono po delegowanym przeglądzie #63. Katalog raportuje 880 PL+EN approved pairs. Ocena translacji CLI pozostaje **NOT RUN** na poziomie językowym, bo runtime zdaniowy nadal jest unsupported. Nie wyciągać wniosków o akceptacji jakości językowej z samej kompilacji katalogu.
+Lokalny stan po audycie #192 zawiera 982 leksemy PL, 1007 sensów, 1006 bindingów (882 approved i 124 pending), 1001 leksemów EN, 1010 sensów i 1001 bindingów. Wszystkie 1000 konceptów mają rekordy; PL ma 118 pending konceptów, a EN 4. Osiem sense/frame/family/variant construction bindings (4 PL, 4 EN) zatwierdzono po delegowanym przeglądzie #63. Katalog raportuje 880 PL+EN approved pairs. CLI ma ograniczone, uruchamialne szlaki `seeing` i `hearing`; rzeczywisty output dla 25 istniejących przykładów `hearing` w obu kierunkach zapisano w [tabeli obserwacji](../../data/sentences/observed-2026-10-23-g05-12-hearing.tsv). Ocena językowa właściciela nadal **NOT RUN**. Nie wyciągać wniosków o jakości na podstawie liczników lub samego statusu wykonania.
 
 ## Co zostało świadomie usunięte
 
@@ -34,4 +34,4 @@ Nie istnieje obowiązek przeniesienia dawnych zdań, wejść oracli i spodziewan
 
 Po decyzji użytkownika przyjmujemy również, że nie ma wymaganego dotted/property API `ROCK.VERB...`. Typowanie i kompozycja pozostają kluczowe, sama nawigacja API nie.
 
-G03-08 #74, G03-09 #75 i G04-07 #76 są zamknięte historycznie. Otwarte pozostają nierozstrzygnięte sensy PL/EN, #123 (dane i callbacki runtime) oraz manualne odbiory #65/#66/#130. #60, #61 i #63 są ukończone w swoim udokumentowanym zakresie.
+G03-08 #74, G03-09 #75 i G04-07 #76 są zamknięte historycznie. G05 #123 i #195 zakończono; #197 rozwija zatwierdzony szlak `hearing`. G06 #128 oczekuje na zatwierdzone konstrukcje odpowiedzi, a #130 na wejścia i ręczną ocenę właściciela. G08 #65/#66 oczekują na działające funkcje i przykłady właściciela. G07 #60/#61/#63 zakończono w udokumentowanym zakresie.

@@ -26,12 +26,13 @@ func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm 
 	return []morph.Paradigm{
 		makeParadigm("en_noun_singular_attested", "noun", "noun_number", "singular"),
 		makeParadigm("en_see_present_third_singular", "verb", "verb_form", "third_person_singular"),
+		makeParadigm("en_hear_present_third_singular", "verb", "verb_form", "third_person_singular"),
 		makeParadigm("en_determiner_definite", "determiner", "determiner", "definite"),
 	}
 }
 
 // inCodeMorphRecords uses a regular seed only where its spelling rule applies.
-// The sentence slice adds explicit singular nouns and one attested verb form;
+// The sentence slice adds explicit singular nouns and attested verb forms;
 // missing English forms remain unavailable.
 func inCodeMorphRecords() ([]lexemeRecord, error) {
 	document, err := LexicalDocument()
@@ -49,6 +50,9 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 		}
 		if lexeme.ParadigmID == "en_see_present_third_singular" {
 			part = morph.PrincipalPart{ID: "attested", Form: "sees"}
+		}
+		if lexeme.ParadigmID == "en_hear_present_third_singular" {
+			part = morph.PrincipalPart{ID: "attested", Form: "hears"}
 		}
 		records = append(records, lexemeRecord{
 			Lexeme:         lexeme,

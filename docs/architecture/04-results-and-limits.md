@@ -1,6 +1,6 @@
 # 04 — Wyniki, diagnostyki i limity
 
-Ten dokument opisuje kontrakt wyników Go oraz jego ograniczone użycie przez parser, morfologię, leksykę i translację PL/EN. Skompilowany runtime obsługuje obecnie tylko jawny szlak `seeing`; pozostałe trasy zwracają odpowiedni status braku obsługi lub nierozstrzygnięcia.
+Ten dokument opisuje kontrakt wyników Go oraz jego ograniczone użycie przez parser, morfologię, leksykę i translację PL/EN. Skompilowany runtime obsługuje obecnie jawne szlaki `seeing` i `hearing` w teraźniejszej 3. osobie liczby pojedynczej; pozostałe trasy zwracają odpowiedni status braku obsługi lub nierozstrzygnięcia.
 
 ## Wynik operacji
 

@@ -16,8 +16,8 @@ import (
 )
 
 // NewSentenceSource compiles the English analysis stages against one exact
-// snapshot. Its complete declarative attestation is limited to the attested
-// third-person singular present visual-perception predicate and explicit
+// snapshot. Its complete declarative attestation is limited to attested
+// third-person singular present visual and auditory predicates and explicit
 // definite articles in the transitive template.
 func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if snapshot == nil {
@@ -44,6 +44,10 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if err != nil {
 		return nil, err
 	}
+	hearingSense, err := ids.NewSenseID("en.hear.auditory")
+	if err != nil {
+		return nil, err
+	}
 	return &runtime.SourcePipeline{
 		Language: "en", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}},
 		Morphology: inverse, MWEPlans: []construction.CompiledMWEPlan{},
@@ -55,7 +59,7 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 			},
 		}}},
 		EvidenceBuilder: runtime.BareDeclarativeEvidenceBuilder{
-			SupportedSenses: map[ids.SenseID]bool{seeingSense: true},
+			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true},
 			RequiredPredicateFeatures: map[features.FeatureID]features.FeatureValueID{
 				"verb_form": "third_person_singular",
 			},

@@ -2,7 +2,7 @@
 
 ## In-code lexical catalog
 
-`en.LexicalDocument()` declares 1000 English lexemes, 1009 distinct senses and 1001
+`en.LexicalDocument()` declares 1001 English lexemes, 1010 distinct senses and 1001
 CORE binding records (19 original lexemes plus 694 noun, 264 verb and 23
 preposition candidates). Twenty delegated review batches and audit #192 approved 996 exact
 equivalent links; 5 records remain pending.
@@ -44,7 +44,7 @@ retained 5 pending binding records across 4 concepts. The remaining candidates a
 `en.school.institution` sense is a pending candidate; eight existing senses
 remain unmapped. Construction approvals do not imply these lexical decisions.
 
-The Go package `github.com/clickbytes/golingua/languages/en` loads the bundled `features.json`, `manifest.json`, `morphology/paradigms.json`, and `morphology/lexemes.json`, plus in-code entries. `en.Load()` validates and compiles the package into a shared morphology engine, then builds a finite relation table for inverse analysis. Its `Seed.Generate(lexemeID, featureValues)` and `Seed.Analyze(surface)` methods are available through CLI `forms`. The seed remains a morphology module; the compiled CLI separately enables one exact `seeing` sentence route when it loads an active snapshot.
+The Go package `github.com/clickbytes/golingua/languages/en` loads the bundled `features.json`, `manifest.json`, `morphology/paradigms.json`, and `morphology/lexemes.json`, plus in-code entries. `en.Load()` validates and compiles the package into a shared morphology engine, then builds a finite relation table for inverse analysis. Its `Seed.Generate(lexemeID, featureValues)` and `Seed.Analyze(surface)` methods are available through CLI `forms`. The seed remains a morphology module; the compiled CLI separately enables exact `seeing` and `hearing` sentence routes when it loads an active snapshot.
 
 ## Included classes
 
@@ -55,4 +55,4 @@ The Go package `github.com/clickbytes/golingua/languages/en` loads the bundled `
 
 `Analyze` preserves all readings: for example, the finite table contains separate `past` and `past_participle` readings for `walked`. Surfaces use NFC normalization only; case and diacritics remain significant.
 
-This is a small declared seed, not a complete English grammar. It does not implement silent-e deletion, consonant doubling, y-to-i changes, irregular plural rules, general person/number agreement, auxiliaries, or sentence realization. The compiled sentence route adds only the explicitly declared present singular forms needed for `see` and its current noun inventory. Additional irregular exception rules require their own valid provenance and review metadata. The owner's manual language review remains **NOT RUN**; CLI outputs recorded for the requested sentence corpus are implementation observations only.
+This is a small declared seed, not a complete English grammar. It does not implement silent-e deletion, consonant doubling, y-to-i changes, irregular plural rules, general person/number agreement, auxiliaries, or sentence realization. The compiled sentence routes add only the explicitly declared present singular forms needed for `see`, `hear` and their current noun inventory. Additional irregular exception rules require their own valid provenance and review metadata. The owner's manual language review remains **NOT RUN**; CLI outputs recorded for the requested sentence corpus are implementation observations only.

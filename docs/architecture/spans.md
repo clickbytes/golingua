@@ -71,6 +71,6 @@ multiword matching are left to later analysis stages rather than guessed here.
 ## Current implementation boundary
 
 G05-01 provides the source-preserving text primitives. Later G05 work connects
-them to morphology, constructions, meaning, and realization for one limited
-PL/EN `seeing` route. Other routes remain unsupported or unresolved. No
+them to morphology, constructions, meaning, and realization for limited PL/EN
+`seeing` and `hearing` routes. Other routes remain unsupported or unresolved. No
 language-quality claim follows from having valid spans or a CLI output.

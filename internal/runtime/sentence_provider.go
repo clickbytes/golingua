@@ -12,7 +12,16 @@ import (
 // SentenceAnalysisCandidates exposes only successful, exact predicate routes
 // from a source result to the typed language bridge. Participant records are
 // intentionally ignored because they are not independent sentence analyses.
-func SentenceAnalysisCandidates(result semantic.Result, senseID ids.SenseID) []language.AnalysisCandidate {
+func SentenceAnalysisCandidates(result semantic.Result, senseIDs ...ids.SenseID) []language.AnalysisCandidate {
+	allowedSenses := make(map[ids.SenseID]bool, len(senseIDs))
+	for _, senseID := range senseIDs {
+		if senseID.String() != "" {
+			allowedSenses[senseID] = true
+		}
+	}
+	if len(allowedSenses) == 0 {
+		return []language.AnalysisCandidate{}
+	}
 	type route struct {
 		sense   ids.SenseID
 		core    ids.ConceptID
@@ -26,7 +35,7 @@ func SentenceAnalysisCandidates(result semantic.Result, senseID ids.SenseID) []l
 			continue
 		}
 		for _, record := range candidate.Evidence.Records {
-			if record.Outcome != status.OutcomeOK || record.SenseID != senseID || record.CoreConceptID.String() == "" ||
+			if record.Outcome != status.OutcomeOK || !allowedSenses[record.SenseID] || record.CoreConceptID.String() == "" ||
 				string(record.FrameID) == "" || record.FamilyID.String() == "" || string(record.VariantID) == "" {
 				continue
 			}

@@ -1,0 +1,51 @@
+id	direction	exit_code	status	diagnostic_codes	output_text
+S026	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The teacher hears the dog.
+S026	en_pl	0	ok		Nauczyciel słyszy psa.
+S027	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The teacher hears the cat.
+S027	en_pl	0	ok		Nauczyciel słyszy kota.
+S028	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The teacher hears the bird.
+S028	en_pl	0	ok		Nauczyciel słyszy ptaka.
+S029	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The teacher hears the mother.
+S029	en_pl	0	ok		Nauczyciel słyszy matkę.
+S030	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The teacher hears the father.
+S030	en_pl	0	ok		Nauczyciel słyszy ojca.
+S031	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The doctor hears the dog.
+S031	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	-
+S032	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The doctor hears the cat.
+S032	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	-
+S033	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The doctor hears the bird.
+S033	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	-
+S034	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The doctor hears the mother.
+S034	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	-
+S035	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The doctor hears the father.
+S035	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	-
+S036	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;ROLE_LEXICALIZATION_UNAVAILABLE	The child hears the dog.
+S036	en_pl	0	ok		Dziecko słyszy psa.
+S037	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;ROLE_LEXICALIZATION_UNAVAILABLE	The child hears the cat.
+S037	en_pl	0	ok		Dziecko słyszy kota.
+S038	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;ROLE_LEXICALIZATION_UNAVAILABLE	The child hears the bird.
+S038	en_pl	0	ok		Dziecko słyszy ptaka.
+S039	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;ROLE_LEXICALIZATION_UNAVAILABLE	The child hears the mother.
+S039	en_pl	0	ok		Dziecko słyszy matkę.
+S040	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;ROLE_LEXICALIZATION_UNAVAILABLE	The child hears the father.
+S040	en_pl	0	ok		Dziecko słyszy ojca.
+S041	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The neighbor hears the dog.
+S041	en_pl	0	ok		Sąsiad słyszy psa.
+S042	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The neighbor hears the cat.
+S042	en_pl	0	ok		Sąsiad słyszy kota.
+S043	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The neighbor hears the bird.
+S043	en_pl	0	ok		Sąsiad słyszy ptaka.
+S044	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The neighbor hears the mother.
+S044	en_pl	0	ok		Sąsiad słyszy matkę.
+S045	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The neighbor hears the father.
+S045	en_pl	0	ok		Sąsiad słyszy ojca.
+S046	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The customer hears the dog.
+S046	en_pl	0	ok		Klient słyszy psa.
+S047	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The customer hears the cat.
+S047	en_pl	0	ok		Klient słyszy kota.
+S048	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The customer hears the bird.
+S048	en_pl	0	ok		Klient słyszy ptaka.
+S049	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The customer hears the mother.
+S049	en_pl	0	ok		Klient słyszy matkę.
+S050	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The customer hears the father.
+S050	en_pl	0	ok		Klient słyszy ojca.

@@ -55,6 +55,6 @@ supplied inventory order is examined; the result is explicitly `incomplete`.
 
 The lattice preserves lexical alternatives; it does not infer semantics from a
 word alone, resolve ambiguity by insertion order, or authorize transfer. The
-compiled CLI can translate one exact `seeing` route after loading an active
+compiled CLI can translate exact `seeing` and `hearing` routes after loading an active
 snapshot; other routes remain explicitly unsupported or unknown. Language
 output has not received the owner's manual evaluation.

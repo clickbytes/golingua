@@ -13,16 +13,20 @@
 ### Status technicznego podglądu v0
 
 `forms` i `catalog` są dostępne lokalnie. CLI może też załadować ograniczony,
-skompilowany runtime PL/EN dla dokładnej trasy `seeing`, gdy `translate`
+skompilowany runtime PL/EN dla dokładnych tras `seeing` i `hearing`, gdy `translate`
 otrzyma `--runtime-config` wskazujący aktywny snapshot. Bez tej konfiguracji
 żądanie translacji zwraca `unsupported` i exit code 3.
 
 Na polecenie właściciela uruchomiono translację 100 zapisanych par w obu
 kierunkach; obserwowane statusy i teksty zapisano w
 [`data/sentences/observed-2026-10-23-provider-runtime.tsv`](../data/sentences/observed-2026-10-23-provider-runtime.tsv).
-To nie jest ocena językowa. Właściciel nie ocenił jeszcze konkretnych wyjść,
-więc ręczny odbiór translacji i ocena form pozostają `NOT RUN`. `forms`
-udostępnia ograniczoną odmianę oraz analizę obecnych seedów PL/EN.
+Po aktywacji trasy `hearing` uruchomiono też 25 zapisanych par w obu kierunkach;
+wyniki z kodami wyjścia, statusami, diagnostykami i tekstami zapisano w
+[`data/sentences/observed-2026-10-23-g05-12-hearing.tsv`](../data/sentences/observed-2026-10-23-g05-12-hearing.tsv).
+To są obserwacje działania programu, a nie ocena językowa. Właściciel nie ocenił
+jeszcze konkretnych wyjść, więc ręczny odbiór translacji i ocena form pozostają
+`NOT RUN`. `forms` udostępnia ograniczoną odmianę oraz analizę obecnych seedów
+PL/EN.
 
 Komenda `question --runtime-config <path> --json` przyjmuje typowany MeaningGraph, jawny FactSet oraz mapowanie ról. Nie przyjmuje zdania w języku naturalnym ani nie realizuje odpowiedzi tekstowej. Jej wynik można ręcznie ocenić jako rozumowanie wyłącznie na wejściach dostarczonych przez właściciela. Bez takich wejść, aktywnego CORE snapshotu i uruchomienia konkretnej komendy wpisz **NOT RUN**; nie twórz przykładowych faktów ani twierdzeń.
 
