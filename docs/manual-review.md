@@ -40,7 +40,37 @@ Komenda `question --runtime-config <path> --json` przyjmuje typowany MeaningGrap
 
 W bieżącym runtime dodatnia odpowiedź yes/no może zwrócić tekst PL/EN ze statusem `incomplete` i jawnymi założeniami. Odpowiedź przecząca oraz tekst WH pozostają `unsupported` do czasu dodania zatwierdzonych konstrukcji negacji i samodzielnej frazy NP. Strukturalna odpowiedź reasonera, proof i źródło faktu pozostają dostępne w wyniku.
 
-Bez tekstu dostarczonego przez właściciela oznacz ocenę językową **NOT EVALUATED**. Jeśli nie uruchomiono konkretnej próby na wejściu właściciela, oznacz ją **NOT RUN**. Gdy właściciel deleguje autonomiczną ocenę, agent może opisać własną ocenę na tych wejściach, ale status akceptacji właściciela pozostaje osobny. Smoki techniczne z tekstem zastępczym nie są wejściem do oceny językowej. Dokładny kontrakt i przykład komendy opisuje [docs/cli.md](cli.md); nie przedstawiaj go jako dowodu, że provider jest skonfigurowany.
+### Delegowana ocena typed `question` — 2026-10-23
+
+Po merge PR #209 uruchomiono zbudowane z `main` CLI (`1d41cbe`) na jednym
+zapisanym przykładzie S001 (`seeing`, teacher, dog). Fakt `agent_demo_seeing_001`
+był tymczasowy, request-scoped i jawnie agent-authored; nie zapisano go w
+katalogu. Wyniki są obserwacją działania i oceną agenta, nie danymi ani
+akceptacją właściciela.
+
+Przykładowa komenda dodatnia PL:
+
+```sh
+/tmp/golingua-g06-130-review question --runtime-config /tmp/golingua-g06-128-runtime.json --language pl --json < /tmp/golingua-g06-128-question.json
+```
+
+EN używa tej samej komendy z `--language en`. Literalne pola powierzchniowe:
+
+| Przypadek | Exit/status | Zaobserwowany wynik |
+| --- | --- | --- |
+| Dodatnia odpowiedź PL | `7` / `incomplete` | `Nauczyciel widzi psa.`; założenia: czas teraźniejszy, 3. osoba, liczba pojedyncza predykatu oraz domyślna liczba leksemu dla uczestników. |
+| Dodatnia odpowiedź EN | `7` / `incomplete` | `The teacher sees the dog.`; założenia: czas teraźniejszy, 3. osoba, liczba pojedyncza, rodzajniki określone i liczba pojedyncza rzeczowników. |
+| Jawny fakt ujemny | `3` / `unsupported` | Odpowiedź `false` i dowód pozostają w JSON; tekstu brak, bo nie ma zatwierdzonej konstrukcji negacji. |
+| WH z luką `stimulus` | `3` / `unsupported` | Reasoner zwraca `dog_1` i proof; tekstu brak, bo nie ma samodzielnej konstrukcji NP. |
+| Odwrócona kolejność ról | `2` / `invalid` | `QUERY_EVENT_ROLE_ORDER_MISMATCH`. |
+
+Istniejące zdanie EN→PL zwróciło `ok` i `Nauczyciel widzi psa.`; PL→EN zwróciło
+`incomplete` i `The teacher sees the dog.`. Kontrole techniczne tego commita:
+`gofmt`, `git diff --check`, `go vet ./...`, `go build ./cmd/golingua`, help/version
+i rzeczywiste CI PR #209 przeszły. `go test ./...` nie uruchamiano. Właścicielska
+ocena językowa pozostaje **NOT RUN**.
+
+Bez tekstu dostarczonego przez właściciela oznacz ocenę językową **NOT EVALUATED**. Jeśli nie uruchomiono konkretnej próby na wejściu właściciela, oznacz ją **NOT RUN**. Gdy właściciel deleguje autonomiczną ocenę, agent może opisać własną ocenę na tych wejściach, ale status akceptacji właściciela pozostaje osobny. Techniczne smoke testy z tekstem zastępczym nie są wejściem do oceny językowej. Dokładny kontrakt i przykład komendy opisuje [docs/cli.md](cli.md); nie przedstawiaj go jako dowodu, że provider jest skonfigurowany.
 
 Nie ma obowiązku zapisywania każdego outputu do pliku. Jeśli zapis jest przydatny, prowadź opcjonalnie krótką notatkę w issue lub `examples/manual/`:
 
