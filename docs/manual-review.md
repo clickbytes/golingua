@@ -278,6 +278,30 @@ i trasy; status zbiorczy nadal pokazuje nierozstrzygnięte alternatywy.
 Akceptacja językowa właściciela i redakcyjny status zdań nadal pozostają osobne;
 właścicielska akceptacja pozostaje **NOT RUN**.
 
+### G10-10 — alternatywy rodzajnika EN w transitive i oblique — 2026-10-23
+
+Na implementacji [`51c9a07980d814aa67fac2fd9eb829ac95c1bfaf`](../data/sentences/observed-2026-10-23-g10-10-determiner-alternatives.tsv)
+uruchomiono wszystkie 100 istniejących wierszy PL/EN w obu kierunkach — 200
+odpowiedzi CLI. Zapis zawiera wyniki, wszystkie zachowane kandydatury i 16
+oddzielnych wywołań `--preview-id` na próbkach tras `seeing`, `looking` i
+`receiving`.
+
+PL→EN: wszystkie 100 wyników zbiorczych ma status `ambiguous`; każdy wynik ma
+co najmniej jeden tekstowy kandydat. Zapisano 402 kandydatury, w tym 370 z
+tekstem i 32 bez tekstu. EN→PL: 60 wyników ma status `ok`, 40 `incomplete`;
+wszystkie 100 mają tekst. S001 udostępnia cztery warianty `a/the` dla podmiotu
+i obiektu; S051 zachowuje `look at` przy tych samych wyborach rodzajnika;
+S076 ma cztery count-NP warianty, a S077 zachowuje bezrodzajnikowe `water` i
+dwie alternatywy rodzajnika dla podmiotu. Wszystkie 16 jawnych podglądów
+zwróciło tekst wskazanego kandydata i jego identyfikator.
+
+**Ocena agenta:** polskie źródło nie określa rodzajnika, dlatego warianty
+pozostają osobnymi, jawnymi kandydatami z założeniami; statusy `incomplete` i
+`ambiguous` nie są zamieniane na `ok`. Wariant `a` dopuszczono tylko dla
+leksemów z jawną właściwością `indefinite_article=a`; wymowa innych leksemów
+nie jest zgadywana. Nierozstrzygnięte bindingi i brakujące teksty kandydatów
+pozostają widoczne. Akceptacja językowa właściciela pozostaje **NOT RUN**.
+
 Bez tekstu dostarczonego przez właściciela oznacz ocenę językową **NOT EVALUATED**. Jeśli nie uruchomiono konkretnej próby na wejściu właściciela, oznacz ją **NOT RUN**. Gdy właściciel deleguje autonomiczną ocenę, agent może opisać własną ocenę na tych wejściach, ale status akceptacji właściciela pozostaje osobny. Techniczne smoke testy z tekstem zastępczym nie są wejściem do oceny językowej. Dokładny kontrakt i przykład komendy opisuje [docs/cli.md](cli.md); nie przedstawiaj go jako dowodu, że provider jest skonfigurowany.
 
 Nie ma obowiązku zapisywania każdego outputu do pliku. Jeśli zapis jest przydatny, prowadź opcjonalnie krótką notatkę w issue lub `examples/manual/`:

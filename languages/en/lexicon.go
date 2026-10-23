@@ -1237,6 +1237,16 @@ var englishParadigmByLexeme = map[string]string{
 	"en.money.n":       "en_noun_singular_attested", "en.water.n": "en_noun_singular_attested",
 }
 
+// englishAArticleLexemes are sentence-facing count nouns whose indefinite
+// article form is explicitly known to be "a". Other lexical items do not
+// receive an indefinite realization until their article form is declared.
+var englishAArticleLexemes = map[string]struct{}{
+	"en.mother.n": {}, "en.father.n": {}, "en.cat.n": {}, "en.book.n": {},
+	"en.house.n": {}, "en.car.n": {}, "en.bird.n": {}, "en.neighbor.n": {},
+	"en.customer.n": {}, "en.dog.n": {}, "en.teacher.n": {}, "en.doctor.n": {},
+	"en.tree.n": {}, "en.child.n": {}, "en.message.n": {},
+}
+
 // LexicalDocument builds the English lexical records from Go declarations.
 // It keeps polysemous senses distinct and leaves unmapped meanings unresolved.
 func LexicalDocument() (lexicon.Document, error) {
@@ -1254,9 +1264,12 @@ func LexicalDocument() (lexicon.Document, error) {
 				ID: lexemeID, Language: "en", Lemma: entry.lemma, POS: entry.pos,
 				ParadigmID: englishParadigmByLexeme[entry.id],
 			}
+			if _, exists := englishAArticleLexemes[entry.id]; exists {
+				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "indefinite_article", Value: "a"})
+			}
 			switch entry.id {
 			case "en.food.n", "en.money.n", "en.water.n":
-				lexeme.Properties = []lexicon.Property{{Key: "number_behavior", Value: "mass"}}
+				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "number_behavior", Value: "mass"})
 			}
 			document.Lexemes = append(document.Lexemes, lexeme)
 			for _, meaning := range entry.meanings {
