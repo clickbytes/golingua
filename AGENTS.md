@@ -1,4 +1,4 @@
-# golingua — jednoosobowy tryb pracy
+# golingua — jeden koordynator, praca szeregowa
 
 ## Nadrzędna decyzja właściciela (2026-10-20)
 
@@ -8,11 +8,19 @@
 
 ## Bramka szeregowa
 
-- Dokładnie jeden wykonujący agent. Najwyżej jeden ACTIVE EPIC, jedno ACTIVE child issue, jedna gałąź i jeden implementacyjny PR. Wszystkie przyszłe issues QUEUED.
+- Jeden koordynator odpowiada za wynik. Najwyżej jeden ACTIVE EPIC, jedno ACTIVE child issue, jedna gałąź i jeden implementacyjny PR. W danej chwili tylko jeden agent edytuje aktywny checkout; pozostali mogą wykonywać ograniczony przegląd bez zapisu. Wszystkie przyszłe issues QUEUED.
 - Zanim edytujesz kod: sprawdź main SHA, otwarte PR i status epiców. W komentarzu issue podaj owner, pliki/symbole, plan, oczekiwany rezultat obserwowalny w CLI.
 - Twórz jeden PR na issue. Przeglądaj diff, rzeczywisty CI i ręcznie obserwowane wyniki. Po merge sprawdź main i dopiero rozpocznij następny task.
 - Jawny wyjątek właściciela dla **G07 #60 (2026-10-21)**: sekwencyjne commity bezpośrednio do `main` bez PR, każdy po przeglądzie różnic i z realnym CI; bez równoległych agentów. Pozostałe issues używają standardowego branch + PR. Wyjątek nie oznacza zatwierdzenia znaczeń.
 - Connector GitHub nie jest terminalem użytkownika. Nie podawaj fikcyjnego lokalnego PASS. Zapisz NOT RUN, jeśli nie uruchomiono CLI na rzeczywistym środowisku.
+
+## Ograniczona delegacja — decyzja właściciela (2026-10-23)
+
+- Koordynator **rozważa** delegację na początku issue, ale nie uruchamia pomocnika automatycznie. Deleguj tylko zadanie z krótkim zakresem, wskazanymi wejściami i plikami, sprawdzalnym wynikiem oraz spodziewaną oszczędnością czasu większą od kosztu koordynacji. Małe lub silnie powiązane zmiany wykonaj bez delegowania.
+- Najwyżej dwóch pomocników może równolegle czytać źródła, przeglądać diff albo analizować obserwacje. Nie edytują repozytorium, nie piszą do GitHub i nie uznają danych językowych za zatwierdzone.
+- Jeśli pomocnik ma edytować kod lub dokument, pracuje **jeden** taki wykonawca naraz, na jawnie przydzielonych plikach aktywnego issue. Koordynator nie edytuje tych plików równocześnie. Pomocnik przekazuje diff i rzeczywiste obserwacje; koordynator sprawdza je, integruje, uruchamia wymagane kontrole i sam wykonuje commit, PR oraz merge.
+- Pomocnik nie otwiera własnej gałęzi, issue ani PR, nie zmienia zakresu i nie wysyła wiadomości do osób trzecich. Jedna bramka szeregowa obowiązuje także podczas delegacji. Odnotuj delegację w issue tylko wtedy, gdy ma znaczenie dla wyniku lub pochodzenia oceny.
+- OpenCode lub inny agent jest opcjonalnym narzędziem koordynatora, nie zależnością projektu. Sprawdź dostępność narzędzia przed użyciem; brak instalacji nie zatrzymuje pracy. Nie wymagaj delegowania dla każdego issue.
 
 ## Narzędzia pracy Codex
 
@@ -22,11 +30,17 @@
 
 ## Minimalny CI, niemal zero testów
 
-- Wymagamy `gofmt`, `go vet ./...`, `go build ./cmd/golingua` i lekkiego smoke `--help`/`--version`.
+- CI wymaga `gofmt`, `go vet ./...`, `go build ./cmd/golingua` i lekkiego smoke `--help`/`--version`. Po zmianie Go sprawdź lokalnie właściwe komendy przed PR. Przy zmianie samych dokumentów sprawdź diff i linki oraz rzeczywisty CI PR i `main`; nie powtarzaj lokalnego builda ani prób CLI bez konkretnej potrzeby.
 - **Nie ma obligatoryjnego `go test ./...`, automatycznych testów gramatycznych, fixtures, formalnych goldów, matrix runnera, porównywania z JS, fuzzy benchmark gate ani liczby zdań do zdania.**
 - Nie dodawaj plików `*_test.go` w bieżącej fazie, chyba że właściciel wyraźnie zmieni tę politykę.
 - Po implementacji funkcji językowej uruchom lokalne CLI na dostępnych wejściach właściciela/korpusu, zapisz rzeczywiste wyniki i samodzielnie popraw konkretne błędy w granicach issue. Jeśli nie ma runtime, oznacz próbę `NOT RUN`. Akceptacja właściciela pozostaje osobnym statusem i nie jest warunkiem czekania na kolejne zadanie.
 - Nie zmieniaj implementacji wyłącznie po to, by dopasować output do starej wersji JS.
+
+## Konkluzywne zadania
+
+- Po G11-R1 kolejne child issue mają kończyć się działającym przepływem użytkownika w terminalu, z obserwowanym wynikiem na rzeczywistym wejściu lub jawnym `NOT RUN`. Makiety i komponenty są częścią takiego zadania, nie osobnymi PR-ami tylko dla liczby zamkniętych issues.
+- Jeden pionowy zakres może mieć kilka sekwencyjnych commitów w jednym PR. Dziel go dalej tylko wtedy, gdy samodzielny wynik będzie używalny i możliwy do przeglądu. Po merge domknij tytuł/body child issue oraz wskaźnik aktywnego zadania w epiku przed otwarciem następnego.
+- `ok`, `incomplete` i `ambiguous` są statusami silnika, nie automatyczną oceną jakości. Dla zdań bez rozstrzygniętej określoności zachowuj jawne kandydatury; nie wymuszaj pojedynczego tłumaczenia przez zgadywanie.
 
 ## Architektura
 
@@ -44,6 +58,6 @@ Brak pamięci i samouczenia w Go v0. Bez własnego serwera, FST, grafowej bazy i
 
 ## Zmiana zakresu
 
-Jeśli stare issue nadal mówi o goldach, niezależnym oracle, matrycy testowej, test_*.go czy regresji względem flexLingua, jest to **stare wymaganie zastąpione decyzją 2026-10-20**. Takie issue musi zostać poprawione przed implementacją, nie wykonywane literalnie. Nie wolno rozszerzać zakresu bez zgody właściciela.
+Jeśli stare issue nadal mówi o goldach, niezależnym oracle, matrycy testowej, test_*.go czy regresji względem flexLingua, jest to **stare wymaganie zastąpione decyzją 2026-10-20**. Takie issue musi zostać poprawione przed implementacją, nie wykonywane literalnie. Niewykonane mikroetapy G11-13–G11-42 zastępuje decyzja właściciela z 2026-10-23 o pionowych zakresach G11-V1–V8. Inne rozszerzenia zakresu wymagają zgody właściciela.
 
 @RTK.md
