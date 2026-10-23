@@ -2,6 +2,7 @@ package tui
 
 import (
 	tea "charm.land/bubbletea/v2"
+	"encoding/json"
 	"fmt"
 	"github.com/clickbytes/golingua/internal/app"
 	"github.com/clickbytes/golingua/internal/engine"
@@ -71,7 +72,7 @@ func (m *model) submitPreview() tea.Cmd {
 	m.notice = ""
 	return func() tea.Msg { return previewDone{id, cfg, s.Translate(ctx, req)} }
 }
-func candidateDetail(c *engine.TranslationAlternative) string {
+func candidateDetail(c *engine.TranslationAlternative, technical bool) string {
 	if c == nil {
 		return "No candidate selected."
 	}
@@ -95,6 +96,9 @@ func candidateDetail(c *engine.TranslationAlternative) string {
 	for _, loss := range c.Losses {
 		b += "\nLoss: " + plain(loss.Field) + " " + string(loss.Outcome) + ": " + plain(loss.Reason)
 	}
+	if technical {
+		b += "\nTechnical candidate:\n" + technicalJSON(c)
+	}
 	return b
 }
 func candidateText(text string) string {
@@ -110,7 +114,17 @@ func (m model) candidatesBody() string {
 	}
 	b := fmt.Sprintf("\nCandidates: %d · Up/Down select · Enter details · Preview control\n", len(r.Candidates))
 	if m.candidateDetail {
-		return b + "Inspection only; Esc returns to list.\n" + candidateDetail(m.selectedCandidate())
+		return b + "Inspection only; Esc returns to list.\n" + candidateDetail(m.selectedCandidate(), m.displayLevel() == "technical")
+	}
+	if m.displayLevel() == "simple" {
+		for i, c := range r.Candidates {
+			mark := "  "
+			if c.ID == m.selectedID {
+				mark = ">>"
+			}
+			b += fmt.Sprintf("%s %d · %s · %s\n", mark, i+1, c.Outcome, candidateText(c.Text))
+		}
+		return b
 	}
 	for i, c := range r.Candidates {
 		mark := "  "
@@ -120,6 +134,17 @@ func (m model) candidatesBody() string {
 		b += fmt.Sprintf("%s %d · %s · %s\nID: %s\nAssumptions: %d · Diagnostics: %d (Enter details)\n", mark, i+1, c.Outcome, candidateText(c.Text), plain(c.ID), len(c.Assumptions), len(c.Diagnostics))
 	}
 	return b
+}
+func technicalJSON(value any) string {
+	data, err := json.MarshalIndent(value, "", "  ")
+	if err != nil {
+		return "JSON unavailable: " + plain(err.Error())
+	}
+	lines := strings.Split(string(data), "\n")
+	for i := range lines {
+		lines[i] = plain(lines[i])
+	}
+	return strings.Join(lines, "\n")
 }
 func (m model) previewBody() string {
 	b := ""

@@ -117,3 +117,9 @@ F3 wczytuje `Service.Catalog(Details:true)`. Dolny prompt filtruje lokalnie, dos
 F4 Languages pokazuje rzeczywisty inwentarz PL/EN z `Service.Catalog`: leksemy, sensy, bindingi i statusy pokrycia konceptów. Oddzielnie pokazuje wybraną ścieżkę runtime’u, wynik `ValidateRuntime`, `ready` i diagnostyki. Wczytanie konfiguracji nie oznacza obsługi dowolnego zdania. Brak albo błąd runtime’u nie zeruje inwentarza.
 
 Wejście na F4 przez klawisz, pasek zakładek lub paletę odświeża katalog i walidację. `Tab` przechodzi przez refresh, result i tabs; `Enter` na refresh ponawia odczyty. Result przewija się strzałkami i `PgUp`/`PgDown`.
+
+## Obsługa dostarczona w V6
+
+F5 ma szkic ścieżki runtime’u, poziomu Simple/Normal/Technical, domyślnego kierunku i katalogu snapshotu. `Tab` przechodzi przez prompt runtime, validate, level, default_direction, store, save, cancel, result i tabs. `Enter` na level oraz default_direction zmienia szkic; na store edytujesz ścieżkę w dolnym prompcie. Validate sprawdza szkic runtime’u, bez zastosowania preferencji. `Ctrl+S` lub Save zapisuje i stosuje przechwycony szkic wyłącznie po udanym zapisie. Cancel albo `Esc` odrzuca szkic. Zmiana domyślnego kierunku po Save zachowuje tekst F1 i oznacza wcześniejszy wynik jako starszy.
+
+Ustawienia nadal mają wersję 1. Starsze pliki bez nowych pól otrzymują w pamięci Normal, EN→PL i pusty snapshot store; nie są automatycznie przepisywane. Zapis pozostaje atomowy z uprawnieniami 0600. Błąd zapisu zachowuje aktywne preferencje. Poziomy zmieniają wyłącznie prezentację: Simple skraca wynik, Normal pokazuje listy, ID, cechy i założenia, Technical dodaje pełne dane techniczne. Szczegóły kandydatów i odczytań pozostają dostępne z klawiatury. Zapis ścieżki snapshot store nie uruchamia operacji snapshotu.
