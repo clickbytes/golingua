@@ -48,6 +48,14 @@ W G07-03 `forms` obejmuje także 15 jawnie zadeklarowanych rzeczowników PL po 1
 
 G10-01 rozszerza angielskie `forms` o finite osoby/liczby/czasu oraz imperative i participles. Analiza form podstawowych zwraca wszystkie zgodne odczyty osoby/liczby; angielski czas przeszły jest wspólny dla osób i liczb. Obsługiwane są tylko przypisane, jawne klasy odmiany i wpisane principal parts. Przykłady są obserwacją generatora/analizatora, nie oceną zdań ani akceptacją językową.
 
+G10-02 rozszerza polskie `forms` o jawne osoby/liczby dla wybranych czasowników oraz zgodę rodzaju/liczby w przeszłym `dostać`. W profilu PL `dostać` jako czasownik dokonany realizuje przyszłość przez sześć jawnych komórek z `tense=future`; liczba mnoga czasu przeszłego rozróżnia `gender=masculine_personal` i `gender=non_masculine_personal`.
+
+```sh
+go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.widziec.v --feature verb_form=finite --feature tense=present --feature aspect=imperfective --feature mood=indicative --feature voice=active --feature person=first --feature number=singular --json
+go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.dostac.v --feature verb_form=finite --feature tense=future --feature aspect=perfective --feature mood=indicative --feature voice=active --feature person=second --feature number=singular --json
+go run ./cmd/golingua forms --language pl --surface dostaliśmy --json
+```
+
 ## Inwentarz katalogu
 
 `catalog --summary --json` kompiluje obecne dane Go CORE, PL i EN i pokazuje

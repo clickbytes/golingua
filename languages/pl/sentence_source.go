@@ -71,10 +71,10 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 		EvidenceBuilder: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true},
 			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
-				seeingSense:    {{"verb_form": "finite", "tense": "present", "person": "third", "number": "singular"}},
-				hearingSense:   {{"verb_form": "finite", "tense": "present", "person": "third", "number": "singular"}},
-				lookingSense:   {{"verb_form": "finite", "tense": "present", "person": "third", "number": "singular"}},
-				receivingSense: {{"verb_form": "finite", "tense": "past", "person": "third", "number": "singular"}},
+				seeingSense:    {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}},
+				hearingSense:   {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}},
+				lookingSense:   {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}},
+				receivingSense: {{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "singular"}},
 			},
 			AllowedUnlexicalizedTerminals: map[string]bool{"na": true},
 		},
