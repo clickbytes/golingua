@@ -1,6 +1,6 @@
 # GoLingua TUI — kontrakt produktu
 
-**Stan: G11-V1 dostarcza powłokę Bubble Tea v2, F1 Translate i wybór/sprawdzenie/zapis ścieżki runtime w F5; G11-V2 dodaje kandydatów, podgląd i paletę nawigacji.** F2–F4 są jawnymi placeholderami. Pozostałe opisy ekranów i makiety przedstawiają docelowy kontrakt. CLI i TUI używają tych samych usług Go.
+**Stan: G11-V1 dostarcza powłokę Bubble Tea v2, F1 Translate i wybór/sprawdzenie/zapis ścieżki runtime w F5; G11-V2 dodaje kandydatów, podgląd i paletę nawigacji.** F2 działa od G11-V3; F3–F4 są jawnymi placeholderami. Pozostałe opisy ekranów i makiety przedstawiają docelowy kontrakt. CLI i TUI używają tych samych usług Go.
 
 ## Uruchamianie
 
@@ -62,7 +62,7 @@ Minimalny układ docelowy to około 80×24 znaki. Przy mniejszym oknie ekran prz
 
 ## Etapy
 
-G11-01–12 ukończyły kontrakty, wspólne usługi i makiety F1, F2 oraz listy F3. Działa zakres G11-V1; kolejne zakresy pozostają planem. [Epic G11](https://github.com/clickbytes/golingua/issues/254) zastępuje niewykonane mikroetapy G11-13–42 ośmioma kolejnymi zakresami, z których każdy ma dać używalny przepływ w terminalu:
+G11-01–12 ukończyły kontrakty, wspólne usługi i makiety F1, F2 oraz listy F3. Działają zakresy G11-V1–V3; kolejne zakresy pozostają planem. [Epic G11](https://github.com/clickbytes/golingua/issues/254) zastępuje niewykonane mikroetapy G11-13–42 ośmioma kolejnymi zakresami, z których każdy ma dać używalny przepływ w terminalu:
 
 | Zakres | Obserwowalny rezultat |
 | --- | --- |
@@ -92,3 +92,18 @@ F1 pokazuje wszystkie rzeczywiście zwrócone kandydatury. `Tab` przechodzi kole
 `Enter` na preview ponownie wywołuje `Service.Translate` z zapisanym żądaniem wyniku i jawnym `PreviewID`; szkic może być już inny. Odpowiedź podglądu jest osobna: pierwotny status i wynik pozostają zachowane. Kandydat bez tekstu nadal ma szczegóły, ale akcja preview wyświetla brak możliwości podglądu. Wybór ani podgląd nie oznaczają akceptacji językowej.
 
 `Ctrl+P` z każdego ekranu otwiera wspólną paletę z początkowym `/`. Wpisz nazwę bez ponownego ukośnika, np. `forms`, albo wyczyść pole i wpisz `/forms`. Dostępne są wyłącznie `/translate`, `/forms`, `/concepts`, `/languages`, `/settings`. Prefiks filtruje listę; `Up`/`Down` wybierają sugestię, `Enter` wykonuje dokładną nazwę lub jawną selekcję. Nieznane nazwy i argumenty dają błąd bez wywołania usługi. `Esc` anuluje bez zmiany szkicu i fokusu ekranu. W F1 początkowy `/` otwiera paletę; w F5 pole ścieżki przyjmuje ukośniki jako część ścieżki, a nawigację otwiera `Ctrl+P`. Przełączanie ekranów i resize zachowują selekcję oraz szkic.
+
+## Obsługa dostarczona w V3
+
+F2 używa wyłącznie `Service.Forms`. Domyślnie widoczny jest Analyze i wybrany język PL. `Tab` przechodzi przez prompt, language, mode, run, result i tabs; w Generate między mode a run dochodzi features. `Enter` na language zmienia PL/EN, na mode przełącza Analyze/Generate. Każdy tryb ma osobny szkic; cechy z Generate nie trafiają do Analyze.
+
+Analyze: wpisz formę, np. `dostaliśmy` dla PL albo `read` dla EN, i `Enter`. Wszystkie zwrócone odczytania są dostępne w result, z rzeczywistymi identyfikatorami i cechami. Brak odczytań pozostaje `unknown`, nie generuje formy zastępczej.
+
+Generate: wpisz stabilny LexemeID, przejdź do features i wpisz jawne pary oddzielone spacjami. Przykłady z istniejących poleceń CLI:
+
+- PL: `lexeme:pl.widziec.v`; `verb_form=finite tense=present aspect=imperfective mood=indicative voice=active person=third number=plural`.
+- EN: `lexeme:en.look.v`; `verb_form=finite tense=present mood=indicative voice=active person=third verb_number=singular`.
+
+`Enter` na prompt, features lub run wysyła żądanie bieżącego trybu. Przyjmowane jest najwyżej 32 jawnych par z nazwami i wartościami do 64 bajtów; błędna składnia, brak cech lub powtórzona nazwa daje widoczny błąd wejścia. Właściwe dla języka nazwy/wartości sprawdza usługa; ekran nie ma zgadywanych list ani domyślnych cech.
+
+Wynik pokazuje faktyczny status, stan generacji, diagnostyki oraz wszystkie zwrócone formy i odczytania w porządku usługi. Pola szczegółów są prezentowane jako JSON z odpowiedzi usługi, w tym rzeczywiste cechy i metadane. Fokus result pozwala przewijać całość; brak tekstu lub danych nie jest uzupełniany. Wynik starszego szkicu/języka/trybu jest oznaczony. Odpowiedzi Forms mają osobny token od F1; zmiana ekranu i resize nie usuwają szkiców ani wyników.

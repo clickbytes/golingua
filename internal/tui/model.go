@@ -24,9 +24,14 @@ type runtimeDone struct {
 	id, config uint64
 	result     app.RuntimeValidationResult
 }
+type formsDone struct {
+	id, revision uint64
+	response     app.FormsResult
+}
 
 type model struct {
 	palette                                           paletteState
+	forms                                             formsState
 	selectedID                                        string
 	candidateDetail                                   bool
 	pendingPreview                                    uint64
@@ -68,6 +73,12 @@ func (m model) focusNames() []string {
 	}
 	if m.screen == 4 {
 		return []string{"prompt", "validate", "save", "result", "tabs"}
+	}
+	if m.screen == 1 {
+		if m.forms.generate {
+			return []string{"prompt", "language", "mode", "features", "run", "result", "tabs"}
+		}
+		return []string{"prompt", "language", "mode", "run", "result", "tabs"}
 	}
 	return []string{"prompt", "tabs"}
 }
@@ -123,6 +134,26 @@ func (m *model) submitTranslate() tea.Cmd {
 		return translationDone{id: id, revision: rev, config: cfg, response: s.Translate(ctx, req), request: req}
 	}
 }
+func (m *model) submitForms() tea.Cmd {
+	req, err := m.forms.request()
+	if err != nil {
+		m.forms.pending = 0
+		m.forms.response = &app.FormsResult{
+			Status:      status.OutcomeInvalid,
+			Language:    m.forms.languageID(),
+			Diagnostics: []status.Diagnostic{{Code: "INVALID_FORMS_INPUT", Message: err.Error(), Path: "forms", Severity: status.SeverityError}},
+		}
+		m.forms.resultRevision = m.forms.revision
+		return nil
+	}
+	id := m.next()
+	m.forms.pending = id
+	revision := m.forms.revision
+	s, ctx := m.service, m.ctx
+	return func() tea.Msg {
+		return formsDone{id: id, revision: revision, response: s.Forms(ctx, req)}
+	}
+}
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch v := msg.(type) {
 	case tea.WindowSizeMsg:
@@ -171,13 +202,27 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.resultRevision = v.revision
 			m.scroll[0] = 0
 		}
+	case formsDone:
+		if v.id == m.forms.pending {
+			m.forms.pending = 0
+			m.forms.response = &v.response
+			m.forms.resultRevision = v.revision
+			m.scroll[1] = 0
+		}
 	case tea.PasteMsg:
 		if m.palette.open {
 			m.palette.input.insert(v.Content)
 			m.palette.selected = -1
 			return m, nil
 		}
-		if m.focus() == "prompt" && (m.screen == 0 || m.screen == 4) {
+		if m.screen == 1 && (m.focus() == "prompt" || m.focus() == "features") {
+			e := m.forms.activeEditor(m.focus())
+			before := e.revision
+			e.insert(v.Content)
+			if e.revision != before {
+				m.forms.revision++
+			}
+		} else if m.focus() == "prompt" && (m.screen == 0 || m.screen == 4) {
 			m.drafts[m.screen].insert(v.Content)
 		}
 	case tea.KeyPressMsg:
@@ -231,7 +276,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, nil
 		}
 		focus := m.focus()
-		if focus == "prompt" && m.screen != 4 && v.Key().Text == "/" && (m.drafts[m.screen].cursor == 0 || m.screen != 0 && m.screen != 4) {
+		cursor := m.drafts[m.screen].cursor
+		if m.screen == 1 && (focus == "prompt" || focus == "features") {
+			cursor = m.forms.activeEditor(focus).cursor
+		}
+		if focus == "prompt" && m.screen != 4 && v.Key().Text == "/" && cursor == 0 {
 			m.openPalette()
 			return m, nil
 		}
@@ -275,6 +324,20 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.focuses[m.screen] = len(m.focusNames()) - 1
 			return m, nil
 		}
+		if m.screen == 1 && key == "enter" && (focus == "language" || focus == "mode") {
+			if focus == "language" {
+				if m.forms.languageID() == "pl" {
+					m.forms.language = "en"
+				} else {
+					m.forms.language = "pl"
+				}
+			} else {
+				m.forms.generate = !m.forms.generate
+			}
+			m.forms.revision++
+			m.scroll[1] = 0
+			return m, nil
+		}
 		if (focus == "direction" && key == "enter") || (m.screen == 0 && key == "alt+d") {
 			m.from, m.to = m.to, m.from
 			m.drafts[0].revision++
@@ -310,6 +373,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Batch(save, m.checkRuntime())
 		}
 		if key == "enter" {
+			if m.screen == 1 && (focus == "prompt" || focus == "features" || focus == "run") {
+				return m, m.submitForms()
+			}
 			if m.screen == 0 && focus == "prompt" {
 				return m, m.submitTranslate()
 			}
@@ -320,7 +386,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			return m, nil
 		}
-		if focus == "prompt" && (m.screen == 0 || m.screen == 4) {
+		if m.screen == 1 && (focus == "prompt" || focus == "features") {
+			e := m.forms.activeEditor(focus)
+			before := e.revision
+			e.update(v)
+			if e.revision != before {
+				m.forms.revision++
+			}
+		} else if focus == "prompt" && (m.screen == 0 || m.screen == 4) {
 			m.drafts[m.screen].update(v)
 		}
 	}
@@ -362,6 +435,8 @@ func (m model) View() tea.View {
 	switch m.screen {
 	case 0:
 		body = m.translationBody()
+	case 1:
+		body = m.forms.body()
 	case 4:
 		state := "not verified"
 		if m.pendingRuntime != 0 {
@@ -373,6 +448,7 @@ func (m model) View() tea.View {
 	}
 	if m.help {
 		body = "Tab/Shift+Tab cycle controls; tabs support Left/Right.\nF1: prompt Enter translates; direction Enter or Alt+D swaps PL/EN.\nF5: prompt Enter validates/selects path; Ctrl+S explicitly saves.\nF1 candidates: Up/Down select, Enter details; Preview control calls service.\nCtrl+P opens navigation palette; Esc cancels. Result focus scrolls. Ctrl+U clears input.\nEsc closes help; Ctrl+C or Ctrl+D restores terminal and exits."
+		body += "\nF2: language and Analyze/Generate mode use Enter; Generate features use explicit name=value pairs."
 	}
 	if m.palette.open {
 		body = m.paletteBody()
@@ -392,7 +468,9 @@ func (m model) View() tea.View {
 	}
 	body = strings.Join(lines[start:], "\n")
 	prompt := m.drafts[m.screen].visible(m.width - 4)
-	if m.screen != 0 && m.screen != 4 {
+	if m.screen == 1 {
+		prompt = m.forms.activeEditor(m.focus()).visible(m.width - 4)
+	} else if m.screen != 0 && m.screen != 4 {
 		prompt = "No text action available"
 	}
 	if m.palette.open {
