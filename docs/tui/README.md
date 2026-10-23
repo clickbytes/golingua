@@ -38,6 +38,8 @@ Paleta komend ma osobny projekt [slash palette layout](mockups/slash-palette.md)
 
 Ekran F1 Translate ma własną [makietę](mockups/translate.md) kierunku, wyniku, kandydatów i statusów. Przykłady z danych obserwacyjnych są oznaczone jako historyczne; w mockupie nie ma wyniku wymyślonego dla niedostępnego runtime'u.
 
+Lista i szczegóły kandydatów mają osobną [makietę nakładki](mockups/translate-candidates.md). Pokazuje rzeczywiste ID, stan kandydata, diagnostykę i jawny brak tekstu bez utożsamiania podglądu z akceptacją.
+
 ## Ustawienia
 
 Preferencje są wersjonowanym JSON w `os.UserConfigDir()/golingua/settings.json`. Zawierają tylko ustawienia interfejsu: poziom wyświetlania, domyślny kierunek PL↔EN, ścieżkę runtime config i katalog snapshotu. Nie przechowują tekstów zdań, leksykonu, znaczeń, historii, faktów, uczenia ani sekretów.
@@ -54,4 +56,4 @@ Minimalny układ docelowy to około 80×24 znaki. Przy mniejszym oknie ekran prz
 
 ## Etapy
 
-G11-01 zamroził kontrakt produktu, a G11-02 udostępnił usługi in-process z [mapy bindingów](bindings.md). G11-03 określił MVU, fokus i odpowiedzi asynchroniczne w [kontrakcie stanu](state-model.md). G11-04 określił routing promptu i slash commands w [kontrakcie komend](command-contract.md). G11-05 ukończył makietę wspólnej ramy, G11-06 — dolnego promptu, G11-07 — palety komend, a G11-08 dodaje osobny projekt ekranu F1. Kolejne etapy dostarczą pozostałe makiety, shell i ekrany. Implementacja TUI jeszcze nie istnieje, a podręcznik CLI jest osobnym zadaniem G11-39.
+G11-01 zamroził kontrakt produktu, a G11-02 udostępnił usługi in-process z [mapy bindingów](bindings.md). G11-03 określił MVU, fokus i odpowiedzi asynchroniczne w [kontrakcie stanu](state-model.md). G11-04 określił routing promptu i slash commands w [kontrakcie komend](command-contract.md). G11-05 ukończył makietę wspólnej ramy, G11-06 — dolnego promptu, G11-07 — palety komend, G11-08 — ekran F1, a G11-09 — nakładkę kandydatów i szczegółów. Kolejne etapy dostarczą pozostałe makiety, shell i ekrany. Implementacja TUI jeszcze nie istnieje, a podręcznik CLI jest osobnym zadaniem G11-39.
