@@ -428,6 +428,29 @@ zgodnością i nieobsługiwanym czasem nie trafiają do nowych tras. Angielskie
 kandydatury z PL pozostają niekompletne, bo Meaning nie zawiera określoności.
 Akceptacja językowa właściciela pozostaje **NOT RUN**.
 
+### G10-18 #249 — rodzajniki na negatywnych trasach EN — 2026-10-23
+
+Na implementacji `6eb733b031e88a448e05260a7b1422a454fea2d6` uruchomiono
+osiem pochodnych wejść CLI na bieżącym snapshotcie. EN→PL zwróciło `ok` dla
+`A teacher does not see a dog.`, `An offspring does not hear a dog.`,
+`A teacher does not look at a dog.` oraz mnogie `The teachers do not look at
+the dog.`; `a/an` zachowało zadeklarowane allomorfy i ograniczenia liczby.
+`A teachers do not see a dog.` i błędne `an dog` pozostały `unsupported`.
+PL→EN zachowało po cztery warianty rodzajnika dla transitive i oblique wraz
+z jawnymi założeniami; status agregatu pozostaje `ambiguous`, bo polskie
+Meaning nie koduje określoności.
+
+Ponownie uruchomiono S001–S100 w obu kierunkach (200 wywołań). Statusy i
+pary `(candidate outcome, text)` zgadzają się z G10-14 we wszystkich 200
+grupach: EN→PL 60 `ok` / 40 `incomplete`, PL→EN 100 `ambiguous`, zero
+zmienionych grup. Nie zmieniono korpusu. Dokładne wyniki i podsumowanie są w
+[`data/sentences/observed-2026-10-23-g10-18-negative-article-alternatives.tsv`](../data/sentences/observed-2026-10-23-g10-18-negative-article-alternatives.tsv).
+
+**Ocena agenta:** negatywna analiza EN zachowuje jawną określoność i ogranicza allomorf
+dla obsłużonych leksemów; polski brak określoności pozostaje widoczny jako
+oddzielne warianty EN, nie jest po cichu rozstrzygany. Odbiór językowy właściciela
+pozostaje **NOT RUN**.
+
 ## Co NIE jest wymagane
 
 - Przenoszenie dawnych zdań lub ich oczekiwanych rezultatów z JS.

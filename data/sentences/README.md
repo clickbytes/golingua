@@ -245,3 +245,14 @@ rekcję oblique dla `look at` / `patrzeć na`. Status `incomplete` PL→EN
 ujawnia brak określoności w źródle, a próby spoza zakresu nie zostały
 zaakceptowane przez nową konstrukcję. Akceptacja językowa właściciela pozostaje
 **NOT RUN**.
+
+
+## Rodzajniki na negatywnych trasach G10-18 — 2026-10-23
+
+Negacja `see`, `hear` i `look at` zachowuje jawne warianty `a`, `an` oraz `the`
+dla podmiotu i dopełnienia/celu w obu liczbach. `a/an` wymaga właściwości
+leksemu i liczby pojedynczej; brak określoności w polskim Meaning pozostawia
+oddzielne angielskie kandydatury ze statusem zbiorczym `ambiguous`. Próby CLI,
+próby ochronne i wynik regresji 200 wywołań są w
+[obserwacji G10-18](observed-2026-10-23-g10-18-negative-article-alternatives.tsv).
+Ocena agenta jest zapisana osobno; odbiór właściciela pozostaje **NOT RUN**.
