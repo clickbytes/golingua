@@ -32,6 +32,8 @@ Nie dodajemy innych zakładek ani funkcji asystenta czatu. Granice danych i paki
 
 Makieta wspólnej ramy w 80×24 i szerokim terminalu, wraz ze stanem kompaktowym i zawijaniem długiej ścieżki, jest oznaczona jako projekt w [global-shell mockup](mockups/global-shell.md); nie pokazuje działającego TUI ani wyniku silnika.
 
+Dolny, wspólny prompt ma osobną makietę [fixed bottom prompt layout](mockups/bottom-prompt.md) z wersją jednoliniową, ograniczonym szkicem wieloliniowym, historią i stanem kompozycji IME. To również projekt układu, nie zachowanie działającego TUI.
+
 ## Ustawienia
 
 Preferencje są wersjonowanym JSON w `os.UserConfigDir()/golingua/settings.json`. Zawierają tylko ustawienia interfejsu: poziom wyświetlania, domyślny kierunek PL↔EN, ścieżkę runtime config i katalog snapshotu. Nie przechowują tekstów zdań, leksykonu, znaczeń, historii, faktów, uczenia ani sekretów.
@@ -48,4 +50,4 @@ Minimalny układ docelowy to około 80×24 znaki. Przy mniejszym oknie ekran prz
 
 ## Etapy
 
-G11-01 zamroził kontrakt produktu, a G11-02 udostępnił usługi in-process z [mapy bindingów](bindings.md). G11-03 określił MVU, fokus i odpowiedzi asynchroniczne w [kontrakcie stanu](state-model.md). G11-04 określił routing promptu i slash commands w [kontrakcie komend](command-contract.md). G11-05 dodaje makietę wspólnej ramy; kolejne etapy dostarczą osobne makiety, shell, ekrany i ustawienia. Implementacja TUI jeszcze nie istnieje, a podręcznik CLI jest osobnym zadaniem G11-39.
+G11-01 zamroził kontrakt produktu, a G11-02 udostępnił usługi in-process z [mapy bindingów](bindings.md). G11-03 określił MVU, fokus i odpowiedzi asynchroniczne w [kontrakcie stanu](state-model.md). G11-04 określił routing promptu i slash commands w [kontrakcie komend](command-contract.md). G11-05 ukończył makietę wspólnej ramy; G11-06 dodaje odrębny projekt dolnego promptu. Kolejne etapy dostarczą pozostałe makiety, shell, ekrany i ustawienia. Implementacja TUI jeszcze nie istnieje, a podręcznik CLI jest osobnym zadaniem G11-39.
