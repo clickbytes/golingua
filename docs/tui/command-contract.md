@@ -1,9 +1,8 @@
 # Prompt i slash commands
 
-Ten dokument definiuje routing wspólnego promptu dla przyszłego TUI. Prompt
-pozostaje jednym elementem powłoki, zakotwiczonym na dole ekranu. Ten sam
-kontroler nie jest kopiowany do widoków F1–F5. Nie uruchamia procesu CLI i nie
-stanowi funkcji czatu.
+Ten dokument opisuje routing wspólnego dolnego edytora w aktualnym TUI. Cel
+wpisu zależy od ekranu i fokusu; TUI nie uruchamia procesu CLI i nie stanowi
+funkcji czatu.
 
 ## Składnia
 
@@ -11,10 +10,10 @@ Wejście promptu jest interpretowane według pierwszego znaku:
 
 | Wejście | Zachowanie |
 | --- | --- |
-| `/` | Otwórz palette z dostępnymi komendami; niczego nie wykonuj |
-| `/prefix` | Filtruj nazwę komendy prefiksem; niczego nie wykonuj podczas pisania |
-| `/command` | Po `Enter` wykonaj dokładną komendę, jeśli należy do rejestru |
-| tekst bez początkowego `/` | Przekaż tekst aktywnemu ekranowi zgodnie z tabelą routingu niżej |
+| `Ctrl+P` | Otwórz paletę nawigacji z dowolnego ekranu |
+| początkowy `/` w promptcie F1–F3 | Otwórz paletę nawigacji zamiast wstawiać znak do szkicu |
+| nazwa lub prefiks w otwartej palecie | Filtruj zarejestrowane trasy; Enter wybiera dokładną nazwę lub zaznaczoną sugestię |
+| tekst bez początkowego `/` | Przekaż do aktywnego pola tekstowego zgodnie z routingiem ekranowym |
 
 Nazwa komendy składa się z małych liter ASCII, cyfr i myślników; zaczyna się
 małą literą. Białe znaki ani argumenty nie są częścią komendy w tej wersji.
@@ -71,14 +70,17 @@ wpisaniem tekstu.
 | --- | --- |
 | F1 Translate | Edytowany tekst źródłowy; `Enter` uruchamia `Service.Translate` z kierunkiem wybranym na ekranie |
 | F2 Forms / Analyze | Pole formy powierzchniowej; `Enter` uruchamia `Service.Forms` w trybie Analyze |
-| F2 Forms / Generate | Filtr lub pole LexemeID wskazane fokusem; cechy wybiera się kontrolkami, a `Enter` uruchamia Generate |
-| F3 Concepts | Filtr katalogu; `Enter` uruchamia wyszukiwanie/lookup katalogu |
-| F4 Languages | Ekran nie ma pola tekstowego; tekst nie jest interpretowany jako zapytanie ani tłumaczenie, a powłoka prosi o wybór kontrolki |
-| F5 Settings | Edytowane pole tekstowe wskazane fokusem, np. ścieżka config/store; zapis lub Apply wymaga osobnej akcji i potwierdzenia |
+| F2 Forms / Generate | LexemeID w prompcie i jawne pary `key=value` w features; Enter na polu albo run uruchamia Generate |
+| F3 Concepts | Dosłowny filtr podciągu wyłącznie po ConceptID, z rozróżnieniem wielkości liter; Enter na prompt/list/result wywołuje LookupConcept dla aktualnie wybranego ID |
+| F4 Languages | Brak pola tekstowego; Enter na Refresh ponawia niezależne Catalog inventory i ValidateRuntime |
+| F5 Settings | Edytowane pole wskazane fokusem: runtime config albo snapshot store. Validate sprawdza szkic runtime'u; Preview, Apply, Save i Cancel są osobnymi kontrolkami |
 
 Zwykły tekst nigdy nie staje się rozmową z agentem, zapytaniem do sieci,
-argumentem CLI ani poleceniem powłoki. Gdy fokus nie wskazuje pola tekstowego,
-powłoka zachowuje szkic promptu i wyświetla podpowiedź, zamiast go odrzucić.
+argumentem CLI ani poleceniem powłoki. Katalog snapshotu jest jawnie podaną
+ścieżką; Preview może utworzyć katalogi, ale nie aktywuje snapshotu. Apply ma
+domyślną akcję Cancel, przed zastosowaniem ponawia Preview i weryfikuje digest.
+Zapis ustawień nie uruchamia Apply, a Apply nie wybiera runtime'u ani nie
+zapisuje preferencji.
 
 ## Granice i status
 
@@ -87,6 +89,7 @@ posiada globalny draft, fokus i przejścia; [mapa ekranów](screens.md) opisuje
 ich pola; [kontrakt błędów](errors.md) zachowuje rozróżnienie diagnostyk TUI i
 statusów silnika. Nieznana slash command nie jest `status.invalid` z engine.
 
-Implementacja palette, sugestii, renderowania i screen-specific akcji pozostaje
-przyszłym zadaniem. Dokument nie zmienia CLI, który nadal wymaga jawnego
+Paleta jest nawigacyjna i rejestruje wyłącznie `/translate`, `/forms`,
+`/concepts`, `/languages` i `/settings`. Ukośnik w edytorze ścieżki F5 jest
+zwykłym znakiem. Dokument nie zmienia CLI, który nadal wymaga jawnego
 podpolecenia i zachowuje swoje dotychczasowe JSON, stderr i kody wyjścia.

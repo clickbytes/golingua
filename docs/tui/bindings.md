@@ -1,15 +1,20 @@
-# Bindingi TUI → typowane usługi Go
+# Bindingi TUI do typowanych usług Go
 
-TUI i CLI używają jednej logiki aplikacyjnej. CLI nie jest uruchamiane jako proces potomny TUI. `internal/app.Service` udostępnia wspólne, typowane operacje; adaptery ekranów mogą używać tych metod bez parsowania JSON-u CLI.
+CLI i TUI używają wspólnego `internal/app.Service`; TUI nie uruchamia CLI jako
+procesu potomnego ani nie parsuje jego JSON-u.
 
-| Ekran / działanie | Źródło prawdy | Reguła bindingu |
+| Ekran/działanie | Kontrakt usługi | Zasada prezentacji |
 | --- | --- | --- |
-| F1 Translate | `Service.Translate(ctx, TranslateRequest)` → `TranslationResponse`; runtime ładowany przez wstrzyknięty `internal/runtime` adapter | Nie omijaj walidacji runtime'u ani stage adapterów. Pokaż status, candidate IDs, assumptions i diagnostics tak, jak zwraca engine. Błędy przygotowania runtime'u pozostają osobnym `status.Result`. |
-| F2 Analyze / Generate | `Service.Forms(ctx, FormsRequest)` → `FormsResult`, delegowane do seedów `languages/pl` lub `languages/en` | Zachowaj wszystkie zgodne odczytania i ich cechy; UI nie wybiera „najbardziej prawdopodobnej” formy. Przekazuj wyłącznie jawne cechy profilu języka. |
-| F3 Details | `Service.LookupConcept(ctx, ConceptID)` → `core.Concept` i informacja o trafieniu | Definicja i relacje pojawiają się tylko po prawdziwym lookupie w skompilowanym grafie. |
-| F3 Coverage / F4 inventory | `Service.Catalog(ctx, CatalogRequest)` → `CatalogResult`, zbudowany przez `catalog.Inspect(graph, polish, english)` | Liczniki oznaczają inwentarz katalogu, a nie gotowość runtime'u ani ocenę jakości. |
-| F4 Runtime state | wynik wybranego runtime config i ograniczone capabilities | `capabilities` bez runtime ma `ready:false`; nie wyciągaj z tego wniosku, że katalog PL/EN jest pusty. |
-| F5 Preview / Apply | `Service.Snapshot(ctx, SnapshotRequest)` → `SnapshotResult`; kandydat i store pochodzą z `bundled`/`staging` | Preview jest bez zapisu. `Apply` wymaga `Confirmed: true`; warstwa UI musi najpierw uzyskać jawne potwierdzenie użytkownika. |
+| F1 Translate i Preview kandydata | `Service.Translate(ctx, TranslateRequest)` → `TranslationResponse` | Pokazuj zwrócony status, kandydatów, ID, założenia i diagnostyki. Preview ponawia zachowane żądanie z jawnym zwróconym PreviewID; nie zmienia pierwotnej odpowiedzi. |
+| F2 Analyze / Generate | `Service.Forms(ctx, FormsRequest)` → `FormsResult` | Zachowaj wszystkie zwrócone odczytania/formy i ich cechy. Przekazuj tylko jawne wejście; nie wnioskuj o cechach językowych. |
+| F3 katalog i szczegóły | `Service.Catalog(ctx, CatalogRequest{Details:true})`; `Service.LookupConcept(ctx, ConceptID)` → `core.Concept` i informacja o trafieniu | Filtruj lokalnie i dosłownie po ConceptID. Szczegóły pochodzą wyłącznie z rekordu zwróconego przez LookupConcept. |
+| F4 inwentarz | `Service.Catalog(ctx, CatalogRequest{})` | Pokazuj rzeczywiste liczniki leksemów, sensów, bindingów i pokrycia PL/EN niezależnie od gotowości runtime'u. |
+| F4 gotowość runtime'u i F5 Validate | `Service.ValidateRuntime(ctx, RuntimeValidationRequest)` | F4 sprawdza wybraną ścieżkę runtime'u, a F5 szkic ścieżki. Poprawnie wczytana konfiguracja nie obiecuje obsługi każdego zdania. Walidacja F5 nie wybiera ani nie zapisuje szkicu. |
+| F5 Snapshot Preview / Apply | `Service.Snapshot(ctx, SnapshotRequest)` → `SnapshotResult` | Preview używa jawnej ścieżki store ze szkicu i może utworzyć katalogi; nie aktywuje danych. Apply wymaga potwierdzenia, przekazuje zatwierdzony digest w `ExpectedDigest`, a usługa sprawdza go przed aktywacją. Niezgodność kończy się bez Apply. |
+
+Zmiana ścieżki store w F5 unieważnia wcześniejszy Preview. Snapshot Apply nie
+zmienia wybranego runtime'u ani nie zapisuje ustawień. Preferencje stają się
+aktywne dopiero po udanym, atomowym Save.
 
 ## Kierunek zależności
 
@@ -20,4 +25,5 @@ cmd/golingua
                               └── injected runtime loader
 ```
 
-`internal/app` nie importuje `internal/cli` ani `cmd/golingua`. `internal/tui` zależy od typowanych żądań/wyników, a nie od JSON-u CLI. `internal/cli` zachowuje stdout, stderr, składnię i kody procesu.
+`internal/app` nie importuje `internal/cli` ani `cmd/golingua`. stdout, stderr,
+składnia komend i kody wyjścia CLI pozostają osobnym kontraktem.

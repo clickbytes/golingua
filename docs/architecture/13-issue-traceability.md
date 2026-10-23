@@ -1,6 +1,6 @@
 # 13 — Mapa pracy szeregowej po resecie testów
 
-**Status: żywa mapa etapów; G11 #254 jest aktywny, a G11-R1 #287 / PR #288 jest ukończony; G11-P0 #289 / PR #290 ukończył konfigurację Codex Sol/Luna/OpenCode; kolejnym etapem pozostaje G11-V1 QUEUED (aktualny status sprawdzaj w GitHub).** G00–G08 są technicznie zamknięte; ręczna akceptacja językowa właściciela pozostaje osobnym statusem. G04 #5/#207 ma zamknięty closeout techniczny. G06 #7 zamyka zakres techniczny przez #128 i delegowaną ocenę #130; akceptacja właściciela pozostaje **NOT RUN**. G08 #9 ukończono po wszystkich child issues (#65–70); właściciel delegował autonomiczną implementację i ocenę, więc jego odbiór pozostaje **NOT RUN**, ale nie blokuje technicznego zamknięcia. #66 w PR #213 dodało wariant bez rodzajnika dla jawnie niepoliczalnych leksemów na trasie `receiving`. G10 #214 zamknięto po PR #255. Aktywnym epikiem jest G11 #254: G11-01–12 ukończono do PR #286, po procesowym G11-P0 #289 następuje kolejka implementacyjna G11-V1–V8 (stan aktywacji jest utrzymywany w epiku GitHub). Niewykonane mikroetapy G11-13–42 są SUPERSEDED; G10-01–08 (#215/#217/#219/#221/#223/#225/#227/#228) ukończono w PR #216/#218/#220/#222/#224/#226/#229/#230; G10-09 #231 zsynchronizował liczniki w PR #232; G10-10 #233 (PR #234) rozszerzył alternatywy rodzajnika na istniejące trasy; G10-11 #235 (PR #236) uzupełnił morfologię `household`; G10-12 #237 (PR #238) ukończono; G10-13 #239 (PR #240) dodało mnogie formy czasu teraźniejszego i twarde uzgodnienie liczby; G10-14 #241 zapisało wyniki 100 wierszy PL/EN; G10-15 #243 rozszerzyło polski czas przeszły `receiving` na liczbę mnogą; G10-16 #245 dodaje negację `seeing` i jej obsługę w realizatorze; G10-17 #247 rozszerza negację na trzy trasy i obie liczby; G10-18 #249 dodaje warianty `a/an/the`; G10-19 #251 aktywuje present `reading`; G10-20 #253 (PR #255) dodało `reading` w past i zamknęło techniczny zakres G10. `catalog --summary --json` raportuje: CORE 1000; PL 983 leksemy / 1007 sensów / 1006 bindingów (882 zatwierdzone koncepty, 118 konceptów pending); EN 1003 leksemy / 1012 sensów / 1001 bindingów (997 zatwierdzonych konceptów, 3 koncepty pending); 881 zatwierdzonych par PL+EN. Liczba pending binding records PL wynosi 124, bo część konceptów ma alternatywne kandydatury; EN ma 4 pending records. Angielskie determinery `a` i `an` są sentence-only i nie mają CORE bindingów. Kompilator CORE udostępnia obecnie 173 dokładne relacje pochodzące z event concepts z dwoma zadeklarowanymi rolami. Historyczne G00 #78 nie jest obecnym aktywnym zadaniem.
+**Status: aktualizacja G11-V8 #307. Implementacje G11-V1–V7 są scalone do main; koordynator wykonał ręczne przebiegi F1–F5, resize, korpusu PL/EN oraz TTY/non-TTY i zapisał dowody w [issue #307](https://github.com/clickbytes/golingua/issues/307). Wyniki końcowego CI i status zamknięcia są utrzymywane w issue #307 oraz epiku #254.** G00–G08 są technicznie zamknięte; ręczna akceptacja językowa właściciela pozostaje osobnym statusem. G04 #5/#207 ma zamknięty closeout techniczny. G06 #7 zamyka zakres techniczny przez #128 i delegowaną ocenę #130; akceptacja właściciela pozostaje **NOT RUN**. G08 #9 ukończono po wszystkich child issues (#65–70); właściciel delegował autonomiczną implementację i ocenę, więc jego odbiór pozostaje **NOT RUN**, ale nie blokuje technicznego zamknięcia. #66 w PR #213 dodało wariant bez rodzajnika dla jawnie niepoliczalnych leksemów na trasie `receiving`. G10 #214 zamknięto po PR #255. G11 #254: G11-01–12 ukończono do PR #286, G11-P0 #289 / PR #290 ustanowił protokół, V1–V7 są scalone do main. G11-V8 #307 prowadzi dokumentację i zamknięcie integracyjne; koordynator odnotował obserwacje ręczne, a końcowe CI pozostaje bramką. Niewykonane mikroetapy G11-13–42 są SUPERSEDED; G10-01–08 (#215/#217/#219/#221/#223/#225/#227/#228) ukończono w PR #216/#218/#220/#222/#224/#226/#229/#230; G10-09 #231 zsynchronizował liczniki w PR #232; G10-10 #233 (PR #234) rozszerzył alternatywy rodzajnika na istniejące trasy; G10-11 #235 (PR #236) uzupełnił morfologię `household`; G10-12 #237 (PR #238) ukończono; G10-13 #239 (PR #240) dodało mnogie formy czasu teraźniejszego i twarde uzgodnienie liczby; G10-14 #241 zapisało wyniki 100 wierszy PL/EN; G10-15 #243 rozszerzyło polski czas przeszły `receiving` na liczbę mnogą; G10-16 #245 dodaje negację `seeing` i jej obsługę w realizatorze; G10-17 #247 rozszerza negację na trzy trasy i obie liczby; G10-18 #249 dodaje warianty `a/an/the`; G10-19 #251 aktywuje present `reading`; G10-20 #253 (PR #255) dodało `reading` w past i zamknęło techniczny zakres G10. `catalog --summary --json` raportuje: CORE 1000; PL 983 leksemy / 1007 sensów / 1006 bindingów (882 zatwierdzone koncepty, 118 konceptów pending); EN 1003 leksemy / 1012 sensów / 1001 bindingów (997 zatwierdzonych konceptów, 3 koncepty pending); 881 zatwierdzonych par PL+EN. Liczba pending binding records PL wynosi 124, bo część konceptów ma alternatywne kandydatury; EN ma 4 pending records. Angielskie determinery `a` i `an` są sentence-only i nie mają CORE bindingów. Kompilator CORE udostępnia obecnie 173 dokładne relacje pochodzące z event concepts z dwoma zadeklarowanymi rolami. Historyczne G00 #78 nie jest obecnym aktywnym zadaniem.
 
 | Kolejność | EPIC | Co zbudować | Jak oceniamy na tym etapie |
 | --- | --- | --- | --- |
@@ -15,7 +15,7 @@
 | 8 | [G08 #9](https://github.com/clickbytes/golingua/issues/9) | uporządkowanie CLI, prosta diagnostyka, optymalizacja tylko gdy potrzebna | ograniczona ocena agenta na zapisanych trasach; akceptacja właściciela osobno |
 | 9 | [G09 #10](https://github.com/clickbytes/golingua/issues/10) | przyszła pamięć i uczenie | DEFERRED, brak implementacji v0 |
 | 10 | [G10 #214](https://github.com/clickbytes/golingua/issues/214) | proceduralny model języka PL/EN: odmiana, cechy i konstrukcje prowadzące do szerszej obsługi zdań | G10-01–08 ukończone przez PR #216/#218/#220/#222/#224/#226/#229/#230; G10-09 #231 przez PR #232; G10-10 #233 (PR #234) rozszerzyło warianty rodzajnika; G10-11 #235 (PR #236) dodało formy `household`; G10-12 #237 (PR #238) dodało `offspring`, zero plural i rozróżnianie `a/an`; G10-13 #239 (PR #240) dodało present 3pl i uzgodnienie `number`; G10-14 #241 (PR #242) ponownie uruchomiło 100 wierszy; G10-15 #243 rozszerzyło polski past `receiving`; G10-16 #245 dodało singularną negację `seeing`; G10-17 #247 obejmuje negację teraźniejszą na wszystkich trzech trasach i w obu liczbach; G10-18 #249 zachowuje tam jawne alternatywy rodzajnika; G10-19 #251 aktywuje present `reading` z `read/reads` i `czyta/czytają`; G10-20 #253 (PR #255) dodało past `read` oraz 15 jawnych komórek przeszłych `czytać`; techniczny zakres G10 jest zamknięty |
-| 11 | [G11 #254](https://github.com/clickbytes/golingua/issues/254) | spójne CLI deweloperskie i pięcioekranowy TUI oparty o te same usługi Go | G11-01–12 ukończone do PR #286; G11-R1 #287 / PR #288 COMPLETE; G11-P0 #289: protokół koordynacji Sol/Luna/OpenCode (status w GitHub); po nim osiem sekwencyjnych zakresów G11-V1–V8. Niewykonane G11-13–42 SUPERSEDED. |
+| 11 | [G11 #254](https://github.com/clickbytes/golingua/issues/254) | spójne CLI deweloperskie i pięcioekranowy TUI oparty o te same usługi Go | G11-01–12 ukończone do PR #286; G11-R1 #287 / PR #288 COMPLETE; G11-P0 #289 / PR #290 ustanowił protokół koordynacji. V1–V7 są scalone do main; V8 #307 prowadzi dokumentację i końcowy przegląd, a końcowe CI pozostaje bramką. G11-13–42 SUPERSEDED; nie dodaje się dalszego backlogu. |
 
 ### G10-19 #251 — aktywacja `reading` w present — 2026-10-23
 
@@ -67,8 +67,9 @@ JSON pod `os.UserConfigDir()`, potwierdzane `Apply` snapshotu i fail-closed
 prezentację statusów. Usługi TUI mają pozostać in-process i współdzielić
 engine/CLI API. PR #257 scalono do `main`. Szczegóły są w [kontrakcie](../tui/README.md), [screen map](../tui/screens.md),
 [keymap](../tui/keymap.md), [binding map](../tui/bindings.md) i
-[kontrakcie błędów](../tui/errors.md). Dokumentacja nie oznacza, że TUI już
-działa; obserwacja TUI pozostaje **NOT RUN**.
+[kontrakcie błędów](../tui/errors.md). W chwili zamknięcia tego issue
+obserwacja live TUI pozostawała **NOT RUN**; obecny status implementacji
+opisuje wpis G11-V1–V7/V8 #307 poniżej.
 
 ### G11-02 #258 — typowany serwis aplikacyjny — 2026-10-23
 
@@ -91,8 +92,8 @@ powłoki i F1–F5, typowane wiadomości, korelację asynchronicznych odpowiedzi
 tokenem/rewizją, przejścia fokusu oraz kontrolowane zamykanie. Zmiana ekranu
 zachowuje lokalny szkic i fokus; spóźniony wynik nie nadpisuje nowszego
 requestu ani innej zakładki. Potwierdzenie snapshotu wiąże się z konkretnym
-store i digestem. To kontrakt dokumentacyjny; implementacja TUI pozostaje
-osobnym etapem. PR #261 scalono jako `dbac5af2a388ff26ec9e869a1bfa1c7f8ca83610`;
+store i digestem. To kontrakt dokumentacyjny; w chwili zamknięcia tego issue
+implementacja TUI pozostawała osobnym etapem. PR #261 scalono jako `dbac5af2a388ff26ec9e869a1bfa1c7f8ca83610`;
 GitHub Actions `go-ci/build` run #39923407243 dla PR i #39923490498 dla `main`
 przeszły. Akceptacja właściciela pozostaje **NOT RUN**.
 
@@ -104,7 +105,9 @@ błędy i routing zwykłego tekstu według aktywnego pola. Slash commands nie
 uruchamiają CLI ani operacji silnika; wpisana treść nie staje się czatem.
 PR #263 scalono jako `bac62dbdd96cc9938d85cb0495223b2f20d7d3ab`; GitHub
 Actions `go-ci/build` run #39923853745 dla PR i #39923945259 dla `main`
-przeszły. Implementacja TUI i akceptacja właściciela pozostają **NOT RUN**.
+przeszły. W chwili zamknięcia tego kontraktu implementacja nie była jeszcze
+wdrożona; bieżący status podaje wpis G11-V1–V7/V8 #307. Akceptacja właściciela
+pozostaje osobnym statusem.
 
 ### G11-05 #270 — makieta globalnej ramy TUI — 2026-10-23
 
@@ -115,8 +118,8 @@ zakładka i fokus mają osobne, tekstowe oznaczenia; status runtime to
 `unavailable`. Dodano też stan terminala 60×6, przykład zawijania długiej
 ścieżki bez ucinania oraz mapę odpowiedzialności powłoki, ekranów i palety.
 To oznaczony projekt, nie rzeczywisty output Go ani makieta biznesowego ekranu.
-CLI nie wymaga uruchomienia; działające TUI i akceptacja właściciela pozostają
-**NOT RUN**.
+CLI nie wymagało uruchomienia dla tej makiety. To historyczny opis projektu,
+nie bieżący status działającego TUI; akceptacja właściciela pozostaje osobna.
 
 ### G11-06 #273 — makieta dolnego promptu — 2026-10-23
 
@@ -126,8 +129,9 @@ kompozycję IME przy 120×32. Wpisywanie i wklejanie edytują szkic; wysłanie j
 osobną akcją. Podgląd historii jest tylko do odczytu. Przepełnienie przewija
 się wewnątrz promptu, a zmiana rozmiaru zachowuje szkic, kursor, fokus i stan
 IME; stopka pozostaje widoczna. To projekt układu, nie działający prompt ani
-wynik silnika. CLI nie wymaga uruchomienia; implementacja TUI i akceptacja
-właściciela pozostają **NOT RUN**.
+wynik silnika. CLI nie wymagało uruchomienia dla tej makiety; bieżący stan
+implementacji opisuje wpis G11-V1–V7/V8 #307. Akceptacja właściciela pozostaje
+osobnym statusem.
 
 ### G11-07 #275 — makieta palety slash commands — 2026-10-23
 
@@ -137,9 +141,9 @@ nawigacyjnych. `/fo` wyróżnia `/forms`; `/` pokazuje listę, a przykłady
 `/xyz` i `/translate --from en` zachowują tekst przy braku dopasowania lub
 błędzie. Mockup pokazuje fokus zapytania, wybór Up/Down, zatwierdzenie Enter,
 anulowanie Esc oraz przewijanie listy bez zasłaniania promptu i stopki. To
-projekt, nie działająca paleta ani wywołanie silnika; CLI nie wymaga
-uruchomienia, a implementacja TUI i akceptacja właściciela pozostają
-**NOT RUN**.
+projekt, nie działająca paleta ani wywołanie silnika; CLI nie wymagało
+uruchomienia dla tej makiety. Paleta jest obecnie opisana w przewodniku TUI;
+akceptacja właściciela pozostaje osobnym statusem.
 
 ### G11-08 #277 — makieta ekranu F1 Translate — 2026-10-23
 
@@ -148,8 +152,9 @@ rzeczywiste kandydatury `ambiguous` S001 wraz z pełnymi ID. Osobna lista wiąż
 statusy `incomplete`, `unsupported`, `unknown` i `invalid` z zapisanymi
 obserwacjami i ich źródłami. Historyczne statusy są oznaczone; żaden tekst nie
 jest przypisywany do niedostępnego runtime'u. Makieta zawiera też stan
-oczekiwania UI bez wyniku silnika. CLI nie wymaga uruchomienia; implementacja
-TUI i akceptacja właściciela pozostają **NOT RUN**.
+oczekiwania UI bez wyniku silnika. CLI nie wymagało uruchomienia dla tej
+makiety; F1 jest zaimplementowane w bieżącej gałęzi. Akceptacja właściciela
+pozostaje osobnym statusem.
 
 ### G11-09 #279 — nakładka listy i szczegółów kandydatów F1 — 2026-10-23
 
@@ -158,8 +163,9 @@ rzeczywiste S001 PL→EN z czterema kandydatami oraz S004 PL→EN z kandydatem b
 tekstu. Zachowuje rozróżnienie wyniku `ambiguous` i statusu kandydata
 `incomplete`, pełne ID, diagnostyki, przewijanie i powrót do F1. Źródłowe TSV
 nie zapisują typowanych wartości `Assumptions`/`Evidence`; makieta wyraźnie
-oznacza te pola jako **not captured**. CLI nie wymaga uruchomienia; UI,
-wykonanie PreviewID i akceptacja właściciela pozostają **NOT RUN**.
+oznacza te pola jako **not captured**. CLI nie wymagało uruchomienia dla tej
+makiety; F1 i PreviewID są zaimplementowane w bieżącej gałęzi. Akceptacja
+właściciela pozostaje osobnym statusem.
 
 ### G11-10 #281 — makieta F2 Analyze — 2026-10-23
 
@@ -169,8 +175,8 @@ a także `unknown` dla `not` i odrębne `invalid` dla błędnego języka żądan
 Awaria loadera ma osobny stan kontraktu API; zwykłe bundled CLI nie może jej
 wywołać, więc próba jest **NOT RUN**. Pełne stdout/stderr i kody wyjścia
 zapisano w [komentarzu CLI issue #281](https://github.com/clickbytes/golingua/issues/281#issuecomment-6361471056).
-F2 Analyze nie generuje form; TUI i akceptacja właściciela pozostają
-**NOT RUN**.
+F2 Analyze nie generuje form; F2 jest zaimplementowane w bieżącej gałęzi.
+Akceptacja właściciela pozostaje osobnym statusem.
 
 ## Kryterium wykonania tasku
 
@@ -205,3 +211,7 @@ G10-16 #245 dodaje osobne rodziny konstrukcji EN/PL i obsługę tożsamościoweg
 G10-17 #247 (PR #248) rozszerza negację present na `seeing`, `hearing` i `looking` w liczbie pojedynczej i mnogiej. EN używa zgodnego `does/do not` i bazowej formy czasownika; PL zachowuje jawne formy `nie widzi/widzą`, `nie słyszy/słyszą` i `nie patrzy/patrzą`. `look at` oraz `patrzeć na` pozostają osobną rodziną oblique, a zgodność liczby jest wymagana. Smoke CLI obejmuje oba kierunki, zamianę ról, błędną zgodność oraz negację w nieobsługiwanym czasie przeszłym; pełny przebieg S001–S100 zachował statusy i zbiory tekstów G10-14. Szczegóły są w [tabeli G10-17](../../data/sentences/observed-2026-10-23-g10-17-present-negation.tsv). Ocena agenta: negacja i role są zachowane na zadeklarowanych trasach; PL→EN pozostaje `incomplete` z powodu angielskiej określoności. Akceptacja językowa właściciela pozostaje **NOT RUN**.
 
 G10-18 #249 dodaje jawne warianty `a`, `an` i `the` do ujemnych konstrukcji EN dla `see`, `hear` i `look at`, zachowując właściwości allomorficzne i ograniczenia liczby. Cztery wejścia EN→PL z określonymi rodzajnikami zwróciły `ok`; `A teachers...` oraz błędne `an dog` pozostały `unsupported`. Dwa polskie wejścia zachowały po cztery alternatywy angielskie i status `ambiguous`. Ponowny przebieg S001–S100 wykonał 200 wywołań i zachował wszystkie statusy oraz zbiory `(candidate outcome, text)` G10-14. Szczegóły są w [obserwacji G10-18](../../data/sentences/observed-2026-10-23-g10-18-negative-article-alternatives.tsv). Ocena agenta: warianty rodzajnika i kontrola allomorfów są zgodne z zadeklarowanymi trasami; akceptacja właściciela pozostaje **NOT RUN**.
+
+### G11-V1–V7 i V8 #307 — stan aktualizacji closeout
+
+Implementacje F1–F5 objęte V1–V7 są scalone do main. Ten wpis aktualizuje opisy użytkowe, keymapę, bindingi i historyczne statusy. Koordynator raportuje PASS dla pełnego przebiegu F1–F5 w 80×24, resize 35×10 / 100×30 / 80×24, prób korpusowych PL/EN, negacji, Forms, Preview/Cancel ustawień, non-TTY bez ANSI i zgodnego stanu `stty` przed/po. Binarka miała SHA-256 `bbc223b82c17884f0d1f9d8aca4cdd21c296c682ec8aad7cf724e72fd709d201`; szczegóły są w [issue #307](https://github.com/clickbytes/golingua/issues/307). Końcowe CI pozostaje bramką. Odbiór językowy właściciela pozostaje osobnym statusem i nie jest tu uznany za wykonany.

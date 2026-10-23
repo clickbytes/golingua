@@ -1,22 +1,28 @@
 # Klawisze i zachowanie terminala
 
-| Klawisz | Działanie |
+| Klawisz | Obecne działanie |
 | --- | --- |
-| `F1`–`F5` | Przejdź bezpośrednio do odpowiadającego ekranu |
-| `Tab` / `Shift-Tab` | Przenieś fokus do następnego/poprzedniego kontrolera; ekranowy pasek zakładek też jest osiągalny z klawiatury |
-| `←` / `→` | Na ekranowym pasku wybierz poprzednią/następną zakładkę; w innym kontekście zachowaj działanie pola |
-| `↑` / `↓` | Przesuń zaznaczenie lub kursor w bieżącej liście |
-| `Enter` | Uruchom zaznaczoną akcję lub zatwierdź wybrany element |
-| `Esc` | Zamknij podwidok lub wróć o jeden poziom; nie zatwierdza zmian |
-| `?` | Pokaż skróconą pomoc dla bieżącego ekranu |
-| `Ctrl-C` | Bezpiecznie zakończ działanie i przywróć terminal |
+| `F1`–`F5` | Otwórz odpowiadający ekran i zachowaj jego stan. Wejście na F4 odświeża katalog oraz walidację runtime'u. |
+| `Tab` / `Shift+Tab` | Przejdź po kolejności fokusu aktywnego ekranu, łącznie z paskiem zakładek. |
+| `Left` / `Right` | Na pasku zakładek otwórz sąsiedni ekran. W dialogu snapshotu zmień zaznaczoną akcję. |
+| `Up` / `Down` | Zmień wybór kandydatury/konceptu albo przewiń fokusowany wynik. W dialogu snapshotu przełącz Cancel/Apply. |
+| `Enter` | Wykonaj akcję wskazaną fokusem. Snapshot Apply najpierw otwiera dialog z domyślnym Cancel. |
+| `Esc` | Zamknij pomoc lub podwidok; na F5 resetuje szkice, chyba że trwa zapis albo snapshot Apply. W dialogu zamyka go bez Apply. |
+| `PgUp` / `PgDown` | Przewiń fokusowane wyniki i szczegóły konceptu F3. |
+| `Ctrl+U` | Wyczyść aktywny edytor. |
+| `?` | Pokaż pomoc klawiatury. |
+| `Ctrl+C` / `Ctrl+D` | Zakończ działanie i przywróć terminal; podczas snapshot Apply poczekaj na wynik operacji. |
 
-Brak myszy nie ogranicza dostępu do żadnej akcji. Fokus jest zawsze widoczny. Bieżąca zakładka, aktywne pole i status wyniku nie mogą zależeć wyłącznie od koloru.
+Ctrl+P otwiera paletę nawigacji z dowolnego ekranu. Początkowy ukośnik w
+promptcie F1–F3 także otwiera paletę. Rejestr zawiera dokładnie `/translate`,
+`/forms`, `/concepts`, `/languages` i `/settings`; komendy wyłącznie
+przełączają ekran. Ukośnik w ścieżce store F5 jest zwykłym znakiem.
 
-## Rozmiar i terminal
+Shell jest projektowany dla około 80×24. Resize przelicza zawijanie i widoczne
+przewinięcie bez utraty szkiców, selekcji ani filtrów. Przy 40×12 lub więcej
+renderuje ramę; poniżej 40×12 pokazuje informację o minimalnym rozmiarze. Fokus
+jest nazwany, nie zależy wyłącznie od koloru. Mysz nie jest wymagana.
 
-Docelowa minimalna przestrzeń robocza to około 80 kolumn × 24 wiersze. Po resize ekran przelicza układ bez wymazywania wprowadzonych danych. Gdy terminal jest mniejszy, interfejs przechodzi do układu zwartego; jeśli nadal nie może pokazać pola wejściowego, fokusu i statusu, pokazuje komunikat `Powiększ terminal do co najmniej 80×24`, a nie ucięty wynik.
-
-TUI uruchamia się tylko przy interaktywnym stdin i stdout. Przy braku TTY albo nieobsługiwanym terminalu nie włącza raw mode i nie drukuje kodów ANSI do potoku. Wyjście przez `Ctrl-C`, EOF lub błąd inicjalizacji przywraca stan terminala.
-
-Taby F1–F5 pozostają stałe. Gdy terminal przechwytuje F-keys, użytkownik może przejść `Tab`/`Shift-Tab` do widocznego paska zakładek, wybrać ekran klawiszami `←`/`→` i otworzyć go przez `Enter`.
+TUI startuje tylko przy interaktywnym stdin i stdout oraz `TERM` różnym od
+`dumb`. Bez TTY CLI zachowuje ścieżkę nieinteraktywną i nie emituje ekranu ANSI
+TUI. Bubble Tea przywraca terminal podczas kontrolowanego wyjścia.

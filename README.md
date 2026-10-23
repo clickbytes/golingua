@@ -22,6 +22,7 @@ Istniejące źródło [clickbytes/flexLingua](https://github.com/clickbytes/flex
 - [Planowanie treści odpowiedzi](docs/architecture/content-planning.md) — wybór aktu i treści odpowiedzi na podstawie typowanego wyniku zapytania.
 - [Realizacja odpowiedzi dialogowej](docs/architecture/dialogue-realization.md) — bezpieczny most do wspólnego pipeline’u konstrukcji, morfologii i linearyzacji.
 - [CLI](docs/cli.md) — rzeczywiste komendy bootstrapu i jawne granice obecnej obsługi.
+- [TUI](docs/tui/README.md) — aktualne ekrany F1–F5, klawisze i bindingi usług.
 - [Przykłady ręczne](examples/manual/README.md) — na razie bez domyślnych zdań.
 - [Status katalogu](docs/data/catalog-status.md) — bieżące liczby CORE/PL/EN i status zatwierdzenia bindingów.
 - [Granice bezpieczeństwa](docs/security.md) — walidacja wejścia i importów.
@@ -39,4 +40,4 @@ go run ./cmd/golingua catalog --summary --json
 go run ./cmd/golingua forms --language en --surface dogs --json
 ```
 
-`capabilities --json` raportuje `ready: false`, gdy proces nie wybiera runtime'u. `translate` bez `--runtime-config` zwraca `unsupported`; z aktywnym snapshotem działa dla ograniczonych, dokładnie licencjonowanych szlaków. Dla odmiany własnego słowa użyj `forms --language pl|en --surface <forma> --json`; wymagane cechy generacji są opisane w [CLI](docs/cli.md). Nie ma TUI, serwera, bazy, FST, pamięci ani uczenia.
+`capabilities --json` raportuje `ready: false`, gdy proces nie wybiera runtime'u. `translate` bez `--runtime-config` zwraca `unsupported`; z aktywnym snapshotem działa dla ograniczonych, dokładnie licencjonowanych szlaków. Dla odmiany własnego słowa użyj `forms --language pl|en --surface <forma> --json`; wymagane cechy generacji są opisane w [CLI](docs/cli.md). TUI uruchamia się przy bezargumentowym starcie w interaktywnym TTY. Nie ma serwera, bazy, FST, pamięci ani uczenia.

@@ -1,9 +1,8 @@
 # Model stanu, zdarzeń i fokusu TUI
 
-Ten dokument opisuje kontrakt MVU dla przyszłego TUI GoLingua. Nie dodaje
-implementacji ani nie zmienia zachowania CLI. Nazwy pól i zdarzeń poniżej są
-stabilnym słownikiem projektu; implementacja może dobrać idiomatyczne typy Go,
-zachowując opisane własności.
+Ten dokument opisuje model MVU zaimplementowanego TUI GoLingua. TUI udostępnia
+pięć ekranów i korzysta z typowanych metod `internal/app.Service`; brak TTY
+zachowuje ścieżkę nieinteraktywnego CLI.
 
 ## Własność stanu
 
@@ -15,11 +14,11 @@ stanu pozostałych ekranów.
 | Właściciel | Stan |
 | --- | --- |
 | Powłoka | aktywny ekran F1–F5, właściciel i cel fokusu, rozmiar terminala, globalne komunikaty oraz stan startu/zamykania |
-| F1 Translate | kierunek, edytowany tekst i jego rewizja, `preview_id`, wynik `TranslationResponse`, rewizja wyniku i oczekujący token translacji |
-| F2 Forms | tryb Analyze/Generate, język, wpisana forma albo LexemeID i cechy, wynik `FormsResult` oraz token operacji |
-| F3 Concepts | filtr, wybrany `ConceptID`, wynik `CatalogResult`, szczegóły po `LookupConcept` i tokeny zapytań |
-| F4 Languages | wynik inwentarza z `CatalogResult` i osobno uzyskany stan wybranego runtime'u |
-| F5 Settings | edytowane preferencje, stan zapisu, ścieżka store, podgląd snapshotu i stan dialogu potwierdzenia |
+| F1 Translate | kierunek, edytowany tekst, `preview_id`, wynik i rewizja `TranslationResponse`, osobne tokeny Translate/Preview |
+| F2 Forms | tryb Analyze/Generate, język, forma albo LexemeID i cechy, `FormsResult` oraz token |
+| F3 Concepts | filtr, wybrany `ConceptID`, `CatalogResult`, szczegóły `LookupConcept` i tokeny zapytań |
+| F4 Languages | inwentarz `CatalogResult` i osobno wynik walidacji wybranego runtime'u |
+| F5 Settings | aktywne preferencje i szkic, walidacja runtime'u, stan zapisu, ścieżka store, wynik snapshotu i dialog |
 
 Model przechowuje dokładne wyniki i statusy usług. Nie wybiera najlepszego
 kandydata, nie zmienia statusu i nie uzupełnia brakujących danych. Stan
@@ -51,10 +50,12 @@ i zwracają osobną wiadomość zakończenia.
 | `QuitRequested` / `ShutdownCompleted` | Przejdź do kontrolowanego zamknięcia i zakończ po przywróceniu terminala |
 
 Zdarzenia klawiatury są tłumaczone na wybór ekranu, fokusu albo akcję
-posiadaną przez aktualny fokus. Szczegółowa składnia promptu i slash palette
-należy do G11-04; konkretne kontrolki i ich tab order należą do map ekranów i
-keymapy. Ta granica zapobiega temu, by model powłoki przejmował wejście pola
-ekranowego albo ekran osobno implementował globalne zachowanie.
+posiadaną przez aktualny fokus. Bieżące kolejności kontrolek są: F1
+prompt/direction/candidates/preview/result/tabs; F2
+prompt/language/mode/[features]/run/result/tabs; F3 prompt/list/result/tabs;
+F4 refresh/result/tabs; F5 prompt/validate/level/default_direction/store/
+snapshot_preview/snapshot_apply/save/cancel/result/tabs. W dialogu snapshotu
+fokus obejmuje tylko Cancel i Apply.
 
 ## Tożsamość odpowiedzi asynchronicznej
 
@@ -134,16 +135,15 @@ kontrolkami powłoki. Pola, listy i akcje są kontrolkami ekranu.
 
 1. Inicjalizacja powłoki sprawdza warunki interaktywnego terminala przed wejściem
    w tryb interaktywny. Jawne CLI/help/version i brak TTY zachowują ścieżkę CLI.
-2. Start TUI może zażądać wczytania wersjonowanych preferencji. Nie stosuje
-   snapshotu ani nie wykonuje tłumaczenia bez działania użytkownika.
+2. Start TUI wczytuje wersjonowane preferencje i żąda szczegółowego katalogu
+   konceptów. Nie stosuje snapshotu ani nie wykonuje tłumaczenia bez działania
+   użytkownika. Wejście na F4 odświeża inwentarz i walidację runtime'u.
 3. Zdarzenia użytkownika aktualizują wyłącznie model przypisany do ich
    właściciela. Dłuższa praca zwraca wiadomość z tokenem.
-4. `QuitRequested` zatrzymuje przyjmowanie nowych akcji i anuluje możliwe do
-   anulowania zadania. Zamknięcie czeka na warstwę terminala, która przywraca
-   jego stan, po czym emituje `ShutdownCompleted`.
+4. Kontrolowane wyjście przywraca terminal. Gdy snapshot Apply już trwa,
+   Ctrl+C/Ctrl+D czeka na wynik tej operacji.
 
-Dokument ustala własność danych i kolejność przejść; nie wybiera jeszcze
-konkretnego typu Bubble Tea dla każdej wiadomości. G11-04 definiuje prompt i
-slash commands, a późniejsze issue doprecyzują jeden shell component albo
-layout naraz. Rzeczywisty TUI pozostaje **NOT RUN**, dopóki te implementacje nie
-powstaną.
+Zmiana ekranu nie anuluje poprawnej pracy. Odpowiedź może uzupełnić nieaktywny
+ekran, jeśli token, rewizja i przechwycona ścieżka nadal pasują. Zmiana ścieżki
+store unieważnia podgląd; zmiana runtime'u unieważnia wcześniejszą walidację.
+Przewinięcie, filtr i selekcja należą do ekranu i przetrwają resize.

@@ -963,9 +963,7 @@ func (m model) View() tea.View {
 		}
 	}
 	if m.help {
-		body = "Tab/Shift+Tab cycle controls; tabs support Left/Right.\nF1: prompt Enter translates; direction Enter or Alt+D swaps PL/EN.\nF5: prompt Enter validates/selects path; Ctrl+S explicitly saves.\nF1 candidates: Up/Down select, Enter details; Preview control calls service.\nCtrl+P opens navigation palette; Esc cancels. Result focus scrolls. Ctrl+U clears input.\nEsc closes help; Ctrl+C or Ctrl+D restores terminal and exits."
-		body += "\nF2: language and Analyze/Generate mode use Enter; Generate features use explicit name=value pairs."
-		body += "\nF3: edit the ConceptID filter; list Up/Down select, Enter opens details, Esc returns."
+		body = "F1: Enter translates; inspect candidates with Up/Down and Enter; Preview calls the service. Alt+D swaps direction.\nF2: choose Analyze/Generate; in Simple view, Enter on result expands details.\nF3: edit ConceptID filter; Up/Down selects, Enter opens concept details.\nF4: Refresh updates the catalog inventory and runtime readiness.\nF5: validate runtime draft; Ctrl+S saves, Cancel resets drafts. Snapshot Preview does not activate; Apply opens a Cancel-default confirmation. Exit waits for a running Apply.\nF-keys switch screens; Tab/Shift+Tab moves focus; Left/Right switches tabs. Ctrl+P opens navigation. Result focus scrolls; resize adjusts the view. Esc closes help; Ctrl+C or Ctrl+D exits."
 	}
 	if m.palette.open {
 		body = m.paletteBody()
