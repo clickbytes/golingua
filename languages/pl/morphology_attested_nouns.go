@@ -44,6 +44,8 @@ var attestedNounForms = []attestedNounEntry{
 	{"pl.ryba.n", "ryba", "feminine", [7]string{"ryba", "ryby", "rybie", "rybę", "rybą", "rybie", "rybo"}, [7]string{"ryby", "ryb", "rybom", "ryby", "rybami", "rybach", "ryby"}},
 	{"pl.szpital.n", "szpital", "masculine_inanimate", [7]string{"szpital", "szpitala", "szpitalowi", "szpital", "szpitalem", "szpitalu", "szpitalu"}, [7]string{"szpitale", "szpitali", "szpitalom", "szpitale", "szpitalami", "szpitalach", "szpitale"}},
 	{"pl.pizza.n", "pizza", "feminine", [7]string{"pizza", "pizzy", "pizzy", "pizzę", "pizzą", "pizzy", "pizzo"}, [7]string{"pizze", "pizz", "pizzom", "pizze", "pizzami", "pizzach", "pizze"}},
+	{"pl.sasiad.n", "sąsiad", "masculine_personal", [7]string{"sąsiad", "sąsiada", "sąsiadowi", "sąsiada", "sąsiadem", "sąsiedzie", "sąsiedzie"}, [7]string{"sąsiedzi", "sąsiadów", "sąsiadom", "sąsiadów", "sąsiadami", "sąsiadach", "sąsiedzi"}},
+	{"pl.klient.n", "klient", "masculine_personal", [7]string{"klient", "klienta", "klientowi", "klienta", "klientem", "kliencie", "kliencie"}, [7]string{"klienci", "klientów", "klientom", "klientów", "klientami", "klientach", "klienci"}},
 }
 
 var attestedNounCases = [7]string{"nominative", "genitive", "dative", "accusative", "instrumental", "locative", "vocative"}
@@ -84,6 +86,8 @@ func attestedNounGender(lexemeID string) (string, bool) {
 		return "masculine_inanimate", true
 	case "pl.pizza.n":
 		return "feminine", true
+	case "pl.sasiad.n", "pl.klient.n":
+		return "masculine_personal", true
 	default:
 		return "", false
 	}

@@ -1168,10 +1168,11 @@ var englishParadigmByLexeme = map[string]string{
 	"en.child.n": "en_noun_singular_attested", "en.cat.n": "en_noun_singular_attested",
 	"en.book.n": "en_noun_singular_attested", "en.house.n": "en_noun_singular_attested",
 	"en.car.n": "en_noun_singular_attested", "en.see.v": "en_see_present_third_singular",
+	"en.bird.n": "en_noun_singular_attested", "en.neighbor.n": "en_noun_singular_attested", "en.customer.n": "en_noun_singular_attested",
 	"en.dog.n": "en_noun_regular", "en.teacher.n": "en_noun_regular",
 	"en.doctor.n": "en_noun_regular", "en.school.n": "en_noun_regular",
 	"en.hand.n": "en_noun_regular", "en.eye.n": "en_noun_regular",
-	"en.look.v": "en_verb_regular",
+	"en.look.v": "en_verb_regular", "en.hear.v": "en_hear_present_third_singular",
 }
 
 // LexicalDocument builds the English lexical records from Go declarations.

@@ -14,7 +14,7 @@ import (
 	"github.com/clickbytes/golingua/internal/valency"
 )
 
-const sentenceProviderVersion = "v2026.10.23"
+const sentenceProviderVersion = "v2026.10.23-hearing"
 
 type sentenceProvider struct {
 	source   *runtime.SourcePipeline
@@ -25,7 +25,7 @@ var _ language.LanguageProvider = (*sentenceProvider)(nil)
 var _ language.Analyzer = (*sentenceProvider)(nil)
 var _ language.Realizer = (*sentenceProvider)(nil)
 
-// NewSentenceProvider creates the exact English seeing capability package and
+// NewSentenceProvider creates the exact English seeing and hearing package and
 // its trusted provider against one validated snapshot.
 func NewSentenceProvider(snapshot *pack.Pack) (language.Package, language.LanguageProvider, error) {
 	if snapshot == nil {
@@ -39,11 +39,11 @@ func NewSentenceProvider(snapshot *pack.Pack) (language.Package, language.Langua
 	if err != nil {
 		return language.Package{}, nil, err
 	}
-	senseID, err := ids.NewSenseID("en.see.visual")
+	senseIDs, err := sentenceSenseIDs()
 	if err != nil {
 		return language.Package{}, nil, err
 	}
-	languagePackage, err := runtime.BuildSentenceLanguagePackage("en", sentenceProviderVersion, senseID, valencyIndex, snapshot.Lexicon())
+	languagePackage, err := runtime.BuildSentenceLanguagePackage("en", sentenceProviderVersion, valencyIndex, snapshot.Lexicon(), senseIDs...)
 	if err != nil {
 		return language.Package{}, nil, err
 	}
@@ -64,11 +64,23 @@ func (provider *sentenceProvider) Analyze(ctx context.Context, surface string) (
 	if err != nil {
 		return nil, err
 	}
-	senseID, err := ids.NewSenseID("en.see.visual")
+	senseIDs, err := sentenceSenseIDs()
 	if err != nil {
 		return nil, err
 	}
-	return runtime.SentenceAnalysisCandidates(result, senseID), nil
+	return runtime.SentenceAnalysisCandidates(result, senseIDs...), nil
+}
+
+func sentenceSenseIDs() ([]ids.SenseID, error) {
+	senseIDs := make([]ids.SenseID, 0, 2)
+	for _, value := range []string{"en.see.visual", "en.hear.auditory"} {
+		senseID, err := ids.NewSenseID(value)
+		if err != nil {
+			return nil, err
+		}
+		senseIDs = append(senseIDs, senseID)
+	}
+	return senseIDs, nil
 }
 
 func (provider *sentenceProvider) Realize(ctx context.Context, graph meaning.Meaning, targetID meaning.NodeID, plan construction.CompiledConstructionPlan) (language.RealizationResult, error) {

@@ -54,11 +54,11 @@ Batch 27 adds `celowe działanie` as a pending event noun for intentional action
 
 Existing `pl.Load()` uses a small morphology seed. `pl.Generate()`/`Seed.Analyze()` work only for lexemes that have explicitly assigned compatible paradigms and principal parts.
 
-The new `morphology_attested_nouns.go` provides **15 additional noun lexemes × 14 explicit form cells = 210 declared forms**. For every noun, the 7 cases in singular and plural are stored as individual principal parts. Five shared, gender-specific `morph.Paradigm` selectors simply retrieve the correct declared form. These are **not productive rules deriving endings for arbitrary nouns**:
+The new `morphology_attested_nouns.go` provides **17 additional noun lexemes × 14 explicit form cells = 238 declared forms**. For every noun, the 7 cases in singular and plural are stored as individual principal parts. Five shared, gender-specific `morph.Paradigm` selectors simply retrieve the correct declared form. These are **not productive rules deriving endings for arbitrary nouns**:
 
 - Masculine animal: `pies`.
 - Masculine inanimate: `dom`, `stół`, `samochód`, `szpital`.
-- Masculine personal: `nauczyciel`, `lekarz`.
+- Masculine personal: `nauczyciel`, `lekarz`, `sąsiad`, `klient`.
 - Feminine: `woda`, `szkoła`, `książka`, `ręka`, `ryba`, `pizza`.
 - Neuter: `oko`, `dziecko`.
 
@@ -76,4 +76,4 @@ These calls must use the actual bundled seed, not the editorial TSV. A technical
 
 ## Hard boundaries
 
-`languages/pl/manifest.json` still declares general `sentence_analysis` and `meaning_realization` capabilities as `unsupported`. The compiled CLI builds a separate package verified for the exact `seeing` route and registers its provider and stage adapters when an active snapshot is selected; other PL routes remain unsupported or unknown. The `catalog` command separately reports the CORE, lexical and valency indexes; it is not a translation result. The owner-delegated lexical assessments are recorded in issues #152, #154, #156, #158, #160, #162, #164, #166, #168, #170, #172, #174, #176, #178 and the ledger. CLI translation was executed on the requested 100-pair corpus, but owner language review and owner inflection review remain **NOT RUN**.
+`languages/pl/manifest.json` still declares general `sentence_analysis` and `meaning_realization` capabilities as `unsupported`. The compiled CLI builds a separate package verified for the exact `seeing` and `hearing` routes and registers its provider and stage adapters when an active snapshot is selected; other PL routes remain unsupported or unknown. The `catalog` command separately reports the CORE, lexical and valency indexes; it is not a translation result. The owner-delegated lexical assessments are recorded in issues #152, #154, #156, #158, #160, #162, #164, #166, #168, #170, #172, #174, #176, #178 and the ledger. CLI translation was executed on the requested 100-pair corpus, but owner language review and owner inflection review remain **NOT RUN**.

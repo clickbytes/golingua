@@ -42,8 +42,8 @@ not a substitute.
 counts separately. Current counts are **zero pending candidates and four
 approved construction bindings per language**. These bindings license only
 their exact sense/frame/family/variant routes. The catalog can resolve exact
-approved plans; the compiled CLI registry currently exposes only the `seeing`
-route in each language. Other approved routes do not yet have sentence
+approved plans; the compiled CLI registry currently exposes the `seeing` and
+`hearing` routes in each language. Other approved routes do not yet have sentence
 providers and stage adapters. `Bindings()` returns only approved records;
 `Candidates()` is review input and never licenses a runtime path.
 
@@ -55,10 +55,10 @@ must not silently stand in for those frames. A frame's `AllowedFamilyIDs` is
 only a candidate family reference. It is never treated as approval.
 
 The owner's sentence-level review has not run. The delegated route review adds
-eight explicit construction bindings; the compiled CLI enables only the
-`seeing` provider route. The base language manifests continue to report their
+eight explicit construction bindings; the compiled CLI enables the `seeing`
+and `hearing` provider routes. The base language manifests continue to report their
 general analysis/realization capabilities as unsupported; the runtime package
-is generated for the exact route and verified against its provider evidence.
+is generated for these exact routes and verified against its provider evidence.
 No external lexical or linguistic source is claimed by the current structural
 templates; their provenance records identify them as internal project data.
 

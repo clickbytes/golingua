@@ -14,7 +14,7 @@ import (
 
 // NewSentenceSource builds the trusted Polish source stages against one exact
 // CORE/lexicon snapshot. The bare declarative completion attestation currently
-// covers only the attested present singular visual-perception predicate.
+// covers attested present singular visual and auditory predicates.
 func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if snapshot == nil {
 		return nil, fmt.Errorf("Polish sentence source requires a snapshot")
@@ -40,6 +40,10 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if err != nil {
 		return nil, err
 	}
+	hearingSense, err := ids.NewSenseID("pl.slyszec.auditory")
+	if err != nil {
+		return nil, err
+	}
 	caseValues := map[features.FeatureValueID]string{}
 	for _, value := range []string{"nominative", "genitive", "dative", "accusative", "instrumental", "locative", "vocative"} {
 		caseValues[features.FeatureValueID(value)] = value
@@ -56,7 +60,7 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 			CaseFeature: "case", CaseValues: caseValues,
 		}},
 		EvidenceBuilder: runtime.BareDeclarativeEvidenceBuilder{
-			SupportedSenses: map[ids.SenseID]bool{seeingSense: true},
+			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true},
 			RequiredPredicateFeatures: map[features.FeatureID]features.FeatureValueID{
 				"verb_form": "finite", "tense": "present", "person": "third", "number": "singular",
 			},

@@ -55,9 +55,16 @@ func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm 
 		})
 	}
 	result := append([]morph.Paradigm{paradigm}, attestedNounParadigms(profile)...)
-	return append(result, morph.Paradigm{
+	return append(result,
+		presentThirdSingularVerbParadigm(profile, "pl_widziec_present_third_singular", "procedure:pl_widziec.present_third_singular"),
+		presentThirdSingularVerbParadigm(profile, "pl_slyszec_present_third_singular", "procedure:pl_slyszec.present_third_singular"),
+	)
+}
+
+func presentThirdSingularVerbParadigm(profile *features.LanguageFeatureProfile, id, procedureID string) morph.Paradigm {
+	return morph.Paradigm{
 		SchemaVersion: morph.ParadigmSchemaVersion,
-		ID:            "pl_widziec_present_third_singular", Language: "pl", ProfileVersion: profile.Version(), POS: "verb",
+		ID:            morph.ParadigmID(id), Language: "pl", ProfileVersion: profile.Version(), POS: "verb",
 		PrincipalPartRequirements: []morph.PrincipalPartRequirement{{StemID: "form", PartID: "present_third_singular", Required: true}},
 		Cells: []morph.ParadigmCell{{ID: "present_third_singular", Features: []features.FeatureValue{
 			{Feature: "verb_form", State: features.StateKnown, Value: "finite"},
@@ -67,9 +74,9 @@ func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm 
 			{Feature: "person", State: features.StateKnown, Value: "third"},
 			{Feature: "number", State: features.StateKnown, Value: "singular"},
 		}}},
-		Rules: []morph.CellRule{{CellID: "present_third_singular", ProcedureID: "procedure:pl_widziec.present_third_singular", Provenance: polishSentenceFormSource,
+		Rules: []morph.CellRule{{CellID: "present_third_singular", ProcedureID: procedureID, Provenance: polishSentenceFormSource,
 			Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "form"}}}},
-	})
+	}
 }
 
 func inCodeMorphRecords() ([]lexemeRecord, error) {
@@ -82,7 +89,9 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 		return nil, err
 	}
 	foundCat := false
+	foundBird := false
 	foundSee := false
+	foundHear := false
 	for _, lexeme := range document.Lexemes {
 		if lexeme.ID.String() == "lexeme:pl.widziec.v" {
 			foundSee = true
@@ -90,8 +99,19 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 				LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "present_third_singular", Form: "widzi"}},
 			}})
 		}
-		if lexeme.ID.String() == "lexeme:pl.kot.n" {
-			foundCat = true
+		if lexeme.ID.String() == "lexeme:pl.slyszec.v" {
+			foundHear = true
+			attested = append(attested, lexemeRecord{Lexeme: lexeme, PrincipalParts: morph.PrincipalParts{
+				LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "present_third_singular", Form: "słyszy"}},
+			}})
+		}
+		if lexeme.ParadigmID == "pl_masc_animal_regular" {
+			if lexeme.ID.String() == "lexeme:pl.kot.n" {
+				foundCat = true
+			}
+			if lexeme.ID.String() == "lexeme:pl.ptak.n" {
+				foundBird = true
+			}
 			attested = append(attested, lexemeRecord{
 				Lexeme: lexeme,
 				PrincipalParts: morph.PrincipalParts{
@@ -101,7 +121,7 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 			})
 		}
 	}
-	if !foundCat || !foundSee {
+	if !foundCat || !foundBird || !foundSee || !foundHear {
 		return nil, fmt.Errorf("Polish in-code morphology lexeme is missing")
 	}
 	return attested, nil
