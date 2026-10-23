@@ -179,6 +179,34 @@ Meaning nie koduje określoności obiektu ani odbiorcy. S079 pokazuje, że jawni
 policzalny leksem korzysta ze starego wariantu z `the`. Właścicielska akceptacja
 językowa pozostaje **NOT RUN**.
 
+### G10-05 — częściowa leksykalizacja przy nierozstrzygniętej polisemii — 2026-10-23
+
+Uruchomienia wykonano binarką z implementacji
+`2ac848623e9b2ad07428702feb365cc44870c7e0` i aktywnym snapshotem wskazanym w
+`/tmp/golingua-g10-04-runtime.json`. Są to trzy istniejące rekordy właścicielskiej
+listy zdań, wszystkie nadal `draft_unreviewed`. Dokładne kody, teksty, diagnostyki
+i nierozstrzygnięte wpisy evidence zapisano w
+[`observed-2026-10-23-g10-05-partial-lexicalization.tsv`](../data/sentences/observed-2026-10-23-g10-05-partial-lexicalization.tsv).
+
+```sh
+/tmp/golingua-g10-05 translate --from en --to pl --text 'The doctor hears the dog.' --runtime-config /tmp/golingua-g10-04-runtime.json --json
+/tmp/golingua-g10-05 translate --from pl --to en --text 'Nauczyciel widzi książkę.' --runtime-config /tmp/golingua-g10-04-runtime.json --json
+/tmp/golingua-g10-05 translate --from en --to pl --text 'The teacher got a book.' --runtime-config /tmp/golingua-g10-04-runtime.json --json
+```
+
+Każda komenda zwróciła exit `7` i status `incomplete`; tekst znajduje się w
+`candidates[0].text`, podczas gdy główne pole `text` pozostaje puste. Dla
+`S003` jawne założenie rodzajnika `the` jest dodatkowo widoczne w diagnostyce.
+Evidence zachowuje odpowiednio `en.doctor.academic`, `pl.ksiazka.work` i
+`en.book.work` jako odczytania bez zatwierdzonego ekwiwalentu. Żaden binding nie
+został dodany ani zatwierdzony.
+
+**Ocena agenta:** `Lekarz słyszy psa.` i `Nauczyciel dostał książkę.` zachowują
+sens i role z istniejących zdań; `The teacher sees the book.` jest możliwym
+tekstem docelowym, a określoność pozostaje jawnym założeniem, bo polski input jej
+nie koduje. To ocena tych konkretnych outputów, nie automatyczna bramka ani
+akceptacja właściciela. Akceptacja właściciela pozostaje **NOT RUN**.
+
 Bez tekstu dostarczonego przez właściciela oznacz ocenę językową **NOT EVALUATED**. Jeśli nie uruchomiono konkretnej próby na wejściu właściciela, oznacz ją **NOT RUN**. Gdy właściciel deleguje autonomiczną ocenę, agent może opisać własną ocenę na tych wejściach, ale status akceptacji właściciela pozostaje osobny. Techniczne smoke testy z tekstem zastępczym nie są wejściem do oceny językowej. Dokładny kontrakt i przykład komendy opisuje [docs/cli.md](cli.md); nie przedstawiaj go jako dowodu, że provider jest skonfigurowany.
 
 Nie ma obowiązku zapisywania każdego outputu do pliku. Jeśli zapis jest przydatny, prowadź opcjonalnie krótką notatkę w issue lub `examples/manual/`:
