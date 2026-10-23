@@ -38,6 +38,12 @@ var englishIndefiniteObjectConstructionSource = provenance.SourceRef{
 	Version: "2026-10-23-g10-08", License: "internal", Author: "Codex by owner delegation",
 }
 
+var englishDeterminerAlternativeConstructionSource = provenance.SourceRef{
+	ID:      "golingua-g10-10-english-determiner-alternatives",
+	URI:     "https://github.com/clickbytes/golingua/issues/233#issuecomment-6357215925",
+	Version: "2026-10-23-g10-10", License: "internal", Author: "Codex by owner delegation",
+}
+
 type frameDeclaration struct {
 	id, sense, family string
 	roles             []meaning.Role
@@ -50,12 +56,24 @@ type constructionBindingDeclaration struct {
 
 var englishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo.indefinite_object"},
+	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo.indefinite_subject"},
+	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_object"},
 	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo.indefinite_object"},
+	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo.indefinite_subject"},
+	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_object"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.mass_object"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_object"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_subject"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_object"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_mass_object"},
 	{"en.read.text", "en.read.text.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo"},
+	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_target"},
+	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_subject"},
+	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_subject_target"},
 }
 
 var englishFrames = []frameDeclaration{
@@ -144,10 +162,28 @@ func englishConstructionBindingProvenance(item constructionBindingDeclaration) p
 	if item.variant == "en.transitive.svo.mass_object" {
 		return englishOwnerMassObjectConstructionSource
 	}
-	if item.variant == "en.transitive.svo.indefinite_object" {
+	if item.variant == "en.transitive.svo.indefinite_object" && item.sense == "en.get.receive" {
 		return englishIndefiniteObjectConstructionSource
 	}
+	if englishDeterminerAlternativeVariant(item.variant) {
+		return englishDeterminerAlternativeConstructionSource
+	}
 	return englishBindingProvenance(item.sense)
+}
+
+func englishDeterminerAlternativeVariant(variant string) bool {
+	switch variant {
+	case "en.transitive.svo.indefinite_object",
+		"en.transitive.svo.indefinite_subject",
+		"en.transitive.svo.indefinite_subject_object",
+		"en.transitive.svo.indefinite_subject_mass_object",
+		"en.oblique.svo.indefinite_target",
+		"en.oblique.svo.indefinite_subject",
+		"en.oblique.svo.indefinite_subject_target":
+		return true
+	default:
+		return false
+	}
 }
 
 func englishBindingProvenance(sense string) provenance.SourceRef {

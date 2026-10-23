@@ -62,7 +62,7 @@ func NewSentenceTarget(snapshot *pack.Pack, registry *language.Registry) (*runti
 		Language: "en", LanguageRegistry: registry, Lexicon: snapshot.Lexicon(), Valency: valencyIndex,
 		Constructions: constructions, Variants: variants, Core: snapshot.CoreGraph(),
 		OperatorBuilder: runtime.NoOperatorEvidenceBuilder{}, ExecutionBuilder: execution,
-		PlanBuilder: englishSentencePlanAnnotations{}, CandidatePolicy: englishReceivingCandidatePolicy{},
+		PlanBuilder: englishSentencePlanAnnotations{}, CandidatePolicy: englishDeterminerCandidatePolicy{},
 	}, nil
 }
 
@@ -172,35 +172,29 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 			continue
 		}
 		values, found := runtime.SourceFeatures(source, participant.Role, coreConcept(referent))
-		if found && values["determiner"] == "definite" {
+		determiner, targetDeterminerKnown := englishDeterminerForRole(selected, participant.Role)
+		if !targetDeterminerKnown {
 			continue
 		}
-		if found && values["determiner"] == "indefinite" {
-			if englishIndefiniteObjectRole(selected, participant.Role) {
-				continue
-			}
-			losses = append(losses, realizer.FieldLoss{
-				Path: referentPath, Field: "determiner", Outcome: status.OutcomeUnsupported,
-				Reason: "the selected English target construction cannot preserve this explicit indefinite source determiner",
-			})
-			continue
+		sourceDeterminer := ""
+		if found {
+			sourceDeterminer = string(values["determiner"])
 		}
-		if englishMassObjectRole(selected, participant.Role) {
-			assumptions = append(assumptions, realizer.FieldAssumption{
-				Path: referentPath, Field: "determiner", Value: "bare",
-				Reason: "The selected English construction realizes an explicitly mass target noun without an article; source Meaning does not encode definiteness",
-			})
-			if len(source.Evidence.Records) == 0 {
-				assumptions = append(assumptions, realizer.FieldAssumption{
-					Path: referentPath, Field: "number", Value: "singular",
-					Reason: "Meaning v1 identifies individual referents but carries no noun number feature; this response uses the approved singular form",
+		if sourceDeterminer != "" {
+			if sourceDeterminer != determiner {
+				losses = append(losses, realizer.FieldLoss{
+					Path: referentPath, Field: "determiner", Outcome: status.OutcomeUnsupported,
+					Reason: "the selected English target construction does not preserve the explicit source determiner",
 				})
 			}
 			continue
 		}
-		determiner, reason := "definite", "English transitive template realizes the definite determiner; source Meaning and morphology provide no explicit definiteness value"
-		if englishIndefiniteObjectRole(selected, participant.Role) {
-			determiner, reason = "indefinite", "English receiving construction offers an indefinite count-object alternative because source Meaning does not encode definiteness"
+		reason := "the source does not encode English definiteness; this candidate selects the definite article"
+		switch determiner {
+		case "indefinite":
+			reason = "the source does not encode English definiteness; this candidate selects the indefinite article"
+		case "bare":
+			reason = "the target noun is explicitly mass and this candidate realizes it without an article"
 		}
 		assumptions = append(assumptions, realizer.FieldAssumption{
 			Path: referentPath, Field: "determiner", Value: determiner, Reason: reason,
@@ -215,107 +209,186 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 	return nil, assumptions, losses, nil
 }
 
-type englishReceivingCandidatePolicy struct{}
+type englishDeterminerCandidatePolicy struct{}
 
-func (englishReceivingCandidatePolicy) KeepTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) bool {
+func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) bool {
 	const (
-		receivingSense          = "sense:en.get.receive"
-		transitiveFamily        = "construction:en.transitive"
-		standardVariant         = "construction:en.transitive.svo"
-		massObjectVariant       = "construction:en.transitive.svo.mass_object"
-		indefiniteObjectVariant = "construction:en.transitive.svo.indefinite_object"
+		transitiveFamily = "construction:en.transitive"
+		obliqueFamily    = "construction:en.oblique"
 	)
-	if candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || candidate.Sense.ID.String() != receivingSense ||
-		candidate.Family.Family.ID.String() != transitiveFamily {
+	familyID := candidate.Family.Family.ID.String()
+	if candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || familyID != transitiveFamily && familyID != obliqueFamily {
 		return true
 	}
-	variantID := candidate.CompiledVariant.Variant.ID.String()
-	if variantID != standardVariant && variantID != massObjectVariant && variantID != indefiniteObjectVariant {
+	variant, knownVariant := englishDeterminerVariant(candidate.CompiledVariant.Variant.ID.String())
+	if !knownVariant {
 		return true
 	}
 	if source.Meaning == nil {
-		return variantID == standardVariant
+		return candidate.CompiledVariant.Variant.ID.String() == englishStandardDeterminerVariant(familyID)
 	}
 	predicate := findMeaningNode(*source.Meaning, candidate.NodeID)
 	if predicate.ID == "" {
-		return variantID == standardVariant
+		return candidate.CompiledVariant.Variant.ID.String() == englishStandardDeterminerVariant(familyID)
 	}
-	var objectTarget meaning.NodeID
-	var objectRole meaning.Role
 	for _, slot := range candidate.Family.Family.SlotSpecs {
-		if slot.ID != "object" || slot.ArgumentBinding == nil {
+		if (slot.ID != "subject" && slot.ID != "object" && slot.ID != "target") || slot.ArgumentBinding == nil {
 			continue
 		}
-		objectRole = slot.ArgumentBinding.SemanticRole
+		role := slot.ArgumentBinding.SemanticRole
+		var referent meaning.Node
+		foundReferent := false
 		for _, participant := range predicate.Participants {
-			if participant.Role == objectRole {
-				objectTarget = participant.Target
+			if participant.Role == role {
+				referent = findMeaningNode(*source.Meaning, participant.Target)
+				foundReferent = referent.ID != ""
 				break
 			}
 		}
-		break
-	}
-	if objectTarget == "" {
-		return variantID == standardVariant
-	}
-	var objectCandidate realizer.TargetCandidate
-	count := 0
-	for _, available := range candidates {
-		if available.SourceCandidateID == candidate.SourceCandidateID && available.NodeID == objectTarget &&
-			available.Kind == meaning.KindReferent && available.Outcome == status.OutcomeOK {
-			objectCandidate = available
-			count++
+		if !foundReferent {
+			if englishDeterminerForSlot(variant, slot.ID) != "definite" {
+				return false
+			}
+			continue
+		}
+		lexicalCandidates := make([]realizer.TargetCandidate, 0, 1)
+		for _, available := range candidates {
+			if available.SourceCandidateID == candidate.SourceCandidateID && available.NodeID == referent.ID &&
+				available.Kind == meaning.KindReferent && (available.Outcome == status.OutcomeOK || available.Outcome == status.OutcomeIncomplete) &&
+				available.Lexeme.ID.String() != "" {
+				lexicalCandidates = append(lexicalCandidates, available)
+			}
+		}
+		if len(lexicalCandidates) == 0 {
+			if englishDeterminerForSlot(variant, slot.ID) != "definite" {
+				return false
+			}
+			continue
+		}
+		values, found := runtime.SourceFeatures(source, role, coreConcept(referent))
+		determiner := ""
+		if found {
+			determiner = string(values["determiner"])
+		}
+		number := values["number"]
+		if number == "" {
+			number = values["noun_number"]
+		}
+		allMass, allAArticle := true, true
+		for _, lexicalCandidate := range lexicalCandidates {
+			allMass = allMass && hasLexicalProperty(lexicalCandidate.Lexeme.Properties, "number_behavior", "mass")
+			allAArticle = allAArticle && hasLexicalProperty(lexicalCandidate.Lexeme.Properties, "indefinite_article", "a")
+		}
+		mass := allMass
+		if mass {
+			number = "singular"
+		}
+		if number == "" && !found && len(source.Evidence.Records) == 0 {
+			number = "singular"
+		}
+		actualDeterminer := englishDeterminerForSlot(variant, slot.ID)
+		if slot.ID == "object" && mass {
+			if determiner == "definite" {
+				if actualDeterminer != "definite" {
+					return false
+				}
+			} else if actualDeterminer != "bare" {
+				return false
+			}
+			continue
+		}
+		if actualDeterminer == "indefinite" && !allAArticle {
+			return false
+		}
+		if determiner != "" {
+			if actualDeterminer != determiner {
+				return false
+			}
+			continue
+		}
+		if number == "plural" {
+			if actualDeterminer != "definite" {
+				return false
+			}
+			continue
+		}
+		if number != "singular" {
+			if actualDeterminer != "definite" {
+				return false
+			}
+			continue
+		}
+		if actualDeterminer != "definite" && actualDeterminer != "indefinite" {
+			return false
 		}
 	}
-	if count != 1 {
-		return variantID == standardVariant
-	}
-	isMassObject := count == 1 && hasLexicalProperty(objectCandidate.Lexeme.Properties, "number_behavior", "mass")
-	if isMassObject {
-		return variantID == massObjectVariant
-	}
-	values, found := runtime.SourceFeatures(source, objectRole, objectCandidate.TransferBinding.CoreRef)
-	determiner := values["determiner"]
-	number := values["number"]
-	if number == "" {
-		number = values["noun_number"]
-	}
-	if determiner == "definite" {
-		return variantID == standardVariant
-	}
-	if determiner == "indefinite" {
-		return number == "singular" && variantID == indefiniteObjectVariant
-	}
-	if number == "singular" || !found && len(source.Evidence.Records) == 0 {
-		return variantID == standardVariant || variantID == indefiniteObjectVariant
-	}
-	return variantID == standardVariant
+	return true
 }
 
-func englishMassObjectRole(candidate realizer.TargetCandidate, role meaning.Role) bool {
-	if candidate.CompiledVariant.Variant.ID.String() != "construction:en.transitive.svo.mass_object" ||
-		candidate.Sense.ID.String() != "sense:en.get.receive" {
-		return false
-	}
-	for _, slot := range candidate.Family.Family.SlotSpecs {
-		if slot.ID == "object" && slot.ArgumentBinding != nil && slot.ArgumentBinding.SemanticRole == role {
-			return true
-		}
-	}
-	return false
+type englishDeterminers struct {
+	subject string
+	object  string
+	target  string
 }
 
-func englishIndefiniteObjectRole(candidate realizer.TargetCandidate, role meaning.Role) bool {
-	if candidate.CompiledVariant.Variant.ID.String() != "construction:en.transitive.svo.indefinite_object" ||
-		candidate.Sense.ID.String() != "sense:en.get.receive" {
-		return false
+func englishDeterminerVariant(id string) (englishDeterminers, bool) {
+	variant, exists := englishDeterminerVariants[id]
+	return variant, exists
+}
+
+var englishDeterminerVariants = map[string]englishDeterminers{
+	"construction:en.transitive.svo":                                {subject: "definite", object: "definite"},
+	"construction:en.transitive.svo.indefinite_object":              {subject: "definite", object: "indefinite"},
+	"construction:en.transitive.svo.indefinite_subject":             {subject: "indefinite", object: "definite"},
+	"construction:en.transitive.svo.indefinite_subject_object":      {subject: "indefinite", object: "indefinite"},
+	"construction:en.transitive.svo.mass_object":                    {subject: "definite", object: "bare"},
+	"construction:en.transitive.svo.indefinite_subject_mass_object": {subject: "indefinite", object: "bare"},
+	"construction:en.oblique.svo":                                   {subject: "definite", target: "definite"},
+	"construction:en.oblique.svo.indefinite_target":                 {subject: "definite", target: "indefinite"},
+	"construction:en.oblique.svo.indefinite_subject":                {subject: "indefinite", target: "definite"},
+	"construction:en.oblique.svo.indefinite_subject_target":         {subject: "indefinite", target: "indefinite"},
+}
+
+func englishStandardDeterminerVariant(familyID string) string {
+	switch familyID {
+	case "construction:en.transitive":
+		return "construction:en.transitive.svo"
+	case "construction:en.oblique":
+		return "construction:en.oblique.svo"
+	default:
+		return ""
+	}
+}
+
+func englishDeterminerForRole(candidate realizer.TargetCandidate, role meaning.Role) (string, bool) {
+	familyID := candidate.Family.Family.ID.String()
+	if familyID != "construction:en.transitive" && familyID != "construction:en.oblique" {
+		return "", false
+	}
+	variant, exists := englishDeterminerVariant(candidate.CompiledVariant.Variant.ID.String())
+	if !exists {
+		return "", false
 	}
 	for _, slot := range candidate.Family.Family.SlotSpecs {
-		if slot.ID == "object" && slot.ArgumentBinding != nil && slot.ArgumentBinding.SemanticRole == role {
-			return true
+		if slot.ArgumentBinding == nil || slot.ArgumentBinding.SemanticRole != role {
+			continue
 		}
+		return englishDeterminerForSlot(variant, slot.ID), true
 	}
-	return false
+	return "", false
+}
+
+func englishDeterminerForSlot(variant englishDeterminers, slotID string) string {
+	switch slotID {
+	case "subject":
+		return variant.subject
+	case "object":
+		return variant.object
+	case "target":
+		return variant.target
+	default:
+		return ""
+	}
 }
 
 func hasLexicalProperty(properties []lexicon.Property, key, value string) bool {
