@@ -316,8 +316,10 @@ Na implementacji [`0caf552605e9b1c24d57a9b88a4ec65f3a6f8c2f`](../data/sentences/
 uruchomiono S021–S025, S036–S040, S071–S075 i S096–S100 w obu kierunkach,
 czyli 40 wywołań CLI, oraz jedną osobno oznaczoną próbę pochodną. `forms`
 rozpoznało `offspring` jako singular i plural o tej samej powierzchni, a `an`
-jako determiner `indefinite`. EN→PL zwróciło 16 wyników `ok` i 4
-`incomplete`; PL→EN zachowało 20 wyników `ambiguous`. Nie wystąpiły
+jako determiner `indefinite`. W 20 istniejących rekordach EN→PL zwróciło 15
+wyników `ok` i 5 `incomplete`; PL→EN zachowało 20 wyników `ambiguous`. Oddzielna
+próba pochodna
+`An offspring sees a dog.` zwróciła `ok`. Nie wystąpiły
 `ROLE_LEXICALIZATION_UNAVAILABLE` ani `PRINCIPAL_PARTS_UNAVAILABLE`.
 
 Przykład pochodny `An offspring sees a dog.` został przełożony jako
@@ -332,6 +334,30 @@ Agent zapisał ocenę i provenance w
 [komentarzu #237](https://github.com/clickbytes/golingua/issues/237#issuecomment-6357615617).
 Wyjścia PL→EN zachowują alternatywy `child`/`offspring` oraz założenia
 rodzajnika. Nierozstrzygnięty `book` nadal daje częściową analizę. Akceptacja
+właściciela pozostaje **NOT RUN**.
+
+### G10-13 #239 (PR #240) — present 3pl i uzgodnienie liczby — 2026-10-23
+
+Na implementacji `c61f401d1abfc1247602b7a0b76b14b5180973df` ponownie
+uruchomiono 20 istniejących rekordów S021–S025, S036–S040, S071–S075 i
+S096–S100 w obu kierunkach. Kody wyjścia, statusy i zbiory tekstów kandydatów
+pozostały takie same jak w obserwacji G10-12: EN→PL 15 `ok` i 5 `incomplete`,
+PL→EN 20 `ambiguous`.
+
+W 10 oddzielnie oznaczonych próbach pochodnych `The offspring sees a dog.` dało
+`Dziecko widzi psa.`, a `The offspring see a dog.` — `Dzieci widzą psa.`; oba
+zwróciły `ok`. Trzy EN wejścia mnogie dla `see`, `hear` i `look at` zwróciły
+zgodne formy PL ze statusem `ok`. Trzy mnogie wejścia PL pokazały mnogie formy
+czasowników w kandydatach EN, zachowując `ambiguous` przez alternatywy
+`children`/`offspring` i `a`/`the`. Dwie niezgodne pary `The children sees...`
+i `Dzieci widzi...` zwróciły `unsupported` z
+`NO_PARSE`/`UNMATCHED_PARSE_CANDIDATE`.
+
+`forms` wygenerowało `see`, `hear`, `look`, `widzą`, `słyszą` i `patrzą` dla
+jawnych komórek 3pl. English past `receiving` używa osobnej rodziny bez
+uzgodnienia liczby; dotychczasowe obserwacje singularnego `got` zachowały
+statusy i teksty. Agent ocenia zachowanie jawnych komórek i uzgodnienie liczby
+na tych przypadkach CLI jako zgodne z deklarowaną regułą. Odbiór językowy
 właściciela pozostaje **NOT RUN**.
 
 Bez tekstu dostarczonego przez właściciela oznacz ocenę językową **NOT EVALUATED**. Jeśli nie uruchomiono konkretnej próby na wejściu właściciela, oznacz ją **NOT RUN**. Gdy właściciel deleguje autonomiczną ocenę, agent może opisać własną ocenę na tych wejściach, ale status akceptacji właściciela pozostaje osobny. Techniczne smoke testy z tekstem zastępczym nie są wejściem do oceny językowej. Dokładny kontrakt i przykład komendy opisuje [docs/cli.md](cli.md); nie przedstawiaj go jako dowodu, że provider jest skonfigurowany.

@@ -2,6 +2,7 @@ package en
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/meaning"
@@ -81,18 +82,18 @@ var englishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_object_a"},
 	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_object_an"},
 	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_mass_object"},
-	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo"},
-	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.mass_object"},
-	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_object"},
-	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_subject"},
-	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_object"},
-	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_mass_object"},
-	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_object_an"},
-	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an"},
-	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_a_object_an"},
-	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_object_a"},
-	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_object_an"},
-	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_mass_object"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo.mass_object"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo.indefinite_object"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo.indefinite_subject"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo.indefinite_subject_object"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo.indefinite_subject_mass_object"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo.indefinite_object_an"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo.indefinite_subject_an"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo.indefinite_subject_a_object_an"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo.indefinite_subject_an_object_a"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo.indefinite_subject_an_object_an"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo.indefinite_subject_an_mass_object"},
 	{"en.read.text", "en.read.text.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_target"},
@@ -118,7 +119,7 @@ var englishFrames = []frameDeclaration{
 		{ID: "subject", Role: "experiencer", Required: true, GrammaticalFunction: "subject"},
 		{ID: "object", Role: "stimulus", Required: true, GrammaticalFunction: "object"},
 	}},
-	{"en.get.receive.transitive", "en.get.receive", "en.transitive", []meaning.Role{"recipient", "theme"}, []valency.ArgumentSlot{
+	{"en.get.receive.transitive", "en.get.receive", "en.transitive_past", []meaning.Role{"recipient", "theme"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "recipient", Required: true, GrammaticalFunction: "subject"},
 		{ID: "object", Role: "theme", Required: true, GrammaticalFunction: "object"},
 	}},
@@ -188,16 +189,20 @@ func CompileValency() (*valency.Index, error) {
 }
 
 func englishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
-	if item.variant == "en.transitive.svo.mass_object" {
+	variant := item.variant
+	if suffix, isPastFamily := strings.CutPrefix(variant, "en.transitive_past."); isPastFamily {
+		variant = "en.transitive." + suffix
+	}
+	if variant == "en.transitive.svo.mass_object" {
 		return englishOwnerMassObjectConstructionSource
 	}
-	if item.variant == "en.transitive.svo.indefinite_object" && item.sense == "en.get.receive" {
+	if variant == "en.transitive.svo.indefinite_object" && item.sense == "en.get.receive" {
 		return englishIndefiniteObjectConstructionSource
 	}
-	if englishIndefiniteAllomorphVariant(item.variant) {
+	if englishIndefiniteAllomorphVariant(variant) {
 		return englishIndefiniteAllomorphConstructionSource
 	}
-	if englishDeterminerAlternativeVariant(item.variant) {
+	if englishDeterminerAlternativeVariant(variant) {
 		return englishDeterminerAlternativeConstructionSource
 	}
 	return englishBindingProvenance(item.sense)

@@ -123,13 +123,18 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 		if number == "" {
 			number = values["verb_number"]
 		}
-		presentSingular := values["verb_form"] == "third_person_singular" ||
+		presentSingular := values["verb_form"] == "third_person_singular" && (number == "" || number == "singular") ||
 			values["verb_form"] == "finite" && values["tense"] == "present" && values["person"] == "third" && number == "singular"
-		if presentSingular {
+		presentPlural := values["verb_form"] == "finite" && values["tense"] == "present" && values["person"] == "third" && number == "plural"
+		if presentSingular || presentPlural {
+			finiteNumber := number
+			if presentSingular && finiteNumber == "" {
+				finiteNumber = "singular"
+			}
 			return knownPolishFeatures(
 				[2]string{"verb_form", "finite"}, [2]string{"tense", "present"},
 				[2]string{"aspect", "imperfective"},
-				[2]string{"person", "third"}, [2]string{"number", "singular"},
+				[2]string{"person", "third"}, [2]string{"number", string(finiteNumber)},
 				[2]string{"mood", "indicative"}, [2]string{"voice", "active"},
 			), nil
 		}

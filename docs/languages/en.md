@@ -74,10 +74,12 @@ classes do not implement consonant doubling, infer unlisted irregular plurals,
 provide auxiliaries, or enable unrestricted sentence realization. The English
 lexical catalog currently has no adjective or pronoun lexemes; `bright` remains
 a standalone morphology seed example. The compiled sentence routes use finite
-`see`, `hear`, `look` and past `get` forms. English `food`, `money`, and `water`
+`see`, `hear`, `look` and past `get` forms. The three present routes support
+third-person singular and plural with hard subject–verb number agreement; past
+`get` uses a separate number-invariant family. English `food`, `money`, and `water`
 are marked as mass nouns for target number selection. The transitive source
 construction recognizes `the`, `a`, and a bare object where current
 lexical/morphology data allow it. The oblique `look at` route recognizes the
 exact `at` terminal. Owner-authored `looking` CLI observations are in
 [`data/sentences/observed-2026-10-23-g05-14-looking.tsv`](../../data/sentences/observed-2026-10-23-g05-14-looking.tsv);
-owner sign-off remains **NOT RUN**.
+Plural route CLI observations are in [`data/sentences/observed-2026-10-23-g10-13-plural-agreement.tsv`](../../data/sentences/observed-2026-10-23-g10-13-plural-agreement.tsv); owner sign-off remains **NOT RUN**.

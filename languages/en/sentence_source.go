@@ -17,7 +17,7 @@ import (
 
 // NewSentenceSource compiles the English analysis stages against one exact
 // snapshot. Its complete declarative attestation is limited to attested
-// third-person singular present visual and auditory predicates, explicit
+// third-person singular and plural present visual and auditory predicates, explicit
 // definite and indefinite articles, and the registered past receiving route.
 func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if snapshot == nil {
@@ -70,9 +70,18 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 		EvidenceBuilder: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true},
 			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
-				seeingSense:  {{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"}},
-				hearingSense: {{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"}},
-				lookingSense: {{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"}},
+				seeingSense: {
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
+				},
+				hearingSense: {
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
+				},
+				lookingSense: {
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
+				},
 				// English simple past is finite but has one form for all persons
 				// and numbers, so no agreement feature is required for this cell.
 				receivingSense: {{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"}},
@@ -94,7 +103,25 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 	}
 	filtered := candidates[:0]
 	for _, candidate := range candidates {
+		if candidate.Features == nil {
+			candidate.Features = make(map[features.FeatureID]features.FeatureValueID)
+		}
+		if candidate.Category == construction.CategoryVP {
+			if number := candidate.Features["verb_number"]; number != "" {
+				candidate.Features["number"] = number
+			}
+			if !supportedEnglishPredicateRoute(candidate) {
+				continue
+			}
+			filtered = append(filtered, candidate)
+			continue
+		}
 		if candidate.Category != construction.CategoryNP || candidate.TokenStart == 0 {
+			if candidate.Category == construction.CategoryNP {
+				if number := candidate.Features["noun_number"]; number != "" {
+					candidate.Features["number"] = number
+				}
+			}
 			filtered = append(filtered, candidate)
 			continue
 		}
@@ -136,8 +163,29 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 			}
 		}
 		if keep {
+			if number := candidate.Features["noun_number"]; number != "" {
+				candidate.Features["number"] = number
+			}
 			filtered = append(filtered, candidate)
 		}
 	}
 	return filtered, parseContext, nil
+}
+
+func supportedEnglishPredicateRoute(candidate parser.PhraseCandidate) bool {
+	if candidate.Features["verb_form"] != "finite" {
+		return false
+	}
+	switch candidate.Features["tense"] {
+	case "present":
+		return candidate.Features["person"] == "third" &&
+			(candidate.Features["verb_number"] == "singular" || candidate.Features["verb_number"] == "plural")
+	case "past":
+		for _, sense := range candidate.SenseIDs {
+			if sense.String() == "sense:en.get.receive" {
+				return true
+			}
+		}
+	}
+	return false
 }
