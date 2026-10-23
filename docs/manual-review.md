@@ -2,6 +2,10 @@
 
 **Obowiązuje od 2026-10-20, z delegacją właściciela z 2026-10-23.** Nie ma automatycznej macierzy translacji, porównania z flexLingua, niezależnych goldów ani liczby przypadków wymaganej przed PR/merge. Właściciel może przekazać słowa, zdania lub korpus; agent uruchamia dostępne CLI, sam ocenia konkretne obserwacje i poprawia błędy w granicach aktywnego zadania. Ocena agenta nie jest podpisem ani akceptacją właściciela. Nie wymyślaj niepodanych wyników oczekiwanych. Sama dostępność komendy nie oznacza, że skonfigurowano runtime językowy.
 
+## Wyjątek A1 — nowsza decyzja właściciela 2026-10-23
+
+Na jawne polecenie właściciela powstaje [mała macierz A1](../tests/README.md) w `tests/A1/*.testdomain.go`, z następnymi partiami A1.1 dopiero po określeniu ich zakresu. Zastępuje to dawny zakaz takiej macierzy w tym obszarze. Pierwszy batch jest danymi do realizacji, bez automatycznego runnera, `*_test.go` i językowej bramki CI. Agent może przygotować zamówione propozycje przypadków i przekładów, jawnie oznaczając ich autorstwo oraz brak akceptacji właściciela. Nie są to obserwowane wyniki ani zatwierdzone goldy. Opis docelowej semantyki pozostaje niezależny od aktualnych braków silnika; `unsupported` dokumentuje lukę, a nie jej zaliczenie. Poniższe reguły rzeczywistego uruchomienia, provenance i oddzielnej oceny pozostają w mocy.
+
 ## Jeden przypadek — prosta procedura
 
 1. Właściciel podaje dowolny tekst i kierunek (`pl→en` albo `en→pl`). Może wskazać akceptowalny wariant, lecz nie musi. Nie wymyślaj tekstu właściciela, jeśli go nie podał.
