@@ -187,3 +187,17 @@ evidence, gdy konkurencyjny sens nie ma zatwierdzonego CORE odpowiednika (np.
 `en.book.work`, `en.doctor.academic`, `en.house.institution`); agent nie uznaje
 tych przypadków za awarię realizatora ani nie awansuje bindingów. Odbiór
 językowy właściciela pozostaje **NOT RUN**.
+
+## Polski czas przeszły mnogi G10-15 — 2026-10-23
+
+Na implementacji `c97a6441c62102b098f734d0945f379064402e95` uruchomiono cztery
+oznaczone jako pochodne smoke CLI oraz cztery wywołania `forms`; dokładne wyniki
+znajdują się w
+[observed-2026-10-23-g10-15-plural-past.tsv](observed-2026-10-23-g10-15-plural-past.tsv).
+Angielskie podmioty mnogie `teachers` i `children` uzyskały polskie formy
+`dostali` i `dostały`. W kierunku PL→EN kandydatury zachowały `got`, ale
+określoność i alternatywne sensy nadal dają status `incomplete`/`ambiguous`.
+Ponowne uruchomienie S001–S100 w obu kierunkach (200 wywołań) zachowało
+wszystkie statusy i zbiory tekstów kandydatów z G10-14; nie dodawano wierszy
+do korpusu. Ocena agenta jest zapisana oddzielnie od odbioru właściciela,
+który pozostaje **NOT RUN**.

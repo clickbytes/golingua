@@ -1,0 +1,9 @@
+implementation_sha	check_id	check_type	from	to	input	exit_code	result_status	candidate_statuses	candidate_texts	note
+c97a6441c62102b098f734d0945f379064402e95	D001	derived_cli_smoke	en	pl	The teachers got water.	0	ok	ok	Nauczyciele dostali wodę.	Third-person masculine-personal plural past
+c97a6441c62102b098f734d0945f379064402e95	D002	derived_cli_smoke	en	pl	The children got water.	0	ok	ok	Dzieci dostały wodę.	Third-person non-masculine-personal plural past
+c97a6441c62102b098f734d0945f379064402e95	D003	derived_cli_smoke	pl	en	Nauczyciele dostali wodę.	7	incomplete	incomplete	The teachers got water.	Target text retained; existing determiner assumption remains
+c97a6441c62102b098f734d0945f379064402e95	D004	derived_cli_smoke	pl	en	Dzieci dostały wodę.	6	ambiguous	incomplete;incomplete	The children got water.;The offspring got water.	Plural realization retained; lexical and determiner alternatives remain
+c97a6441c62102b098f734d0945f379064402e95	F001	forms_generate	pl	pl	pl.dostac.v; verb_form=finite; tense=past; aspect=perfective; mood=indicative; voice=active; person=third; number=plural; gender=masculine_personal	0	ok	-	dostali	Declared third-person masculine-personal plural past cell
+c97a6441c62102b098f734d0945f379064402e95	F002	forms_generate	pl	pl	pl.dostac.v; verb_form=finite; tense=past; aspect=perfective; mood=indicative; voice=active; person=third; number=plural; gender=non_masculine_personal	0	ok	-	dostały	Declared third-person non-masculine-personal plural past cell
+c97a6441c62102b098f734d0945f379064402e95	F003	forms_analyze	pl	pl	dostali	0	ok	-	dostali	Analyzed as past_3pl_masculine_personal
+c97a6441c62102b098f734d0945f379064402e95	F004	forms_analyze	pl	pl	dostały	0	ok	-	dostały	Analyzed as past_3pl_non_masculine_personal
