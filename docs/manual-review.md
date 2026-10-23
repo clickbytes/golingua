@@ -310,7 +310,7 @@ PL→EN zachowało status `ambiguous` we wszystkich 10 wynikach. W 84 zachowanyc
 
 **Ocena agenta:** dodane formy są regularnym zapisem istniejącego leksemu i odsłaniają kandydatury dla już zapisanych odczytów `dom`; nie rozstrzygają, czy w zdaniu chodzi o budynek, czy gospodarstwo domowe. Wyniki nadal wymagają ręcznej oceny; akceptacja właściciela pozostaje **NOT RUN**.
 
-### G10-12 #237 — `offspring` i allomorfy `a/an` — 2026-10-23
+### G10-12 #237 (PR #238) — `offspring` i allomorfy `a/an` — 2026-10-23
 
 Na implementacji [`0caf552605e9b1c24d57a9b88a4ec65f3a6f8c2f`](../data/sentences/observed-2026-10-23-g10-12-offspring-a-an.tsv)
 uruchomiono S021–S025, S036–S040, S071–S075 i S096–S100 w obu kierunkach,
