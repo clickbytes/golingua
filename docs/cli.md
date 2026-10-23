@@ -54,7 +54,19 @@ G10-02 rozszerza polskie `forms` o jawne osoby/liczby dla wybranych czasowników
 go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.widziec.v --feature verb_form=finite --feature tense=present --feature aspect=imperfective --feature mood=indicative --feature voice=active --feature person=first --feature number=singular --json
 go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.dostac.v --feature verb_form=finite --feature tense=future --feature aspect=perfective --feature mood=indicative --feature voice=active --feature person=second --feature number=singular --json
 go run ./cmd/golingua forms --language pl --surface dostaliśmy --json
+go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.kon.n --feature number=plural --feature case=instrumental --feature gender=masculine_animal --json
+go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.miasto.n --feature number=plural --feature case=genitive --feature gender=neuter --json
+go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.dorosly.adj --feature degree=superlative --feature number=plural --feature gender=non_masculine_personal --feature case=nominative --json
+go run ./cmd/golingua forms --language pl --surface dorośli --json
 ```
+
+G10-04 dodał pełne 14 komórek przypadek/liczba dla `kot`, `ptak`, `koń`,
+`miasto`, `mieszkanie`, `rzeka`, `siostra` i `mewa`. Dla istniejącego
+przymiotnika `dorosły` CLI generuje udokumentowane stopnie: równy, wyższy i
+najwyższy. Wyższe stopnie nie mają zadeklarowanych form wołacza, więc żądanie
+takiej komórki pozostaje niedostępne. `mewa` jest leksemem morfologicznym bez
+sensu i bindingu CORE, więc jego formy są dostępne dla `forms`, ale nie tworzą
+nowej ścieżki tłumaczenia semantycznego.
 
 G10-03 dodaje ograniczone angielskie klasy liczby rzeczowników: regularne `+s`,
 sybilant `+es`, spółgłoska + `y → ies`, jawne principal parts dla wybranych

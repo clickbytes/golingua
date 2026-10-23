@@ -38,6 +38,12 @@ G10-03 dodaje jawne komórki singular/plural dla wybranych rzeczowników. Proced
 
 G10-02 przypisuje jawne klasy tylko `widzieć`, `słyszeć`, `patrzeć` i `dostać`. Pierwsze trzy mają sześć komórek czasu teraźniejszego z aspektem niedokonanym. `Dostać` ma sześć komórek przyszłych czasu dokonanego oraz komórki przeszłe dla osób i liczb. Czas przeszły rozróżnia rodzaj w liczbie pojedynczej oraz klasę męskoosobową i niemęskoosobową w liczbie mnogiej. Tematy są zapisane jako principal parts; procedury wybierają końcówkę komórki. Nie jest to klasyfikator wszystkich polskich czasowników ani pełny model aspektu, trybu, strony, imiesłowów czy czasowników złożonych.
 
+### Polskie rzeczowniki i przymiotnik
+
+G10-04 deklaruje pełne 7 przypadków × 2 liczby dla ośmiu jawnie wybranych rzeczowników. `kot` i `ptak` przechodzą z ograniczonej sześciokomórkowej reguły na indywidualne, źródłowane formy. Pozostałe nowe wpisy to `koń`, `miasto`, `mieszkanie`, `rzeka`, `siostra` i `mewa`. Każda reguła wskazuje własny rekord WSJP PAN oraz licencję `unknown`; żaden wpis nie tworzy produktywnej reguły dla innych leksemów. `mewa` jest obecnie wyłącznie leksemem morfologicznym bez sensu i bindingu CORE.
+
+Jedyny obecny polski przymiotnik `dorosły` ma jawne komórki stopnia równego, wyższego i najwyższego dla dostępnych przypadków, liczb i klas zgody. Formy comparativus są wymienione w principal parts; procedura najwyższego stopnia dodaje `naj-` do tych form. WSJP nie przedstawia vocative dla stopni wyższych, więc tych komórek nie deklarujemy.
+
 ### Wyjątki
 
 | Effect | Semantyka |

@@ -5,53 +5,14 @@ import (
 
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/morph"
-	"github.com/clickbytes/golingua/internal/procedure"
-	"github.com/clickbytes/golingua/internal/provenance"
 )
 
-var polishNounSource = provenance.SourceRef{
-	ID: "golingua-pl-noun-authored", Path: "languages/pl/morphology.go",
-	Version: "2026-10-21-initial", License: "unknown", Author: "golingua contributors",
-}
-
-// Only cells whose outputs are explicitly declared here are generated. This
-// regular masculine animate pattern does not imply a complete Polish noun
-// declension for every lexical item.
+// Only explicitly declared noun and adjective forms enter these paradigms.
 func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm {
-	type cell struct{ id, number, grammaticalCase, suffix string }
-	cells := []cell{
-		{"sg_nom", "singular", "nominative", ""},
-		{"sg_gen", "singular", "genitive", "a"},
-		{"sg_acc", "singular", "accusative", "a"},
-		{"sg_inst", "singular", "instrumental", "em"},
-		{"pl_nom", "plural", "nominative", "y"},
-		{"pl_gen", "plural", "genitive", "ów"},
-	}
-	paradigm := morph.Paradigm{
-		SchemaVersion: morph.ParadigmSchemaVersion,
-		ID:            "pl_masc_animal_regular", Language: "pl", ProfileVersion: profile.Version(), POS: "noun",
-		PrincipalPartRequirements: []morph.PrincipalPartRequirement{{StemID: "root", PartID: "base", Required: true}},
-	}
-	for _, item := range cells {
-		paradigm.Cells = append(paradigm.Cells, morph.ParadigmCell{
-			ID: morph.CellID(item.id), Features: []features.FeatureValue{
-				{Feature: "number", State: features.StateKnown, Value: features.FeatureValueID(item.number)},
-				{Feature: "case", State: features.StateKnown, Value: features.FeatureValueID(item.grammaticalCase)},
-				{Feature: "gender", State: features.StateKnown, Value: "masculine_animal"},
-			},
-		})
-		steps := []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "root"}}
-		if item.suffix != "" {
-			steps = append(steps, procedure.Operation{Kind: procedure.OperationAppend, Text: item.suffix})
-		}
-		paradigm.Rules = append(paradigm.Rules, morph.CellRule{
-			CellID: morph.CellID(item.id), ProcedureID: "procedure:pl_masc_animal_regular." + item.id,
-			Provenance: polishNounSource, Steps: steps,
-		})
-	}
-	result := append([]morph.Paradigm{paradigm}, attestedNounParadigms(profile)...)
+	result := attestedNounParadigms(profile)
 	result = append(result, pluralOnlyNounParadigm(profile))
-	return append(result, treeNounParadigm(profile))
+	result = append(result, treeNounParadigm(profile))
+	return append(result, doroslyAdjectiveParadigm(profile))
 }
 
 func inCodeMorphRecords() ([]lexemeRecord, error) {
@@ -73,6 +34,11 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 		return nil, err
 	}
 	attested = append(attested, treeNouns...)
+	adjectives, err := doroslyAdjectiveRecords(document.Lexemes)
+	if err != nil {
+		return nil, err
+	}
+	attested = append(attested, adjectives...)
 	foundCat := false
 	foundBird := false
 	foundSee := false
@@ -80,6 +46,12 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 	foundLook := false
 	foundReceive := false
 	for _, lexeme := range document.Lexemes {
+		if lexeme.ID.String() == "lexeme:pl.kot.n" {
+			foundCat = true
+		}
+		if lexeme.ID.String() == "lexeme:pl.ptak.n" {
+			foundBird = true
+		}
 		if lexeme.ID.String() == "lexeme:pl.widziec.v" {
 			foundSee = true
 			attested = append(attested, lexemeRecord{Lexeme: lexeme, PrincipalParts: morph.PrincipalParts{
@@ -106,21 +78,6 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 					{ID: "past_stem", Form: "dosta"},
 				},
 			}})
-		}
-		if lexeme.ParadigmID == "pl_masc_animal_regular" {
-			if lexeme.ID.String() == "lexeme:pl.kot.n" {
-				foundCat = true
-			}
-			if lexeme.ID.String() == "lexeme:pl.ptak.n" {
-				foundBird = true
-			}
-			attested = append(attested, lexemeRecord{
-				Lexeme: lexeme,
-				PrincipalParts: morph.PrincipalParts{
-					LexemeID: lexeme.ID,
-					Parts:    []morph.PrincipalPart{{ID: "base", Form: lexeme.Lemma}},
-				},
-			})
 		}
 	}
 	if !foundCat || !foundBird || !foundSee || !foundHear || !foundLook || !foundReceive {
