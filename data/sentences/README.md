@@ -166,3 +166,24 @@ kandydatach `ambiguous`, a dwie niezgodne pary liczby nie uzyskały parse.
 `forms` wygenerowało `see`, `hear`, `look`, `widzą`, `słyszą` i `patrzą` dla
 komórek trzeciej osoby mnogiej. To obserwacje działania CLI, nie gold ani odbiór
 językowy; akceptacja właściciela pozostaje **NOT RUN**.
+
+## Pełny przebieg G10-14 — 2026-10-23
+
+Na aktualnym CLI z implementacji
+`33b8830cae5b285fbfafacdbb0e90c85c7916aa6` uruchomiono wszystkie 100 istniejących
+wierszy w obu kierunkach: 200 rzeczywistych wywołań. Dokładne statusy, kody
+wyjścia, kandydatury tekstowe i diagnostyki są w
+[observed-2026-10-23-g10-14-full-corpus.tsv](observed-2026-10-23-g10-14-full-corpus.tsv)
+(592 wiersze kandydatur; `-` w polach diagnostyki oznacza brak diagnostyki).
+EN→PL zwróciło 60 wyników `ok` i 40 `incomplete`; każdy wynik zachował tekst.
+PL→EN zwróciło 100 wyników `ambiguous` z widocznymi kandydaturami; wszystkie
+592 kandydatury mają tekst, a każda z 492 kandydatur PL→EN ma status lokalny
+`incomplete` z jawnymi założeniami/alternatywami.
+
+**Ocena agenta:** `The child sees the dog.` daje `Dziecko widzi psa.` (`ok`).
+`Dziecko widzi psa.` zachowuje warianty `child`/`offspring` oraz rodzajniki
+`a`/`the` jako alternatywy. W EN→PL niekompletne wyniki pozostawiają tekst i
+evidence, gdy konkurencyjny sens nie ma zatwierdzonego CORE odpowiednika (np.
+`en.book.work`, `en.doctor.academic`, `en.house.institution`); agent nie uznaje
+tych przypadków za awarię realizatora ani nie awansuje bindingów. Odbiór
+językowy właściciela pozostaje **NOT RUN**.

@@ -360,6 +360,25 @@ statusy i teksty. Agent ocenia zachowanie jawnych komórek i uzgodnienie liczby
 na tych przypadkach CLI jako zgodne z deklarowaną regułą. Odbiór językowy
 właściciela pozostaje **NOT RUN**.
 
+### G10-14 #241 — pełne 100 wierszy w obu kierunkach — 2026-10-23
+
+Na implementacji `33b8830cae5b285fbfafacdbb0e90c85c7916aa6` uruchomiono
+istniejące S001–S100 EN→PL i PL→EN, czyli 200 lokalnych wywołań CLI na aktywnym
+snapshotcie. W tabeli
+[obserwacji G10-14](../data/sentences/observed-2026-10-23-g10-14-full-corpus.tsv)
+zapisano każdy wynik i kandydaturę: 592 wiersze, kody wyjścia oraz diagnostyki.
+EN→PL zwróciło 60 wyników `ok` i 40 `incomplete`; tekst był obecny w każdym
+wyniku. PL→EN zwróciło 100 wyników `ambiguous`; wszystkie kandydatury mają
+tekst, ale pozostają lokalnie `incomplete` przez jawne założenia rodzajnika i
+konkurencyjne odczytania.
+
+Agent ocenia, że obecna trasa zachowuje tłumaczenia w postaci kandydatur, a
+statusy ujawniają nierozstrzygniętą informację. Przykładowo EN `The child sees
+the book.` → PL `Dziecko widzi książkę.` pozostaje `incomplete`, bo parser
+zachowuje konkurencyjny niezatwierdzony sens `en.book.work`; tekst nie zostaje
+utajony ani binding promowany automatycznie. Akceptacja językowa właściciela
+pozostaje **NOT RUN**.
+
 Bez tekstu dostarczonego przez właściciela oznacz ocenę językową **NOT EVALUATED**. Jeśli nie uruchomiono konkretnej próby na wejściu właściciela, oznacz ją **NOT RUN**. Gdy właściciel deleguje autonomiczną ocenę, agent może opisać własną ocenę na tych wejściach, ale status akceptacji właściciela pozostaje osobny. Techniczne smoke testy z tekstem zastępczym nie są wejściem do oceny językowej. Dokładny kontrakt i przykład komendy opisuje [docs/cli.md](cli.md); nie przedstawiaj go jako dowodu, że provider jest skonfigurowany.
 
 Nie ma obowiązku zapisywania każdego outputu do pliku. Jeśli zapis jest przydatny, prowadź opcjonalnie krótką notatkę w issue lub `examples/manual/`:
