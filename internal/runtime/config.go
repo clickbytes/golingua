@@ -42,12 +42,17 @@ type Config struct {
 // Options supplies trusted compiled providers and the engine stage adapters
 // that are available in this application build.
 type Options struct {
-	Providers    []language.LanguageProvider
-	Analyzers    map[features.LanguageID]engine.SourceAnalyzer
-	Realizers    map[features.LanguageID]engine.TargetRealizer
-	StageFactory StageFactory
-	Budget       engine.Budget
+	Providers       []language.LanguageProvider
+	LanguageFactory LanguageFactory
+	Analyzers       map[features.LanguageID]engine.SourceAnalyzer
+	Realizers       map[features.LanguageID]engine.TargetRealizer
+	StageFactory    StageFactory
+	Budget          engine.Budget
 }
+
+// LanguageFactory compiles data packages and their matching trusted Go
+// providers against the exact selected snapshot before registry validation.
+type LanguageFactory func(*pack.Pack) ([]language.Package, []language.LanguageProvider, error)
 
 // StageAdapters are compiled, language-specific engine stages constructed
 // against the exact pack and verified language registry selected by Config.
@@ -169,10 +174,22 @@ func LoadEngineFile(path string, options Options) (*engine.Engine, error) {
 	if err != nil {
 		return nil, err
 	}
-	if len(config.LanguagePackageDirs) == 0 {
+	if len(config.LanguagePackageDirs) == 0 && options.LanguageFactory == nil {
 		return nil, runtimeError(status.OutcomeInvalid, "LANGUAGE_PACKAGES_REQUIRED", "language_package_dirs", "translation runtime requires at least one language package")
 	}
-	registry, err := language.LoadRegistry(config.LanguagePackageDirs, options.Providers)
+	var registry *language.Registry
+	if options.LanguageFactory != nil {
+		if len(config.LanguagePackageDirs) != 0 {
+			return nil, runtimeError(status.OutcomeInvalid, "AMBIGUOUS_LANGUAGE_PACKAGE_SOURCE", "language_package_dirs", "runtime config cannot combine compiled language packages with external language package directories")
+		}
+		packages, providers, factoryErr := options.LanguageFactory(snapshot)
+		if factoryErr != nil {
+			return nil, preserveError(factoryErr, "RUNTIME_LANGUAGE_FACTORY_FAILED", "language_factory")
+		}
+		registry, err = language.BuildRegistry(packages, providers)
+	} else {
+		registry, err = language.LoadRegistry(config.LanguagePackageDirs, options.Providers)
+	}
 	if err != nil {
 		return nil, preserveError(err, "RUNTIME_LANGUAGE_REGISTRY_INVALID", "language_package_dirs")
 	}

@@ -12,19 +12,22 @@ go run ./cmd/golingua --help
 go run ./cmd/golingua capabilities --json
 ```
 
-`--version` zwraca wersję technicznego podglądu v0. `--help` pokazuje dostępne komendy. `capabilities --json` obecnie zwraca `status: "unsupported"`, puste tablice `languages` i `features`, oraz `ready: false` dla translacji; sama komenda kończy się kodem 0. `forms` i `catalog` mają własne komendy opisane poniżej.
+`--version` zwraca wersję technicznego podglądu v0. `--help` pokazuje dostępne komendy. `capabilities --json` opisuje gotowość bez wybranego runtime'u, dlatego obecnie zwraca `status: "unsupported"`, puste tablice `languages` i `features` oraz `ready: false`; sama komenda kończy się kodem 0. `forms` i `catalog` mają własne komendy opisane poniżej.
 
 ## Translacja
 
-Użyj jawnych flag oraz wymaganej odpowiedzi JSON:
+Użyj jawnych flag, aktywnego snapshotu i wymaganej odpowiedzi JSON:
 
 ```sh
-go run ./cmd/golingua translate --from pl --to en --text 'tekst właściciela' --json
+go run ./cmd/golingua snapshot --apply --store ./store --json
+go run ./cmd/golingua translate --from pl --to en --text 'Nauczyciel widzi psa.' --runtime-config ./runtime.json --json
 ```
+
+`runtime.json` wskazuje aktywny snapshot. W skompilowanym CLI nie trzeba podawać `language_package_dirs`: binarka kompiluje ograniczone pakiety PL/EN i dostarcza je tylko dla dokładnego szlaku `seeing`. Bez `--runtime-config` odpowiedź pozostaje `unsupported`, ponieważ proces nie ma wybranego snapshotu.
 
 Opcjonalny `--preview-id <id>` wybiera podgląd wskazanego kandydata, jeśli silnik zwrócił kilka alternatyw. Wybór zachowuje ogólny status `ambiguous` lub `incomplete`; nie zmienia Meaning. Po dojściu do etapu wyboru kandydata identyfikator, który nie wskazuje kompletnego zachowanego kandydata, zwraca `invalid`. Jeśli runtime jest niedostępny, żądanie kończy się `unsupported`, bo nie ma alternatyw do sprawdzenia. Flagi mogą wystąpić w dowolnej kolejności. `--from`, `--to`, `--text` i `--json` są wymagane; wartości tekstowe nie mogą być puste. Nieznane, powtórzone, błędne lub niekompletne argumenty zwracają JSON ze statusem `invalid` i kodem wyjścia 2. Nie podawaj argumentów pozycyjnych.
 
-Wynik translacji ma pola `status`, `from`, `to`, opcjonalne `text`, opcjonalne `preview_id`, `candidates` oraz `diagnostics`. Niepoprawne żądanie zwraca te same pola z `status: "invalid"`; błędna składnia samych flag jest raportowana jako JSON `status`/`diagnostics`, bo nie powstało jeszcze żądanie do silnika. Przy pustej domyślnej konfiguracji CLI nie ładuje providerów językowych. Dlatego obecnie prawidłowo sformowane żądanie zwraca jawny wynik `unsupported` z diagnostyką; nie jest to próba tłumaczenia ani wynik PL↔EN do oceny. CLI nie obiecuje poprawnego tłumaczenia. Dostępne są statusy `ok`, `unsupported`, `unknown`, `ambiguous`, `incomplete`, `invalid`, `resource_limit` i `error`; `ok` będzie zwracane wyłącznie po rzeczywistym wyniku silnika.
+Wynik translacji ma pola `status`, `from`, `to`, opcjonalne `text`, opcjonalne `preview_id`, `candidates` oraz `diagnostics`. Niepoprawne żądanie zwraca te same pola z `status: "invalid"`; błędna składnia samych flag jest raportowana jako JSON `status`/`diagnostics`, bo nie powstało jeszcze żądanie do silnika. Obecny ograniczony szlak obsługuje analizę `seeing` w czasie teraźniejszym, liczbie pojedynczej i zdaniach oznajmujących z jawnie rozpoznanymi formami. Brak odpowiedniej formy lub konstrukcji pozostaje `unsupported` albo `unknown`; kilka dopuszczalnych interpretacji pozostaje `ambiguous`. Tłumaczenie PL→EN może zwrócić tekst `incomplete`, ponieważ polski `MeaningGraph` nie koduje określoności wymaganej przez obecną angielską konstrukcję z `the`. Status `ok` oznacza wykonanie skonfigurowanego pipeline'u, nie ocenę językową.
 
 Tekst wejściowy ma limit 64 KiB, a każdy tekst wyjściowy również 64 KiB; łączny tekst alternatyw ma limit 64 KiB. Silnik ogranicza rozmiar całego wyniku do 4 MiB oraz liczbę kandydatów do 256. Identyfikatory języków mają maksymalnie 35 znaków, a identyfikator podglądu maksymalnie 256 bajtów. Przekroczenie limitu wejścia lub retencji alternatyw zwraca `resource_limit`, a nie obcięty tekst. Niepoprawny albo zbyt duży serializowany wynik zwraca `invalid`.
 
@@ -66,8 +69,19 @@ go run ./cmd/golingua snapshot --apply --store <katalog-magazynu> --json
 ```
 
 Obie komendy wymagają jawnej ścieżki i mogą utworzyć katalog magazynu. Snapshot
-zachowuje `pending` i pochodzenie każdego bindingu. Nie zawiera walencji,
-konstrukcji ani reguł tworzenia zdań, więc jego aktywacja nie włącza translacji.
+zachowuje `pending` i pochodzenie każdego bindingu. Nie zawiera walencji ani
+konstrukcji; skompilowana binarka dostarcza je osobno i aktywuje tylko dokładne
+trasy dozwolone przez dane snapshotu. Dla bieżącego CLI plik runtime może
+wyglądać tak:
+
+```json
+{
+  "schema_version": 1,
+  "dataset_store": "./store",
+  "dataset_id": "golingua-authored"
+}
+```
+
 Do użycia CORE przez `question` skonfiguruj `dataset_store` na ten katalog i
 `dataset_id` na `golingua-authored`.
 
@@ -79,7 +93,7 @@ Komenda `question` wykonuje typowane zapytanie na `MeaningGraph` i `FactSet` pod
 go run ./cmd/golingua question --runtime-config <runtime.json> --json < question-request.json
 ```
 
-Runtime config wybiera aktywny CORE/dataset snapshot. Do samego `question` można pominąć `language_package_dirs`; konfiguracja `translate` nadal wymaga co najmniej jednego pakietu językowego. JSON ze standardowego wejścia ma limit 4 MiB, schemat zamknięty i wersję `schema_version: 1`:
+Runtime config wybiera aktywny CORE/dataset snapshot. Konfiguracja `question` oraz bieżące skompilowane CLI mogą pominąć `language_package_dirs`; aplikacje używające zewnętrznych katalogów pakietów nadal mogą je podać. JSON ze standardowego wejścia ma limit 4 MiB, schemat zamknięty i wersję `schema_version: 1`:
 
 - `question`: `reason.QuestionInput` — typowany `meaning`, request-scoped `context`, `kind` (`yes_no` albo `wh`), jawne `mapping` relacji i ról, opcjonalne `gap_role` i `at`.
 - `facts`: tablica `facts.Fact` dla tego samego request context; każdy fakt wymaga jawnego źródła i polaryzacji.
@@ -93,4 +107,4 @@ Nieznana lub niepoprawna komenda zwraca `invalid` i exit code 2. Ogólne błędy
 
 ## Przyszłe funkcje
 
-Obsługiwane kierunki i ręczna ocena translacji zależą od skonfigurowanych providerów oraz danych. Procedura oceny wyników dostarczonych przez właściciela jest opisana w [manual review](manual-review.md).
+Pozostałe sensy, konstrukcje, czasy i formy wymagają własnych etapów danych i implementacji. Procedura oceny wyników dostarczonych przez właściciela jest opisana w [manual review](manual-review.md); bieżący odbiór zdań pozostaje `NOT RUN`.

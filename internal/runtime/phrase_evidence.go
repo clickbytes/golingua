@@ -53,6 +53,11 @@ func (builder SimplePhraseEvidenceBuilder) Build(_ context.Context, lattice anal
 				senseIDs = append(senseIDs, sense.Sense.ID)
 			}
 			caseValue, caseKnown := knownCase(reading, builder.Config.CaseFeature, builder.Config.CaseValues)
+			if _, exists := features["case"]; exists && !caseKnown {
+				// Parser case evidence must have a matching dedicated label.
+				// The original morphology reading still retains its exact case.
+				delete(features, "case")
+			}
 			seenCategories := make(map[construction.SlotCategory]struct{}, len(categories))
 			for _, category := range categories {
 				if !validPhraseCategory(category) {
@@ -65,10 +70,14 @@ func (builder SimplePhraseEvidenceBuilder) Build(_ context.Context, lattice anal
 				if len(candidates) >= MaxSimplePhraseCandidates {
 					return nil, parser.ParseContext{}, runtimeError(status.OutcomeResourceLimit, "PHRASE_CANDIDATE_LIMIT", "phrase_candidates", "simple phrase candidate limit was exhausted")
 				}
+				headTokenIndex := 0
+				if category == construction.CategoryVP {
+					headTokenIndex = token.Index
+				}
 				candidates = append(candidates, parser.PhraseCandidate{
 					ID:       simplePhraseID(token.Index, reading.Reading.ID, category),
 					Category: category, TokenStart: token.Index, TokenEnd: token.Index + 1,
-					Span: token.Token.Span, HeadTokenIndex: token.Index,
+					Span: token.Token.Span, HeadTokenIndex: headTokenIndex,
 					ReadingIDs: []string{reading.Reading.ID}, LexemeID: reading.Lexeme.ID,
 					SenseIDs: append([]ids.SenseID(nil), senseIDs...), Features: clonePhraseFeatures(features), Case: caseValue, CaseKnown: caseKnown,
 				})

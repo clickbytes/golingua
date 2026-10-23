@@ -10,7 +10,9 @@ lexeme or sense.
 rejects unknown and duplicate object fields, checks its declared language
 against the family, and compiles the variants into a deterministic
 `VariantIndex`. Compilation proves only that the structure is well formed.
-These files are not loaded by the application runtime today.
+The CLI compiles the construction packages for its explicitly enabled route;
+other families remain structural data until a provider and stage adapter use
+their exact licensed plans.
 
 In particular, the Polish OVS order is a marked structural option; it does
 not assert case marking, topic/focus, or interchangeable grammatical roles.
@@ -39,11 +41,11 @@ not a substitute.
 `catalog --summary --json` reports candidate and approved construction-binding
 counts separately. Current counts are **zero pending candidates and four
 approved construction bindings per language**. These bindings license only
-their exact sense/frame/family/variant routes. No lexical CORE bindings are
-approved and no verified language registry is configured, so the full
-`catalog.ResolveApprovedPlans` path and CLI `translate` remain unsupported.
-`Bindings()` returns only approved records; `Candidates()` is review input and
-never licenses a runtime path.
+their exact sense/frame/family/variant routes. The catalog can resolve exact
+approved plans; the compiled CLI registry currently exposes only the `seeing`
+route in each language. Other approved routes do not yet have sentence
+providers and stage adapters. `Bindings()` returns only approved records;
+`Candidates()` is review input and never licenses a runtime path.
 
 Structural templates can be shared by compatible senses only after their
 roles, grammatical functions, case or adposition policy, variant and operator
@@ -53,9 +55,10 @@ must not silently stand in for those frames. A frame's `AllowedFamilyIDs` is
 only a candidate family reference. It is never treated as approval.
 
 The owner's sentence-level review has not run. The delegated route review adds
-eight explicit construction bindings; compiled plans and a configured runtime
-are still required before advertising sentence analysis or realization in the
-language manifests.
+eight explicit construction bindings; the compiled CLI enables only the
+`seeing` provider route. The base language manifests continue to report their
+general analysis/realization capabilities as unsupported; the runtime package
+is generated for the exact route and verified against its provider evidence.
 No external lexical or linguistic source is claimed by the current structural
 templates; their provenance records identify them as internal project data.
 
@@ -63,7 +66,7 @@ templates; their provenance records identify them as internal project data.
 
 `languages/pl/valency.go` now assigns a compatible construction family per sense instead of marking all frames `pl.transitive`. `pl.intransitive` applies to `spać` and the currently modeled `uczyć się`; `pl.oblique` (new `languages/pl/constructions/oblique.json`) describes a PP complement for `patrzeć na`; `pl.ditransitive` (new `ditransitive.json`) can describe a dative recipient and accusative theme for `dać`. Remaining listed transitive frames have a single NP complement. Semantic participant names match their referenced CORE concepts.
 
-These declarations are **not** approved sense-to-family bindings. Optional `o co` (`pytać`), `na co` (`odpowiadać`), and discipline/content complements (`uczyć`/`uczyć się`) remain out of scope until semantic roles and language-local arguments are reviewed. No sentence capability was activated.
+These declarations are **not** approved sense-to-family bindings. Optional `o co` (`pytać`), `na co` (`odpowiadać`), and discipline/content complements (`uczyć`/`uczyć się`) remain out of scope until semantic roles and language-local arguments are reviewed. No sentence capability was activated for these families.
 
 ## Polish movement and transport sense frames
 

@@ -4,6 +4,7 @@
   "version": "v2026-10-20.1",
   "dimensions": [
     {"id": "adjective_degree", "allow_absent": true, "allow_unknown": true, "values": ["comparative", "positive", "superlative"]},
+    {"id": "determiner", "allow_absent": true, "allow_unknown": true, "values": ["definite", "indefinite"]},
     {"id": "mood", "allow_absent": true, "allow_unknown": true, "values": ["imperative", "indicative", "subjunctive"]},
     {"id": "noun_number", "allow_absent": true, "allow_unknown": true, "values": ["plural", "singular"]},
     {"id": "person", "allow_absent": true, "allow_unknown": true, "values": ["first", "second", "third"]},

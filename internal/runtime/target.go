@@ -30,7 +30,7 @@ type TargetPlanBuilder interface {
 // one canonical plan. The callback decides feature values and principal parts;
 // it may not choose another semantic or selector candidate.
 type TargetExecutionBuilder interface {
-	Build(context.Context, semantic.MeaningCandidate, realizer.TargetCandidate, realizer.RealizationPlan) (realizer.ExecuteInput, error)
+	Build(context.Context, semantic.MeaningCandidate, []realizer.TargetCandidate, realizer.TargetCandidate, realizer.RealizationPlan) (realizer.ExecuteInput, error)
 }
 
 // TargetOperatorBuilder returns only operator evidence licensed for this exact
@@ -98,7 +98,22 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 		return engine.SurfaceResult{}, err
 	}
 	result := engine.SurfaceResult{Outcome: selection.Outcome, Diagnostics: append([]status.Diagnostic(nil), selection.Diagnostics...)}
-	candidates := selection.Candidates
+	if source.Meaning == nil {
+		return engine.SurfaceResult{}, targetPipelineError(status.OutcomeUnsupported, "TARGET_MEANING_UNAVAILABLE", "source.meaning", "target realization requires a supported source Meaning graph")
+	}
+	// Referent selections supply the predicate's role slots. They are not
+	// independent sentence alternatives, and must remain available to the
+	// language-local execution builder when it lexicalizes those slots.
+	candidates := make([]realizer.TargetCandidate, 0, len(selection.Candidates))
+	rootIDs := make(map[meaning.NodeID]bool, len(source.Meaning.Roots))
+	for _, root := range source.Meaning.Roots {
+		rootIDs[root] = true
+	}
+	for _, candidate := range selection.Candidates {
+		if rootIDs[candidate.NodeID] && (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState) {
+			candidates = append(candidates, candidate)
+		}
+	}
 	if len(candidates) > engine.MaxTranslationAlternatives {
 		candidates = candidates[:engine.MaxTranslationAlternatives]
 		result.Outcome = status.OutcomeResourceLimit
@@ -113,9 +128,6 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 			return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
 		}
 		planInput := realizer.PlanInput{Meaning: meaning.Meaning{}, Candidate: selected, Core: pipeline.Core, Budget: pipeline.PlanBudget}
-		if source.Meaning == nil {
-			return engine.SurfaceResult{}, targetPipelineError(status.OutcomeUnsupported, "TARGET_MEANING_UNAVAILABLE", "source.meaning", "target realization requires a supported source Meaning graph")
-		}
 		planInput.Meaning = *source.Meaning
 		if pipeline.PlanBuilder != nil {
 			planInput.FeatureConstraints, planInput.Assumptions, planInput.Losses, err = pipeline.PlanBuilder.Annotations(ctx, source, selected)
@@ -130,7 +142,7 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 		if err != nil {
 			return engine.SurfaceResult{}, err
 		}
-		executionInput, err := pipeline.ExecutionBuilder.Build(ctx, source, selected, plan)
+		executionInput, err := pipeline.ExecutionBuilder.Build(ctx, source, selection.Candidates, selected, plan)
 		if err != nil {
 			return engine.SurfaceResult{}, err
 		}

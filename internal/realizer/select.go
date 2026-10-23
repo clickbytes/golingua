@@ -483,6 +483,13 @@ func SelectTargets(input Input) (Result, error) {
 								result.Diagnostics = appendDiagnostic(result.Diagnostics, "TARGET_VARIANT_INDEX_STALE", "target variant index was compiled from a different construction family plan", "constructions."+familyID.String())
 								continue
 							}
+							family, err = construction.BindFrame(family, frame)
+							if err != nil {
+								licensed = true
+								result.Outcome = mergeOutcome(result.Outcome, outcomeFromError(err))
+								result.Diagnostics = appendDiagnostic(result.Diagnostics, "TARGET_FRAME_FAMILY_MISMATCH", err.Error(), "constructions."+familyID.String())
+								continue
+							}
 							if compiledVariant.Variant.DirectionPolicy != construction.DirectionBoth && compiledVariant.Variant.DirectionPolicy != construction.DirectionRealize {
 								licensed = true
 								result.Outcome = mergeOutcome(result.Outcome, status.OutcomeUnsupported)
@@ -518,6 +525,12 @@ func SelectTargets(input Input) (Result, error) {
 								return finish()
 							}
 							roles := append([]meaning.Role(nil), rolesByNode[node.ID]...)
+							if node.Kind == meaning.KindEvent || node.Kind == meaning.KindState {
+								roles = roles[:0]
+								for _, participant := range node.Participants {
+									roles = append(roles, participant.Role)
+								}
+							}
 							sort.Slice(roles, func(i, j int) bool { return roles[i] < roles[j] })
 							result.Candidates = append(result.Candidates, TargetCandidate{SourceCandidateID: source.ID, SemanticID: source.SemanticID, NodeID: node.ID, Kind: node.Kind, Roles: roles, Outcome: nodeOutcome, Diagnostics: append([]status.Diagnostic(nil), nodeDiagnostics...), Lexeme: lexeme, Sense: sense, TransferBinding: transfer, Frame: frame, ConstructionBinding: binding, Family: family, CompiledVariant: compiledVariant, ConstructionPlan: plan, SoftConstraintMisses: append([]valency.SoftConstraintMiss(nil), validation.SoftConstraintMisses...)})
 							nodeCounts[nodeKey]++

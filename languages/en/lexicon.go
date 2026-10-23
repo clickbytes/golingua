@@ -22,6 +22,7 @@ type lexicalEntry struct {
 // English distinctions are authored independently from Polish lexical items.
 // The proposed CORE references remain pending and cannot authorize transfer.
 var englishEntries = []lexicalEntry{
+	{"en.the.det", "the", "determiner", []lexicalMeaning{{"en.the.definite", "definite determiner", ""}}},
 	{"en.dog.n", "dog", "noun", []lexicalMeaning{{"en.dog.animal", "domestic canine animal", "dog"}}},
 	{"en.cat.n", "cat", "noun", []lexicalMeaning{{"en.cat.animal", "domestic feline animal", "cat"}}},
 	{"en.child.n", "child", "noun", []lexicalMeaning{{"en.child.person", "young person", "child"}}},
@@ -1162,6 +1163,11 @@ var englishFrameBySense = map[string]lexicon.ValencyID{
 }
 
 var englishParadigmByLexeme = map[string]string{
+	"en.the.det":  "en_determiner_definite",
+	"en.mother.n": "en_noun_singular_attested", "en.father.n": "en_noun_singular_attested",
+	"en.child.n": "en_noun_singular_attested", "en.cat.n": "en_noun_singular_attested",
+	"en.book.n": "en_noun_singular_attested", "en.house.n": "en_noun_singular_attested",
+	"en.car.n": "en_noun_singular_attested", "en.see.v": "en_see_present_third_singular",
 	"en.dog.n": "en_noun_regular", "en.teacher.n": "en_noun_regular",
 	"en.doctor.n": "en_noun_regular", "en.school.n": "en_noun_regular",
 	"en.hand.n": "en_noun_regular", "en.eye.n": "en_noun_regular",

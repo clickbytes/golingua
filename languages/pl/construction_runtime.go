@@ -1,0 +1,41 @@
+package pl
+
+import (
+	"embed"
+	"fmt"
+
+	"github.com/clickbytes/golingua/internal/construction"
+	"github.com/clickbytes/golingua/internal/valency"
+)
+
+//go:embed constructions/transitive.json constructions/oblique.json constructions/intransitive.json constructions/ditransitive.json constructions/double_np.json constructions/transitive_oblique.json constructions/question.json
+var sentenceConstructions embed.FS
+
+// SentenceConstructions compiles the language-local templates against the
+// authored valency index. Only exact approved bindings in that index license
+// a sense; the presence of a family alone grants no sentence capability.
+func SentenceConstructions(index *valency.Index) ([]construction.CompiledConstructionPackage, *construction.Registry, error) {
+	files := []string{
+		"transitive.json", "oblique.json", "intransitive.json", "ditransitive.json",
+		"double_np.json", "transitive_oblique.json", "question.json",
+	}
+	packages := make([]construction.CompiledConstructionPackage, 0, len(files))
+	families := make([]construction.ConstructionFamily, 0, len(files))
+	for _, file := range files {
+		data, err := sentenceConstructions.ReadFile("constructions/" + file)
+		if err != nil {
+			return nil, nil, fmt.Errorf("Polish construction %s: %w", file, err)
+		}
+		compiled, err := construction.DecodeConstructionPackage(data)
+		if err != nil {
+			return nil, nil, fmt.Errorf("Polish construction %s: %w", file, err)
+		}
+		packages = append(packages, compiled)
+		families = append(families, compiled.Package.Family)
+	}
+	registry, err := construction.CompileRegistry(families, index)
+	if err != nil {
+		return nil, nil, err
+	}
+	return packages, registry, nil
+}

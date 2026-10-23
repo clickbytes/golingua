@@ -140,6 +140,18 @@ func BuildLattice(
 		}
 
 		readings, analyzeErr := morphology.Analyze(node.Token.Surface)
+		if tokenIndex == 0 && node.Token.Folded != "" && node.Token.Folded != node.Token.Surface {
+			// Sentence-initial capitalization may differ from an attested
+			// lowercase form. Preserve an exact reading when it exists; use
+			// the explicitly enabled fold only for an unknown exact form.
+			var failure *morph.MorphError
+			if len(readings) == 0 && (analyzeErr == nil || errors.As(analyzeErr, &failure) && failure.Result().Status == status.OutcomeUnknown && hasDiagnosticCode(failure.Result().Diagnostics, "UNKNOWN_SURFACE_FORM")) {
+				folded, foldedErr := morphology.Analyze(node.Token.Folded)
+				if foldedErr == nil && len(folded) > 0 {
+					readings, analyzeErr = folded, nil
+				}
+			}
+		}
 		if analyzeErr != nil {
 			var morphFailure *morph.MorphError
 			if errors.As(analyzeErr, &morphFailure) {

@@ -578,6 +578,14 @@ func containsNodeID(values []meaning.NodeID, wanted meaning.NodeID) bool {
 func sameRoles(roles []meaning.Role, target meaning.NodeID, graph meaning.Meaning) bool {
 	want := []meaning.Role{}
 	for _, node := range graph.Nodes {
+		if node.ID == target && (node.Kind == meaning.KindEvent || node.Kind == meaning.KindState) {
+			for _, participant := range node.Participants {
+				want = append(want, participant.Role)
+			}
+			return equalSortedRoles(roles, want)
+		}
+	}
+	for _, node := range graph.Nodes {
 		if node.Kind != meaning.KindEvent && node.Kind != meaning.KindState {
 			continue
 		}
@@ -587,6 +595,10 @@ func sameRoles(roles []meaning.Role, target meaning.NodeID, graph meaning.Meanin
 			}
 		}
 	}
+	return equalSortedRoles(roles, want)
+}
+
+func equalSortedRoles(roles, want []meaning.Role) bool {
 	sort.Slice(want, func(i, j int) bool { return want[i] < want[j] })
 	got := append([]meaning.Role(nil), roles...)
 	sort.Slice(got, func(i, j int) bool { return got[i] < got[j] })

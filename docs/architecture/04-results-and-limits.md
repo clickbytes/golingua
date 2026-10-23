@@ -1,6 +1,6 @@
 # 04 — Wyniki, diagnostyki i limity
 
-Ten dokument opisuje **zaimplementowany, generyczny kontrakt wyników Go**, a nie działającą obsługę tłumaczeń. Parser, morfologia, leksyka i translacja nadal nie są zaimplementowane. `translate` musi zatem zwracać `unsupported`.
+Ten dokument opisuje kontrakt wyników Go oraz jego ograniczone użycie przez parser, morfologię, leksykę i translację PL/EN. Skompilowany runtime obsługuje obecnie tylko jawny szlak `seeing`; pozostałe trasy zwracają odpowiedni status braku obsługi lub nierozstrzygnięcia.
 
 ## Wynik operacji
 
@@ -17,10 +17,10 @@ Ten dokument opisuje **zaimplementowany, generyczny kontrakt wyników Go**, a ni
 | `resource_limit` | Jawny limit wejścia lub pracy został przekroczony. To osobny wynik, nie odmowa z powodu braku obsługi. |
 | `error` | Wystąpił błąd wykonania lub infrastruktury. |
 
-Przykładowe wyjście `translate` z obecnego bootstrapu:
+Skrócony przykład obserwowanego wyjścia `translate` PL→EN. Status `incomplete` zachowuje tekst, ale ujawnia jawne założenia dotyczące angielskich rodzajników:
 
 ```json
-{"status":"unsupported","diagnostics":[{"code":"LANGUAGE_RUNTIME_UNAVAILABLE","message":"sentence translation is not implemented in the bootstrap","path":"translate","severity":"error"}]}
+{"status":"incomplete","from":"pl","to":"en","candidates":[{"outcome":"incomplete","text":"The teacher sees the dog."}]}
 ```
 
 Wyjście błędnej komendy:
@@ -47,7 +47,7 @@ CLI wypisuje te wyniki na stdout jako JSON. Nieznana komenda i nieobsługiwana t
 
 `Bounds.Validate` wymaga dodatnich limitów; zero nie oznacza „bez limitu”. `CheckInputText` sprawdza UTF-8 i limit bajtów; niepoprawny UTF-8 zwraca `ErrInvalidInput`. Metody `CheckInputBytes`, `CheckGraphDepth` i `CheckAnalyses` zwracają `LimitExceededError` po przekroczeniu. `LimitExceededError.Result()` daje status `resource_limit` i diagnostykę `RESOURCE_LIMIT`. Ujemna wartość albo niepoprawna konfiguracja budżetu jest błędem konfiguracji, a nie przekroczeniem limitu.
 
-Obecne CLI nie przyjmuje jeszcze tekstu do analizy. Powyższe budżety są zaimplementowanym, typowanym API dla przyszłych operacji runtime; nie oznaczają, że nieistniejący parser lub translator już ich używa. `translate` na tym etapie zwraca `unsupported` bez przetwarzania argumentów jako tekstu językowego.
+Budżety są używane przez operacje runtime. `translate` bez `--runtime-config` zwraca `unsupported`, a z aktywnym snapshotem uruchamia wyłącznie skonfigurowane, skompilowane adaptery.
 
 ## Ślad pochodzenia
 
@@ -66,6 +66,6 @@ Opcjonalny `Trace` może zawierać najwyżej 32 kroki, a każdy krok musi wskazy
 | 6 | `ambiguous` |
 | 7 | `incomplete` |
 
-`capabilities --json` opisuje dostępne możliwości procesu: komenda kończy się kodem 0, a pole `status: unsupported` wewnątrz odpowiedzi oznacza, że żadne języki ani funkcje językowe nie są obecnie dostępne. `--help` i `--version` pozostają krótkimi odpowiedziami tekstowymi. `translate` zwraca wynik JSON ze statusem `unsupported` i kodem 3.
+`capabilities --json` bez wybranego runtime'u zwraca pole `status: unsupported`, puste listy języków i funkcji oraz `ready: false`; komenda sama kończy się kodem 0. `--help` i `--version` pozostają krótkimi odpowiedziami tekstowymi. `translate` bez aktywnego runtime'u zwraca `unsupported` i kod 3.
 
-Nie ma tu goldów, runnera, testów automatycznych jakości językowej ani bramki procentowej. Ręczna ocena tłumaczeń pozostaje nieoceniona, dopóki właściciel nie poda rzeczywistego wejścia.
+Nie ma tu goldów, testów automatycznych jakości językowej ani bramki procentowej. Zapis obserwacji CLI dla redakcyjnych 100 zdań nie jest oceną poprawności. Ręczna ocena pozostaje `NOT RUN`, dopóki właściciel nie oceni konkretnych wyników.

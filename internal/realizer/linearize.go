@@ -293,6 +293,17 @@ func Linearize(plan RealizationPlan, family construction.ConstructionFamily, slo
 		}
 		lastWasOpening = class == terminalOpeningPunctuation
 	}
+	for index := range result.Parts {
+		capitalized, changed := capitalizeInitialLetter(result.Parts[index].Text)
+		if changed {
+			result.Parts[index].Text = capitalized
+			break
+		}
+	}
+	output.Reset()
+	for _, part := range result.Parts {
+		output.WriteString(part.Text)
+	}
 	result.Text = output.String()
 	if !utf8.ValidString(result.Text) {
 		return LinearizedResult{}, linearizeError(status.OutcomeInvalid, "INVALID_LINEARIZED_UTF8", "text", "linearized output is not valid UTF-8")
@@ -306,6 +317,21 @@ func Linearize(plan RealizationPlan, family construction.ConstructionFamily, slo
 	}
 	result.Segments = segments
 	return result, nil
+}
+
+func capitalizeInitialLetter(value string) (string, bool) {
+	for offset, character := range value {
+		if !unicode.IsLetter(character) {
+			continue
+		}
+		upper := unicode.ToUpper(character)
+		if upper == character {
+			return value, false
+		}
+		_, size := utf8.DecodeRuneInString(value[offset:])
+		return value[:offset] + string(upper) + value[offset+size:], true
+	}
+	return value, false
 }
 
 func validateLinearizationConditions(conditions []construction.Condition, slots map[string]SlotForm, information map[meaning.Role]construction.InformationValue) error {

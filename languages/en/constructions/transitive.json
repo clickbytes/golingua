@@ -12,6 +12,6 @@
     "provenance":{"id":"golingua-structural-template","path":"languages/en/constructions/transitive.json","version":"1","license":"internal"}
   },
   "variants": [
-    {"id":"construction:en.transitive.svo","family_id":"construction:en.transitive","sequence":[{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"slot","slot_id":"object"}],"markedness":"neutral","priority":0,"direction_policy":"both","provenance":{"id":"golingua-structural-template","path":"languages/en/constructions/transitive.json","version":"1","license":"internal"}}
+    {"id":"construction:en.transitive.svo","family_id":"construction:en.transitive","sequence":[{"kind":"terminal","terminal":"the"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"the"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"both","provenance":{"id":"golingua-structural-template","path":"languages/en/constructions/transitive.json","version":"1","license":"internal"}}
   ]
 }

@@ -70,7 +70,7 @@ multiword matching are left to later analysis stages rather than guessed here.
 
 ## Current implementation boundary
 
-G05-01 provides the source-preserving text primitives. The CLI still reports
-translation as unsupported until later G05 tasks connect tokenization to
-morphology, constructions, meaning, and realization. No language-quality claim
-follows from having valid spans.
+G05-01 provides the source-preserving text primitives. Later G05 work connects
+them to morphology, constructions, meaning, and realization for one limited
+PL/EN `seeing` route. Other routes remain unsupported or unresolved. No
+language-quality claim follows from having valid spans or a CLI output.
