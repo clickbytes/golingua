@@ -97,3 +97,7 @@ Before any `--auto` run, Sol verifies `opencode --version`, `opencode run --help
 ## G11 closeout owner decision (2026-10-23)
 
 Deliver V4 → V5 → V6 → V7 → V8 sequentially, one child and PR per usable slice, after prior merge, passing main CI and child closure. The four-helper ceiling is subject to available tool slots and retains exactly one implementation writer. Optional roles: OpenCode implementation, Luna Low analysis, Luna Low review, OpenCode read-only evidence/document proposal. Select an actually available free OpenCode model through the documented daily review and per-job permission gates. If unavailable or a mandatory gate cannot be verified, use bounded Luna Low jobs; do not bypass isolation.
+
+## Owner-authorized A1 matrix exception (2026-10-23)
+
+The later owner decision authorizes the first small level-oriented PL/EN sample under `tests/A1/*.testdomain.go` (#309), superseding the older blanket matrix-directory prohibition for this scope. The first delivery is declarative domain data without a runner, `*_test.go` or a CI language gate. Future A1.1 batches require their own defined scope; do not create a backlog automatically. References are agent proposals, separate from actual observations and owner acceptance; never turn an existing unsupported result into the desired behavior. See [matrix rules](../tests/README.md). Serial delegation/review/verification rules remain in force.

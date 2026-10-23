@@ -2,6 +2,10 @@
 
 **Nadrzędna decyzja 2026-10-20:** obecny etap golingua **nie posiada automatycznej macierzy poprawności języka, formalnych goldów, test runnerów ani bramki zgodności z poprzednim JavaScriptem**.
 
+## Wyjątek A1 — nowsza decyzja właściciela 2026-10-23
+
+Na jawne polecenie właściciela powstaje [mała macierz A1](../../tests/README.md) w `tests/A1/*.testdomain.go`, z następnymi partiami A1.1 dopiero po określeniu ich zakresu. Zastępuje to dawny zakaz takiej macierzy w tym obszarze. Pierwszy batch jest danymi do realizacji, bez automatycznego runnera, `*_test.go` i językowej bramki CI. Agent może przygotować zamówione propozycje przypadków i przekładów, jawnie oznaczając ich autorstwo oraz brak akceptacji właściciela. Nie są to obserwowane wyniki ani zatwierdzone goldy. Opis docelowej semantyki pozostaje niezależny od aktualnych braków silnika; `unsupported` dokumentuje lukę, a nie jej zaliczenie. Poniższe reguły rzeczywistego uruchomienia, provenance i oddzielnej oceny pozostają w mocy.
+
 ## Co naprawdę sprawdzamy w każdym PR
 
 **Technicznie (GitHub CI):** gofmt, go vet, go build, uruchomienie CLI z `--version` i `--help`. To weryfikuje, że projekt się buduje i startuje. Nie jest dowodem jakości tłumaczenia.

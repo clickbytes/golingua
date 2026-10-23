@@ -89,3 +89,9 @@ Jeśli stare issue nadal mówi o goldach, niezależnym oracle, matrycy testowej,
 ## Domknięcie G11 — decyzja właściciela 2026-10-23
 
 V4 → V5 → V6 → V7 → V8 wykonujemy szeregowo, po jednym child issue i PR; kolejny zakres dopiero po merge, zielonym CI main i zamknięciu poprzednika. Limit czterech pomocników uwzględnia rzeczywiste limity narzędzi; jeden wykonawca pisze naraz. Role opcjonalne: OpenCode wykonawca, Luna Low analiza, Luna Low review, OpenCode przegląd dowodów/propozycja dokumentacji bez zapisu. Nie uruchamiaj wszystkich dla wykorzystania limitu. Aktualnie dostępny darmowy model OpenCode wybieramy po wymaganym przeglądzie; brak OpenCode lub niespełniona bramka delegacji dopuszcza małe zadania Luna Low, bez obchodzenia izolacji.
+
+## Macierz poziomów językowych — nowsza decyzja właściciela 2026-10-23
+
+Właściciel jawnie zmienił wcześniejszy zakaz macierzy: zaczynamy od małej próbki A1 dla PL↔EN w `tests/A1/*.testdomain.go`. Kolejne `tests/A1.1/`, `tests/A1.2/` to następne partie tego samego celu A1, otwierane dopiero po określeniu zakresu. Pierwsza dostawa #309 jest deklaratywną macierzą przypadków do realizacji, bez runnera i bez `*_test.go`; sama nazwa `.testdomain.go` nie uruchamia testów Go. Ta decyzja jest wyjątkiem od wcześniejszego zakazu katalogów macierzy, nie pozwoleniem na JS parity, masowe automatyczne generowanie, procentowe bramki ani niezamówioną zmianę gramatyki/CI.
+
+Przypadki opisują docelowe zachowanie języka, w tym brakujące konstrukcje. Nie dopasowuj oczekiwań do aktualnego outputu silnika i nie uznawaj `unsupported` za zaliczenie brakującej funkcji. Jawne wejście, kierunek, wymagania semantyczne, przykładowe propozycje przekładu, niejednoznaczność i pochodzenie mają być rozdzielone. Propozycja agenta nie oznacza akceptacji właściciela; obserwacje i `NOT RUN` zapisujemy osobno. Reguły i pierwsza próbka: [`tests/README.md`](tests/README.md). Pozostałe zasady pracy szeregowej i wymagane kontrole nadal obowiązują.
