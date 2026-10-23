@@ -1,55 +1,89 @@
 name: Task
-description: One implementation task in the active epic
-title: "[TASK][G00] "
+description: One bounded implementation task under the active epic
+title: "[TASK] "
 body:
   - type: input
     id: parent
     attributes:
       label: Parent epic
-      placeholder: "#1"
+      placeholder: "#254"
     validations:
       required: true
   - type: dropdown
-    id: status
+    id: queue_status
     attributes:
-      label: Queue status
+      label: Queue status (only one ACTIVE child)
       options:
         - QUEUED
         - ACTIVE
     validations:
       required: true
   - type: textarea
-    id: goal
+    id: outcome
     attributes:
-      label: Goal and observable CLI behavior
-      description: Describe positive and negative behavior; do not claim capabilities that do not exist.
+      label: Goal and user-observable positive and negative outcomes
+      description: Describe one end-to-end vertical slice, not several tiny component tasks.
     validations:
       required: true
   - type: textarea
-    id: files
+    id: boundaries
     attributes:
-      label: Files and symbols
-      description: Name intended files/symbols and the implementation steps.
+      label: Explicit exclusions / non-goals
+      value: "GoLingua v0 only. No product v2, data migrations, old JS parity, speculative architecture, unrelated refactors, queued issues or unrequested documentation."
     validations:
       required: true
+  - type: textarea
+    id: authorized_files
+    attributes:
+      label: Authorized files / symbols and normative document links
+      description: List expected paths and link specific current contracts. Reading unrelated docs does not authorize editing them.
+    validations:
+      required: true
+  - type: textarea
+    id: dod
+    attributes:
+      label: Exact technical definition of done (DoD)
+      description: Mandatory positive/negative user behavior and compatibility. Required behavior NOT RUN means PARTIAL/BLOCKED unless owner explicitly waives it.
+    validations:
+      required: true
+  - type: dropdown
+    id: new_tests
+    attributes:
+      label: Are new tests explicitly approved by the owner in this issue?
+      options:
+        - "NO - use existing checks only"
+        - "YES - exact new test names listed below"
+    validations:
+      required: true
+  - type: textarea
+    id: exact_tests
+    attributes:
+      label: Exact new tests (only when YES)
+      description: No inferred regressions, fixtures, golds or test framework.
   - type: textarea
     id: verification
     attributes:
-      label: Verification commands
-      value: "gofmt -l <changed Go files>\ngo vet ./...\ngo build ./cmd/golingua\ngo run ./cmd/golingua --version\ngo run ./cmd/golingua --help"
+      label: Existing technical verification
+      value: |
+        gofmt -l <changed Go files>
+        go vet ./...
+        go build ./cmd/golingua
+        go run ./cmd/golingua --version
+        go run ./cmd/golingua --help
+        Actual PR go-ci; issue-specific TTY/CLI/manual checks when required
     validations:
       required: true
   - type: textarea
-    id: manual
+    id: owner_data
     attributes:
-      label: Manual language evaluation
-      description: Record owner-provided examples and observed output if available; otherwise state NOT EVALUATED. Do not invent examples or expected output.
+      label: Owner-provided corpus / manual observations (when relevant)
+      description: Record literal commands and results; distinguish NOT RUN/NOT EVALUATED from PASS. Agent assessment != owner linguistic acceptance.
   - type: checkboxes
     id: policy
     attributes:
-      label: Work policy
+      label: Execution invariants
       options:
-        - label: One implementing agent, branch, and PR; do not begin the next task before this task merges.
+        - label: Codex Sol Medium is the sole coordinator/GitHub writer; at most one implementation writer works at a time.
           required: true
-        - label: This issue does not require unit tests, golds, JS parity, or a language-quality metric unless the owner separately changes project policy.
+        - label: Workers never enlarge scope, spawn agents or create issues/PRs; all future tasks remain queued.
           required: true
