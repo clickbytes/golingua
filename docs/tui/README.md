@@ -111,3 +111,9 @@ Wynik pokazuje faktyczny status, stan generacji, diagnostyki oraz wszystkie zwr�
 ## Obsługa dostarczona w V4
 
 F3 wczytuje `Service.Catalog(Details:true)`. Dolny prompt filtruje lokalnie, dosłownie i z rozróżnieniem wielkości liter wyłącznie po stabilnym ConceptID; kolejność pochodzi z katalogu. Lista pokazuje zwrócone statusy pokrycia PL/EN, które nie oznaczają gotowości runtime’u. `Tab` przechodzi przez prompt, list, result i tabs; na list `Up`/`Down` wybierają rekord, `Enter` pobiera jego szczegóły przez `LookupConcept`. `Esc` wraca do listy. W szczegółach `Up`/`Down` i `PgUp`/`PgDown` przewijają zwrócone pola. Brak definicji, rodzica, ról, relacji i efektów jest jawny. Filtr, wybór i przewinięcie pozostają po zmianie ekranu i rozmiaru terminala.
+
+## Obsługa dostarczona w V5
+
+F4 Languages pokazuje rzeczywisty inwentarz PL/EN z `Service.Catalog`: leksemy, sensy, bindingi i statusy pokrycia konceptów. Oddzielnie pokazuje wybraną ścieżkę runtime’u, wynik `ValidateRuntime`, `ready` i diagnostyki. Wczytanie konfiguracji nie oznacza obsługi dowolnego zdania. Brak albo błąd runtime’u nie zeruje inwentarza.
+
+Wejście na F4 przez klawisz, pasek zakładek lub paletę odświeża katalog i walidację. `Tab` przechodzi przez refresh, result i tabs; `Enter` na refresh ponawia odczyty. Result przewija się strzałkami i `PgUp`/`PgDown`.

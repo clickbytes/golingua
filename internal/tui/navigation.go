@@ -32,16 +32,16 @@ func (m *model) openPalette() {
 	m.palette.input.set("/")
 	m.notice = ""
 }
-func (m *model) paletteKey(k tea.KeyPressMsg) {
+func (m *model) paletteKey(k tea.KeyPressMsg) tea.Cmd {
 	switch k.String() {
 	case "esc":
 		m.palette.open = false
 		m.notice = ""
-		return
+		return nil
 	case "up", "down":
 		matches := m.palette.matches()
 		if len(matches) == 0 {
-			return
+			return nil
 		}
 		n := len(matches)
 		if k.String() == "down" {
@@ -52,7 +52,7 @@ func (m *model) paletteKey(k tea.KeyPressMsg) {
 			}
 			m.palette.selected = (m.palette.selected + n - 1) % n
 		}
-		return
+		return nil
 	case "enter":
 		matches := m.palette.matches()
 		target := -1
@@ -66,16 +66,14 @@ func (m *model) paletteKey(k tea.KeyPressMsg) {
 		}
 		if target < 0 {
 			m.notice = "Choose a registered command; arguments are not supported."
-			return
+			return nil
 		}
-		m.screen = target
-		m.palette.open = false
-		m.notice = ""
-		return
+		return m.enterScreen(target)
 	}
 	m.palette.input.update(k)
 	m.palette.selected = -1
 	m.notice = ""
+	return nil
 }
 func (m model) paletteBody() string {
 	b := "Navigation only · Up/Down choose · Enter open · Esc cancel\n"

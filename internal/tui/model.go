@@ -42,11 +42,21 @@ type conceptsLookupDone struct {
 	found        bool
 	err          error
 }
+type languagesCatalogDone struct {
+	id       uint64
+	response app.CatalogResult
+}
+type languagesValidationDone struct {
+	id, config uint64
+	path       string
+	result     app.RuntimeValidationResult
+}
 
 type model struct {
 	palette                                           paletteState
 	forms                                             formsState
 	concepts                                          conceptsState
+	languages                                         languagesState
 	selectedID                                        string
 	candidateDetail                                   bool
 	pendingPreview                                    uint64
@@ -117,6 +127,30 @@ func (m *model) lookupConcept() tea.Cmd {
 		return conceptsLookupDone{id: id, revision: revision, conceptID: conceptID, concept: concept, found: found, err: err}
 	}
 }
+func (m *model) refreshLanguages() tea.Cmd {
+	catalogID, validationID := m.next(), m.next()
+	path, config := m.runtimePath, m.configRevision
+	m.languages.path = path
+	m.languages.pendingCatalog = catalogID
+	m.languages.pendingValidation = validationID
+	s, ctx := m.service, m.ctx
+	catalogCmd := func() tea.Msg {
+		return languagesCatalogDone{id: catalogID, response: s.Catalog(ctx, app.CatalogRequest{})}
+	}
+	validationCmd := func() tea.Msg {
+		return languagesValidationDone{id: validationID, config: config, path: path, result: s.ValidateRuntime(ctx, app.RuntimeValidationRequest{RuntimeConfig: path})}
+	}
+	return tea.Batch(catalogCmd, validationCmd)
+}
+func (m *model) enterScreen(target int) tea.Cmd {
+	m.screen = target
+	m.help = false
+	m.palette.open = false
+	if target == 3 {
+		return m.refreshLanguages()
+	}
+	return nil
+}
 func (m model) focusNames() []string {
 	if m.screen == 0 {
 		return []string{"prompt", "direction", "candidates", "preview", "result", "tabs"}
@@ -132,6 +166,9 @@ func (m model) focusNames() []string {
 	}
 	if m.screen == 2 {
 		return []string{"prompt", "list", "result", "tabs"}
+	}
+	if m.screen == 3 {
+		return []string{"refresh", "result", "tabs"}
 	}
 	return []string{"prompt", "tabs"}
 }
@@ -149,6 +186,9 @@ func (m *model) selectRuntime(path string) {
 	m.selectedID = ""
 	m.candidateDetail = false
 	m.runtime = app.RuntimeValidationResult{}
+	m.languages.pendingValidation = 0
+	m.languages.validation = app.RuntimeValidationResult{}
+	m.languages.path = path
 }
 func (m *model) checkRuntime() tea.Cmd {
 	id := m.next()
@@ -244,6 +284,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.concepts.lookup = &concept
 			}
 		}
+	case languagesCatalogDone:
+		if v.id == m.languages.pendingCatalog {
+			m.languages.pendingCatalog = 0
+			m.languages.catalog = &v.response
+		}
+	case languagesValidationDone:
+		if v.id == m.languages.pendingValidation && v.config == m.configRevision && v.path == m.runtimePath && v.path == m.languages.path {
+			m.languages.pendingValidation = 0
+			m.languages.validation = v.result
+		}
 	case settingsLoaded:
 		m.loaded = true
 		m.settingsFile = v.path
@@ -253,6 +303,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		m.selectRuntime(v.settings.RuntimeConfig)
 		m.drafts[4].set(v.settings.RuntimeConfig)
+		if m.screen == 3 {
+			return m, tea.Batch(m.checkRuntime(), m.refreshLanguages())
+		}
 		return m, m.checkRuntime()
 	case settingsSaved:
 		if v.id == m.pendingSave {
@@ -324,10 +377,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		switch key {
 		case "f1", "f2", "f3", "f4", "f5":
-			m.screen = int(key[1] - '1')
-			m.help = false
-			m.palette.open = false
-			return m, nil
+			return m, m.enterScreen(int(key[1] - '1'))
 		case "tab", "shift+tab":
 			m.palette.open = false
 			n := len(m.focusNames())
@@ -361,8 +411,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, nil
 		case "?":
 			if m.palette.open {
-				m.paletteKey(v)
-				return m, nil
+				return m, m.paletteKey(v)
 			}
 			m.help = !m.help
 			return m, nil
@@ -372,8 +421,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, nil
 		}
 		if m.palette.open {
-			m.paletteKey(v)
-			return m, nil
+			return m, m.paletteKey(v)
 		}
 		focus := m.focus()
 		cursor := m.drafts[m.screen].cursor
@@ -451,9 +499,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if key == "left" {
 				delta = 4
 			}
-			m.screen = (m.screen + delta) % 5
+			cmd := m.enterScreen((m.screen + delta) % 5)
 			m.focuses[m.screen] = len(m.focusNames()) - 1
-			return m, nil
+			return m, cmd
+		}
+		if m.screen == 3 && focus == "refresh" && key == "enter" {
+			return m, m.refreshLanguages()
 		}
 		if m.screen == 1 && key == "enter" && (focus == "language" || focus == "mode") {
 			if focus == "language" {
@@ -593,6 +644,8 @@ func (m model) View() tea.View {
 		body = m.forms.body()
 	case 2:
 		body = m.concepts.body()
+	case 3:
+		body = m.languages.body()
 	case 4:
 		state := "not verified"
 		if m.pendingRuntime != 0 {
@@ -643,6 +696,8 @@ func (m model) View() tea.View {
 	prompt := m.drafts[m.screen].visible(m.width - 4)
 	if m.screen == 1 {
 		prompt = m.forms.activeEditor(m.focus()).visible(m.width - 4)
+	} else if m.screen == 3 {
+		prompt = "F4 inventory and runtime readiness · Enter on Refresh to recheck"
 	} else if m.screen == 2 {
 		prompt = m.concepts.filter.visible(m.width - 4)
 	} else if m.screen != 0 && m.screen != 4 {
