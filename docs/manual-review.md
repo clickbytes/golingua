@@ -302,7 +302,7 @@ leksemów z jawną właściwością `indefinite_article=a`; wymowa innych leksem
 nie jest zgadywana. Nierozstrzygnięte bindingi i brakujące teksty kandydatów
 pozostają widoczne. Akceptacja językowa właściciela pozostaje **NOT RUN**.
 
-### G10-11 — regularne formy EN dla `household` — 2026-10-23
+### G10-11 #235 (PR #236) — regularne formy EN dla `household` — 2026-10-23
 
 Na implementacji [`be6bf497b6bae0780bec1cc988be873f37edac83`](../data/sentences/observed-2026-10-23-g10-11-household-morphology.tsv) uruchomiono oba kierunki dla 10 istniejących rekordów: S004, S009, S014, S019, S024, S052, S057, S062, S067 i S072 — 20 odpowiedzi CLI. `en.household.n` korzysta teraz z regularnej klasy `en_noun_regular`, a sentence-facing właściwość `indefinite_article=a` dopuszcza `a household`; `forms` rozpoznało `household` i `households`.
 

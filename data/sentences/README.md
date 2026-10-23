@@ -132,4 +132,4 @@ rodzajnika. EN→PL zachowało dotychczasowe teksty. Wyniki wciąż pokazują
 niejednoznaczność i niezatwierdzone odczytania; akceptacja właściciela jest
 **NOT RUN**.
 
-Po G10-11 #235 uzupełniono sentence-facing formy istniejącego EN `household`; zapis CLI dla 10 już obecnych rekordów i obu kierunków znajduje się w [observed-2026-10-23-g10-11-household-morphology.tsv](observed-2026-10-23-g10-11-household-morphology.tsv). Warianty `household` i `house` pozostają osobnymi kandydatami, a wyniki zachowują `ambiguous`/`incomplete`; akceptacja właściciela jest **NOT RUN**.
+Po G10-11 #235 (PR #236) uzupełniono sentence-facing formy istniejącego EN `household`; zapis CLI dla 10 już obecnych rekordów i obu kierunków znajduje się w [observed-2026-10-23-g10-11-household-morphology.tsv](observed-2026-10-23-g10-11-household-morphology.tsv). Warianty `household` i `house` pozostają osobnymi kandydatami, a wyniki zachowują `ambiguous`/`incomplete`; akceptacja właściciela jest **NOT RUN**.
