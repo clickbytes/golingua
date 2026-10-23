@@ -42,6 +42,8 @@ Lista i szczegóły kandydatów mają osobną [makietę nakładki](mockups/trans
 
 F2 Analyze ma osobną [makietę analizy formy powierzchniowej](mockups/forms-analyze.md). Pokazuje odczyty PL/EN zwracane przez `forms`, stan `unknown` i błędne żądanie; nie generuje form.
 
+F2 Generate ma osobną [makietę generowania form](mockups/forms-generate.md). Pokazuje rzeczywiste formy PL/EN i pola zwrócone przez `FormsResult`; feature rows pozostają jawnym wejściem `key=value`, bez zgadywanych list wartości. `incomplete`, `blocked` i `unavailable` są opisane jako stany kontraktu API, których zwykły CLI nie odtwarza na aktualnym seedzie.
+
 ## Ustawienia
 
 Preferencje są wersjonowanym JSON w `os.UserConfigDir()/golingua/settings.json`. Zawierają tylko ustawienia interfejsu: poziom wyświetlania, domyślny kierunek PL↔EN, ścieżkę runtime config i katalog snapshotu. Nie przechowują tekstów zdań, leksykonu, znaczeń, historii, faktów, uczenia ani sekretów.
@@ -58,4 +60,4 @@ Minimalny układ docelowy to około 80×24 znaki. Przy mniejszym oknie ekran prz
 
 ## Etapy
 
-G11-01 zamroził kontrakt produktu, a G11-02 udostępnił usługi in-process z [mapy bindingów](bindings.md). G11-03 określił MVU, fokus i odpowiedzi asynchroniczne w [kontrakcie stanu](state-model.md). G11-04 określił routing promptu i slash commands w [kontrakcie komend](command-contract.md). G11-05 ukończył makietę wspólnej ramy, G11-06 — dolnego promptu, G11-07 — palety komend, G11-08 — ekran F1, G11-09 — nakładkę kandydatów i szczegółów, a G11-10 — F2 Analyze. Kolejne etapy dostarczą pozostałe makiety, shell i ekrany. Implementacja TUI jeszcze nie istnieje, a podręcznik CLI jest osobnym zadaniem G11-39.
+G11-01 zamroził kontrakt produktu, a G11-02 udostępnił usługi in-process z [mapy bindingów](bindings.md). G11-03 określił MVU, fokus i odpowiedzi asynchroniczne w [kontrakcie stanu](state-model.md). G11-04 określił routing promptu i slash commands w [kontrakcie komend](command-contract.md). G11-05 ukończył makietę wspólnej ramy, G11-06 — dolnego promptu, G11-07 — palety komend, G11-08 — ekran F1, G11-09 — nakładkę kandydatów i szczegółów, G11-10 — F2 Analyze, a G11-11 — F2 Generate. Kolejne etapy dostarczą pozostałe makiety, shell i ekrany. Implementacja TUI jeszcze nie istnieje, a podręcznik CLI jest osobnym zadaniem G11-39.
