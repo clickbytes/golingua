@@ -1,6 +1,6 @@
 # GoLingua TUI — kontrakt produktu
 
-**Stan: zatwierdzony kontrakt G11-01; interfejs TUI nie jest jeszcze zaimplementowany.** Do implementacji G11-04 dołączone zostanie Bubble Tea v2, a pięć ekranów ma używać tych samych usług Go co CLI. Ta dokumentacja nie oznacza, że TUI jest już dostępne.
+**Stan: zatwierdzony kontrakt G11-01; interfejs TUI nie jest jeszcze zaimplementowany.** Bubble Tea v2 zostanie dołączone w etapie implementacji; pięć ekranów ma używać tych samych usług Go co CLI. Ta dokumentacja nie oznacza, że TUI jest już dostępne.
 
 ## Uruchamianie
 
@@ -30,6 +30,8 @@ TUI pokazuje tylko dane zwrócone przez wybraną usługę. Brak formy pozostaje 
 
 Nie dodajemy innych zakładek ani funkcji asystenta czatu. Granice danych i pakietów opisuje [mapa bindingów](bindings.md), statusy i błędy — [kontrakt błędów](errors.md), własność modelu, zdarzenia, odpowiedzi asynchroniczne i fokus — [kontrakt stanu](state-model.md), a routing promptu — [kontrakt komend](command-contract.md).
 
+Makieta wspólnej ramy w 80×24 i szerokim terminalu jest oznaczona jako projekt w [global-shell mockup](mockups/global-shell.md); nie pokazuje działającego TUI ani wyniku silnika.
+
 ## Ustawienia
 
 Preferencje są wersjonowanym JSON w `os.UserConfigDir()/golingua/settings.json`. Zawierają tylko ustawienia interfejsu: poziom wyświetlania, domyślny kierunek PL↔EN, ścieżkę runtime config i katalog snapshotu. Nie przechowują tekstów zdań, leksykonu, znaczeń, historii, faktów, uczenia ani sekretów.
@@ -46,4 +48,4 @@ Minimalny układ docelowy to około 80×24 znaki. Przy mniejszym oknie ekran prz
 
 ## Etapy
 
-G11-01 zamroził kontrakt produktu, a G11-02 udostępnił usługi in-process z [mapy bindingów](bindings.md). G11-03 definiuje MVU, fokus i odpowiedzi asynchroniczne w [kontrakcie stanu](state-model.md). G11-04 definiuje routing promptu i slash commands w [kontrakcie komend](command-contract.md). Późniejsze etapy dodadzą osobne makiety, shell, ekrany i ustawienia; implementacja TUI jeszcze nie istnieje, a podręcznik CLI jest osobnym zadaniem G11-39.
+G11-01 zamroził kontrakt produktu, a G11-02 udostępnił usługi in-process z [mapy bindingów](bindings.md). G11-03 określił MVU, fokus i odpowiedzi asynchroniczne w [kontrakcie stanu](state-model.md). G11-04 określił routing promptu i slash commands w [kontrakcie komend](command-contract.md). G11-05 dodaje makietę wspólnej ramy; kolejne etapy dostarczą osobne makiety, shell, ekrany i ustawienia. Implementacja TUI jeszcze nie istnieje, a podręcznik CLI jest osobnym zadaniem G11-39.
