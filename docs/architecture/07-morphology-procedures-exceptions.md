@@ -30,6 +30,10 @@ G10-01 dodaje do angielskiego profilu `verb_form=finite` oraz jawne komórki cza
 
 Regularne procedury wybierają wyłącznie przypisane im leksemy: zwykłe `+s/+ed/+ing`, sybilant `+es`, końcowe nieme `e` oraz spółgłoska + `y`. Nie jest to automatyczny klasyfikator ortografii. `see`, `hear`, `look` i `get` mają jawne principal parts i wybierają je bez zgadywania. Angielski adapter zdań analizuje/generuje ograniczone formy finite teraźniejsze 3. osoby lp. i przeszłe; G10-01 nie oznacza obsługi wszystkich konstrukcji zdaniowych.
 
+### Angielski rzeczownik: liczba
+
+G10-03 dodaje jawne komórki singular/plural dla wybranych rzeczowników. Procedury obejmują regularne `+s`, sybilant `+es` i dokładne `y → ies`; przypisanie klasy jest indywidualne i nie klasyfikuje całego słownika. `child/children`, `person/people`, `mouse/mice`, `goose/geese`, `foot/feet`, `tooth/teeth`, `leaf/leaves` i `knife/knives` zapisują oba principal parts. `fish` w sensie zwierzęcia oraz `sheep` mają osobne odczyty liczby pojedynczej i mnogiej o tej samej powierzchni. Nie powstają uogólnione reguły nieregularności; masowe `food`, `money` i `water` pozostają singular-only.
+
 ### Polski finite: aspekt, osoba, liczba i uzgodnienie czasu przeszłego
 
 G10-02 przypisuje jawne klasy tylko `widzieć`, `słyszeć`, `patrzeć` i `dostać`. Pierwsze trzy mają sześć komórek czasu teraźniejszego z aspektem niedokonanym. `Dostać` ma sześć komórek przyszłych czasu dokonanego oraz komórki przeszłe dla osób i liczb. Czas przeszły rozróżnia rodzaj w liczbie pojedynczej oraz klasę męskoosobową i niemęskoosobową w liczbie mnogiej. Tematy są zapisane jako principal parts; procedury wybierają końcówkę komórki. Nie jest to klasyfikator wszystkich polskich czasowników ani pełny model aspektu, trybu, strony, imiesłowów czy czasowników złożonych.

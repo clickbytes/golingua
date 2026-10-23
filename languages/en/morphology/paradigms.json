@@ -19,6 +19,73 @@
   },
   {
     "schema_version": 1,
+    "id": "en_noun_sibilant",
+    "language": "en",
+    "profile_version": "v2026-10-23.1",
+    "pos": "noun",
+    "principal_part_requirements": [{"stem_id":"root","part_id":"base","required":true}],
+    "cells": [
+      {"id":"singular","features":[{"feature":"noun_number","state":"known","value":"singular"}]},
+      {"id":"plural","features":[{"feature":"noun_number","state":"known","value":"plural"}]}
+    ],
+    "rules": [
+      {"cell_id":"singular","procedure_id":"procedure:en_noun_sibilant.singular","provenance":{"id":"golingua-en-morphology-seed","path":"languages/en/morphology/paradigms.json","version":"2026-10-23-g10-03","license":"internal"},"steps":[{"kind":"select_stem","stem_id":"root"}]},
+      {"cell_id":"plural","procedure_id":"procedure:en_noun_sibilant.plural","provenance":{"id":"golingua-en-morphology-seed","path":"languages/en/morphology/paradigms.json","version":"2026-10-23-g10-03","license":"internal"},"steps":[{"kind":"select_stem","stem_id":"root"},{"kind":"append","text":"es"}]}
+    ]
+  },
+  {
+    "schema_version": 1,
+    "id": "en_noun_consonant_y",
+    "language": "en",
+    "profile_version": "v2026-10-23.1",
+    "pos": "noun",
+    "principal_part_requirements": [{"stem_id":"root","part_id":"base","required":true}],
+    "cells": [
+      {"id":"singular","features":[{"feature":"noun_number","state":"known","value":"singular"}]},
+      {"id":"plural","features":[{"feature":"noun_number","state":"known","value":"plural"}]}
+    ],
+    "rules": [
+      {"cell_id":"singular","procedure_id":"procedure:en_noun_consonant_y.singular","provenance":{"id":"golingua-en-morphology-seed","path":"languages/en/morphology/paradigms.json","version":"2026-10-23-g10-03","license":"internal"},"steps":[{"kind":"select_stem","stem_id":"root"}]},
+      {"cell_id":"plural","procedure_id":"procedure:en_noun_consonant_y.plural","provenance":{"id":"golingua-en-morphology-seed","path":"languages/en/morphology/paradigms.json","version":"2026-10-23-g10-03","license":"internal"},"steps":[{"kind":"select_stem","stem_id":"root"},{"kind":"replace_suffix","suffix":"y","replacement":"ies"}]}
+    ]
+  },
+  {
+    "schema_version": 1,
+    "id": "en_noun_principal_parts",
+    "language": "en",
+    "profile_version": "v2026-10-23.1",
+    "pos": "noun",
+    "principal_part_requirements": [
+      {"stem_id":"singular","part_id":"singular","required":true},
+      {"stem_id":"plural","part_id":"plural","required":true}
+    ],
+    "cells": [
+      {"id":"singular","features":[{"feature":"noun_number","state":"known","value":"singular"}]},
+      {"id":"plural","features":[{"feature":"noun_number","state":"known","value":"plural"}]}
+    ],
+    "rules": [
+      {"cell_id":"singular","procedure_id":"procedure:en_noun_principal_parts.singular","provenance":{"id":"golingua-en-morphology-seed","path":"languages/en/morphology/paradigms.json","version":"2026-10-23-g10-03","license":"internal"},"steps":[{"kind":"select_stem","stem_id":"singular"}]},
+      {"cell_id":"plural","procedure_id":"procedure:en_noun_principal_parts.plural","provenance":{"id":"golingua-en-morphology-seed","path":"languages/en/morphology/paradigms.json","version":"2026-10-23-g10-03","license":"internal"},"steps":[{"kind":"select_stem","stem_id":"plural"}]}
+    ]
+  },
+  {
+    "schema_version": 1,
+    "id": "en_noun_zero_plural",
+    "language": "en",
+    "profile_version": "v2026-10-23.1",
+    "pos": "noun",
+    "principal_part_requirements": [{"stem_id":"root","part_id":"base","required":true}],
+    "cells": [
+      {"id":"singular","features":[{"feature":"noun_number","state":"known","value":"singular"}]},
+      {"id":"plural","features":[{"feature":"noun_number","state":"known","value":"plural"}]}
+    ],
+    "rules": [
+      {"cell_id":"singular","procedure_id":"procedure:en_noun_zero_plural.singular","provenance":{"id":"golingua-en-morphology-seed","path":"languages/en/morphology/paradigms.json","version":"2026-10-23-g10-03","license":"internal"},"steps":[{"kind":"select_stem","stem_id":"root"}]},
+      {"cell_id":"plural","procedure_id":"procedure:en_noun_zero_plural.plural","provenance":{"id":"golingua-en-morphology-seed","path":"languages/en/morphology/paradigms.json","version":"2026-10-23-g10-03","license":"internal"},"steps":[{"kind":"select_stem","stem_id":"root"}]}
+    ]
+  },
+  {
+    "schema_version": 1,
     "id": "en_verb_regular",
     "language": "en",
     "profile_version": "v2026-10-23.1",

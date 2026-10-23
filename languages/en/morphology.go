@@ -61,12 +61,36 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 		case "lexeme:en.get.v":
 			principalParts = finiteEnglishPrincipalParts(lexeme, "get", "gets", "got", "gotten", "getting")
 		}
+		if lexeme.ParadigmID == "en_noun_principal_parts" {
+			principalParts = englishNounPrincipalParts(lexeme)
+		}
 		records = append(records, lexemeRecord{
 			Lexeme:         lexeme,
 			PrincipalParts: principalParts,
 		})
 	}
 	return records, nil
+}
+
+func englishNounPrincipalParts(lexeme lexicon.MorphLexeme) morph.PrincipalParts {
+	pluralByLexeme := map[string]string{
+		"lexeme:en.child.n":         "children",
+		"lexeme:en.person.n":        "people",
+		"lexeme:en.mouse_animal.n":  "mice",
+		"lexeme:en.goose.n":         "geese",
+		"lexeme:en.foot.n":          "feet",
+		"lexeme:en.tooth.n":         "teeth",
+		"lexeme:en.leaf_plant.n":    "leaves",
+		"lexeme:en.knife_utensil.n": "knives",
+	}
+	plural := pluralByLexeme[lexeme.ID.String()]
+	if plural == "" {
+		return morph.PrincipalParts{LexemeID: lexeme.ID}
+	}
+	return morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{
+		{ID: "singular", Form: lexeme.Lemma},
+		{ID: "plural", Form: plural},
+	}}
 }
 
 func finiteEnglishPrincipalParts(lexeme lexicon.MorphLexeme, base, thirdPersonSingular, past, pastParticiple, presentParticiple string) morph.PrincipalParts {

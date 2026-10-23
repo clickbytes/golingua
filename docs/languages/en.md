@@ -25,11 +25,10 @@ Source metadata points to the project-authored Go files and records the license
 as `unknown` until established.
 
 The morphology catalog assigns paradigms to a bounded, explicit subset of the
-English lexicon. In addition to regular count nouns and the recorded singular
-`tree`, G10-01 binds finite verb paradigms to selected regular classes and
-explicit principal parts. Most of the 1000 lexical entries still have no
-assigned morphology. It does not add auxiliaries or unrestricted sentence
-realization.
+English lexicon. G10-03 adds selected count-noun number classes alongside the
+G10-01 finite verb classes and explicit principal parts. Most of the 1000
+lexical entries still have no assigned morphology. It does not add auxiliaries
+or unrestricted sentence realization.
 
 The 981 newly lexicalized entries cover people and social roles, organizations, basic concepts,
 animals, plants, body parts, materials, vehicles, household objects, communication verbs
@@ -53,11 +52,32 @@ The Go package `github.com/clickbytes/golingua/languages/en` loads the bundled `
 
 ## Included classes
 
-- Regular count nouns: singular base and plural `+s` (seed entries: `book`, `cat`).
+- Selected count nouns have singular/plural cells for regular `+s`, sibilant
+  `+es`, or consonant + `y → ies`. Assignment is explicit per lexeme; there is
+  no automatic spelling classifier. Examples include `book/books`,
+  `bus/buses`, `branch/branches`, and `city/cities`.
+- Selected irregular nouns list both principal parts directly: `child/children`,
+  `person/people`, `mouse/mice`, `goose/geese`, `foot/feet`, `tooth/teeth`,
+  `leaf/leaves`, and `knife/knives`. `fish` (animal sense) and `sheep` have
+  separate singular/plural cells selecting the same surface form, so analysis
+  preserves both number readings. These entries do not license general rules
+  for other irregular nouns.
+- `food`, `money`, and `water` remain explicitly singular-only mass nouns.
 - English finite regular verb classes add person/number present cells, a person-invariant past cell, imperative, and both participles. Subclasses cover plain endings, sibilants, final silent `e`, and consonant + `y`; each is attached only to explicitly selected entries such as `print`, `brush`, `bake`, and `fry`.
 - An explicit finite principal-parts paradigm covers `see`, `hear`, `look`, and `get`, and the standalone seed example `go`. Each lists base, third-person singular, past, past participle, and present participle. Listed forms are selected directly; the package does not infer irregular forms from the lemma or claim they are reviewed exception rules.
 - Regular adjective degree for positive, comparative `+er`, and superlative `+est` (seed entry: `bright`).
 
 `Analyze` preserves all readings: for example, the finite table contains separate `past` and `past_participle` readings for `walked`. Surfaces use NFC normalization only; case and diacritics remain significant.
 
-This is a small declared seed, not a complete English grammar. The orthographic classes do not implement consonant doubling, irregular plural rules, auxiliaries, or unrestricted sentence realization. The compiled sentence routes use finite `see`, `hear`, `look` and past `get` forms; `tree` has an explicit singular form for this slice. English `food`, `money`, and `water` are marked as mass nouns for target number selection. The transitive source construction recognizes `the`, `a`, and a bare object where current lexical/morphology data allow it. The oblique `look at` route recognizes the exact `at` terminal. Additional irregular exception rules require their own valid provenance. Owner-authored `looking` CLI observations are in [`data/sentences/observed-2026-10-23-g05-14-looking.tsv`](../../data/sentences/observed-2026-10-23-g05-14-looking.tsv); owner sign-off remains **NOT RUN**.
+This is a bounded declared seed, not a complete English grammar. The spelling
+classes do not implement consonant doubling, infer unlisted irregular plurals,
+provide auxiliaries, or enable unrestricted sentence realization. The English
+lexical catalog currently has no adjective or pronoun lexemes; `bright` remains
+a standalone morphology seed example. The compiled sentence routes use finite
+`see`, `hear`, `look` and past `get` forms. English `food`, `money`, and `water`
+are marked as mass nouns for target number selection. The transitive source
+construction recognizes `the`, `a`, and a bare object where current
+lexical/morphology data allow it. The oblique `look at` route recognizes the
+exact `at` terminal. Owner-authored `looking` CLI observations are in
+[`data/sentences/observed-2026-10-23-g05-14-looking.tsv`](../../data/sentences/observed-2026-10-23-g05-14-looking.tsv);
+owner sign-off remains **NOT RUN**.
