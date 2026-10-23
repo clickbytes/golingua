@@ -1,24 +1,18 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"strings"
 
+	"github.com/clickbytes/golingua/internal/app"
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/morph"
 	"github.com/clickbytes/golingua/internal/status"
-	"github.com/clickbytes/golingua/languages/en"
-	"github.com/clickbytes/golingua/languages/pl"
 )
-
-type morphologySeed interface {
-	Generate(string, []features.FeatureValue) (morph.GenerationResult, error)
-	Analyze(string) ([]morph.Reading, error)
-}
 
 type formsOptions struct {
 	language, lexeme, surface string
@@ -26,16 +20,7 @@ type formsOptions struct {
 	json                      bool
 }
 
-type formsResponse struct {
-	Status      status.OutcomeKind    `json:"status"`
-	Language    string                `json:"language,omitempty"`
-	LexemeID    string                `json:"lexeme_id,omitempty"`
-	Surface     string                `json:"surface,omitempty"`
-	State       morph.GenerationState `json:"state,omitempty"`
-	Forms       []morph.GeneratedForm `json:"forms,omitempty"`
-	Readings    []morph.Reading       `json:"readings,omitempty"`
-	Diagnostics []status.Diagnostic   `json:"diagnostics,omitempty"`
-}
+type formsResponse = app.FormsResult
 
 func parseForms(args []string) (formsOptions, error) {
 	var options formsOptions
@@ -103,63 +88,16 @@ func parseForms(args []string) (formsOptions, error) {
 	return options, nil
 }
 
-func runForms(args []string, stdout, stderr io.Writer) int {
+func runForms(args []string, stdout, stderr io.Writer, service *app.Service) int {
 	options, err := parseForms(args)
 	if err != nil {
 		return writeForms(stdout, stderr, formsResponse{Status: status.OutcomeInvalid, Diagnostics: []status.Diagnostic{formsDiagnostic("INVALID_FORMS_ARGUMENTS", err.Error(), "forms")}})
 	}
-	var seed morphologySeed
-	switch options.language {
-	case "pl":
-		seed, err = pl.Load()
-	case "en":
-		seed, err = en.Load()
-	}
-	if err != nil {
-		return writeForms(stdout, stderr, formsResponse{Status: status.OutcomeError, Language: options.language, Diagnostics: []status.Diagnostic{formsDiagnostic("MORPHOLOGY_LOAD_FAILED", "could not load bundled morphology", "forms")}})
-	}
-	response := formsResponse{Status: status.OutcomeOK, Language: options.language, LexemeID: options.lexeme, Surface: options.surface}
-	if options.lexeme != "" {
-		result, generateErr := seed.Generate(options.lexeme, options.features)
-		if generateErr != nil {
-			return writeForms(stdout, stderr, formsErrorResponse(response, generateErr))
-		}
-		response.State, response.Forms, response.Diagnostics = result.State, result.Forms, result.Diagnostics
-		switch result.State {
-		case morph.GenerationGenerated:
-			response.Status = status.OutcomeOK
-		case morph.GenerationIncomplete:
-			response.Status = status.OutcomeIncomplete
-		case morph.GenerationBlocked, morph.GenerationUnavailable:
-			response.Status = status.OutcomeUnsupported
-		default:
-			response.Status = status.OutcomeUnknown
-		}
-	} else {
-		response.Readings, err = seed.Analyze(options.surface)
-		if err != nil {
-			return writeForms(stdout, stderr, formsErrorResponse(response, err))
-		}
-		if len(response.Readings) == 0 {
-			response.Status = status.OutcomeUnknown
-		}
-	}
-	if response.Status != status.OutcomeOK && len(response.Diagnostics) == 0 {
-		response.Diagnostics = []status.Diagnostic{formsDiagnostic("FORM_UNAVAILABLE", "requested morphology is not available", "forms")}
-	}
+	response := service.Forms(context.Background(), app.FormsRequest{
+		Language: options.language, LexemeID: options.lexeme, Surface: options.surface,
+		Features: options.features,
+	})
 	return writeForms(stdout, stderr, response)
-}
-
-func formsErrorResponse(response formsResponse, err error) formsResponse {
-	var typed interface{ Result() status.Result }
-	if errors.As(err, &typed) {
-		result := typed.Result()
-		response.Status, response.Diagnostics = result.Status, result.Diagnostics
-		return response
-	}
-	response.Status = status.OutcomeError
-	response.Diagnostics = []status.Diagnostic{formsDiagnostic("MORPHOLOGY_ERROR", "morphology operation failed", "forms")}
-	return response
 }
 
 func formsDiagnostic(code, message, path string) status.Diagnostic {

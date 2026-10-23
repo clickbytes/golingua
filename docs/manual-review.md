@@ -540,6 +540,45 @@ To potwierdza obecne zachowanie bez TTY; przyszły start interaktywnego TUI jest
 jeszcze niezaimplementowany. TUI: **NOT RUN**. Akceptacja kontraktu przez
 właściciela pozostaje **NOT RUN**.
 
+### G11-02 #258 — typowany serwis aplikacyjny — 2026-10-23
+
+`internal/app.Service` łączy dotychczasowe operacje CLI: `Translate`,
+`Forms`, `Catalog`, `LookupConcept` i `Snapshot`. CLI parsuje argumenty i
+zachowuje JSON, stdout/stderr oraz kody procesu; TUI może wywoływać te same
+metody bez procesu potomnego. Potwierdzenie `SnapshotRequest.Confirmed` jest
+wymagane przed `Apply`; handler CLI przekazuje je wyłącznie dla jawnego
+`snapshot --apply`. Question pozostaje na dotychczasowej ścieżce.
+
+Zbudowany z bieżącego drzewa gałęzi `g11-02-app-services`, bazowego SHA
+`3bee081af76d7907eeb4dd1e13accb5f8f265d3c`:
+`go build -o /tmp/golingua-g11-02 ./cmd/golingua`. `gofmt`, `git diff --check`,
+`go vet ./...` i build zakończyły się kodem 0. `--help`, `--version`,
+`forms`, `catalog --summary` oraz snapshot CLI zwróciły kod 0 i puste stderr.
+
+Wyniki ręcznych wywołań CLI:
+
+- `/tmp/golingua-g11-02 --version` → `0.1.0-alpha.1`.
+- `forms --language pl --surface dostaliśmy --json` → `ok`, odczyt
+  `lexeme:pl.dostac.v`, komórka `past_1pl_masculine_personal`.
+- `forms --language pl --lexeme lexeme:pl.widziec.v` z jawnymi cechami
+  present, third, plural → `ok`, `widzą`.
+- `catalog --summary --json` → 1000 konceptów; PL 983 leksemy / 1007 sensów /
+  1006 bindingów, EN 1003 / 1012 / 1001; 881 zatwierdzonych par; 173 relacje
+  CORE; 273/5 ram walencji; 8/109 zatwierdzonych bindingów konstrukcji.
+- `snapshot --preview` w tymczasowym store → `ok`, digest
+  `0c045b50f6f93c16008f54d1bdb1e3eb02bf16430c8c29c226ebebf1046d40d0`,
+  `applied:false`; jawne `snapshot --apply` na tym samym store → `ok`,
+  `applied:true`, `durability_confirmed:true`.
+- Z aktywnym snapshotem w tym tymczasowym store: `The teacher sees the dog.`
+  EN→PL → `ok`, `Nauczyciel widzi psa.`
+
+Ręczne wywołanie serwisu potwierdziło, że `LookupConcept(concept:dog)` zwraca
+trafienie, a próba `Apply` z `Confirmed:false` zwraca `invalid` oraz
+`SNAPSHOT_APPLY_CONFIRMATION_REQUIRED`; wskazany store nie powstał. Nie
+zmieniono danych językowych ani tras tłumaczenia. To ocena techniczna agenta,
+nie akceptacja właściciela. `go test ./...`, CI i działające TUI: **NOT RUN**;
+CI zostanie sprawdzony po otwarciu PR. Akceptacja właściciela: **NOT RUN**.
+
 ## Co NIE jest wymagane
 
 - Przenoszenie dawnych zdań lub ich oczekiwanych rezultatów z JS.
