@@ -9,7 +9,8 @@
       {"id":"verb","position":1,"category":"VP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"},
       {"id":"object","position":2,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"}
     ],
-    "provenance":{"id":"golingua-structural-template","path":"languages/pl/constructions/transitive.json","version":"1","license":"internal"}
+    "constraints":[{"id":"subject_verb_number","kind":"agreement","strength":"hard","controller_slot":"subject","target_slot":"verb","features":["number"]}],
+    "provenance":{"id":"golingua-structural-template","path":"languages/pl/constructions/transitive.json","version":"2026-10-23-g10-13","license":"internal"}
   },
   "variants": [
     {"id":"construction:pl.transitive.svo","family_id":"construction:pl.transitive","sequence":[{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"both","provenance":{"id":"golingua-structural-template","path":"languages/pl/constructions/transitive.json","version":"1","license":"internal"}},

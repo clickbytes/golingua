@@ -120,7 +120,10 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 	if number != "singular" && number != "plural" {
 		return nil, nil
 	}
-	return knownFeature("noun_number", string(number)), nil
+	return []features.FeatureValue{
+		{Feature: "noun_number", State: features.StateKnown, Value: features.FeatureValueID(number)},
+		{Feature: "number", State: features.StateKnown, Value: features.FeatureValueID(number)},
+	}, nil
 }
 
 func englishFiniteVerbFeatures(tense, person, number string) []features.FeatureValue {
@@ -134,6 +137,7 @@ func englishFiniteVerbFeatures(tense, person, number string) []features.FeatureV
 		values = append(values,
 			features.FeatureValue{Feature: "person", State: features.StateKnown, Value: features.FeatureValueID(person)},
 			features.FeatureValue{Feature: "verb_number", State: features.StateKnown, Value: features.FeatureValueID(number)},
+			features.FeatureValue{Feature: "number", State: features.StateKnown, Value: features.FeatureValueID(number)},
 		)
 	}
 	return values
@@ -217,11 +221,12 @@ type englishDeterminerCandidatePolicy struct{}
 
 func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) bool {
 	const (
-		transitiveFamily = "construction:en.transitive"
-		obliqueFamily    = "construction:en.oblique"
+		transitiveFamily     = "construction:en.transitive"
+		transitivePastFamily = "construction:en.transitive_past"
+		obliqueFamily        = "construction:en.oblique"
 	)
 	familyID := candidate.Family.Family.ID.String()
-	if candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || familyID != transitiveFamily && familyID != obliqueFamily {
+	if candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || familyID != transitiveFamily && familyID != transitivePastFamily && familyID != obliqueFamily {
 		return true
 	}
 	variant, knownVariant := englishDeterminerVariant(candidate.CompiledVariant.Variant.ID.String())
@@ -338,6 +343,10 @@ type englishDeterminers struct {
 
 func englishDeterminerVariant(id string) (englishDeterminers, bool) {
 	variant, exists := englishDeterminerVariants[id]
+	const pastPrefix = "construction:en.transitive_past."
+	if !exists && len(id) > len(pastPrefix) && id[:len(pastPrefix)] == pastPrefix {
+		variant, exists = englishDeterminerVariants["construction:en.transitive."+id[len(pastPrefix):]]
+	}
 	return variant, exists
 }
 
@@ -369,6 +378,8 @@ func englishStandardDeterminerVariant(familyID string) string {
 	switch familyID {
 	case "construction:en.transitive":
 		return "construction:en.transitive.svo"
+	case "construction:en.transitive_past":
+		return "construction:en.transitive_past.svo"
 	case "construction:en.oblique":
 		return "construction:en.oblique.svo"
 	default:
@@ -378,7 +389,7 @@ func englishStandardDeterminerVariant(familyID string) string {
 
 func englishDeterminerForRole(candidate realizer.TargetCandidate, role meaning.Role) (string, bool) {
 	familyID := candidate.Family.Family.ID.String()
-	if familyID != "construction:en.transitive" && familyID != "construction:en.oblique" {
+	if familyID != "construction:en.transitive" && familyID != "construction:en.transitive_past" && familyID != "construction:en.oblique" {
 		return "", false
 	}
 	variant, exists := englishDeterminerVariant(candidate.CompiledVariant.Variant.ID.String())

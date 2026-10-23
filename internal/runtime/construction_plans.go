@@ -74,6 +74,7 @@ func CompileSentencePlans(profile *features.LanguageFeatureProfile, packages []c
 			Profile: construction.ConstructionProfile{
 				Language: profile.Language(), Version: profile.Version(), Dimensions: profile.Dimensions(), Provenance: profileSource,
 			},
+			Constraints: sentenceFamilyConstraints(family.Family),
 		})
 		if err != nil {
 			return nil, nil, fmt.Errorf("compile construction %s for %s: %w", binding.VariantID, frame.ID, err)
@@ -88,4 +89,26 @@ func CompileSentencePlans(profile *features.LanguageFeatureProfile, packages []c
 		return nil, nil, err
 	}
 	return index, variants, nil
+}
+
+func sentenceFamilyConstraints(family construction.ConstructionFamily) []construction.CompiledConstraint {
+	var constraints []construction.CompiledConstraint
+	for _, source := range family.Constraints {
+		if source.Kind != construction.ConstraintAgreement {
+			continue
+		}
+		for _, feature := range source.Features {
+			constraints = append(constraints, construction.CompiledConstraint{
+				ID:       source.ID + "_" + string(feature),
+				Kind:     construction.ConstraintAgree,
+				Strength: source.Strength,
+				Target:   construction.SourcePath{SlotID: source.TargetSlot, Feature: feature},
+				Controller: construction.SourcePath{
+					SlotID: source.ControllerSlot, Feature: feature,
+				},
+				Features: []features.FeatureID{feature},
+			})
+		}
+	}
+	return constraints
 }

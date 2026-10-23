@@ -28,6 +28,9 @@
         "adposition": "at"
       }
     ],
+    "constraints": [
+      {"id":"subject_verb_number","kind":"agreement","strength":"hard","controller_slot":"subject","target_slot":"verb","features":["number"]}
+    ],
     "provenance": {
       "id": "golingua-structural-template",
       "path": "languages/en/constructions/oblique.json",

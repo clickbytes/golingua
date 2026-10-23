@@ -14,7 +14,7 @@ import (
 
 // NewSentenceSource builds the trusted Polish source stages against one exact
 // CORE/lexicon snapshot. The bare declarative completion attestation covers
-// present visual/auditory/looking and singular past receiving predicates.
+// singular and plural present visual/auditory/looking and singular past receiving predicates.
 func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if snapshot == nil {
 		return nil, fmt.Errorf("Polish sentence source requires a snapshot")
@@ -71,9 +71,18 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 		EvidenceBuilder: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true},
 			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
-				seeingSense:    {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}},
-				hearingSense:   {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}},
-				lookingSense:   {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}},
+				seeingSense: {
+					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
+					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
+				},
+				hearingSense: {
+					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
+					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
+				},
+				lookingSense: {
+					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
+					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
+				},
 				receivingSense: {{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "singular"}},
 			},
 			AllowedUnlexicalizedTerminals: map[string]bool{"na": true},
