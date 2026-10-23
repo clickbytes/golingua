@@ -18,4 +18,4 @@ Luka doprecyzowania jest sprawdzana względem roli predykatu oraz jawnego kontek
 
 Cele odpowiedzi są `answer_yes_no`, `answer_wh`, `clarify`, `refuse` i `explain`. Akty odmowy i wyjaśnienia nie są asercjami; projektowany `Meaning` nie trafia przez to do projekcji asertywnych faktów.
 
-To API biblioteczne. CLI nadal nie wykonuje dialogu ani tłumaczenia. Weryfikacja językowa przez właściciela pozostaje **NOT RUN** do czasu dostarczenia przykładów wejściowych i uruchomienia ich na docelowym środowisku.
+Typowany CLI `question` udostępnia plan odpowiedzi oraz opcjonalną realizację PL/EN na aktywnym snapshotcie. Obecna realizacja tekstowa jest ograniczona do dodatnich odpowiedzi yes/no na zatwierdzonych trasach zdań; odpowiedź `incomplete` jawnie pokazuje założenia. False, WH, clarify, refusal i explain pozostają bez tekstu tam, gdzie brakuje zatwierdzonej konstrukcji. Ocena delegowana przez agenta i akceptacja językowa właściciela są osobnymi statusami; akceptacja właściciela pozostaje **NOT RUN**.

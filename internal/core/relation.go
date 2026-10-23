@@ -77,11 +77,13 @@ func (strength EdgeStrength) Valid() bool {
 // Empty kind lists mean any valid ConceptKind. Symmetric requires endpoint
 // signatures to be equivalent and is enforced during graph compilation.
 type RelationType struct {
-	ID          RelationID
-	SubjectKind []ConceptKind
-	ObjectKind  []ConceptKind
-	Symmetric   bool
-	Transitive  bool
+	ID             RelationID
+	SubjectKind    []ConceptKind
+	ObjectKind     []ConceptKind
+	EventConceptID ids.ConceptID
+	ArgumentRoles  [2]string
+	Symmetric      bool
+	Transitive     bool
 }
 
 // Relation returns a defensive copy of a relation schema from a compiled graph.

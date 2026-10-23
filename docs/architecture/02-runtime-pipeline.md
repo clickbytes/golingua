@@ -38,13 +38,13 @@ Brak FactSet nie jest dowodem fałszu; świat nie jest zamkniętą tabelą. Nie 
 
 ## CLI jako główny wskaźnik funkcjonalny
 
-CLI udostępnia `golingua translate --from pl --to en --text "..." --runtime-config <path> --json` oraz analizę i generację ograniczonych form przez `forms`. Właściciel może podać wejścia do ręcznego odbioru; wynik `ok` potwierdza wykonanie pipeline'u, nie poprawność językową.
+CLI udostępnia `golingua translate --from pl --to en --text "..." --runtime-config <path> --json`, typowane `question` na jawnych Meaning/FactSet oraz analizę i generację ograniczonych form przez `forms`. `question --language pl|en` może realizować dodatnią odpowiedź yes/no na istniejących trasach; nie parsuje zdań pytających w języku naturalnym. Właściciel może podać wejścia do ręcznego odbioru; wynik `ok` potwierdza wykonanie pipeline'u, nie poprawność językową.
 
-**Nie ma skryptu sprawdzającego setki zdań, założeń procentowych ani porównania do starego JS.** Minimalny CI tylko buduje Go. Ograniczenia runtime (maksymalna liczba kandydatów/węzłów) są cechą bezpieczeństwa, a nie celem generowania automatycznych testów.
+**Nie ma skryptu sprawdzającego setki zdań, założeń procentowych ani porównania do starego JS.** Minimalne CI uruchamia formatowanie, vet, build i lekkie smoke CLI; nie dodajemy suite testów gramatycznych ani goldów. Ograniczenia runtime (maksymalna liczba kandydatów/węzłów) są cechą bezpieczeństwa, a nie celem generowania automatycznych testów.
 
 ## Jawna konfiguracja runtime
 
-`translate` może przyjąć `--runtime-config <path>`. Wersjonowany plik JSON wskazuje istniejący aktywny dataset store i `dataset_id`; ścieżki względne liczone są od katalogu pliku konfiguracji. Store musi już zawierać aktywny snapshot; CLI nie importuje ani nie aktywuje danych. W skompilowanym CLI pakiety PL/EN powstają przez zaufaną fabrykę Go, więc `language_package_dirs` można pominąć.
+`translate` i `question` mogą przyjąć `--runtime-config <path>`. Wersjonowany plik JSON wskazuje istniejący aktywny dataset store i `dataset_id`; ścieżki względne liczone są od katalogu pliku konfiguracji. Store musi już zawierać aktywny snapshot; CLI nie importuje ani nie aktywuje danych. W skompilowanym CLI pakiety PL/EN powstają przez zaufaną fabrykę Go, więc `language_package_dirs` można pominąć.
 
 ```json
 {

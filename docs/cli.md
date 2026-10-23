@@ -87,10 +87,11 @@ Do użycia CORE przez `question` skonfiguruj `dataset_store` na ten katalog i
 
 ## Pytania na faktach z żądania
 
-Komenda `question` wykonuje typowane zapytanie na `MeaningGraph` i `FactSet` podanych w jednym żądaniu. Nie parsuje polskiego ani angielskiego tekstu i nie realizuje odpowiedzi powierzchniowej.
+Komenda `question` wykonuje typowane zapytanie na `MeaningGraph` i `FactSet` podanych w jednym żądaniu. Nie parsuje polskiego ani angielskiego tekstu. Opcjonalna flaga `--language pl|en` uruchamia odpowiedź przez zweryfikowany target runtime:
 
 ```sh
 go run ./cmd/golingua question --runtime-config <runtime.json> --json < question-request.json
+go run ./cmd/golingua question --runtime-config <runtime.json> --language pl --json < question-request.json
 ```
 
 Runtime config wybiera aktywny CORE/dataset snapshot. Konfiguracja `question` oraz bieżące skompilowane CLI mogą pominąć `language_package_dirs`; aplikacje używające zewnętrznych katalogów pakietów nadal mogą je podać. JSON ze standardowego wejścia ma limit 4 MiB, schemat zamknięty i wersję `schema_version: 1`:
@@ -99,7 +100,9 @@ Runtime config wybiera aktywny CORE/dataset snapshot. Konfiguracja `question` or
 - `facts`: tablica `facts.Fact` dla tego samego request context; każdy fakt wymaga jawnego źródła i polaryzacji.
 - `rules`: opcjonalne reguły `symmetry`/`transitivity`, które CORE jawnie deklaruje. Są walidowane względem wybranego snapshotu.
 
-Wynik JSON zawiera `status`, wybrany `goal`, zaplanowane `question`, `answer` z prawdą/kandydatami i proof IDs, oraz tylko te fakty/źródła, które stanowią dowód. Brak dowodu daje `unknown`; nie tworzy faktu negatywnego. Niepoprawny snapshot, Meaning, FactSet lub mapowanie daje typowany status błędu. `question` nie jest dowodem jakości językowej; ręczny odbiór wymaga wejść dostarczonych przez właściciela.
+Wynik JSON zawiera `status`, wybrany `goal`, zaplanowane `question`, `answer` z prawdą/kandydatami i proof IDs, oraz tylko te fakty/źródła, które stanowią dowód. Przy `--language` wynik zawiera też `response` z `response_meaning`, konstrukcjami i alternatywami. Każda alternatywa pokazuje tekst, status, dokładne identyfikatory dowodu konstrukcji, jawne `assumptions`, straty i diagnostykę. Brak dowodu daje `unknown`; nie tworzy faktu negatywnego. Niepoprawny snapshot, Meaning, FactSet lub mapowanie daje typowany status błędu.
+
+Obecne dodatnie odpowiedzi yes/no mogą użyć istniejących zatwierdzonych konstrukcji zdaniowych PL/EN. Gdy Meaning nie określa czasu, osoby/liczby lub angielskiego rodzajnika, CLI zachowuje tekst ze statusem `incomplete` i jawnymi założeniami. Dla odpowiedzi `false` negacja pozostaje `unsupported`, dopóki nie ma zatwierdzonej konstrukcji negacji. Odpowiedź WH zachowuje znaleziony referent i proof, ale jej tekst pozostaje `unsupported`, dopóki runtime nie ma samodzielnej konstrukcji NP. Błędy realizacji zachowują ustrukturyzowaną odpowiedź, dowód i źródło faktu. `question` nadal nie przyjmuje pytania w języku naturalnym. Ocenę delegowaną przez właściciela zapisuje się oddzielnie od jego akceptacji; ręczna akceptacja właściciela pozostaje osobnym statusem.
 
 Wyjście sukcesu i błędów domenowych jest pojedynczym obiektem JSON na stdout. Exit code odpowiada statusowi: `ok` 0, `invalid` 2, `unsupported` 3, `resource_limit` 4, `unknown` 5, `ambiguous` 6, `incomplete` 7; `error` i błędy infrastruktury używają kodu 1. Komenda `capabilities --json` sama kończy się 0 i opisuje gotowość przez pole `ready`.
 

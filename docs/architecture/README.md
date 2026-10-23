@@ -47,12 +47,12 @@ Dokumenty 04 i 05 opisują typy/statusy oraz manifesty/pochodzenie; nie są bram
 
 ## Co jest normatywne
 
-- Oddzielne ConceptDefinition, MorphLexeme, LexicalSense, SemanticBinding, ValencyFrame, ConstructionFamily/Variant/Operator, Procedure, Paradigm, MeaningGraph i ewentualny późniejszy FactSet.
+- Oddzielne ConceptDefinition, MorphLexeme, LexicalSense, SemanticBinding, ValencyFrame, ConstructionFamily/Variant/Operator, Procedure, Paradigm, MeaningGraph i request-scoped FactSet.
 - Oddzielna wiedza semantyczna i powierzchnia języka.
 - Proceduralne formy/zdania z legalną obsługą wyjątków.
 - Typowane błędy i ograniczenie pracy runtime.
 - Języki jako moduły danych, bez kopiowania słownika do CORE.
-- Jedna kolejka zadań (G00 ACTIVE, następne QUEUED), jeden agent i jeden PR.
+- Jedna kolejka zadań: najwyżej jeden aktywny epic/task, reszta QUEUED, jeden agent i jeden implementacyjny PR.
 
 **Nie jest normatywne:** obligatoryjne API `ROCK.VERB.MORPH.PAST`; odtwarzanie dawnego JS; liczba testów, goldów i wymaganych przykładów; od razu FST/SQL; uczenie i trwała pamięć.
 

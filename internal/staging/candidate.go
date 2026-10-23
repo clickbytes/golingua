@@ -35,13 +35,14 @@ type File struct {
 
 // Summary contains aggregate counts from the validated CORE and lexicon data.
 type Summary struct {
-	DatasetID string
-	Version   string
-	Files     int
-	Concepts  int
-	Lexemes   int
-	Senses    int
-	Bindings  int
+	DatasetID     string
+	Version       string
+	Files         int
+	Concepts      int
+	RelationTypes int
+	Lexemes       int
+	Senses        int
+	Bindings      int
 }
 
 var ErrInvalidCandidateFiles = errors.New("candidate files do not match manifest")
@@ -66,6 +67,7 @@ func BuildCandidate(dataRoot string, manifest importer.Manifest) (Candidate, err
 	}
 	for _, conceptFile := range dataset.Concepts {
 		candidate.Summary.Concepts += len(conceptFile.Concepts)
+		candidate.Summary.RelationTypes += len(conceptFile.Relations)
 	}
 	for _, lexiconFile := range dataset.Lexicons {
 		candidate.Summary.Lexemes += len(lexiconFile.Lexemes)

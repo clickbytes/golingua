@@ -15,7 +15,6 @@ import (
 	"github.com/clickbytes/golingua/internal/realizer"
 	"github.com/clickbytes/golingua/internal/semantic"
 	"github.com/clickbytes/golingua/internal/status"
-	"github.com/clickbytes/golingua/internal/text"
 	"github.com/clickbytes/golingua/internal/valency"
 )
 
@@ -75,7 +74,7 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 		return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
 	}
 	var operators []construction.Operator
-	operatorCoverageComplete := false
+	operatorCoverageComplete := source.Meaning != nil && meaningHasNoExplicitOperators(*source.Meaning)
 	var err error
 	if pipeline.OperatorBuilder != nil {
 		operators, operatorCoverageComplete, err = pipeline.OperatorBuilder.Build(ctx, source)
@@ -98,24 +97,38 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 		return engine.SurfaceResult{}, err
 	}
 	result := engine.SurfaceResult{Outcome: selection.Outcome, Diagnostics: append([]status.Diagnostic(nil), selection.Diagnostics...)}
+	if !operatorCoverageComplete {
+		result.Outcome = status.OutcomeUnsupported
+		result.Diagnostics = appendTargetDiagnostics(result.Diagnostics, status.Diagnostic{
+			Code: "TARGET_OPERATOR_COVERAGE_UNAVAILABLE", Path: "target.operators",
+			Message:  "the target runtime has no complete licensed realization for the Meaning operator scope",
+			Severity: status.SeverityError,
+		})
+		return result, nil
+	}
 	if source.Meaning == nil {
 		return engine.SurfaceResult{}, targetPipelineError(status.OutcomeUnsupported, "TARGET_MEANING_UNAVAILABLE", "source.meaning", "target realization requires a supported source Meaning graph")
 	}
 	// Referent selections supply the predicate's role slots. They are not
 	// independent sentence alternatives, and must remain available to the
 	// language-local execution builder when it lexicalizes those slots.
+	// Surface candidates are the top-level predicates or noun phrases. Role
+	// referents are passed to slot execution as supporting candidates, but are
+	// never realized as independent alternatives for a sentence response.
+	surfaceIDs := topLevelTargetNodeIDs(*source.Meaning)
+	neededIDs := targetExecutionNodeIDs(*source.Meaning, surfaceIDs)
 	candidates := make([]realizer.TargetCandidate, 0, len(selection.Candidates))
-	rootIDs := make(map[meaning.NodeID]bool, len(source.Meaning.Roots))
-	for _, root := range source.Meaning.Roots {
-		rootIDs[root] = true
-	}
+	surfaceCandidates := make([]realizer.TargetCandidate, 0, len(selection.Candidates))
 	for _, candidate := range selection.Candidates {
-		if rootIDs[candidate.NodeID] && (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState) {
+		if neededIDs[candidate.NodeID] && (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState || candidate.Kind == meaning.KindReferent) {
 			candidates = append(candidates, candidate)
 		}
+		if surfaceIDs[candidate.NodeID] && (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState || candidate.Kind == meaning.KindReferent) {
+			surfaceCandidates = append(surfaceCandidates, candidate)
+		}
 	}
-	if len(candidates) > engine.MaxTranslationAlternatives {
-		candidates = candidates[:engine.MaxTranslationAlternatives]
+	if len(surfaceCandidates) > engine.MaxTranslationAlternatives {
+		surfaceCandidates = surfaceCandidates[:engine.MaxTranslationAlternatives]
 		result.Outcome = status.OutcomeResourceLimit
 		result.Diagnostics = appendTargetDiagnostics(result.Diagnostics, status.Diagnostic{
 			Code: "RESOURCE_LIMIT", Path: "target.candidates",
@@ -123,7 +136,7 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 			Severity: status.SeverityWarning,
 		})
 	}
-	for _, selected := range candidates {
+	for _, selected := range surfaceCandidates {
 		if err := ctx.Err(); err != nil {
 			return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
 		}
@@ -142,7 +155,7 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 		if err != nil {
 			return engine.SurfaceResult{}, err
 		}
-		executionInput, err := pipeline.ExecutionBuilder.Build(ctx, source, selection.Candidates, selected, plan)
+		executionInput, err := pipeline.ExecutionBuilder.Build(ctx, source, candidates, selected, plan)
 		if err != nil {
 			return engine.SurfaceResult{}, err
 		}
@@ -180,7 +193,8 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 		}
 		alternative := engine.SurfaceAlternative{
 			ID: plan.ID, Outcome: outcome, Text: linearized.Text,
-			Evidence: evidence, Losses: append([]realizer.FieldLoss(nil), plan.Losses...),
+			Evidence: evidence, Assumptions: cloneFieldAssumptions(plan.Assumptions),
+			Losses:      append([]realizer.FieldLoss(nil), plan.Losses...),
 			Diagnostics: append([]status.Diagnostic(nil), selected.Diagnostics...),
 		}
 		alternative.Diagnostics = appendTargetDiagnostics(alternative.Diagnostics, plan.Diagnostics...)
@@ -211,6 +225,82 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 	return result, nil
 }
 
+func cloneFieldAssumptions(values []realizer.FieldAssumption) []realizer.FieldAssumption {
+	result := make([]realizer.FieldAssumption, len(values))
+	for index, value := range values {
+		result[index] = value
+		result[index].Path = append([]meaning.NodeID(nil), value.Path...)
+	}
+	return result
+}
+
+func meaningHasNoExplicitOperators(graph meaning.Meaning) bool {
+	for _, node := range graph.Nodes {
+		switch node.Kind {
+		case meaning.KindScope, meaning.KindModality, meaning.KindQuantifier:
+			return false
+		}
+	}
+	return true
+}
+
+func targetExecutionNodeIDs(graph meaning.Meaning, surfaceIDs map[meaning.NodeID]bool) map[meaning.NodeID]bool {
+	result := make(map[meaning.NodeID]bool, len(surfaceIDs))
+	for id := range surfaceIDs {
+		result[id] = true
+	}
+	nodes := make(map[meaning.NodeID]meaning.Node, len(graph.Nodes))
+	for _, node := range graph.Nodes {
+		nodes[node.ID] = node
+	}
+	for id := range surfaceIDs {
+		predicate, exists := nodes[id]
+		if !exists || predicate.Kind != meaning.KindEvent && predicate.Kind != meaning.KindState {
+			continue
+		}
+		for _, participant := range predicate.Participants {
+			if target, exists := nodes[participant.Target]; exists && target.Kind == meaning.KindReferent {
+				result[target.ID] = true
+			}
+		}
+	}
+	return result
+}
+
+func topLevelTargetNodeIDs(graph meaning.Meaning) map[meaning.NodeID]bool {
+	nodes := make(map[meaning.NodeID]meaning.Node, len(graph.Nodes))
+	for _, node := range graph.Nodes {
+		nodes[node.ID] = node
+	}
+	result := make(map[meaning.NodeID]bool)
+	var visit func(meaning.NodeID, int)
+	visit = func(id meaning.NodeID, depth int) {
+		if depth >= meaning.MaxMeaningDepth {
+			return
+		}
+		node, exists := nodes[id]
+		if !exists {
+			return
+		}
+		switch node.Kind {
+		case meaning.KindDiscourse:
+			if node.Act == meaning.ActStatement && len(node.Content) == 1 {
+				visit(node.Content[0], depth+1)
+			}
+		case meaning.KindScope:
+			if node.Operator == meaning.OperatorNegation {
+				visit(node.Target, depth+1)
+			}
+		case meaning.KindEvent, meaning.KindState, meaning.KindReferent:
+			result[node.ID] = true
+		}
+	}
+	for _, root := range graph.Roots {
+		visit(root, 0)
+	}
+	return result
+}
+
 func targetBindingEvidence(registry *language.Registry, languageID features.LanguageID, source semantic.MeaningCandidate, candidate realizer.TargetCandidate, plan realizer.RealizationPlan) (semantic.EvidenceTrace, bool) {
 	registered, ok := registry.Language(languageID)
 	if !ok || source.Meaning == nil {
@@ -236,18 +326,24 @@ func targetBindingEvidence(registry *language.Registry, languageID features.Lang
 			break
 		}
 	}
-	if !foundSpan {
+	generated := !foundSpan && len(source.Evidence.Records) == 0
+	if !foundSpan && !generated {
 		return semantic.EvidenceTrace{}, false
+	}
+	evidenceRecord := semantic.EvidenceRecord{
+		SenseID: binding.SenseID, CoreConceptID: binding.CoreRef,
+		BindingKey: semantic.BindingKeyFor(binding.SenseID, binding.CoreRef),
+		PlanID:     plan.FamilyPlanID, FamilyID: plan.FamilyID, VariantID: plan.VariantID,
+		FrameID: plan.FrameID, Outcome: status.OutcomeOK, Provenance: binding.Provenance,
+	}
+	if generated {
+		evidenceRecord.Origin = semantic.EvidenceOriginGenerated
+	} else {
+		evidenceRecord.SourceSpan.Start, evidenceRecord.SourceSpan.End = sourceSpan.Start, sourceSpan.End
 	}
 	trace := semantic.EvidenceTrace{
 		AlternativeID: plan.ID, Outcome: status.OutcomeOK,
-		Records: []semantic.EvidenceRecord{{
-			SourceSpan: semanticSourceSpan(sourceSpan.Start, sourceSpan.End),
-			SenseID:    binding.SenseID, CoreConceptID: binding.CoreRef,
-			BindingKey: semantic.BindingKeyFor(binding.SenseID, binding.CoreRef),
-			PlanID:     plan.FamilyPlanID, FamilyID: plan.FamilyID, VariantID: plan.VariantID,
-			FrameID: plan.FrameID, Outcome: status.OutcomeOK, Provenance: binding.Provenance,
-		}},
+		Records: []semantic.EvidenceRecord{evidenceRecord},
 	}
 	return trace, trace.Validate() == nil
 }
@@ -269,10 +365,6 @@ func appendTargetDiagnostics(target []status.Diagnostic, values ...status.Diagno
 		target = append(target, value)
 	}
 	return target
-}
-
-func semanticSourceSpan(start, end int) text.Span {
-	return text.Span{Start: start, End: end}
 }
 
 func combineTargetOutcomes(outcomes ...status.OutcomeKind) status.OutcomeKind {

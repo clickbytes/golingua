@@ -4,6 +4,7 @@ package catalog
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/clickbytes/golingua/internal/core"
 	"github.com/clickbytes/golingua/internal/ids"
@@ -139,5 +140,35 @@ func Compile() (*core.ConceptGraph, error) {
 	for index, entry := range entries {
 		definitions[index] = entry.Definition
 	}
-	return core.CompileConceptGraph(definitions, nil)
+	relations, err := eventRelationDefinitions(entries)
+	if err != nil {
+		return nil, err
+	}
+	return core.CompileConceptGraph(definitions, relations)
+}
+
+// eventRelationDefinitions projects only binary CORE events into the existing
+// request-scoped FactSet relation model. Event identity, ordered role names,
+// and endpoint kinds are copied from the typed event declaration; no
+// symmetry, transitivity, or omitted roles are inferred.
+func eventRelationDefinitions(entries []Entry) ([]core.RelationDefinition, error) {
+	result := make([]core.RelationDefinition, 0)
+	for _, entry := range entries {
+		event := entry.Definition
+		if event.Kind != core.KindEvent || len(event.RoleTypes) != 2 {
+			continue
+		}
+		relationID, err := core.NewRelationID(strings.TrimPrefix(event.ID.String(), "concept:"))
+		if err != nil {
+			return nil, fmt.Errorf("event %s relation ID: %w", event.ID, err)
+		}
+		relation := core.RelationType{
+			ID: relationID, SubjectKind: append([]core.ConceptKind(nil), event.RoleTypes[0].AllowedKinds...),
+			ObjectKind:     append([]core.ConceptKind(nil), event.RoleTypes[1].AllowedKinds...),
+			EventConceptID: event.ID,
+			ArgumentRoles:  [2]string{event.RoleTypes[0].Name, event.RoleTypes[1].Name},
+		}
+		result = append(result, core.RelationDefinition{RelationType: relation})
+	}
+	return result, nil
 }

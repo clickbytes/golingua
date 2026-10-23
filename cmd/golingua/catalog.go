@@ -14,6 +14,7 @@ import (
 type catalogResponse struct {
 	Status               status.OutcomeKind                `json:"status"`
 	Inventory            *catalog.Inventory                `json:"inventory,omitempty"`
+	CoreRelationTypes    int                               `json:"core_relation_types"`
 	ValencyFrames        *catalogFrameCounts               `json:"valency_frames,omitempty"`
 	ConstructionBindings *catalogConstructionBindingCounts `json:"construction_bindings,omitempty"`
 	Diagnostics          []status.Diagnostic               `json:"diagnostics,omitempty"`
@@ -72,7 +73,7 @@ func runCatalog(args []string, stdout, stderr io.Writer) int {
 		inventory.PerConcept = []catalog.ConceptCoverage{}
 	}
 	return writeCatalog(stdout, stderr, catalogResponse{
-		Status: status.OutcomeOK, Inventory: &inventory, ValencyFrames: frameCounts,
+		Status: status.OutcomeOK, Inventory: &inventory, CoreRelationTypes: len(graph.RelationTypes()), ValencyFrames: frameCounts,
 		ConstructionBindings: constructionBindingCounts,
 	})
 }

@@ -48,7 +48,13 @@ func (builder MorphologyExecutionBuilder) Build(ctx context.Context, source sema
 		return realizer.ExecuteInput{}, runtimeError(status.OutcomeInvalid, "SLOT_EXECUTION_IDENTITY_MISMATCH", "target.slot_execution", "selected predicate, realization plan and morphology profile must identify the same target language and Meaning node")
 	}
 	predicate, found := meaningNode(*source.Meaning, plan.NodeID)
-	if !found || predicate.Kind != meaning.KindEvent && predicate.Kind != meaning.KindState {
+	if !found {
+		return realizer.ExecuteInput{}, runtimeError(status.OutcomeInvalid, "PREDICATE_NODE_UNAVAILABLE", "source.meaning", "selected plan must identify an event or state node in the source Meaning")
+	}
+	if predicate.Kind == meaning.KindReferent {
+		return realizer.ExecuteInput{}, runtimeError(status.OutcomeUnsupported, "STANDALONE_NP_REALIZATION_UNAVAILABLE", "target.np", "this runtime has no registered standalone noun phrase construction")
+	}
+	if predicate.Kind != meaning.KindEvent && predicate.Kind != meaning.KindState {
 		return realizer.ExecuteInput{}, runtimeError(status.OutcomeInvalid, "PREDICATE_NODE_UNAVAILABLE", "source.meaning", "selected plan must identify an event or state node in the source Meaning")
 	}
 	input := realizer.ExecuteInput{

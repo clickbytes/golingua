@@ -2,6 +2,7 @@ package cli
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -9,7 +10,10 @@ import (
 	"sort"
 
 	"github.com/clickbytes/golingua/internal/core"
+	"github.com/clickbytes/golingua/internal/dialogue"
+	"github.com/clickbytes/golingua/internal/engine"
 	"github.com/clickbytes/golingua/internal/facts"
+	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/planner"
 	"github.com/clickbytes/golingua/internal/reason"
@@ -39,12 +43,18 @@ type questionOutput struct {
 	Goal          planner.DialogueGoal   `json:"goal,omitempty"`
 	Question      *reason.Question       `json:"question,omitempty"`
 	Answer        *reason.QuestionResult `json:"answer,omitempty"`
+	Response      *dialogue.Result       `json:"response,omitempty"`
 	Evidence      []facts.Fact           `json:"evidence"`
 	Diagnostics   []status.Diagnostic    `json:"diagnostics,omitempty"`
 }
 
-func runQuestion(args []string, input io.Reader, stdout, stderr io.Writer, loadCore CoreLoader) int {
-	configPath, parseError := parseQuestionArgs(args)
+type questionOptions struct {
+	RuntimeConfig string
+	Language      string
+}
+
+func runQuestion(args []string, input io.Reader, stdout, stderr io.Writer, loadEngine EngineLoader, loadCore CoreLoader) int {
+	options, parseError := parseQuestionArgs(args)
 	if parseError != "" {
 		return writeQuestion(stdout, stderr, questionFailure(diagnosticResult(status.OutcomeInvalid, "INVALID_QUESTION_ARGUMENTS", parseError, "question")))
 	}
@@ -74,12 +84,28 @@ func runQuestion(args []string, input io.Reader, stdout, stderr io.Writer, loadC
 	if request.SchemaVersion != QuestionRequestSchemaVersion {
 		return writeQuestion(stdout, stderr, questionFailure(diagnosticResult(status.OutcomeInvalid, "QUESTION_SCHEMA_VERSION", "unsupported question request schema version", "schema_version")))
 	}
-	if loadCore == nil {
-		return writeQuestion(stdout, stderr, questionFailure(diagnosticResult(status.OutcomeUnsupported, "CORE_LOADER_UNAVAILABLE", "this executable cannot load a configured CORE snapshot", "runtime_config")))
+	var ontology *core.ConceptGraph
+	var configuredEngine *engine.Engine
+	if options.Language != "" {
+		if loadEngine == nil {
+			return writeQuestion(stdout, stderr, questionFailure(diagnosticResult(status.OutcomeUnsupported, "RUNTIME_LOADER_UNAVAILABLE", "this executable cannot load configured language runtimes", "runtime_config")))
+		}
+		configuredEngine, err = loadEngine(options.RuntimeConfig)
+		if err != nil {
+			return writeQuestion(stdout, stderr, errorQuestion(err, "ENGINE_SETUP_ERROR", "configured language runtime could not be loaded", "runtime_config"))
+		}
+		ontology = configuredEngine.CoreGraph()
+	} else {
+		if loadCore == nil {
+			return writeQuestion(stdout, stderr, questionFailure(diagnosticResult(status.OutcomeUnsupported, "CORE_LOADER_UNAVAILABLE", "this executable cannot load a configured CORE snapshot", "runtime_config")))
+		}
+		ontology, err = loadCore(options.RuntimeConfig)
+		if err != nil {
+			return writeQuestion(stdout, stderr, errorQuestion(err, "CORE_LOAD_ERROR", "configured CORE snapshot could not be loaded", "runtime_config"))
+		}
 	}
-	ontology, err := loadCore(configPath)
-	if err != nil {
-		return writeQuestion(stdout, stderr, errorQuestion(err, "CORE_LOAD_ERROR", "configured CORE snapshot could not be loaded", "runtime_config"))
+	if ontology == nil {
+		return writeQuestion(stdout, stderr, questionFailure(diagnosticResult(status.OutcomeUnknown, "RUNTIME_SNAPSHOT_UNAVAILABLE", "configured CORE snapshot could not be loaded", "runtime_config")))
 	}
 	set, err := facts.Build(ontology, facts.Input{SchemaVersion: facts.SchemaVersion, Context: request.Question.Context, Facts: request.Facts}, facts.DefaultBudget())
 	if err != nil {
@@ -104,36 +130,96 @@ func runQuestion(args []string, input io.Reader, stdout, stderr io.Writer, loadC
 		Evidence:    questionEvidence(answer, set),
 		Diagnostics: []status.Diagnostic{},
 	}
+	if options.Language != "" {
+		contentPlan, planErr := planner.Build(planner.PlanInput{
+			Decision:        planner.DecisionInput{Query: question, Result: &answer},
+			QuestionMeaning: request.Question.Meaning, Core: ontology, FactSet: set,
+		})
+		if planErr != nil {
+			failure := errorQuestion(planErr, "CONTENT_PLAN_FAILED", "response content could not be planned", "answer")
+			result.Status = failure.Status
+			result.Diagnostics = append(result.Diagnostics, failure.Diagnostics...)
+			return writeQuestion(stdout, stderr, result)
+		}
+		var target engine.TargetRealizer
+		if configuredEngine != nil {
+			target, _ = configuredEngine.TargetRealizerFor(features.LanguageID(options.Language))
+		}
+		responseContext, cancel := context.WithTimeout(context.Background(), engine.DefaultBudget().RequestTimeout)
+		response, realizeErr := dialogue.Realize(responseContext, contentPlan, ontology, target)
+		cancel()
+		if realizeErr != nil {
+			failure := failedDialogueResponse(contentPlan, realizeErr)
+			result.Response = &failure
+			result.Status = failure.Outcome
+			result.Diagnostics = append(result.Diagnostics, failure.Diagnostics...)
+			return writeQuestion(stdout, stderr, result)
+		}
+		result.Response = &response
+		if response.Outcome != status.OutcomeOK {
+			result.Status = response.Outcome
+			result.Diagnostics = append(result.Diagnostics, response.Diagnostics...)
+		}
+	}
 	return writeQuestion(stdout, stderr, result)
 }
 
-func parseQuestionArgs(args []string) (string, string) {
-	if len(args) < 2 || args[0] != "question" {
-		return "", "usage: question --runtime-config <path> --json"
+func failedDialogueResponse(plan planner.ContentPlan, err error) dialogue.Result {
+	result := dialogue.Result{
+		Goal: plan.Goal, Outcome: status.OutcomeError, ResponseMeaning: plan.ResponseMeaning,
+		SelectedFactIDs:    append([]string(nil), plan.SelectedFactIDs...),
+		ConfidenceEvidence: append([]planner.EvidenceRef(nil), plan.ConfidenceEvidence...),
+		ProofRefs:          append([]string(nil), plan.ProofRefs...),
+		Constructions:      []dialogue.ConstructionRef{}, Alternatives: []engine.SurfaceAlternative{},
+		Diagnostics: []status.Diagnostic{{Code: "DIALOGUE_REALIZATION_FAILED", Path: "response", Message: "response could not be realized", Severity: status.SeverityError}},
 	}
-	var config string
+	var typed interface{ Result() status.Result }
+	if errors.As(err, &typed) {
+		failure := typed.Result()
+		if failure.Validate() == nil && failure.Status != status.OutcomeOK {
+			result.Outcome = failure.Status
+			result.Diagnostics = append([]status.Diagnostic(nil), failure.Diagnostics...)
+		}
+	}
+	return result
+}
+
+func parseQuestionArgs(args []string) (questionOptions, string) {
+	if len(args) < 2 || args[0] != "question" {
+		return questionOptions{}, "usage: question --runtime-config <path> [--language pl|en] --json"
+	}
+	var options questionOptions
 	seenJSON := false
 	for index := 1; index < len(args); index++ {
 		switch args[index] {
 		case "--json":
 			if seenJSON {
-				return "", "duplicate --json flag"
+				return questionOptions{}, "duplicate --json flag"
 			}
 			seenJSON = true
 		case "--runtime-config":
-			if config != "" || index+1 >= len(args) || args[index+1] == "--json" || args[index+1] == "--runtime-config" {
-				return "", "--runtime-config requires one non-empty path"
+			if options.RuntimeConfig != "" || index+1 >= len(args) || args[index+1] == "--json" || args[index+1] == "--runtime-config" || args[index+1] == "--language" {
+				return questionOptions{}, "--runtime-config requires one non-empty path"
 			}
 			index++
-			config = args[index]
+			options.RuntimeConfig = args[index]
+		case "--language":
+			if options.Language != "" || index+1 >= len(args) || args[index+1] == "--json" || args[index+1] == "--runtime-config" || args[index+1] == "--language" {
+				return questionOptions{}, "--language requires one language ID: pl or en"
+			}
+			index++
+			options.Language = args[index]
+			if options.Language != "pl" && options.Language != "en" {
+				return questionOptions{}, "--language must be pl or en"
+			}
 		default:
-			return "", fmt.Sprintf("unknown or malformed question argument %q", args[index])
+			return questionOptions{}, fmt.Sprintf("unknown or malformed question argument %q", args[index])
 		}
 	}
-	if !seenJSON || config == "" {
-		return "", "question requires --runtime-config <path> and --json"
+	if !seenJSON || options.RuntimeConfig == "" {
+		return questionOptions{}, "question requires --runtime-config <path> and --json"
 	}
-	return config, ""
+	return options, ""
 }
 
 func writeQuestion(stdout, stderr io.Writer, result questionOutput) int {

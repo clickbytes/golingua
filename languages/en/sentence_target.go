@@ -71,6 +71,9 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 	if slot.Category == construction.CategoryVP {
 		values, found := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)
 		if !found {
+			if len(source.Evidence.Records) == 0 {
+				return knownFeature("verb_form", "third_person_singular"), nil
+			}
 			return nil, nil
 		}
 		if values["verb_form"] == "past" || values["tense"] == "past" {
@@ -86,12 +89,15 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 		return nil, nil
 	}
 	values, found := runtime.SourceFeatures(source, slot.ArgumentBinding.SemanticRole, candidate.TransferBinding.CoreRef)
-	if !found {
+	if !found && len(source.Evidence.Records) != 0 {
 		return nil, nil
 	}
 	number := values["number"]
 	if number == "" {
 		number = values["noun_number"]
+	}
+	if !found {
+		number = "singular"
 	}
 	for _, property := range candidate.Lexeme.Properties {
 		if property.Key == "number_behavior" && property.Value == "mass" {
@@ -117,11 +123,26 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 	if predicate.ID == "" {
 		return nil, nil, nil, nil
 	}
-	assumptions := make([]realizer.FieldAssumption, 0, len(predicate.Participants))
+	assumptions := make([]realizer.FieldAssumption, 0, 3+2*len(predicate.Participants))
 	losses := make([]realizer.FieldLoss, 0, len(predicate.Participants))
+	predicatePath, pathFound := runtime.MeaningPath(*source.Meaning, selected.NodeID)
+	if !pathFound {
+		return nil, nil, nil, nil
+	}
+	if len(source.Evidence.Records) == 0 {
+		assumptions = append(assumptions,
+			realizer.FieldAssumption{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning v1 carries no tense; this response uses the approved present-tense route"},
+			realizer.FieldAssumption{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning v1 carries no grammatical person; this response uses the approved third-person route"},
+			realizer.FieldAssumption{Path: predicatePath, Field: "number", Value: "singular", Reason: "Meaning v1 carries no grammatical number; this response uses the approved singular route"},
+		)
+	}
 	for _, participant := range predicate.Participants {
 		referent := findMeaningNode(*source.Meaning, participant.Target)
 		if referent.ID == "" {
+			continue
+		}
+		referentPath, pathFound := runtime.MeaningPath(*source.Meaning, participant.Target)
+		if !pathFound {
 			continue
 		}
 		values, found := runtime.SourceFeatures(source, participant.Role, coreConcept(referent))
@@ -130,15 +151,21 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 		}
 		if found && values["determiner"] == "indefinite" {
 			losses = append(losses, realizer.FieldLoss{
-				Path: []meaning.NodeID{selected.NodeID, participant.Target}, Field: "determiner", Outcome: status.OutcomeUnsupported,
+				Path: referentPath, Field: "determiner", Outcome: status.OutcomeUnsupported,
 				Reason: "English target construction currently realizes only a definite article; an explicit indefinite source determiner cannot be preserved",
 			})
 			continue
 		}
 		assumptions = append(assumptions, realizer.FieldAssumption{
-			Path: []meaning.NodeID{selected.NodeID, participant.Target}, Field: "determiner", Value: "definite",
+			Path: referentPath, Field: "determiner", Value: "definite",
 			Reason: "English transitive template realizes the definite determiner; source Meaning and morphology provide no explicit definiteness value",
 		})
+		if len(source.Evidence.Records) == 0 {
+			assumptions = append(assumptions, realizer.FieldAssumption{
+				Path: referentPath, Field: "number", Value: "singular",
+				Reason: "Meaning v1 identifies individual referents but carries no noun number feature; this response uses the approved singular form",
+			})
+		}
 	}
 	return nil, assumptions, losses, nil
 }

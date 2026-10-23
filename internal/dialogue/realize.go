@@ -30,6 +30,7 @@ type ConstructionRef struct {
 type Result struct {
 	Goal               planner.DialogueGoal        `json:"goal"`
 	Outcome            status.OutcomeKind          `json:"outcome"`
+	ResponseMeaning    meaning.Meaning             `json:"response_meaning"`
 	SelectedFactIDs    []string                    `json:"selected_fact_ids"`
 	ConfidenceEvidence []planner.EvidenceRef       `json:"confidence_evidence"`
 	ProofRefs          []string                    `json:"proof_refs"`
@@ -38,13 +39,13 @@ type Result struct {
 	Diagnostics        []status.Diagnostic         `json:"diagnostics,omitempty"`
 }
 
-// Realize sends one supported response predicate through the same target
-// selector, ConstructionPlan, morphology executor and linearizer used by the
-// translation pipeline. Non-statement dialogue acts fail closed until their
-// language-local constructions are verified and registered.
+// Realize sends one supported response predicate or referent through the same
+// target selector, ConstructionPlan, morphology executor and linearizer used
+// by translation. Incomplete output may retain text when it has a licensed
+// construction and no field losses; unsupported output never receives text.
 func Realize(ctx context.Context, plan planner.ContentPlan, ontology *core.ConceptGraph, target engine.TargetRealizer) (Result, error) {
 	result := Result{
-		Goal: plan.Goal, Outcome: status.OutcomeUnsupported,
+		Goal: plan.Goal, Outcome: status.OutcomeUnsupported, ResponseMeaning: cloneMeaning(plan.ResponseMeaning),
 		SelectedFactIDs:    append([]string(nil), plan.SelectedFactIDs...),
 		ConfidenceEvidence: append([]planner.EvidenceRef(nil), plan.ConfidenceEvidence...),
 		ProofRefs:          append([]string(nil), plan.ProofRefs...),
@@ -124,7 +125,9 @@ func Realize(ctx context.Context, plan planner.ContentPlan, ontology *core.Conce
 			result.Constructions = appendUniqueConstruction(result.Constructions, ref)
 			constructionCount++
 		}
-		if surface.Outcome != status.OutcomeOK || len(surface.Losses) != 0 || surface.Text == "" || constructionCount == 0 {
+		preservesContent := len(surface.Losses) == 0 && surface.Text != "" && constructionCount != 0
+		outcomeCanBeShown := surface.Outcome == status.OutcomeOK || surface.Outcome == status.OutcomeIncomplete
+		if !preservesContent || !outcomeCanBeShown {
 			result.Alternatives[index].Text = ""
 			result.Alternatives[index].Outcome = status.OutcomeUnsupported
 			result.Alternatives[index].Diagnostics = append(result.Alternatives[index].Diagnostics, diagnostic("DIALOGUE_CONTENT_NOT_PRESERVED", "target", "target construction did not preserve the complete response meaning and its construction evidence", status.SeverityError))
@@ -199,6 +202,10 @@ func cloneMeaning(graph meaning.Meaning) meaning.Meaning {
 
 func cloneSurface(surface engine.SurfaceAlternative) engine.SurfaceAlternative {
 	surface.Evidence = surface.Evidence.Clone()
+	surface.Assumptions = append([]realizer.FieldAssumption(nil), surface.Assumptions...)
+	for index := range surface.Assumptions {
+		surface.Assumptions[index].Path = append([]meaning.NodeID(nil), surface.Assumptions[index].Path...)
+	}
 	surface.Losses = append([]realizer.FieldLoss(nil), surface.Losses...)
 	for index := range surface.Losses {
 		surface.Losses[index].Path = append([]meaning.NodeID(nil), surface.Losses[index].Path...)
