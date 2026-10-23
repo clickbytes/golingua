@@ -7,6 +7,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/clickbytes/golingua/internal/construction"
+	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/parser"
@@ -68,6 +69,7 @@ type EvidenceRecord struct {
 	CoreConceptID ids.ConceptID                   `json:"core_concept_id,omitempty"`
 	BindingKey    string                          `json:"binding_key,omitempty"`
 	Role          meaning.Role                    `json:"role,omitempty"`
+	Features      []features.FeatureValue         `json:"features,omitempty"`
 	PlanID        construction.ConstructionPlanID `json:"plan_id,omitempty"`
 	FamilyID      ids.ConstructionID              `json:"family_id,omitempty"`
 	VariantID     construction.VariantID          `json:"variant_id,omitempty"`
@@ -86,8 +88,22 @@ func BindingKeyFor(senseID ids.SenseID, coreConceptID ids.ConceptID) string {
 // Clone returns a defensive copy of all trace-owned slices.
 func (trace EvidenceTrace) Clone() EvidenceTrace {
 	trace.Records = append([]EvidenceRecord(nil), trace.Records...)
+	for index := range trace.Records {
+		trace.Records[index].Features = cloneEvidenceFeatures(trace.Records[index].Features)
+	}
 	trace.Diagnostics = append([]status.Diagnostic(nil), trace.Diagnostics...)
 	return trace
+}
+
+func cloneEvidenceFeatures(source []features.FeatureValue) []features.FeatureValue {
+	result := append([]features.FeatureValue(nil), source...)
+	for index := range result {
+		if result[index].Variable != nil {
+			variable := *result[index].Variable
+			result[index].Variable = &variable
+		}
+	}
+	return result
 }
 
 // Validate checks the trace against the package's default evidence budget.
@@ -135,6 +151,14 @@ func (trace EvidenceTrace) ValidateWithBudget(budget EvidenceBudget) error {
 			}
 			textBytes += len(value)
 		}
+		for featureIndex, value := range record.Features {
+			if !validEvidenceFeatureToken(string(value.Feature)) || value.State != features.StateKnown || !validEvidenceFeatureToken(string(value.Value)) || value.Variable != nil {
+				return evidenceError(status.OutcomeInvalid, "INVALID_EVIDENCE_FEATURE", fmt.Sprintf("records[%d].features[%d]", i, featureIndex), "source feature evidence must contain a bounded known feature value")
+			}
+			if featureIndex > 0 && record.Features[featureIndex-1].Feature >= value.Feature {
+				return evidenceError(status.OutcomeInvalid, "NONCANONICAL_EVIDENCE_FEATURES", fmt.Sprintf("records[%d].features", i), "source features must be unique and sorted by feature ID")
+			}
+		}
 	}
 	for _, diagnostic := range trace.Diagnostics {
 		for _, value := range []string{diagnostic.Code, diagnostic.Message, diagnostic.Path} {
@@ -147,12 +171,27 @@ func (trace EvidenceTrace) ValidateWithBudget(budget EvidenceBudget) error {
 	return nil
 }
 
+func validEvidenceFeatureToken(value string) bool {
+	if value == "" || len(value) > features.MaxTokenBytes {
+		return false
+	}
+	for index, character := range value {
+		if !(character >= 'a' && character <= 'z') && !(character >= '0' && character <= '9') && !(index > 0 && character == '_') {
+			return false
+		}
+	}
+	return true
+}
+
 func validateEvidenceRecord(record EvidenceRecord, path string) error {
 	if record.SourceSpan.Start < 0 || record.SourceSpan.End <= record.SourceSpan.Start || record.SourceSpan.End > status.DefaultBounds().MaxInputBytes {
 		return evidenceError(status.OutcomeInvalid, "INVALID_EVIDENCE_SPAN", path+".source_span", "source span must be a non-empty half-open byte range within the input limit")
 	}
 	if !record.Outcome.Valid() {
 		return evidenceError(status.OutcomeInvalid, "INVALID_EVIDENCE_OUTCOME", path+".outcome", "evidence outcome is unsupported")
+	}
+	if len(record.Features) > features.MaxBundleValues {
+		return evidenceError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", path+".features", "source feature evidence exceeds the feature bundle limit")
 	}
 	for _, value := range []struct {
 		text string
@@ -217,12 +256,16 @@ func validateEvidenceRecord(record EvidenceRecord, path string) error {
 
 func evidenceRecordStrings(record EvidenceRecord) []string {
 	ref := record.Provenance
-	return []string{
+	result := []string{
 		record.CandidateID, string(record.PhraseNodeID), record.ReadingID, record.SenseID.String(),
 		record.CoreConceptID.String(), record.BindingKey, string(record.Role), string(record.PlanID),
 		record.FamilyID.String(), record.VariantID.String(), string(record.FrameID), record.Reason,
 		ref.ID, ref.Path, ref.URI, ref.Version, ref.License, ref.Author, ref.ChecksumSHA256,
 	}
+	for _, feature := range record.Features {
+		result = append(result, string(feature.Feature), string(feature.Value))
+	}
+	return result
 }
 
 func hasSourceRef(ref provenance.SourceRef) bool {

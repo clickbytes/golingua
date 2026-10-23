@@ -12,12 +12,17 @@
 
 ### Status technicznego podglądu v0
 
-W technicznym podglądzie v0 `forms` i `catalog` są dostępne lokalnie. Właściciel
-może podać słowo PL/EN do oceny odmiany; agent uruchomi dokładnie tę formę
-przez `forms` i zapisze literalne wyjście. Ocena translacji zdania pozostaje
-`NOT RUN` do czasu zatwierdzenia danych i uruchomienia providerów zdań.
+`forms` i `catalog` są dostępne lokalnie. CLI może też załadować ograniczony,
+skompilowany runtime PL/EN dla dokładnej trasy `seeing`, gdy `translate`
+otrzyma `--runtime-config` wskazujący aktywny snapshot. Bez tej konfiguracji
+żądanie translacji zwraca `unsupported` i exit code 3.
 
-CLI przyjmuje `translate --from <lang> --to <lang> --text <text> --json`, waliduje żądanie i zwraca typowy JSON. Domyślna konfiguracja nie zawiera jednak providerów językowych, więc poprawnie sformułowane żądanie zwraca `unsupported` i exit code 3. Taki wynik potwierdza tylko uczciwą odmowę; nie jest wynikiem translacji ani podstawą do oceny PL/EN. Błędne flagi lub para językowa zwracają `invalid` i exit code 2. `forms` udostępnia ograniczoną odmianę i analizę obecnych seedów PL/EN; ocena na wejściu właściciela pozostaje `NOT RUN`.
+Na polecenie właściciela uruchomiono translację 100 zapisanych par w obu
+kierunkach; obserwowane statusy i teksty zapisano w
+[`data/sentences/observed-2026-10-23-provider-runtime.tsv`](../data/sentences/observed-2026-10-23-provider-runtime.tsv).
+To nie jest ocena językowa. Właściciel nie ocenił jeszcze konkretnych wyjść,
+więc ręczny odbiór translacji i ocena form pozostają `NOT RUN`. `forms`
+udostępnia ograniczoną odmianę oraz analizę obecnych seedów PL/EN.
 
 Komenda `question --runtime-config <path> --json` przyjmuje typowany MeaningGraph, jawny FactSet oraz mapowanie ról. Nie przyjmuje zdania w języku naturalnym ani nie realizuje odpowiedzi tekstowej. Jej wynik można ręcznie ocenić jako rozumowanie wyłącznie na wejściach dostarczonych przez właściciela. Bez takich wejść, aktywnego CORE snapshotu i uruchomienia konkretnej komendy wpisz **NOT RUN**; nie twórz przykładowych faktów ani twierdzeń.
 

@@ -8,6 +8,7 @@ import (
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/meaning"
+	"github.com/clickbytes/golingua/internal/status"
 )
 
 type AnalysisCandidate struct {
@@ -28,7 +29,15 @@ type Analyzer interface {
 	Analyze(context.Context, string) ([]AnalysisCandidate, error)
 }
 type Realizer interface {
-	Realize(context.Context, meaning.Meaning, meaning.NodeID, construction.CompiledConstructionPlan) (string, error)
+	Realize(context.Context, meaning.Meaning, meaning.NodeID, construction.CompiledConstructionPlan) (RealizationResult, error)
+}
+
+// RealizationResult preserves an explicitly incomplete surface instead of
+// forcing language providers to claim every generated string is complete.
+type RealizationResult struct {
+	Text        string              `json:"text"`
+	Outcome     status.OutcomeKind  `json:"outcome"`
+	Diagnostics []status.Diagnostic `json:"diagnostics,omitempty"`
 }
 
 type CapabilityEvidence struct {

@@ -43,6 +43,12 @@ func BindFrame(record FamilyRecord, frame valency.ValencyFrame) (FamilyRecord, e
 			return FamilyRecord{}, unsupported("ADPOSITION_POLICY_CONFLICT", "family.slot_specs."+slot.ID, "construction and frame adposition policies conflict")
 		}
 		slot.ArgumentBinding = &ArgumentBinding{SemanticRole: argument.Role}
+		if slot.Case == "" {
+			slot.Case = argument.Case
+		}
+		if slot.Adposition == "" {
+			slot.Adposition = argument.Adposition
+		}
 		bound[argument.ID] = true
 	}
 	for _, argument := range frame.Arguments {

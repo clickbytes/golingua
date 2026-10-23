@@ -14,6 +14,7 @@ import (
 	"github.com/clickbytes/golingua/internal/analyzer"
 	"github.com/clickbytes/golingua/internal/construction"
 	"github.com/clickbytes/golingua/internal/core"
+	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/lexicon"
 	"github.com/clickbytes/golingua/internal/meaning"
@@ -502,7 +503,7 @@ func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlter
 	refs := meaning.RequestContext{ID: input.RequestContextID, Referents: []meaning.Referent{}, Mentions: []meaning.Mention{}}
 	refNodeByIdentity := map[string]meaning.NodeID{}
 	refConceptByIdentity := map[string]ids.ConceptID{}
-	records := []EvidenceRecord{{SourceSpan: predicate.Span, CandidateID: predicate.ID, PhraseNodeID: phraseNodes[predicate.ID], ReadingID: firstString(predicate.ReadingIDs), SenseID: predicateMapping.sense, CoreConceptID: predicateMapping.binding.CoreRef, BindingKey: BindingKeyFor(predicateMapping.sense, predicateMapping.binding.CoreRef), PlanID: alternative.PlanID, FamilyID: alternative.FamilyID, VariantID: alternative.VariantID, FrameID: alternative.Permission.FrameID, Outcome: status.OutcomeOK, Provenance: predicateMapping.binding.Provenance}}
+	records := []EvidenceRecord{{SourceSpan: predicate.Span, CandidateID: predicate.ID, PhraseNodeID: phraseNodes[predicate.ID], ReadingID: firstString(predicate.ReadingIDs), SenseID: predicateMapping.sense, CoreConceptID: predicateMapping.binding.CoreRef, BindingKey: BindingKeyFor(predicateMapping.sense, predicateMapping.binding.CoreRef), PlanID: alternative.PlanID, FamilyID: alternative.FamilyID, VariantID: alternative.VariantID, FrameID: alternative.Permission.FrameID, Outcome: status.OutcomeOK, Features: evidenceFeatures(predicate.Features), Provenance: predicateMapping.binding.Provenance}}
 	for index, role := range roles {
 		identity := "candidate:" + role.candidate.ID
 		refEvidence, resolved := references[role.candidate.ID]
@@ -536,7 +537,7 @@ func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlter
 			refs.Mentions = append(refs.Mentions, meaning.Mention{ID: meaning.MentionID("m" + strconv.Itoa(index)), NodeID: nodeID})
 		}
 		participants = append(participants, meaning.Participant{Role: role.role, Target: nodeID})
-		records = append(records, EvidenceRecord{SourceSpan: role.span, CandidateID: role.candidate.ID, PhraseNodeID: phraseNodes[role.candidate.ID], ReadingID: firstString(role.candidate.ReadingIDs), SenseID: role.mapping.sense, CoreConceptID: role.mapping.binding.CoreRef, BindingKey: BindingKeyFor(role.mapping.sense, role.mapping.binding.CoreRef), Role: role.role, Outcome: status.OutcomeOK, Provenance: role.mapping.binding.Provenance})
+		records = append(records, EvidenceRecord{SourceSpan: role.span, CandidateID: role.candidate.ID, PhraseNodeID: phraseNodes[role.candidate.ID], ReadingID: firstString(role.candidate.ReadingIDs), SenseID: role.mapping.sense, CoreConceptID: role.mapping.binding.CoreRef, BindingKey: BindingKeyFor(role.mapping.sense, role.mapping.binding.CoreRef), Role: role.role, Outcome: status.OutcomeOK, Features: evidenceFeatures(role.candidate.Features), Provenance: role.mapping.binding.Provenance})
 	}
 	kind := meaning.KindEvent
 	if concept, ok := input.Core.Lookup(predicateMapping.binding.CoreRef); !ok {
@@ -952,6 +953,18 @@ func trimDiagnostics(ds []status.Diagnostic) []status.Diagnostic {
 		return append([]status.Diagnostic(nil), ds[:status.MaxDiagnostics]...)
 	}
 	return append([]status.Diagnostic(nil), ds...)
+}
+
+func evidenceFeatures(values map[features.FeatureID]features.FeatureValueID) []features.FeatureValue {
+	if len(values) == 0 {
+		return nil
+	}
+	result := make([]features.FeatureValue, 0, len(values))
+	for feature, value := range values {
+		result = append(result, features.FeatureValue{Feature: feature, State: features.StateKnown, Value: value})
+	}
+	sort.Slice(result, func(left, right int) bool { return result[left].Feature < result[right].Feature })
+	return result
 }
 
 func mergeSemanticOutcome(left, right status.OutcomeKind) status.OutcomeKind {

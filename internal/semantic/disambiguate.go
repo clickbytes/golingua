@@ -1,6 +1,7 @@
 package semantic
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"sort"
@@ -364,18 +365,25 @@ func cloneMeaning(source *meaning.Meaning) *meaning.Meaning {
 }
 
 func mergeEvidence(target *EvidenceTrace, source EvidenceTrace, semanticID string) {
-	seen := make(map[EvidenceRecord]struct{}, len(target.Records)+len(source.Records))
+	seen := make(map[string]struct{}, len(target.Records)+len(source.Records))
 	for _, record := range target.Records {
-		seen[record] = struct{}{}
+		seen[evidenceRecordKey(record)] = struct{}{}
 	}
 	for _, record := range source.Records {
-		if _, exists := seen[record]; exists {
+		key := evidenceRecordKey(record)
+		if _, exists := seen[key]; exists {
 			continue
 		}
-		seen[record] = struct{}{}
+		seen[key] = struct{}{}
+		record.Features = cloneEvidenceFeatures(record.Features)
 		target.Records = append(target.Records, record)
 	}
 	target.AlternativeID = semanticID
+}
+
+func evidenceRecordKey(record EvidenceRecord) string {
+	encoded, _ := json.Marshal(record)
+	return string(encoded)
 }
 
 func mergeDiagnostics(target, source []status.Diagnostic) []status.Diagnostic {

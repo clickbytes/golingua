@@ -1,21 +1,24 @@
 package en
 
 import (
+	"context"
 	"fmt"
 
+	"github.com/clickbytes/golingua/internal/analyzer"
 	"github.com/clickbytes/golingua/internal/construction"
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/lexicon"
 	"github.com/clickbytes/golingua/internal/pack"
+	"github.com/clickbytes/golingua/internal/parser"
 	"github.com/clickbytes/golingua/internal/runtime"
 	"github.com/clickbytes/golingua/internal/text"
 )
 
 // NewSentenceSource compiles the English analysis stages against one exact
-// snapshot. Its complete bare-declarative attestation is limited to the
-// attested third-person singular present visual-perception predicate. English
-// determiners are not yet represented by this one-token phrase builder.
+// snapshot. Its complete declarative attestation is limited to the attested
+// third-person singular present visual-perception predicate and explicit
+// definite articles in the transitive template.
 func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if snapshot == nil {
 		return nil, fmt.Errorf("English sentence source requires a snapshot")
@@ -43,14 +46,14 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	}
 	return &runtime.SourcePipeline{
 		Language: "en", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}},
-		AllowFinalPeriod: true, Morphology: inverse, MWEPlans: []construction.CompiledMWEPlan{},
+		Morphology: inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
-		PhraseBuilder: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
+		PhraseBuilder: definiteNPBuilder{inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
 			Categories: map[lexicon.PartOfSpeech][]construction.SlotCategory{
 				"noun": {construction.CategoryNP}, "verb": {construction.CategoryVP},
 			},
-		}},
+		}}},
 		EvidenceBuilder: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses: map[ids.SenseID]bool{seeingSense: true},
 			RequiredPredicateFeatures: map[features.FeatureID]features.FeatureValueID{
@@ -58,4 +61,32 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 			},
 		},
 	}, nil
+}
+
+type definiteNPBuilder struct {
+	inner runtime.SimplePhraseEvidenceBuilder
+}
+
+func (builder definiteNPBuilder) Build(ctx context.Context, lattice analyzer.LexicalLattice) ([]parser.PhraseCandidate, parser.ParseContext, error) {
+	candidates, parseContext, err := builder.inner.Build(ctx, lattice)
+	if err != nil {
+		return nil, parser.ParseContext{}, err
+	}
+	for index := range candidates {
+		candidate := &candidates[index]
+		if candidate.Category != construction.CategoryNP || candidate.TokenStart == 0 {
+			continue
+		}
+		previous := lattice.Tokens[candidate.TokenStart-1]
+		for _, reading := range previous.Readings {
+			if reading.HasLexeme && reading.Lexeme.ID.String() == "lexeme:en.the.det" {
+				if candidate.Features == nil {
+					candidate.Features = make(map[features.FeatureID]features.FeatureValueID)
+				}
+				candidate.Features["determiner"] = "definite"
+				break
+			}
+		}
+	}
+	return candidates, parseContext, nil
 }

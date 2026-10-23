@@ -418,7 +418,7 @@ func plansStartingAtZero(index *Index, lattice analyzer.LexicalLattice, candidat
 			seen[pi] = true
 		}
 	}
-	terminal := lattice.Tokens[0].Token.Normalized
+	terminal := canonicalTerminal(lattice.Tokens[0].Token)
 	for _, pi := range index.byFirstSymbol[planLookupKey{Language: lattice.Language, Terminal: terminal}] {
 		seen[pi] = true
 	}
@@ -446,7 +446,7 @@ func (m *matcher) walk(p compiledPlan, si, ti int, part partial) {
 	}
 	symbol := p.sequence[si]
 	if symbol.Slot == nil {
-		if ti < len(m.lattice.Tokens) && m.lattice.Tokens[ti].Token.Normalized == symbol.Terminal {
+		if ti < len(m.lattice.Tokens) && canonicalTerminal(m.lattice.Tokens[ti].Token) == symbol.Terminal {
 			m.walk(p, si+1, ti+1, clonePartial(part))
 		}
 		return
@@ -490,6 +490,13 @@ func (m *matcher) walk(p compiledPlan, si, ti int, part partial) {
 		next.slots[slot.ID] = assignment{role: role}
 		m.walk(p, si+1, ti, next)
 	}
+}
+
+func canonicalTerminal(token text.Token) string {
+	if token.Folded != "" {
+		return token.Folded
+	}
+	return token.Normalized
 }
 
 func (m *matcher) walkMulti(p compiledPlan, si, ti int, slot construction.SlotSpec, role meaning.Role, part partial) {

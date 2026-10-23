@@ -55,5 +55,6 @@ supplied inventory order is examined; the result is explicitly `incomplete`.
 
 The lattice preserves lexical alternatives; it does not infer semantics from a
 word alone, resolve ambiguity by insertion order, or authorize transfer. The
-bootstrap CLI still reports translation as unsupported. Language output is
-not evaluated until the owner supplies text through a suitable interface.
+compiled CLI can translate one exact `seeing` route after loading an active
+snapshot; other routes remain explicitly unsupported or unknown. Language
+output has not received the owner's manual evaluation.

@@ -10,44 +10,37 @@ Status wszystkich wierszy to `draft_unreviewed`. Autorem powierzchni PL/EN jest 
 
 ## Obserwacja CLI
 
-W roboczej gałęzi #195 dodano jawne, ograniczone formy potrzebne dla grupy `seeing`:
-`widzi` i `sees`, polskie paradygmaty `matka` i `ojciec` oraz angielskie
-formy liczby pojedynczej uczestników. Komenda `forms` potwierdza analizę tych
-form. Nie daje to jeszcze wyników `translate`: zatwierdzone szablony
-`pl.transitive` i `en.transitive` mają sloty `subject`/`object` bez ról.
-`construction.BindFrame` może je teraz skompilować dla dokładnej ramy
-walencji, która jawnie zapisuje `ArgumentSlot.ID` i rolę. Providery zdań
-i adaptery CLI nadal nie są zarejestrowane. Angielskie rodzajniki wymagają osobnej
-analizy frazy i reprezentacji określoności; przykładowy MeaningGraph jej nie
-przechowuje. Ręczna ocena jakości zdań pozostaje **NOT RUN**.
+Gałąź #195 rejestruje skompilowane pakiety i etapy PL/EN dla ograniczonego,
+zatwierdzonego szlaku `seeing`. Używa analizy składniowej, dokładnych bindingów,
+ram walencji, planu konstrukcji, jawnych form morfologicznych i linearyzacji.
+Angielski artykuł jest analizowany jako cecha `definite`; przy tłumaczeniu z PL
+określoność nie występuje w `MeaningGraph`, więc wybór `the` jest jawnie
+oznaczany jako założenie i wynik pozostaje `incomplete`.
 
-Lokalne uruchomienie skompilowanego `pl.NewSentenceSource` na tym snapshotcie
-zwróciło `ok` oraz role `experiencer=teacher`, `stimulus=dog` dla
-`Nauczyciel widzi psa.`. Dla `Pies widzi nauczyciela.` role zostały zamienione
-zgodnie z przypadkami. `Nauczyciel słyszy psa.` pozostało `unsupported`, bo
-brakuje jawnej formy `słyszy` w seedzie. Ta obserwacja dotyczy analizy PL,
-nie przekładu w CLI ani ręcznej oceny jakości.
-
-W lokalnym przebiegu `SelectTargets` dla pierwszego znaczenia wybrał
-osobno angielski sens zdarzenia oraz sensy obu uczestników. Po przekazaniu
-tych wyborów do `BuildPlan`, `Execute` i `Linearize` otrzymano surową
-sekwencję `teacher sees dog`. To potwierdza połączenie slotów i jawnej
-morfologii w tym wąskim przypadku. Sekwencja nie ma rodzajników, więc nie
-jest zaakceptowanym tłumaczeniem angielskim. Adapter celu zachowuje wybory
-uczestników jako wejście realizacji jednego zdania, zamiast wyświetlać je
-jako osobne zdania. CLI nadal zwraca `unsupported`.
-
-Skompilowany `en.NewSentenceSource` rozpoznał `Teacher sees dog.` i
-`Dog sees teacher.` jako `ok` z odpowiednią zamianą ról. Są to fragmenty
-bez angielskich rodzajników, więc wynik dotyczy wyłącznie struktury.
-`The teacher sees the dog.` pozostało `unsupported`: budowniczy fraz
-obsługuje obecnie pojedynczy token NP i nie ma reguły determinera.
-
-Na kodzie `d05212e` zbudowano `go build -o /tmp/golingua-g05 ./cmd/golingua` i dla każdego z 100 wierszy uruchomiono obie komendy:
+Przykładowe lokalne wywołania na aktywnym snapshotcie:
 
 ```sh
-/tmp/golingua-g05 translate --from pl --to en --text '<pl z wiersza>' --json
-/tmp/golingua-g05 translate --from en --to pl --text '<en z wiersza>' --json
+golingua translate --from pl --to en --text 'Nauczyciel widzi psa.' --runtime-config runtime.json --json
+golingua translate --from en --to pl --text 'The teacher sees the dog.' --runtime-config runtime.json --json
 ```
 
-Dosłowne statusy i kody diagnostyczne są w [observed-2026-10-23-d05212e.tsv](observed-2026-10-23-d05212e.tsv). Wszystkie 200 wywołań zwróciły exit code 3, `unsupported` i `LANGUAGE_REGISTRY_UNAVAILABLE`; żadne nie zwróciło tłumaczenia. Jest to obserwacja stanu runtime, a nie ocena językowa. Do rzeczywistego sprawdzenia PL↔EN potrzebne są providerzy, `StageFactory`, reguły fraz i form slotów w #123 oraz ocena właściciela po ich uruchomieniu.
+Pierwsze zwróciło dosłowny tekst `The teacher sees the dog.` ze statusem
+`incomplete` i diagnostykami `EXPLICIT_REALIZATION_ASSUMPTION` oraz
+`TRANSLATION_NOT_OK`. Drugie zwróciło `Nauczyciel widzi psa.` ze statusem
+`ok`. To są obserwacje działania pipeline'u, nie ręczna ocena jakości zdań.
+
+Wcześniej, przed rejestracją providerów, 200 analogicznych wywołań zwracało
+`unsupported / LANGUAGE_REGISTRY_UNAVAILABLE`; ten historyczny zapis znajduje
+się w [observed-2026-10-23-d05212e.tsv](observed-2026-10-23-d05212e.tsv).
+Po aktywowaniu bieżącego snapshotu uruchomiono wszystkie 100 par w obu
+kierunkach. Pełne wyjścia z kodami wyjścia, statusami, kodami diagnostyk i
+tekstami znajdują się w
+[observed-2026-10-23-provider-runtime.tsv](observed-2026-10-23-provider-runtime.tsv).
+Spośród 200 wywołań 12 miało status `ok`, 12 `incomplete`, 8 `ambiguous`,
+4 `unknown`, a 164 `unsupported`. Tylko część przykładów korzysta z obecnego
+szlaku `seeing`; pozostałe pokazują brak obsługi leksykalnej lub konstrukcyjnej.
+Nie są to goldy ani automatyczna miara poprawności.
+
+Ręczna ocena właściciela pozostaje **NOT RUN**. Nie zmieniano statusów
+redakcyjnych wierszy. Odbiór językowy wymaga oceny konkretnych wyjść przez
+właściciela projektu.

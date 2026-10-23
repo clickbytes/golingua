@@ -2,6 +2,7 @@ package language
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"unicode/utf8"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/meaning"
+	"github.com/clickbytes/golingua/internal/status"
 )
 
 type Bridge struct {
@@ -66,15 +68,15 @@ func (bridge Bridge) Analyze(ctx context.Context, surface string) ([]AnalysisCan
 	return append([]AnalysisCandidate(nil), candidates...), nil
 }
 
-func (bridge Bridge) Realize(ctx context.Context, graph meaning.Meaning, targetID meaning.NodeID, plan construction.CompiledConstructionPlan) (string, error) {
+func (bridge Bridge) Realize(ctx context.Context, graph meaning.Meaning, targetID meaning.NodeID, plan construction.CompiledConstructionPlan) (RealizationResult, error) {
 	if bridge.provider == nil || !bridge.binding.Realize || !supportsDirection(bridge.capabilities, false) {
-		return "", unsupported("REALIZE_NOT_LICENSED", "binding.realize", "binding and verified provider do not license realization")
+		return RealizationResult{}, unsupported("REALIZE_NOT_LICENSED", "binding.realize", "binding and verified provider do not license realization")
 	}
 	if ctx == nil {
-		return "", invalid("MISSING_REALIZATION_CONTEXT", "context", "realization requires a request context")
+		return RealizationResult{}, invalid("MISSING_REALIZATION_CONTEXT", "context", "realization requires a request context")
 	}
 	if err := meaning.ValidateStructure(graph, meaning.DefaultBudget()); err != nil {
-		return "", err
+		return RealizationResult{}, err
 	}
 	var target *meaning.Node
 	for i := range graph.Nodes {
@@ -84,16 +86,16 @@ func (bridge Bridge) Realize(ctx context.Context, graph meaning.Meaning, targetI
 		}
 	}
 	if target == nil {
-		return "", unknown("UNKNOWN_REALIZATION_TARGET", "target_node_id", "selected Meaning target does not exist")
+		return RealizationResult{}, unknown("UNKNOWN_REALIZATION_TARGET", "target_node_id", "selected Meaning target does not exist")
 	}
 	if target.Kind != meaning.KindEvent && target.Kind != meaning.KindState {
-		return "", unsupported("REALIZATION_TARGET_UNSUPPORTED", "target_node_id", "realization binding requires an event or state target")
+		return RealizationResult{}, unsupported("REALIZATION_TARGET_UNSUPPORTED", "target_node_id", "realization binding requires an event or state target")
 	}
 	if target.Concept != meaning.ConceptRefFromID(bridge.binding.CoreRef) {
-		return "", unsupported("REALIZATION_CORE_MISMATCH", "target_node_id", "selected Meaning concept does not match the approved binding CoreRef")
+		return RealizationResult{}, unsupported("REALIZATION_CORE_MISMATCH", "target_node_id", "selected Meaning concept does not match the approved binding CoreRef")
 	}
 	if !plan.ValidateIdentity() || plan.Language != string(bridge.provider.Language()) || plan.FamilyID != bridge.binding.FamilyID || plan.VariantID.String() == "" || !containsVariantString(bridge.binding.VariantIDs, plan.VariantID.String()) {
-		return "", unsupported("REALIZATION_PLAN_OUTSIDE_BINDING", "plan", "plan family or variant is outside the approved binding")
+		return RealizationResult{}, unsupported("REALIZATION_PLAN_OUTSIDE_BINDING", "plan", "plan family or variant is outside the approved binding")
 	}
 	licensed := false
 	for _, permission := range plan.Permissions {
@@ -103,26 +105,46 @@ func (bridge Bridge) Realize(ctx context.Context, graph meaning.Meaning, targetI
 		}
 	}
 	if !licensed {
-		return "", unsupported("REALIZATION_FRAME_OUTSIDE_BINDING", "plan.sense_permissions", "plan does not carry this exact sense/frame permission")
+		return RealizationResult{}, unsupported("REALIZATION_FRAME_OUTSIDE_BINDING", "plan.sense_permissions", "plan does not carry this exact sense/frame permission")
 	}
 	realizer, ok := bridge.provider.(Realizer)
 	if !ok {
-		return "", unsupported("REALIZER_IMPLEMENTATION_MISSING", "provider", "verified provider does not implement realization")
+		return RealizationResult{}, unsupported("REALIZER_IMPLEMENTATION_MISSING", "provider", "verified provider does not implement realization")
 	}
-	form, err := realizer.Realize(ctx, graph, targetID, plan)
+	result, err := realizer.Realize(ctx, graph, targetID, plan)
 	if err != nil {
-		return "", err
+		return RealizationResult{}, err
 	}
-	if len(form) > MaxRealizedSurfaceBytes {
-		return "", resource("realized_surface_bytes", len(form), MaxRealizedSurfaceBytes)
+	if !result.Outcome.Valid() {
+		return RealizationResult{}, unsupported("INVALID_REALIZATION_OUTCOME", "realized_surface.outcome", "provider returned an invalid realization outcome")
 	}
-	if form == "" {
-		return "", incomplete("EMPTY_REALIZED_SURFACE", "realized_surface", "provider returned no realized surface")
+	if len(result.Diagnostics) > status.MaxDiagnostics {
+		return RealizationResult{}, resource("realization_diagnostics", len(result.Diagnostics), status.MaxDiagnostics)
 	}
-	if !utf8.ValidString(form) {
-		return "", unsupported("INVALID_REALIZED_UTF8", "realized_surface", "provider returned invalid UTF-8")
+	for index, diagnostic := range result.Diagnostics {
+		if err := diagnostic.Validate(); err != nil {
+			return RealizationResult{}, invalid("INVALID_REALIZATION_DIAGNOSTIC", fmt.Sprintf("realized_surface.diagnostics[%d]", index), err.Error())
+		}
 	}
-	return form, nil
+	if len(result.Text) > MaxRealizedSurfaceBytes {
+		return RealizationResult{}, resource("realized_surface_bytes", len(result.Text), MaxRealizedSurfaceBytes)
+	}
+	if result.Text == "" {
+		if result.Outcome == status.OutcomeOK {
+			return RealizationResult{Outcome: status.OutcomeIncomplete, Diagnostics: []status.Diagnostic{{Code: "EMPTY_REALIZED_SURFACE", Path: "realized_surface", Message: "provider returned no realized surface", Severity: status.SeverityWarning}}}, nil
+		}
+		if len(result.Diagnostics) == 0 {
+			result.Diagnostics = []status.Diagnostic{{Code: "INCOMPLETE_REALIZED_SURFACE", Path: "realized_surface", Message: "provider returned a non-ok outcome without diagnostic evidence", Severity: status.SeverityWarning}}
+		}
+		return result, nil
+	}
+	if !utf8.ValidString(result.Text) {
+		return RealizationResult{}, unsupported("INVALID_REALIZED_UTF8", "realized_surface", "provider returned invalid UTF-8")
+	}
+	if result.Outcome != status.OutcomeOK && len(result.Diagnostics) == 0 {
+		result.Diagnostics = []status.Diagnostic{{Code: "INCOMPLETE_REALIZED_SURFACE", Path: "realized_surface", Message: "provider returned a surface with a non-ok outcome but no diagnostic evidence", Severity: status.SeverityWarning}}
+	}
+	return result, nil
 }
 
 const MaxSurfaceBytes = 16 << 10

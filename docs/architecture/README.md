@@ -1,8 +1,8 @@
 # Architektura golingua — Go od zera, ocena ręczna
 
-**Status architektury: techniczne komponenty zaimplementowane, językowy runtime nieaktywny.** Istnieją CLI/bootstrap, typowane identyfikatory, 1000-komponentowy ConceptGraph, Meaning IR, graph indexes, parser/realizer/planery jako biblioteki, małe seedy morfologii i niezależne leksykony PL/EN. Osiem dokładnych konstrukcyjnych tras PL/EN ma zatwierdzone bindingi, 996 EN i 882 PL Sense→CORE links przeszło delegowany przegląd; katalog wykazuje 880 par PL+EN. Brakuje skonfigurowanych providerów językowych, więc `translate` nadal zwraca `unsupported`. Implementacja technicznego parsera/realizera nie jest równoznaczna z możliwością generowania polskiego lub angielskiego zdania.
+**Status architektury: runtime zdań PL/EN działa dla jednego ograniczonego szlaku `seeing`.** Istnieją CLI, typowane identyfikatory, 1000-konceptowy ConceptGraph, Meaning IR, indeksy grafu, parser i realizer, seedy morfologii oraz niezależne leksykony PL/EN. Osiem dokładnych tras konstrukcyjnych ma zatwierdzone bindingi. Skompilowane pakiety i etapy CLI uruchamiają jedną trasę `seeing`; pozostałe trasy zwracają status braku obsługi lub nierozstrzygnięcia. Wyniki translacji są obserwowalne w CLI, ale ich ręczna ocena właściciela pozostaje `NOT RUN`.
 
-Katalog Go można teraz zapisać jako walidowany snapshot poleceniem `golingua snapshot --apply --store <katalog> --json`. `--preview` pokazuje skrót i liczności przed aktywacją. Snapshot obejmuje CORE oraz leksemy, sensy i bindingi PL/EN z ich obecnymi statusami i pochodzeniem; nie zawiera morfologii, walencji ani planów konstrukcji. Samo aktywowanie snapshotu nie włącza `translate`.
+Katalog Go można zapisać jako walidowany snapshot poleceniem `golingua snapshot --apply --store <katalog> --json`. `--preview` pokazuje skrót i liczności przed aktywacją. Snapshot obejmuje CORE oraz leksemy, sensy i bindingi PL/EN z ich obecnymi statusami i pochodzeniem; morfologia, walencja i plany konstrukcji są kompilowane z zaufanego kodu Go. `translate --runtime-config <path>` wymaga aktywnego snapshotu i weryfikuje dokładne trasy przed wykonaniem.
 
 ## Fundamentalna decyzja (2026-10-20)
 

@@ -26,6 +26,7 @@ func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm 
 	return []morph.Paradigm{
 		makeParadigm("en_noun_singular_attested", "noun", "noun_number", "singular"),
 		makeParadigm("en_see_present_third_singular", "verb", "verb_form", "third_person_singular"),
+		makeParadigm("en_determiner_definite", "determiner", "determiner", "definite"),
 	}
 }
 
@@ -43,7 +44,7 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 			continue
 		}
 		part := morph.PrincipalPart{ID: "base", Form: lexeme.Lemma}
-		if lexeme.ParadigmID == "en_noun_singular_attested" {
+		if lexeme.ParadigmID == "en_noun_singular_attested" || lexeme.ParadigmID == "en_determiner_definite" {
 			part.ID = "attested"
 		}
 		if lexeme.ParadigmID == "en_see_present_third_singular" {
