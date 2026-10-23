@@ -302,6 +302,14 @@ leksemów z jawną właściwością `indefinite_article=a`; wymowa innych leksem
 nie jest zgadywana. Nierozstrzygnięte bindingi i brakujące teksty kandydatów
 pozostają widoczne. Akceptacja językowa właściciela pozostaje **NOT RUN**.
 
+### G10-11 — regularne formy EN dla `household` — 2026-10-23
+
+Na implementacji [`be6bf497b6bae0780bec1cc988be873f37edac83`](../data/sentences/observed-2026-10-23-g10-11-household-morphology.tsv) uruchomiono oba kierunki dla 10 istniejących rekordów: S004, S009, S014, S019, S024, S052, S057, S062, S067 i S072 — 20 odpowiedzi CLI. `en.household.n` korzysta teraz z regularnej klasy `en_noun_regular`, a sentence-facing właściwość `indefinite_article=a` dopuszcza `a household`; `forms` rozpoznało `household` i `households`.
+
+PL→EN zachowało status `ambiguous` we wszystkich 10 wynikach. W 84 zachowanych kandydaturach 80 ma tekst, w tym 40 wariantów `household`; 4 kandydatury nadal są `unsupported` z powodu nierozstrzygniętego `child_of_person`. EN→PL zachowało 10 wyników `incomplete` z tekstem oraz `PARTIAL_PARSE_EVIDENCE`/`UNRESOLVED_ROLE_SENSE`. W poprzedniej obserwacji tych rekordów 10 kandydatur miało `PRINCIPAL_PARTS_UNAVAILABLE`; po zmianie w wybranej próbce nie pozostała żadna taka diagnostyka. Statusy semantyczne, lexical bindings oraz redakcyjny status zdań nie zostały zmienione.
+
+**Ocena agenta:** dodane formy są regularnym zapisem istniejącego leksemu i odsłaniają kandydatury dla już zapisanych odczytów `dom`; nie rozstrzygają, czy w zdaniu chodzi o budynek, czy gospodarstwo domowe. Wyniki nadal wymagają ręcznej oceny; akceptacja właściciela pozostaje **NOT RUN**.
+
 Bez tekstu dostarczonego przez właściciela oznacz ocenę językową **NOT EVALUATED**. Jeśli nie uruchomiono konkretnej próby na wejściu właściciela, oznacz ją **NOT RUN**. Gdy właściciel deleguje autonomiczną ocenę, agent może opisać własną ocenę na tych wejściach, ale status akceptacji właściciela pozostaje osobny. Techniczne smoke testy z tekstem zastępczym nie są wejściem do oceny językowej. Dokładny kontrakt i przykład komendy opisuje [docs/cli.md](cli.md); nie przedstawiaj go jako dowodu, że provider jest skonfigurowany.
 
 Nie ma obowiązku zapisywania każdego outputu do pliku. Jeśli zapis jest przydatny, prowadź opcjonalnie krótką notatkę w issue lub `examples/manual/`:
