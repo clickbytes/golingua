@@ -28,7 +28,7 @@ TUI pokazuje tylko dane zwrócone przez wybraną usługę. Brak formy pozostaje 
 - **F4 Languages** — wyłącznie PL i EN, liczniki katalogu i osobny stan wybranego runtime'u.
 - **F5 Settings** — poziom wyświetlania, domyślny kierunek, ścieżka runtime config i katalog snapshotu; podgląd i osobno potwierdzone zastosowanie snapshotu.
 
-Nie dodajemy innych zakładek ani funkcji asystenta czatu. Granice danych i pakietów opisuje [mapa bindingów](bindings.md), a statusy i błędy — [kontrakt błędów](errors.md).
+Nie dodajemy innych zakładek ani funkcji asystenta czatu. Granice danych i pakietów opisuje [mapa bindingów](bindings.md), statusy i błędy — [kontrakt błędów](errors.md), a własność modelu, zdarzenia, odpowiedzi asynchroniczne i fokus — [kontrakt stanu](state-model.md).
 
 ## Ustawienia
 
@@ -46,4 +46,4 @@ Minimalny układ docelowy to około 80×24 znaki. Przy mniejszym oknie ekran prz
 
 ## Etapy
 
-G11-01 zamroził kontrakt i decyzje. G11-02 udostępnia typowane usługi in-process opisane w [mapie bindingów](bindings.md). G11-03 uzupełni podręcznik CLI. G11-04 doda cykl życia TUI i nawigację. Następne etapy dodadzą ekrany, ustawienia, diagnostykę i ręczne obserwacje po jednym child issue naraz. Do tego czasu wszystkie ekranowe interakcje są planem, nie działającą funkcją.
+G11-01 zamroził kontrakt produktu, a G11-02 udostępnił usługi in-process z [mapy bindingów](bindings.md). G11-03 definiuje MVU, fokus i odpowiedzi asynchroniczne w [kontrakcie stanu](state-model.md). G11-04 określi kontrakt promptu i slash commands. Późniejsze etapy dodadzą osobne makiety, shell, ekrany i ustawienia; implementacja TUI jeszcze nie istnieje, a podręcznik CLI jest osobnym zadaniem G11-39.
