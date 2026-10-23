@@ -1,25 +1,40 @@
-## Issue and scope
+## Authority / issue scope
 
 Closes #
 
-- Owner:
+- Parent epic and one ACTIVE child:
+- Sole coordinator: Codex Sol Medium
 - Base `main` SHA:
-- Files/symbols changed:
-- Positive behavior:
-- Negative behavior / limits:
+- Exact changed files and symbols:
+- Positive observable outcome:
+- Negative behavior / unsupported / remaining:
+- Contracts and docs explicitly authorized to change:
+- New tests authorized by this exact issue? NO / YES (cite)
+- Product v2/migrations, JS parity and unrelated refactors avoided? YES / NO
 
-## Verification
+## Delegation and boundaries
 
-Record exact result classes and evidence. Do not treat a GitHub connector call as a local terminal run.
+- Worker(s): NONE / Luna Low scout / Luna Low implementer / OpenCode YOLO
+- Bounded JOB BRIEF / permitted paths:
+- At most one writer at a time? YES / NO
+- Worker handoff: DONE / PARTIAL / BLOCKED
+- Sol inspected whole diff and newly created files? YES / NO
+- Out-of-scope changes: NONE / explained
+
+## Verification (actual observations)
 
 - `gofmt`: NOT RUN
 - `go vet ./...`: NOT RUN
 - `go build ./cmd/golingua`: NOT RUN
-- CLI `--version` / `--help`: NOT RUN
-- `go-ci` run: PENDING (link after completion)
-- Manual language evaluation: NOT EVALUATED (or describe owner-provided input and observed output)
+- Existing CLI smoke: NOT RUN
+- Mandatory issue-specific CLI/TTY/manual observations: NOT RUN / evidence
+- GitHub `go-ci` run on PR head: PENDING (link)
+- Owner linguistic acceptance: NOT EVALUATED (distinct from agent technical review)
 
-## Review
+## Final review by Sol
 
-- [ ] Diff reviewed against the active issue and current project policy.
-- [ ] No unrelated task or queued issue was included.
+- [ ] Every mandatory acceptance criterion has evidence or is explicitly waived by owner; required NOT RUN is not DONE.
+- [ ] No queued issue, speculative v2, migration, unrequested tests/docs or unrelated change.
+- [ ] Reviewer findings classified and blockers resolved.
+- [ ] Full diff, required checks and actual CI reviewed before merge.
+- [ ] After merge, `main` SHA and CI confirmed before activating next child.

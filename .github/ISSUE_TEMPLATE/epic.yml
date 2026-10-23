@@ -1,42 +1,45 @@
 name: Epic
-description: Plan a serial, bounded project milestone
-title: "[EPIC][G00] "
+description: One serial, bounded GoLingua v0 milestone
+title: "[EPIC] "
 body:
   - type: textarea
     id: goal
     attributes:
-      label: Goal and observable outcome
-      description: State what will exist when the epic is complete.
+      label: Observable product finish line
+      description: State what an actual CLI/TUI user can do when complete.
     validations:
       required: true
   - type: textarea
     id: scope
     attributes:
-      label: Scope and boundaries
-      description: List included work and important exclusions.
+      label: Included scope and explicit exclusions
+      value: "GoLingua v0; no speculative product v2, migrations, JS parity or new tests by default."
     validations:
       required: true
   - type: textarea
     id: children
     attributes:
-      label: Ordered child issues
-      description: Keep future tasks queued; complete and merge one task before activating the next.
-      value: "1. [ ] First task — QUEUED\n2. [ ] Next task — QUEUED"
+      label: Ordered queue and current child
+      description: Keep future tasks queued in this epic. Create/open only the current child issue.
+      value: |
+        - Active child: NONE
+        - Next queued vertical slice:
+        - Later slices:
     validations:
       required: true
   - type: textarea
     id: acceptance
     attributes:
-      label: Acceptance criteria
-      description: Mark each criterion PASS, FAIL, INFRA, or NOT RUN with evidence. Do not close an epic while any required criterion is NOT RUN.
+      label: Required acceptance criteria and evidence
+      description: Record actual observable results. NOT RUN does not prove mandatory technical behavior. Owner linguistic acceptance is independent from technical acceptance.
     validations:
       required: true
   - type: checkboxes
     id: policy
     attributes:
-      label: Work policy
+      label: Coordination rules
       options:
-        - label: One active epic, task, working branch, and implementation PR at a time.
+        - label: One active epic, one child, one implementation branch and PR; only Codex Sol Medium coordinates and writes GitHub.
           required: true
-        - label: Go unit tests, golds, and automated language-quality gates are not implied.
+        - label: New tests, migrations and broader design require explicit owner authorization and current issue scope.
           required: true

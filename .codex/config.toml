@@ -1,3 +1,14 @@
+# Project-level defaults; requires a trusted repository and locally available models.
+# Never treat the model names as Go/CI dependencies. Check Codex model availability.
+model = "gpt-6.1-sol"
+model_reasoning_effort = "medium"
+
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 2
+default_subagent_model = "gpt-6-luna"
+default_subagent_reasoning_effort = "low"
+
 # Loaded only when this repository is trusted by Codex.
 # Override with a user-level CodeGraph MCP entry only if needed for this repo.
 [mcp_servers.codegraph]
