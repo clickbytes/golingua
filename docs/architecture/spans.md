@@ -72,5 +72,5 @@ multiword matching are left to later analysis stages rather than guessed here.
 
 G05-01 provides the source-preserving text primitives. Later G05 work connects
 them to morphology, constructions, meaning, and realization for limited PL/EN
-`seeing`, `hearing`, and `receiving` routes. Other routes remain unsupported or unresolved. No
+`seeing`, `hearing`, `looking`, and `receiving` routes. Other routes remain unsupported or unresolved. No
 language-quality claim follows from having valid spans or a CLI output.

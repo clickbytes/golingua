@@ -61,8 +61,8 @@ func (budget ExecuteBudget) Validate() error {
 
 // SlotRequest supplies an explicit target lexical choice and morphology input
 // for one family slot. Feature values are caller supplied; execution does not
-// infer case, agreement, or defaults from semantic roles. PP and adposition
-// slots are refused until their separate lexical realization is represented.
+// infer case, agreement, or defaults from semantic roles. Adposition-bearing
+// slots require a matching terminal in the selected construction sequence.
 type SlotRequest struct {
 	NodeID         meaning.NodeID
 	Candidate      TargetCandidate
@@ -279,7 +279,7 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 			return ExecuteResult{}, executeError(status.OutcomeUnsupported, "UNSEQUENCED_SLOT_REQUEST", "slots."+slotID, "slot request is not present in the selected variant sequence")
 		}
 	}
-	if err := validateSlotCasePolicies(input.Frame, slots, requests); err != nil {
+	if err := validateSlotCasePolicies(input.Frame, slots, requests, input.Family, plan.CompiledVariant.Variant); err != nil {
 		return ExecuteResult{}, err
 	}
 	if err := validateVariantConditions(plan.CompiledVariant.Variant.Conditions, requests, input.InformationStructure); err != nil {
@@ -299,7 +299,9 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 			continue
 		}
 		if slot.Category == construction.CategoryPP || slot.Adposition != "" {
-			return ExecuteResult{}, executeError(status.OutcomeUnsupported, "ADPOSITIONAL_SLOT_UNSUPPORTED", "family.slot_specs."+slot.ID, "this API cannot emit the separately licensed adposition required by a PP slot")
+			if slot.Adposition == "" || !construction.VariantEmitsAdposition(plan.CompiledVariant.Variant, input.Family, slot.ID, slot.Adposition) {
+				return ExecuteResult{}, executeError(status.OutcomeUnsupported, "ADPOSITION_SEQUENCE_UNAVAILABLE", "family.slot_specs."+slot.ID, "an adpositional argument requires its exact adposition terminal before the slot in the selected construction")
+			}
 		}
 		role := meaning.Role("")
 		var sourcePath []meaning.NodeID
@@ -464,7 +466,7 @@ func validateHardAgreement(family construction.ConstructionFamily, slots map[str
 	return nil
 }
 
-func validateSlotCasePolicies(frame valency.ValencyFrame, orderedSlots []construction.SlotSpec, requests map[string]SlotRequest) error {
+func validateSlotCasePolicies(frame valency.ValencyFrame, orderedSlots []construction.SlotSpec, requests map[string]SlotRequest, family construction.ConstructionFamily, variant construction.Variant) error {
 	frameArguments := make(map[meaning.Role]valency.ArgumentSlot, len(frame.Arguments))
 	for _, argument := range frame.Arguments {
 		frameArguments[argument.Role] = argument
@@ -483,7 +485,13 @@ func validateSlotCasePolicies(frame valency.ValencyFrame, orderedSlots []constru
 			if slot.Adposition != "" && argument.Adposition != "" && slot.Adposition != argument.Adposition {
 				return executeError(status.OutcomeUnsupported, "ADPOSITION_POLICY_CONFLICT", "family.slot_specs."+slot.ID+".adposition", "family slot adposition conflicts with the selected frame argument adposition")
 			}
-			return executeError(status.OutcomeUnsupported, "ADPOSITION_SLOT_UNSUPPORTED", "family.slot_specs."+slot.ID, "this API cannot emit the separately licensed adposition required by the frame or family")
+			adposition := slot.Adposition
+			if adposition == "" {
+				adposition = argument.Adposition
+			}
+			if !construction.VariantEmitsAdposition(variant, family, slot.ID, adposition) {
+				return executeError(status.OutcomeUnsupported, "ADPOSITION_SEQUENCE_UNAVAILABLE", "family.slot_specs."+slot.ID, "an adpositional argument requires its exact adposition terminal before the slot in the selected construction")
+			}
 		}
 		if slot.Case != "" && argument.Case != "" && slot.Case != argument.Case {
 			return executeError(status.OutcomeUnsupported, "CASE_POLICY_CONFLICT", "family.slot_specs."+slot.ID+".case", "family slot case conflicts with the selected frame argument case")

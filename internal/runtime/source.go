@@ -59,6 +59,9 @@ type SourcePipeline struct {
 	Constructions    *construction.Registry
 	SemanticBudget   semantic.Budget
 	EvidenceBuilder  CompositionEvidenceBuilder
+	// AllowedUnlexicalizedTerminals names exact function words whose evidence
+	// comes from a matched construction terminal rather than a lexical reading.
+	AllowedUnlexicalizedTerminals map[string]bool
 }
 
 var _ engine.SourceAnalyzer = (*SourcePipeline)(nil)
@@ -87,6 +90,7 @@ func (pipeline *SourcePipeline) Analyze(ctx context.Context, input string) (sema
 	if err != nil {
 		return semantic.Result{}, err
 	}
+	attestConstructionTerminals(&lattice, pipeline.AllowedUnlexicalizedTerminals)
 	if err := ctx.Err(); err != nil {
 		return semantic.Result{}, pipelineError(status.OutcomeResourceLimit, "SOURCE_ANALYSIS_CANCELED", "context", "source analysis was canceled or timed out")
 	}
@@ -142,6 +146,49 @@ func (pipeline *SourcePipeline) Analyze(ctx context.Context, input string) (sema
 		return semantic.Result{}, fmt.Errorf("validate source semantic alternatives: %w", err)
 	}
 	return validated, nil
+}
+
+func attestConstructionTerminals(lattice *analyzer.LexicalLattice, allowed map[string]bool) {
+	if lattice == nil || len(allowed) == 0 {
+		return
+	}
+	removedUnknownPaths := make(map[string]bool)
+	for index := range lattice.Tokens {
+		token := &lattice.Tokens[index]
+		if token.Outcome != status.OutcomeUnknown || len(token.Readings) != 0 || token.Token.Kind != text.TokenWord {
+			continue
+		}
+		terminal := token.Token.Folded
+		if terminal == "" {
+			terminal = token.Token.Normalized
+		}
+		if !allowed[terminal] {
+			continue
+		}
+		token.Outcome = status.OutcomeOK
+		removedUnknownPaths[fmt.Sprintf("tokens[%d].span[%d:%d]", index, token.Token.Span.Start, token.Token.Span.End)] = true
+	}
+	if len(removedUnknownPaths) == 0 {
+		return
+	}
+	remainingUnknown := false
+	for _, token := range lattice.Tokens {
+		if token.Outcome == status.OutcomeUnknown || token.Outcome == status.OutcomeIncomplete {
+			remainingUnknown = true
+			break
+		}
+	}
+	if lattice.Outcome == status.OutcomeUnknown && !remainingUnknown {
+		lattice.Outcome = status.OutcomeOK
+	}
+	diagnostics := lattice.Diagnostics[:0]
+	for _, diagnostic := range lattice.Diagnostics {
+		if diagnostic.Code == "UNKNOWN_SURFACE" && removedUnknownPaths[diagnostic.Path] {
+			continue
+		}
+		diagnostics = append(diagnostics, diagnostic)
+	}
+	lattice.Diagnostics = diagnostics
 }
 
 type sourcePipelineError struct{ result status.Result }

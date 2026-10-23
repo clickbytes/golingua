@@ -684,7 +684,7 @@ func (m *matcher) checkPlan(p compiledPlan, part *partial) bool {
 	}
 	for _, s := range p.family.SlotSpecs {
 		if s.Adposition != "" {
-			if a := part.slots[s.ID]; len(a.candidateIDs) > 0 {
+			if a := part.slots[s.ID]; len(a.candidateIDs) > 0 && !construction.VariantEmitsAdposition(p.variant, p.family, s.ID, s.Adposition) {
 				part.unresolved = appendUnique(part.unresolved, s.ID)
 			}
 		}

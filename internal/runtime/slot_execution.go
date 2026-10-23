@@ -95,8 +95,13 @@ func (builder MorphologyExecutionBuilder) Build(ctx context.Context, source sema
 		} else {
 			return realizer.ExecuteInput{}, runtimeError(status.OutcomeUnsupported, "UNBOUND_SLOT_UNSUPPORTED", "target.slots."+slot.ID, "only predicate VP slots and explicitly role-bound argument slots are supported")
 		}
-		if slot.Category != construction.CategoryNP && slot.Category != construction.CategoryVP {
+		if slot.Category != construction.CategoryNP && slot.Category != construction.CategoryVP && slot.Category != construction.CategoryPP {
 			return realizer.ExecuteInput{}, runtimeError(status.OutcomeUnsupported, "SLOT_CATEGORY_UNSUPPORTED", "target.slots."+slot.ID, "slot execution does not yet realize PP or other phrase categories")
+		}
+		if slot.Category == construction.CategoryPP || slot.Adposition != "" {
+			if slot.Adposition == "" || !construction.VariantEmitsAdposition(plan.CompiledVariant.Variant, selected.Family.Family, slot.ID, slot.Adposition) {
+				return realizer.ExecuteInput{}, runtimeError(status.OutcomeUnsupported, "ADPOSITION_SEQUENCE_UNAVAILABLE", "target.slots."+slot.ID, "an adpositional argument requires its exact adposition terminal before the slot in the selected construction")
+			}
 		}
 		parts, exists := builder.Parts(candidate.Lexeme.ID.String())
 		if !exists {

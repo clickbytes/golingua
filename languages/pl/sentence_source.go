@@ -14,7 +14,7 @@ import (
 
 // NewSentenceSource builds the trusted Polish source stages against one exact
 // CORE/lexicon snapshot. The bare declarative completion attestation covers
-// present visual/auditory and singular past receiving predicates.
+// present visual/auditory/looking and singular past receiving predicates.
 func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if snapshot == nil {
 		return nil, fmt.Errorf("Polish sentence source requires a snapshot")
@@ -48,13 +48,18 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if err != nil {
 		return nil, err
 	}
+	lookingSense, err := ids.NewSenseID("pl.patrzec.directed")
+	if err != nil {
+		return nil, err
+	}
 	caseValues := map[features.FeatureValueID]string{}
 	for _, value := range []string{"nominative", "genitive", "dative", "accusative", "instrumental", "locative", "vocative"} {
 		caseValues[features.FeatureValueID(value)] = value
 	}
 	return &runtime.SourcePipeline{
 		Language: "pl", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}},
-		Morphology: inverse, MWEPlans: []construction.CompiledMWEPlan{},
+		AllowedUnlexicalizedTerminals: map[string]bool{"na": true},
+		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
 		PhraseBuilder: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
@@ -64,12 +69,14 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 			CaseFeature: "case", CaseValues: caseValues,
 		}},
 		EvidenceBuilder: runtime.BareDeclarativeEvidenceBuilder{
-			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true},
+			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true},
 			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
 				seeingSense:    {{"verb_form": "finite", "tense": "present", "person": "third", "number": "singular"}},
 				hearingSense:   {{"verb_form": "finite", "tense": "present", "person": "third", "number": "singular"}},
+				lookingSense:   {{"verb_form": "finite", "tense": "present", "person": "third", "number": "singular"}},
 				receivingSense: {{"verb_form": "finite", "tense": "past", "person": "third", "number": "singular"}},
 			},
+			AllowedUnlexicalizedTerminals: map[string]bool{"na": true},
 		},
 	}, nil
 }

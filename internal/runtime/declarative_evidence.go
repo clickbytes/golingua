@@ -25,6 +25,10 @@ type BareDeclarativeEvidenceBuilder struct {
 	SupportedSenses                     map[ids.SenseID]bool
 	RequiredPredicateFeatures           map[features.FeatureID]features.FeatureValueID
 	PredicateFeatureAlternativesBySense map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID
+	// AllowedUnlexicalizedTerminals names exact function words licensed by the
+	// source's compiled construction sequence, such as English "at" or Polish
+	// "na". A complete parse must still consume every input token.
+	AllowedUnlexicalizedTerminals map[string]bool
 }
 
 // NoOperatorEvidenceBuilder attests an empty operator inventory only for an
@@ -67,8 +71,17 @@ func (builder BareDeclarativeEvidenceBuilder) Build(ctx context.Context, lattice
 		if token.Token.Kind == text.TokenPunctuation && token.Token.Normalized == "." && index == len(lattice.Tokens)-1 {
 			continue
 		}
-		if token.Token.Kind != text.TokenWord || len(token.Readings) == 0 {
+		if token.Token.Kind != text.TokenWord {
 			return evidence, nil
+		}
+		if len(token.Readings) == 0 {
+			terminal := token.Token.Folded
+			if terminal == "" {
+				terminal = token.Token.Normalized
+			}
+			if !builder.AllowedUnlexicalizedTerminals[terminal] {
+				return evidence, nil
+			}
 		}
 	}
 	byCandidate := make(map[string]parser.PhraseCandidate, len(candidates))

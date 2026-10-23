@@ -19,9 +19,9 @@ Proposed semantic rows: **882 approved and 118 pending**, **0 without a proposed
 
 - CORE: **1000** compiled concept definitions.
 - PL: **982 lexemes**, **1007 senses**, **1006 semantic bindings (882 approved; 124 pending) over 1000 concepts**, **0 CORE absent**.
-- EN: **1001 lexemes**, **1010 senses**, **996 approved and 5 pending binding records** over 1000 concepts.
+- EN: **1002 lexemes**, **1011 senses**, **996 approved and 5 pending binding records** over 1000 concepts.
 - PL valency: **273 authored, compiled frames**, some single-role, some NP/PP/recipient-based; four separately approved construction bindings.
-- Polish morphology: **17 selected noun lexemes** supplied with 14 explicit form strings each (7 cases × 2 numbers), using five shared gender-class selection paradigms. Previous `kot`, `student`, `czytać` seeds remain. No automatic inflection for the remaining lexical inventory.
+- Polish morphology: **22 selected noun lexemes** supplied with 14 explicit form strings each (7 cases × 2 numbers), including separately sourced forms for `drzewo`, plus seven explicit case forms for plural-only `pieniądze`. Five shared gender-class selection paradigms cover 21 nouns; `drzewo` has its own selector. Previous `kot`, `student`, `czytać` seeds remain. No automatic inflection for the remaining lexical inventory.
 
 `MORPHOLOGY_COVERAGE=attested_14_case_number_cells_pending_owner_review` in the TSV identifies the noun slice, including multiple senses of the same lexeme. `no_authorized_paradigm` identifies new verb entries without inflection. Missing cells and lexemes must not be filled through speculative analogy. Inverse analysis preserves distinct syncretic readings, with normalization constrained to NFC.
 

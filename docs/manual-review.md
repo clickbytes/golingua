@@ -13,8 +13,8 @@
 ### Status technicznego podglądu v0
 
 `forms` i `catalog` są dostępne lokalnie. CLI może też załadować ograniczony,
-skompilowany runtime PL/EN dla dokładnych tras `seeing`, `hearing` i `receiving`, gdy `translate`
-otrzyma `--runtime-config` wskazujący aktywny snapshot. Dwie pierwsze trasy obsługują teraźniejszą
+skompilowany runtime PL/EN dla dokładnych tras `seeing`, `hearing`, `looking` i `receiving`, gdy `translate`
+otrzyma `--runtime-config` wskazujący aktywny snapshot. Pierwsze trzy trasy obsługują teraźniejszą
 3. osobę liczby pojedynczej, a `receiving` — czas przeszły w 3. osobie liczby pojedynczej.
 Bez tej konfiguracji
 żądanie translacji zwraca `unsupported` i exit code 3.
@@ -28,6 +28,9 @@ wyniki z kodami wyjścia, statusami, diagnostykami i tekstami zapisano w
 Po aktywacji `receiving` uruchomiono 25 istniejących par z tego samego korpusu
 w obu kierunkach; wyniki zapisano w
 [`data/sentences/observed-2026-10-23-g05-13-receiving.tsv`](../data/sentences/observed-2026-10-23-g05-13-receiving.tsv).
+Po aktywacji `looking` uruchomiono istniejące pary S051–S075 w obu kierunkach;
+wyniki zapisano w
+[`data/sentences/observed-2026-10-23-g05-14-looking.tsv`](../data/sentences/observed-2026-10-23-g05-14-looking.tsv).
 To są obserwacje działania programu, a nie ocena językowa. Właściciel nie ocenił
 jeszcze konkretnych wyjść, więc ręczny odbiór translacji i ocena form pozostają
 `NOT RUN`. `forms` udostępnia ograniczoną odmianę oraz analizę obecnych seedów

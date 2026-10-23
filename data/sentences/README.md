@@ -2,7 +2,7 @@
 
 Na polecenie właściciela z 2026-10-23 zapisano 100 **redakcyjnych propozycji** zdań w [100-pl-en.tsv](100-pl-en.tsv). Dla każdego wiersza [100-meanings.jsonl](100-meanings.jsonl) zawiera odpowiadający mu przykład request-scoped `MeaningGraph` z konceptem zdarzenia i dwoma osobnymi referentami. `S001` w obu plikach oznacza ten sam przykład. Zdania nie są nowymi `ConceptDefinition`, `LexicalSense` ani zatwierdzonymi tłumaczeniami.
 
-Materiał obejmuje po 25 zdań dla `seeing`, `hearing`, `looking` i `receiving`. Każdy użyty koncept i sens zdarzenia ma obecnie osobny zatwierdzony binding PL/EN w katalogu, ale zdania, formy czasowników, wybór rodzajnika, czas/aspekt oraz konstrukcje nie zostały przez to zatwierdzone. Angielska trasa konstrukcyjna `look at` nie ma jeszcze approved bindingu. Powtarzane kombinacje uczestników służą sprawdzeniu zamiany ról i odmiany; nie stanowią miary jakości.
+Materiał obejmuje po 25 zdań dla `seeing`, `hearing`, `looking` i `receiving`. Każdy użyty koncept i sens zdarzenia ma obecnie osobny zatwierdzony binding PL/EN w katalogu, ale zdania, wybór rodzajnika i własności MeaningGraph nie zostały przez to zatwierdzone. W G05 #201 zatwierdzono dokładne szlaki konstrukcyjne EN `look at` oraz PL `patrzeć na` + biernik. Powtarzane kombinacje uczestników służą sprawdzeniu zamiany ról i odmiany; nie stanowią miary jakości.
 
 Wszystkie 100 struktur `MeaningGraph` sprawdzono przez `meaning.ValidateMeaning` względem skompilowanego CORE. Skompilowane indeksy leksykalne PL/EN potwierdziły `approved` i `equivalent` dla każdego wskazanego konceptu oraz dokładnych sensów zdarzeń. Ta kontrola dotyczy identyfikatorów i ról, a nie poprawności powierzchni zdań.
 
@@ -10,8 +10,8 @@ Status wszystkich wierszy to `draft_unreviewed`. Autorem powierzchni PL/EN jest 
 
 ## Obserwacja CLI
 
-Gałęzie #195, #197 i #199 rejestrują skompilowane pakiety oraz etapy PL/EN dla
-ograniczonych, zatwierdzonych szlaków `seeing`, `hearing` i `receiving`. Używają analizy
+Gałęzie #195, #197, #199 i #201 rejestrują skompilowane pakiety oraz etapy PL/EN dla
+ograniczonych, zatwierdzonych szlaków `seeing`, `hearing`, `looking` i `receiving`. Używają analizy
 składniowej, dokładnych bindingów, ram walencji, planu konstrukcji, jawnych form
 morfologicznych i linearyzacji. Angielski artykuł analizuje `the` i `a` jako
 cechy; konstrukcja dopuszcza również brak rodzajnika dla bieżących rzeczowników
@@ -27,12 +27,33 @@ golingua translate --from pl --to en --text 'Nauczyciel widzi psa.' --runtime-co
 golingua translate --from en --to pl --text 'The teacher sees the dog.' --runtime-config runtime.json --json
 golingua translate --from pl --to en --text 'Nauczyciel słyszy psa.' --runtime-config runtime.json --json
 golingua translate --from en --to pl --text 'The teacher hears the dog.' --runtime-config runtime.json --json
+golingua translate --from en --to pl --text 'The teacher looks at the dog.' --runtime-config runtime.json --json
+golingua translate --from pl --to en --text 'Nauczyciel patrzy na psa.' --runtime-config runtime.json --json
 ```
 
 Pierwsze zwróciło dosłowny tekst `The teacher sees the dog.` ze statusem
 `incomplete` i diagnostykami `EXPLICIT_REALIZATION_ASSUMPTION` oraz
 `TRANSLATION_NOT_OK`. Drugie zwróciło `Nauczyciel widzi psa.` ze statusem
 `ok`. To są obserwacje działania pipeline'u, nie ręczna ocena jakości zdań.
+
+Po G05 #201 uruchomiono wszystkie 25 istniejących propozycji `looking` w obu
+kierunkach; dosłowne kody wyjścia, statusy, diagnostyki i teksty są w
+[observed-2026-10-23-g05-14-looking.tsv](observed-2026-10-23-g05-14-looking.tsv).
+Wyniki: 12 `ok`, 12 `incomplete`, 8 `ambiguous` i 18 `unsupported` spośród 50
+wywołań. Jednoznaczne podmioty z `dog`, `car` i `tree` tłumaczą się EN→PL ze
+statusem `ok`; PL→EN zachowuje tekst, ale pozostaje `incomplete` z powodu
+jawnego założenia rodzajnika `the`. Formy `drzewo` i `tree` są dostępne po obu
+stronach. Nierozstrzygnięte `book`, `house`, `doctor` i `child` nie są wymuszane;
+ich statusy pozostają `ambiguous` lub `unsupported` zależnie od kierunku i
+pozostałych ról zdania.
+
+**Ocena agenta:** w wyjściach z jednoznacznymi podmiotami zachowano relację
+patrzenia skierowanego na cel. Angielskie `look at` jest oddzielone od
+bezpośredniego `see`, a polskie `patrzeć na` zachowuje wymagane `na` i biernik
+(`psa`, `samochód`, `drzewo`). `Nauczyciel`, `Matka`, `Ojciec` i `Dziecko`
+zachowują rolę agensa. Niejednoznaczne wejścia nie powinny być oceniane jako
+błędy leksykalne, dopóki ich odczytanie nie zostanie rozstrzygnięte. Właścicielska
+akceptacja zdań i form nadal **NOT RUN**.
 
 Wcześniejszy wynik 100 par z gałęzi #195 (przed aktywacją `hearing`) jest
 zachowany w [observed-2026-10-23-provider-runtime.tsv](observed-2026-10-23-provider-runtime.tsv);

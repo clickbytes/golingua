@@ -1173,6 +1173,7 @@ var englishParadigmByLexeme = map[string]string{
 	"en.bird.n": "en_noun_singular_attested", "en.neighbor.n": "en_noun_singular_attested", "en.customer.n": "en_noun_singular_attested",
 	"en.dog.n": "en_noun_regular", "en.teacher.n": "en_noun_regular",
 	"en.doctor.n": "en_noun_regular", "en.school.n": "en_noun_regular",
+	"en.tree.n": "en_noun_singular_attested",
 	"en.hand.n": "en_noun_regular", "en.eye.n": "en_noun_regular",
 	"en.look.v": "en_verb_regular", "en.hear.v": "en_hear_present_third_singular",
 	"en.get.v":  "en_verb_principal_parts",

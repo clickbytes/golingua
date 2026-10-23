@@ -1,0 +1,51 @@
+id	direction	exit_code	status	diagnostic_codes	output_text
+S051	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S051	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S052	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S052	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;PRINCIPAL_PARTS_UNAVAILABLE	ambiguous:The teacher looks at the house.
+S053	en_pl	0	ok		ok:Nauczyciel patrzy na psa.
+S053	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The teacher looks at the dog.
+S054	en_pl	0	ok		ok:Nauczyciel patrzy na samochód.
+S054	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The teacher looks at the car.
+S055	en_pl	0	ok		ok:Nauczyciel patrzy na drzewo.
+S055	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The teacher looks at the tree.
+S056	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S056	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S057	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S057	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;PRINCIPAL_PARTS_UNAVAILABLE	ambiguous:The doctor looks at the house.
+S058	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S058	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The doctor looks at the dog.
+S059	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S059	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The doctor looks at the car.
+S060	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S060	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The doctor looks at the tree.
+S061	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S061	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S062	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S062	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;PRINCIPAL_PARTS_UNAVAILABLE	ambiguous:The mother looks at the house.
+S063	en_pl	0	ok		ok:Matka patrzy na psa.
+S063	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The mother looks at the dog.
+S064	en_pl	0	ok		ok:Matka patrzy na samochód.
+S064	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The mother looks at the car.
+S065	en_pl	0	ok		ok:Matka patrzy na drzewo.
+S065	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The mother looks at the tree.
+S066	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S066	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S067	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S067	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;PRINCIPAL_PARTS_UNAVAILABLE	ambiguous:The father looks at the house.
+S068	en_pl	0	ok		ok:Ojciec patrzy na psa.
+S068	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The father looks at the dog.
+S069	en_pl	0	ok		ok:Ojciec patrzy na samochód.
+S069	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The father looks at the car.
+S070	en_pl	0	ok		ok:Ojciec patrzy na drzewo.
+S070	pl_en	7	incomplete	TRANSLATION_NOT_OK	incomplete:The father looks at the tree.
+S071	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S071	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S072	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S072	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;ROLE_LEXICALIZATION_UNAVAILABLE;PRINCIPAL_PARTS_UNAVAILABLE	ambiguous:The child looks at the house.
+S073	en_pl	0	ok		ok:Dziecko patrzy na psa.
+S073	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;ROLE_LEXICALIZATION_UNAVAILABLE	ambiguous:The child looks at the dog.
+S074	en_pl	0	ok		ok:Dziecko patrzy na samochód.
+S074	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;ROLE_LEXICALIZATION_UNAVAILABLE	ambiguous:The child looks at the car.
+S075	en_pl	0	ok		ok:Dziecko patrzy na drzewo.
+S075	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;ROLE_LEXICALIZATION_UNAVAILABLE	ambiguous:The child looks at the tree.

@@ -181,7 +181,9 @@ func Linearize(plan RealizationPlan, family construction.ConstructionFamily, slo
 		}
 		spec := familySlots[form.SlotID]
 		if spec.Category == construction.CategoryPP || spec.Adposition != "" {
-			return LinearizedResult{}, linearizeError(status.OutcomeUnsupported, "ADPOSITIONAL_SLOT_UNSUPPORTED", path+".slot_id", "the current linearizer cannot emit the separately licensed adposition for this slot")
+			if spec.Adposition == "" || !construction.VariantEmitsAdposition(compiled.Variant, family, spec.ID, spec.Adposition) {
+				return LinearizedResult{}, linearizeError(status.OutcomeUnsupported, "ADPOSITION_SEQUENCE_UNAVAILABLE", path+".slot_id", "an adpositional argument requires its exact adposition terminal before the slot in the selected construction")
+			}
 		}
 		if spec.ArgumentBinding == nil && form.Role != "" || spec.ArgumentBinding != nil && form.Role != spec.ArgumentBinding.SemanticRole {
 			return LinearizedResult{}, linearizeError(status.OutcomeInvalid, "SLOT_ROLE_LICENSE_MISMATCH", path+".role", "slot form role does not match the family slot binding")

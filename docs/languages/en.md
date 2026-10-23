@@ -15,17 +15,19 @@ assumed.
 
 `en.CompileValency()` compiles five sense-specific frames. In particular,
 directed `look` uses an `at` oblique argument, whereas visual `see` uses a
-direct object. Four exact EN sense/frame/family/variant routes (`see`, `hear`,
-`get` in its receive sense, and `read` with text) have approved construction
-bindings after delegated review. `look at` remains without an oblique binding.
+direct object. Five exact EN sense/frame/family/variant routes (`see`, `hear`,
+`get` in its receive sense, `read` with text, and `look at`) have approved
+construction bindings after delegated review. `look at` uses the distinct
+oblique `at` + NP construction assessed in G05 #201.
 Remaining candidate lexical links stay pending; neither they nor the approved
 EN links alone authorize translation.
 Source metadata points to the project-authored Go files and records the license
 as `unknown` until established.
 
-The morphology catalog assigns existing regular paradigms to seven additional entries:
-`dog`, `teacher`, `doctor`, `school`, `hand`, `eye` and `look`. It does not add
-auxiliaries or sentence realization.
+The morphology catalog assigns paradigms to eight additional entries: regular
+paradigms for `dog`, `teacher`, `doctor`, `school`, `hand`, `eye` and `look`,
+plus an explicitly recorded singular `tree` form for the looking sentence slice.
+It does not add auxiliaries or unrestricted sentence realization.
 
 The 981 newly lexicalized entries cover people and social roles, organizations, basic concepts,
 animals, plants, body parts, materials, vehicles, household objects, communication verbs
@@ -45,7 +47,7 @@ retained 5 pending binding records across 4 concepts. The remaining candidates a
 `en.school.institution` sense is a pending candidate; eight existing senses
 remain unmapped. Construction approvals do not imply these lexical decisions.
 
-The Go package `github.com/clickbytes/golingua/languages/en` loads the bundled `features.json`, `manifest.json`, `morphology/paradigms.json`, and `morphology/lexemes.json`, plus in-code entries. `en.Load()` validates and compiles the package into a shared morphology engine, then builds a finite relation table for inverse analysis. Its `Seed.Generate(lexemeID, featureValues)` and `Seed.Analyze(surface)` methods are available through CLI `forms`. The compiled CLI enables exact `seeing`, `hearing`, and `receiving` routes when it loads an active snapshot. The last route uses the declared principal parts `get`, `gets`, `got`, `gotten`, `getting`; its sentence slice analyzes `got` and realizes past tense only.
+The Go package `github.com/clickbytes/golingua/languages/en` loads the bundled `features.json`, `manifest.json`, `morphology/paradigms.json`, and `morphology/lexemes.json`, plus in-code entries. `en.Load()` validates and compiles the package into a shared morphology engine, then builds a finite relation table for inverse analysis. Its `Seed.Generate(lexemeID, featureValues)` and `Seed.Analyze(surface)` methods are available through CLI `forms`. The compiled CLI enables exact `seeing`, `hearing`, `looking`, and `receiving` routes when it loads an active snapshot. The `looking` slice uses `looks` and exact `at`; `receiving` uses the declared principal parts `get`, `gets`, `got`, `gotten`, `getting`, analyzes `got`, and realizes past tense only.
 
 ## Included classes
 
@@ -56,4 +58,4 @@ The Go package `github.com/clickbytes/golingua/languages/en` loads the bundled `
 
 `Analyze` preserves all readings: for example, the finite table contains separate `past` and `past_participle` readings for `walked`. Surfaces use NFC normalization only; case and diacritics remain significant.
 
-This is a small declared seed, not a complete English grammar. It does not implement silent-e deletion, consonant doubling, y-to-i changes, irregular plural rules, general person/number agreement, auxiliaries, or unrestricted sentence realization. The compiled sentence routes add explicitly declared forms for `see`, `hear`, and past `get`; English `food`, `money`, and `water` are marked as mass nouns for target number selection. The transitive source construction recognizes `the`, `a`, and a bare object where current lexical/morphology data allow it. Additional irregular exception rules require their own valid provenance. The owner-delegated CLI observations are in [`data/sentences/observed-2026-10-23-g05-13-receiving.tsv`](../../data/sentences/observed-2026-10-23-g05-13-receiving.tsv); owner sign-off remains **NOT RUN**.
+This is a small declared seed, not a complete English grammar. It does not implement silent-e deletion, consonant doubling, y-to-i changes, irregular plural rules, general person/number agreement, auxiliaries, or unrestricted sentence realization. The compiled sentence routes use explicit `see`, `hear`, `look` and past `get` forms; `tree` has an explicit singular form for this slice. English `food`, `money`, and `water` are marked as mass nouns for target number selection. The transitive source construction recognizes `the`, `a`, and a bare object where current lexical/morphology data allow it. The oblique `look at` route recognizes the exact `at` terminal. Additional irregular exception rules require their own valid provenance. Owner-authored `looking` CLI observations are in [`data/sentences/observed-2026-10-23-g05-14-looking.tsv`](../../data/sentences/observed-2026-10-23-g05-14-looking.tsv); owner sign-off remains **NOT RUN**.

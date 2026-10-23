@@ -2,7 +2,7 @@
 
 **Nowy, niezależny prototyp silnika językowego w Go.** Koncepty, gramatyka, walencja, procedury i wyjątki są projektowane od zera. Polski i angielski pozostają osobnymi pakietami językowymi.
 
-**Status technicznego podglądu v0:** CLI tłumaczy ograniczone zdania PL↔EN dla zatwierdzonych tras `seeing`, `hearing` (teraźniejsza 3. osoba liczby pojedynczej) i `receiving` (przeszła 3. osoba liczby pojedynczej), gdy wskażesz aktywny snapshot. Nie realizuje dowolnych zdań. `forms` obsługuje jawnie zadeklarowane klasy i wyjątki; `catalog` raportuje stan danych Go, a `question` wykonuje typowane zapytania na MeaningGraph i faktach podanych jawnie w JSON. CORE ma 1000 konceptów. Bieżące liczniki i statusy bindingów są w [`docs/data/catalog-status.md`](docs/data/catalog-status.md). Brak pamięci i uczenia w v0.
+**Status technicznego podglądu v0:** CLI tłumaczy ograniczone zdania PL↔EN dla zatwierdzonych tras `seeing`, `hearing` i `looking` (teraźniejsza 3. osoba liczby pojedynczej) oraz `receiving` (przeszła 3. osoba liczby pojedynczej), gdy wskażesz aktywny snapshot. Trasa `looking` zachowuje angielskie `look at` i polskie `patrzeć na` z biernikiem; wieloznaczne odczytania pozostają widoczne. CLI nie realizuje dowolnych zdań. `forms` obsługuje jawnie zadeklarowane klasy i wyjątki; `catalog` raportuje stan danych Go, a `question` wykonuje typowane zapytania na MeaningGraph i faktach podanych jawnie w JSON. CORE ma 1000 konceptów. Bieżące liczniki i statusy bindingów są w [`docs/data/catalog-status.md`](docs/data/catalog-status.md). Brak pamięci i uczenia w v0.
 
 ## Jak rozwijamy
 

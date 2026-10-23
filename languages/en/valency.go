@@ -20,10 +20,16 @@ var englishConstructionReviewSource = provenance.SourceRef{
 	Version: "2026-10-22", License: "unknown", Author: "Codex by owner delegation",
 }
 
+var englishLookingConstructionReviewSource = provenance.SourceRef{
+	ID:      "golingua-delegated-construction-review",
+	URI:     "https://github.com/clickbytes/golingua/issues/201#issuecomment-6354741947",
+	Version: "2026-10-23-g05-14", License: "unknown", Author: "Codex by owner delegation",
+}
+
 type frameDeclaration struct {
-	id, sense string
-	roles     []meaning.Role
-	arguments []valency.ArgumentSlot
+	id, sense, family string
+	roles             []meaning.Role
+	arguments         []valency.ArgumentSlot
 }
 
 type constructionBindingDeclaration struct {
@@ -35,26 +41,27 @@ var englishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.read.text", "en.read.text.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo"},
 }
 
 var englishFrames = []frameDeclaration{
-	{"en.see.visual.transitive", "en.see.visual", []meaning.Role{"experiencer", "stimulus"}, []valency.ArgumentSlot{
+	{"en.see.visual.transitive", "en.see.visual", "en.transitive", []meaning.Role{"experiencer", "stimulus"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "experiencer", Required: true, GrammaticalFunction: "subject"},
 		{ID: "object", Role: "stimulus", Required: true, GrammaticalFunction: "object"},
 	}},
-	{"en.look.directed.at", "en.look.directed", []meaning.Role{"agent", "target"}, []valency.ArgumentSlot{
+	{"en.look.directed.at", "en.look.directed", "en.oblique", []meaning.Role{"agent", "target"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject"},
 		{ID: "target", Role: "target", Required: true, GrammaticalFunction: "oblique", Adposition: "at"},
 	}},
-	{"en.hear.auditory.transitive", "en.hear.auditory", []meaning.Role{"experiencer", "stimulus"}, []valency.ArgumentSlot{
+	{"en.hear.auditory.transitive", "en.hear.auditory", "en.transitive", []meaning.Role{"experiencer", "stimulus"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "experiencer", Required: true, GrammaticalFunction: "subject"},
 		{ID: "object", Role: "stimulus", Required: true, GrammaticalFunction: "object"},
 	}},
-	{"en.get.receive.transitive", "en.get.receive", []meaning.Role{"recipient", "theme"}, []valency.ArgumentSlot{
+	{"en.get.receive.transitive", "en.get.receive", "en.transitive", []meaning.Role{"recipient", "theme"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "recipient", Required: true, GrammaticalFunction: "subject"},
 		{ID: "object", Role: "theme", Required: true, GrammaticalFunction: "object"},
 	}},
-	{"en.read.text.transitive", "en.read.text", []meaning.Role{"reader", "material"}, []valency.ArgumentSlot{
+	{"en.read.text.transitive", "en.read.text", "en.transitive", []meaning.Role{"reader", "material"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "reader", Required: true, GrammaticalFunction: "subject"},
 		{ID: "object", Role: "material", Required: true, GrammaticalFunction: "object"},
 	}},
@@ -75,12 +82,12 @@ func CompileValency() (*valency.Index, error) {
 	for _, sense := range document.Senses {
 		senses[sense.ID.String()] = struct{}{}
 	}
-	familyID, err := ids.NewConstructionID("en.transitive")
-	if err != nil {
-		return nil, err
-	}
 	frames := make([]valency.ValencyFrame, 0, len(englishFrames))
 	for _, item := range englishFrames {
+		familyID, err := ids.NewConstructionID(item.family)
+		if err != nil {
+			return nil, err
+		}
 		senseID, err := ids.NewSenseID(item.sense)
 		if err != nil {
 			return nil, fmt.Errorf("English frame %s: %w", item.id, err)
@@ -113,8 +120,15 @@ func CompileValency() (*valency.Index, error) {
 		bindings = append(bindings, valency.ConstructionBinding{
 			SenseID: senseID, ValencyFrameID: valency.FrameID(item.frame),
 			FamilyID: familyID, VariantID: variantID, Approved: true,
-			Provenance: englishConstructionReviewSource,
+			Provenance: englishBindingProvenance(item.sense),
 		})
 	}
 	return valency.BuildIndexWithCandidates(frames, bindings, nil)
+}
+
+func englishBindingProvenance(sense string) provenance.SourceRef {
+	if sense == "en.look.directed" {
+		return englishLookingConstructionReviewSource
+	}
+	return englishConstructionReviewSource
 }
