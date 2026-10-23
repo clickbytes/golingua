@@ -116,7 +116,7 @@ func newSentencePlanRealizer(snapshot *pack.Pack) (*runtime.ConstructionPlanReal
 		Language: "en", Lexicon: snapshot.Lexicon(), Valency: valencyIndex,
 		Constructions: constructions, Variants: variants, Core: snapshot.CoreGraph(),
 		PlanBuilder: englishSentencePlanAnnotations{}, ExecutionBuilder: execution,
-		CandidatePolicy: englishMassObjectCandidatePolicy{},
+		CandidatePolicy: englishReceivingCandidatePolicy{},
 	}
 	return adapter, valencyIndex, nil
 }

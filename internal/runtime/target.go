@@ -182,7 +182,10 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 			return engine.SurfaceResult{}, err
 		}
 		evidence, bindingOK := targetBindingEvidence(pipeline.LanguageRegistry, pipeline.Language, source, selected, plan)
-		outcome := combineTargetOutcomes(selection.Outcome, selected.Outcome, plan.Outcome, executed.Outcome, linearized.Outcome)
+		// Selection.Outcome summarizes all retained routes. Keep route-local
+		// alternatives usable when that aggregate is ambiguous; result.Outcome
+		// already preserves the overall selection status for the caller.
+		outcome := combineTargetOutcomes(selected.Outcome, plan.Outcome, executed.Outcome, linearized.Outcome)
 		var bindingDiagnostic status.Diagnostic
 		if !bindingOK {
 			outcome = status.OutcomeUnsupported
