@@ -24,6 +24,14 @@ Zamiast tworzyć tysiące zagnieżdżonych obiektów jak `ROCK.VERB.MORPH.PAST`,
 
 Nie wybieramy kandydata wyłącznie według kolejności importu. Gdy brak słowa/cechy/konstrukcji — `unsupported`/`unknown`; gdy kilka znaczeń — `ambiguous`. Jeśli limit przerwie analizę, wynik ma być niekompletny, nie fałszywie pewny.
 
+Jeżeli fraza ma co najmniej jeden zatwierdzony sens roli i konkurencyjny sens
+bez zatwierdzonego bindingu, kompozycja zachowuje graf tylko dla
+zatwierdzonych odczytań i dołącza nierozstrzygnięty sens do evidence. Runtime
+może wtedy zrealizować tekst dla tego grafu, lecz kandydat i całe żądanie
+pozostają `incomplete`; tekst nie staje się automatycznie wybranym wynikiem.
+Pozostałe rodzaje niekompletnego źródła nie przechodzą przez ten wąski wyjątek,
+a fraza bez żadnego zatwierdzonego ekwiwalentu nadal jest `unsupported`.
+
 ## Realizacja
 
 `MeaningGraph → zatwierdzony lub spójny SemanticBinding → ValencyFrame → językowa ConstructionFamily/Variant → procedura NP/VP/PP → formy fleksyjne → tekst`.

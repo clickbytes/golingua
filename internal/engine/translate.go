@@ -121,11 +121,21 @@ func (engine *Engine) Translate(ctx context.Context, request Request) (Translati
 			result.Diagnostics = appendDiagnostic(result.Diagnostics, diagnostic("RESOURCE_LIMIT", "candidates", "translation alternative retention limit was exhausted"))
 			break
 		}
-		if sourceCandidate.Status != status.OutcomeOK || sourceCandidate.Meaning == nil {
+		if sourceCandidate.Meaning == nil || (sourceCandidate.Status != status.OutcomeOK && !mayRealizePartialRoleCandidate(sourceCandidate)) {
 			result.Candidates = append(result.Candidates, unresolvedAlternative(sourceCandidate))
 			continue
 		}
-		if !hasVerifiedBindingEvidence(sourceLanguage, sourceCandidate.Evidence, sourceCandidate.Meaning, true) {
+		realizationCandidate := sourceCandidate
+		if sourceCandidate.Status == status.OutcomeIncomplete {
+			// The source Meaning contains only approved readings. Normalize this
+			// internal copy so target selection can realize those readings; the
+			// returned translation still inherits the original incomplete status
+			// and unresolved evidence below.
+			realizationCandidate.Status = status.OutcomeOK
+			realizationCandidate.Evidence.Outcome = status.OutcomeOK
+			realizationCandidate.Evidence.Diagnostics = nil
+		}
+		if !hasVerifiedBindingEvidence(sourceLanguage, realizationCandidate.Evidence, realizationCandidate.Meaning, true) {
 			unresolved := unresolvedAlternative(sourceCandidate)
 			unresolved.Outcome = status.OutcomeUnsupported
 			unresolved.Diagnostics = appendDiagnostic(unresolved.Diagnostics, diagnostic("SOURCE_BINDING_EVIDENCE_UNLICENSED", "source.evidence", "source candidate has no exact registry binding for its sense, frame, family, variant, and CORE concept"))
@@ -133,7 +143,7 @@ func (engine *Engine) Translate(ctx context.Context, request Request) (Translati
 			result.Status = mergeEngineOutcome(result.Status, status.OutcomeUnsupported)
 			continue
 		}
-		target, targetErr := targetRealizer.Realize(requestContext, sourceCandidate)
+		target, targetErr := targetRealizer.Realize(requestContext, realizationCandidate)
 		if targetErr != nil {
 			failed := stageFailure(request, targetErr, "TARGET_REALIZATION_FAILED")
 			result.Diagnostics = appendDiagnostics(result.Diagnostics, failed.Diagnostics)
@@ -218,6 +228,9 @@ func (engine *Engine) Translate(ctx context.Context, request Request) (Translati
 			}
 			if !licensed {
 				candidate.Diagnostics = appendDiagnostic(candidate.Diagnostics, diagnostic("TARGET_BINDING_EVIDENCE_UNLICENSED", "target.evidence", "target output has no exact registry binding for its sense, frame, family, variant, and CORE concept"))
+			}
+			if sourceCandidate.Status != status.OutcomeOK {
+				candidate.Diagnostics = appendDiagnostics(candidate.Diagnostics, sourceCandidate.Evidence.Diagnostics)
 			}
 			if candidate.Outcome != status.OutcomeOK && len(candidate.Diagnostics) == 0 {
 				candidate.Diagnostics = append(candidate.Diagnostics, diagnostic("TARGET_ALTERNATIVE_NOT_OK", "target.alternatives", "target alternative is not a complete supported realization"))
@@ -420,6 +433,46 @@ func hasVerifiedBindingEvidence(pack language.Language, trace semantic.EvidenceT
 		}
 	}
 	return false
+}
+
+func mayRealizePartialRoleCandidate(candidate semantic.MeaningCandidate) bool {
+	if candidate.Status != status.OutcomeIncomplete || candidate.Evidence.Outcome != status.OutcomeIncomplete || candidate.Meaning == nil || len(candidate.SoftConstraintMisses) > 0 {
+		return false
+	}
+	var partialReason, roleReason string
+	partialDiagnostics, roleDiagnostics := 0, 0
+	for _, diagnostic := range candidate.Evidence.Diagnostics {
+		switch diagnostic.Code {
+		case "PARTIAL_PARSE_EVIDENCE":
+			partialDiagnostics++
+			if partialReason != "" || diagnostic.Message == "" {
+				return false
+			}
+			partialReason = diagnostic.Message
+		case semantic.DiagnosticUnresolvedRoleSense:
+			roleDiagnostics++
+			if diagnostic.Path != "roles" || diagnostic.Severity != status.SeverityWarning || diagnostic.Message != semantic.UnresolvedRoleSenseReason || roleReason != "" {
+				return false
+			}
+			roleReason = diagnostic.Message
+		default:
+			return false
+		}
+	}
+	if partialDiagnostics != 1 || roleDiagnostics != 1 || roleReason == "" || partialReason != roleReason {
+		return false
+	}
+	unresolvedRecords := 0
+	for _, record := range candidate.Evidence.Records {
+		if record.Outcome == status.OutcomeOK {
+			continue
+		}
+		if record.Outcome != status.OutcomeUnsupported || record.Reason != roleReason || record.Role == "" || record.SenseID.String() == "" || record.SourceSpan.End <= record.SourceSpan.Start || record.CandidateID == "" || record.CoreConceptID.String() != "" || record.BindingKey != "" || record.FrameID != "" || record.FamilyID.String() != "" || record.VariantID != "" {
+			return false
+		}
+		unresolvedRecords++
+	}
+	return unresolvedRecords > 0
 }
 
 func containsVariantID(variants []ids.ConstructionID, value string) bool {
