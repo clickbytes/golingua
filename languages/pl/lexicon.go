@@ -538,11 +538,11 @@ var polishParadigmByLexeme = map[string]string{
 	"pl.ptak.n":    "pl_masc_animal_regular",
 	"pl.sasiad.n":  "pl_noun_attested_masculine_personal",
 	"pl.klient.n":  "pl_noun_attested_masculine_personal",
-	"pl.widziec.v": "pl_widziec_present_third_singular",
-	"pl.slyszec.v": "pl_slyszec_present_third_singular",
-	"pl.patrzec.v": "pl_patrzec_present_third_singular",
+	"pl.widziec.v": "pl_verb_present_i",
+	"pl.slyszec.v": "pl_verb_present_y",
+	"pl.patrzec.v": "pl_verb_present_y",
 	"pl.drzewo.n":  "pl_noun_drzewo_attested",
-	"pl.dostac.v":  "pl_verb_past_third_singular",
+	"pl.dostac.v":  "pl_verb_perfective_finite",
 }
 
 // LexicalDocument constructs the Polish lexical data from Go declarations.

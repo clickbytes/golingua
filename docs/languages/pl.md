@@ -63,7 +63,7 @@ The new `morphology_attested_nouns.go` provides **22 noun lexemes × 14 explicit
 - Neuter: `oko`, `dziecko`, `jedzenie`, `drzewo` (separately sourced from [WSJP](https://wsjp.pl/haslo/podglad/10895/drzewo/4680852/roslina)).
 - Plural-only: `pieniądze` (seven explicit case forms).
 
-The older `kot` noun pattern remains restricted to 6 cells; the separate `lexeme:student-n` and `lexeme:czytac-v` seeds retain their existing IDs. The `dostać` sentence route adds only singular past forms `dostał`, `dostała`, and `dostało`, selected using the resolved target subject's lexical gender. For lexeme `pl.ryba.n`, for example, both its animal and food senses share one morphology entry; morphology alone does not choose a semantic sense. Some alternate, dialectal, archaic or context-sensitive forms have deliberately not been declared. No general verb conjugation, aspect, reflexive handling or adjective agreement is implied.
+The older `kot` noun pattern remains restricted to 6 cells; the separate `lexeme:student-n` and `lexeme:czytac-v` seeds retain their existing IDs. G10-02 adds six present indicative cells for imperfective `widzieć`, `słyszeć`, and `patrzeć`. Perfective `dostać` has six future cells and 13 past agreement cells: singular forms mark masculine personal, feminine, or neuter as licensed by person; plural forms distinguish masculine-personal from non-masculine-personal agreement. Its present-tense-looking forms are explicitly marked `tense=future`, not present. These reusable suffix procedures are attached only to the named lexemes through explicit stems. They do not imply a general conjugator for other Polish verbs or provide every aspectual pair, imperative, participle, passive, conditional, or reflexive form. For lexeme `pl.ryba.n`, for example, both its animal and food senses share one morphology entry; morphology alone does not choose a semantic sense.
 
 ### Manual CLI checks
 
@@ -71,6 +71,9 @@ The older `kot` noun pattern remains restricted to 6 cells; the separate `lexeme
 go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.pies.n --feature number=plural --feature case=genitive --feature gender=masculine_animal --json
 go run ./cmd/golingua forms --language pl --surface psów --json
 go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.dziecko.n --feature number=plural --feature case=instrumental --feature gender=neuter --json
+go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.widziec.v --feature verb_form=finite --feature tense=present --feature aspect=imperfective --feature mood=indicative --feature voice=active --feature person=first --feature number=singular --json
+go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.dostac.v --feature verb_form=finite --feature tense=future --feature aspect=perfective --feature mood=indicative --feature voice=active --feature person=second --feature number=singular --json
+go run ./cmd/golingua forms --language pl --surface dostaliśmy --json
 ```
 
 These calls must use the actual bundled seed, not the editorial TSV. A technical smoke verifies that a form can be produced/read, **not that it is linguistically approved**.

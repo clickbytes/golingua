@@ -14,11 +14,6 @@ var polishNounSource = provenance.SourceRef{
 	Version: "2026-10-21-initial", License: "unknown", Author: "golingua contributors",
 }
 
-var polishSentenceFormSource = provenance.SourceRef{
-	ID: "golingua-pl-sentence-forms-authored", Path: "languages/pl/morphology.go",
-	Version: "2026-10-23-g05-14-looking", License: "internal", Author: "golingua contributors",
-}
-
 // Only cells whose outputs are explicitly declared here are generated. This
 // regular masculine animate pattern does not imply a complete Polish noun
 // declension for every lexical item.
@@ -56,62 +51,7 @@ func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm 
 	}
 	result := append([]morph.Paradigm{paradigm}, attestedNounParadigms(profile)...)
 	result = append(result, pluralOnlyNounParadigm(profile))
-	result = append(result, treeNounParadigm(profile))
-	return append(result,
-		presentThirdSingularVerbParadigm(profile, "pl_widziec_present_third_singular", "procedure:pl_widziec.present_third_singular"),
-		presentThirdSingularVerbParadigm(profile, "pl_slyszec_present_third_singular", "procedure:pl_slyszec.present_third_singular"),
-		presentThirdSingularVerbParadigm(profile, "pl_patrzec_present_third_singular", "procedure:pl_patrzec.present_third_singular"),
-		pastThirdSingularVerbParadigm(profile),
-	)
-}
-
-func pastThirdSingularVerbParadigm(profile *features.LanguageFeatureProfile) morph.Paradigm {
-	paradigm := morph.Paradigm{
-		SchemaVersion: morph.ParadigmSchemaVersion,
-		ID:            "pl_verb_past_third_singular", Language: "pl", ProfileVersion: profile.Version(), POS: "verb",
-		PrincipalPartRequirements: []morph.PrincipalPartRequirement{{StemID: "root", PartID: "past_stem", Required: true}},
-	}
-	for _, cell := range []struct{ id, gender, ending string }{
-		{"past_3sg_masculine_personal", "masculine_personal", "ł"},
-		{"past_3sg_feminine", "feminine", "ła"},
-		{"past_3sg_neuter", "neuter", "ło"},
-	} {
-		paradigm.Cells = append(paradigm.Cells, morph.ParadigmCell{ID: morph.CellID(cell.id), Features: []features.FeatureValue{
-			{Feature: "verb_form", State: features.StateKnown, Value: "finite"},
-			{Feature: "tense", State: features.StateKnown, Value: "past"},
-			{Feature: "mood", State: features.StateKnown, Value: "indicative"},
-			{Feature: "voice", State: features.StateKnown, Value: "active"},
-			{Feature: "person", State: features.StateKnown, Value: "third"},
-			{Feature: "number", State: features.StateKnown, Value: "singular"},
-			{Feature: "gender", State: features.StateKnown, Value: features.FeatureValueID(cell.gender)},
-		}})
-		paradigm.Rules = append(paradigm.Rules, morph.CellRule{
-			CellID: morph.CellID(cell.id), ProcedureID: "procedure:pl_verb_past_third_singular." + cell.id, Provenance: polishSentenceFormSource,
-			Steps: []procedure.Operation{
-				{Kind: procedure.OperationSelectStem, StemID: "root"},
-				{Kind: procedure.OperationAppend, Text: cell.ending},
-			},
-		})
-	}
-	return paradigm
-}
-
-func presentThirdSingularVerbParadigm(profile *features.LanguageFeatureProfile, id, procedureID string) morph.Paradigm {
-	return morph.Paradigm{
-		SchemaVersion: morph.ParadigmSchemaVersion,
-		ID:            morph.ParadigmID(id), Language: "pl", ProfileVersion: profile.Version(), POS: "verb",
-		PrincipalPartRequirements: []morph.PrincipalPartRequirement{{StemID: "form", PartID: "present_third_singular", Required: true}},
-		Cells: []morph.ParadigmCell{{ID: "present_third_singular", Features: []features.FeatureValue{
-			{Feature: "verb_form", State: features.StateKnown, Value: "finite"},
-			{Feature: "tense", State: features.StateKnown, Value: "present"},
-			{Feature: "mood", State: features.StateKnown, Value: "indicative"},
-			{Feature: "voice", State: features.StateKnown, Value: "active"},
-			{Feature: "person", State: features.StateKnown, Value: "third"},
-			{Feature: "number", State: features.StateKnown, Value: "singular"},
-		}}},
-		Rules: []morph.CellRule{{CellID: "present_third_singular", ProcedureID: procedureID, Provenance: polishSentenceFormSource,
-			Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "form"}}}},
-	}
+	return append(result, treeNounParadigm(profile))
 }
 
 func inCodeMorphRecords() ([]lexemeRecord, error) {
@@ -143,25 +83,28 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 		if lexeme.ID.String() == "lexeme:pl.widziec.v" {
 			foundSee = true
 			attested = append(attested, lexemeRecord{Lexeme: lexeme, PrincipalParts: morph.PrincipalParts{
-				LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "present_third_singular", Form: "widzi"}},
+				LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "present_stem", Form: "widz"}},
 			}})
 		}
 		if lexeme.ID.String() == "lexeme:pl.slyszec.v" {
 			foundHear = true
 			attested = append(attested, lexemeRecord{Lexeme: lexeme, PrincipalParts: morph.PrincipalParts{
-				LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "present_third_singular", Form: "słyszy"}},
+				LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "present_stem", Form: "słysz"}},
 			}})
 		}
 		if lexeme.ID.String() == "lexeme:pl.patrzec.v" {
 			foundLook = true
 			attested = append(attested, lexemeRecord{Lexeme: lexeme, PrincipalParts: morph.PrincipalParts{
-				LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "present_third_singular", Form: "patrzy"}},
+				LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "present_stem", Form: "patrz"}},
 			}})
 		}
 		if lexeme.ID.String() == "lexeme:pl.dostac.v" {
 			foundReceive = true
 			attested = append(attested, lexemeRecord{Lexeme: lexeme, PrincipalParts: morph.PrincipalParts{
-				LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "past_stem", Form: "dosta"}},
+				LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{
+					{ID: "future_stem", Form: "dostan"},
+					{ID: "past_stem", Form: "dosta"},
+				},
 			}})
 		}
 		if lexeme.ParadigmID == "pl_masc_animal_regular" {

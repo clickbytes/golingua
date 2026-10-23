@@ -99,7 +99,7 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 		if !found {
 			if len(source.Evidence.Records) == 0 {
 				return knownPolishFeatures(
-					[2]string{"verb_form", "finite"}, [2]string{"tense", "present"},
+					[2]string{"verb_form", "finite"}, [2]string{"tense", "present"}, [2]string{"aspect", "imperfective"},
 					[2]string{"person", "third"}, [2]string{"number", "singular"},
 					[2]string{"mood", "indicative"}, [2]string{"voice", "active"},
 				), nil
@@ -113,6 +113,7 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 			}
 			return knownPolishFeatures(
 				[2]string{"verb_form", "finite"}, [2]string{"tense", "past"},
+				[2]string{"aspect", "perfective"},
 				[2]string{"person", "third"}, [2]string{"number", "singular"},
 				[2]string{"mood", "indicative"}, [2]string{"voice", "active"},
 				[2]string{"gender", gender},
@@ -127,6 +128,7 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 		if presentSingular {
 			return knownPolishFeatures(
 				[2]string{"verb_form", "finite"}, [2]string{"tense", "present"},
+				[2]string{"aspect", "imperfective"},
 				[2]string{"person", "third"}, [2]string{"number", "singular"},
 				[2]string{"mood", "indicative"}, [2]string{"voice", "active"},
 			), nil
