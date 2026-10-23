@@ -277,9 +277,9 @@ func (engine *Engine) Translate(ctx context.Context, request Request) (Translati
 				break
 			}
 		}
-		if selected == nil || selected.Outcome != status.OutcomeOK || selected.Text == "" ||
+		if selected == nil || !previewableAlternative(*selected) ||
 			(result.Status != status.OutcomeAmbiguous && result.Status != status.OutcomeIncomplete) {
-			return invalidResultFrom(result, diagnostic("INVALID_PREVIEW_ID", "preview_id", "preview ID must name a complete retained candidate in an ambiguous or incomplete result"))
+			return invalidResultFrom(result, diagnostic("INVALID_PREVIEW_ID", "preview_id", "preview ID must name an OK or incomplete text-bearing candidate in an ambiguous or incomplete result"))
 		}
 		result.PreviewID = selected.ID
 		result.Text = selected.Text
