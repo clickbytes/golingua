@@ -78,18 +78,26 @@ func Compile(inputs []PlanInput, budget Budget) (*Index, error) {
 		index.byLanguage[language] = append(index.byLanguage[language], i)
 		seenKeys := make(map[planLookupKey]struct{}, len(plan.sequence))
 		for _, symbol := range plan.sequence {
-			key := planLookupKey{Language: language}
 			if symbol.Slot != nil {
-				key.Category = symbol.Slot.Category
+				key := planLookupKey{Language: language, Category: symbol.Slot.Category}
+				if _, exists := seenKeys[key]; !exists {
+					index.byFirstSymbol[key] = append(index.byFirstSymbol[key], i)
+					seenKeys[key] = struct{}{}
+				}
+				if symbol.Slot.Optionality != construction.SlotOptional {
+					break
+				}
 			} else {
-				key.Terminal = symbol.Terminal
-			}
-			if _, exists := seenKeys[key]; !exists {
-				index.byFirstSymbol[key] = append(index.byFirstSymbol[key], i)
-				seenKeys[key] = struct{}{}
-			}
-			if symbol.Slot == nil || symbol.Slot.Optionality != construction.SlotOptional {
-				break
+				for _, terminal := range append([]string{symbol.Terminal}, symbol.AcceptedInputs...) {
+					key := planLookupKey{Language: language, Terminal: terminal}
+					if _, exists := seenKeys[key]; !exists {
+						index.byFirstSymbol[key] = append(index.byFirstSymbol[key], i)
+						seenKeys[key] = struct{}{}
+					}
+				}
+				if !symbol.Optional {
+					break
+				}
 			}
 		}
 	}
@@ -171,6 +179,8 @@ func compilePlanInput(input PlanInput, path string) (compiledPlan, error) {
 			}
 		case construction.TokenTerminal:
 			symbol.Terminal = token.Terminal
+			symbol.Optional = token.Optional
+			symbol.AcceptedInputs = append([]string(nil), token.AcceptedInputs...)
 		default:
 			return compiledPlan{}, newParserError(path+fmt.Sprintf(".variant.sequence[%d]", i), "variant contains an unsupported sequence token")
 		}
@@ -199,7 +209,19 @@ func sequenceEqual(left, right []construction.SequenceToken) bool {
 		return false
 	}
 	for i := range left {
-		if left[i] != right[i] {
+		if left[i].Kind != right[i].Kind || left[i].SlotID != right[i].SlotID || left[i].Terminal != right[i].Terminal || left[i].Optional != right[i].Optional || !equalSequenceStrings(left[i].AcceptedInputs, right[i].AcceptedInputs) {
+			return false
+		}
+	}
+	return true
+}
+
+func equalSequenceStrings(left, right []string) bool {
+	if len(left) != len(right) {
+		return false
+	}
+	for index := range left {
+		if left[index] != right[index] {
 			return false
 		}
 	}
@@ -294,6 +316,12 @@ func countInputItems(current int, input PlanInput) int {
 	add(len(input.Plan.ArgumentBindings))
 	add(len(input.Plan.Constraints))
 	add(len(input.Plan.Linearization))
+	for _, token := range input.Plan.Linearization {
+		add(len(token.AcceptedInputs))
+		if count > construction.MaxCompileItems {
+			return count
+		}
+	}
 	add(len(input.Plan.ProcedureIDs))
 	for _, constraint := range input.Plan.Constraints {
 		add(len(constraint.Features))
@@ -302,6 +330,12 @@ func countInputItems(current int, input PlanInput) int {
 		}
 	}
 	add(len(input.Variant.Sequence))
+	for _, token := range input.Variant.Sequence {
+		add(len(token.AcceptedInputs))
+		if count > construction.MaxCompileItems {
+			return count
+		}
+	}
 	add(len(input.Variant.Conditions))
 	return count
 }
@@ -414,6 +448,11 @@ func validatePlanScalars(plan construction.CompiledConstructionPlan, path string
 		if err := add(token.Terminal, fmt.Sprintf("linearization[%d].terminal", i)); err != nil {
 			return err
 		}
+		for inputIndex, accepted := range token.AcceptedInputs {
+			if err := add(accepted, fmt.Sprintf("linearization[%d].accepted_inputs[%d]", i, inputIndex)); err != nil {
+				return err
+			}
+		}
 	}
 	for i, procedure := range plan.ProcedureIDs {
 		if err := add(procedure, fmt.Sprintf("procedure_ids[%d]", i)); err != nil {
@@ -470,7 +509,7 @@ func cloneFrame(frame valency.ValencyFrame) valency.ValencyFrame {
 }
 
 func cloneVariant(variant construction.Variant) construction.Variant {
-	variant.Sequence = append([]construction.SequenceToken(nil), variant.Sequence...)
+	variant.Sequence = construction.CloneSequenceTokens(variant.Sequence)
 	variant.Conditions = append([]construction.Condition(nil), variant.Conditions...)
 	return variant
 }
@@ -486,7 +525,7 @@ func cloneCompiledPlan(plan construction.CompiledConstructionPlan) construction.
 			plan.Constraints[i].Condition = &condition
 		}
 	}
-	plan.Linearization = append([]construction.SequenceToken(nil), plan.Linearization...)
+	plan.Linearization = construction.CloneSequenceTokens(plan.Linearization)
 	plan.ProcedureIDs = append([]string(nil), plan.ProcedureIDs...)
 	return plan
 }

@@ -23,6 +23,7 @@ type lexicalEntry struct {
 // The proposed CORE references remain pending and cannot authorize transfer.
 var englishEntries = []lexicalEntry{
 	{"en.the.det", "the", "determiner", []lexicalMeaning{{"en.the.definite", "definite determiner", ""}}},
+	{"en.a.det", "a", "determiner", []lexicalMeaning{{"en.a.indefinite", "indefinite determiner", ""}}},
 	{"en.dog.n", "dog", "noun", []lexicalMeaning{{"en.dog.animal", "domestic canine animal", "dog"}}},
 	{"en.cat.n", "cat", "noun", []lexicalMeaning{{"en.cat.animal", "domestic feline animal", "cat"}}},
 	{"en.child.n", "child", "noun", []lexicalMeaning{{"en.child.person", "young person", "child"}}},
@@ -46,7 +47,7 @@ var englishEntries = []lexicalEntry{
 
 var englishLexicalSource = provenance.SourceRef{
 	ID: "golingua-en-authored", Path: "languages/en/lexicon.go",
-	Version: "2026-10-21-initial", License: "unknown", Author: "golingua contributors",
+	Version: "2026-10-23-receiving", License: "unknown", Author: "golingua contributors",
 }
 
 // Approved equivalent bindings and their individual delegated-review provenance.
@@ -1164,6 +1165,7 @@ var englishFrameBySense = map[string]lexicon.ValencyID{
 
 var englishParadigmByLexeme = map[string]string{
 	"en.the.det":  "en_determiner_definite",
+	"en.a.det":    "en_determiner_indefinite",
 	"en.mother.n": "en_noun_singular_attested", "en.father.n": "en_noun_singular_attested",
 	"en.child.n": "en_noun_singular_attested", "en.cat.n": "en_noun_singular_attested",
 	"en.book.n": "en_noun_singular_attested", "en.house.n": "en_noun_singular_attested",
@@ -1173,6 +1175,9 @@ var englishParadigmByLexeme = map[string]string{
 	"en.doctor.n": "en_noun_regular", "en.school.n": "en_noun_regular",
 	"en.hand.n": "en_noun_regular", "en.eye.n": "en_noun_regular",
 	"en.look.v": "en_verb_regular", "en.hear.v": "en_hear_present_third_singular",
+	"en.get.v":  "en_verb_principal_parts",
+	"en.food.n": "en_noun_singular_attested", "en.message.n": "en_noun_singular_attested",
+	"en.money.n": "en_noun_singular_attested", "en.water.n": "en_noun_singular_attested",
 }
 
 // LexicalDocument builds the English lexical records from Go declarations.
@@ -1188,10 +1193,15 @@ func LexicalDocument() (lexicon.Document, error) {
 			if err != nil {
 				return lexicon.Document{}, fmt.Errorf("English lexeme %s: %w", entry.id, err)
 			}
-			document.Lexemes = append(document.Lexemes, lexicon.MorphLexeme{
+			lexeme := lexicon.MorphLexeme{
 				ID: lexemeID, Language: "en", Lemma: entry.lemma, POS: entry.pos,
 				ParadigmID: englishParadigmByLexeme[entry.id],
-			})
+			}
+			switch entry.id {
+			case "en.food.n", "en.money.n", "en.water.n":
+				lexeme.Properties = []lexicon.Property{{Key: "number_behavior", Value: "mass"}}
+			}
+			document.Lexemes = append(document.Lexemes, lexeme)
 			for _, meaning := range entry.meanings {
 				senseID, err := ids.NewSenseID(meaning.id)
 				if err != nil {

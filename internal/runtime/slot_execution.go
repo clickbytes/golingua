@@ -17,7 +17,7 @@ import (
 // selected lexical candidate and family slot. It must return only feature
 // values licensed by the compiled language profile and its own policy.
 type SlotFeaturePlanner interface {
-	Features(context.Context, semantic.MeaningCandidate, realizer.TargetCandidate, construction.SlotSpec, realizer.TargetCandidate) ([]features.FeatureValue, error)
+	Features(context.Context, semantic.MeaningCandidate, realizer.TargetCandidate, construction.SlotSpec, realizer.TargetCandidate, []realizer.TargetCandidate) ([]features.FeatureValue, error)
 }
 
 // MorphologyExecutionBuilder binds exact selector candidates to the
@@ -102,7 +102,7 @@ func (builder MorphologyExecutionBuilder) Build(ctx context.Context, source sema
 		if !exists {
 			return realizer.ExecuteInput{}, runtimeError(status.OutcomeIncomplete, "PRINCIPAL_PARTS_UNAVAILABLE", "target.slots."+slot.ID, "selected target lexeme has no attested principal parts")
 		}
-		values, err := builder.FeaturePlan.Features(ctx, source, selected, slot, candidate)
+		values, err := builder.FeaturePlan.Features(ctx, source, selected, slot, candidate, candidates)
 		if err != nil {
 			return realizer.ExecuteInput{}, err
 		}

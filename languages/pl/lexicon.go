@@ -42,7 +42,7 @@ var polishEntries = []lexicalEntry{
 
 var polishLexicalSource = provenance.SourceRef{
 	ID: "golingua-pl-authored", Path: "languages/pl/lexicon.go",
-	Version: "2026-10-21-initial", License: "unknown", Author: "golingua contributors",
+	Version: "2026-10-23-receiving", License: "unknown", Author: "golingua contributors",
 }
 
 var polishLexicalReviewBatch1Source = provenance.SourceRef{
@@ -540,6 +540,7 @@ var polishParadigmByLexeme = map[string]string{
 	"pl.klient.n":  "pl_noun_attested_masculine_personal",
 	"pl.widziec.v": "pl_widziec_present_third_singular",
 	"pl.slyszec.v": "pl_slyszec_present_third_singular",
+	"pl.dostac.v":  "pl_verb_past_third_singular",
 }
 
 // LexicalDocument constructs the Polish lexical data from Go declarations.
@@ -624,6 +625,9 @@ func LexicalDocument() (lexicon.Document, error) {
 			if gender, ok := attestedNounGender(entry.id); ok {
 				lexeme.ParadigmID = "pl_noun_attested_" + gender
 				lexeme.Properties = []lexicon.Property{{Key: "gender", Value: gender}}
+			} else if entry.id == "pl.pieniadze.n" {
+				lexeme.ParadigmID = "pl_noun_plural_only_attested"
+				lexeme.Properties = []lexicon.Property{{Key: "grammatical_number", Value: "plural_only"}}
 			} else if lexeme.ParadigmID == "pl_masc_animal_regular" {
 				lexeme.Properties = []lexicon.Property{{Key: "gender", Value: "masculine_animal"}}
 			}

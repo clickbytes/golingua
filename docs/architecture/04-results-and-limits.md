@@ -1,6 +1,6 @@
 # 04 — Wyniki, diagnostyki i limity
 
-Ten dokument opisuje kontrakt wyników Go oraz jego ograniczone użycie przez parser, morfologię, leksykę i translację PL/EN. Skompilowany runtime obsługuje obecnie jawne szlaki `seeing` i `hearing` w teraźniejszej 3. osobie liczby pojedynczej; pozostałe trasy zwracają odpowiedni status braku obsługi lub nierozstrzygnięcia.
+Ten dokument opisuje kontrakt wyników Go oraz jego ograniczone użycie przez parser, morfologię, leksykę i translację PL/EN. Skompilowany runtime obsługuje jawne szlaki `seeing` i `hearing` w teraźniejszej 3. osobie liczby pojedynczej oraz `receiving` w przeszłej 3. osobie liczby pojedynczej. Pozostałe trasy zwracają odpowiedni status braku obsługi lub nierozstrzygnięcia.
 
 ## Wynik operacji
 
@@ -68,4 +68,4 @@ Opcjonalny `Trace` może zawierać najwyżej 32 kroki, a każdy krok musi wskazy
 
 `capabilities --json` bez wybranego runtime'u zwraca pole `status: unsupported`, puste listy języków i funkcji oraz `ready: false`; komenda sama kończy się kodem 0. `--help` i `--version` pozostają krótkimi odpowiedziami tekstowymi. `translate` bez aktywnego runtime'u zwraca `unsupported` i kod 3.
 
-Nie ma tu goldów, testów automatycznych jakości językowej ani bramki procentowej. Zapis obserwacji CLI dla redakcyjnych 100 zdań nie jest oceną poprawności. Ręczna ocena pozostaje `NOT RUN`, dopóki właściciel nie oceni konkretnych wyników.
+Nie ma tu goldów, testów automatycznych jakości językowej ani bramki procentowej. Zapis obserwacji CLI dla redakcyjnych 100 zdań nie jest goldem. Właściciel deleguje agentowi autonomiczną ocenę konkretnych przykładów; jego własna akceptacja pozostaje osobnym statusem `NOT RUN`.

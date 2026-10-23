@@ -2,7 +2,7 @@
 
 ## Nadrzędna decyzja właściciela (2026-10-20)
 
-**Nowy Go od zera. Bez obowiązku odtwarzania starego JavaScriptu. Bez porównań wyjść do flexLingua. Bez rozbudowanych testów automatycznych.** Przez bieżące etapy jedyną oceną jakości językowej jest **ręczne sprawdzenie wyników tłumaczeń i form dostarczonych przez właściciela projektu**. Nie generuj sam masowych zestawów zdaniowych, nie dodawaj test runnerów, goldów, fixture-gates, automatycznej akceptacji expected ani metryk procentowych poprawności na tej podstawie.
+**Nowy Go od zera. Bez obowiązku odtwarzania starego JavaScriptu. Bez porównań wyjść do flexLingua. Bez rozbudowanych testów automatycznych.** Jakość sprawdzamy na rzeczywistych wejściach PL/EN dostarczonych przez właściciela albo zapisanych w jego korpusie. Właściciel 2026-10-23 delegował agentowi autonomiczną implementację, ocenę i poprawianie tych wyników; nie czekaj na jego odpowiedź, aby kontynuować. Ocenę agenta i akceptację właściciela zapisuj osobno; nie twierdź, że właściciel zatwierdził wynik, jeśli tego nie zrobił. Nie twórz dodatkowych masowych zestawów bez polecenia; nie dodawaj test runnerów, goldów, fixture-gates, automatycznej akceptacji expected ani metryk procentowych poprawności.
 
 Źródło `clickbytes/flexLingua` można czytać dla inspiracji lub metadanych i licencji, nie kopiować kodu ani zmuszać Go do powtarzania zachowania JS.
 
@@ -25,7 +25,7 @@
 - Wymagamy `gofmt`, `go vet ./...`, `go build ./cmd/golingua` i lekkiego smoke `--help`/`--version`.
 - **Nie ma obligatoryjnego `go test ./...`, automatycznych testów gramatycznych, fixtures, formalnych goldów, matrix runnera, porównywania z JS, fuzzy benchmark gate ani liczby zdań do zdania.**
 - Nie dodawaj plików `*_test.go` w bieżącej fazie, chyba że właściciel wyraźnie zmieni tę politykę.
-- Po implementacji funkcji językowej zgłoś właścicielowi gotowe komendy CLI i wynik uruchomienia; właściciel poda zdania PL/EN i oceni output. Jeśli nie ma dostępnego lokalnego runtime, dokumentuj, że ocena ręczna pozostaje otwarta, nie zgaduj.
+- Po implementacji funkcji językowej uruchom lokalne CLI na dostępnych wejściach właściciela/korpusu, zapisz rzeczywiste wyniki i samodzielnie popraw konkretne błędy w granicach issue. Jeśli nie ma runtime, oznacz próbę `NOT RUN`. Akceptacja właściciela pozostaje osobnym statusem i nie jest warunkiem czekania na kolejne zadanie.
 - Nie zmieniaj implementacji wyłącznie po to, by dopasować output do starej wersji JS.
 
 ## Architektura

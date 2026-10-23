@@ -28,6 +28,7 @@ func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm 
 		makeParadigm("en_see_present_third_singular", "verb", "verb_form", "third_person_singular"),
 		makeParadigm("en_hear_present_third_singular", "verb", "verb_form", "third_person_singular"),
 		makeParadigm("en_determiner_definite", "determiner", "determiner", "definite"),
+		makeParadigm("en_determiner_indefinite", "determiner", "determiner", "indefinite"),
 	}
 }
 
@@ -45,7 +46,7 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 			continue
 		}
 		part := morph.PrincipalPart{ID: "base", Form: lexeme.Lemma}
-		if lexeme.ParadigmID == "en_noun_singular_attested" || lexeme.ParadigmID == "en_determiner_definite" {
+		if lexeme.ParadigmID == "en_noun_singular_attested" || lexeme.ParadigmID == "en_determiner_definite" || lexeme.ParadigmID == "en_determiner_indefinite" {
 			part.ID = "attested"
 		}
 		if lexeme.ParadigmID == "en_see_present_third_singular" {
@@ -54,9 +55,22 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 		if lexeme.ParadigmID == "en_hear_present_third_singular" {
 			part = morph.PrincipalPart{ID: "attested", Form: "hears"}
 		}
+		if lexeme.ID.String() == "lexeme:en.a.det" {
+			part = morph.PrincipalPart{ID: "attested", Form: "a"}
+		}
+		principalParts := morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{part}}
+		if lexeme.ID.String() == "lexeme:en.get.v" {
+			principalParts.Parts = []morph.PrincipalPart{
+				{ID: "base", Form: "get"},
+				{ID: "third_person_singular", Form: "gets"},
+				{ID: "past", Form: "got"},
+				{ID: "past_participle", Form: "gotten"},
+				{ID: "present_participle", Form: "getting"},
+			}
+		}
 		records = append(records, lexemeRecord{
 			Lexeme:         lexeme,
-			PrincipalParts: morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{part}},
+			PrincipalParts: principalParts,
 		})
 	}
 	return records, nil

@@ -67,11 +67,14 @@ func NewSentenceTarget(snapshot *pack.Pack, registry *language.Registry) (*runti
 
 type englishSentenceFeatures struct{}
 
-func (englishSentenceFeatures) Features(_ context.Context, source semantic.MeaningCandidate, predicate realizer.TargetCandidate, slot construction.SlotSpec, candidate realizer.TargetCandidate) ([]features.FeatureValue, error) {
+func (englishSentenceFeatures) Features(_ context.Context, source semantic.MeaningCandidate, predicate realizer.TargetCandidate, slot construction.SlotSpec, candidate realizer.TargetCandidate, _ []realizer.TargetCandidate) ([]features.FeatureValue, error) {
 	if slot.Category == construction.CategoryVP {
 		values, found := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)
 		if !found {
 			return nil, nil
+		}
+		if values["verb_form"] == "past" || values["tense"] == "past" {
+			return knownFeature("verb_form", "past"), nil
 		}
 		if values["verb_form"] == "third_person_singular" ||
 			values["verb_form"] == "finite" && values["tense"] == "present" && values["person"] == "third" && values["number"] == "singular" {
@@ -89,6 +92,14 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 	number := values["number"]
 	if number == "" {
 		number = values["noun_number"]
+	}
+	for _, property := range candidate.Lexeme.Properties {
+		if property.Key == "number_behavior" && property.Value == "mass" {
+			// English mass nouns use the singular attested form even when the
+			// source language lexicalizes the same substance as plural.
+			number = "singular"
+			break
+		}
 	}
 	if number != "singular" && number != "plural" {
 		return nil, nil

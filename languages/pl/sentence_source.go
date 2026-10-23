@@ -13,8 +13,8 @@ import (
 )
 
 // NewSentenceSource builds the trusted Polish source stages against one exact
-// CORE/lexicon snapshot. The bare declarative completion attestation currently
-// covers attested present singular visual and auditory predicates.
+// CORE/lexicon snapshot. The bare declarative completion attestation covers
+// present visual/auditory and singular past receiving predicates.
 func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if snapshot == nil {
 		return nil, fmt.Errorf("Polish sentence source requires a snapshot")
@@ -44,6 +44,10 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if err != nil {
 		return nil, err
 	}
+	receivingSense, err := ids.NewSenseID("pl.dostac.receive")
+	if err != nil {
+		return nil, err
+	}
 	caseValues := map[features.FeatureValueID]string{}
 	for _, value := range []string{"nominative", "genitive", "dative", "accusative", "instrumental", "locative", "vocative"} {
 		caseValues[features.FeatureValueID(value)] = value
@@ -60,9 +64,11 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 			CaseFeature: "case", CaseValues: caseValues,
 		}},
 		EvidenceBuilder: runtime.BareDeclarativeEvidenceBuilder{
-			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true},
-			RequiredPredicateFeatures: map[features.FeatureID]features.FeatureValueID{
-				"verb_form": "finite", "tense": "present", "person": "third", "number": "singular",
+			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true},
+			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
+				seeingSense:    {{"verb_form": "finite", "tense": "present", "person": "third", "number": "singular"}},
+				hearingSense:   {{"verb_form": "finite", "tense": "present", "person": "third", "number": "singular"}},
+				receivingSense: {{"verb_form": "finite", "tense": "past", "person": "third", "number": "singular"}},
 			},
 		},
 	}, nil

@@ -38,7 +38,9 @@ func CompileVariant(variant Variant, family ConstructionFamily) (CompiledVariant
 			if err := token.validate("variant.sequence[" + strconv.Itoa(index) + "]"); err != nil {
 				return CompiledVariant{}, err
 			}
-			hasRequiredToken = true
+			if !token.Optional {
+				hasRequiredToken = true
+			}
 			continue
 		}
 		counts[token.SlotID]++
@@ -141,8 +143,8 @@ func boundaryTokens(sequence []SequenceToken, slots map[string]SlotSpec, reverse
 			index = len(sequence) - 1 - offset
 		}
 		token := sequence[index]
-		result = append(result, token)
-		if token.Kind == TokenTerminal || slots[token.SlotID].Optionality == SlotRequired {
+		result = append(result, CloneSequenceTokens([]SequenceToken{token})[0])
+		if token.Kind == TokenTerminal && !token.Optional || token.Kind == TokenSlot && slots[token.SlotID].Optionality == SlotRequired {
 			break
 		}
 	}
@@ -202,21 +204,25 @@ func CompileVariantIndex(family ConstructionFamily, variants []Variant) (*Varian
 		byID[record.Variant.ID.String()] = index
 		seenFirst := make(map[string]struct{}, len(record.FirstAllowed))
 		for _, token := range record.FirstAllowed {
-			key, _ := token.Key()
-			if _, exists := seenFirst[key]; exists {
-				continue
+			keys, _ := token.InputKeys()
+			for _, key := range keys {
+				if _, exists := seenFirst[key]; exists {
+					continue
+				}
+				seenFirst[key] = struct{}{}
+				byFirst[key] = append(byFirst[key], index)
 			}
-			seenFirst[key] = struct{}{}
-			byFirst[key] = append(byFirst[key], index)
 		}
 		seenLast := make(map[string]struct{}, len(record.LastAllowed))
 		for _, token := range record.LastAllowed {
-			key, _ := token.Key()
-			if _, exists := seenLast[key]; exists {
-				continue
+			keys, _ := token.InputKeys()
+			for _, key := range keys {
+				if _, exists := seenLast[key]; exists {
+					continue
+				}
+				seenLast[key] = struct{}{}
+				byLast[key] = append(byLast[key], index)
 			}
-			seenLast[key] = struct{}{}
-			byLast[key] = append(byLast[key], index)
 		}
 	}
 	return &VariantIndex{family: canonicalFamily(family), records: records, byID: byID, byFirst: byFirst, byLast: byLast}, nil
@@ -271,7 +277,7 @@ func cloneCompiled(record CompiledVariant) CompiledVariant {
 		Variant:      cloneVariant(record.Variant),
 		FamilyID:     record.FamilyID,
 		PlanID:       record.PlanID,
-		FirstAllowed: append([]SequenceToken(nil), record.FirstAllowed...),
-		LastAllowed:  append([]SequenceToken(nil), record.LastAllowed...),
+		FirstAllowed: CloneSequenceTokens(record.FirstAllowed),
+		LastAllowed:  CloneSequenceTokens(record.LastAllowed),
 	}
 }

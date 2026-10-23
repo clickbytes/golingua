@@ -446,8 +446,11 @@ func (m *matcher) walk(p compiledPlan, si, ti int, part partial) {
 	}
 	symbol := p.sequence[si]
 	if symbol.Slot == nil {
-		if ti < len(m.lattice.Tokens) && canonicalTerminal(m.lattice.Tokens[ti].Token) == symbol.Terminal {
+		if ti < len(m.lattice.Tokens) && symbolMatchesInput(symbol, canonicalTerminal(m.lattice.Tokens[ti].Token)) {
 			m.walk(p, si+1, ti+1, clonePartial(part))
+		}
+		if symbol.Optional {
+			m.walk(p, si+1, ti, clonePartial(part))
 		}
 		return
 	}
@@ -490,6 +493,18 @@ func (m *matcher) walk(p compiledPlan, si, ti int, part partial) {
 		next.slots[slot.ID] = assignment{role: role}
 		m.walk(p, si+1, ti, next)
 	}
+}
+
+func symbolMatchesInput(symbol compiledSymbol, value string) bool {
+	if value == symbol.Terminal {
+		return true
+	}
+	for _, accepted := range symbol.AcceptedInputs {
+		if value == accepted {
+			return true
+		}
+	}
+	return false
 }
 
 func canonicalTerminal(token text.Token) string {

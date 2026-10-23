@@ -13,7 +13,7 @@ import (
 var attestedNounSource = provenance.SourceRef{
 	ID:      "golingua-pl-noun-forms-authored",
 	Path:    "languages/pl/morphology_attested_nouns.go",
-	Version: "2026-10-23-authored-v2",
+	Version: "2026-10-23-authored-v3",
 	License: "unknown",
 	Author:  "golingua contributors",
 }
@@ -46,6 +46,8 @@ var attestedNounForms = []attestedNounEntry{
 	{"pl.pizza.n", "pizza", "feminine", [7]string{"pizza", "pizzy", "pizzy", "pizzę", "pizzą", "pizzy", "pizzo"}, [7]string{"pizze", "pizz", "pizzom", "pizze", "pizzami", "pizzach", "pizze"}},
 	{"pl.sasiad.n", "sąsiad", "masculine_personal", [7]string{"sąsiad", "sąsiada", "sąsiadowi", "sąsiada", "sąsiadem", "sąsiedzie", "sąsiedzie"}, [7]string{"sąsiedzi", "sąsiadów", "sąsiadom", "sąsiadów", "sąsiadami", "sąsiadach", "sąsiedzi"}},
 	{"pl.klient.n", "klient", "masculine_personal", [7]string{"klient", "klienta", "klientowi", "klienta", "klientem", "kliencie", "kliencie"}, [7]string{"klienci", "klientów", "klientom", "klientów", "klientami", "klientach", "klienci"}},
+	{"pl.jedzenie.n", "jedzenie", "neuter", [7]string{"jedzenie", "jedzenia", "jedzeniu", "jedzenie", "jedzeniem", "jedzeniu", "jedzenie"}, [7]string{"jedzenia", "jedzeń", "jedzeniom", "jedzenia", "jedzeniami", "jedzeniach", "jedzenia"}},
+	{"pl.wiadomosc.n", "wiadomość", "feminine", [7]string{"wiadomość", "wiadomości", "wiadomości", "wiadomość", "wiadomością", "wiadomości", "wiadomości"}, [7]string{"wiadomości", "wiadomości", "wiadomościom", "wiadomości", "wiadomościami", "wiadomościach", "wiadomości"}},
 }
 
 var attestedNounCases = [7]string{"nominative", "genitive", "dative", "accusative", "instrumental", "locative", "vocative"}
@@ -88,9 +90,55 @@ func attestedNounGender(lexemeID string) (string, bool) {
 		return "feminine", true
 	case "pl.sasiad.n", "pl.klient.n":
 		return "masculine_personal", true
+	case "pl.jedzenie.n":
+		return "neuter", true
+	case "pl.wiadomosc.n":
+		return "feminine", true
 	default:
 		return "", false
 	}
+}
+
+func pluralOnlyNounParadigm(profile *features.LanguageFeatureProfile) morph.Paradigm {
+	paradigm := morph.Paradigm{
+		SchemaVersion: morph.ParadigmSchemaVersion,
+		ID:            "pl_noun_plural_only_attested", Language: "pl", ProfileVersion: profile.Version(), POS: "noun",
+	}
+	for _, grammaticalCase := range attestedNounCases {
+		partID := morph.PrincipalPartID("pl_" + grammaticalCase)
+		cellID := morph.CellID(partID)
+		stemID := procedure.StemID(partID)
+		paradigm.PrincipalPartRequirements = append(paradigm.PrincipalPartRequirements, morph.PrincipalPartRequirement{
+			StemID: stemID, PartID: partID, Required: true,
+		})
+		paradigm.Cells = append(paradigm.Cells, morph.ParadigmCell{
+			ID: cellID,
+			Features: []features.FeatureValue{
+				{Feature: "number", State: features.StateKnown, Value: "plural"},
+				{Feature: "case", State: features.StateKnown, Value: features.FeatureValueID(grammaticalCase)},
+			},
+		})
+		paradigm.Rules = append(paradigm.Rules, morph.CellRule{
+			CellID: cellID, ProcedureID: "procedure:pl_noun_plural_only_attested." + string(cellID), Provenance: attestedNounSource,
+			Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: stemID}},
+		})
+	}
+	return paradigm
+}
+
+func pluralOnlyNounRecords(lexemes []lexicon.MorphLexeme) ([]lexemeRecord, error) {
+	for _, lexeme := range lexemes {
+		if lexeme.ID.String() != "lexeme:pl.pieniadze.n" {
+			continue
+		}
+		parts := morph.PrincipalParts{LexemeID: lexeme.ID, Parts: make([]morph.PrincipalPart, 0, len(attestedNounCases))}
+		forms := [7]string{"pieniądze", "pieniędzy", "pieniądzom", "pieniądze", "pieniędzmi", "pieniądzach", "pieniądze"}
+		for index, grammaticalCase := range attestedNounCases {
+			parts.Parts = append(parts.Parts, morph.PrincipalPart{ID: morph.PrincipalPartID("pl_" + grammaticalCase), Form: forms[index]})
+		}
+		return []lexemeRecord{{Lexeme: lexeme, PrincipalParts: parts}}, nil
+	}
+	return nil, fmt.Errorf("Polish plural-only noun lexeme is missing")
 }
 
 func attestedNounParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm {

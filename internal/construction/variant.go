@@ -16,6 +16,7 @@ const (
 	MaxSequenceTokens  = 256
 	MaxConditions      = 128
 	MaxTerminalBytes   = 256
+	MaxTerminalInputs  = 16
 	MaxVariantPriority = 1_000
 )
 
@@ -52,12 +53,16 @@ func ParseVariantID(value string) (VariantID, error) {
 // String returns the stable external variant identity.
 func (id VariantID) String() string { return string(id) }
 
-// SequenceToken is either one family slot reference or one fixed terminal.
+// SequenceToken is either one family slot reference or one terminal. A
+// terminal may accept bounded alternate source spellings and may be omitted
+// during analysis; linearization always emits its canonical Terminal value.
 // Repeated terminal text is allowed; a slot reference may occur only once.
 type SequenceToken struct {
-	Kind     SequenceTokenKind `json:"kind"`
-	SlotID   string            `json:"slot_id,omitempty"`
-	Terminal string            `json:"terminal,omitempty"`
+	Kind           SequenceTokenKind `json:"kind"`
+	SlotID         string            `json:"slot_id,omitempty"`
+	Terminal       string            `json:"terminal,omitempty"`
+	Optional       bool              `json:"optional,omitempty"`
+	AcceptedInputs []string          `json:"accepted_inputs,omitempty"`
 }
 
 // Key returns a bounded, unambiguous index key for a well-formed token.
@@ -72,15 +77,64 @@ func (token SequenceToken) Key() (string, error) {
 	return string(token.Kind) + "\x00" + value, nil
 }
 
+// InputKeys returns the canonical terminal key and each explicitly accepted
+// source spelling. Slot tokens have one key. The returned slice is owned by
+// the caller.
+func (token SequenceToken) InputKeys() ([]string, error) {
+	if err := token.validate("token"); err != nil {
+		return nil, err
+	}
+	if token.Kind == TokenSlot {
+		key, _ := token.Key()
+		return []string{key}, nil
+	}
+	keys := make([]string, 0, len(token.AcceptedInputs)+1)
+	keys = append(keys, string(TokenTerminal)+"\x00"+token.Terminal)
+	for _, accepted := range token.AcceptedInputs {
+		keys = append(keys, string(TokenTerminal)+"\x00"+accepted)
+	}
+	return keys, nil
+}
+
+// MatchesInput reports whether an analyzed terminal is licensed by this
+// token, including an explicitly declared alternate source spelling.
+func (token SequenceToken) MatchesInput(value string) bool {
+	if token.Kind != TokenTerminal {
+		return false
+	}
+	if value == token.Terminal {
+		return true
+	}
+	for _, accepted := range token.AcceptedInputs {
+		if value == accepted {
+			return true
+		}
+	}
+	return false
+}
+
 func (token SequenceToken) validate(path string) error {
 	switch token.Kind {
 	case TokenSlot:
-		if !validToken(token.SlotID) || token.Terminal != "" {
+		if !validToken(token.SlotID) || token.Terminal != "" || token.Optional || len(token.AcceptedInputs) != 0 {
 			return invalid("INVALID_SLOT_SEQUENCE_TOKEN", path, "slot token requires only a bounded slot ID")
 		}
 	case TokenTerminal:
 		if token.SlotID != "" || !validTerminal(token.Terminal) {
 			return invalid("INVALID_TERMINAL_SEQUENCE_TOKEN", path, "terminal token requires only a bounded non-empty terminal")
+		}
+		if len(token.AcceptedInputs) > MaxTerminalInputs {
+			return resourceLimit(path+".accepted_inputs", len(token.AcceptedInputs), MaxTerminalInputs)
+		}
+		seen := map[string]struct{}{token.Terminal: {}}
+		for index, accepted := range token.AcceptedInputs {
+			if !validTerminal(accepted) {
+				return invalid("INVALID_ACCEPTED_TERMINAL", path+".accepted_inputs["+strconv.Itoa(index)+"]", "accepted source terminal must be a bounded non-empty terminal")
+			}
+			if _, duplicate := seen[accepted]; duplicate {
+				return invalid("DUPLICATE_ACCEPTED_TERMINAL", path+".accepted_inputs", "accepted source terminals must be unique and differ from the canonical terminal")
+			}
+			seen[accepted] = struct{}{}
 		}
 	default:
 		return invalid("INVALID_SEQUENCE_TOKEN_KIND", path+".kind", "sequence token kind must be slot or terminal")
@@ -253,7 +307,17 @@ func validInformationValue(value InformationValue) bool {
 
 func cloneVariant(variant Variant) Variant {
 	result := variant
-	result.Sequence = append([]SequenceToken(nil), variant.Sequence...)
+	result.Sequence = CloneSequenceTokens(variant.Sequence)
 	result.Conditions = append([]Condition(nil), variant.Conditions...)
+	return result
+}
+
+// CloneSequenceTokens returns a deep copy of a sequence and its alternate
+// terminal spellings.
+func CloneSequenceTokens(tokens []SequenceToken) []SequenceToken {
+	result := append([]SequenceToken(nil), tokens...)
+	for index := range result {
+		result[index].AcceptedInputs = append([]string(nil), tokens[index].AcceptedInputs...)
+	}
 	return result
 }

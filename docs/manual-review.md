@@ -1,6 +1,6 @@
 # Ręczny przegląd outputu golingua
 
-**Obowiązuje od 2026-10-20.** Nie ma automatycznej macierzy translacji, porównania z flexLingua, niezależnych goldów ani liczby przypadków wymaganej przed PR/merge. Właściciel może przekazać dowolne słowo lub zdanie; agent uruchamia dostępne CLI i relacjonuje *zaobserwowany* wynik, bez zgadywania. Sama dostępność komendy nie oznacza, że skonfigurowano runtime językowy.
+**Obowiązuje od 2026-10-20, z delegacją właściciela z 2026-10-23.** Nie ma automatycznej macierzy translacji, porównania z flexLingua, niezależnych goldów ani liczby przypadków wymaganej przed PR/merge. Właściciel może przekazać słowa, zdania lub korpus; agent uruchamia dostępne CLI, sam ocenia konkretne obserwacje i poprawia błędy w granicach aktywnego zadania. Ocena agenta nie jest podpisem ani akceptacją właściciela. Nie wymyślaj niepodanych wyników oczekiwanych. Sama dostępność komendy nie oznacza, że skonfigurowano runtime językowy.
 
 ## Jeden przypadek — prosta procedura
 
@@ -13,8 +13,10 @@
 ### Status technicznego podglądu v0
 
 `forms` i `catalog` są dostępne lokalnie. CLI może też załadować ograniczony,
-skompilowany runtime PL/EN dla dokładnych tras `seeing` i `hearing`, gdy `translate`
-otrzyma `--runtime-config` wskazujący aktywny snapshot. Bez tej konfiguracji
+skompilowany runtime PL/EN dla dokładnych tras `seeing`, `hearing` i `receiving`, gdy `translate`
+otrzyma `--runtime-config` wskazujący aktywny snapshot. Dwie pierwsze trasy obsługują teraźniejszą
+3. osobę liczby pojedynczej, a `receiving` — czas przeszły w 3. osobie liczby pojedynczej.
+Bez tej konfiguracji
 żądanie translacji zwraca `unsupported` i exit code 3.
 
 Na polecenie właściciela uruchomiono translację 100 zapisanych par w obu
@@ -23,6 +25,9 @@ kierunkach; obserwowane statusy i teksty zapisano w
 Po aktywacji trasy `hearing` uruchomiono też 25 zapisanych par w obu kierunkach;
 wyniki z kodami wyjścia, statusami, diagnostykami i tekstami zapisano w
 [`data/sentences/observed-2026-10-23-g05-12-hearing.tsv`](../data/sentences/observed-2026-10-23-g05-12-hearing.tsv).
+Po aktywacji `receiving` uruchomiono 25 istniejących par z tego samego korpusu
+w obu kierunkach; wyniki zapisano w
+[`data/sentences/observed-2026-10-23-g05-13-receiving.tsv`](../data/sentences/observed-2026-10-23-g05-13-receiving.tsv).
 To są obserwacje działania programu, a nie ocena językowa. Właściciel nie ocenił
 jeszcze konkretnych wyjść, więc ręczny odbiór translacji i ocena form pozostają
 `NOT RUN`. `forms` udostępnia ograniczoną odmianę oraz analizę obecnych seedów
@@ -30,7 +35,7 @@ PL/EN.
 
 Komenda `question --runtime-config <path> --json` przyjmuje typowany MeaningGraph, jawny FactSet oraz mapowanie ról. Nie przyjmuje zdania w języku naturalnym ani nie realizuje odpowiedzi tekstowej. Jej wynik można ręcznie ocenić jako rozumowanie wyłącznie na wejściach dostarczonych przez właściciela. Bez takich wejść, aktywnego CORE snapshotu i uruchomienia konkretnej komendy wpisz **NOT RUN**; nie twórz przykładowych faktów ani twierdzeń.
 
-Bez tekstu dostarczonego przez właściciela oznacz ocenę językową **NOT EVALUATED**. Jeśli nie uruchomiono konkretnej próby na wejściu właściciela, oznacz ją **NOT RUN**. Smoki techniczne z tekstem zastępczym nie są wejściem do oceny językowej. Dokładny kontrakt i przykład komendy opisuje [docs/cli.md](cli.md); nie przedstawiaj go jako dowodu, że provider jest skonfigurowany.
+Bez tekstu dostarczonego przez właściciela oznacz ocenę językową **NOT EVALUATED**. Jeśli nie uruchomiono konkretnej próby na wejściu właściciela, oznacz ją **NOT RUN**. Gdy właściciel deleguje autonomiczną ocenę, agent może opisać własną ocenę na tych wejściach, ale status akceptacji właściciela pozostaje osobny. Smoki techniczne z tekstem zastępczym nie są wejściem do oceny językowej. Dokładny kontrakt i przykład komendy opisuje [docs/cli.md](cli.md); nie przedstawiaj go jako dowodu, że provider jest skonfigurowany.
 
 Nie ma obowiązku zapisywania każdego outputu do pliku. Jeśli zapis jest przydatny, prowadź opcjonalnie krótką notatkę w issue lub `examples/manual/`:
 

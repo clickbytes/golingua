@@ -54,15 +54,16 @@ Batch 27 adds `celowe działanie` as a pending event noun for intentional action
 
 Existing `pl.Load()` uses a small morphology seed. `pl.Generate()`/`Seed.Analyze()` work only for lexemes that have explicitly assigned compatible paradigms and principal parts.
 
-The new `morphology_attested_nouns.go` provides **17 additional noun lexemes × 14 explicit form cells = 238 declared forms**. For every noun, the 7 cases in singular and plural are stored as individual principal parts. Five shared, gender-specific `morph.Paradigm` selectors simply retrieve the correct declared form. These are **not productive rules deriving endings for arbitrary nouns**:
+The new `morphology_attested_nouns.go` provides **21 noun lexemes × 14 explicit form cells = 294 declared forms**, plus seven case forms for the plural-only lexeme `pieniądze`. For each fully inflected noun, the 7 cases in singular and plural are stored as individual principal parts. Five shared, gender-specific `morph.Paradigm` selectors retrieve the declared form; the plural-only paradigm contains only its seven explicitly supplied plural cells. These are **not productive rules deriving endings for arbitrary nouns**:
 
 - Masculine animal: `pies`.
 - Masculine inanimate: `dom`, `stół`, `samochód`, `szpital`.
 - Masculine personal: `nauczyciel`, `lekarz`, `sąsiad`, `klient`.
-- Feminine: `woda`, `szkoła`, `książka`, `ręka`, `ryba`, `pizza`.
-- Neuter: `oko`, `dziecko`.
+- Feminine: `woda`, `szkoła`, `książka`, `ręka`, `ryba`, `pizza`, `wiadomość`.
+- Neuter: `oko`, `dziecko`, `jedzenie`.
+- Plural-only: `pieniądze` (seven explicit case forms).
 
-The older `kot` noun pattern remains restricted to 6 cells; the separate `lexeme:student-n` and `lexeme:czytac-v` seeds retain their existing IDs. For lexeme `pl.ryba.n`, for example, both its animal and food senses share one morphology entry; morphology alone does not choose a semantic sense. Some alternate, dialectal, archaic or context-sensitive forms have deliberately not been declared. No new verb conjugation, aspect, reflexive handling or adjective agreement is implied.
+The older `kot` noun pattern remains restricted to 6 cells; the separate `lexeme:student-n` and `lexeme:czytac-v` seeds retain their existing IDs. The `dostać` sentence route adds only singular past forms `dostał`, `dostała`, and `dostało`, selected using the resolved target subject's lexical gender. For lexeme `pl.ryba.n`, for example, both its animal and food senses share one morphology entry; morphology alone does not choose a semantic sense. Some alternate, dialectal, archaic or context-sensitive forms have deliberately not been declared. No general verb conjugation, aspect, reflexive handling or adjective agreement is implied.
 
 ### Manual CLI checks
 
@@ -76,4 +77,4 @@ These calls must use the actual bundled seed, not the editorial TSV. A technical
 
 ## Hard boundaries
 
-`languages/pl/manifest.json` still declares general `sentence_analysis` and `meaning_realization` capabilities as `unsupported`. The compiled CLI builds a separate package verified for the exact `seeing` and `hearing` routes and registers its provider and stage adapters when an active snapshot is selected; other PL routes remain unsupported or unknown. The `catalog` command separately reports the CORE, lexical and valency indexes; it is not a translation result. The owner-delegated lexical assessments are recorded in issues #152, #154, #156, #158, #160, #162, #164, #166, #168, #170, #172, #174, #176, #178 and the ledger. CLI translation was executed on the requested 100-pair corpus, but owner language review and owner inflection review remain **NOT RUN**.
+`languages/pl/manifest.json` still declares general `sentence_analysis` and `meaning_realization` capabilities as `unsupported`. The compiled CLI builds a separate package verified for the exact `seeing`, `hearing`, and `receiving` routes and registers its provider and stage adapters when an active snapshot is selected; other PL routes remain unsupported or unknown. The `catalog` command separately reports the CORE, lexical and valency indexes; it is not a translation result. The owner-delegated lexical assessments are recorded in issues #152, #154, #156, #158, #160, #162, #164, #166, #168, #170, #172, #174, #176, #178 and the ledger. CLI output for the existing 25 `receiving` pairs in both directions is recorded in [`data/sentences/observed-2026-10-23-g05-13-receiving.tsv`](../../data/sentences/observed-2026-10-23-g05-13-receiving.tsv); agent assessment is separate from owner sign-off, which remains **NOT RUN**.
