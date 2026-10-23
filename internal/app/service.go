@@ -350,9 +350,10 @@ func cloneInventory(source catalog.Inventory) catalog.Inventory {
 }
 
 type SnapshotRequest struct {
-	StorePath string
-	Apply     bool
-	Confirmed bool
+	StorePath      string
+	Apply          bool
+	Confirmed      bool
+	ExpectedDigest string
 }
 
 type SnapshotResult struct {
@@ -387,6 +388,26 @@ func (service *Service) Snapshot(ctx context.Context, request SnapshotRequest) S
 	}
 	var preview staging.Preview
 	if request.Apply {
+		if request.ExpectedDigest != "" {
+			preview, err = store.Preview(candidate)
+			if err != nil {
+				return snapshotError("SNAPSHOT_OPERATION_FAILED", err)
+			}
+			if preview.Digest != request.ExpectedDigest {
+				return SnapshotResult{
+					Status:  status.OutcomeInvalid,
+					Preview: &preview,
+					Diagnostics: []status.Diagnostic{diagnostic(
+						"SNAPSHOT_DIGEST_MISMATCH",
+						"snapshot changed since preview; obtain a new preview and confirmation before applying",
+						"snapshot.expected_digest",
+					)},
+				}
+			}
+		}
+		if err := ctx.Err(); err != nil {
+			return SnapshotResult{Status: status.OutcomeError, Diagnostics: []status.Diagnostic{diagnostic("SNAPSHOT_CANCELED", "snapshot operation was canceled", "snapshot")}}
+		}
 		preview, err = store.Apply(candidate)
 	} else {
 		preview, err = store.Preview(candidate)
