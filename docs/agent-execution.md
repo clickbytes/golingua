@@ -6,12 +6,12 @@ This complements root `AGENTS.md` without changing project architecture. Applies
 
 | Actor | May decide scope/priority? | May write code? | May write GitHub? | May approve merge? |
 | --- | --- | --- | --- | --- |
-| Codex Sol Medium (main) | Yes, under active issue and owner constraints | Yes, when no worker has writer lease | Yes | Yes, after review and real CI |
+| Codex Sol Medium (main) | Yes, under active issue and owner constraints | Editorial/integration changes; delegate implementation | Yes | Yes, after review and real CI |
 | Codex Luna Low scout / reviewer | No | No | No | No |
 | Codex Luna Low micro-implementer | No | Yes, when sole writer with assigned paths | No | No |
 | External OpenCode YOLO worker | No | Yes, in isolated disposable workspace, assigned paths only | No | No |
 
-Codex max native threads is 2, but OpenCode is a separate process and is NOT included in that limit. The coordinator enforces at most 2 workers in total, no more than 1 implementation writer, and never edits the same files concurrently.
+Owner update 2026-10-23: delegate small, precisely scoped implementation jobs to OpenCode; GPT Luna Low may assist. The coordinator owns editing, integration, review and verification. At most three helpers total may run concurrently, subject to actual tool limits; OpenCode is a separate process. At most one implementation writer, with no simultaneous coordinator edits to its assigned files.
 
 ## Per-issue state machine
 
@@ -21,7 +21,7 @@ At any gate: `BLOCKED` (with evidence and a specific blocker) or `PARTIAL` (with
 
 1. **AUTHORIZED:** Sol checks clean checkout, current main SHA, active epic and child status, previous issue/PR closure and current open PRs. Follow only ONE current child. G11-V1 was still QUEUED at the review snapshot.
 2. **SCOPED:** Read active child issue and linked current contracts only, then trace implementation reality in code. Draft a 3-8 line issue comment with SHA, exact files/symbols, observable result, risks and verification. Do not turn an issue into a wall of planning text.
-3. **DELEGATION DECISION:** Delegate only if one coherent subtask fits a short JOB BRIEF, has reviewable output, and saves more effort than orchestration. Prefer Luna for exploration/diff checking. Prefer Sol for architecture, TUI state ownership, engine meaning/status, snapshot mutations and cross-module design. Use OpenCode only for low-risk mechanical implementation with explicit paths and no GitHub access. Delegation is optional, not automatic.
+3. **DELEGATION:** Always split implementation into small closed jobs with an exact JOB BRIEF, delegating to OpenCode. GPT Luna Low can handle bounded analysis/review or small local jobs. The coordinator defines architecture/state contracts, redacts, integrates, reviews and verifies the result. Respect explicit OpenCode/isolation requirements; unavailable tools do not justify host YOLO.
 4. **WRITING:** Exactly one writer. The worker gets the complete brief. Sol does not simultaneously edit its files. The worker returns a patch/diff and a structured handoff, not an unbounded follow-up plan.
 5. **REVIEW:** Sol checks `git diff` against the exact scope, worker's claims vs actual code, existing CLI and app contract, any changed docs/tests and all changed paths. Optionally assign read-only Luna diff review; Luna does not decide acceptance.
 6. **VERIFY:** For changed Go: run existing gofmt/vet/build and issue-relevant CLI/terminal observation. For docs-only: links and `git diff --check`, with actual CI on PR. Do not create new tests unless the active issue explicitly specifies them. Record PASS/FAIL/INFRA/NOT RUN as applicable; do not fabricate commands or outputs.
@@ -36,7 +36,7 @@ Do not add product migrations, versioned compatibility adapters, future-proof ab
 ## Loop breakers
 
 - One worker implementation pass. One correction only after Sol names a concrete defect in a new brief. No silent retries.
-- One direct Sol correction after worker limits only when small and within existing issue; otherwise mark BLOCKED/PARTIAL with next human decision or missing contract.
+- After worker limits, Sol may only integrate/redact a small supplied correction within the issue; otherwise mark BLOCKED/PARTIAL with the exact missing dependency.
 - OpenCode worker has `steps: 12` (V2 has no `doom_loop` action); Sol should also impose an external process timeout when it launches it. These controls are separate from proof of functional correctness.
 - Never rerun an unchanged failing command repeatedly. Categorize failure as: CODE, SPEC, ENV, EXTERNAL, or OUT_OF_SCOPE. Each retry must state a new hypothesis and a different action.
 - STOP on repeated identical failure, failed acceptance after allowed correction, off-scope file modifications, need for a migration/new test framework, credential requirement, ambiguous domain semantics, or issue/document authority conflict.
@@ -82,7 +82,7 @@ permissions or unexplained missing agents stop delegation.
 
 ## Example G11-V1 splitting (without more micro-PRs)
 
-Sol owns the overall G11-V1 TUI vertical slice, public CLI/TUI startup decision and `internal/app.Service` contract. Luna Low can map existing `cmd/golingua` and `internal/app` call paths read-only. The implementation writer may own one sharply bounded presentational component of the shell, if Sol has specified the exact types/interfaces; it may not invent state ownership or status semantics. Sol integrates, drives actual TTY and non-TTY probes and owns the sole G11-V1 PR. G11-V2 and later remain queued.
+Sol owns scope, public CLI/TUI startup decisions, the `internal/app.Service` contract and integration/review of delegated implementation jobs. Luna Low can map existing `cmd/golingua` and `internal/app` call paths read-only. The implementation writer may own one sharply bounded presentational component of the shell, if Sol has specified the exact types/interfaces; it may not invent state ownership or status semantics. Sol integrates, drives actual TTY and non-TTY probes and owns the sole G11-V1 PR. G11-V2 and later remain queued.
 
 ## Completion gate for user-visible flows
 

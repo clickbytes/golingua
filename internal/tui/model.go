@@ -18,6 +18,7 @@ import (
 type translationDone struct {
 	id, revision, config uint64
 	response             app.TranslationResponse
+	request              app.TranslateRequest
 }
 type runtimeDone struct {
 	id, config uint64
@@ -25,6 +26,12 @@ type runtimeDone struct {
 }
 
 type model struct {
+	palette                                           paletteState
+	selectedID                                        string
+	candidateDetail                                   bool
+	pendingPreview                                    uint64
+	previewResponse                                   app.TranslationResponse
+	resultRequest                                     app.TranslateRequest
 	service                                           *app.Service
 	ctx                                               context.Context
 	width, height, screen                             int
@@ -57,7 +64,7 @@ func (m model) Init() tea.Cmd { return func() tea.Msg { return loadSettings() } 
 func (m *model) next() uint64 { m.sequence++; return m.sequence }
 func (m model) focusNames() []string {
 	if m.screen == 0 {
-		return []string{"prompt", "direction", "result", "tabs"}
+		return []string{"prompt", "direction", "candidates", "preview", "result", "tabs"}
 	}
 	if m.screen == 4 {
 		return []string{"prompt", "validate", "save", "result", "tabs"}
@@ -73,6 +80,10 @@ func (m *model) selectRuntime(path string) {
 	m.configRevision++
 	m.pendingTranslate = 0
 	m.response = app.TranslationResponse{}
+	m.pendingPreview = 0
+	m.previewResponse = app.TranslationResponse{}
+	m.selectedID = ""
+	m.candidateDetail = false
 	m.runtime = app.RuntimeValidationResult{}
 }
 func (m *model) checkRuntime() tea.Cmd {
@@ -102,11 +113,15 @@ func (m *model) pathFromDraft() bool {
 }
 func (m *model) submitTranslate() tea.Cmd {
 	id := m.next()
+	m.pendingPreview = 0
+	m.previewResponse = app.TranslationResponse{}
 	m.pendingTranslate = id
 	rev, cfg := m.drafts[0].revision, m.configRevision
 	req := app.TranslateRequest{From: m.from, To: m.to, Text: m.drafts[0].text, RuntimeConfig: m.runtimePath}
 	s, ctx := m.service, m.ctx
-	return func() tea.Msg { return translationDone{id, rev, cfg, s.Translate(ctx, req)} }
+	return func() tea.Msg {
+		return translationDone{id: id, revision: rev, config: cfg, response: s.Translate(ctx, req), request: req}
+	}
 }
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch v := msg.(type) {
@@ -136,14 +151,32 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.pendingRuntime = 0
 			m.runtime = v.result
 		}
+	case previewDone:
+		if v.id == m.pendingPreview && v.config == m.configRevision {
+			m.pendingPreview = 0
+			m.previewResponse = v.response
+			m.scroll[0] = 0
+		}
 	case translationDone:
 		if v.id == m.pendingTranslate && v.config == m.configRevision {
 			m.pendingTranslate = 0
 			m.response = v.response
+			m.resultRequest = v.request
+			m.previewResponse = app.TranslationResponse{}
+			m.pendingPreview = 0
+			if m.selectedCandidate() == nil {
+				m.selectedID = ""
+				m.candidateDetail = false
+			}
 			m.resultRevision = v.revision
 			m.scroll[0] = 0
 		}
 	case tea.PasteMsg:
+		if m.palette.open {
+			m.palette.input.insert(v.Content)
+			m.palette.selected = -1
+			return m, nil
+		}
 		if m.focus() == "prompt" && (m.screen == 0 || m.screen == 4) {
 			m.drafts[m.screen].insert(v.Content)
 		}
@@ -156,8 +189,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "f1", "f2", "f3", "f4", "f5":
 			m.screen = int(key[1] - '1')
 			m.help = false
+			m.palette.open = false
 			return m, nil
 		case "tab", "shift+tab":
+			m.palette.open = false
 			n := len(m.focusNames())
 			delta := 1
 			if key == "shift+tab" {
@@ -166,14 +201,71 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.focuses[m.screen] = (m.focuses[m.screen] + delta) % n
 			return m, nil
 		case "esc":
+			if m.palette.open {
+				m.palette.open = false
+				m.notice = ""
+				return m, nil
+			}
+			if m.screen == 0 && m.candidateDetail {
+				m.candidateDetail = false
+				m.scroll[0] = 0
+				return m, nil
+			}
 			m.help = false
 			m.focuses[m.screen] = 0
 			return m, nil
 		case "?":
+			if m.palette.open {
+				m.paletteKey(v)
+				return m, nil
+			}
 			m.help = !m.help
 			return m, nil
 		}
+		if key == "ctrl+p" {
+			m.openPalette()
+			return m, nil
+		}
+		if m.palette.open {
+			m.paletteKey(v)
+			return m, nil
+		}
 		focus := m.focus()
+		if focus == "prompt" && m.screen != 4 && v.Key().Text == "/" && (m.drafts[m.screen].cursor == 0 || m.screen != 0 && m.screen != 4) {
+			m.openPalette()
+			return m, nil
+		}
+		if m.screen == 0 && focus == "preview" && key == "enter" {
+			return m, m.submitPreview()
+		}
+		if m.screen == 0 && focus == "candidates" {
+			switch key {
+			case "down", "up":
+				if m.candidateDetail {
+					if key == "down" {
+						m.scroll[0]++
+					} else {
+						m.scroll[0] = max(0, m.scroll[0]-1)
+					}
+				} else {
+					delta := 1
+					if key == "up" {
+						delta = -1
+					}
+					m.moveCandidate(delta)
+				}
+			case "enter":
+				if m.selectedCandidate() != nil {
+					m.candidateDetail = true
+					m.scroll[0] = 0
+				}
+			case "pgdown":
+				m.scroll[0] += max(1, m.height-8)
+			case "pgup":
+				m.scroll[0] = max(0, m.scroll[0]-max(1, m.height-8))
+			}
+			return m, nil
+		}
 		if focus == "tabs" && (key == "left" || key == "right") {
 			delta := 1
 			if key == "left" {
@@ -262,7 +354,7 @@ func (m model) translationBody() string {
 	} else {
 		b += plain(r.Text)
 	}
-	return b + diagnostics(r.Diagnostics)
+	return b + diagnostics(r.Diagnostics) + m.previewBody() + m.candidatesBody()
 }
 func (m model) View() tea.View {
 	body := "Not implemented yet. This tab has no service actions."
@@ -280,20 +372,40 @@ func (m model) View() tea.View {
 		body = "F5 Runtime config · Enter Validate/select · Ctrl+S Save\nValidation: " + state + diagnostics(m.runtime.Result.Diagnostics) + "\nSettings file: " + plain(m.settingsFile) + "\n" + plain(m.settingsNotice) + "\nSave is explicit; no snapshot is applied."
 	}
 	if m.help {
-		body = "Tab/Shift+Tab cycle controls; tabs support Left/Right.\nF1: prompt Enter translates; direction Enter or Alt+D swaps PL/EN.\nF5: prompt Enter validates/selects path; Ctrl+S explicitly saves.\nResult focus: Up/Down/PgUp/PgDown scroll. Ctrl+U clears input.\nEsc closes help; Ctrl+C or Ctrl+D restores terminal and exits."
+		body = "Tab/Shift+Tab cycle controls; tabs support Left/Right.\nF1: prompt Enter translates; direction Enter or Alt+D swaps PL/EN.\nF5: prompt Enter validates/selects path; Ctrl+S explicitly saves.\nF1 candidates: Up/Down select, Enter details; Preview control calls service.\nCtrl+P opens navigation palette; Esc cancels. Result focus scrolls. Ctrl+U clears input.\nEsc closes help; Ctrl+C or Ctrl+D restores terminal and exits."
+	}
+	if m.palette.open {
+		body = m.paletteBody()
+	} else if m.notice != "" {
+		body = plain(m.notice) + "\n" + body
 	}
 	body = ansi.Hardwrap(body, max(1, m.width), true)
 	lines := strings.Split(body, "\n")
 	start := min(m.scroll[m.screen], max(0, len(lines)-max(1, m.height-6)))
+	if m.screen == 0 && m.focus() == "candidates" && !m.candidateDetail && !m.palette.open {
+		for i, line := range lines {
+			if strings.HasPrefix(line, ">> ") {
+				start = max(0, i-2)
+				break
+			}
+		}
+	}
 	body = strings.Join(lines[start:], "\n")
 	prompt := m.drafts[m.screen].visible(m.width - 4)
 	if m.screen != 0 && m.screen != 4 {
 		prompt = "No text action available"
 	}
+	if m.palette.open {
+		prompt = m.palette.input.visible(m.width - 4)
+	}
 	if m.settingsNotice != "" && m.screen != 4 {
 		footer = plain(m.settingsNotice) + " · F5 details · Ctrl+C Exit"
 	}
-	v := tea.NewView(renderShell(m.width, m.height, m.screen, m.focus(), plain(m.runtimePath), body, prompt, footer))
+	focus := m.focus()
+	if m.palette.open {
+		focus = "palette"
+	}
+	v := tea.NewView(renderShell(m.width, m.height, m.screen, focus, plain(m.runtimePath), body, prompt, footer))
 	v.AltScreen = true
 	return v
 }
