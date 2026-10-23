@@ -1,0 +1,201 @@
+id	direction	exit_code	status	diagnostic_codes	output_text
+S001	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher sees the dog.
+S001	en_pl	0	ok		ok:Nauczyciel widzi psa.
+S002	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher sees the cat.
+S002	en_pl	0	ok		ok:Nauczyciel widzi kota.
+S003	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S003	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S004	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE	incomplete:The teacher sees the house. | incomplete:
+S004	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S005	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher sees the car.
+S005	en_pl	0	ok		ok:Nauczyciel widzi samochód.
+S006	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor sees the dog.
+S006	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S007	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor sees the cat.
+S007	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S008	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S008	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S009	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE	incomplete:The doctor sees the house. | incomplete:
+S009	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S010	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor sees the car.
+S010	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S011	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother sees the dog.
+S011	en_pl	0	ok		ok:Matka widzi psa.
+S012	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother sees the cat.
+S012	en_pl	0	ok		ok:Matka widzi kota.
+S013	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S013	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S014	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE	incomplete: | incomplete:The mother sees the house.
+S014	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S015	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother sees the car.
+S015	en_pl	0	ok		ok:Matka widzi samochód.
+S016	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father sees the dog.
+S016	en_pl	0	ok		ok:Ojciec widzi psa.
+S017	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father sees the cat.
+S017	en_pl	0	ok		ok:Ojciec widzi kota.
+S018	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S018	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S019	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE	incomplete:The father sees the house. | incomplete:
+S019	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S020	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father sees the car.
+S020	en_pl	0	ok		ok:Ojciec widzi samochód.
+S021	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	incomplete:The child sees the dog. | unsupported:
+S021	en_pl	0	ok		ok:Dziecko widzi psa.
+S022	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	unsupported: | incomplete:The child sees the cat.
+S022	en_pl	0	ok		ok:Dziecko widzi kota.
+S023	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S023	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S024	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE;ROLE_LEXICALIZATION_UNAVAILABLE	unsupported: | incomplete:The child sees the house. | unsupported: | incomplete:
+S024	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S025	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	incomplete:The child sees the car. | unsupported:
+S025	en_pl	0	ok		ok:Dziecko widzi samochód.
+S026	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher hears the dog.
+S026	en_pl	0	ok		ok:Nauczyciel słyszy psa.
+S027	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher hears the cat.
+S027	en_pl	0	ok		ok:Nauczyciel słyszy kota.
+S028	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher hears the bird.
+S028	en_pl	0	ok		ok:Nauczyciel słyszy ptaka.
+S029	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher hears the mother.
+S029	en_pl	0	ok		ok:Nauczyciel słyszy matkę.
+S030	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher hears the father.
+S030	en_pl	0	ok		ok:Nauczyciel słyszy ojca.
+S031	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor hears the dog.
+S031	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S032	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor hears the cat.
+S032	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S033	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor hears the bird.
+S033	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S034	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor hears the mother.
+S034	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S035	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor hears the father.
+S035	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S036	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	unsupported: | incomplete:The child hears the dog.
+S036	en_pl	0	ok		ok:Dziecko słyszy psa.
+S037	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	unsupported: | incomplete:The child hears the cat.
+S037	en_pl	0	ok		ok:Dziecko słyszy kota.
+S038	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	incomplete:The child hears the bird. | unsupported:
+S038	en_pl	0	ok		ok:Dziecko słyszy ptaka.
+S039	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	unsupported: | incomplete:The child hears the mother.
+S039	en_pl	0	ok		ok:Dziecko słyszy matkę.
+S040	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	incomplete:The child hears the father. | unsupported:
+S040	en_pl	0	ok		ok:Dziecko słyszy ojca.
+S041	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The neighbor hears the dog.
+S041	en_pl	0	ok		ok:Sąsiad słyszy psa.
+S042	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The neighbor hears the cat.
+S042	en_pl	0	ok		ok:Sąsiad słyszy kota.
+S043	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The neighbor hears the bird.
+S043	en_pl	0	ok		ok:Sąsiad słyszy ptaka.
+S044	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The neighbor hears the mother.
+S044	en_pl	0	ok		ok:Sąsiad słyszy matkę.
+S045	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The neighbor hears the father.
+S045	en_pl	0	ok		ok:Sąsiad słyszy ojca.
+S046	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The customer hears the dog.
+S046	en_pl	0	ok		ok:Klient słyszy psa.
+S047	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The customer hears the cat.
+S047	en_pl	0	ok		ok:Klient słyszy kota.
+S048	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The customer hears the bird.
+S048	en_pl	0	ok		ok:Klient słyszy ptaka.
+S049	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The customer hears the mother.
+S049	en_pl	0	ok		ok:Klient słyszy matkę.
+S050	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The customer hears the father.
+S050	en_pl	0	ok		ok:Klient słyszy ojca.
+S051	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S051	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S052	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE	incomplete:The teacher looks at the house. | incomplete:
+S052	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S053	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher looks at the dog.
+S053	en_pl	0	ok		ok:Nauczyciel patrzy na psa.
+S054	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher looks at the car.
+S054	en_pl	0	ok		ok:Nauczyciel patrzy na samochód.
+S055	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher looks at the tree.
+S055	en_pl	0	ok		ok:Nauczyciel patrzy na drzewo.
+S056	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S056	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S057	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE	incomplete: | incomplete:The doctor looks at the house.
+S057	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S058	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor looks at the dog.
+S058	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S059	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor looks at the car.
+S059	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S060	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor looks at the tree.
+S060	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S061	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S061	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S062	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE	incomplete: | incomplete:The mother looks at the house.
+S062	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S063	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother looks at the dog.
+S063	en_pl	0	ok		ok:Matka patrzy na psa.
+S064	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother looks at the car.
+S064	en_pl	0	ok		ok:Matka patrzy na samochód.
+S065	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother looks at the tree.
+S065	en_pl	0	ok		ok:Matka patrzy na drzewo.
+S066	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S066	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S067	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE	incomplete:The father looks at the house. | incomplete:
+S067	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S068	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father looks at the dog.
+S068	en_pl	0	ok		ok:Ojciec patrzy na psa.
+S069	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father looks at the car.
+S069	en_pl	0	ok		ok:Ojciec patrzy na samochód.
+S070	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father looks at the tree.
+S070	en_pl	0	ok		ok:Ojciec patrzy na drzewo.
+S071	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S071	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S072	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE;ROLE_LEXICALIZATION_UNAVAILABLE	unsupported: | incomplete:The child looks at the house. | unsupported: | incomplete:
+S072	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S073	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	incomplete:The child looks at the dog. | unsupported:
+S073	en_pl	0	ok		ok:Dziecko patrzy na psa.
+S074	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	unsupported: | incomplete:The child looks at the car.
+S074	en_pl	0	ok		ok:Dziecko patrzy na samochód.
+S075	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	incomplete:The child looks at the tree. | unsupported:
+S075	en_pl	0	ok		ok:Dziecko patrzy na drzewo.
+S076	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S076	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S077	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher got water.
+S077	en_pl	0	ok		ok:Nauczyciel dostał wodę.
+S078	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher got food.
+S078	en_pl	0	ok		ok:Nauczyciel dostał jedzenie.
+S079	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher got the message.
+S079	en_pl	0	ok		ok:Nauczyciel dostał wiadomość.
+S080	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher got money.
+S080	en_pl	0	ok		ok:Nauczyciel dostał pieniądze.
+S081	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S081	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S082	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor got water.
+S082	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S083	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor got food.
+S083	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S084	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor got the message.
+S084	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S085	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor got money.
+S085	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S086	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S086	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S087	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother got water.
+S087	en_pl	0	ok		ok:Matka dostała wodę.
+S088	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother got food.
+S088	en_pl	0	ok		ok:Matka dostała jedzenie.
+S089	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother got the message.
+S089	en_pl	0	ok		ok:Matka dostała wiadomość.
+S090	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother got money.
+S090	en_pl	0	ok		ok:Matka dostała pieniądze.
+S091	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S091	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S092	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father got water.
+S092	en_pl	0	ok		ok:Ojciec dostał wodę.
+S093	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father got food.
+S093	en_pl	0	ok		ok:Ojciec dostał jedzenie.
+S094	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father got the message.
+S094	en_pl	0	ok		ok:Ojciec dostał wiadomość.
+S095	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father got money.
+S095	en_pl	0	ok		ok:Ojciec dostał pieniądze.
+S096	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S096	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+S097	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	incomplete:The child got water. | unsupported:
+S097	en_pl	0	ok		ok:Dziecko dostało wodę.
+S098	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	unsupported: | incomplete:The child got food.
+S098	en_pl	0	ok		ok:Dziecko dostało jedzenie.
+S099	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	incomplete:The child got the message. | unsupported:
+S099	en_pl	0	ok		ok:Dziecko dostało wiadomość.
+S100	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	unsupported: | incomplete:The child got money.
+S100	en_pl	0	ok		ok:Dziecko dostało pieniądze.

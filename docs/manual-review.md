@@ -36,6 +36,18 @@ jeszcze konkretnych wyjść, więc ręczny odbiór translacji i ocena form pozos
 `NOT RUN`. `forms` udostępnia ograniczoną odmianę oraz analizę obecnych seedów
 PL/EN.
 
+Po G10-01 ponownie uruchomiono wszystkie 100 istniejących par w obu kierunkach
+na aktywnym snapshotcie. Dokładne kody wyjścia, statusy, diagnostyki i wyjścia
+kandydatów zapisano w
+[`data/sentences/observed-2026-10-23-g10-01-finite-verbs.tsv`](../data/sentences/observed-2026-10-23-g10-01-finite-verbs.tsv).
+Kontrola konkretnych tras potwierdziła zachowanie dotychczasowych statusów:
+EN→PL `seeing`, `hearing`, `looking` zwracają istniejące formy, a `receiving`
+zwraca `Nauczyciel dostał wodę.` ze statusem `ok`. PL→EN zachowuje jawne
+założenia wyboru rodzajnika. W rozszerzonym inwentarzu czasowników `water` nie
+ma przypisanego paradygmatu, bo homografia z rzeczownikiem masowym `water`
+tworzyła dodatkowy odczyt czasownikowy w istniejącej trasie `receiving`.
+Odbiór właściciela nadal **NOT RUN**.
+
 Komenda `question --runtime-config <path> --json` przyjmuje typowany MeaningGraph, jawny FactSet oraz mapowanie ról. Nie przyjmuje zdania w języku naturalnym. `--language pl|en` opcjonalnie uruchamia realizację odpowiedzi. Z delegacji właściciela agent może sprawdzić ograniczony przykład oparty na dostępnych danych projektu oraz jawnie oznaczonym fakcie demonstracyjnym; taki fakt jest agent-authored, nietrwały i nie jest wejściem ani akceptacją właściciela. Bez uruchomienia komendy wpisz **NOT RUN**. Właścicielska akceptacja językowa pozostaje osobnym statusem.
 
 W bieżącym runtime dodatnia odpowiedź yes/no może zwrócić tekst PL/EN ze statusem `incomplete` i jawnymi założeniami. Odpowiedź przecząca oraz tekst WH pozostają `unsupported` do czasu dodania zatwierdzonych konstrukcji negacji i samodzielnej frazy NP. Strukturalna odpowiedź reasonera, proof i źródło faktu pozostają dostępne w wyniku.

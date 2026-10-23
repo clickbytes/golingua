@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "language": "en",
-  "version": "v2026-10-20.1",
+  "version": "v2026-10-23.1",
   "dimensions": [
     {"id": "adjective_degree", "allow_absent": true, "allow_unknown": true, "values": ["comparative", "positive", "superlative"]},
     {"id": "determiner", "allow_absent": true, "allow_unknown": true, "values": ["definite", "indefinite"]},
@@ -12,7 +12,8 @@
     {"id": "pronoun_number", "allow_absent": true, "allow_unknown": true, "values": ["plural", "singular"]},
     {"id": "pronoun_person", "allow_absent": true, "allow_unknown": true, "values": ["first", "second", "third"]},
     {"id": "tense", "allow_absent": true, "allow_unknown": true, "values": ["past", "present"]},
-    {"id": "verb_form", "allow_absent": true, "allow_unknown": true, "values": ["base", "imperative", "past", "past_participle", "present_participle", "third_person_singular"]},
-    {"id": "verb_number", "allow_absent": true, "allow_unknown": true, "values": ["plural", "singular"]}
+    {"id": "verb_form", "allow_absent": true, "allow_unknown": true, "values": ["base", "finite", "imperative", "past", "past_participle", "present_participle", "third_person_singular"]},
+    {"id": "verb_number", "allow_absent": true, "allow_unknown": true, "values": ["plural", "singular"]},
+    {"id": "voice", "allow_absent": true, "allow_unknown": true, "values": ["active", "passive"]}
   ]
 }

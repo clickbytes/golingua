@@ -70,13 +70,12 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 		EvidenceBuilder: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true},
 			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
-				seeingSense:  {{"verb_form": "third_person_singular"}},
-				hearingSense: {{"verb_form": "third_person_singular"}},
-				lookingSense: {{"verb_form": "third_person_singular"}},
-				// The English principal-parts paradigm exposes its past cell as
-				// verb_form=past. Do not require tense here: that value is not
-				// currently declared by the English analysis cell.
-				receivingSense: {{"verb_form": "past"}},
+				seeingSense:  {{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"}},
+				hearingSense: {{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"}},
+				lookingSense: {{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"}},
+				// English simple past is finite but has one form for all persons
+				// and numbers, so no agreement feature is required for this cell.
+				receivingSense: {{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"}},
 			},
 			AllowedUnlexicalizedTerminals: map[string]bool{"at": true},
 		},

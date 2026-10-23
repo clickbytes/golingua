@@ -10,11 +10,11 @@
       "principal_parts": {"lexeme_id": "lexeme:cat-n", "parts": [{"id": "base", "form": "cat"}]}
     },
     {
-      "lexeme": {"id": "lexeme:walk-v", "language": "en", "lemma": "walk", "pos": "verb", "paradigm_id": "en_verb_regular"},
+      "lexeme": {"id": "lexeme:walk-v", "language": "en", "lemma": "walk", "pos": "verb", "paradigm_id": "en_verb_finite_regular"},
       "principal_parts": {"lexeme_id": "lexeme:walk-v", "parts": [{"id": "base", "form": "walk"}]}
     },
     {
-      "lexeme": {"id": "lexeme:go-v", "language": "en", "lemma": "go", "pos": "verb", "paradigm_id": "en_verb_principal_parts"},
+      "lexeme": {"id": "lexeme:go-v", "language": "en", "lemma": "go", "pos": "verb", "paradigm_id": "en_verb_finite_principal_parts"},
       "principal_parts": {"lexeme_id": "lexeme:go-v", "parts": [
         {"id": "base", "form": "go"},
         {"id": "third_person_singular", "form": "goes"},

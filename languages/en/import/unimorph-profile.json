@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "language": "en",
-  "profile_version": "v2026-10-20.1",
+  "profile_version": "v2026-10-23.1",
   "mappings": [
     {"tag": "N", "pos": "noun"},
     {"tag": "V", "pos": "verb"},
