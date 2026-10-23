@@ -24,6 +24,12 @@ Kompilator sprawdza wersję profilu, komórki i reguły, cykle dziedziczenia, ko
 
 Reguły sprawdzają POS, profil, dostępność komórki i zgodność wyjątków. Kiedy forma jest zablokowana, generator **nie może** wrócić do regularnej postaci przez obejście. Gdy jej nie znamy, odpowiedź brzmi `unknown/unavailable`, nie wymyślona forma. Pusta końcówka (zero exponent) nie jest brakującą komórką.
 
+### Angielski finite: osoba, liczba i czas
+
+G10-01 dodaje do angielskiego profilu `verb_form=finite` oraz jawne komórki czasu teraźniejszego dla sześciu kombinacji osoby i liczby. Tylko 3. osoba liczby pojedynczej ma odmienną powierzchnię; pozostałe wybierają formę podstawową. Czas przeszły ma jedną komórkę wspólną, bo jego powierzchnia nie zmienia się przez osobę ani liczbę. Imperative oraz present/past participle pozostają osobnymi formami.
+
+Regularne procedury wybierają wyłącznie przypisane im leksemy: zwykłe `+s/+ed/+ing`, sybilant `+es`, końcowe nieme `e` oraz spółgłoska + `y`. Nie jest to automatyczny klasyfikator ortografii. `see`, `hear`, `look` i `get` mają jawne principal parts i wybierają je bez zgadywania. Angielski adapter zdań analizuje/generuje ograniczone formy finite teraźniejsze 3. osoby lp. i przeszłe; G10-01 nie oznacza obsługi wszystkich konstrukcji zdaniowych.
+
 ### Wyjątki
 
 | Effect | Semantyka |

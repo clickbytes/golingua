@@ -25,8 +25,6 @@ func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm 
 	}
 	return []morph.Paradigm{
 		makeParadigm("en_noun_singular_attested", "noun", "noun_number", "singular"),
-		makeParadigm("en_see_present_third_singular", "verb", "verb_form", "third_person_singular"),
-		makeParadigm("en_hear_present_third_singular", "verb", "verb_form", "third_person_singular"),
 		makeParadigm("en_determiner_definite", "determiner", "determiner", "definite"),
 		makeParadigm("en_determiner_indefinite", "determiner", "determiner", "indefinite"),
 	}
@@ -49,24 +47,19 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 		if lexeme.ParadigmID == "en_noun_singular_attested" || lexeme.ParadigmID == "en_determiner_definite" || lexeme.ParadigmID == "en_determiner_indefinite" {
 			part.ID = "attested"
 		}
-		if lexeme.ParadigmID == "en_see_present_third_singular" {
-			part = morph.PrincipalPart{ID: "attested", Form: "sees"}
-		}
-		if lexeme.ParadigmID == "en_hear_present_third_singular" {
-			part = morph.PrincipalPart{ID: "attested", Form: "hears"}
-		}
 		if lexeme.ID.String() == "lexeme:en.a.det" {
 			part = morph.PrincipalPart{ID: "attested", Form: "a"}
 		}
 		principalParts := morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{part}}
-		if lexeme.ID.String() == "lexeme:en.get.v" {
-			principalParts.Parts = []morph.PrincipalPart{
-				{ID: "base", Form: "get"},
-				{ID: "third_person_singular", Form: "gets"},
-				{ID: "past", Form: "got"},
-				{ID: "past_participle", Form: "gotten"},
-				{ID: "present_participle", Form: "getting"},
-			}
+		switch lexeme.ID.String() {
+		case "lexeme:en.see.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "see", "sees", "saw", "seen", "seeing")
+		case "lexeme:en.hear.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "hear", "hears", "heard", "heard", "hearing")
+		case "lexeme:en.look.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "look", "looks", "looked", "looked", "looking")
+		case "lexeme:en.get.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "get", "gets", "got", "gotten", "getting")
 		}
 		records = append(records, lexemeRecord{
 			Lexeme:         lexeme,
@@ -74,4 +67,14 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 		})
 	}
 	return records, nil
+}
+
+func finiteEnglishPrincipalParts(lexeme lexicon.MorphLexeme, base, thirdPersonSingular, past, pastParticiple, presentParticiple string) morph.PrincipalParts {
+	return morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{
+		{ID: "base", Form: base},
+		{ID: "third_person_singular", Form: thirdPersonSingular},
+		{ID: "past", Form: past},
+		{ID: "past_participle", Form: pastParticiple},
+		{ID: "present_participle", Form: presentParticiple},
+	}}
 }

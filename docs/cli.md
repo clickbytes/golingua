@@ -38,11 +38,15 @@ Tekst wejściowy ma limit 64 KiB, a każdy tekst wyjściowy również 64 KiB; ł
 ```sh
 go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.kot.n --feature number=singular --feature case=nominative --feature gender=masculine_animal --json
 go run ./cmd/golingua forms --language en --surface dogs --json
+go run ./cmd/golingua forms --language en --lexeme lexeme:en.look.v --feature verb_form=finite --feature tense=present --feature mood=indicative --feature voice=active --feature person=third --feature verb_number=singular --json
+go run ./cmd/golingua forms --language en --lexeme lexeme:en.get.v --feature verb_form=finite --feature tense=past --feature mood=indicative --feature voice=active --json
 ```
 
 Wynik zawiera status oraz `forms` lub `readings`. Brak leksemu albo odczytu daje `unknown`. To nie jest translacja ani ocena jakości językowej. Ocena na słowach właściciela pozostaje `NOT RUN`.
 
 W G07-03 `forms` obejmuje także 15 jawnie zadeklarowanych rzeczowników PL po 14 standardowych komórek case/number. Są to pełne listy głównych form zapisane jako principal parts, nie automatyczne reguły dla całego słownika. Przykład: `forms --language pl --lexeme lexeme:pl.pies.n --feature number=plural --feature case=genitive --feature gender=masculine_animal --json`. Test techniczny generatora/analizatora w CI nie jest akceptacją językową.
+
+G10-01 rozszerza angielskie `forms` o finite osoby/liczby/czasu oraz imperative i participles. Analiza form podstawowych zwraca wszystkie zgodne odczyty osoby/liczby; angielski czas przeszły jest wspólny dla osób i liczb. Obsługiwane są tylko przypisane, jawne klasy odmiany i wpisane principal parts. Przykłady są obserwacją generatora/analizatora, nie oceną zdań ani akceptacją językową.
 
 ## Inwentarz katalogu
 

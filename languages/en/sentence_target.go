@@ -73,16 +73,25 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 		values, found := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)
 		if !found {
 			if len(source.Evidence.Records) == 0 {
-				return knownFeature("verb_form", "third_person_singular"), nil
+				return englishFiniteVerbFeatures("present", "third", "singular"), nil
 			}
 			return nil, nil
 		}
 		if values["verb_form"] == "past" || values["tense"] == "past" {
-			return knownFeature("verb_form", "past"), nil
+			return englishFiniteVerbFeatures("past", "", ""), nil
 		}
-		if values["verb_form"] == "third_person_singular" ||
-			values["verb_form"] == "finite" && values["tense"] == "present" && values["person"] == "third" && values["number"] == "singular" {
-			return knownFeature("verb_form", "third_person_singular"), nil
+		if values["verb_form"] == "third_person_singular" {
+			return englishFiniteVerbFeatures("present", "third", "singular"), nil
+		}
+		if values["verb_form"] == "finite" && values["tense"] == "present" {
+			number := values["verb_number"]
+			if number == "" {
+				number = values["number"]
+			}
+			if (values["person"] == "first" || values["person"] == "second" || values["person"] == "third") &&
+				(number == "singular" || number == "plural") {
+				return englishFiniteVerbFeatures("present", string(values["person"]), string(number)), nil
+			}
 		}
 		return nil, nil
 	}
@@ -112,6 +121,22 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 		return nil, nil
 	}
 	return knownFeature("noun_number", string(number)), nil
+}
+
+func englishFiniteVerbFeatures(tense, person, number string) []features.FeatureValue {
+	values := []features.FeatureValue{
+		{Feature: "verb_form", State: features.StateKnown, Value: "finite"},
+		{Feature: "tense", State: features.StateKnown, Value: features.FeatureValueID(tense)},
+		{Feature: "mood", State: features.StateKnown, Value: "indicative"},
+		{Feature: "voice", State: features.StateKnown, Value: "active"},
+	}
+	if tense == "present" {
+		values = append(values,
+			features.FeatureValue{Feature: "person", State: features.StateKnown, Value: features.FeatureValueID(person)},
+			features.FeatureValue{Feature: "verb_number", State: features.StateKnown, Value: features.FeatureValueID(number)},
+		)
+	}
+	return values
 }
 
 type englishSentencePlanAnnotations struct{}
