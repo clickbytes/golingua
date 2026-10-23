@@ -233,6 +233,30 @@ ID z odpowiedzi i użyć go w kolejnej komendzie.
 zmienia statusu ani evidence. Akceptacja językowa właściciela pozostaje
 **NOT RUN**.
 
+### G10-07 — wyniki zapisanych 100 par w obu kierunkach — 2026-10-23
+
+Każdy z 100 istniejących wierszy uruchomiono jako PL→EN i EN→PL na binarce z
+implementacji `0da6ad7726af85af6ac92fade774061d3c4e7815` i tym samym aktywnym
+snapshotem. Wszystkie 200 bazowych odpowiedzi oraz kandydatury zapisano w
+[`observed-2026-10-23-g10-07-runtime-preview.tsv`](../data/sentences/observed-2026-10-23-g10-07-runtime-preview.tsv).
+Dla tekstowych kandydatów z wynikiem `incomplete` lub `ambiguous` wykonano osobne
+wywołanie z `--preview-id`; wyniki `ok` miały tekst bez preview.
+
+EN→PL zwróciło status `ok` dla 60 wejść i `incomplete` dla 40; wszystkie miały
+tekst. PL→EN zwróciło `incomplete` dla 75 i `ambiguous` dla 25; każde wejście
+miało co najmniej jednego tekstowego kandydata, a w zachowanych alternatywach
+znalazły się również przypadki bez tekstu. CLI potwierdziło 140 jawnych
+podglądów: wskazany tekst pojawił się w głównym `text`, a status wyniku i
+kandydata pozostał bez zmian. Różne teksty nie były rozstrzygane kolejnością.
+
+**Ocena agenta:** wyjścia dla prostych tras `seeing`, `hearing` i `looking`
+zachowują role i konstrukcje wejścia. W `receiving` polski input nie przenosi
+określoności. Dla pojedynczych dopełnień `book` i `message` obecna angielska
+kandydatura wybiera `the`, podczas gdy zapisane pary EN zawierają `a`; wybór
+pozostaje założeniem i nie zmieniam statusu na `ok`. Ten konkretny przypadek
+jest ujęty w kolejce jako G10-08 #228. Akceptacja językowa właściciela pozostaje
+**NOT RUN**.
+
 Bez tekstu dostarczonego przez właściciela oznacz ocenę językową **NOT EVALUATED**. Jeśli nie uruchomiono konkretnej próby na wejściu właściciela, oznacz ją **NOT RUN**. Gdy właściciel deleguje autonomiczną ocenę, agent może opisać własną ocenę na tych wejściach, ale status akceptacji właściciela pozostaje osobny. Techniczne smoke testy z tekstem zastępczym nie są wejściem do oceny językowej. Dokładny kontrakt i przykład komendy opisuje [docs/cli.md](cli.md); nie przedstawiaj go jako dowodu, że provider jest skonfigurowany.
 
 Nie ma obowiązku zapisywania każdego outputu do pliku. Jeśli zapis jest przydatny, prowadź opcjonalnie krótką notatkę w issue lub `examples/manual/`:

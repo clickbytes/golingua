@@ -101,3 +101,15 @@ Akceptacja właściciela pozostaje **NOT RUN**. Nie zmieniano statusów
 redakcyjnych wierszy. Właściciel delegował agentowi autonomiczną ocenę i
 poprawianie rzeczywistych przykładów; ocena agenta nie jest akceptacją
 właściciela.
+
+Po G10-06 #225 wszystkie 100 istniejących par uruchomiono ponownie w obu
+kierunkach, a tekstowe kandydatury dla wyników `incomplete`/`ambiguous`
+wybrano jawnie przez `--preview-id`. Dokładne odpowiedzi, ID, diagnostyki i
+wyniki podglądów są w
+[observed-2026-10-23-g10-07-runtime-preview.tsv](observed-2026-10-23-g10-07-runtime-preview.tsv).
+W tej obserwacji EN→PL miało 60 wyników `ok` i 40 `incomplete`; PL→EN miało
+75 `incomplete` i 25 `ambiguous`. Kandydatury z nierozstrzygniętymi sensami
+pozostają widoczne. Dla policzalnych rzeczowników w liczbie pojedynczej `book` i `message` realizacja z PL
+przyjęła `the`, podczas gdy zapisane EN pary mają `a`; brak określoności w
+MeaningGraph pozostaje jawny i jest śledzony w G10-08 #228. Akceptacja
+właściciela pozostaje **NOT RUN**.
