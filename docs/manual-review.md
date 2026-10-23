@@ -48,6 +48,28 @@ ma przypisanego paradygmatu, bo homografia z rzeczownikiem masowym `water`
 tworzyła dodatkowy odczyt czasownikowy w istniejącej trasie `receiving`.
 Odbiór właściciela nadal **NOT RUN**.
 
+### G10-02 — polskie paradygmaty finite — 2026-10-23
+
+`golingua` zbudowano z implementacji `54f7807030c4aa052bd95f1423a5be7503c12fea`. Aktywny snapshot `golingua-authored` w `/tmp/golingua-g10-02-store` ma digest `f950ea7251fd2a84dac477a309b7c2e0e6bdb1057a3950b27d0306b58764828e`. `forms` wygenerowało wybrane komórki: `widzi`, `widzą`, `słyszę`, `patrzy`, `dostanie`, `dostaniemy`, `dostałaś`, `dostałyśmy`, `dostaliście` i `dostali`. `forms --surface dostaliśmy --json` zwróciło `past_1pl_masculine_personal` z `aspect=perfective`, `gender=masculine_personal`, `number=plural`, `person=first`, `tense=past`, `verb_form=finite`, `mood=indicative` i `voice=active`.
+
+Przykładowe komendy:
+
+```sh
+./golingua forms --language pl --lexeme lexeme:pl.widziec.v --feature verb_form=finite --feature tense=present --feature aspect=imperfective --feature mood=indicative --feature voice=active --feature person=third --feature number=plural --json
+./golingua forms --language pl --surface dostaliśmy --json
+./golingua translate --from en --to pl --text 'The teacher sees the dog.' --runtime-config /tmp/golingua-g10-02-runtime.json --json
+./golingua translate --from pl --to en --text 'Nauczyciel widzi psa.' --runtime-config /tmp/golingua-g10-02-runtime.json --json
+```
+
+| Wejście | Kierunek | Exit/status | Tekst kandydata |
+| --- | --- | --- | --- |
+| `The teacher sees the dog.` | EN→PL | `0` / `ok` | `Nauczyciel widzi psa.` |
+| `Nauczyciel widzi psa.` | PL→EN | `7` / `incomplete` | `The teacher sees the dog.`; jawne założenia targetu pozostają widoczne |
+| `The teacher got water.` | EN→PL | `0` / `ok` | `Nauczyciel dostał wodę.` |
+| `Nauczyciel dostał wodę.` | PL→EN | `7` / `incomplete` | `The teacher got water.`; jawne założenia targetu pozostają widoczne |
+
+Po zmianie ponownie wykonano 200 CLI uruchomień na 100 istniejących, właścicielskich par zdań; wyniki zapisano w [`data/sentences/observed-2026-10-23-g10-02-pl-finite-verbs.tsv`](../data/sentences/observed-2026-10-23-g10-02-pl-finite-verbs.tsv). W porównaniu z obserwacjami G10-01 kody wyjścia, statusy, zbiory tekstów kandydatów i zbiory diagnostyk pozostały takie same. Nie oznacza to, że wszystkie pary są tłumaczone w pełni; część nadal jest `unsupported`, `ambiguous` albo `incomplete`. Ocena agenta nie jest odbiorem właściciela; akceptacja właściciela pozostaje **NOT RUN**.
+
 Komenda `question --runtime-config <path> --json` przyjmuje typowany MeaningGraph, jawny FactSet oraz mapowanie ról. Nie przyjmuje zdania w języku naturalnym. `--language pl|en` opcjonalnie uruchamia realizację odpowiedzi. Z delegacji właściciela agent może sprawdzić ograniczony przykład oparty na dostępnych danych projektu oraz jawnie oznaczonym fakcie demonstracyjnym; taki fakt jest agent-authored, nietrwały i nie jest wejściem ani akceptacją właściciela. Bez uruchomienia komendy wpisz **NOT RUN**. Właścicielska akceptacja językowa pozostaje osobnym statusem.
 
 W bieżącym runtime dodatnia odpowiedź yes/no może zwrócić tekst PL/EN ze statusem `incomplete` i jawnymi założeniami. Odpowiedź przecząca oraz tekst WH pozostają `unsupported` do czasu dodania zatwierdzonych konstrukcji negacji i samodzielnej frazy NP. Strukturalna odpowiedź reasonera, proof i źródło faktu pozostają dostępne w wyniku.

@@ -1,0 +1,201 @@
+source_sha	id	direction	exit_code	status	diagnostic_codes	output_text
+54f7807030c4aa052bd95f1423a5be7503c12fea	S001	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher sees the dog.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S001	en_pl	0	ok		ok:Nauczyciel widzi psa.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S002	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher sees the cat.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S002	en_pl	0	ok		ok:Nauczyciel widzi kota.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S003	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S003	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S004	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE	incomplete: | incomplete:The teacher sees the house.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S004	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S005	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher sees the car.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S005	en_pl	0	ok		ok:Nauczyciel widzi samochód.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S006	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor sees the dog.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S006	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S007	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor sees the cat.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S007	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S008	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S008	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S009	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE	incomplete:The doctor sees the house. | incomplete:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S009	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S010	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor sees the car.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S010	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S011	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother sees the dog.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S011	en_pl	0	ok		ok:Matka widzi psa.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S012	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother sees the cat.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S012	en_pl	0	ok		ok:Matka widzi kota.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S013	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S013	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S014	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE	incomplete:The mother sees the house. | incomplete:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S014	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S015	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother sees the car.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S015	en_pl	0	ok		ok:Matka widzi samochód.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S016	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father sees the dog.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S016	en_pl	0	ok		ok:Ojciec widzi psa.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S017	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father sees the cat.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S017	en_pl	0	ok		ok:Ojciec widzi kota.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S018	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S018	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S019	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE	incomplete: | incomplete:The father sees the house.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S019	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S020	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father sees the car.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S020	en_pl	0	ok		ok:Ojciec widzi samochód.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S021	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	incomplete:The child sees the dog. | unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S021	en_pl	0	ok		ok:Dziecko widzi psa.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S022	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	unsupported: | incomplete:The child sees the cat.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S022	en_pl	0	ok		ok:Dziecko widzi kota.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S023	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S023	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S024	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE;ROLE_LEXICALIZATION_UNAVAILABLE	unsupported: | incomplete:The child sees the house. | incomplete: | unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S024	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S025	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	incomplete:The child sees the car. | unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S025	en_pl	0	ok		ok:Dziecko widzi samochód.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S026	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher hears the dog.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S026	en_pl	0	ok		ok:Nauczyciel słyszy psa.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S027	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher hears the cat.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S027	en_pl	0	ok		ok:Nauczyciel słyszy kota.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S028	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher hears the bird.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S028	en_pl	0	ok		ok:Nauczyciel słyszy ptaka.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S029	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher hears the mother.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S029	en_pl	0	ok		ok:Nauczyciel słyszy matkę.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S030	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher hears the father.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S030	en_pl	0	ok		ok:Nauczyciel słyszy ojca.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S031	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor hears the dog.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S031	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S032	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor hears the cat.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S032	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S033	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor hears the bird.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S033	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S034	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor hears the mother.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S034	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S035	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor hears the father.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S035	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S036	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	incomplete:The child hears the dog. | unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S036	en_pl	0	ok		ok:Dziecko słyszy psa.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S037	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	incomplete:The child hears the cat. | unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S037	en_pl	0	ok		ok:Dziecko słyszy kota.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S038	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	incomplete:The child hears the bird. | unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S038	en_pl	0	ok		ok:Dziecko słyszy ptaka.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S039	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	unsupported: | incomplete:The child hears the mother.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S039	en_pl	0	ok		ok:Dziecko słyszy matkę.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S040	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	unsupported: | incomplete:The child hears the father.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S040	en_pl	0	ok		ok:Dziecko słyszy ojca.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S041	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The neighbor hears the dog.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S041	en_pl	0	ok		ok:Sąsiad słyszy psa.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S042	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The neighbor hears the cat.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S042	en_pl	0	ok		ok:Sąsiad słyszy kota.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S043	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The neighbor hears the bird.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S043	en_pl	0	ok		ok:Sąsiad słyszy ptaka.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S044	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The neighbor hears the mother.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S044	en_pl	0	ok		ok:Sąsiad słyszy matkę.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S045	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The neighbor hears the father.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S045	en_pl	0	ok		ok:Sąsiad słyszy ojca.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S046	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The customer hears the dog.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S046	en_pl	0	ok		ok:Klient słyszy psa.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S047	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The customer hears the cat.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S047	en_pl	0	ok		ok:Klient słyszy kota.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S048	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The customer hears the bird.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S048	en_pl	0	ok		ok:Klient słyszy ptaka.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S049	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The customer hears the mother.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S049	en_pl	0	ok		ok:Klient słyszy matkę.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S050	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The customer hears the father.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S050	en_pl	0	ok		ok:Klient słyszy ojca.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S051	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S051	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S052	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE	incomplete: | incomplete:The teacher looks at the house.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S052	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S053	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher looks at the dog.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S053	en_pl	0	ok		ok:Nauczyciel patrzy na psa.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S054	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher looks at the car.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S054	en_pl	0	ok		ok:Nauczyciel patrzy na samochód.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S055	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher looks at the tree.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S055	en_pl	0	ok		ok:Nauczyciel patrzy na drzewo.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S056	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S056	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S057	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE	incomplete:The doctor looks at the house. | incomplete:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S057	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S058	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor looks at the dog.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S058	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S059	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor looks at the car.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S059	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S060	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor looks at the tree.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S060	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S061	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S061	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S062	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE	incomplete: | incomplete:The mother looks at the house.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S062	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S063	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother looks at the dog.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S063	en_pl	0	ok		ok:Matka patrzy na psa.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S064	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother looks at the car.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S064	en_pl	0	ok		ok:Matka patrzy na samochód.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S065	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother looks at the tree.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S065	en_pl	0	ok		ok:Matka patrzy na drzewo.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S066	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S066	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S067	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE	incomplete: | incomplete:The father looks at the house.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S067	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S068	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father looks at the dog.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S068	en_pl	0	ok		ok:Ojciec patrzy na psa.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S069	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father looks at the car.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S069	en_pl	0	ok		ok:Ojciec patrzy na samochód.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S070	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father looks at the tree.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S070	en_pl	0	ok		ok:Ojciec patrzy na drzewo.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S071	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S071	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S072	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;PRINCIPAL_PARTS_UNAVAILABLE;ROLE_LEXICALIZATION_UNAVAILABLE	unsupported: | incomplete: | incomplete:The child looks at the house. | unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S072	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S073	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	incomplete:The child looks at the dog. | unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S073	en_pl	0	ok		ok:Dziecko patrzy na psa.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S074	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	unsupported: | incomplete:The child looks at the car.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S074	en_pl	0	ok		ok:Dziecko patrzy na samochód.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S075	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	incomplete:The child looks at the tree. | unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S075	en_pl	0	ok		ok:Dziecko patrzy na drzewo.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S076	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S076	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S077	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher got water.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S077	en_pl	0	ok		ok:Nauczyciel dostał wodę.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S078	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher got food.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S078	en_pl	0	ok		ok:Nauczyciel dostał jedzenie.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S079	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher got the message.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S079	en_pl	0	ok		ok:Nauczyciel dostał wiadomość.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S080	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The teacher got money.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S080	en_pl	0	ok		ok:Nauczyciel dostał pieniądze.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S081	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S081	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S082	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor got water.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S082	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S083	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor got food.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S083	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S084	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor got the message.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S084	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S085	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The doctor got money.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S085	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S086	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S086	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S087	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother got water.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S087	en_pl	0	ok		ok:Matka dostała wodę.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S088	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother got food.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S088	en_pl	0	ok		ok:Matka dostała jedzenie.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S089	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother got the message.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S089	en_pl	0	ok		ok:Matka dostała wiadomość.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S090	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The mother got money.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S090	en_pl	0	ok		ok:Matka dostała pieniądze.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S091	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S091	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S092	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father got water.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S092	en_pl	0	ok		ok:Ojciec dostał wodę.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S093	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father got food.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S093	en_pl	0	ok		ok:Ojciec dostał jedzenie.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S094	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father got the message.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S094	en_pl	0	ok		ok:Ojciec dostał wiadomość.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S095	pl_en	7	incomplete	EXPLICIT_REALIZATION_ASSUMPTION;TRANSLATION_NOT_OK	incomplete:The father got money.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S095	en_pl	0	ok		ok:Ojciec dostał pieniądze.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S096	pl_en	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S096	en_pl	3	unsupported	ROLE_MAPPING_UNAVAILABLE	unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S097	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	unsupported: | incomplete:The child got water.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S097	en_pl	0	ok		ok:Dziecko dostało wodę.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S098	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	unsupported: | incomplete:The child got food.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S098	en_pl	0	ok		ok:Dziecko dostało jedzenie.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S099	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	incomplete:The child got the message. | unsupported:
+54f7807030c4aa052bd95f1423a5be7503c12fea	S099	en_pl	0	ok		ok:Dziecko dostało wiadomość.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S100	pl_en	6	ambiguous	DISAMBIGUATION_INCOMPLETE;EXPLICIT_REALIZATION_ASSUMPTION;ROLE_LEXICALIZATION_UNAVAILABLE	unsupported: | incomplete:The child got money.
+54f7807030c4aa052bd95f1423a5be7503c12fea	S100	en_pl	0	ok		ok:Dziecko dostało pieniądze.
