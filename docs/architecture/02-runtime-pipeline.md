@@ -1,12 +1,17 @@
 # 02 — Przepływy wykonania (nowy Go)
 
-**Zaimplementowano ograniczone szlaki zdań PL/EN dla `seeing`, `hearing`, `looking` i `receiving`.**
-Pierwsze trzy obsługują jawne formy teraźniejsze 3. osoby liczby pojedynczej;
+**Zaimplementowano ograniczone szlaki zdań PL/EN dla `seeing`, `hearing`, `looking` i `receiving`, wraz z negacją `seeing` w 3. osobie liczby pojedynczej.**
+Pierwsze trzy obsługują jawne formy teraźniejsze 3. osoby liczby pojedynczej i mnogiej;
 `receiving` obsługuje angielskie `got` i polski czas przeszły 3. osoby liczby
 pojedynczej z uzgodnieniem rodzaju oraz mnogiej z uzgodnieniem klasy
 masculine-personal/non-masculine-personal. Przy angielskim `got` liczba i klasa
 podmiotu muszą wynikać z jego jednoznacznej analizy. Inne sensy, formy i profile gramatyczne
 pozostają poza zakresem.
+
+Negacja `seeing` jest ograniczona do angielskiego `does not see` i polskiego
+`nie widzi` w 3. osobie liczby pojedynczej. PL→EN generuje określony wariant
+rodzajników jako kandydat z jawnymi założeniami, więc status pozostaje
+`incomplete`, gdy źródłowy Meaning nie niesie określoności.
 
 `looking` wiąże angielskie `look at` z `at` + NP oraz polskie `patrzeć na` z
 `na` + NP w bierniku. Szlak obsługuje tylko jawne formy 3. osoby liczby

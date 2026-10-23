@@ -201,3 +201,22 @@ Ponowne uruchomienie S001–S100 w obu kierunkach (200 wywołań) zachowało
 wszystkie statusy i zbiory tekstów kandydatów z G10-14; nie dodawano wierszy
 do korpusu. Ocena agenta jest zapisana oddzielnie od odbioru właściciela,
 który pozostaje **NOT RUN**.
+
+## Negacja `seeing` G10-16 — 2026-10-23
+
+Na implementacji `08dd82c87e201161e47d8e277048fe6848e13f73` EN
+`The teacher does not see the dog.` → PL `Nauczyciel nie widzi psa.` zwróciło
+`ok` (exit 0). W kierunku PL→EN ten sam przykład wyprodukował kandydata
+`The teacher does not see the dog.` ze statusem `incomplete` (exit 7), ponieważ
+Meaning nie określa angielskich rodzajników. Dodatnie counterpart EN→PL
+zachowało `ok`; PL→EN zachowało dotychczasowe cztery warianty dodatnie i nie
+wybrało rodziny negatywnej. Szczegóły znajdują się w
+[observed-2026-10-23-g10-16-negated-seeing.tsv](observed-2026-10-23-g10-16-negated-seeing.tsv).
+
+**Ocena agenta:** ograniczona negacja poprawnie tworzy i zachowuje scope Meaning
+w EN→PL oraz realizuje jawne terminale `does not` / `nie`. Angielski kandydat
+z polskiego wejścia zachowuje negację, ale status `incomplete` jest prawidłowy,
+bo określoność nie jest zakodowana w Meaning. Ponowny przebieg wszystkich 100
+istniejących par w obu kierunkach wykonał 200 wywołań i zachował statusy oraz
+zbiory tekstów kandydatów G10-14. Odbiór językowy właściciela pozostaje
+**NOT RUN**.
