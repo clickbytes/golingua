@@ -17,8 +17,8 @@ import (
 
 // NewSentenceSource compiles the English analysis stages against one exact
 // snapshot. Its complete declarative attestation is limited to attested
-// third-person singular present visual and auditory predicates and explicit
-// definite articles in the transitive template.
+// third-person singular present visual and auditory predicates, explicit
+// definite articles, and the registered past receiving route.
 func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if snapshot == nil {
 		return nil, fmt.Errorf("English sentence source requires a snapshot")

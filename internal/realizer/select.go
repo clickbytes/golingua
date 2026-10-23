@@ -52,6 +52,7 @@ type Input struct {
 	Candidates               []semantic.MeaningCandidate
 	Outcome                  status.OutcomeKind
 	Diagnostics              []status.Diagnostic
+	CandidatePolicy          TargetCandidatePolicy
 	Operators                []construction.Operator
 	OperatorCoverageComplete bool
 	Language                 lexicon.LanguageID
@@ -61,6 +62,13 @@ type Input struct {
 	Variants                 map[ids.ConstructionID]*construction.VariantIndex
 	Core                     *core.ConceptGraph
 	Budget                   Budget
+}
+
+// TargetCandidatePolicy may retain or omit an already licensed candidate
+// after considering the complete candidate set for its source Meaning. It
+// cannot add or modify lexical or construction licenses.
+type TargetCandidatePolicy interface {
+	KeepTargetCandidate(semantic.MeaningCandidate, TargetCandidate, []TargetCandidate) bool
 }
 
 // TargetCandidate is one exact approved target-side lexical and construction
@@ -543,11 +551,43 @@ func SelectTargets(input Input) (Result, error) {
 					result.Outcome = mergeOutcome(result.Outcome, status.OutcomeUnsupported)
 					result.Diagnostics = appendDiagnostic(result.Diagnostics, "NO_LICENSED_TARGET", "no approved target transfer and exact construction license was found", "meaning."+string(node.ID))
 				}
-			} else if nodeCounts[nodeKey] > 1 {
-				result.Outcome = mergeOutcome(result.Outcome, status.OutcomeAmbiguous)
-				result.Diagnostics = appendDiagnostic(result.Diagnostics, "TARGET_ALTERNATIVES_AMBIGUOUS", "multiple licensed target lexical and construction alternatives remain for this predicate", "meaning."+string(node.ID))
 			}
 		}
+	}
+	if input.CandidatePolicy != nil {
+		bySourceID := make(map[string]semantic.MeaningCandidate, len(ordered))
+		for _, source := range ordered {
+			bySourceID[source.ID] = source
+		}
+		all := result.Candidates
+		filtered := make([]TargetCandidate, 0, len(all))
+		for _, candidate := range all {
+			source := bySourceID[candidate.SourceCandidateID]
+			if input.CandidatePolicy.KeepTargetCandidate(source, candidate, all) {
+				filtered = append(filtered, candidate)
+			}
+		}
+		result.Candidates = filtered
+	}
+	// Construction and lexical alternatives are counted after the optional
+	// language-local policy has retained only the applicable licensed routes.
+	eventCandidateCounts := make(map[string]int)
+	for _, candidate := range result.Candidates {
+		if candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState {
+			eventCandidateCounts[candidate.SourceCandidateID+"\x00"+string(candidate.NodeID)]++
+		}
+	}
+	for key, count := range eventCandidateCounts {
+		if count <= 1 {
+			continue
+		}
+		parts := strings.SplitN(key, "\x00", 2)
+		path := "meaning"
+		if len(parts) == 2 {
+			path += "." + parts[1]
+		}
+		result.Outcome = mergeOutcome(result.Outcome, status.OutcomeAmbiguous)
+		result.Diagnostics = appendDiagnostic(result.Diagnostics, "TARGET_ALTERNATIVES_AMBIGUOUS", "multiple licensed target lexical and construction alternatives remain for this predicate", path)
 	}
 	sort.Slice(result.Candidates, func(i, j int) bool { return targetLess(result.Candidates[i], result.Candidates[j]) })
 	return finish()

@@ -51,6 +51,8 @@ Dla każdego `ValencyFrame`: `SenseID`, role semantyczne, typy argumentów, obow
 
 Warianty konstrukcji nie powinny być mnożone do wszystkich połączeń. `Family + Operator + Valency + Profile → check → Plan`. Konstruktor ocenia legalność, a potem zleca pracę generatorom form. Operatory nie muszą komutować, zwłaszcza przy negacji, pytaniu i modalności.
 
+W ograniczonej angielskiej trasie `receiving` wariant SVO z obiektem bare jest osobno licencjonowany i wybierany wyłącznie dla jednoznacznego angielskiego leksemu z jawnym `number_behavior=mass`. Pozostałe obiekty używają istniejącego wariantu z rodzajnikiem `the`. Ponieważ Meaning nie koduje określoności, PL→EN nadal ujawnia tę decyzję jako założenie i zwraca `incomplete`.
+
 ## Kompilacja i runtime
 
 Jedna rodzina konstrukcji może obsługiwać wiele sensów. Dane trzymamy raz, a `ConstructionBinding` ma konkretne `SenseID, ValencyFrameID, FamilyID, VariantID`. Zależności na kontrolerze zgody, obowiązkowym miejscu czasownika, sekwencji i typach muszą być zweryfikowane przed użyciem.

@@ -57,6 +57,7 @@ type TargetPipeline struct {
 	LinearizeBudget  realizer.LinearizeBudget
 	PlanBuilder      TargetPlanBuilder
 	ExecutionBuilder TargetExecutionBuilder
+	CandidatePolicy  realizer.TargetCandidatePolicy
 }
 
 var _ engine.TargetRealizer = (*TargetPipeline)(nil)
@@ -88,6 +89,7 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 	selection, err := realizer.SelectTargets(realizer.Input{
 		Candidates: []semantic.MeaningCandidate{source}, Outcome: source.Status,
 		Diagnostics: source.Evidence.Diagnostics, Operators: operators,
+		CandidatePolicy:          pipeline.CandidatePolicy,
 		OperatorCoverageComplete: operatorCoverageComplete,
 		Language:                 lexicon.LanguageID(pipeline.Language), Lexicon: pipeline.Lexicon,
 		Valency: pipeline.Valency, Constructions: pipeline.Constructions,
