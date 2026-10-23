@@ -56,6 +56,21 @@ go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.dostac.v --feature 
 go run ./cmd/golingua forms --language pl --surface dostaliśmy --json
 ```
 
+G10-03 dodaje ograniczone angielskie klasy liczby rzeczowników: regularne `+s`,
+sybilant `+es`, spółgłoska + `y → ies`, jawne principal parts dla wybranych
+nieregularności oraz pluralia synkretyczne `fish` i `sheep`. Klasa jest
+przypisana jawnie do wybranych leksemów; rzeczowniki masowe `food`, `money` i
+`water` pozostają bez formy mnogiej.
+
+```sh
+go run ./cmd/golingua forms --language en --lexeme lexeme:en.bus.n --feature noun_number=plural --json
+go run ./cmd/golingua forms --language en --lexeme lexeme:en.city.n --feature noun_number=plural --json
+go run ./cmd/golingua forms --language en --lexeme lexeme:en.child.n --feature noun_number=plural --json
+go run ./cmd/golingua forms --language en --surface buses --json
+go run ./cmd/golingua forms --language en --surface children --json
+go run ./cmd/golingua forms --language en --surface fish --json
+```
+
 ## Inwentarz katalogu
 
 `catalog --summary --json` kompiluje obecne dane Go CORE, PL i EN i pokazuje

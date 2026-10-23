@@ -16,6 +16,8 @@ import (
 	"github.com/clickbytes/golingua/internal/provenance"
 )
 
+const maxCompiledMorphologyLexemes = 160
+
 //go:embed features.json
 var profileJSON []byte
 
@@ -116,7 +118,7 @@ func Load() (*Seed, error) {
 	if err != nil {
 		return nil, err
 	}
-	if len(document.Records)+len(additionalRecords) > 128 {
+	if len(document.Records)+len(additionalRecords) > maxCompiledMorphologyLexemes {
 		return nil, fmt.Errorf("English lexeme count exceeds seed limit")
 	}
 	document.Records = append(document.Records, additionalRecords...)
