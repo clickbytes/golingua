@@ -1,6 +1,6 @@
 # GoLingua TUI — kontrakt produktu
 
-**Stan: G11-V1 dostarcza powłokę Bubble Tea v2, F1 Translate i wybór/sprawdzenie/zapis ścieżki runtime w F5.** F2–F4 są jawnymi placeholderami. Pozostałe opisy ekranów i makiety przedstawiają docelowy kontrakt. CLI i TUI używają tych samych usług Go.
+**Stan: G11-V1 dostarcza powłokę Bubble Tea v2, F1 Translate i wybór/sprawdzenie/zapis ścieżki runtime w F5; G11-V2 dodaje kandydatów, podgląd i paletę nawigacji.** F2–F4 są jawnymi placeholderami. Pozostałe opisy ekranów i makiety przedstawiają docelowy kontrakt. CLI i TUI używają tych samych usług Go.
 
 ## Uruchamianie
 
@@ -79,8 +79,16 @@ Makiety i dokumentację aktualizujemy razem z odpowiadającym im działającym z
 
 ## Obsługa dostarczona w V1
 
-F1: wpisz tekst w dolnym prompcie i naciśnij `Enter`. `Alt+D` albo `Enter` na kontrolce direction zmienia EN↔PL. Wynik pokazuje faktyczny status, tekst lub jego brak i diagnostyki. Wynik starszego szkicu jest oznaczony. Listę kandydatów i ich podgląd dostarcza V2.
+F1: wpisz tekst w dolnym prompcie i naciśnij `Enter`. `Alt+D` albo `Enter` na kontrolce direction zmienia EN↔PL. Wynik pokazuje faktyczny status, tekst lub jego brak i diagnostyki. Wynik starszego szkicu jest oznaczony. Lista kandydatów i ich podgląd działają od V2.
 
 F5: wpisz ścieżkę runtime config; `Enter` wybiera i sprawdza ją przez `Service.ValidateRuntime`. `Ctrl+S` albo `Enter` na kontrolce save jawnie zapisuje wersję 1 ustawień i bezwzględną ścieżkę. Tymczasowy plik ma uprawnienia 0600 i jest atomowo przemianowany w tym samym katalogu. Nieaktualny runtime zachowuje ścieżkę i diagnostyki. Niepoprawne ustawienia wywołują ostrzeżenie, bez zapisu do czasu jawnego Save. Pozostałe preferencje należą do V6; snapshot Preview/Apply nie są dostępne w V1.
 
 `Tab`/`Shift+Tab` przechodzą po jawnie nazwanych kontrolkach, w tym tabs. Na tabs działają `Left`/`Right`; fokus result pozwala przewijać `Up`/`Down`/`PgUp`/`PgDown`. `Ctrl+U` czyści pole. `?` pokazuje pomoc, `Esc` zamyka ją i wraca do promptu, `Ctrl+C`/`Ctrl+D` bezpiecznie kończy program. Zmiana zakładki i rozmiaru zachowuje szkice.
+
+## Obsługa dostarczona w V2
+
+F1 pokazuje wszystkie rzeczywiście zwrócone kandydatury. `Tab` przechodzi kolejno przez prompt, direction, candidates, preview, result i tabs. Na candidates `Up`/`Down` wybierają do inspekcji; `Enter` otwiera szczegóły z pełnym ID, statusem, tekstem lub jego brakiem, założeniami i diagnostykami. `Esc` wraca do listy. Szczegóły i wynik przewija się strzałkami oraz `PgUp`/`PgDown`.
+
+`Enter` na preview ponownie wywołuje `Service.Translate` z zapisanym żądaniem wyniku i jawnym `PreviewID`; szkic może być już inny. Odpowiedź podglądu jest osobna: pierwotny status i wynik pozostają zachowane. Kandydat bez tekstu nadal ma szczegóły, ale akcja preview wyświetla brak możliwości podglądu. Wybór ani podgląd nie oznaczają akceptacji językowej.
+
+`Ctrl+P` z każdego ekranu otwiera wspólną paletę z początkowym `/`. Wpisz nazwę bez ponownego ukośnika, np. `forms`, albo wyczyść pole i wpisz `/forms`. Dostępne są wyłącznie `/translate`, `/forms`, `/concepts`, `/languages`, `/settings`. Prefiks filtruje listę; `Up`/`Down` wybierają sugestię, `Enter` wykonuje dokładną nazwę lub jawną selekcję. Nieznane nazwy i argumenty dają błąd bez wywołania usługi. `Esc` anuluje bez zmiany szkicu i fokusu ekranu. W F1 początkowy `/` otwiera paletę; w F5 pole ścieżki przyjmuje ukośniki jako część ścieżki, a nawigację otwiera `Ctrl+P`. Przełączanie ekranów i resize zachowują selekcję oraz szkic.
