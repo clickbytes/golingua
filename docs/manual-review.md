@@ -499,6 +499,47 @@ odczytania pozostają widoczne. Wybór określoności przy tłumaczeniu PL→EN 
 założeniem jawnie pokazanym przez warianty. Akceptacja językowa właściciela
 pozostaje **NOT RUN**.
 
+### G11-01 #256 — kontrakt CLI/TUI — 2026-10-23
+
+G10 #214 zostało zamknięte po PR #255, więc aktywowałem G11 #254 i jego
+pierwsze zadanie projektowe. Zamroziłem decyzje dotyczące startu na TTY,
+zachowania poleceń skryptowych, pięciu ekranów, klawiatury, ustawień UI,
+źródeł danych i fail-closed prezentacji statusów. Kontrakt i szczegółowe mapy
+znajdują się w [`docs/tui/`](tui/README.md).
+
+**Obserwacja agenta:** aktualne źródła CLI nadal uruchamiają pomoc przy braku
+argumentów; zgodnie z polityką dokumentuję przyszłe przejście do TUI tylko dla
+interaktywnego TTY jako plan kolejnego etapu, nie obecną funkcję. CLI i TUI mają
+korzystać z jednej usługi in-process; TUI nie ma wywoływać własnego procesu
+`golingua`. Wybrany upstream to Bubble Tea v2 z modułem
+`charm.land/bubbletea/v2`; zależność zostanie dodana w etapie implementacji.
+
+Źródło CLI: `f2caf5d83d8303598bce2672f2beb5b46153dd17`; kompilacja
+`go build -o /tmp/golingua-g11-01 ./cmd/golingua`. Polecenia uruchomiono
+bez runtime config (digest runtime nie dotyczy), stderr było puste, a każde
+zakończyło się kodem 0.
+
+`/tmp/golingua-g11-01` bez argumentów w nieinteraktywnym środowisku i
+`/tmp/golingua-g11-01 --help` dały identyczne stdout:
+
+```text
+golingua v0 preview
+Usage: golingua --help | --version | capabilities --json | meaning canonicalize --json < meaning.json | meaning project --json < meaning.json | question --runtime-config <path> [--language pl|en] --json < question.json | translate --from <lang> --to <lang> --text <text> --json [--preview-id <id>] [--runtime-config <path>] | forms --language pl|en (--lexeme <id> --feature name=value... | --surface <form>) --json | catalog --summary|--details --json | snapshot --preview|--apply --store <path> --json
+question executes typed MeaningGraph requests against caller-supplied FactSets; it does not parse natural language. With --language, supported answers use verified PL/EN sentence routes and retain proof evidence.
+Compiled PL/EN sentence adapters cover limited seeing, hearing, looking, and reading (present 3sg/3pl and past 3sg/3pl), bounded present negation for seeing/hearing/looking in 3sg/3pl (EN do/does not; PL nie), and receiving (past 3sg/3pl); Polish plural past requires known subject number and agreement class. Reading supports English simple past read and Polish czytać past forms in third-person singular and plural; plural English read remains tense-ambiguous. translate requires --runtime-config with an active snapshot.
+```
+
+`/tmp/golingua-g11-01 --version` stdout: `0.1.0-alpha.1`.
+`/tmp/golingua-g11-01 catalog --summary --json` stdout:
+
+```json
+{"status":"ok","inventory":{"concepts":1000,"target":1000,"pl":{"lexemes":983,"senses":1007,"bindings":1006,"pending_concepts":118,"non_transferable_concepts":0,"approved_concepts":882,"absent_concepts":0},"en":{"lexemes":1003,"senses":1012,"bindings":1001,"pending_concepts":3,"non_transferable_concepts":0,"approved_concepts":997,"absent_concepts":0},"per_concept":[],"approved_pairs":881},"core_relation_types":173,"valency_frames":{"pl":273,"en":5},"construction_bindings":{"pl_pending_candidates":0,"en_pending_candidates":0,"pl_approved":8,"en_approved":109}}
+```
+
+To potwierdza obecne zachowanie bez TTY; przyszły start interaktywnego TUI jest
+jeszcze niezaimplementowany. TUI: **NOT RUN**. Akceptacja kontraktu przez
+właściciela pozostaje **NOT RUN**.
+
 ## Co NIE jest wymagane
 
 - Przenoszenie dawnych zdań lub ich oczekiwanych rezultatów z JS.

@@ -14,6 +14,10 @@ go run ./cmd/golingua capabilities --json
 
 `--version` zwraca wersję technicznego podglądu v0. `--help` pokazuje dostępne komendy. `capabilities --json` opisuje gotowość bez wybranego runtime'u, dlatego obecnie zwraca `status: "unsupported"`, puste tablice `languages` i `features` oraz `ready: false`; sama komenda kończy się kodem 0. `forms` i `catalog` mają własne komendy opisane poniżej.
 
+## Planowany interfejs terminalowy (G11)
+
+Kontrakt pięciu ekranów (`F1 Translate`–`F5 Settings`) jest opisany w [dokumentacji TUI](tui/README.md), ale TUI nie jest jeszcze zaimplementowany. Na obecnym `main` wywołanie bez argumentów nadal pokazuje pomoc. W G11-04 planowany start TUI będzie wymagał interaktywnego TTY; bez TTY pozostanie pomoc CLI. Jawne `--help` i `--version`, istniejące polecenia, JSON na stdout i kody wyjścia pozostają kontraktem dla skryptów. Poziom szczegółowości TUI ma wpływać wyłącznie na prezentację, nie na engine.
+
 ## Translacja
 
 Użyj jawnych flag, aktywnego snapshotu i wymaganej odpowiedzi JSON:
