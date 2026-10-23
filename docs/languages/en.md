@@ -82,4 +82,4 @@ construction recognizes `the`, `a`, and a bare object where current
 lexical/morphology data allow it. The oblique `look at` route recognizes the
 exact `at` terminal. Owner-authored `looking` CLI observations are in
 [`data/sentences/observed-2026-10-23-g05-14-looking.tsv`](../../data/sentences/observed-2026-10-23-g05-14-looking.tsv);
-Plural route CLI observations are in [`data/sentences/observed-2026-10-23-g10-13-plural-agreement.tsv`](../../data/sentences/observed-2026-10-23-g10-13-plural-agreement.tsv); owner sign-off remains **NOT RUN**.
+Full current-runtime CLI outputs for all 100 existing sentence rows in both directions are in [`data/sentences/observed-2026-10-23-g10-14-full-corpus.tsv`](../../data/sentences/observed-2026-10-23-g10-14-full-corpus.tsv); plural route observations are in [`data/sentences/observed-2026-10-23-g10-13-plural-agreement.tsv`](../../data/sentences/observed-2026-10-23-g10-13-plural-agreement.tsv); owner sign-off remains **NOT RUN**.

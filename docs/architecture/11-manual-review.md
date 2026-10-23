@@ -82,3 +82,14 @@ przeszłe `got` pozostało w rodzinie bez uzgodnienia, a polski przeszły `dosta
 nadal wybiera jawne cechy liczby i rodzaju.
 
 W istniejących 40 wywołaniach dla S021–S025, S036–S040, S071–S075 i S096–S100 nie zmieniły się statusy ani zbiory tekstów względem poprzedniej obserwacji. Dziesięć osobno oznaczonych prób pochodnych oraz dokładne wyjścia CLI są w [tabeli G10-13](../../data/sentences/observed-2026-10-23-g10-13-plural-agreement.tsv). Formy mnogie generują się i są analizowane; `offspring` dobiera liczbę czasownika, a niezgodne kombinacje podmiotu i czasownika nie otrzymują pełnego parsowania. PL→EN nadal pokazuje alternatywy leksykalne/rodzajnikowe jako `ambiguous`. Agent ocenia zachowanie jawnych form i cechy liczby jako spójne z trasą; ocena językowa właściciela pozostaje **NOT RUN**.
+
+## G10-14 — wszystkie 100 par na bieżącym runtime
+
+Na implementacji `33b8830cae5b285fbfafacdbb0e90c85c7916aa6` lokalny CLI
+wykonał 200 wywołań dla S001–S100 w obu kierunkach. EN→PL: 60 `ok`, 40 `incomplete`, zawsze z tekstem kandydata.
+PL→EN: 100 `ambiguous` wyników, z widocznymi tekstami kandydatów i
+założeniami rodzajnika. Szczegóły wszystkich 592 wierszy odpowiedzi są w
+[tabeli G10-14](../../data/sentences/observed-2026-10-23-g10-14-full-corpus.tsv).
+Niekompletne wyniki zachowują nierozstrzygnięte sensy zamiast promować ich bindingi.
+To obserwacje pipeline'u; akceptacja językowa właściciela pozostaje
+**NOT RUN**.
