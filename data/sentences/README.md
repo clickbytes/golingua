@@ -122,3 +122,12 @@ jest `ambiguous`; jawny `--preview-id` wyświetla wybrany tekst bez zmiany tego
 statusu. Jawnie niepoliczalne `water` i `money` nadal realizują się bez
 rodzajnika. EN→PL dla tych samych istniejących par zachowało teksty polskie.
 Wiersze pozostają `draft_unreviewed`; akceptacja właściciela jest **NOT RUN**.
+
+Po G10-10 #233 wszystkie 100 par uruchomiono ponownie w obu kierunkach.
+Dokładne statusy, kandydatury i wybrane podglądy zapisano w
+[observed-2026-10-23-g10-10-determiner-alternatives.tsv](observed-2026-10-23-g10-10-determiner-alternatives.tsv).
+PL→EN zachowuje `a/the` dla podmiotu i dopełnienia/celu w istniejących
+transitive i oblique routes, a masowe `water` / `money` nadal mają wariant bez
+rodzajnika. EN→PL zachowało dotychczasowe teksty. Wyniki wciąż pokazują
+niejednoznaczność i niezatwierdzone odczytania; akceptacja właściciela jest
+**NOT RUN**.

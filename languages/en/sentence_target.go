@@ -209,6 +209,9 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 	return nil, assumptions, losses, nil
 }
 
+// englishDeterminerCandidatePolicy retains only variants supported by source
+// determiner/number evidence and explicit target-lexeme article properties.
+// Missing source definiteness keeps all compatible options visible.
 type englishDeterminerCandidatePolicy struct{}
 
 func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) bool {

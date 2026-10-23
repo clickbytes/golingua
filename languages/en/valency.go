@@ -40,7 +40,7 @@ var englishIndefiniteObjectConstructionSource = provenance.SourceRef{
 
 var englishDeterminerAlternativeConstructionSource = provenance.SourceRef{
 	ID:      "golingua-g10-10-english-determiner-alternatives",
-	URI:     "https://github.com/clickbytes/golingua/issues/233#issuecomment-6357215925",
+	URI:     "https://github.com/clickbytes/golingua/issues/233#issuecomment-6357295748",
 	Version: "2026-10-23-g10-10", License: "internal", Author: "Codex by owner delegation",
 }
 
