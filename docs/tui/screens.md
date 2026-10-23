@@ -23,11 +23,11 @@ Użytkownik wybiera dokładnie jeden tryb:
 - **Analyze:** język i forma powierzchniowa; wyświetl wszystkie zwrócone odczytania.
 - **Generate:** język, istniejący LexemeID i wybrane jawne cechy; wyświetl wszystkie wygenerowane formy.
 
-Lista cech pochodzi z aktualnego profilu/leksemu. Nie ma swobodnego formularza, który akceptuje nieznane cechy.
+Użytkownik wpisuje jawne cechy `key=value` właściwe dla języka i leksemu. Obecna usługa Forms nie udostępnia listy dopuszczalnych wartości dla rozwijanych pól; ekran nie wymyśla takiej listy. Wynik walidacji i wygenerowane formy pochodzą z usługi, a błędne lub nieznane cechy pozostają widoczne jako błąd żądania.
 
 ## F3 — Concepts
 
-Filtr przyjmuje stabilny ConceptID lub tekstową frazę do filtrowania rzeczywistego katalogu. Szczegóły pochodzą z `ConceptGraph.Lookup`; pokrycie PL/EN z bieżącego inwentarza. Ekran odróżnia brak rekordu od braku zatwierdzonego bindingu i nie sugeruje tłumaczenia na podstawie samej nazwy.
+Filtr tekstowy działa na stabilnych ConceptID rzeczywistego katalogu. Nie jest wyszukiwaniem po definicjach ani tłumaczeniach. Szczegóły pochodzą z `ConceptGraph.Lookup`; pokrycie PL/EN z bieżącego inwentarza. Ekran odróżnia brak rekordu od braku zatwierdzonego bindingu i nie sugeruje tłumaczenia na podstawie samej nazwy.
 
 ## F4 — Languages
 

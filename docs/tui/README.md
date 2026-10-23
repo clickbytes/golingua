@@ -4,7 +4,7 @@
 
 ## Uruchamianie
 
-| Wywołanie | Zachowanie docelowe | Zachowanie na `main` przed implementacją G11-04 |
+| Wywołanie | Zachowanie docelowe | Zachowanie na `main` przed G11-V1 |
 | --- | --- | --- |
 | `golingua` na interaktywnym TTY | Otwiera F1 Translate | Wyświetla pomoc CLI |
 | `golingua` bez TTY | Wyświetla pomoc bez ANSI | Wyświetla pomoc CLI |
@@ -62,4 +62,17 @@ Minimalny układ docelowy to około 80×24 znaki. Przy mniejszym oknie ekran prz
 
 ## Etapy
 
-G11-01 zamroził kontrakt produktu, a G11-02 udostępnił usługi in-process z [mapy bindingów](bindings.md). G11-03 określił MVU, fokus i odpowiedzi asynchroniczne w [kontrakcie stanu](state-model.md). G11-04 określił routing promptu i slash commands w [kontrakcie komend](command-contract.md). G11-05 ukończył makietę wspólnej ramy, G11-06 — dolnego promptu, G11-07 — palety komend, G11-08 — ekran F1, G11-09 — nakładkę kandydatów i szczegółów, G11-10 — F2 Analyze, G11-11 — F2 Generate, a G11-12 — listę i wyszukiwanie konceptów F3. Kolejne etapy dostarczą pozostałe makiety, shell i ekrany. Implementacja TUI jeszcze nie istnieje, a podręcznik CLI jest osobnym zadaniem G11-39.
+G11-01–12 ukończyły kontrakty, wspólne usługi i makiety F1, F2 oraz listy F3. Implementacja TUI jeszcze nie istnieje. [Epic G11](https://github.com/clickbytes/golingua/issues/254) zastępuje niewykonane mikroetapy G11-13–42 ośmioma kolejnymi zakresami, z których każdy ma dać używalny przepływ w terminalu:
+
+| Zakres | Obserwowalny rezultat |
+| --- | --- |
+| G11-V1 | Rama pięciu zakładek z jednym dolnym promptem i działającym F1 Translate; CLI bez TTY zachowuje obecne działanie. |
+| G11-V2 | Szczegóły rzeczywistych kandydatów, jawny podgląd po PreviewID i pięć komend nawigacyjnych z paletą. |
+| G11-V3 | F2 Analyze i Generate z jawnymi, lokalnymi dla języka cechami `key=value`. |
+| G11-V4 | F3 Concepts: lista, filtr po ConceptID i szczegóły rzeczywistego rekordu. |
+| G11-V5 | F4 Languages: inwentarz PL/EN oddzielony od gotowości wybranego runtime'u. |
+| G11-V6 | F5 Settings: wersjonowane preferencje i ścieżka runtime'u. |
+| G11-V7 | F5 snapshot: podgląd i osobno potwierdzone zastosowanie. |
+| G11-V8 | Dokumentacja CLI/TUI, przegląd integracyjny i zamknięcie epiku. |
+
+Makiety i dokumentację aktualizujemy razem z odpowiadającym im działającym zakresem. Kolejne issue otwieramy po zamknięciu poprzedniego.

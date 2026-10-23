@@ -107,7 +107,7 @@ must not be joined to these candidate IDs.
 
 The detail view separates outer status from candidate outcome. If a later
 implementation offers a technical preview, it must use the selected candidate
-ID explicitly under G11-29; that action is not owner or linguistic approval.
+ID explicitly in G11-V2; that action is not owner or linguistic approval.
 
 ## Focus and resizing
 
@@ -119,5 +119,5 @@ navigation as defined by the [keymap](../keymap.md). Focus is labeled in text,
 not color alone. Full IDs and Polish text wrap or scroll without changing their
 bytes; resizing preserves the selection and the F1 state.
 
-Candidate details belong to G11-09. Preview execution belongs to G11-29 and the
-reusable candidate details UI to G11-26; neither is implemented by this design.
+G11-09 completed this candidate-details design. G11-V2 will implement the
+candidate details and explicit PreviewID action; neither is implemented by this design.
