@@ -13,6 +13,9 @@ import (
 type settings struct {
 	SchemaVersion int    `json:"schema_version"`
 	RuntimeConfig string `json:"runtime_config"`
+	DisplayLevel  string `json:"display_level"`
+	DefaultFrom   string `json:"default_from"`
+	SnapshotStore string `json:"snapshot_store"`
 }
 
 type settingsLoaded struct {
@@ -21,8 +24,34 @@ type settingsLoaded struct {
 	err      error
 }
 type settingsSaved struct {
-	id  uint64
-	err error
+	id    uint64
+	value settings
+	err   error
+}
+
+func defaultSettings() settings {
+	return settings{SchemaVersion: 1, DisplayLevel: "normal", DefaultFrom: "en"}
+}
+
+func validSettings(value settings) error {
+	if value.SchemaVersion != 1 {
+		return errors.New("settings schema version must be 1")
+	}
+	switch value.DisplayLevel {
+	case "simple", "normal", "technical":
+	default:
+		return errors.New("display_level must be simple, normal, or technical")
+	}
+	if value.DefaultFrom != "en" && value.DefaultFrom != "pl" {
+		return errors.New("default_from must be en or pl")
+	}
+	if value.RuntimeConfig != "" && !filepath.IsAbs(value.RuntimeConfig) {
+		return errors.New("runtime_config must be an absolute path")
+	}
+	if value.SnapshotStore != "" && !filepath.IsAbs(value.SnapshotStore) {
+		return errors.New("snapshot_store must be empty or an absolute path")
+	}
+	return nil
 }
 
 func settingsPath() (string, error) {
@@ -35,7 +64,7 @@ func settingsPath() (string, error) {
 
 func loadSettings() settingsLoaded {
 	path, err := settingsPath()
-	msg := settingsLoaded{settings: settings{SchemaVersion: 1}, path: path, err: err}
+	msg := settingsLoaded{settings: defaultSettings(), path: path, err: err}
 	if err != nil {
 		return msg
 	}
@@ -58,15 +87,16 @@ func loadSettings() settingsLoaded {
 	}
 	dec := json.NewDecoder(bytes.NewReader(data))
 	dec.DisallowUnknownFields()
-	var value settings
+	value := defaultSettings()
+	value.SchemaVersion = 0 // The version remains mandatory, including for older files.
 	if err = dec.Decode(&value); err == nil {
 		var extra any
 		if dec.Decode(&extra) != io.EOF {
 			err = errors.New("settings contain trailing data")
 		}
 	}
-	if err == nil && (value.SchemaVersion != 1 || value.RuntimeConfig != "" && !filepath.IsAbs(value.RuntimeConfig)) {
-		err = errors.New("invalid settings version or non-absolute runtime path")
+	if err == nil {
+		err = validSettings(value)
 	}
 	if err != nil {
 		msg.err = fmt.Errorf("invalid settings (not overwritten): %w", err)
@@ -80,8 +110,8 @@ func saveSettings(path string, value settings) error {
 	if path == "" {
 		return errors.New("settings path unavailable")
 	}
-	if value.SchemaVersion != 1 || value.RuntimeConfig != "" && !filepath.IsAbs(value.RuntimeConfig) {
-		return errors.New("settings require version 1 and an absolute runtime path")
+	if err := validSettings(value); err != nil {
+		return err
 	}
 	dir := filepath.Dir(path)
 	if err := os.MkdirAll(dir, 0700); err != nil {
