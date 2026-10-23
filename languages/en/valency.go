@@ -56,6 +56,11 @@ var englishNegationConstructionSource = provenance.SourceRef{
 	Version: "2026-10-23-g10-17", License: "internal", Author: "Codex by owner delegation",
 }
 
+var englishNegativeArticleConstructionSource = provenance.SourceRef{
+	ID: "golingua-g10-18-negative-article-alternatives", URI: "https://github.com/clickbytes/golingua/issues/249#issuecomment-6359036189",
+	Version: "2026-10-23-g10-18", License: "internal", Author: "Codex by owner delegation",
+}
+
 type frameDeclaration struct {
 	id, sense, family string
 	roles             []meaning.Role
@@ -66,7 +71,7 @@ type constructionBindingDeclaration struct {
 	sense, frame, family, variant string
 }
 
-var englishConstructionBindingDeclarations = []constructionBindingDeclaration{
+var englishConstructionBindingDeclarations = append([]constructionBindingDeclaration{
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive_negative", "en.transitive_negative.svo"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive_negative", "en.transitive_negative.svo.plural"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo"},
@@ -115,6 +120,45 @@ var englishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_subject_an_target_an"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique_negative", "en.oblique_negative.svo"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique_negative", "en.oblique_negative.svo.plural"},
+}, englishNegativeArticleBindingDeclarations()...)
+
+func englishNegativeArticleBindingDeclarations() []constructionBindingDeclaration {
+	type familyRoute struct {
+		sense, frame, family string
+		suffixes             []string
+	}
+	routes := []familyRoute{
+		{"en.see.visual", "en.see.visual.transitive", "en.transitive_negative", []string{
+			".indefinite_object", ".indefinite_subject", ".indefinite_subject_object",
+			".indefinite_object_an", ".indefinite_subject_an",
+			".indefinite_subject_a_object_an", ".indefinite_subject_an_object_a",
+			".indefinite_subject_an_object_an",
+		}},
+		{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive_negative", []string{
+			".indefinite_object", ".indefinite_subject", ".indefinite_subject_object",
+			".indefinite_object_an", ".indefinite_subject_an",
+			".indefinite_subject_a_object_an", ".indefinite_subject_an_object_a",
+			".indefinite_subject_an_object_an",
+		}},
+		{"en.look.directed", "en.look.directed.at", "en.oblique_negative", []string{
+			".indefinite_target", ".indefinite_subject", ".indefinite_subject_target",
+			".indefinite_target_an", ".indefinite_subject_an",
+			".indefinite_subject_a_target_an", ".indefinite_subject_an_target_a",
+			".indefinite_subject_an_target_an",
+		}},
+	}
+	bindings := make([]constructionBindingDeclaration, 0, 48)
+	for _, route := range routes {
+		for _, numberSuffix := range []string{"", ".plural"} {
+			for _, suffix := range route.suffixes {
+				bindings = append(bindings, constructionBindingDeclaration{
+					sense: route.sense, frame: route.frame, family: route.family,
+					variant: route.family + ".svo" + numberSuffix + suffix,
+				})
+			}
+		}
+	}
+	return bindings
 }
 
 var englishFrames = []frameDeclaration{
@@ -215,6 +259,9 @@ func CompileValency() (*valency.Index, error) {
 
 func englishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
 	if strings.HasSuffix(item.family, "_negative") {
+		if strings.Contains(item.variant, ".indefinite_") {
+			return englishNegativeArticleConstructionSource
+		}
 		return englishNegationConstructionSource
 	}
 	variant := item.variant

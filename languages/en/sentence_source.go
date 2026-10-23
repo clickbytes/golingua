@@ -144,17 +144,13 @@ func (builder englishSentenceEvidenceBuilder) Build(ctx context.Context, lattice
 	if err != nil {
 		return runtime.CompositionEvidence{}, err
 	}
-	negativeVariant, err := ids.NewConstructionID(strings.TrimPrefix(route.variantForNumber(number), "construction:"))
-	if err != nil {
-		return runtime.CompositionEvidence{}, err
-	}
 	operatorCount := 0
 	for _, node := range forest.Nodes {
 		if node.Category != "clause" {
 			continue
 		}
 		for _, alternative := range node.Alternatives {
-			if alternative.FamilyID != negativeFamily || alternative.VariantID.String() != negativeVariant.String() || alternative.Permission.SenseID.String() != route.sense {
+			if alternative.FamilyID != negativeFamily || !route.variantMatchesNumber(alternative.VariantID.String(), number) || alternative.Permission.SenseID.String() != route.sense {
 				return runtime.CompositionEvidence{}, nil
 			}
 			for _, slot := range alternative.Slots {
