@@ -70,6 +70,50 @@ Istniejące zdanie EN→PL zwróciło `ok` i `Nauczyciel widzi psa.`; PL→EN zw
 i rzeczywiste CI PR #209 przeszły. `go test ./...` nie uruchamiano. Właścicielska
 ocena językowa pozostaje **NOT RUN**.
 
+### Delegowany przegląd tras `translate` — 2026-10-23
+
+Ograniczony przegląd użył istniejących, oznaczonych `draft_unreviewed` rekordów
+S001, S026, S053 i S077 z `data/sentences/100-pl-en.tsv`: po jednym dla tras
+`seeing`, `hearing`, `looking` i `receiving`, w obu kierunkach. Bazowy `main`
+przed poprawką miał SHA
+`6d7b2e85c1f8f57175f47f2bc00d54eb0c79e280`. Końcowe wyniki poniżej uruchomiono
+z binarki zbudowanej z review commita
+`8ed705d161dd03965a06ce1ff04e900bb1b3a92c`.
+
+Komendy miały postać:
+
+```sh
+/tmp/golingua-g08-65-review-final translate --from pl --to en --text 'Nauczyciel widzi psa.' --runtime-config /tmp/golingua-g06-128-runtime.json --json
+/tmp/golingua-g08-65-review-final translate --from en --to pl --text 'The teacher sees the dog.' --runtime-config /tmp/golingua-g06-128-runtime.json --json
+/tmp/golingua-g08-65-review-final translate --from pl --to en --text 'Nauczyciel słyszy psa.' --runtime-config /tmp/golingua-g06-128-runtime.json --json
+/tmp/golingua-g08-65-review-final translate --from en --to pl --text 'The teacher hears the dog.' --runtime-config /tmp/golingua-g06-128-runtime.json --json
+/tmp/golingua-g08-65-review-final translate --from pl --to en --text 'Nauczyciel patrzy na psa.' --runtime-config /tmp/golingua-g06-128-runtime.json --json
+/tmp/golingua-g08-65-review-final translate --from en --to pl --text 'The teacher looks at the dog.' --runtime-config /tmp/golingua-g06-128-runtime.json --json
+/tmp/golingua-g08-65-review-final translate --from pl --to en --text 'Nauczyciel dostał wodę.' --runtime-config /tmp/golingua-g06-128-runtime.json --json
+/tmp/golingua-g08-65-review-final translate --from en --to pl --text 'The teacher got water.' --runtime-config /tmp/golingua-g06-128-runtime.json --json
+```
+
+Literalne pola wyjścia po poprawce:
+
+| Rekord | Kierunek | Exit/status | Tekst | Assumptions / diagnostyka |
+| --- | --- | --- | --- | --- |
+| S001 | PL→EN | `7` / `incomplete` | `The teacher sees the dog.` | `determiner=definite` dla `event/ref0` i `event/ref1`; candidate `EXPLICIT_REALIZATION_ASSUMPTION`, wynik `TRANSLATION_NOT_OK`. |
+| S001 | EN→PL | `0` / `ok` | `Nauczyciel widzi psa.` | brak assumptions i diagnostyk. |
+| S026 | PL→EN | `7` / `incomplete` | `The teacher hears the dog.` | `determiner=definite` dla obu uczestników; candidate `EXPLICIT_REALIZATION_ASSUMPTION`, wynik `TRANSLATION_NOT_OK`. |
+| S026 | EN→PL | `0` / `ok` | `Nauczyciel słyszy psa.` | brak assumptions i diagnostyk. |
+| S053 | PL→EN | `7` / `incomplete` | `The teacher looks at the dog.` | `determiner=definite` dla obu uczestników; candidate `EXPLICIT_REALIZATION_ASSUMPTION`, wynik `TRANSLATION_NOT_OK`. |
+| S053 | EN→PL | `0` / `ok` | `Nauczyciel patrzy na psa.` | brak assumptions i diagnostyk. |
+| S077 | PL→EN | `7` / `incomplete` | `The teacher got the water.` | `determiner=definite` dla `event/ref0` (water) i `event/ref1` (teacher); candidate `EXPLICIT_REALIZATION_ASSUMPTION`, wynik `TRANSLATION_NOT_OK`. |
+| S077 | EN→PL | `0` / `ok` | `Nauczyciel dostał wodę.` | brak assumptions i diagnostyk. |
+
+Assumptions są dołączone do każdego candidate z wartością, powodem i ścieżką
+Meaning; identyczne powtórzenia diagnostyki target są zwracane raz. S077 pokazuje
+konkretny wybór `the water`, ale rekord źródłowy jest `draft_unreviewed`, a
+Meaning nie koduje określoności. To jawne założenie, nie rozstrzygnięcie, czy
+wariant jest językowo akceptowalny. Akceptacja właściciela pozostaje
+**NOT RUN**. Kontrole review commita: `gofmt`, `git diff --check`, `go vet ./...`,
+`go build ./cmd/golingua`, `--help` i `--version`; `go test ./...` nie uruchamiano.
+
 Bez tekstu dostarczonego przez właściciela oznacz ocenę językową **NOT EVALUATED**. Jeśli nie uruchomiono konkretnej próby na wejściu właściciela, oznacz ją **NOT RUN**. Gdy właściciel deleguje autonomiczną ocenę, agent może opisać własną ocenę na tych wejściach, ale status akceptacji właściciela pozostaje osobny. Techniczne smoke testy z tekstem zastępczym nie są wejściem do oceny językowej. Dokładny kontrakt i przykład komendy opisuje [docs/cli.md](cli.md); nie przedstawiaj go jako dowodu, że provider jest skonfigurowany.
 
 Nie ma obowiązku zapisywania każdego outputu do pliku. Jeśli zapis jest przydatny, prowadź opcjonalnie krótką notatkę w issue lub `examples/manual/`:
