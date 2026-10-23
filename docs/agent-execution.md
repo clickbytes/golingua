@@ -70,3 +70,13 @@ Reviewers must verify that the worker did not change AGENTS.md, CI, GitHub metad
 ## Example G11-V1 splitting (without more micro-PRs)
 
 Sol owns the overall G11-V1 TUI vertical slice, public CLI/TUI startup decision and `internal/app.Service` contract. Luna Low can map existing `cmd/golingua` and `internal/app` call paths read-only. The implementation writer may own one sharply bounded presentational component of the shell, if Sol has specified the exact types/interfaces; it may not invent state ownership or status semantics. Sol integrates, drives actual TTY and non-TTY probes and owns the sole G11-V1 PR. G11-V2 and later remain queued.
+
+## Completion gate for user-visible flows
+
+Required observable product behavior (for example, G11-V1 opening an actual TTY and executing F1 Translate) is NOT proven by a `NOT RUN` entry. Report PARTIAL/BLOCKED until it is actually verified, unless the owner explicitly waives that exact acceptance criterion. Owner linguistic acceptance can stay NOT EVALUATED without blocking otherwise verified technical work.
+
+## OpenCode version and isolation gate
+
+Before any `--auto` run, Sol verifies `opencode --version`, `opencode run --help`, the local model, and actual denial of shell/both shell and bash aliases, web/network, nested task execution and external-directory access. If any configured deny rule is unsupported, refuse YOLO and use Sol or Luna instead.
+
+`steps: 12` caps model iterations, not wall-clock runtime, number of file writes or OS resource consumption. Add an external process timeout and run in an isolated disposable container/VM without secrets and GitHub credentials. A worktree alone is NOT security isolation; it shares repository metadata and often host credentials.
