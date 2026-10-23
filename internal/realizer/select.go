@@ -433,6 +433,9 @@ func SelectTargets(input Input) (Result, error) {
 						return finish()
 					}
 					for _, familyID := range frame.AllowedFamilyIDs {
+						if len(nodeOperators) > 0 && nodeOperators[0].InputFamilyID != familyID {
+							continue
+						}
 						familyBindings := valencyBindingsForFamily(familyID)
 						if len(familyBindings) > budget.MaxExpansions-work {
 							result.Outcome = status.OutcomeResourceLimit

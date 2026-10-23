@@ -51,6 +51,11 @@ var englishIndefiniteAllomorphConstructionSource = provenance.SourceRef{
 	Version: "2026-10-23-g10-12", License: "internal", Author: "Codex by owner delegation",
 }
 
+var englishNegationConstructionSource = provenance.SourceRef{
+	ID: "golingua-g10-16-negated-seeing", URI: "https://github.com/clickbytes/golingua/issues/245#issuecomment-6358351181",
+	Version: "2026-10-23", License: "internal", Author: "Codex by owner delegation",
+}
+
 type frameDeclaration struct {
 	id, sense, family string
 	roles             []meaning.Role
@@ -62,6 +67,7 @@ type constructionBindingDeclaration struct {
 }
 
 var englishConstructionBindingDeclarations = []constructionBindingDeclaration{
+	{"en.see.visual", "en.see.visual.transitive", "en.transitive_negative", "en.transitive_negative.svo"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo.indefinite_object"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo.indefinite_subject"},
@@ -163,6 +169,13 @@ func CompileValency() (*valency.Index, error) {
 			Arguments:        append([]valency.ArgumentSlot(nil), item.arguments...),
 			AllowedFamilyIDs: []ids.ConstructionID{familyID}, Provenance: englishValencySource,
 		}
+		if item.id == "en.see.visual.transitive" {
+			negativeFamilyID, err := ids.NewConstructionID("en.transitive_negative")
+			if err != nil {
+				return nil, fmt.Errorf("English negative frame family: %w", err)
+			}
+			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
+		}
 		frames = append(frames, frame)
 	}
 	bindings := make([]valency.ConstructionBinding, 0, len(englishConstructionBindingDeclarations))
@@ -189,6 +202,9 @@ func CompileValency() (*valency.Index, error) {
 }
 
 func englishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.family == "en.transitive_negative" {
+		return englishNegationConstructionSource
+	}
 	variant := item.variant
 	if suffix, isPastFamily := strings.CutPrefix(variant, "en.transitive_past."); isPastFamily {
 		variant = "en.transitive." + suffix

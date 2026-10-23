@@ -8,7 +8,7 @@ import (
 	"github.com/clickbytes/golingua/internal/valency"
 )
 
-//go:embed constructions/transitive.json constructions/oblique.json constructions/intransitive.json constructions/ditransitive.json constructions/double_np.json constructions/transitive_oblique.json constructions/question.json
+//go:embed constructions/transitive.json constructions/transitive_negative.json constructions/oblique.json constructions/intransitive.json constructions/ditransitive.json constructions/double_np.json constructions/transitive_oblique.json constructions/question.json
 var sentenceConstructions embed.FS
 
 // SentenceConstructions compiles the language-local templates against the
@@ -16,7 +16,7 @@ var sentenceConstructions embed.FS
 // a sense; the presence of a family alone grants no sentence capability.
 func SentenceConstructions(index *valency.Index) ([]construction.CompiledConstructionPackage, *construction.Registry, error) {
 	files := []string{
-		"transitive.json", "oblique.json", "intransitive.json", "ditransitive.json",
+		"transitive.json", "transitive_negative.json", "oblique.json", "intransitive.json", "ditransitive.json",
 		"double_np.json", "transitive_oblique.json", "question.json",
 	}
 	packages := make([]construction.CompiledConstructionPackage, 0, len(files))

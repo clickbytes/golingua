@@ -14,8 +14,10 @@
 
 `forms` i `catalog` są dostępne lokalnie. CLI może też załadować ograniczony,
 skompilowany runtime PL/EN dla dokładnych tras `seeing`, `hearing`, `looking` i `receiving`, gdy `translate`
-otrzyma `--runtime-config` wskazujący aktywny snapshot. Pierwsze trzy trasy obsługują teraźniejszą
-3. osobę liczby pojedynczej, a `receiving` — czas przeszły w 3. osobie liczby pojedynczej.
+otrzyma `--runtime-config` wskazujący aktywny snapshot. Trasy `seeing`, `hearing`
+i `looking` obsługują teraźniejszą 3. osobę liczby pojedynczej i mnogiej;
+`seeing` dodatkowo ma negację w 3. osobie liczby pojedynczej. `receiving`
+obsługuje czas przeszły w 3. osobie liczby pojedynczej i mnogiej.
 Bez tej konfiguracji
 żądanie translacji zwraca `unsupported` i exit code 3.
 

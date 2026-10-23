@@ -92,8 +92,8 @@ func Linearize(plan RealizationPlan, family construction.ConstructionFamily, slo
 	if plan.Outcome != status.OutcomeOK && plan.Outcome != status.OutcomeIncomplete {
 		return LinearizedResult{}, linearizeError(plan.Outcome, "PLAN_OUTCOME_NOT_REALIZABLE", "plan.outcome", "only ok or explicitly incomplete plans may be linearized")
 	}
-	if len(plan.Construction.Steps) != 0 {
-		return LinearizedResult{}, linearizeError(status.OutcomeUnsupported, "CONSTRUCTION_OPERATORS_NOT_LINEARIZED", "plan.construction.steps", "construction operator effects are not represented by the current surface linearizer")
+	if len(plan.Construction.Steps) != 0 && !explicitSurfaceNegation(plan, family) {
+		return LinearizedResult{}, linearizeError(status.OutcomeUnsupported, "CONSTRUCTION_OPERATORS_NOT_LINEARIZED", "plan.construction.steps", "the selected family has no explicit surface realization for this operator chain")
 	}
 	compiled := plan.CompiledVariant
 	if family.ID != plan.FamilyID || family.ID != compiled.FamilyID || family.ID != plan.Construction.OutputFamilyID || compiled.PlanID != plan.FamilyPlanID || compiled.Variant.ID != plan.VariantID {

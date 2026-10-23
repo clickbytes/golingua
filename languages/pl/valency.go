@@ -20,6 +20,11 @@ var polishConstructionReviewSource = provenance.SourceRef{
 	Version: "2026-10-22", License: "unknown", Author: "Codex by owner delegation",
 }
 
+var polishNegationConstructionSource = provenance.SourceRef{
+	ID: "golingua-g10-16-negated-seeing", URI: "https://github.com/clickbytes/golingua/issues/245#issuecomment-6358351181",
+	Version: "2026-10-23", License: "internal", Author: "Codex by owner delegation",
+}
+
 type frameDeclaration struct {
 	id, sense, family string
 	roles             []meaning.Role
@@ -31,6 +36,7 @@ type constructionBindingDeclaration struct {
 }
 
 var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.transitive_negative", "pl.transitive_negative.svo"},
 	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.transitive", "pl.transitive.svo"},
 	{"pl.slyszec.auditory", "pl.slyszec.auditory.transitive", "pl.transitive", "pl.transitive.svo"},
 	{"pl.dostac.receive", "pl.dostac.receive.transitive", "pl.transitive", "pl.transitive.svo"},
@@ -143,6 +149,13 @@ func CompileValency() (*valency.Index, error) {
 			Arguments:        append([]valency.ArgumentSlot(nil), item.arguments...),
 			AllowedFamilyIDs: []ids.ConstructionID{familyID}, Provenance: polishValencySource,
 		}
+		if item.id == "pl.widziec.visual.transitive" {
+			negativeFamilyID, err := ids.NewConstructionID("pl.transitive_negative")
+			if err != nil {
+				return nil, fmt.Errorf("Polish negative frame family: %w", err)
+			}
+			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
+		}
 		frames = append(frames, frame)
 	}
 	bindings := make([]valency.ConstructionBinding, 0, len(polishConstructionBindingDeclarations))
@@ -162,8 +175,15 @@ func CompileValency() (*valency.Index, error) {
 		bindings = append(bindings, valency.ConstructionBinding{
 			SenseID: senseID, ValencyFrameID: valency.FrameID(item.frame),
 			FamilyID: familyID, VariantID: variantID, Approved: true,
-			Provenance: polishConstructionReviewSource,
+			Provenance: polishConstructionBindingProvenance(item),
 		})
 	}
 	return valency.BuildIndexWithCandidates(frames, bindings, nil)
+}
+
+func polishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.family == "pl.transitive_negative" {
+		return polishNegationConstructionSource
+	}
+	return polishConstructionReviewSource
 }
