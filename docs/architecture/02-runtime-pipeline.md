@@ -3,7 +3,9 @@
 **Zaimplementowano ograniczone szlaki zdań PL/EN dla `seeing`, `hearing`, `looking` i `receiving`.**
 Pierwsze trzy obsługują jawne formy teraźniejsze 3. osoby liczby pojedynczej;
 `receiving` obsługuje angielskie `got` i polski czas przeszły 3. osoby liczby
-pojedynczej z uzgodnieniem rodzaju. Inne sensy, formy i profile gramatyczne
+pojedynczej z uzgodnieniem rodzaju oraz mnogiej z uzgodnieniem klasy
+masculine-personal/non-masculine-personal. Przy angielskim `got` liczba i klasa
+podmiotu muszą wynikać z jego jednoznacznej analizy. Inne sensy, formy i profile gramatyczne
 pozostają poza zakresem.
 
 `looking` wiąże angielskie `look at` z `at` + NP oraz polskie `patrzeć na` z
