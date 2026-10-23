@@ -107,14 +107,27 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 			return nil, nil
 		}
 		if values["tense"] == "past" || values["verb_form"] == "past" {
-			gender, known := polishSubjectGender(source, predicate, candidates)
+			number := string(values["number"])
+			if number == "" {
+				number = string(values["verb_number"])
+			}
+			subjectNumber, subjectNumberKnown := polishSubjectNumber(source, predicate, candidates)
+			if number == "" && subjectNumberKnown {
+				number = subjectNumber
+			} else if number != "" && subjectNumberKnown && number != subjectNumber {
+				return nil, nil
+			}
+			if number != "singular" && number != "plural" {
+				return nil, nil
+			}
+			gender, known := polishSubjectPastGender(source, predicate, candidates, number)
 			if !known {
 				return nil, nil
 			}
 			return knownPolishFeatures(
 				[2]string{"verb_form", "finite"}, [2]string{"tense", "past"},
 				[2]string{"aspect", "perfective"},
-				[2]string{"person", "third"}, [2]string{"number", "singular"},
+				[2]string{"person", "third"}, [2]string{"number", number},
 				[2]string{"mood", "indicative"}, [2]string{"voice", "active"},
 				[2]string{"gender", gender},
 			), nil
@@ -179,37 +192,8 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 }
 
 func polishSubjectGender(source semantic.MeaningCandidate, predicate realizer.TargetCandidate, candidates []realizer.TargetCandidate) (string, bool) {
-	if source.Meaning == nil {
-		return "", false
-	}
-	var subjectRole string
-	for _, argument := range predicate.Frame.Arguments {
-		if argument.GrammaticalFunction != "subject" {
-			continue
-		}
-		if subjectRole != "" {
-			return "", false
-		}
-		subjectRole = string(argument.Role)
-	}
-	if subjectRole == "" {
-		return "", false
-	}
-	meaningPredicate := findSentencePredicate(*source.Meaning, predicate.NodeID)
-	if meaningPredicate.ID == "" {
-		return "", false
-	}
-	var targetNode meaning.NodeID
-	for _, participant := range meaningPredicate.Participants {
-		if string(participant.Role) != subjectRole {
-			continue
-		}
-		if targetNode != "" {
-			return "", false
-		}
-		targetNode = participant.Target
-	}
-	if targetNode == "" {
+	_, targetNode, found := polishSubjectTarget(source, predicate)
+	if !found {
 		return "", false
 	}
 	gender := ""
@@ -228,6 +212,104 @@ func polishSubjectGender(source semantic.MeaningCandidate, predicate realizer.Ta
 		}
 	}
 	return gender, gender != ""
+}
+
+func polishSubjectNumber(source semantic.MeaningCandidate, predicate realizer.TargetCandidate, candidates []realizer.TargetCandidate) (string, bool) {
+	role, targetNode, found := polishSubjectTarget(source, predicate)
+	if !found {
+		return "", false
+	}
+	number := ""
+	for _, candidate := range candidates {
+		if candidate.Kind != meaning.KindReferent || candidate.NodeID != targetNode || candidate.Outcome != status.OutcomeOK {
+			continue
+		}
+		values, found := runtime.SourceFeatures(source, role, candidate.TransferBinding.CoreRef)
+		if !found {
+			continue
+		}
+		candidateNumber := string(values["number"])
+		if candidateNumber == "" {
+			candidateNumber = string(values["noun_number"])
+		}
+		if candidateNumber != "singular" && candidateNumber != "plural" {
+			continue
+		}
+		if number != "" && number != candidateNumber {
+			return "", false
+		}
+		number = candidateNumber
+	}
+	return number, number != ""
+}
+
+func polishSubjectPastGender(source semantic.MeaningCandidate, predicate realizer.TargetCandidate, candidates []realizer.TargetCandidate, number string) (string, bool) {
+	if number == "plural" {
+		values, found := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)
+		if found {
+			genderClass := string(values["gender"])
+			if genderClass == "masculine_personal" || genderClass == "non_masculine_personal" {
+				return genderClass, true
+			}
+		}
+	}
+	gender, found := polishSubjectGender(source, predicate, candidates)
+	if !found {
+		return "", false
+	}
+	if number == "singular" {
+		switch gender {
+		case "masculine_personal", "feminine", "neuter":
+			return gender, true
+		default:
+			return "", false
+		}
+	}
+	if number == "plural" {
+		switch gender {
+		case "masculine_personal":
+			return "masculine_personal", true
+		case "masculine_animal", "masculine_inanimate", "feminine", "neuter":
+			return "non_masculine_personal", true
+		default:
+			return "", false
+		}
+	}
+	return "", false
+}
+
+func polishSubjectTarget(source semantic.MeaningCandidate, predicate realizer.TargetCandidate) (meaning.Role, meaning.NodeID, bool) {
+	if source.Meaning == nil {
+		return "", "", false
+	}
+	var subjectRole meaning.Role
+	for _, argument := range predicate.Frame.Arguments {
+		if argument.GrammaticalFunction != "subject" {
+			continue
+		}
+		if subjectRole != "" {
+			return "", "", false
+		}
+		subjectRole = argument.Role
+	}
+	if subjectRole == "" {
+		return "", "", false
+	}
+	meaningPredicate := findSentencePredicate(*source.Meaning, predicate.NodeID)
+	if meaningPredicate.ID == "" {
+		return "", "", false
+	}
+	var targetNode meaning.NodeID
+	for _, participant := range meaningPredicate.Participants {
+		if participant.Role != subjectRole {
+			continue
+		}
+		if targetNode != "" {
+			return "", "", false
+		}
+		targetNode = participant.Target
+	}
+	return subjectRole, targetNode, targetNode != ""
 }
 
 func findSentencePredicate(graph meaning.Meaning, id meaning.NodeID) meaning.Node {

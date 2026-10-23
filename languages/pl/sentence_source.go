@@ -14,7 +14,7 @@ import (
 
 // NewSentenceSource builds the trusted Polish source stages against one exact
 // CORE/lexicon snapshot. The bare declarative completion attestation covers
-// singular and plural present visual/auditory/looking and singular past receiving predicates.
+// singular and plural present visual/auditory/looking and third-person past receiving predicates.
 func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if snapshot == nil {
 		return nil, fmt.Errorf("Polish sentence source requires a snapshot")
@@ -83,7 +83,11 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
 				},
-				receivingSense: {{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "singular"}},
+				receivingSense: {
+					{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "singular"},
+					{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
+					{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"},
+				},
 			},
 			AllowedUnlexicalizedTerminals: map[string]bool{"na": true},
 		},
