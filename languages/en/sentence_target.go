@@ -8,6 +8,7 @@ import (
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/language"
+	"github.com/clickbytes/golingua/internal/lexicon"
 	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/pack"
 	"github.com/clickbytes/golingua/internal/realizer"
@@ -61,7 +62,7 @@ func NewSentenceTarget(snapshot *pack.Pack, registry *language.Registry) (*runti
 		Language: "en", LanguageRegistry: registry, Lexicon: snapshot.Lexicon(), Valency: valencyIndex,
 		Constructions: constructions, Variants: variants, Core: snapshot.CoreGraph(),
 		OperatorBuilder: runtime.NoOperatorEvidenceBuilder{}, ExecutionBuilder: execution,
-		PlanBuilder: englishSentencePlanAnnotations{},
+		PlanBuilder: englishSentencePlanAnnotations{}, CandidatePolicy: englishMassObjectCandidatePolicy{},
 	}, nil
 }
 
@@ -156,6 +157,19 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 			})
 			continue
 		}
+		if englishMassObjectRole(selected, participant.Role) {
+			assumptions = append(assumptions, realizer.FieldAssumption{
+				Path: referentPath, Field: "determiner", Value: "bare",
+				Reason: "The selected English construction realizes an explicitly mass target noun without an article; source Meaning does not encode definiteness",
+			})
+			if len(source.Evidence.Records) == 0 {
+				assumptions = append(assumptions, realizer.FieldAssumption{
+					Path: referentPath, Field: "number", Value: "singular",
+					Reason: "Meaning v1 identifies individual referents but carries no noun number feature; this response uses the approved singular form",
+				})
+			}
+			continue
+		}
 		assumptions = append(assumptions, realizer.FieldAssumption{
 			Path: referentPath, Field: "determiner", Value: "definite",
 			Reason: "English transitive template realizes the definite determiner; source Meaning and morphology provide no explicit definiteness value",
@@ -168,6 +182,84 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 		}
 	}
 	return nil, assumptions, losses, nil
+}
+
+type englishMassObjectCandidatePolicy struct{}
+
+func (englishMassObjectCandidatePolicy) KeepTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) bool {
+	const (
+		receivingSense    = "sense:en.get.receive"
+		transitiveFamily  = "construction:en.transitive"
+		standardVariant   = "construction:en.transitive.svo"
+		massObjectVariant = "construction:en.transitive.svo.mass_object"
+	)
+	if candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || candidate.Sense.ID.String() != receivingSense ||
+		candidate.Family.Family.ID.String() != transitiveFamily {
+		return true
+	}
+	variantID := candidate.CompiledVariant.Variant.ID.String()
+	if variantID != standardVariant && variantID != massObjectVariant {
+		return true
+	}
+	if source.Meaning == nil {
+		return variantID != massObjectVariant
+	}
+	predicate := findMeaningNode(*source.Meaning, candidate.NodeID)
+	if predicate.ID == "" {
+		return variantID != massObjectVariant
+	}
+	var objectTarget meaning.NodeID
+	for _, slot := range candidate.Family.Family.SlotSpecs {
+		if slot.ID != "object" || slot.ArgumentBinding == nil {
+			continue
+		}
+		for _, participant := range predicate.Participants {
+			if participant.Role == slot.ArgumentBinding.SemanticRole {
+				objectTarget = participant.Target
+				break
+			}
+		}
+		break
+	}
+	if objectTarget == "" {
+		return variantID != massObjectVariant
+	}
+	var objectCandidate realizer.TargetCandidate
+	count := 0
+	for _, available := range candidates {
+		if available.SourceCandidateID == candidate.SourceCandidateID && available.NodeID == objectTarget &&
+			available.Kind == meaning.KindReferent && available.Outcome == status.OutcomeOK {
+			objectCandidate = available
+			count++
+		}
+	}
+	isMassObject := count == 1 && hasLexicalProperty(objectCandidate.Lexeme.Properties, "number_behavior", "mass")
+	if isMassObject {
+		return variantID == massObjectVariant
+	}
+	return variantID == standardVariant
+}
+
+func englishMassObjectRole(candidate realizer.TargetCandidate, role meaning.Role) bool {
+	if candidate.CompiledVariant.Variant.ID.String() != "construction:en.transitive.svo.mass_object" ||
+		candidate.Sense.ID.String() != "sense:en.get.receive" {
+		return false
+	}
+	for _, slot := range candidate.Family.Family.SlotSpecs {
+		if slot.ID == "object" && slot.ArgumentBinding != nil && slot.ArgumentBinding.SemanticRole == role {
+			return true
+		}
+	}
+	return false
+}
+
+func hasLexicalProperty(properties []lexicon.Property, key, value string) bool {
+	for _, property := range properties {
+		if property.Key == key && property.Value == value {
+			return true
+		}
+	}
+	return false
 }
 
 func knownFeature(feature features.FeatureID, value string) []features.FeatureValue {

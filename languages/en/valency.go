@@ -26,6 +26,12 @@ var englishLookingConstructionReviewSource = provenance.SourceRef{
 	Version: "2026-10-23-g05-14", License: "unknown", Author: "Codex by owner delegation",
 }
 
+var englishOwnerMassObjectConstructionSource = provenance.SourceRef{
+	ID:      "golingua-owner-selected-mass-object",
+	URI:     "https://github.com/clickbytes/golingua/issues/66#issuecomment-6355642886",
+	Version: "2026-10-23-s077-mass-object", License: "internal", Author: "project owner",
+}
+
 type frameDeclaration struct {
 	id, sense, family string
 	roles             []meaning.Role
@@ -40,6 +46,7 @@ var englishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.mass_object"},
 	{"en.read.text", "en.read.text.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo"},
 }
@@ -120,10 +127,17 @@ func CompileValency() (*valency.Index, error) {
 		bindings = append(bindings, valency.ConstructionBinding{
 			SenseID: senseID, ValencyFrameID: valency.FrameID(item.frame),
 			FamilyID: familyID, VariantID: variantID, Approved: true,
-			Provenance: englishBindingProvenance(item.sense),
+			Provenance: englishConstructionBindingProvenance(item),
 		})
 	}
 	return valency.BuildIndexWithCandidates(frames, bindings, nil)
+}
+
+func englishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.variant == "en.transitive.svo.mass_object" {
+		return englishOwnerMassObjectConstructionSource
+	}
+	return englishBindingProvenance(item.sense)
 }
 
 func englishBindingProvenance(sense string) provenance.SourceRef {

@@ -45,6 +45,7 @@ func BuildSentenceLanguagePackage(languageID features.LanguageID, version string
 		}
 	}
 	var bindings []language.Binding
+	bindingIndexes := make(map[string]int)
 	boundSenses := make(map[ids.SenseID]bool, len(allowedSenses))
 	for _, route := range valencyIndex.Bindings() {
 		if !route.Approved || !allowedSenses[route.SenseID] {
@@ -54,12 +55,31 @@ func BuildSentenceLanguagePackage(languageID features.LanguageID, version string
 			if !transfer.TransferAuthorized() {
 				continue
 			}
-			bindings = append(bindings, language.Binding{
-				SenseID: route.SenseID, ValencyFrameID: string(route.ValencyFrameID), FamilyID: route.FamilyID,
-				VariantIDs: []ids.ConstructionID{route.VariantID}, CoreRef: transfer.CoreRef,
-				Mapping: lexicon.MappingEquivalent, Approved: true, Provenance: transfer.Provenance,
-				Analyze: true, Realize: true,
-			})
+			key := route.SenseID.String() + "\x00" + string(route.ValencyFrameID) + "\x00" + route.FamilyID.String()
+			if index, exists := bindingIndexes[key]; exists {
+				binding := &bindings[index]
+				if binding.CoreRef != transfer.CoreRef || binding.Provenance != transfer.Provenance {
+					return language.Package{}, fmt.Errorf("sentence route variants for %s disagree on their exact lexical transfer", route.SenseID)
+				}
+				found := false
+				for _, variantID := range binding.VariantIDs {
+					if variantID == route.VariantID {
+						found = true
+						break
+					}
+				}
+				if !found {
+					binding.VariantIDs = append(binding.VariantIDs, route.VariantID)
+				}
+			} else {
+				bindingIndexes[key] = len(bindings)
+				bindings = append(bindings, language.Binding{
+					SenseID: route.SenseID, ValencyFrameID: string(route.ValencyFrameID), FamilyID: route.FamilyID,
+					VariantIDs: []ids.ConstructionID{route.VariantID}, CoreRef: transfer.CoreRef,
+					Mapping: lexicon.MappingEquivalent, Approved: true, Provenance: transfer.Provenance,
+					Analyze: true, Realize: true,
+				})
+			}
 			boundSenses[route.SenseID] = true
 		}
 	}

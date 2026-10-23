@@ -14,7 +14,7 @@ import (
 	"github.com/clickbytes/golingua/internal/valency"
 )
 
-const sentenceProviderVersion = "v2026.10.23-looking"
+const sentenceProviderVersion = "v2026.10.23-mass-object"
 
 type sentenceProvider struct {
 	source   *runtime.SourcePipeline
@@ -116,6 +116,7 @@ func newSentencePlanRealizer(snapshot *pack.Pack) (*runtime.ConstructionPlanReal
 		Language: "en", Lexicon: snapshot.Lexicon(), Valency: valencyIndex,
 		Constructions: constructions, Variants: variants, Core: snapshot.CoreGraph(),
 		PlanBuilder: englishSentencePlanAnnotations{}, ExecutionBuilder: execution,
+		CandidatePolicy: englishMassObjectCandidatePolicy{},
 	}
 	return adapter, valencyIndex, nil
 }

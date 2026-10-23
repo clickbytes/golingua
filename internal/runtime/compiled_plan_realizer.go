@@ -34,6 +34,7 @@ type ConstructionPlanRealizer struct {
 	PlanBudget       realizer.PlanBudget
 	ExecuteBudget    realizer.ExecuteBudget
 	LinearizeBudget  realizer.LinearizeBudget
+	CandidatePolicy  realizer.TargetCandidatePolicy
 }
 
 var _ language.Realizer = (*ConstructionPlanRealizer)(nil)
@@ -64,6 +65,7 @@ func (adapter *ConstructionPlanRealizer) Realize(ctx context.Context, graph mean
 	}
 	selection, err := realizer.SelectTargets(realizer.Input{
 		Candidates: []semantic.MeaningCandidate{source}, Outcome: status.OutcomeOK,
+		CandidatePolicy:          adapter.CandidatePolicy,
 		OperatorCoverageComplete: true, Language: lexicon.LanguageID(adapter.Language),
 		Lexicon: adapter.Lexicon, Valency: adapter.Valency, Constructions: adapter.Constructions,
 		Variants: adapter.Variants, Core: adapter.Core, Budget: adapter.SelectionBudget,
