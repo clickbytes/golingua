@@ -539,7 +539,7 @@ var polishParadigmByLexeme = map[string]string{
 	"pl.widziec.v":   "pl_verb_present_i",
 	"pl.slyszec.v":   "pl_verb_present_y",
 	"pl.patrzec.v":   "pl_verb_present_y",
-	"pl.czytac.v":    "pl_verb_czytac_present",
+	"pl.czytac.v":    "pl_verb_czytac_finite",
 	"pl.dorosly.adj": "pl_adjective_dorosly_attested",
 	"pl.drzewo.n":    "pl_noun_drzewo_attested",
 	"pl.dostac.v":    "pl_verb_perfective_finite",

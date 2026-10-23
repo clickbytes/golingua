@@ -20,8 +20,8 @@ import (
 // NewSentenceSource compiles the English analysis stages against one exact
 // snapshot. Its complete declarative attestation is limited to attested
 // third-person singular and plural present visual, auditory, directed-looking,
-// and reading predicates, bounded present negation, explicit articles, and past
-// receiving.
+// and reading predicates, third-person past reading, bounded present negation,
+// explicit articles, and past receiving.
 func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if snapshot == nil {
 		return nil, fmt.Errorf("English sentence source requires a snapshot")
@@ -92,6 +92,7 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 				readingSense: {
 					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
 					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
+					{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"},
 				},
 				// English simple past is finite but has one form for all persons
 				// and numbers, so no agreement feature is required for this cell.
@@ -308,7 +309,7 @@ func supportedEnglishPredicateRoute(candidate parser.PhraseCandidate) bool {
 			(candidate.Features["verb_number"] == "singular" || candidate.Features["verb_number"] == "plural")
 	case "past":
 		for _, sense := range candidate.SenseIDs {
-			if sense.String() == "sense:en.get.receive" {
+			if sense.String() == "sense:en.get.receive" || sense.String() == "sense:en.read.text" {
 				return true
 			}
 		}

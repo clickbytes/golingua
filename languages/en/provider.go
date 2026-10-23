@@ -14,7 +14,7 @@ import (
 	"github.com/clickbytes/golingua/internal/valency"
 )
 
-const sentenceProviderVersion = "v2026.10.23-g10-19-reading-route"
+const sentenceProviderVersion = "v2026.10.23-g10-20-reading-past"
 
 type sentenceProvider struct {
 	source   *runtime.SourcePipeline
@@ -26,8 +26,8 @@ var _ language.Analyzer = (*sentenceProvider)(nil)
 var _ language.Realizer = (*sentenceProvider)(nil)
 
 // NewSentenceProvider creates the exact English seeing, hearing, receiving,
-// looking, and reading package and its trusted provider against one validated
-// snapshot.
+// looking, and present/past reading package and its trusted provider against
+// one validated snapshot.
 func NewSentenceProvider(snapshot *pack.Pack) (language.Package, language.LanguageProvider, error) {
 	if snapshot == nil {
 		return language.Package{}, nil, fmt.Errorf("English sentence provider requires a validated snapshot")

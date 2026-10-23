@@ -276,3 +276,25 @@ i dokładne wyniki są w
 **Ocena agenta:** role czytelnika i materiału, liczba oraz ograniczenie czasu
 są zachowane; PL→EN jawnie ujawnia brak określoności. Akceptacja językowa
 właściciela pozostaje **NOT RUN**.
+
+## Trasa `reading` past G10-20 — 2026-10-23
+
+G10-20 dodaje zdaniową analizę i realizację czasu przeszłego dla istniejących
+sensów `reading`, bez dodawania wierszy do korpusu. EN→PL dla
+`The teacher/mother/child read the message.` generuje odpowiednio
+`Nauczyciel czytał wiadomość.`, `Matka czytała wiadomość.` i
+`Dziecko czytało wiadomość.`. Dla `teachers` i `children` angielskie `read` ma
+zarówno teraźniejszą, jak i przeszłą analizę, a runtime zachowuje oba polskie
+teksty jako `ambiguous`. PL→EN używa simple past `read`; brak określoności w
+polskim źródle zachowuje alternatywy `a/the`, a `dziecko` również ma
+alternatywę leksemu.
+
+Paradygmat `pl.czytac.v` zawiera 15 jawnych komórek czasu przeszłego
+(1./2./3. osoba, liczba pojedyncza/mnoga, odpowiednia klasa rodzaju) ze
+źródłem WSJP. Istniejący korpus S001–S100 uruchomiono ponownie w obu kierunkach:
+200 wywołań, bez zmian w statusach ani parach `(candidate outcome, text)`
+względem G10-14. Dokładne wyjścia tras i form są w
+[obserwacji G10-20](observed-2026-10-23-g10-20-reading-past.tsv); przebieg
+pełnego korpusu jest w
+[osobnej tabeli](observed-2026-10-23-g10-20-full-corpus.tsv). Ocena agenta jest
+zapisana, akceptacja właściciela pozostaje **NOT RUN**.

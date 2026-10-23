@@ -197,6 +197,12 @@ func Compose(input CompositionInput) (ComposeResult, error) {
 			for _, slot := range alternative.Slots {
 				for _, nodeID := range slot.NodeIDs {
 					if node, found := rootByID[nodeID]; found && node.Category == construction.CategoryVP {
+						// Packed VP nodes can be shared by several readings. The
+						// alternative's slot binding is the candidate selection for
+						// this exact derivation; retain it when composing meaning.
+						if len(slot.CandidateIDs) != 0 {
+							node.CandidateIDs = append([]string(nil), slot.CandidateIDs...)
+						}
 						predicateNodes = append(predicateNodes, node)
 					}
 				}

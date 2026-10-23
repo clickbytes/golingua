@@ -74,7 +74,10 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 		if lexeme.ID.String() == "lexeme:pl.czytac.v" {
 			foundRead = true
 			attested = append(attested, lexemeRecord{Lexeme: lexeme, PrincipalParts: morph.PrincipalParts{
-				LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "present_stem", Form: "czyt"}},
+				LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{
+					{ID: "present_stem", Form: "czyt"},
+					{ID: "past_stem", Form: "czyta"},
+				},
 			}})
 		}
 		if lexeme.ID.String() == "lexeme:pl.dostac.v" {

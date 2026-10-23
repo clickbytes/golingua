@@ -470,6 +470,35 @@ wyjścia są w
 [`data/sentences/observed-2026-10-23-g10-19-reading-route.tsv`](../data/sentences/observed-2026-10-23-g10-19-reading-route.tsv).
 Akceptacja językowa właściciela pozostaje **NOT RUN**.
 
+### G10-20 #253 — `reading` simple past PL/EN — 2026-10-23
+
+Po włączeniu czasu przeszłego w szlaku `reading` uruchomiłem CLI dla
+`The teacher/mother/child read the message.` oraz
+`The teachers/children read the message.` w EN→PL, dla odpowiadających im
+polskich form przeszłych w PL→EN i dla kontrolnego `The teacher reads the
+message.`. Liczba pojedyncza realizuje `czytał/czytała/czytało`; mnoga
+zachowuje `czytali/czytały`. Angielskie mnogie `read` zwraca kandydatów
+teraźniejszego i przeszłego, więc runtime zgłasza `ambiguous`. PL→EN zachowuje
+alternatywy angielskich rodzajników; wynik może być `ambiguous`, a dla
+niejednoznacznego konceptu `child` także pokazuje alternatywy leksykalne.
+
+Polski paradygmat zawiera 15 jawnych komórek przeszłych z WSJP jako źródłem
+form i zachowuje dotychczasowe formy teraźniejsze. Ponowne uruchomienie 100
+istniejących par (200 wywołań) zachowało wszystkie statusy i zbiory
+`(candidate outcome, text)` G10-14; zmienionych grup: zero. Korpusu nie
+zmieniono. Dokładne przykłady i wygenerowane formy są w
+[`data/sentences/observed-2026-10-23-g10-20-reading-past.tsv`](../data/sentences/observed-2026-10-23-g10-20-reading-past.tsv),
+a pełne wyjścia istniejącego korpusu w
+[`data/sentences/observed-2026-10-23-g10-20-full-corpus.tsv`](../data/sentences/observed-2026-10-23-g10-20-full-corpus.tsv).
+
+**Ocena agenta:** role czytelnika i materiału są zachowane; rodzaj polskiego
+czasownika zgadza się z jawnym rodzajem podmiotu, a liczba mnoga rozróżnia
+rodzaj męskoosobowy i niemęskoosobowy. Angielskie `read` ma rzeczywistą
+homografię czasu teraźniejszego i przeszłego w liczbie mnogiej; oba sensowne
+odczytania pozostają widoczne. Wybór określoności przy tłumaczeniu PL→EN jest
+założeniem jawnie pokazanym przez warianty. Akceptacja językowa właściciela
+pozostaje **NOT RUN**.
+
 ## Co NIE jest wymagane
 
 - Przenoszenie dawnych zdań lub ich oczekiwanych rezultatów z JS.
