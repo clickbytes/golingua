@@ -11,6 +11,8 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/x/ansi"
 	"github.com/clickbytes/golingua/internal/app"
+	"github.com/clickbytes/golingua/internal/core"
+	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/status"
 	"golang.org/x/term"
 )
@@ -28,10 +30,23 @@ type formsDone struct {
 	id, revision uint64
 	response     app.FormsResult
 }
+type conceptsStart struct{}
+type conceptsCatalogDone struct {
+	id       uint64
+	response app.CatalogResult
+}
+type conceptsLookupDone struct {
+	id, revision uint64
+	conceptID    string
+	concept      core.Concept
+	found        bool
+	err          error
+}
 
 type model struct {
 	palette                                           paletteState
 	forms                                             formsState
+	concepts                                          conceptsState
 	selectedID                                        string
 	candidateDetail                                   bool
 	pendingPreview                                    uint64
@@ -65,8 +80,43 @@ func Run(service *app.Service, in, out *os.File) error {
 	_, err := tea.NewProgram(m, tea.WithInput(in), tea.WithOutput(out), tea.WithContext(ctx)).Run()
 	return err
 }
-func (m model) Init() tea.Cmd { return func() tea.Msg { return loadSettings() } }
+func (m model) Init() tea.Cmd {
+	return tea.Batch(
+		func() tea.Msg { return loadSettings() },
+		func() tea.Msg { return conceptsStart{} },
+	)
+}
 func (m *model) next() uint64 { m.sequence++; return m.sequence }
+func (m *model) loadConcepts() tea.Cmd {
+	id := m.next()
+	m.concepts.pendingCatalog = id
+	s, ctx := m.service, m.ctx
+	return func() tea.Msg {
+		return conceptsCatalogDone{id: id, response: s.Catalog(ctx, app.CatalogRequest{Details: true})}
+	}
+}
+func (m *model) lookupConcept() tea.Cmd {
+	if m.concepts.selectedID == "" {
+		return nil
+	}
+	id := m.next()
+	revision, conceptID := m.concepts.revision, m.concepts.selectedID
+	m.concepts.pendingLookup = id
+	m.concepts.detail = true
+	m.concepts.lookup = nil
+	m.concepts.lookupErr = ""
+	m.concepts.lookupFound = false
+	m.concepts.detailScroll = 0
+	s, ctx := m.service, m.ctx
+	return func() tea.Msg {
+		parsed, err := ids.ParseConceptID(conceptID)
+		if err != nil {
+			return conceptsLookupDone{id: id, revision: revision, conceptID: conceptID, err: err}
+		}
+		concept, found, err := s.LookupConcept(ctx, parsed)
+		return conceptsLookupDone{id: id, revision: revision, conceptID: conceptID, concept: concept, found: found, err: err}
+	}
+}
 func (m model) focusNames() []string {
 	if m.screen == 0 {
 		return []string{"prompt", "direction", "candidates", "preview", "result", "tabs"}
@@ -79,6 +129,9 @@ func (m model) focusNames() []string {
 			return []string{"prompt", "language", "mode", "features", "run", "result", "tabs"}
 		}
 		return []string{"prompt", "language", "mode", "run", "result", "tabs"}
+	}
+	if m.screen == 2 {
+		return []string{"prompt", "list", "result", "tabs"}
 	}
 	return []string{"prompt", "tabs"}
 }
@@ -158,6 +211,39 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch v := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.width, m.height = v.Width, v.Height
+	case conceptsStart:
+		if m.concepts.catalog == nil && m.concepts.pendingCatalog == 0 {
+			return m, m.loadConcepts()
+		}
+	case conceptsCatalogDone:
+		if v.id == m.concepts.pendingCatalog {
+			m.concepts.pendingCatalog = 0
+			previous := m.concepts.selectedID
+			m.concepts.catalog = &v.response
+			m.concepts.reconcile()
+			if previous != m.concepts.selectedID {
+				m.concepts.pendingLookup = 0
+				m.concepts.detail = false
+				m.concepts.lookup = nil
+				m.concepts.lookupErr = ""
+				m.concepts.lookupFound = false
+				m.concepts.detailScroll = 0
+			}
+			m.concepts.listScroll = 0
+		}
+	case conceptsLookupDone:
+		if v.id == m.concepts.pendingLookup && v.revision == m.concepts.revision && v.conceptID == m.concepts.selectedID {
+			m.concepts.pendingLookup = 0
+			m.concepts.lookupErr = ""
+			if v.err != nil {
+				m.concepts.lookupErr = v.err.Error()
+			}
+			m.concepts.lookupFound = v.found && v.err == nil
+			if m.concepts.lookupFound {
+				concept := v.concept
+				m.concepts.lookup = &concept
+			}
+		}
 	case settingsLoaded:
 		m.loaded = true
 		m.settingsFile = v.path
@@ -224,6 +310,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		} else if m.focus() == "prompt" && (m.screen == 0 || m.screen == 4) {
 			m.drafts[m.screen].insert(v.Content)
+		} else if m.screen == 2 && m.focus() == "prompt" {
+			before := m.concepts.filter.revision
+			m.concepts.filter.insert(v.Content)
+			if before != m.concepts.filter.revision {
+				m.concepts.edited()
+			}
 		}
 	case tea.KeyPressMsg:
 		key := v.String()
@@ -256,6 +348,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.scroll[0] = 0
 				return m, nil
 			}
+			if m.screen == 2 && m.concepts.detail {
+				m.concepts.detail = false
+				m.concepts.pendingLookup = 0
+				m.concepts.lookup = nil
+				m.concepts.lookupErr = ""
+				m.concepts.lookupFound = false
+				return m, nil
+			}
 			m.help = false
 			m.focuses[m.screen] = 0
 			return m, nil
@@ -279,10 +379,41 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		cursor := m.drafts[m.screen].cursor
 		if m.screen == 1 && (focus == "prompt" || focus == "features") {
 			cursor = m.forms.activeEditor(focus).cursor
+		} else if m.screen == 2 && focus == "prompt" {
+			cursor = m.concepts.filter.cursor
 		}
 		if focus == "prompt" && m.screen != 4 && v.Key().Text == "/" && cursor == 0 {
 			m.openPalette()
 			return m, nil
+		}
+		if m.screen == 2 && m.concepts.detail && (focus == "list" || focus == "result") {
+			switch key {
+			case "up":
+				m.concepts.detailScroll = max(0, m.concepts.detailScroll-1)
+			case "down":
+				m.concepts.detailScroll++
+			case "pgup":
+				m.concepts.detailScroll = max(0, m.concepts.detailScroll-max(1, m.height-8))
+			case "pgdown":
+				m.concepts.detailScroll += max(1, m.height-8)
+			}
+			return m, nil
+		}
+		if m.screen == 2 && focus == "list" {
+			switch key {
+			case "up", "down":
+				delta := 1
+				if key == "up" {
+					delta = -1
+				}
+				m.concepts.move(delta)
+				return m, nil
+			case "enter":
+				return m, m.lookupConcept()
+			}
+		}
+		if m.screen == 2 && focus == "prompt" && key == "enter" {
+			return m, m.lookupConcept()
 		}
 		if m.screen == 0 && focus == "preview" && key == "enter" {
 			return m, m.submitPreview()
@@ -343,6 +474,23 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.drafts[0].revision++
 			return m, nil
 		}
+		if m.screen == 2 && focus == "result" {
+			if key == "enter" && !m.concepts.detail {
+				return m, m.lookupConcept()
+			}
+			if !m.concepts.detail {
+				if key == "down" {
+					m.concepts.listScroll++
+				} else if key == "up" {
+					m.concepts.listScroll = max(0, m.concepts.listScroll-1)
+				} else if key == "pgdown" {
+					m.concepts.listScroll += max(1, m.height-8)
+				} else if key == "pgup" {
+					m.concepts.listScroll = max(0, m.concepts.listScroll-max(1, m.height-8))
+				}
+			}
+			return m, nil
+		}
 		if focus == "result" {
 			switch key {
 			case "down":
@@ -395,6 +543,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		} else if focus == "prompt" && (m.screen == 0 || m.screen == 4) {
 			m.drafts[m.screen].update(v)
+		} else if m.screen == 2 && focus == "prompt" {
+			before := m.concepts.filter.revision
+			m.concepts.filter.update(v)
+			if before != m.concepts.filter.revision {
+				m.concepts.edited()
+			}
 		}
 	}
 	return m, nil
@@ -437,6 +591,8 @@ func (m model) View() tea.View {
 		body = m.translationBody()
 	case 1:
 		body = m.forms.body()
+	case 2:
+		body = m.concepts.body()
 	case 4:
 		state := "not verified"
 		if m.pendingRuntime != 0 {
@@ -449,6 +605,7 @@ func (m model) View() tea.View {
 	if m.help {
 		body = "Tab/Shift+Tab cycle controls; tabs support Left/Right.\nF1: prompt Enter translates; direction Enter or Alt+D swaps PL/EN.\nF5: prompt Enter validates/selects path; Ctrl+S explicitly saves.\nF1 candidates: Up/Down select, Enter details; Preview control calls service.\nCtrl+P opens navigation palette; Esc cancels. Result focus scrolls. Ctrl+U clears input.\nEsc closes help; Ctrl+C or Ctrl+D restores terminal and exits."
 		body += "\nF2: language and Analyze/Generate mode use Enter; Generate features use explicit name=value pairs."
+		body += "\nF3: edit the ConceptID filter; list Up/Down select, Enter opens details, Esc returns."
 	}
 	if m.palette.open {
 		body = m.paletteBody()
@@ -458,6 +615,22 @@ func (m model) View() tea.View {
 	body = ansi.Hardwrap(body, max(1, m.width), true)
 	lines := strings.Split(body, "\n")
 	start := min(m.scroll[m.screen], max(0, len(lines)-max(1, m.height-6)))
+	if m.screen == 2 && (m.palette.open || m.help) {
+		start = 0
+	} else if m.screen == 2 {
+		conceptScroll := m.concepts.listScroll
+		if m.concepts.detail {
+			conceptScroll = m.concepts.detailScroll
+		} else if m.focus() == "list" {
+			for i, line := range lines {
+				if strings.HasPrefix(line, ">> ") {
+					conceptScroll = max(0, i-3)
+					break
+				}
+			}
+		}
+		start = min(conceptScroll, max(0, len(lines)-max(1, m.height-6)))
+	}
 	if m.screen == 0 && m.focus() == "candidates" && !m.candidateDetail && !m.palette.open {
 		for i, line := range lines {
 			if strings.HasPrefix(line, ">> ") {
@@ -470,6 +643,8 @@ func (m model) View() tea.View {
 	prompt := m.drafts[m.screen].visible(m.width - 4)
 	if m.screen == 1 {
 		prompt = m.forms.activeEditor(m.focus()).visible(m.width - 4)
+	} else if m.screen == 2 {
+		prompt = m.concepts.filter.visible(m.width - 4)
 	} else if m.screen != 0 && m.screen != 4 {
 		prompt = "No text action available"
 	}

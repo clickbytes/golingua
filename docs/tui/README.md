@@ -107,3 +107,7 @@ Generate: wpisz stabilny LexemeID, przejdź do features i wpisz jawne pary oddzi
 `Enter` na prompt, features lub run wysyła żądanie bieżącego trybu. Przyjmowane jest najwyżej 32 jawnych par z nazwami i wartościami do 64 bajtów; błędna składnia, brak cech lub powtórzona nazwa daje widoczny błąd wejścia. Właściwe dla języka nazwy/wartości sprawdza usługa; ekran nie ma zgadywanych list ani domyślnych cech.
 
 Wynik pokazuje faktyczny status, stan generacji, diagnostyki oraz wszystkie zwrócone formy i odczytania w porządku usługi. Pola szczegółów są prezentowane jako JSON z odpowiedzi usługi, w tym rzeczywiste cechy i metadane. Fokus result pozwala przewijać całość; brak tekstu lub danych nie jest uzupełniany. Wynik starszego szkicu/języka/trybu jest oznaczony. Odpowiedzi Forms mają osobny token od F1; zmiana ekranu i resize nie usuwają szkiców ani wyników.
+
+## Obsługa dostarczona w V4
+
+F3 wczytuje `Service.Catalog(Details:true)`. Dolny prompt filtruje lokalnie, dosłownie i z rozróżnieniem wielkości liter wyłącznie po stabilnym ConceptID; kolejność pochodzi z katalogu. Lista pokazuje zwrócone statusy pokrycia PL/EN, które nie oznaczają gotowości runtime’u. `Tab` przechodzi przez prompt, list, result i tabs; na list `Up`/`Down` wybierają rekord, `Enter` pobiera jego szczegóły przez `LookupConcept`. `Esc` wraca do listy. W szczegółach `Up`/`Down` i `PgUp`/`PgDown` przewijają zwrócone pola. Brak definicji, rodzica, ról, relacji i efektów jest jawny. Filtr, wybór i przewinięcie pozostają po zmianie ekranu i rozmiaru terminala.

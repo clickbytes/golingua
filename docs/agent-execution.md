@@ -11,7 +11,7 @@ This complements root `AGENTS.md` without changing project architecture. Applies
 | Codex Luna Low micro-implementer | No | Yes, when sole writer with assigned paths | No | No |
 | External OpenCode YOLO worker | No | Yes, in isolated disposable workspace, assigned paths only | No | No |
 
-Owner update 2026-10-23: delegate small, precisely scoped implementation jobs to OpenCode; GPT Luna Low may assist. The coordinator owns editing, integration, review and verification. At most three helpers total may run concurrently, subject to actual tool limits; OpenCode is a separate process. At most one implementation writer, with no simultaneous coordinator edits to its assigned files.
+Owner update 2026-10-23: delegate small, precisely scoped implementation jobs to OpenCode; GPT Luna Low may assist. The coordinator owns editing, integration, review and verification. At most four helpers total may run concurrently, subject to actual tool limits; OpenCode is a separate process. At most one implementation writer, with no simultaneous coordinator edits to its assigned files.
 
 ## Per-issue state machine
 
@@ -93,3 +93,7 @@ Required observable product behavior (for example, G11-V1 opening an actual TTY 
 Before any `--auto` run, Sol verifies `opencode --version`, `opencode run --help`, the local model, and actual denial of shell/both shell and bash aliases, web/network, nested task execution and external-directory access. If any configured deny rule is unsupported, refuse YOLO and use Sol or Luna instead.
 
 `steps: 12` caps model iterations, not wall-clock runtime, number of file writes or OS resource consumption. Add an external process timeout and run in an isolated disposable container/VM without secrets and GitHub credentials. A worktree alone is NOT security isolation; it shares repository metadata and often host credentials.
+
+## G11 closeout owner decision (2026-10-23)
+
+Deliver V4 → V5 → V6 → V7 → V8 sequentially, one child and PR per usable slice, after prior merge, passing main CI and child closure. The four-helper ceiling is subject to available tool slots and retains exactly one implementation writer. Optional roles: OpenCode implementation, Luna Low analysis, Luna Low review, OpenCode read-only evidence/document proposal. Select an actually available free OpenCode model through the documented daily review and per-job permission gates. If unavailable or a mandatory gate cannot be verified, use bounded Luna Low jobs; do not bypass isolation.
