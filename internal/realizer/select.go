@@ -196,10 +196,11 @@ func SelectTargets(input Input) (Result, error) {
 	})
 	result := Result{Outcome: input.Outcome, Candidates: []TargetCandidate{}, Diagnostics: append([]status.Diagnostic(nil), input.Diagnostics...)}
 	finish := func() (Result, error) {
-		for index := range result.Candidates {
-			result.Candidates[index].Outcome = mergeOutcome(result.Candidates[index].Outcome, result.Outcome)
-			result.Candidates[index].Diagnostics = boundedDiagnostics(result.Candidates[index].Diagnostics, result.Diagnostics)
-		}
+		// Keep each candidate's status and diagnostics local to the node and
+		// route that produced it. Result.Outcome aggregates all candidates and
+		// may be ambiguous solely because multiple valid routes remain; copying
+		// that aggregate back onto every candidate would make independent role
+		// referents unusable during realization.
 		return result, nil
 	}
 	if !input.OperatorCoverageComplete {

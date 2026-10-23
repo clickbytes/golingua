@@ -32,6 +32,12 @@ var englishOwnerMassObjectConstructionSource = provenance.SourceRef{
 	Version: "2026-10-23-s077-mass-object", License: "internal", Author: "project owner",
 }
 
+var englishIndefiniteObjectConstructionSource = provenance.SourceRef{
+	ID:      "golingua-g10-08-indefinite-object-alternative",
+	URI:     "https://github.com/clickbytes/golingua/issues/228#issuecomment-6356966127",
+	Version: "2026-10-23-g10-08", License: "internal", Author: "Codex by owner delegation",
+}
+
 type frameDeclaration struct {
 	id, sense, family string
 	roles             []meaning.Role
@@ -47,6 +53,7 @@ var englishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.mass_object"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_object"},
 	{"en.read.text", "en.read.text.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo"},
 }
@@ -136,6 +143,9 @@ func CompileValency() (*valency.Index, error) {
 func englishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
 	if item.variant == "en.transitive.svo.mass_object" {
 		return englishOwnerMassObjectConstructionSource
+	}
+	if item.variant == "en.transitive.svo.indefinite_object" {
+		return englishIndefiniteObjectConstructionSource
 	}
 	return englishBindingProvenance(item.sense)
 }
