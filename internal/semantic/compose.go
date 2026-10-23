@@ -31,6 +31,14 @@ const (
 	maxSemanticExpansions          = 65536
 )
 
+const (
+	// DiagnosticUnresolvedRoleSense marks a partial candidate whose only
+	// semantic uncertainty is an unapproved competing lexical sense in a role.
+	DiagnosticUnresolvedRoleSense = "UNRESOLVED_ROLE_SENSE"
+	// UnresolvedRoleSenseReason describes the exact unresolved condition above.
+	UnresolvedRoleSenseReason = "role candidate has a competing sense without an approved equivalent CORE binding"
+)
+
 // Budget bounds semantic alternatives and expansion work independently from
 // parser and Meaning graph budgets.
 type Budget struct {
@@ -437,14 +445,18 @@ func composeAlternative(result *ComposeResult, input CompositionInput, alternati
 		return nil
 	}
 	roleOptions, unresolvedStatus, unresolvedReason := resolveRoles(input, alternative, candidates)
+	unresolvedRoleRecords := []EvidenceRecord{}
 	if unresolvedReason != "" {
 		if unresolvedStatus == status.OutcomeUnsupported {
 			unmappedRecords := unmappedRoleEvidence(alternative, candidates, input.Lexicon, unresolvedReason)
 			appendAlternativeEvidenceOnly(result, input, alternative, span, unresolvedStatus, "ROLE_MAPPING_UNAVAILABLE", unresolvedReason, unmappedRecords, budget)
 			return nil
 		}
+		if unresolvedStatus == status.OutcomeIncomplete {
+			unresolvedRoleRecords = unmappedRoleEvidence(alternative, candidates, input.Lexicon, unresolvedReason)
+		}
 		partialStatus = mergeSemanticOutcome(partialStatus, unresolvedStatus)
-		partialReason = unresolvedReason
+		partialReason = mergePartialReason(partialReason, unresolvedReason)
 	}
 	if len(result.Candidates) >= budget.MaxAlternatives {
 		result.Outcome = status.OutcomeResourceLimit
@@ -478,6 +490,10 @@ func composeAlternative(result *ComposeResult, input CompositionInput, alternati
 				return err
 			}
 			candidate.Evidence.Outcome = outcome
+			candidate.Evidence.Records = append(candidate.Evidence.Records, unresolvedRoleRecords...)
+			if unresolvedReason == UnresolvedRoleSenseReason && len(unresolvedRoleRecords) > 0 {
+				candidate.Evidence.Diagnostics = appendDiagnostic(candidate.Evidence.Diagnostics, semanticDiagnostic(DiagnosticUnresolvedRoleSense, unresolvedReason, "roles"))
+			}
 			candidate.Status = outcome
 			candidate.SoftConstraintMisses = misses
 			if err := candidate.Evidence.ValidateWithBudget(budget.Evidence); err != nil {
@@ -699,6 +715,7 @@ func materializeOperators(input CompositionInput, alternative parser.ParseAltern
 
 func resolveRoles(input CompositionInput, alternative parser.ParseAlternative, candidates map[string]parser.PhraseCandidate) ([][]roleOption, status.OutcomeKind, string) {
 	options := [][]roleOption{}
+	var unresolvedReason string
 	for _, slot := range alternative.Slots {
 		if slot.Role == "" || len(slot.CandidateIDs) == 0 {
 			continue
@@ -723,9 +740,9 @@ func resolveRoles(input CompositionInput, alternative parser.ParseAlternative, c
 		}
 		for _, sense := range candidate.SenseIDs {
 			if !mappedSenses[sense] {
-				// Missing approval is a live competing reading. Keep it visible so
-				// one mapped sense cannot become a falsely unique result.
-				return nil, status.OutcomeUnsupported, "role candidate has a competing sense without an approved equivalent CORE binding"
+				// Keep the approved readings available while retaining this competing
+				// sense as unresolved evidence on the partial Meaning candidate.
+				unresolvedReason = UnresolvedRoleSenseReason
 			}
 		}
 		roleChoices := make([]roleOption, 0, len(mappings))
@@ -734,7 +751,20 @@ func resolveRoles(input CompositionInput, alternative parser.ParseAlternative, c
 		}
 		options = append(options, roleChoices)
 	}
+	if unresolvedReason != "" {
+		return options, status.OutcomeIncomplete, unresolvedReason
+	}
 	return options, status.OutcomeOK, ""
+}
+
+func mergePartialReason(existing, next string) string {
+	if next == "" || existing == next {
+		return existing
+	}
+	if existing == "" {
+		return next
+	}
+	return existing + "; " + next
 }
 
 func unmappedRoleEvidence(alternative parser.ParseAlternative, candidates map[string]parser.PhraseCandidate, index *lexicon.Index, reason string) []EvidenceRecord {
