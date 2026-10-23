@@ -17,14 +17,16 @@ import (
 )
 
 const (
-	MaxTranslationAlternatives = 256
-	MaxTranslationIDBytes      = 256
-	MaxTranslationTextBytes    = 64 * 1024
-	MaxTranslationLosses       = 64
-	MaxTranslationEvidence     = 32
-	MaxTranslationPayloadBytes = 4 << 20
-	MaxTranslationMeaningNodes = 65_536
-	MaxTranslationEvidenceRows = 65_536
+	MaxTranslationAlternatives          = 256
+	MaxTranslationIDBytes               = 256
+	MaxTranslationTextBytes             = 64 * 1024
+	MaxTranslationLosses                = 64
+	MaxTranslationAssumptions           = 64
+	MaxTranslationAssumptionReasonBytes = 1024
+	MaxTranslationEvidence              = 32
+	MaxTranslationPayloadBytes          = 4 << 20
+	MaxTranslationMeaningNodes          = 65_536
+	MaxTranslationEvidenceRows          = 65_536
 )
 
 var ErrInvalidTranslationResult = errors.New("invalid translation result")
@@ -33,15 +35,16 @@ var ErrInvalidTranslationResult = errors.New("invalid translation result")
 // target realization. A candidate's outcome remains distinct from the outer
 // request outcome.
 type TranslationAlternative struct {
-	ID                string                   `json:"id"`
-	SourceCandidateID string                   `json:"source_candidate_id"`
-	SemanticID        string                   `json:"semantic_id"`
-	Outcome           status.OutcomeKind       `json:"outcome"`
-	Text              string                   `json:"text,omitempty"`
-	Meaning           *meaning.Meaning         `json:"meaning,omitempty"`
-	Evidence          []semantic.EvidenceTrace `json:"evidence,omitempty"`
-	Losses            []realizer.FieldLoss     `json:"losses,omitempty"`
-	Diagnostics       []status.Diagnostic      `json:"diagnostics,omitempty"`
+	ID                string                     `json:"id"`
+	SourceCandidateID string                     `json:"source_candidate_id"`
+	SemanticID        string                     `json:"semantic_id"`
+	Outcome           status.OutcomeKind         `json:"outcome"`
+	Text              string                     `json:"text,omitempty"`
+	Meaning           *meaning.Meaning           `json:"meaning,omitempty"`
+	Evidence          []semantic.EvidenceTrace   `json:"evidence,omitempty"`
+	Assumptions       []realizer.FieldAssumption `json:"assumptions,omitempty"`
+	Losses            []realizer.FieldLoss       `json:"losses,omitempty"`
+	Diagnostics       []status.Diagnostic        `json:"diagnostics,omitempty"`
 }
 
 // TranslationResult is the bounded outward result of one translation request.
@@ -63,6 +66,7 @@ func (candidate TranslationAlternative) Clone() TranslationAlternative {
 	for i := range candidate.Evidence {
 		candidate.Evidence[i] = candidate.Evidence[i].Clone()
 	}
+	candidate.Assumptions = cloneFieldAssumptions(candidate.Assumptions)
 	candidate.Losses = append([]realizer.FieldLoss(nil), candidate.Losses...)
 	for i := range candidate.Losses {
 		candidate.Losses[i].Path = append([]meaning.NodeID(nil), candidate.Losses[i].Path...)
@@ -150,8 +154,8 @@ func (result TranslationResult) Validate() error {
 			return invalid(path+".text", err.Error())
 		}
 		payloadBytes += len(candidate.ID) + len(candidate.SourceCandidateID) + len(candidate.SemanticID) + len(candidate.Text)
-		if len(candidate.Evidence) > MaxTranslationEvidence || len(candidate.Losses) > MaxTranslationLosses || len(candidate.Diagnostics) > status.MaxDiagnostics {
-			return invalid(path, "nested evidence, losses, or diagnostics exceed limits")
+		if len(candidate.Evidence) > MaxTranslationEvidence || len(candidate.Assumptions) > MaxTranslationAssumptions || len(candidate.Losses) > MaxTranslationLosses || len(candidate.Diagnostics) > status.MaxDiagnostics {
+			return invalid(path, "nested evidence, assumptions, losses, or diagnostics exceed limits")
 		}
 		for j, trace := range candidate.Evidence {
 			if err := trace.Validate(); err != nil {
@@ -159,6 +163,15 @@ func (result TranslationResult) Validate() error {
 			}
 			evidenceRows += len(trace.Records)
 			payloadBytes += evidenceTextBytes(trace)
+		}
+		for j, assumption := range candidate.Assumptions {
+			if err := validateAssumption(assumption); err != nil {
+				return invalid(fmt.Sprintf("%s.assumptions[%d]", path, j), err.Error())
+			}
+			payloadBytes += len(assumption.Field) + len(assumption.Value) + len(assumption.Reason)
+			for _, id := range assumption.Path {
+				payloadBytes += len(string(id))
+			}
 		}
 		for j, loss := range candidate.Losses {
 			if err := validateLoss(loss); err != nil {
@@ -193,7 +206,7 @@ func (result TranslationResult) Validate() error {
 		}
 	}
 	if payloadBytes > MaxTranslationPayloadBytes || meaningNodes > MaxTranslationMeaningNodes || evidenceRows > MaxTranslationEvidenceRows {
-		return invalid("payload", "aggregate Meaning, evidence, and text payload exceeds the translation result limits")
+		return invalid("payload", "aggregate Meaning, evidence, assumptions, and text payload exceeds the translation result limits")
 	}
 	encoded, err := json.Marshal(result)
 	if err != nil {
@@ -287,6 +300,34 @@ func validateLoss(loss realizer.FieldLoss) error {
 		}
 	}
 	return nil
+}
+
+func validateAssumption(assumption realizer.FieldAssumption) error {
+	if len(assumption.Path) == 0 || len(assumption.Path) > meaning.MaxMeaningDepth || !validID(assumption.Field) || !validID(assumption.Value) {
+		return errors.New("assumption requires a bounded path, field, and value")
+	}
+	if assumption.Reason == "" || len(assumption.Reason) > MaxTranslationAssumptionReasonBytes || !utf8.ValidString(assumption.Reason) || strings.TrimSpace(assumption.Reason) != assumption.Reason {
+		return errors.New("assumption requires a bounded non-empty reason")
+	}
+	for _, r := range assumption.Reason {
+		if r < 0x20 || r == 0x7f {
+			return errors.New("assumption reason contains a control character")
+		}
+	}
+	for _, id := range assumption.Path {
+		if !validID(string(id)) {
+			return errors.New("assumption path contains an invalid node ID")
+		}
+	}
+	return nil
+}
+
+func cloneFieldAssumptions(values []realizer.FieldAssumption) []realizer.FieldAssumption {
+	result := append([]realizer.FieldAssumption(nil), values...)
+	for index := range result {
+		result[index].Path = append([]meaning.NodeID(nil), result[index].Path...)
+	}
+	return result
 }
 
 func validLanguage(value string) bool {

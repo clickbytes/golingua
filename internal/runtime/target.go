@@ -358,13 +358,23 @@ func hasVariantString(variants []ids.ConstructionID, selected string) bool {
 }
 
 func appendTargetDiagnostics(target []status.Diagnostic, values ...status.Diagnostic) []status.Diagnostic {
-	for _, value := range values {
-		if len(target) >= status.MaxDiagnostics {
-			break
+	result := make([]status.Diagnostic, 0, len(target)+len(values))
+	seen := make(map[status.Diagnostic]struct{}, len(target)+len(values))
+	appendUnique := func(items []status.Diagnostic) {
+		for _, value := range items {
+			if _, exists := seen[value]; exists {
+				continue
+			}
+			if len(result) >= status.MaxDiagnostics {
+				return
+			}
+			seen[value] = struct{}{}
+			result = append(result, value)
 		}
-		target = append(target, value)
 	}
-	return target
+	appendUnique(target)
+	appendUnique(values)
+	return result
 }
 
 func combineTargetOutcomes(outcomes ...status.OutcomeKind) status.OutcomeKind {

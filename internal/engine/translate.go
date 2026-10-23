@@ -178,7 +178,7 @@ func (engine *Engine) Translate(ctx context.Context, request Request) (Translati
 				result.Diagnostics = appendDiagnostic(result.Diagnostics, diagnostic("RESOURCE_LIMIT", "target.alternatives", "translation alternative retention limit was exhausted"))
 				break
 			}
-			if !surface.Outcome.Valid() || !validID(surface.ID) || len(surface.Diagnostics) > status.MaxDiagnostics || len(surface.Losses) > MaxTranslationLosses {
+			if !surface.Outcome.Valid() || !validID(surface.ID) || len(surface.Diagnostics) > status.MaxDiagnostics || len(surface.Assumptions) > MaxTranslationAssumptions || len(surface.Losses) > MaxTranslationLosses {
 				result.Status = mergeEngineOutcome(result.Status, status.OutcomeInvalid)
 				result.Diagnostics = appendDiagnostic(result.Diagnostics, diagnostic("INVALID_SURFACE_ALTERNATIVE", "target.alternatives", "target adapter returned malformed alternative metadata"))
 				continue
@@ -212,6 +212,7 @@ func (engine *Engine) Translate(ctx context.Context, request Request) (Translati
 				SourceCandidateID: sourceCandidate.ID, SemanticID: sourceCandidate.SemanticID,
 				Outcome: outcome, Text: surface.Text, Meaning: sourceCandidate.Meaning,
 				Evidence:    appendEvidence(sourceCandidate.Evidence, surface.Evidence),
+				Assumptions: cloneFieldAssumptions(surface.Assumptions),
 				Losses:      append([]realizer.FieldLoss(nil), surface.Losses...),
 				Diagnostics: append([]status.Diagnostic(nil), surface.Diagnostics...),
 			}

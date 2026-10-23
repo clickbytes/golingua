@@ -88,8 +88,9 @@ returns `unsupported`.
 Segment identities are copied from the linearizer's explicit source trace.
 They do not prove semantic correctness and do not reconstruct Meaning. The
 caller retains the Meaning graph and realization plan. Any plan assumptions
-and losses remain attached to that plan and its outcome; generating valid spans
-does not turn an `incomplete` plan into `ok`. An `unsupported`, `unknown`,
+and losses remain attached to that plan and its outcome; the translation CLI
+also exposes assumptions per candidate with their Meaning paths. Generating
+valid spans does not turn an `incomplete` plan into `ok`. An `unsupported`, `unknown`,
 `ambiguous`, or `incomplete` result must remain visible to the caller with its
 diagnostics. The surface layer must not silently switch to an unlicensed
 construction, omit a feature, or fabricate a trace to return text.
