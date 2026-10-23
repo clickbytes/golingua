@@ -4,10 +4,6 @@
     {
       "lexeme": {"id": "lexeme:student-n", "language": "pl", "lemma": "student", "pos": "noun", "properties": [{"key": "gender", "value": "masculine_personal"}], "paradigm_id": "pl_masc_personal_student"},
       "principal_parts": {"lexeme_id": "lexeme:student-n", "parts": [{"id": "base", "form": "student"}]}
-    },
-    {
-      "lexeme": {"id": "lexeme:czytac-v", "language": "pl", "lemma": "czytać", "pos": "verb", "paradigm_id": "pl_verb_czytac_present"},
-      "principal_parts": {"lexeme_id": "lexeme:czytac-v", "parts": [{"id": "present_stem", "form": "czyt"}]}
     }
   ]
 }

@@ -18,6 +18,7 @@ const (
 	sentenceHearingCapabilityEvidenceID   = "sentence.hearing.present.singular.v1"
 	sentenceReceivingCapabilityEvidenceID = "sentence.receiving.past.singular.v1"
 	sentenceLookingCapabilityEvidenceID   = "sentence.looking.present.singular.v1"
+	sentenceReadingCapabilityEvidenceID   = "sentence.reading.present.singular_plural.v1"
 )
 
 // BuildSentenceLanguagePackage exposes only requested exact approved sentence
@@ -35,7 +36,7 @@ func BuildSentenceLanguagePackage(languageID features.LanguageID, version string
 	}
 	expectedSenseNames, ok := currentSentenceSenseNames(languageID)
 	if !ok || len(allowedSenses) != len(expectedSenseNames) {
-		return language.Package{}, fmt.Errorf("sentence package currently requires the exact seeing, hearing, receiving, and looking routes for Polish or English")
+		return language.Package{}, fmt.Errorf("sentence package currently requires the exact seeing, hearing, receiving, looking, and reading routes for Polish or English")
 	}
 	for _, name := range expectedSenseNames {
 		expectedSense, err := ids.NewSenseID(name)
@@ -109,15 +110,15 @@ func SentenceCapabilityEvidence() []language.CapabilityEvidence {
 }
 
 func sentenceCapabilityEvidenceIDs() []string {
-	return []string{sentenceSeeingCapabilityEvidenceID, sentenceSeeingNegationEvidenceID, sentencePresentNegationEvidenceID, sentenceHearingCapabilityEvidenceID, sentenceReceivingCapabilityEvidenceID, sentenceLookingCapabilityEvidenceID}
+	return []string{sentenceSeeingCapabilityEvidenceID, sentenceSeeingNegationEvidenceID, sentencePresentNegationEvidenceID, sentenceHearingCapabilityEvidenceID, sentenceReceivingCapabilityEvidenceID, sentenceLookingCapabilityEvidenceID, sentenceReadingCapabilityEvidenceID}
 }
 
 func currentSentenceSenseNames(languageID features.LanguageID) ([]string, bool) {
 	switch languageID {
 	case "en":
-		return []string{"en.see.visual", "en.hear.auditory", "en.get.receive", "en.look.directed"}, true
+		return []string{"en.see.visual", "en.hear.auditory", "en.get.receive", "en.look.directed", "en.read.text"}, true
 	case "pl":
-		return []string{"pl.widziec.visual", "pl.slyszec.auditory", "pl.dostac.receive", "pl.patrzec.directed"}, true
+		return []string{"pl.widziec.visual", "pl.slyszec.auditory", "pl.dostac.receive", "pl.patrzec.directed", "pl.czytac.interpret"}, true
 	default:
 		return nil, false
 	}

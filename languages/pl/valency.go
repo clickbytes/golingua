@@ -25,6 +25,11 @@ var polishNegationConstructionSource = provenance.SourceRef{
 	Version: "2026-10-23-g10-17", License: "internal", Author: "Codex by owner delegation",
 }
 
+var polishReadingConstructionSource = provenance.SourceRef{
+	ID: "golingua-g10-19-reading-route-review", URI: "https://github.com/clickbytes/golingua/issues/251#issuecomment-6359339236",
+	Version: "2026-10-23-g10-19", License: "internal", Author: "Codex by owner delegation",
+}
+
 type frameDeclaration struct {
 	id, sense, family string
 	roles             []meaning.Role
@@ -42,6 +47,7 @@ var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.transitive", "pl.transitive.svo"},
 	{"pl.slyszec.auditory", "pl.slyszec.auditory.transitive", "pl.transitive", "pl.transitive.svo"},
 	{"pl.dostac.receive", "pl.dostac.receive.transitive", "pl.transitive", "pl.transitive.svo"},
+	{"pl.czytac.interpret", "pl.czytac.interpret.frame", "pl.transitive", "pl.transitive.svo"},
 	{"pl.patrzec.directed", "pl.patrzec.directed.na", "pl.oblique", "pl.oblique.svo"},
 }
 
@@ -191,6 +197,9 @@ func CompileValency() (*valency.Index, error) {
 }
 
 func polishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.sense == "pl.czytac.interpret" {
+		return polishReadingConstructionSource
+	}
 	if item.family == "pl.transitive_negative" || item.family == "pl.oblique_negative" {
 		return polishNegationConstructionSource
 	}

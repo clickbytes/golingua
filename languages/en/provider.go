@@ -14,7 +14,7 @@ import (
 	"github.com/clickbytes/golingua/internal/valency"
 )
 
-const sentenceProviderVersion = "v2026.10.23-g10-17-present-negation"
+const sentenceProviderVersion = "v2026.10.23-g10-19-reading-route"
 
 type sentenceProvider struct {
 	source   *runtime.SourcePipeline
@@ -25,8 +25,9 @@ var _ language.LanguageProvider = (*sentenceProvider)(nil)
 var _ language.Analyzer = (*sentenceProvider)(nil)
 var _ language.Realizer = (*sentenceProvider)(nil)
 
-// NewSentenceProvider creates the exact English seeing, hearing, receiving and looking package and
-// its trusted provider against one validated snapshot.
+// NewSentenceProvider creates the exact English seeing, hearing, receiving,
+// looking, and reading package and its trusted provider against one validated
+// snapshot.
 func NewSentenceProvider(snapshot *pack.Pack) (language.Package, language.LanguageProvider, error) {
 	if snapshot == nil {
 		return language.Package{}, nil, fmt.Errorf("English sentence provider requires a validated snapshot")
@@ -72,8 +73,8 @@ func (provider *sentenceProvider) Analyze(ctx context.Context, surface string) (
 }
 
 func sentenceSenseIDs() ([]ids.SenseID, error) {
-	senseIDs := make([]ids.SenseID, 0, 4)
-	for _, value := range []string{"en.see.visual", "en.hear.auditory", "en.get.receive", "en.look.directed"} {
+	senseIDs := make([]ids.SenseID, 0, 5)
+	for _, value := range []string{"en.see.visual", "en.hear.auditory", "en.get.receive", "en.look.directed", "en.read.text"} {
 		senseID, err := ids.NewSenseID(value)
 		if err != nil {
 			return nil, err
