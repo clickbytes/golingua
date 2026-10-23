@@ -172,10 +172,11 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 			continue
 		}
 		values, found := runtime.SourceFeatures(source, participant.Role, coreConcept(referent))
-		determiner, targetDeterminerKnown := englishDeterminerForRole(selected, participant.Role)
+		article, targetDeterminerKnown := englishDeterminerForRole(selected, participant.Role)
 		if !targetDeterminerKnown {
 			continue
 		}
+		determiner := englishDeterminerFeature(article)
 		sourceDeterminer := ""
 		if found {
 			sourceDeterminer = string(values["determiner"])
@@ -192,7 +193,7 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 		reason := "the source does not encode English definiteness; this candidate selects the definite article"
 		switch determiner {
 		case "indefinite":
-			reason = "the source does not encode English definiteness; this candidate selects the indefinite article"
+			reason = "the source does not encode English definiteness; this candidate selects the indefinite article " + article
 		case "bare":
 			reason = "the target noun is explicitly mass and this candidate realizes it without an article"
 		}
@@ -249,7 +250,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 			}
 		}
 		if !foundReferent {
-			if englishDeterminerForSlot(variant, slot.ID) != "definite" {
+			if englishDeterminerFeature(englishDeterminerForSlot(variant, slot.ID)) != "definite" {
 				return false
 			}
 			continue
@@ -263,7 +264,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 			}
 		}
 		if len(lexicalCandidates) == 0 {
-			if englishDeterminerForSlot(variant, slot.ID) != "definite" {
+			if englishDeterminerFeature(englishDeterminerForSlot(variant, slot.ID)) != "definite" {
 				return false
 			}
 			continue
@@ -277,11 +278,11 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 		if number == "" {
 			number = values["noun_number"]
 		}
-		allMass, allAArticle := true, true
+		allMass := true
 		for _, lexicalCandidate := range lexicalCandidates {
 			allMass = allMass && hasLexicalProperty(lexicalCandidate.Lexeme.Properties, "number_behavior", "mass")
-			allAArticle = allAArticle && hasLexicalProperty(lexicalCandidate.Lexeme.Properties, "indefinite_article", "a")
 		}
+		indefiniteArticle, hasCommonIndefiniteArticle := commonEnglishIndefiniteArticle(lexicalCandidates)
 		mass := allMass
 		if mass {
 			number = "singular"
@@ -289,7 +290,8 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 		if number == "" && !found && len(source.Evidence.Records) == 0 {
 			number = "singular"
 		}
-		actualDeterminer := englishDeterminerForSlot(variant, slot.ID)
+		actualArticle := englishDeterminerForSlot(variant, slot.ID)
+		actualDeterminer := englishDeterminerFeature(actualArticle)
 		if slot.ID == "object" && mass {
 			if determiner == "definite" {
 				if actualDeterminer != "definite" {
@@ -300,7 +302,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 			}
 			continue
 		}
-		if actualDeterminer == "indefinite" && !allAArticle {
+		if actualDeterminer == "indefinite" && (!hasCommonIndefiniteArticle || actualArticle != indefiniteArticle) {
 			return false
 		}
 		if determiner != "" {
@@ -340,16 +342,27 @@ func englishDeterminerVariant(id string) (englishDeterminers, bool) {
 }
 
 var englishDeterminerVariants = map[string]englishDeterminers{
-	"construction:en.transitive.svo":                                {subject: "definite", object: "definite"},
-	"construction:en.transitive.svo.indefinite_object":              {subject: "definite", object: "indefinite"},
-	"construction:en.transitive.svo.indefinite_subject":             {subject: "indefinite", object: "definite"},
-	"construction:en.transitive.svo.indefinite_subject_object":      {subject: "indefinite", object: "indefinite"},
-	"construction:en.transitive.svo.mass_object":                    {subject: "definite", object: "bare"},
-	"construction:en.transitive.svo.indefinite_subject_mass_object": {subject: "indefinite", object: "bare"},
-	"construction:en.oblique.svo":                                   {subject: "definite", target: "definite"},
-	"construction:en.oblique.svo.indefinite_target":                 {subject: "definite", target: "indefinite"},
-	"construction:en.oblique.svo.indefinite_subject":                {subject: "indefinite", target: "definite"},
-	"construction:en.oblique.svo.indefinite_subject_target":         {subject: "indefinite", target: "indefinite"},
+	"construction:en.transitive.svo":                                   {subject: "the", object: "the"},
+	"construction:en.transitive.svo.indefinite_object":                 {subject: "the", object: "a"},
+	"construction:en.transitive.svo.indefinite_subject":                {subject: "a", object: "the"},
+	"construction:en.transitive.svo.indefinite_subject_object":         {subject: "a", object: "a"},
+	"construction:en.transitive.svo.mass_object":                       {subject: "the", object: "bare"},
+	"construction:en.transitive.svo.indefinite_subject_mass_object":    {subject: "a", object: "bare"},
+	"construction:en.transitive.svo.indefinite_object_an":              {subject: "the", object: "an"},
+	"construction:en.transitive.svo.indefinite_subject_an":             {subject: "an", object: "the"},
+	"construction:en.transitive.svo.indefinite_subject_a_object_an":    {subject: "a", object: "an"},
+	"construction:en.transitive.svo.indefinite_subject_an_object_a":    {subject: "an", object: "a"},
+	"construction:en.transitive.svo.indefinite_subject_an_object_an":   {subject: "an", object: "an"},
+	"construction:en.transitive.svo.indefinite_subject_an_mass_object": {subject: "an", object: "bare"},
+	"construction:en.oblique.svo":                                      {subject: "the", target: "the"},
+	"construction:en.oblique.svo.indefinite_target":                    {subject: "the", target: "a"},
+	"construction:en.oblique.svo.indefinite_subject":                   {subject: "a", target: "the"},
+	"construction:en.oblique.svo.indefinite_subject_target":            {subject: "a", target: "a"},
+	"construction:en.oblique.svo.indefinite_target_an":                 {subject: "the", target: "an"},
+	"construction:en.oblique.svo.indefinite_subject_an":                {subject: "an", target: "the"},
+	"construction:en.oblique.svo.indefinite_subject_a_target_an":       {subject: "a", target: "an"},
+	"construction:en.oblique.svo.indefinite_subject_an_target_a":       {subject: "an", target: "a"},
+	"construction:en.oblique.svo.indefinite_subject_an_target_an":      {subject: "an", target: "an"},
 }
 
 func englishStandardDeterminerVariant(familyID string) string {
@@ -392,6 +405,43 @@ func englishDeterminerForSlot(variant englishDeterminers, slotID string) string 
 	default:
 		return ""
 	}
+}
+
+func englishDeterminerFeature(article string) string {
+	switch article {
+	case "the":
+		return "definite"
+	case "a", "an":
+		return "indefinite"
+	case "bare":
+		return "bare"
+	default:
+		return ""
+	}
+}
+
+func commonEnglishIndefiniteArticle(candidates []realizer.TargetCandidate) (string, bool) {
+	article := ""
+	for _, candidate := range candidates {
+		candidateArticle, exists := englishIndefiniteArticle(candidate.Lexeme.Properties)
+		if !exists {
+			return "", false
+		}
+		if article != "" && article != candidateArticle {
+			return "", false
+		}
+		article = candidateArticle
+	}
+	return article, article != ""
+}
+
+func englishIndefiniteArticle(properties []lexicon.Property) (string, bool) {
+	for _, property := range properties {
+		if property.Key == "indefinite_article" && (property.Value == "a" || property.Value == "an") {
+			return property.Value, true
+		}
+	}
+	return "", false
 }
 
 func hasLexicalProperty(properties []lexicon.Property, key, value string) bool {

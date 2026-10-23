@@ -50,6 +50,9 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 		if lexeme.ID.String() == "lexeme:en.a.det" {
 			part = morph.PrincipalPart{ID: "attested", Form: "a"}
 		}
+		if lexeme.ID.String() == "lexeme:en.an.det" {
+			part = morph.PrincipalPart{ID: "attested", Form: "an"}
+		}
 		principalParts := morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{part}}
 		switch lexeme.ID.String() {
 		case "lexeme:en.see.v":

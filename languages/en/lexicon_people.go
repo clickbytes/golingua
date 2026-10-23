@@ -11,7 +11,8 @@ var englishPeopleSource = provenance.SourceRef{
 }
 
 // These common person and relationship nouns have distinct English senses.
-// Candidate links remain pending and carry no inferred morphology or frames.
+// Candidate links remain pending until individually reviewed; morphology and
+// frames are declared separately from lexical equivalence.
 var englishPeopleEntries = []lexicalEntry{
 	{"en.spouse.n", "spouse", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.spouse.married_partner", "a person joined to another by marriage", "spouse"}}},
 	{"en.romantic_partner.n", "romantic partner", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.romantic_partner.relationship", "a person in a continuing romantic relationship with another", "romantic_partner"}}},

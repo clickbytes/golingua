@@ -18,7 +18,7 @@ import (
 // NewSentenceSource compiles the English analysis stages against one exact
 // snapshot. Its complete declarative attestation is limited to attested
 // third-person singular present visual and auditory predicates, explicit
-// definite articles, and the registered past receiving route.
+// definite and indefinite articles, and the registered past receiving route.
 func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if snapshot == nil {
 		return nil, fmt.Errorf("English sentence source requires a snapshot")
@@ -66,7 +66,7 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 			Categories: map[lexicon.PartOfSpeech][]construction.SlotCategory{
 				"noun": {construction.CategoryNP}, "verb": {construction.CategoryVP},
 			},
-		}}},
+		}}, lexicon: snapshot.Lexicon()},
 		EvidenceBuilder: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true},
 			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
@@ -83,7 +83,8 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 }
 
 type englishDeterminerNPBuilder struct {
-	inner runtime.SimplePhraseEvidenceBuilder
+	inner   runtime.SimplePhraseEvidenceBuilder
+	lexicon *lexicon.Index
 }
 
 func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice analyzer.LexicalLattice) ([]parser.PhraseCandidate, parser.ParseContext, error) {
@@ -91,25 +92,52 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 	if err != nil {
 		return nil, parser.ParseContext{}, err
 	}
-	for index := range candidates {
-		candidate := &candidates[index]
+	filtered := candidates[:0]
+	for _, candidate := range candidates {
 		if candidate.Category != construction.CategoryNP || candidate.TokenStart == 0 {
+			filtered = append(filtered, candidate)
 			continue
 		}
 		previous := lattice.Tokens[candidate.TokenStart-1]
+		keep := true
 		for _, reading := range previous.Readings {
-			if reading.HasLexeme && (reading.Lexeme.ID.String() == "lexeme:en.the.det" || reading.Lexeme.ID.String() == "lexeme:en.a.det") {
+			if reading.HasLexeme && (reading.Lexeme.ID.String() == "lexeme:en.the.det" || reading.Lexeme.ID.String() == "lexeme:en.a.det" || reading.Lexeme.ID.String() == "lexeme:en.an.det") {
+				indefinite := reading.Lexeme.ID.String() == "lexeme:en.a.det" || reading.Lexeme.ID.String() == "lexeme:en.an.det"
+				if indefinite {
+					if number := candidate.Features["noun_number"]; number != "" && number != "singular" {
+						keep = false
+						break
+					}
+					if candidate.LexemeID.String() != "" && builder.lexicon != nil {
+						if noun, exists := builder.lexicon.ByLexemeID(candidate.LexemeID); exists {
+							article := "a"
+							if reading.Lexeme.ID.String() == "lexeme:en.an.det" {
+								article = "an"
+							}
+							if expectedArticle, hasLexicalArticle := englishIndefiniteArticle(noun.Properties); hasLexicalArticle && expectedArticle != article {
+								keep = false
+								break
+							}
+						}
+					}
+				}
 				if candidate.Features == nil {
 					candidate.Features = make(map[features.FeatureID]features.FeatureValueID)
 				}
-				if reading.Lexeme.ID.String() == "lexeme:en.a.det" {
+				if indefinite {
 					candidate.Features["determiner"] = "indefinite"
+					if candidate.Features["noun_number"] == "" {
+						candidate.Features["noun_number"] = "singular"
+					}
 				} else {
 					candidate.Features["determiner"] = "definite"
 				}
 				break
 			}
 		}
+		if keep {
+			filtered = append(filtered, candidate)
+		}
 	}
-	return candidates, parseContext, nil
+	return filtered, parseContext, nil
 }

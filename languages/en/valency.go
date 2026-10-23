@@ -44,6 +44,12 @@ var englishDeterminerAlternativeConstructionSource = provenance.SourceRef{
 	Version: "2026-10-23-g10-10", License: "internal", Author: "Codex by owner delegation",
 }
 
+var englishIndefiniteAllomorphConstructionSource = provenance.SourceRef{
+	ID:      "golingua-g10-12-english-indefinite-allomorphs",
+	URI:     "https://github.com/clickbytes/golingua/issues/237#issuecomment-6357579336",
+	Version: "2026-10-23-g10-12", License: "internal", Author: "Codex by owner delegation",
+}
+
 type frameDeclaration struct {
 	id, sense, family string
 	roles             []meaning.Role
@@ -59,21 +65,44 @@ var englishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo.indefinite_object"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo.indefinite_subject"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_object"},
+	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo.indefinite_object_an"},
+	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an"},
+	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_a_object_an"},
+	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_object_a"},
+	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_object_an"},
+	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_mass_object"},
 	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo.indefinite_object"},
 	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo.indefinite_subject"},
 	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_object"},
+	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo.indefinite_object_an"},
+	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an"},
+	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_a_object_an"},
+	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_object_a"},
+	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_object_an"},
+	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_mass_object"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.mass_object"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_object"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_subject"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_object"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_mass_object"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_object_an"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_a_object_an"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_object_a"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_object_an"},
+	{"en.get.receive", "en.get.receive.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_mass_object"},
 	{"en.read.text", "en.read.text.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_target"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_subject"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_subject_target"},
+	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_target_an"},
+	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_subject_an"},
+	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_subject_a_target_an"},
+	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_subject_an_target_a"},
+	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_subject_an_target_an"},
 }
 
 var englishFrames = []frameDeclaration{
@@ -165,10 +194,32 @@ func englishConstructionBindingProvenance(item constructionBindingDeclaration) p
 	if item.variant == "en.transitive.svo.indefinite_object" && item.sense == "en.get.receive" {
 		return englishIndefiniteObjectConstructionSource
 	}
+	if englishIndefiniteAllomorphVariant(item.variant) {
+		return englishIndefiniteAllomorphConstructionSource
+	}
 	if englishDeterminerAlternativeVariant(item.variant) {
 		return englishDeterminerAlternativeConstructionSource
 	}
 	return englishBindingProvenance(item.sense)
+}
+
+func englishIndefiniteAllomorphVariant(variant string) bool {
+	switch variant {
+	case "en.transitive.svo.indefinite_object_an",
+		"en.transitive.svo.indefinite_subject_an",
+		"en.transitive.svo.indefinite_subject_a_object_an",
+		"en.transitive.svo.indefinite_subject_an_object_a",
+		"en.transitive.svo.indefinite_subject_an_object_an",
+		"en.transitive.svo.indefinite_subject_an_mass_object",
+		"en.oblique.svo.indefinite_target_an",
+		"en.oblique.svo.indefinite_subject_an",
+		"en.oblique.svo.indefinite_subject_a_target_an",
+		"en.oblique.svo.indefinite_subject_an_target_a",
+		"en.oblique.svo.indefinite_subject_an_target_an":
+		return true
+	default:
+		return false
+	}
 }
 
 func englishDeterminerAlternativeVariant(variant string) bool {
