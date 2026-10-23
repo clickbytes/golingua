@@ -799,9 +799,17 @@ func (m *matcher) finishUnmatched() {
 		used = map[string]bool{}
 	}
 	usedNouns := make(map[string]bool)
+	usedPredicates := make(map[string]bool)
 	for _, candidate := range m.candidates {
-		if used[candidate.ID] && candidate.Category == construction.CategoryNP {
-			usedNouns[fmt.Sprintf("%d:%d:%s:%s", candidate.TokenStart, candidate.TokenEnd, candidate.LexemeID, senseSetKey(candidate.SenseIDs))] = true
+		if !used[candidate.ID] {
+			continue
+		}
+		key := fmt.Sprintf("%d:%d:%s:%s", candidate.TokenStart, candidate.TokenEnd, candidate.LexemeID, senseSetKey(candidate.SenseIDs))
+		if candidate.Category == construction.CategoryNP {
+			usedNouns[key] = true
+		}
+		if candidate.Category == construction.CategoryVP {
+			usedPredicates[key] = true
 		}
 	}
 	for _, c := range m.candidates {
@@ -811,6 +819,12 @@ func (m *matcher) finishUnmatched() {
 		if c.Category == construction.CategoryNP && usedNouns[fmt.Sprintf("%d:%d:%s:%s", c.TokenStart, c.TokenEnd, c.LexemeID, senseSetKey(c.SenseIDs))] {
 			// A different case reading for the same noun and sense is
 			// rejected by the frame, not an unresolved lexical meaning.
+			continue
+		}
+		if c.Category == construction.CategoryVP && usedPredicates[fmt.Sprintf("%d:%d:%s:%s", c.TokenStart, c.TokenEnd, c.LexemeID, senseSetKey(c.SenseIDs))] {
+			// A homographic inflection of the same predicate lexeme and senses
+			// was considered by the retained parse; it is a feature ambiguity,
+			// not an unsupported competing lexical head.
 			continue
 		}
 		reason := "not selected by a retained complete derivation"

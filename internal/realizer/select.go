@@ -503,9 +503,6 @@ func SelectTargets(input Input) (Result, error) {
 								continue
 							}
 							if compiledVariant.Variant.DirectionPolicy != construction.DirectionBoth && compiledVariant.Variant.DirectionPolicy != construction.DirectionRealize {
-								licensed = true
-								result.Outcome = mergeOutcome(result.Outcome, status.OutcomeUnsupported)
-								result.Diagnostics = appendDiagnostic(result.Diagnostics, "TARGET_VARIANT_ANALYZE_ONLY", "bound target variant is not licensed for realization", "constructions."+familyID.String())
 								continue
 							}
 							validatedVariant, err := construction.ValidateVariantForFrame(compiledVariant.Variant, family.Family, frame)

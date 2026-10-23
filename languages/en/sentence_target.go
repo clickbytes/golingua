@@ -308,6 +308,12 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 		obliqueFamily        = "construction:en.oblique"
 	)
 	familyID := candidate.Family.Family.ID.String()
+	if candidate.CompiledVariant.Variant.DirectionPolicy == construction.DirectionAnalyze {
+		return false
+	}
+	if candidate.Sense.ID.String() == "sense:en.read.text" && !englishReadingTargetFamilyMatches(source, candidate, familyID, transitiveFamily, transitivePastFamily) {
+		return false
+	}
 	negativeRoute, isNegativeFamily := englishPresentNegationRouteForFamily(candidate.Family.Family.ID)
 	if isNegativeFamily {
 		_, event, sourceRoute, negated := englishNegatedPresent(source)
@@ -428,6 +434,21 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 	return true
 }
 
+func englishReadingTargetFamilyMatches(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, familyID, presentFamily, pastFamily string) bool {
+	if familyID != presentFamily && familyID != pastFamily {
+		return true
+	}
+	values, found := runtime.SourceFeatures(source, "", candidate.TransferBinding.CoreRef)
+	if !found {
+		return len(source.Evidence.Records) == 0 && familyID == presentFamily
+	}
+	isPast := values["tense"] == "past" || values["verb_form"] == "past"
+	if familyID == pastFamily {
+		return isPast
+	}
+	return !isPast && (values["tense"] == "present" || values["verb_form"] == "third_person_singular" || values["verb_form"] == "finite")
+}
+
 type englishDeterminers struct {
 	subject string
 	object  string
@@ -437,6 +458,10 @@ type englishDeterminers struct {
 func englishDeterminerVariant(id string) (englishDeterminers, bool) {
 	variant, exists := englishDeterminerVariants[id]
 	if !exists {
+		if id == "construction:en.transitive.svo.reading" || id == "construction:en.transitive_past.svo.reading.realize" {
+			variant, exists = englishDeterminerVariants["construction:en.transitive.svo"]
+			return variant, exists
+		}
 		if variant, exists = englishNegativeDeterminerVariant(id, "construction:en.transitive_negative.svo", englishNegativeTransitiveDeterminerVariants); exists {
 			return variant, true
 		}

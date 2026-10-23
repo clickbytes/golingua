@@ -12,13 +12,14 @@ import (
 )
 
 const (
-	sentenceSeeingCapabilityEvidenceID    = "sentence.seeing.present.singular.v1"
-	sentenceSeeingNegationEvidenceID      = "sentence.seeing.negation.present.singular.v1"
-	sentencePresentNegationEvidenceID     = "sentence.present.negation.transitive_oblique.singular_plural.v1"
-	sentenceHearingCapabilityEvidenceID   = "sentence.hearing.present.singular.v1"
-	sentenceReceivingCapabilityEvidenceID = "sentence.receiving.past.singular.v1"
-	sentenceLookingCapabilityEvidenceID   = "sentence.looking.present.singular.v1"
-	sentenceReadingCapabilityEvidenceID   = "sentence.reading.present.singular_plural.v1"
+	sentenceSeeingCapabilityEvidenceID      = "sentence.seeing.present.singular.v1"
+	sentenceSeeingNegationEvidenceID        = "sentence.seeing.negation.present.singular.v1"
+	sentencePresentNegationEvidenceID       = "sentence.present.negation.transitive_oblique.singular_plural.v1"
+	sentenceHearingCapabilityEvidenceID     = "sentence.hearing.present.singular.v1"
+	sentenceReceivingCapabilityEvidenceID   = "sentence.receiving.past.singular.v1"
+	sentenceLookingCapabilityEvidenceID     = "sentence.looking.present.singular.v1"
+	sentenceReadingCapabilityEvidenceID     = "sentence.reading.present.singular_plural.v1"
+	sentenceReadingPastCapabilityEvidenceID = "sentence.reading.past.third_person.v1"
 )
 
 // BuildSentenceLanguagePackage exposes only requested exact approved sentence
@@ -110,7 +111,7 @@ func SentenceCapabilityEvidence() []language.CapabilityEvidence {
 }
 
 func sentenceCapabilityEvidenceIDs() []string {
-	return []string{sentenceSeeingCapabilityEvidenceID, sentenceSeeingNegationEvidenceID, sentencePresentNegationEvidenceID, sentenceHearingCapabilityEvidenceID, sentenceReceivingCapabilityEvidenceID, sentenceLookingCapabilityEvidenceID, sentenceReadingCapabilityEvidenceID}
+	return []string{sentenceSeeingCapabilityEvidenceID, sentenceSeeingNegationEvidenceID, sentencePresentNegationEvidenceID, sentenceHearingCapabilityEvidenceID, sentenceReceivingCapabilityEvidenceID, sentenceLookingCapabilityEvidenceID, sentenceReadingCapabilityEvidenceID, sentenceReadingPastCapabilityEvidenceID}
 }
 
 func currentSentenceSenseNames(languageID features.LanguageID) ([]string, bool) {

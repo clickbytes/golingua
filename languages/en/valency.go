@@ -61,6 +61,11 @@ var englishNegativeArticleConstructionSource = provenance.SourceRef{
 	Version: "2026-10-23-g10-18", License: "internal", Author: "Codex by owner delegation",
 }
 
+var englishReadingPastConstructionSource = provenance.SourceRef{
+	ID: "golingua-g10-20-reading-past-route", URI: "https://github.com/clickbytes/golingua/issues/253#issuecomment-6359693771",
+	Version: "2026-10-23-g10-20", License: "internal", Author: "Codex by owner delegation",
+}
+
 type frameDeclaration struct {
 	id, sense, family string
 	roles             []meaning.Role
@@ -71,7 +76,7 @@ type constructionBindingDeclaration struct {
 	sense, frame, family, variant string
 }
 
-var englishConstructionBindingDeclarations = append([]constructionBindingDeclaration{
+var englishConstructionBindingDeclarations = append(append([]constructionBindingDeclaration{
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive_negative", "en.transitive_negative.svo"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive_negative", "en.transitive_negative.svo.plural"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo"},
@@ -108,7 +113,7 @@ var englishConstructionBindingDeclarations = append([]constructionBindingDeclara
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo.indefinite_subject_an_object_a"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo.indefinite_subject_an_object_an"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo.indefinite_subject_an_mass_object"},
-	{"en.read.text", "en.read.text.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.read.text", "en.read.text.transitive", "en.transitive", "en.transitive.svo.reading"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_target"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_subject"},
@@ -120,7 +125,37 @@ var englishConstructionBindingDeclarations = append([]constructionBindingDeclara
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_subject_an_target_an"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique_negative", "en.oblique_negative.svo"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique_negative", "en.oblique_negative.svo.plural"},
-}, englishNegativeArticleBindingDeclarations()...)
+}, englishNegativeArticleBindingDeclarations()...), englishReadingPastBindingDeclarations()...)
+
+func englishReadingPastBindingDeclarations() []constructionBindingDeclaration {
+	suffixes := []string{
+		"", ".mass_object", ".indefinite_object", ".indefinite_subject", ".indefinite_subject_object",
+		".indefinite_subject_mass_object", ".indefinite_object_an", ".indefinite_subject_an",
+		".indefinite_subject_a_object_an", ".indefinite_subject_an_object_a",
+		".indefinite_subject_an_object_an", ".indefinite_subject_an_mass_object",
+	}
+	bindings := make([]constructionBindingDeclaration, 0, len(suffixes))
+	for _, suffix := range suffixes {
+		if suffix == "" {
+			bindings = append(bindings,
+				constructionBindingDeclaration{
+					sense: "en.read.text", frame: "en.read.text.transitive", family: "en.transitive_past",
+					variant: "en.transitive_past.svo.reading",
+				},
+				constructionBindingDeclaration{
+					sense: "en.read.text", frame: "en.read.text.transitive", family: "en.transitive_past",
+					variant: "en.transitive_past.svo.reading.realize",
+				},
+			)
+			continue
+		}
+		bindings = append(bindings, constructionBindingDeclaration{
+			sense: "en.read.text", frame: "en.read.text.transitive", family: "en.transitive_past",
+			variant: "en.transitive_past.svo" + suffix,
+		})
+	}
+	return bindings
+}
 
 func englishNegativeArticleBindingDeclarations() []constructionBindingDeclaration {
 	type familyRoute struct {
@@ -225,6 +260,12 @@ func CompileValency() (*valency.Index, error) {
 				return nil, fmt.Errorf("English negative frame family: %w", err)
 			}
 			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
+		case "en.read.text.transitive":
+			pastFamilyID, err := ids.NewConstructionID("en.transitive_past")
+			if err != nil {
+				return nil, fmt.Errorf("English past reading frame family: %w", err)
+			}
+			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, pastFamilyID)
 		case "en.look.directed.at":
 			negativeFamilyID, err := ids.NewConstructionID("en.oblique_negative")
 			if err != nil {
@@ -258,6 +299,9 @@ func CompileValency() (*valency.Index, error) {
 }
 
 func englishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.sense == "en.read.text" && item.family == "en.transitive_past" {
+		return englishReadingPastConstructionSource
+	}
 	if strings.HasSuffix(item.family, "_negative") {
 		if strings.Contains(item.variant, ".indefinite_") {
 			return englishNegativeArticleConstructionSource

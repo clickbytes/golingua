@@ -161,7 +161,7 @@ func (builder BareDeclarativeEvidenceBuilder) Build(ctx context.Context, lattice
 		return CompositionEvidence{}, err
 	}
 	evidence := CompositionEvidence{RequestContextID: stableRequestContextID(lattice)}
-	if forest.Outcome != status.OutcomeOK || len(forest.Roots) == 0 || len(forest.Unmatched) != 0 || len(lattice.MWEs) != 0 {
+	if forest.Outcome != status.OutcomeOK && forest.Outcome != status.OutcomeAmbiguous || len(forest.Roots) == 0 || len(forest.Unmatched) != 0 || len(lattice.MWEs) != 0 {
 		return evidence, nil
 	}
 	for index, token := range lattice.Tokens {

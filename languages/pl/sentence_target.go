@@ -137,9 +137,15 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 			if !known {
 				return nil, nil
 			}
+			aspect := "perfective"
+			if predicate.Sense.ID.String() == "sense:pl.czytac.interpret" {
+				// The approved reading lexeme is imperfective; do not assign the
+				// receiving route's perfective aspect to this distinct sense.
+				aspect = "imperfective"
+			}
 			return knownPolishFeatures(
 				[2]string{"verb_form", "finite"}, [2]string{"tense", "past"},
-				[2]string{"aspect", "perfective"},
+				[2]string{"aspect", aspect},
 				[2]string{"person", "third"}, [2]string{"number", number},
 				[2]string{"mood", "indicative"}, [2]string{"voice", "active"},
 				[2]string{"gender", gender},
