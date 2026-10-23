@@ -61,7 +61,7 @@ func NewSentenceTarget(snapshot *pack.Pack, registry *language.Registry) (*runti
 	return &runtime.TargetPipeline{
 		Language: "en", LanguageRegistry: registry, Lexicon: snapshot.Lexicon(), Valency: valencyIndex,
 		Constructions: constructions, Variants: variants, Core: snapshot.CoreGraph(),
-		OperatorBuilder: runtime.NoOperatorEvidenceBuilder{}, ExecutionBuilder: execution,
+		OperatorBuilder: englishSentenceOperatorBuilder{}, ExecutionBuilder: execution,
 		PlanBuilder: englishSentencePlanAnnotations{}, CandidatePolicy: englishDeterminerCandidatePolicy{},
 	}, nil
 }
@@ -70,6 +70,15 @@ type englishSentenceFeatures struct{}
 
 func (englishSentenceFeatures) Features(_ context.Context, source semantic.MeaningCandidate, predicate realizer.TargetCandidate, slot construction.SlotSpec, candidate realizer.TargetCandidate, _ []realizer.TargetCandidate) ([]features.FeatureValue, error) {
 	if slot.Category == construction.CategoryVP {
+		if _, event, found := englishNegatedSeeing(source); found && event.ID == predicate.NodeID && predicate.Sense.ID.String() == "sense:en.see.visual" {
+			return []features.FeatureValue{
+				{Feature: "verb_form", State: features.StateKnown, Value: "imperative"},
+				{Feature: "mood", State: features.StateKnown, Value: "imperative"},
+				{Feature: "voice", State: features.StateKnown, Value: "active"},
+				{Feature: "number", State: features.StateKnown, Value: "singular"},
+				{Feature: "verb_number", State: features.StateKnown, Value: "singular"},
+			}, nil
+		}
 		values, found := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)
 		if !found {
 			if len(source.Evidence.Records) == 0 {
@@ -124,6 +133,56 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 		{Feature: "noun_number", State: features.StateKnown, Value: features.FeatureValueID(number)},
 		{Feature: "number", State: features.StateKnown, Value: features.FeatureValueID(number)},
 	}, nil
+}
+
+type englishSentenceOperatorBuilder struct{}
+
+func (englishSentenceOperatorBuilder) Build(ctx context.Context, source semantic.MeaningCandidate) ([]construction.Operator, bool, error) {
+	if ctx == nil {
+		return nil, false, fmt.Errorf("English operator evidence requires a request context")
+	}
+	if err := ctx.Err(); err != nil {
+		return nil, false, err
+	}
+	scope, event, found := englishNegatedSeeing(source)
+	if !found {
+		return runtime.NoOperatorEvidenceBuilder{}.Build(ctx, source)
+	}
+	familyID, err := ids.NewConstructionID("en.transitive_negative")
+	if err != nil {
+		return nil, false, err
+	}
+	return []construction.Operator{{
+		ID: "negate", Kind: construction.OperatorNegation, Value: construction.ValueNegated,
+		InputFamilyID: familyID, OutputFamilyID: familyID,
+		SemanticScope: construction.SemanticScope{TargetNodeID: event.ID, ScopeNodeID: scope.ID},
+		Capabilities:  []construction.Capability{"negation-negated"}, Provenance: englishNegationConstructionSource,
+	}}, true, nil
+}
+
+func englishNegatedSeeing(source semantic.MeaningCandidate) (meaning.Node, meaning.Node, bool) {
+	if source.Meaning == nil {
+		return meaning.Node{}, meaning.Node{}, false
+	}
+	var scope meaning.Node
+	for _, node := range source.Meaning.Nodes {
+		if node.Kind != meaning.KindScope {
+			continue
+		}
+		if scope.ID != "" || node.Operator != meaning.OperatorNegation {
+			return meaning.Node{}, meaning.Node{}, false
+		}
+		scope = node
+	}
+	if scope.ID == "" {
+		return meaning.Node{}, meaning.Node{}, false
+	}
+	for _, node := range source.Meaning.Nodes {
+		if node.ID == scope.Target && node.Kind == meaning.KindEvent && node.Concept == "concept:seeing" {
+			return scope, node, true
+		}
+	}
+	return meaning.Node{}, meaning.Node{}, false
 }
 
 func englishFiniteVerbFeatures(tense, person, number string) []features.FeatureValue {
@@ -223,10 +282,16 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 	const (
 		transitiveFamily     = "construction:en.transitive"
 		transitivePastFamily = "construction:en.transitive_past"
+		transitiveNegative   = "construction:en.transitive_negative"
 		obliqueFamily        = "construction:en.oblique"
 	)
 	familyID := candidate.Family.Family.ID.String()
-	if candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || familyID != transitiveFamily && familyID != transitivePastFamily && familyID != obliqueFamily {
+	if familyID == transitiveNegative {
+		if _, _, negated := englishNegatedSeeing(source); !negated {
+			return false
+		}
+	}
+	if candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || familyID != transitiveFamily && familyID != transitivePastFamily && familyID != transitiveNegative && familyID != obliqueFamily {
 		return true
 	}
 	variant, knownVariant := englishDeterminerVariant(candidate.CompiledVariant.Variant.ID.String())
@@ -352,6 +417,7 @@ func englishDeterminerVariant(id string) (englishDeterminers, bool) {
 
 var englishDeterminerVariants = map[string]englishDeterminers{
 	"construction:en.transitive.svo":                                   {subject: "the", object: "the"},
+	"construction:en.transitive_negative.svo":                          {subject: "the", object: "the"},
 	"construction:en.transitive.svo.indefinite_object":                 {subject: "the", object: "a"},
 	"construction:en.transitive.svo.indefinite_subject":                {subject: "a", object: "the"},
 	"construction:en.transitive.svo.indefinite_subject_object":         {subject: "a", object: "a"},
@@ -380,6 +446,8 @@ func englishStandardDeterminerVariant(familyID string) string {
 		return "construction:en.transitive.svo"
 	case "construction:en.transitive_past":
 		return "construction:en.transitive_past.svo"
+	case "construction:en.transitive_negative":
+		return "construction:en.transitive_negative.svo"
 	case "construction:en.oblique":
 		return "construction:en.oblique.svo"
 	default:
@@ -389,7 +457,7 @@ func englishStandardDeterminerVariant(familyID string) string {
 
 func englishDeterminerForRole(candidate realizer.TargetCandidate, role meaning.Role) (string, bool) {
 	familyID := candidate.Family.Family.ID.String()
-	if familyID != "construction:en.transitive" && familyID != "construction:en.transitive_past" && familyID != "construction:en.oblique" {
+	if familyID != "construction:en.transitive" && familyID != "construction:en.transitive_past" && familyID != "construction:en.transitive_negative" && familyID != "construction:en.oblique" {
 		return "", false
 	}
 	variant, exists := englishDeterminerVariant(candidate.CompiledVariant.Variant.ID.String())

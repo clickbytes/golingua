@@ -178,9 +178,6 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 	if !found || predicate.Kind != plan.Kind || !equalNodePath(path, plan.MeaningPath) || string(predicate.Concept) != plan.CoreConceptID.String() {
 		return ExecuteResult{}, executeError(status.OutcomeInvalid, "PLAN_MEANING_MISMATCH", "plan.meaning_path", "plan predicate identity or path differs from the supplied Meaning graph")
 	}
-	if len(plan.Construction.Steps) > 0 {
-		return ExecuteResult{}, executeError(status.OutcomeUnsupported, "SURFACE_OPERATOR_UNSUPPORTED", "plan.construction.steps", "surface execution cannot yet emit composed operator morphology or segments")
-	}
 	if err := input.Family.Validate(); err != nil {
 		return ExecuteResult{}, executeWrapError(err)
 	}
@@ -197,7 +194,7 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 	if input.Frame.ID != plan.FrameID || input.Frame.SenseID != plan.SenseID {
 		return ExecuteResult{}, executeError(status.OutcomeInvalid, "PLAN_FRAME_MISMATCH", "frame", "supplied valency frame differs from the selected plan sense or frame")
 	}
-	if err := validateNoOpConstructionPlan(plan, input.Family); err != nil {
+	if err := validateConstructionPlanForSurface(plan, input.Family); err != nil {
 		return ExecuteResult{}, err
 	}
 	if len(input.Slots) > budget.MaxSlots {
@@ -384,10 +381,19 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 	return result, nil
 }
 
-func validateNoOpConstructionPlan(plan RealizationPlan, family construction.ConstructionFamily) error {
+func validateConstructionPlanForSurface(plan RealizationPlan, family construction.ConstructionFamily) error {
 	composition := plan.Construction
 	if composition.Language != family.Language || composition.SenseID != plan.SenseID || composition.ValencyFrameID != plan.FrameID || composition.InputFamilyID != plan.FamilyID || composition.OutputFamilyID != plan.FamilyID {
-		return executeError(status.OutcomeInvalid, "CONSTRUCTION_PLAN_CONTEXT_MISMATCH", "plan.construction", "no-op construction plan language, sense, frame, or family differs from the selected realization")
+		return executeError(status.OutcomeInvalid, "CONSTRUCTION_PLAN_CONTEXT_MISMATCH", "plan.construction", "construction plan language, sense, frame, or family differs from the selected realization")
+	}
+	if len(composition.Steps) > 0 {
+		if !composition.ID.Valid() {
+			return executeError(status.OutcomeInvalid, "CONSTRUCTION_PLAN_ID_MISMATCH", "plan.construction.id", "operator construction plan requires a canonical identity")
+		}
+		if explicitSurfaceNegation(plan, family) {
+			return nil
+		}
+		return executeError(status.OutcomeUnsupported, "CONSTRUCTION_OPERATOR_NOT_EXECUTABLE", "plan.construction.steps", "only an explicitly declared identity negation has a compiled surface realization")
 	}
 	if !composition.ID.Valid() || composition.ID != noOpConstructionPlanID(plan.FamilyPlanID, plan.SenseID, plan.FrameID) {
 		return executeError(status.OutcomeInvalid, "CONSTRUCTION_PLAN_ID_MISMATCH", "plan.construction.id", "no-op construction plan identity does not match its selected family, sense, and frame")

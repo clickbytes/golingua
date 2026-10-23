@@ -6,6 +6,7 @@ import (
 
 	"github.com/clickbytes/golingua/internal/construction"
 	"github.com/clickbytes/golingua/internal/features"
+	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/language"
 	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/pack"
@@ -59,8 +60,9 @@ func NewSentenceTarget(snapshot *pack.Pack, registry *language.Registry) (*runti
 	return &runtime.TargetPipeline{
 		Language: "pl", LanguageRegistry: registry, Lexicon: snapshot.Lexicon(), Valency: valencyIndex,
 		Constructions: constructions, Variants: variants, Core: snapshot.CoreGraph(),
-		OperatorBuilder: runtime.NoOperatorEvidenceBuilder{}, ExecutionBuilder: execution,
-		PlanBuilder: polishSentencePlanAnnotations{},
+		OperatorBuilder: polishSentenceOperatorBuilder{}, ExecutionBuilder: execution,
+		CandidatePolicy: polishSentenceCandidatePolicy{},
+		PlanBuilder:     polishSentencePlanAnnotations{},
 	}, nil
 }
 
@@ -95,6 +97,12 @@ type polishSentenceFeatures struct{}
 
 func (polishSentenceFeatures) Features(_ context.Context, source semantic.MeaningCandidate, predicate realizer.TargetCandidate, slot construction.SlotSpec, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) ([]features.FeatureValue, error) {
 	if slot.Category == construction.CategoryVP {
+		if _, event, found := polishNegatedSeeing(source); found && event.ID == predicate.NodeID && predicate.Sense.ID.String() == "sense:pl.widziec.visual" {
+			return knownPolishFeatures(
+				[2]string{"verb_form", "finite"}, [2]string{"tense", "present"}, [2]string{"aspect", "imperfective"},
+				[2]string{"person", "third"}, [2]string{"number", "singular"}, [2]string{"mood", "indicative"}, [2]string{"voice", "active"},
+			), nil
+		}
 		values, found := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)
 		if !found {
 			if len(source.Evidence.Records) == 0 {
@@ -189,6 +197,66 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 		featureValues = append(featureValues, [2]string{"gender", gender})
 	}
 	return knownPolishFeatures(featureValues...), nil
+}
+
+type polishSentenceOperatorBuilder struct{}
+
+func (polishSentenceOperatorBuilder) Build(ctx context.Context, source semantic.MeaningCandidate) ([]construction.Operator, bool, error) {
+	if ctx == nil {
+		return nil, false, fmt.Errorf("Polish operator evidence requires a request context")
+	}
+	if err := ctx.Err(); err != nil {
+		return nil, false, err
+	}
+	scope, event, found := polishNegatedSeeing(source)
+	if !found {
+		return runtime.NoOperatorEvidenceBuilder{}.Build(ctx, source)
+	}
+	familyID, err := ids.NewConstructionID("pl.transitive_negative")
+	if err != nil {
+		return nil, false, err
+	}
+	return []construction.Operator{{
+		ID: "negate", Kind: construction.OperatorNegation, Value: construction.ValueNegated,
+		InputFamilyID: familyID, OutputFamilyID: familyID,
+		SemanticScope: construction.SemanticScope{TargetNodeID: event.ID, ScopeNodeID: scope.ID},
+		Capabilities:  []construction.Capability{"negation-negated"}, Provenance: polishNegationConstructionSource,
+	}}, true, nil
+}
+
+func polishNegatedSeeing(source semantic.MeaningCandidate) (meaning.Node, meaning.Node, bool) {
+	if source.Meaning == nil {
+		return meaning.Node{}, meaning.Node{}, false
+	}
+	var scope meaning.Node
+	for _, node := range source.Meaning.Nodes {
+		if node.Kind != meaning.KindScope {
+			continue
+		}
+		if scope.ID != "" || node.Operator != meaning.OperatorNegation {
+			return meaning.Node{}, meaning.Node{}, false
+		}
+		scope = node
+	}
+	if scope.ID == "" {
+		return meaning.Node{}, meaning.Node{}, false
+	}
+	for _, node := range source.Meaning.Nodes {
+		if node.ID == scope.Target && node.Kind == meaning.KindEvent && node.Concept == "concept:seeing" {
+			return scope, node, true
+		}
+	}
+	return meaning.Node{}, meaning.Node{}, false
+}
+
+type polishSentenceCandidatePolicy struct{}
+
+func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, _ []realizer.TargetCandidate) bool {
+	if candidate.Family.Family.ID.String() != "construction:pl.transitive_negative" {
+		return true
+	}
+	_, _, negated := polishNegatedSeeing(source)
+	return negated
 }
 
 func polishSubjectGender(source semantic.MeaningCandidate, predicate realizer.TargetCandidate, candidates []realizer.TargetCandidate) (string, bool) {
