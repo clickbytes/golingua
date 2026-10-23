@@ -317,7 +317,7 @@ func cloneVariant(variant Variant) Variant {
 func CloneSequenceTokens(tokens []SequenceToken) []SequenceToken {
 	result := append([]SequenceToken(nil), tokens...)
 	for index := range result {
-	result[index].AcceptedInputs = append([]string(nil), tokens[index].AcceptedInputs...)
+		result[index].AcceptedInputs = append([]string(nil), tokens[index].AcceptedInputs...)
 	}
 	return result
 }
