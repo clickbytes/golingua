@@ -14,6 +14,7 @@ import (
 const (
 	sentenceSeeingCapabilityEvidenceID    = "sentence.seeing.present.singular.v1"
 	sentenceSeeingNegationEvidenceID      = "sentence.seeing.negation.present.singular.v1"
+	sentencePresentNegationEvidenceID     = "sentence.present.negation.transitive_oblique.singular_plural.v1"
 	sentenceHearingCapabilityEvidenceID   = "sentence.hearing.present.singular.v1"
 	sentenceReceivingCapabilityEvidenceID = "sentence.receiving.past.singular.v1"
 	sentenceLookingCapabilityEvidenceID   = "sentence.looking.present.singular.v1"
@@ -108,7 +109,7 @@ func SentenceCapabilityEvidence() []language.CapabilityEvidence {
 }
 
 func sentenceCapabilityEvidenceIDs() []string {
-	return []string{sentenceSeeingCapabilityEvidenceID, sentenceSeeingNegationEvidenceID, sentenceHearingCapabilityEvidenceID, sentenceReceivingCapabilityEvidenceID, sentenceLookingCapabilityEvidenceID}
+	return []string{sentenceSeeingCapabilityEvidenceID, sentenceSeeingNegationEvidenceID, sentencePresentNegationEvidenceID, sentenceHearingCapabilityEvidenceID, sentenceReceivingCapabilityEvidenceID, sentenceLookingCapabilityEvidenceID}
 }
 
 func currentSentenceSenseNames(languageID features.LanguageID) ([]string, bool) {

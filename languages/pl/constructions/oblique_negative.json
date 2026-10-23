@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "language": "pl",
+  "family": {
+    "id": "construction:pl.oblique_negative",
+    "language": "pl",
+    "slot_specs": [
+      {"id":"subject","position":0,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"},
+      {"id":"verb","position":1,"category":"VP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"},
+      {"id":"oblique","position":2,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required","case":"accusative","adposition":"na"}
+    ],
+    "constraints":[{"id":"subject_verb_number","kind":"agreement","strength":"hard","controller_slot":"subject","target_slot":"verb","features":["number"]}],
+    "operators":["negate"],
+    "capabilities":["negation-negated","negation","surface_negation"],
+    "provenance":{"id":"golingua-g10-17-present-negation","uri":"https://github.com/clickbytes/golingua/issues/247#issuecomment-6358687010","version":"2026-10-23-g10-17","license":"internal","author":"Codex by owner delegation"}
+  },
+  "variants": [
+    {"id":"construction:pl.oblique_negative.svo","family_id":"construction:pl.oblique_negative","sequence":[{"kind":"slot","slot_id":"subject"},{"kind":"terminal","terminal":"nie"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"na"},{"kind":"slot","slot_id":"oblique"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"both","provenance":{"id":"golingua-g10-17-present-negation","uri":"https://github.com/clickbytes/golingua/issues/247#issuecomment-6358687010","version":"2026-10-23-g10-17","license":"internal","author":"Codex by owner delegation"}}
+  ]
+}

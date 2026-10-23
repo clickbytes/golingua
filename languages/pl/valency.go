@@ -21,8 +21,8 @@ var polishConstructionReviewSource = provenance.SourceRef{
 }
 
 var polishNegationConstructionSource = provenance.SourceRef{
-	ID: "golingua-g10-16-negated-seeing", URI: "https://github.com/clickbytes/golingua/issues/245#issuecomment-6358351181",
-	Version: "2026-10-23", License: "internal", Author: "Codex by owner delegation",
+	ID: "golingua-g10-17-present-negation", URI: "https://github.com/clickbytes/golingua/issues/247#issuecomment-6358687010",
+	Version: "2026-10-23-g10-17", License: "internal", Author: "Codex by owner delegation",
 }
 
 type frameDeclaration struct {
@@ -37,6 +37,8 @@ type constructionBindingDeclaration struct {
 
 var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.transitive_negative", "pl.transitive_negative.svo"},
+	{"pl.slyszec.auditory", "pl.slyszec.auditory.transitive", "pl.transitive_negative", "pl.transitive_negative.svo"},
+	{"pl.patrzec.directed", "pl.patrzec.directed.na", "pl.oblique_negative", "pl.oblique_negative.svo"},
 	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.transitive", "pl.transitive.svo"},
 	{"pl.slyszec.auditory", "pl.slyszec.auditory.transitive", "pl.transitive", "pl.transitive.svo"},
 	{"pl.dostac.receive", "pl.dostac.receive.transitive", "pl.transitive", "pl.transitive.svo"},
@@ -149,10 +151,17 @@ func CompileValency() (*valency.Index, error) {
 			Arguments:        append([]valency.ArgumentSlot(nil), item.arguments...),
 			AllowedFamilyIDs: []ids.ConstructionID{familyID}, Provenance: polishValencySource,
 		}
-		if item.id == "pl.widziec.visual.transitive" {
+		switch item.id {
+		case "pl.widziec.visual.transitive", "pl.slyszec.auditory.transitive":
 			negativeFamilyID, err := ids.NewConstructionID("pl.transitive_negative")
 			if err != nil {
 				return nil, fmt.Errorf("Polish negative frame family: %w", err)
+			}
+			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
+		case "pl.patrzec.directed.na":
+			negativeFamilyID, err := ids.NewConstructionID("pl.oblique_negative")
+			if err != nil {
+				return nil, fmt.Errorf("Polish negative oblique frame family: %w", err)
 			}
 			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
 		}
@@ -182,7 +191,7 @@ func CompileValency() (*valency.Index, error) {
 }
 
 func polishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
-	if item.family == "pl.transitive_negative" {
+	if item.family == "pl.transitive_negative" || item.family == "pl.oblique_negative" {
 		return polishNegationConstructionSource
 	}
 	return polishConstructionReviewSource

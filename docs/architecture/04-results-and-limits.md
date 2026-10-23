@@ -1,6 +1,6 @@
 # 04 — Wyniki, diagnostyki i limity
 
-Ten dokument opisuje kontrakt wyników Go oraz jego ograniczone użycie przez parser, morfologię, leksykę i translację PL/EN. Skompilowany runtime obsługuje jawne szlaki `seeing`, `hearing` i `looking` w teraźniejszej 3. osobie liczby pojedynczej i mnogiej, negację `seeing` w 3. osobie liczby pojedynczej oraz `receiving` w przeszłej 3. osobie liczby pojedynczej i mnogiej. Pozostałe trasy zwracają odpowiedni status braku obsługi lub nierozstrzygnięcia.
+Ten dokument opisuje kontrakt wyników Go oraz jego ograniczone użycie przez parser, morfologię, leksykę i translację PL/EN. Skompilowany runtime obsługuje jawne szlaki `seeing`, `hearing` i `looking` w teraźniejszej 3. osobie liczby pojedynczej i mnogiej oraz negację tych trzech szlaków w obu liczbach. `Receiving` obsługuje przeszłą 3. osobę liczby pojedynczej i mnogiej. Pozostałe trasy zwracają odpowiedni status braku obsługi lub nierozstrzygnięcia.
 
 ## Wynik operacji
 

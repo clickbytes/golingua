@@ -15,8 +15,8 @@
 `forms` i `catalog` są dostępne lokalnie. CLI może też załadować ograniczony,
 skompilowany runtime PL/EN dla dokładnych tras `seeing`, `hearing`, `looking` i `receiving`, gdy `translate`
 otrzyma `--runtime-config` wskazujący aktywny snapshot. Trasy `seeing`, `hearing`
-i `looking` obsługują teraźniejszą 3. osobę liczby pojedynczej i mnogiej;
-`seeing` dodatkowo ma negację w 3. osobie liczby pojedynczej. `receiving`
+i `looking` obsługują teraźniejszą 3. osobę liczby pojedynczej i mnogiej,
+w tym ograniczoną negację wszystkich trzech tras w obu liczbach. `receiving`
 obsługuje czas przeszły w 3. osobie liczby pojedynczej i mnogiej.
 Bez tej konfiguracji
 żądanie translacji zwraca `unsupported` i exit code 3.
@@ -402,6 +402,31 @@ Uwaga: <opcjonalna diagnoza lub poprawka>
 Nie zapisuj prywatnego wejścia lub rozmowy do repo bez potrzeby i zgody właściciela. Notatki w [`examples/manual/`](../examples/manual/README.md) są opcjonalne i nie są czytane przez CI.
 
 Wyniki diagnostyczne muszą odróżniać: brak leksemu, brak sensu, nieobsługiwaną konstrukcję, wieloznaczność, limit i rzeczywisty błąd programu. **Zielone CI = da się zbudować i uruchomić CLI, nie jakość językowa.**
+
+### G10-17 #247 — negacja present na trzech trasach — 2026-10-23
+
+Na implementacji `e1c9166b5ac7fa73fc39e650512fd033c4b4e05d` uruchomiono 18
+pochodnych wejść CLI na aktywnym snapshotcie: po sześć form `seeing`,
+`hearing` i `looking` po stronie EN→PL oraz PL→EN, dwie zamiany ról i cztery
+próby ochronne dla niezgodnej liczby i czasu przeszłego. EN→PL dało sześć
+wyników `ok`, z formami `nie widzi/widzą`, `nie słyszy/słyszą` i
+`nie patrzy/patrzą na`. PL→EN zachowało sześć oczekiwanych kandydatów z
+`does/do not`; każdy ma status `incomplete` z powodu jawnego założenia
+angielskiej określoności. Obie zamiany ról zachowały uczestników, a cztery
+próby ochronne zwróciły `unsupported`.
+
+Ponownie wykonano też S001–S100 w obu kierunkach (200 wywołań). Wszystkie 200
+grup wejściowych zachowało zbiorczy status i zbiór par `(candidate outcome,
+text)` z G10-14: EN→PL 60 `ok` / 40 `incomplete`, PL→EN 100 `ambiguous`, zero
+zmienionych grup. Nie zmieniano korpusu. Dokładne wejścia, kody, teksty,
+diagnostyki i podsumowanie porównania zapisano w
+[`data/sentences/observed-2026-10-23-g10-17-present-negation.tsv`](../data/sentences/observed-2026-10-23-g10-17-present-negation.tsv).
+
+**Ocena agenta:** jawne terminale i polskie formy zachowują negację, zgodność
+liczby oraz rozróżnienie `see/hear` od oblique `look at`. Próby z błędną
+zgodnością i nieobsługiwanym czasem nie trafiają do nowych tras. Angielskie
+kandydatury z PL pozostają niekompletne, bo Meaning nie zawiera określoności.
+Akceptacja językowa właściciela pozostaje **NOT RUN**.
 
 ## Co NIE jest wymagane
 

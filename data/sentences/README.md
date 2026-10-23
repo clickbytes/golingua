@@ -220,3 +220,28 @@ bo określoność nie jest zakodowana w Meaning. Ponowny przebieg wszystkich 100
 istniejących par w obu kierunkach wykonał 200 wywołań i zachował statusy oraz
 zbiory tekstów kandydatów G10-14. Odbiór językowy właściciela pozostaje
 **NOT RUN**.
+
+## Negacja teraźniejsza `seeing`, `hearing`, `looking` G10-17 — 2026-10-23
+
+Na implementacji `e1c9166b5ac7fa73fc39e650512fd033c4b4e05d` uruchomiono 18
+pochodnych wejść CLI na snapshotcie utworzonym z bieżącego katalogu. EN→PL
+zwróciło `ok` dla 3sg/3pl `does/do not see`, `hear` i `look at`, dając
+odpowiednio `nie widzi/widzą`, `nie słyszy/słyszą` i `nie patrzy/patrzą na`.
+PL→EN zachowało odpowiadające kandydatury z `does/do not`; wszystkie sześć
+pozostało `incomplete`, ponieważ określoność nie występuje w polskim Meaning.
+Zamiana ról w obu kierunkach zachowała właściwego experiencera/agensa i
+stimulus/target. Cztery próby niezgodnej liczby albo czasu przeszłego zwróciły
+`unsupported`.
+
+Ponownie uruchomiono wszystkie 100 istniejących par w obu kierunkach — 200
+wywołań. Każda grupa zachowała zbiorczy status i zbiór par `(candidate
+outcome, text)` względem G10-14; zmienionych grup: 0. EN→PL miało 60 `ok` i
+40 `incomplete`, a PL→EN 100 `ambiguous`. Nie dodano ani nie edytowano wierszy
+korpusu. Dokładne wyniki smoke i skrót porównania są w
+[obserwacji G10-17](observed-2026-10-23-g10-17-present-negation.tsv).
+
+**Ocena agenta:** rozpoznane trasy zachowują negację, role, liczbę i osobną
+rekcję oblique dla `look at` / `patrzeć na`. Status `incomplete` PL→EN
+ujawnia brak określoności w źródle, a próby spoza zakresu nie zostały
+zaakceptowane przez nową konstrukcję. Akceptacja językowa właściciela pozostaje
+**NOT RUN**.

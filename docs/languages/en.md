@@ -2,11 +2,12 @@
 
 ## In-code lexical catalog
 
-`en.LexicalDocument()` declares 1002 English lexemes, 1011 distinct senses and 1001
-CORE binding records (the concept inventory plus the sentence-only determiner `a`).
-Twenty delegated review batches and audit #192 approved 996 exact equivalent
-links; 5 records remain pending. The additional determiner sense has no CORE
-binding because it is used only to analyze English noun phrases.
+`en.LexicalDocument()` declares 1003 English lexemes, 1012 distinct senses and 1001
+CORE binding records. The sentence-only determiners `a` and `an` have no CORE
+bindings. Twenty delegated review batches and audit #192, followed by G10-12
+#237, approved 997 exact equivalent links; 4 records remain pending across 3
+concepts. Sentence-only determiner senses have no CORE binding and are used
+only to analyze or realize English noun phrases.
 `en.CompileLexicon(coreGraph)` validates those records against the exact CORE
 snapshot. Meanings such as the institutional sense of `school` and the
 understanding sense of `see` remain separate and unmapped. English records are
@@ -15,10 +16,10 @@ assumed.
 
 `en.CompileValency()` compiles five sense-specific frames. In particular,
 directed `look` uses an `at` oblique argument, whereas visual `see` uses a
-direct object. Five exact EN sense/frame/family/variant routes (`see`, `hear`,
-`get` in its receive sense, `read` with text, and `look at`) have approved
-construction bindings after delegated review. `look at` uses the distinct
-oblique `at` + NP construction assessed in G05 #201.
+direct object. The construction index currently has 48 approved EN sense/frame/family/variant
+bindings, including the distinct oblique `look at` route from G05 #201 and
+negative present routes from G10-16/#245 and G10-17/#247. These are exact
+construction approvals, separate from CORE lexical bindings.
 Remaining candidate lexical links stay pending; neither they nor the approved
 EN links alone authorize translation.
 Source metadata points to the project-authored Go files and records the license
@@ -43,12 +44,11 @@ no assigned paradigm, form inventory, valency frame, or construction binding. Ve
 `en.book.work`, `en.hand.worker`, `en.see.understand`, `en.look.appear`, and
 `en.get.understand`. Their mappings still need separate lexical decisions.
 
-The ledger has a lexical candidate for every current CORE concept. Twenty delegated review batches and audit #192 approved 996 exact equivalents across 996 concepts and
-retained 5 pending binding records across 4 concepts. The remaining candidates are recorded in issue #192. The existing
+The ledger has a lexical candidate for every current CORE concept. Twenty delegated review batches and audit #192 approved 996 exact equivalents across 996 concepts; G10-12 #237 separately reviewed `en.offspring.child`, bringing the total to 997 approved links across 997 concepts, with 4 pending binding records across 3 concepts. The remaining candidates are recorded in issue #192. The existing
 `en.school.institution` sense is a pending candidate; eight existing senses
 remain unmapped. Construction approvals do not imply these lexical decisions.
 
-The Go package `github.com/clickbytes/golingua/languages/en` loads the bundled `features.json`, `manifest.json`, `morphology/paradigms.json`, and `morphology/lexemes.json`, plus in-code entries. `en.Load()` validates and compiles the package into a shared morphology engine, then builds a finite relation table for inverse analysis. Its `Seed.Generate(lexemeID, featureValues)` and `Seed.Analyze(surface)` methods are available through CLI `forms`. The compiled CLI enables exact `seeing`, `hearing`, `looking`, and `receiving` routes when it loads an active snapshot. Present `seeing`, `hearing`, and `looking` support 3sg/3pl; `seeing` also supports the singular negative `does not see`. The `looking` slice uses `looks` and exact `at`; `receiving` uses the declared principal parts `get`, `gets`, `got`, `gotten`, `getting`, analyzes `got`, and realizes past tense only.
+The Go package `github.com/clickbytes/golingua/languages/en` loads the bundled `features.json`, `manifest.json`, `morphology/paradigms.json`, and `morphology/lexemes.json`, plus in-code entries. `en.Load()` validates and compiles the package into a shared morphology engine, then builds a finite relation table for inverse analysis. Its `Seed.Generate(lexemeID, featureValues)` and `Seed.Analyze(surface)` methods are available through CLI `forms`. The compiled CLI enables exact `seeing`, `hearing`, `looking`, and `receiving` routes when it loads an active snapshot. Present `seeing`, `hearing`, and `looking` support 3sg/3pl, including bounded negative forms `does not` / `do not` plus the base verb. The `looking` slice uses exact `at`; `receiving` uses the declared principal parts `get`, `gets`, `got`, `gotten`, `getting`, analyzes `got`, and realizes past tense only.
 
 ## Included classes
 

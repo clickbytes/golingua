@@ -3,6 +3,7 @@ package pl
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/clickbytes/golingua/internal/analyzer"
 	"github.com/clickbytes/golingua/internal/construction"
@@ -18,8 +19,8 @@ import (
 
 // NewSentenceSource builds the trusted Polish source stages against one exact
 // CORE/lexicon snapshot. The declarative completion attestation covers
-// singular and plural present visual/auditory/looking, singular visual negation,
-// and third-person past receiving predicates.
+// singular and plural present visual/auditory/looking, present negation for
+// those routes, and third-person past receiving predicates.
 func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if snapshot == nil {
 		return nil, fmt.Errorf("Polish sentence source requires a snapshot")
@@ -106,11 +107,12 @@ type polishSentenceEvidenceBuilder struct {
 func (builder polishSentenceEvidenceBuilder) Build(ctx context.Context, lattice analyzer.LexicalLattice, candidates []parser.PhraseCandidate, forest parser.Forest) (runtime.CompositionEvidence, error) {
 	notSpan, hasNegation := polishTerminalSpan(lattice, "nie")
 	if !hasNegation {
+		for _, token := range lattice.Tokens {
+			if token.Token.Folded == "nie" {
+				return runtime.CompositionEvidence{}, nil
+			}
+		}
 		return builder.base.Build(ctx, lattice, candidates, forest)
-	}
-	seeingSense, err := ids.NewSenseID("pl.widziec.visual")
-	if err != nil {
-		return runtime.CompositionEvidence{}, err
 	}
 	evidence, err := builder.base.Build(ctx, lattice, candidates, forest)
 	if err != nil || !evidence.OperatorCoverageComplete {
@@ -120,22 +122,19 @@ func (builder polishSentenceEvidenceBuilder) Build(ctx context.Context, lattice 
 	for _, candidate := range candidates {
 		byID[candidate.ID] = candidate
 	}
-	negativeFamily, err := ids.NewConstructionID("pl.transitive_negative")
-	if err != nil {
-		return runtime.CompositionEvidence{}, err
-	}
-	negativeVariant, err := ids.NewConstructionID("pl.transitive_negative.svo")
-	if err != nil {
-		return runtime.CompositionEvidence{}, err
-	}
 	operatorCount := 0
 	for _, node := range forest.Nodes {
 		if node.Category != "clause" {
 			continue
 		}
 		for _, alternative := range node.Alternatives {
-			if alternative.FamilyID != negativeFamily || alternative.VariantID.String() != negativeVariant.String() || alternative.Permission.SenseID != seeingSense {
+			route, supported := polishPresentNegationRouteForSense(alternative.Permission.SenseID)
+			if !supported || alternative.FamilyID.String() != route.family || alternative.VariantID.String() != route.variant {
 				return runtime.CompositionEvidence{}, nil
+			}
+			negativeFamily, err := ids.NewConstructionID(strings.TrimPrefix(route.family, "construction:"))
+			if err != nil {
+				return runtime.CompositionEvidence{}, err
 			}
 			for _, slot := range alternative.Slots {
 				if slot.Role != "" {
@@ -143,7 +142,7 @@ func (builder polishSentenceEvidenceBuilder) Build(ctx context.Context, lattice 
 				}
 				for _, candidateID := range slot.CandidateIDs {
 					candidate, exists := byID[candidateID]
-					if !exists || !polishNegatedSeeingCandidate(candidate) {
+					if !exists || !polishNegatedPresentCandidate(candidate, route) {
 						continue
 					}
 					evidence.Operators = append(evidence.Operators, semantic.OperatorEvidence{
@@ -162,25 +161,4 @@ func (builder polishSentenceEvidenceBuilder) Build(ctx context.Context, lattice 
 	}
 	evidence.OperatorCoverageComplete = operatorCount > 0
 	return evidence, nil
-}
-
-func polishTerminalSpan(lattice analyzer.LexicalLattice, terminal string) (text.Span, bool) {
-	var span text.Span
-	found := false
-	for _, token := range lattice.Tokens {
-		if token.Token.Folded != terminal {
-			continue
-		}
-		if found {
-			return text.Span{}, false
-		}
-		span, found = token.Token.Span, true
-	}
-	return span, found
-}
-
-func polishNegatedSeeingCandidate(candidate parser.PhraseCandidate) bool {
-	return candidate.Category == construction.CategoryVP && candidate.LexemeID.String() == "lexeme:pl.widziec.v" &&
-		candidate.Features["verb_form"] == "finite" && candidate.Features["tense"] == "present" &&
-		candidate.Features["person"] == "third" && candidate.Features["number"] == "singular"
 }
