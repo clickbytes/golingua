@@ -80,9 +80,9 @@ external read rejected by the guard is an actual observed denial. Never report
 an unattempted tool call as executed. Unsupported restrictions, unexpected
 permissions or unexplained missing agents stop delegation.
 
-## Example G11-V1 splitting (without more micro-PRs)
+## Historical example: G11-V1 splitting (without more micro-PRs)
 
-Sol owns scope, public CLI/TUI startup decisions, the `internal/app.Service` contract and integration/review of delegated implementation jobs. Luna Low can map existing `cmd/golingua` and `internal/app` call paths read-only. The implementation writer may own one sharply bounded presentational component of the shell, if Sol has specified the exact types/interfaces; it may not invent state ownership or status semantics. Sol integrates, drives actual TTY and non-TTY probes and owns the sole G11-V1 PR. G11-V2 and later remain queued.
+At the time of this example, Sol owned scope, public CLI/TUI startup decisions, the `internal/app.Service` contract and integration/review of delegated implementation jobs. Luna Low could map `cmd/golingua` and `internal/app` read-only; the implementation writer owned only a sharply bounded shell component. Sol integrated it and owned the G11-V1 PR. This is a process example, not the current queued-work status.
 
 ## Completion gate for user-visible flows
 

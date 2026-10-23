@@ -14,17 +14,23 @@ go run ./cmd/golingua capabilities --json
 
 `--version` zwraca wersję technicznego podglądu v0. `--help` pokazuje dostępne komendy. `capabilities --json` opisuje gotowość bez wybranego runtime'u, dlatego obecnie zwraca `status: "unsupported"`, puste tablice `languages` i `features` oraz `ready: false`; sama komenda kończy się kodem 0. `forms` i `catalog` mają własne komendy opisane poniżej.
 
-## Interfejs terminalowy (G11-V1–V3)
+## Interfejs terminalowy
 
 Bezargumentowe `golingua` otwiera TUI, gdy stdin i stdout są TTY (poza `TERM=dumb`). Bez TTY pozostaje pomoc bez ANSI. Jawne komendy, `--help`, `--version`, JSON i kody wyjścia zachowują dotychczasowy kontrakt.
 
-F1 tłumaczy przez wspólny `app.Service`: wpisz tekst, `Enter`; `Alt+D` zmienia EN/PL. F5 przyjmuje ścieżkę runtime config: `Enter` wybiera ją i sprawdza; `Ctrl+S` jawnie zapisuje bezwzględną ścieżkę w `os.UserConfigDir()/golingua/settings.json`. Zapis nigdy nie stosuje snapshotu. Ostrzeżenie o błędnych ustawieniach nie powoduje ich automatycznego nadpisania. Sprawdzenie runtime’u oznacza możliwość jego wczytania, nie obsługę każdego zdania.
+F1 tłumaczy przez wspólny `app.Service`: wpisz tekst i naciśnij `Enter`; `Alt+D` zmienia EN/PL. Up/Down wybiera rzeczywiste kandydatury, Enter otwiera ich szczegóły, a kontrolka Preview ponawia jawne żądanie z PreviewID. F2 udostępnia Analyze i Generate. Analyze przyjmuje formę powierzchniową; Generate przyjmuje LexemeID i jawne pary `key=value`. Żądanie nie uzupełnia cech. W Simple Enter na wyniku pokazuje szczegóły wszystkich odczytań/form.
 
-`F1`–`F5` przełączają ekrany, `Tab`/`Shift+Tab` zmieniają fokus. Na pasku zakładek użyj strzałek. Fokus wyniku pozwala przewijać `Up`/`Down`/`PgUp`/`PgDown`; `Ctrl+U` czyści pole. `?` pokazuje pomoc, `Esc` wraca do promptu, `Ctrl+C`/`Ctrl+D` kończy i przywraca terminal. F3–F4 są placeholderami. Szczegóły w [dokumentacji TUI](tui/README.md).
+F3 filtruje katalog lokalnie, dosłownie i z rozróżnieniem wielkości liter wyłącznie po ConceptID; Enter wywołuje lookup wybranego rekordu. F4 pokazuje rzeczywisty inwentarz PL/EN i osobno walidację runtime'u. Wejście przez F-key, tabs lub paletę odświeża oba odczyty; Refresh ponawia je. Wczytanie runtime config nie oznacza obsługi każdego zdania, a błąd runtime'u nie czyści inwentarza.
 
-F1 udostępnia od V2 kontrolki candidates i preview: strzałki wybierają kandydata, `Enter` pokazuje szczegóły, a `Enter` na preview jawnie wywołuje usługę z jego `PreviewID`. Podgląd zachowuje status pierwotnego wyniku. Brak tekstu pozostaje jawnym brakiem. `Ctrl+P` otwiera na każdym ekranie paletę pięciu komend nawigacyjnych (`/translate`, `/forms`, `/concepts`, `/languages`, `/settings`); `Esc` anuluje i zachowuje szkic. W F5 ukośnik w polu ścieżki jest częścią ścieżki.
+F5 edytuje wersjonowane ustawienia. Runtime path, display level, default direction i snapshot store pozostają szkicem do udanego `Save` (`Ctrl+S`); zapis atomowy używa trybu 0600. `Cancel`/`Esc` odrzuca szkic. Walidacja runtime'u sprawdza szkic, ale go nie wybiera. Starsze pliki v1 bez `display_level`, `default_from` i `snapshot_store` dostają wartości domyślne w pamięci bez automatycznego przepisu. Simple pokazuje skrót, Normal listy/ID/cechy/założenia, Technical pełny JSON. Szczegóły kandydatów i odczytań pozostają dostępne.
 
-F2 Forms działa od V3. Wybierz język i tryb przez `Enter` na kontrolkach language i mode. Analyze przyjmuje formę powierzchniową w prompcie; Generate — LexemeID w prompcie oraz jawne pary `key=value` oddzielone spacjami w kontrolce features. `Enter` na polu albo run wywołuje usługę. UI nie dodaje cech. Wynik pokazuje status, stan i wszystkie zwrócone odczytania lub formy; na result przewijaj strzałkami i `PgUp`/`PgDown`. Szkice obu trybów są zachowane.
+Snapshot Preview wymaga jawnej ścieżki store; nie aktywuje danych, choć może utworzyć katalogi. Apply wymaga udanego bieżącego Preview i dostępnego z klawiatury dialogu z domyślnym Cancel. Przed aktywacją następuje ponowny preview i weryfikacja digestu; zmiana digestu wymaga ponownego potwierdzenia. Apply nie zapisuje ustawień ani nie wybiera runtime'u. Ctrl+C/Ctrl+D czeka na już trwający Apply.
+
+F1–F5 przełączają ekrany, Tab/Shift+Tab zmienia fokus, Left/Right na pasku wybiera ekran. F3–F5 focus order i operacje, resize i terminal opisano w [dokumentacji TUI](tui/README.md). Ctrl+P otwiera paletę pięciu tras nawigacyjnych; początkowy slash w promptcie F1–F3 także ją otwiera, a ukośnik w ścieżce F5 jest literalny. Bez TTY CLI zachowuje pomoc bez ANSI.
+
+### Krótki przegląd ręczny
+
+Uruchom `go run ./cmd/golingua` w terminalu, sprawdź F1 na zwykłym zdaniu PL lub EN, następnie F2 Analyze na istniejącej formie, F3 na wpisanym ConceptID, F4 przez Refresh i F5 przez walidację wybranej ścieżki. W F5 można osobno wpisać ścieżkę store, uruchomić Preview i anulować dialog Apply; nie trzeba stosować snapshotu do przejrzenia pozostałych ekranów. Na istniejących przykładach CLI sprawdź pojedynczą komendę `forms --language en --surface dogs --json` oraz `catalog --summary --json`. Bez TTY sprawdź domyślne wejście przez `go run ./cmd/golingua </dev/null`; `--help` pozostaje jawną komendą CLI. Ten przegląd nie jest test runnerem ani nowym korpusem.
 
 ## Translacja
 

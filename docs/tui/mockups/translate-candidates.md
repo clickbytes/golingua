@@ -105,9 +105,10 @@ must not be joined to these candidate IDs.
 | Candidate outcome `incomplete`, no text | Show the actual ID and diagnostics with “no text”; preview is unavailable. |
 | `unsupported`, `unknown`, `invalid`, `resource_limit`, or `error` response/failure | Keep the returned result/failure in F1. Show no candidate row unless an actual candidate was returned. |
 
-The detail view separates outer status from candidate outcome. If a later
-implementation offers a technical preview, it must use the selected candidate
-ID explicitly in G11-V2; that action is not owner or linguistic approval.
+The detail view separates outer status from candidate outcome. This historical
+design predates the current F1 implementation; the running TUI exposes the
+selected candidate and Preview action as described in the current
+[TUI guide](../README.md). Neither action is owner or linguistic approval.
 
 ## Focus and resizing
 
@@ -119,5 +120,5 @@ navigation as defined by the [keymap](../keymap.md). Focus is labeled in text,
 not color alone. Full IDs and Polish text wrap or scroll without changing their
 bytes; resizing preserves the selection and the F1 state.
 
-G11-09 completed this candidate-details design. G11-V2 will implement the
-candidate details and explicit PreviewID action; neither is implemented by this design.
+G11-09 completed this candidate-details design. The frames remain historical
+design references and are not live Go output.
