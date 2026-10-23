@@ -63,11 +63,22 @@ akceptacja właściciela pozostaje **NOT RUN**.
 Rzeczywiste wywołania dla 20 istniejących rekordów S021–S025, S036–S040,
 S071–S075 i S096–S100, w obu kierunkach, zapisano w
 [tabeli obserwacji G10-12](../../data/sentences/observed-2026-10-23-g10-12-offspring-a-an.tsv).
-EN→PL zwróciło 16 `ok` i 4 `incomplete`; niekompletne przypadki zachowały
-diagnostyki nierozstrzygniętego sensu `book`. PL→EN zwróciło 20 wyników
+W 20 istniejących rekordach EN→PL zwróciło 15 `ok` i 5 `incomplete`;
+niekompletne przypadki zachowały diagnostyki nierozstrzygniętego sensu `book`. PL→EN zwróciło 20 wyników
 `ambiguous`, w których widoczne są leksykalne alternatywy `child`/`offspring`
 i warianty rodzajnika. Pochodna próba `An offspring sees a dog.` →
 `Dziecko widzi psa.` zwróciła `ok`; nie jest częścią korpusu właściciela. Parser odrzuca
 `A offspring...`, a `an` wyklucza mnogą analizę `offspring`. Agent uznaje
 rozróżnienie form i jawność niepewności za zgodne z zadeklarowanym modelem;
 pełna ocena językowa właściciela nadal **NOT RUN**.
+
+## G10-13 — present 3pl i uzgodnienie podmiotu z czasownikiem
+
+Issue #239 / PR #240 włącza komórki trzeciej osoby liczby mnogiej na już
+istniejących trasach `seeing`, `hearing` i `looking` w PL i EN. Rodzime cechy
+`noun_number`/`verb_number` są normalizowane do `number` na granicy analizy i
+realizacji; twarda reguła konstrukcji odrzuca niezgodne liczby. Angielskie
+przeszłe `got` pozostało w rodzinie bez uzgodnienia, a polski przeszły `dostać`
+nadal wybiera jawne cechy liczby i rodzaju.
+
+W istniejących 40 wywołaniach dla S021–S025, S036–S040, S071–S075 i S096–S100 nie zmieniły się statusy ani zbiory tekstów względem poprzedniej obserwacji. Dziesięć osobno oznaczonych prób pochodnych oraz dokładne wyjścia CLI są w [tabeli G10-13](../../data/sentences/observed-2026-10-23-g10-13-plural-agreement.tsv). Formy mnogie generują się i są analizowane; `offspring` dobiera liczbę czasownika, a niezgodne kombinacje podmiotu i czasownika nie otrzymują pełnego parsowania. PL→EN nadal pokazuje alternatywy leksykalne/rodzajnikowe jako `ambiguous`. Agent ocenia zachowanie jawnych form i cechy liczby jako spójne z trasą; ocena językowa właściciela pozostaje **NOT RUN**.

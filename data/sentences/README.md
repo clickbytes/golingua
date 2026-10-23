@@ -138,8 +138,9 @@ Po G10-12 #237 (PR #238) ponownie uruchomiono istniejące rekordy S021–S025, S
 S071–S075 i S096–S100 w obu kierunkach. Dokładne odpowiedzi kandydatów,
 kody wyjścia, statusy, diagnostyki i teksty znajdują się w
 [observed-2026-10-23-g10-12-offspring-a-an.tsv](observed-2026-10-23-g10-12-offspring-a-an.tsv).
-EN→PL zwróciło 16 wyników `ok` i 4 `incomplete`; niekompletne odczytania
-`book` zachowują `PARTIAL_PARSE_EVIDENCE` i `UNRESOLVED_ROLE_SENSE`. PL→EN
+W 20 istniejących rekordach EN→PL zwróciło 15 wyników `ok` i 5 `incomplete`;
+niekompletne odczytania `book` zachowują `PARTIAL_PARSE_EVIDENCE` i
+`UNRESOLVED_ROLE_SENSE`. PL→EN
 zachowało 20 wieloznacznych wyników z odrębnymi kandydaturami `child` i
 `offspring` oraz wariantami `a`/`an`/`the`; brak określoności w źródle nadal
 jest jawnym założeniem, a nie automatycznie wybranym tłumaczeniem. W tej
@@ -152,3 +153,16 @@ pochodną próbę `An offspring sees a dog.` → `Dziecko widzi psa.` (`ok`, exi
 ma formy `offspring` dla singular i plural, a `an` jest analizowany jako
 determiner indefinite. To obserwacje CLI i ocena agenta, nie formalny gold ani
 akceptacja właściciela. Akceptacja językowa właściciela pozostaje **NOT RUN**.
+
+Po G10-13 #239 (PR #240) obserwacje dla istniejących S021–S025, S036–S040,
+S071–S075 i S096–S100 ponownie uruchomiono w obu kierunkach. Wszystkie 40
+wywołań zachowało statusy i zbiory tekstów z poprzedniej obserwacji: EN→PL
+15 `ok` / 5 `incomplete`, PL→EN 20 `ambiguous`. Plik
+[observed-2026-10-23-g10-13-plural-agreement.tsv](observed-2026-10-23-g10-13-plural-agreement.tsv)
+zawiera też 10 osobno oznaczonych prób pochodnych. W polach diagnostyk `-`
+oznacza brak diagnostyki. Pięć zgodnych prób EN→PL (jedna singularna i cztery
+mnogie) dało `ok`; trzy wejścia PL→EN zachowały mnogie formy czasowników w
+kandydatach `ambiguous`, a dwie niezgodne pary liczby nie uzyskały parse.
+`forms` wygenerowało `see`, `hear`, `look`, `widzą`, `słyszą` i `patrzą` dla
+komórek trzeciej osoby mnogiej. To obserwacje działania CLI, nie gold ani odbiór
+językowy; akceptacja właściciela pozostaje **NOT RUN**.
