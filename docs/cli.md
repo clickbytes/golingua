@@ -14,9 +14,13 @@ go run ./cmd/golingua capabilities --json
 
 `--version` zwraca wersję technicznego podglądu v0. `--help` pokazuje dostępne komendy. `capabilities --json` opisuje gotowość bez wybranego runtime'u, dlatego obecnie zwraca `status: "unsupported"`, puste tablice `languages` i `features` oraz `ready: false`; sama komenda kończy się kodem 0. `forms` i `catalog` mają własne komendy opisane poniżej.
 
-## Planowany interfejs terminalowy (G11)
+## Interfejs terminalowy (G11-V1)
 
-Kontrakt pięciu ekranów (`F1 Translate`–`F5 Settings`) jest opisany w [dokumentacji TUI](tui/README.md), ale TUI nie jest jeszcze zaimplementowany. Na obecnym `main` wywołanie bez argumentów nadal pokazuje pomoc. W G11-04 planowany start TUI będzie wymagał interaktywnego TTY; bez TTY pozostanie pomoc CLI. Jawne `--help` i `--version`, istniejące polecenia, JSON na stdout i kody wyjścia pozostają kontraktem dla skryptów. Poziom szczegółowości TUI ma wpływać wyłącznie na prezentację, nie na engine.
+Bezargumentowe `golingua` otwiera TUI, gdy stdin i stdout są TTY (poza `TERM=dumb`). Bez TTY pozostaje pomoc bez ANSI. Jawne komendy, `--help`, `--version`, JSON i kody wyjścia zachowują dotychczasowy kontrakt.
+
+F1 tłumaczy przez wspólny `app.Service`: wpisz tekst, `Enter`; `Alt+D` zmienia EN/PL. F5 przyjmuje ścieżkę runtime config: `Enter` wybiera ją i sprawdza; `Ctrl+S` jawnie zapisuje bezwzględną ścieżkę w `os.UserConfigDir()/golingua/settings.json`. Zapis nigdy nie stosuje snapshotu. Ostrzeżenie o błędnych ustawieniach nie powoduje ich automatycznego nadpisania. Sprawdzenie runtime’u oznacza możliwość jego wczytania, nie obsługę każdego zdania.
+
+`F1`–`F5` przełączają ekrany, `Tab`/`Shift+Tab` zmieniają fokus. Na pasku zakładek użyj strzałek. Fokus wyniku pozwala przewijać `Up`/`Down`/`PgUp`/`PgDown`; `Ctrl+U` czyści pole. `?` pokazuje pomoc, `Esc` wraca do promptu, `Ctrl+C`/`Ctrl+D` kończy i przywraca terminal. F2–F4 są placeholderami. Szczegóły w [dokumentacji TUI](tui/README.md).
 
 ## Translacja
 
