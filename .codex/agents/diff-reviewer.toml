@@ -1,5 +1,3 @@
-name = "diff_reviewer"
-description = "Read-only review of active PR diff against exact issue acceptance criteria."
 model = "gpt-6-luna"
 model_reasoning_effort = "low"
 developer_instructions = """

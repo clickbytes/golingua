@@ -11,6 +11,18 @@ default_subagent_reasoning_effort = "low"
 
 # Loaded only when this repository is trusted by Codex.
 # Override with a user-level CodeGraph MCP entry only if needed for this repo.
+[agents.issue_scout]
+description = "Luna Low: bounded read-only exploration of the active issue and exact source anchors."
+config_file = "agents/issue-scout.toml"
+
+[agents.diff_reviewer]
+description = "Luna Low: read-only review of the exact diff against one issue's acceptance criteria."
+config_file = "agents/diff-reviewer.toml"
+
+[agents.micro_implementer]
+description = "Luna Low: one-writer small change with explicit allowed paths and job brief."
+config_file = "agents/micro-implementer.toml"
+
 [mcp_servers.codegraph]
 command = "codegraph"
 args = ["serve", "--mcp"]

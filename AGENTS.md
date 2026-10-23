@@ -10,7 +10,7 @@
 
 - Jeden koordynator odpowiada za wynik. Najwyżej jeden ACTIVE EPIC, jedno ACTIVE child issue, jedna gałąź i jeden implementacyjny PR. W danej chwili tylko jeden agent edytuje aktywny checkout; pozostali mogą wykonywać ograniczony przegląd bez zapisu. Wszystkie przyszłe issues QUEUED.
 - Zanim edytujesz kod: sprawdź main SHA, otwarte PR i status epiców. W komentarzu issue podaj owner, pliki/symbole, plan, oczekiwany rezultat obserwowalny w CLI.
-- Twórz jeden PR na issue. Przeglądaj diff, rzeczywisty CI i ręcznie obserwowane wyniki. Po merge sprawdź main i dopiero rozpocznij następny task.
+- Domyślnie twórz jeden PR na issue. Przeglądaj diff, rzeczywisty CI i ręcznie obserwowane wyniki. Po merge sprawdź main i dopiero rozpocznij następny task. Jawne polecenie właściciela wykonania konkretnej zmiany bezpośrednio na `main` jest wyjątkiem jednorazowym: sprawdź świeży HEAD, zakres diffu i rzeczywisty CI; nie przenoś wyjątku na kolejne zadania.
 - Jawny wyjątek właściciela dla **G07 #60 (2026-10-21)**: sekwencyjne commity bezpośrednio do `main` bez PR, każdy po przeglądzie różnic i z realnym CI; bez równoległych agentów. Pozostałe issues używają standardowego branch + PR. Wyjątek nie oznacza zatwierdzenia znaczeń.
 - Connector GitHub nie jest terminalem użytkownika. Nie podawaj fikcyjnego lokalnego PASS. Zapisz NOT RUN, jeśli nie uruchomiono CLI na rzeczywistym środowisku.
 
@@ -38,7 +38,7 @@
 
 ## Konkluzywne zadania
 
-- Po G11-R1 kolejne child issue mają kończyć się działającym przepływem użytkownika w terminalu, z obserwowanym wynikiem na rzeczywistym wejściu lub jawnym `NOT RUN`. Makiety i komponenty są częścią takiego zadania, nie osobnymi PR-ami tylko dla liczby zamkniętych issues.
+- Po G11-R1 kolejne implementacyjne child issue mają kończyć się działającym przepływem użytkownika w terminalu, z rzeczywiście obserwowanym wynikiem na dostępnym wejściu. Jeśli obowiązkowego przepływu nie sprawdzono (`NOT RUN`), wynik zadania to `PARTIAL`/`BLOCKED`, nie `DONE`, chyba że właściciel wyraźnie zwolni z tego kryterium. Odrębna akceptacja językowa właściciela może pozostać `NOT EVALUATED`. Makiety i komponenty są częścią takiego zadania, nie osobnymi PR-ami tylko dla liczby zamkniętych issues.
 - Jeden pionowy zakres może mieć kilka sekwencyjnych commitów w jednym PR. Dziel go dalej tylko wtedy, gdy samodzielny wynik będzie używalny i możliwy do przeglądu. Po merge domknij tytuł/body child issue oraz wskaźnik aktywnego zadania w epiku przed otwarciem następnego.
 - `ok`, `incomplete` i `ambiguous` są statusami silnika, nie automatyczną oceną jakości. Dla zdań bez rozstrzygniętej określoności zachowuj jawne kandydatury; nie wymuszaj pojedynczego tłumaczenia przez zgadywanie.
 

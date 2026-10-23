@@ -17,7 +17,7 @@ Codex max native threads is 2, but OpenCode is a separate process and is NOT inc
 
 `QUEUED -> AUTHORIZED -> SCOPED -> WRITING -> REVIEW -> VERIFY -> PR -> MERGED -> CLOSED`
 
-At any gate: `BLOCKED` (with evidence and a specific blocker) or `PARTIAL` (with incomplete acceptance criteria). No automatic retries or automatic activation of a different child issue when blocked.
+At any gate: `BLOCKED` (with evidence and a specific blocker) or `PARTIAL` (with incomplete acceptance criteria). No automatic retries or automatic activation of a different child issue when blocked. Roles `issue_scout`, `diff_reviewer` and `micro_implementer` are registered explicitly in `.codex/config.toml`, referencing `.codex/agents/*.toml`; standalone role files without these registrations are not enough.
 
 1. **AUTHORIZED:** Sol checks clean checkout, current main SHA, active epic and child status, previous issue/PR closure and current open PRs. Follow only ONE current child. G11-V1 was still QUEUED at the review snapshot.
 2. **SCOPED:** Read active child issue and linked current contracts only, then trace implementation reality in code. Draft a 3-8 line issue comment with SHA, exact files/symbols, observable result, risks and verification. Do not turn an issue into a wall of planning text.
@@ -25,7 +25,7 @@ At any gate: `BLOCKED` (with evidence and a specific blocker) or `PARTIAL` (with
 4. **WRITING:** Exactly one writer. The worker gets the complete brief. Sol does not simultaneously edit its files. The worker returns a patch/diff and a structured handoff, not an unbounded follow-up plan.
 5. **REVIEW:** Sol checks `git diff` against the exact scope, worker's claims vs actual code, existing CLI and app contract, any changed docs/tests and all changed paths. Optionally assign read-only Luna diff review; Luna does not decide acceptance.
 6. **VERIFY:** For changed Go: run existing gofmt/vet/build and issue-relevant CLI/terminal observation. For docs-only: links and `git diff --check`, with actual CI on PR. Do not create new tests unless the active issue explicitly specifies them. Record PASS/FAIL/INFRA/NOT RUN as applicable; do not fabricate commands or outputs.
-7. **PR:** Sol owns one branch, commits, issue-linked PR, CI inspection and decision to merge. After merging, confirm main CI. Then close/update child + epic in one concise transaction. Do not write GitHub from workers.
+7. **PR:** By default Sol owns one branch, commits, issue-linked PR, CI inspection and decision to merge. After merging, confirm main CI. Then close/update child + epic in one concise transaction. A specific, explicit owner instruction can exceptionally authorize a direct commit to fresh `main` with a head-SHA lease and the same diff/CI/issue evidence; this does not waive the PR gate for future issues. Do not write GitHub from workers.
 
 ## Authority and version boundaries
 
