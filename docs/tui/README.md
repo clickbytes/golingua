@@ -1,12 +1,12 @@
 # GoLingua TUI — kontrakt produktu
 
-**Stan: zatwierdzony kontrakt G11-01; interfejs TUI nie jest jeszcze zaimplementowany.** Bubble Tea v2 zostanie dołączone w etapie implementacji; pięć ekranów ma używać tych samych usług Go co CLI. Ta dokumentacja nie oznacza, że TUI jest już dostępne.
+**Stan: G11-V1 dostarcza powłokę Bubble Tea v2, F1 Translate i wybór/sprawdzenie/zapis ścieżki runtime w F5.** F2–F4 są jawnymi placeholderami. Pozostałe opisy ekranów i makiety przedstawiają docelowy kontrakt. CLI i TUI używają tych samych usług Go.
 
 ## Uruchamianie
 
-| Wywołanie | Zachowanie docelowe | Zachowanie na `main` przed G11-V1 |
+| Wywołanie | Zachowanie docelowe | Zachowanie G11-V1 |
 | --- | --- | --- |
-| `golingua` na interaktywnym TTY | Otwiera F1 Translate | Wyświetla pomoc CLI |
+| `golingua` na interaktywnym TTY | Otwiera F1 Translate | Otwiera F1 Translate |
 | `golingua` bez TTY | Wyświetla pomoc bez ANSI | Wyświetla pomoc CLI |
 | `golingua --help`, `-h` lub `help` | Zawsze wyświetla pomoc CLI | Wyświetla pomoc CLI |
 | `golingua --version` | Zwraca samą wersję | Zwraca samą wersję |
@@ -54,7 +54,7 @@ Zapis następuje po jawnym poleceniu **Save**: plik tymczasowy w tym samym katal
 
 ## Biblioteka TUI
 
-Wybrano [Bubble Tea v2](https://github.com/charmbracelet/bubbletea) z modułem `charm.land/bubbletea/v2`. Zweryfikowana wersja referencyjna G11-01 to [v2.0.10](https://github.com/charmbracelet/bubbletea/releases/tag/v2.0.10), licencja projektu upstream to [MIT](https://github.com/charmbracelet/bubbletea/blob/main/LICENSE). Biblioteka dostarcza cykl zdarzeń i renderowanie terminala; decyzje i reguły GoLingua pozostają w `internal/app`. Zależność zostanie przypięta w `go.mod` w etapie implementacji.
+Wybrano [Bubble Tea v2](https://github.com/charmbracelet/bubbletea) z modułem `charm.land/bubbletea/v2`. Zweryfikowana wersja referencyjna G11-01 to [v2.0.10](https://github.com/charmbracelet/bubbletea/releases/tag/v2.0.10), licencja projektu upstream to [MIT](https://github.com/charmbracelet/bubbletea/blob/main/LICENSE). Biblioteka dostarcza cykl zdarzeń i renderowanie terminala; decyzje i reguły GoLingua pozostają w `internal/app`. Zależność v2.0.10 jest przypięta w `go.mod`.
 
 ## Dostępność i rozmiar
 
@@ -62,7 +62,7 @@ Minimalny układ docelowy to około 80×24 znaki. Przy mniejszym oknie ekran prz
 
 ## Etapy
 
-G11-01–12 ukończyły kontrakty, wspólne usługi i makiety F1, F2 oraz listy F3. Implementacja TUI jeszcze nie istnieje. [Epic G11](https://github.com/clickbytes/golingua/issues/254) zastępuje niewykonane mikroetapy G11-13–42 ośmioma kolejnymi zakresami, z których każdy ma dać używalny przepływ w terminalu:
+G11-01–12 ukończyły kontrakty, wspólne usługi i makiety F1, F2 oraz listy F3. Działa zakres G11-V1; kolejne zakresy pozostają planem. [Epic G11](https://github.com/clickbytes/golingua/issues/254) zastępuje niewykonane mikroetapy G11-13–42 ośmioma kolejnymi zakresami, z których każdy ma dać używalny przepływ w terminalu:
 
 | Zakres | Obserwowalny rezultat |
 | --- | --- |
@@ -71,8 +71,16 @@ G11-01–12 ukończyły kontrakty, wspólne usługi i makiety F1, F2 oraz listy 
 | G11-V3 | F2 Analyze i Generate z jawnymi, lokalnymi dla języka cechami `key=value`. |
 | G11-V4 | F3 Concepts: lista, filtr po ConceptID i szczegóły rzeczywistego rekordu. |
 | G11-V5 | F4 Languages: inwentarz PL/EN oddzielony od gotowości wybranego runtime'u. |
-| G11-V6 | F5 Settings: wersjonowane preferencje i ścieżka runtime'u. |
+| G11-V6 | F5 Settings: pozostałe preferencje (ścieżka runtime’u działa od V1). |
 | G11-V7 | F5 snapshot: podgląd i osobno potwierdzone zastosowanie. |
 | G11-V8 | Dokumentacja CLI/TUI, przegląd integracyjny i zamknięcie epiku. |
 
 Makiety i dokumentację aktualizujemy razem z odpowiadającym im działającym zakresem. Kolejne issue otwieramy po zamknięciu poprzedniego.
+
+## Obsługa dostarczona w V1
+
+F1: wpisz tekst w dolnym prompcie i naciśnij `Enter`. `Alt+D` albo `Enter` na kontrolce direction zmienia EN↔PL. Wynik pokazuje faktyczny status, tekst lub jego brak i diagnostyki. Wynik starszego szkicu jest oznaczony. Listę kandydatów i ich podgląd dostarcza V2.
+
+F5: wpisz ścieżkę runtime config; `Enter` wybiera i sprawdza ją przez `Service.ValidateRuntime`. `Ctrl+S` albo `Enter` na kontrolce save jawnie zapisuje wersję 1 ustawień i bezwzględną ścieżkę. Tymczasowy plik ma uprawnienia 0600 i jest atomowo przemianowany w tym samym katalogu. Nieaktualny runtime zachowuje ścieżkę i diagnostyki. Niepoprawne ustawienia wywołują ostrzeżenie, bez zapisu do czasu jawnego Save. Pozostałe preferencje należą do V6; snapshot Preview/Apply nie są dostępne w V1.
+
+`Tab`/`Shift+Tab` przechodzą po jawnie nazwanych kontrolkach, w tym tabs. Na tabs działają `Left`/`Right`; fokus result pozwala przewijać `Up`/`Down`/`PgUp`/`PgDown`. `Ctrl+U` czyści pole. `?` pokazuje pomoc, `Esc` zamyka ją i wraca do promptu, `Ctrl+C`/`Ctrl+D` bezpiecznie kończy program. Zmiana zakładki i rozmiaru zachowuje szkice.

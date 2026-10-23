@@ -37,35 +37,48 @@ Do not add product migrations, versioned compatibility adapters, future-proof ab
 
 - One worker implementation pass. One correction only after Sol names a concrete defect in a new brief. No silent retries.
 - One direct Sol correction after worker limits only when small and within existing issue; otherwise mark BLOCKED/PARTIAL with next human decision or missing contract.
-- OpenCode worker has `steps: 12` and `doom_loop: deny`; Sol should also impose an external process timeout when it launches it. These controls are separate from proof of functional correctness.
+- OpenCode worker has `steps: 12` (V2 has no `doom_loop` action); Sol should also impose an external process timeout when it launches it. These controls are separate from proof of functional correctness.
 - Never rerun an unchanged failing command repeatedly. Categorize failure as: CODE, SPEC, ENV, EXTERNAL, or OUT_OF_SCOPE. Each retry must state a new hypothesis and a different action.
 - STOP on repeated identical failure, failed acceptance after allowed correction, off-scope file modifications, need for a migration/new test framework, credential requirement, ambiguous domain semantics, or issue/document authority conflict.
 - Report `DONE` only for met acceptance criteria with evidence. `PARTIAL` lists unmet criteria; `BLOCKED` names blocking dependency. `NOT RUN` is never PASS. `go-ci` green does not imply linguistic acceptance.
 
-## Example OpenCode worktree handoff (POSIX demonstration)
+## Example isolated OpenCode V2 handoff
 
-> This is a reviewable diff workflow, NOT a security sandbox. A separate worktree shares Git metadata with the source repository and the process may retain host credentials. For genuinely untrusted YOLO mode, use a container/VM with no secrets or GitHub credentials and a disposable code snapshot. Sol must audit the patch before applying.
+The coordinator uses a disposable code snapshot without `.git` or credentials.
+Create an explicit `opencode.json` in its root for each delegation; the agent
+Markdown file alone does not prove configuration is loaded. Use V2 `permissions`,
+`shell` and `subagent`, not V1 `permission`, `bash` or `task`. V2 has no
+`doom_loop` permission action. `steps: 12` and an external timeout bound the run.
 
 ```sh
-# Sol must ensure one writer and a clean, expected base SHA first.
 BASE=$(git rev-parse HEAD)
 WORKER_DIR=$(mktemp -d -t golingua-worker-XXXXXX)
-git worktree add --detach "$WORKER_DIR" "$BASE"
-# Supply a complete, issue-specific job brief as the prompt; no second planner.
-# Replace ./job-brief.md with Sol's temporary filled brief.
-opencode run --auto --agent golingua-worker --dir "$WORKER_DIR" "$(cat ./job-brief.md)"
-# Run git operations as Sol, not as OpenCode.
-git -C "$WORKER_DIR" add -N .   # include newly added files in the diff
-git -C "$WORKER_DIR" diff --binary > ./worker-output.patch
-git -C "$WORKER_DIR" diff --name-only
-# Stop if any modified path is not explicitly allowed by the job brief.
-git apply --check ./worker-output.patch
-# Do not automatically git apply. Sol reviews the exact diff first.
-# After recording evidence and applying only an accepted patch:
-# git worktree remove --force "$WORKER_DIR"
+git archive "$BASE" | tar -x -C "$WORKER_DIR"
+# Coordinator writes the complete JOB BRIEF and explicit opencode.json here.
+# Required JSON fields: model, default_agent, agents (system/steps/permissions),
+# and any provider settings needed by the verified free model.
+# Deny by default; allow read/edit only for the exact assigned paths.
+# Explicitly deny shell, subagent, webfetch, websearch and external_directory.
+# Verify effective config/agent/model in this same environment before editing.
+# Model catalogs can be empty before the location finishes initialization;
+# inspect actual session/effective API state rather than assuming no models.
+timeout 180 docker run --rm --cap-drop ALL --security-opt no-new-privileges \
+  --pids-limit 128 --memory 1g --cpus 2 \
+  -v "$WORKER_DIR:/workspace" -w /workspace \
+  ghcr.io/anomalyco/opencode:2.0.15 run --standalone --auto \
+  --agent golingua-worker --model opencode/glm-5.3-flash-free \
+  --file /workspace/job-brief.txt 'Implement only the attached JOB BRIEF'
+# Inspect every changed path against the snapshot and review the complete diff.
+# Integrate only a reviewed patch; do not copy configuration or unrelated files.
 ```
 
-Reviewers must verify that the worker did not change AGENTS.md, CI, GitHub metadata, docs or tests unless the brief expressly allowed it. Never paste credentials into the worker prompt. The sample command assumes OpenCode is installed, authenticated to a model provider and project agent files are present; otherwise fall back to a Sol or Luna-only workflow.
+Follow root `AGENTS.md` for daily model availability/cost/ranking review and
+immediate refresh on failures or relevant changes. Before `--auto`, inspect
+loaded config and actual permission behavior. A tool removed from the exposed
+toolset is reported as unavailable, never as an executed denial probe. An
+external read rejected by the guard is an actual observed denial. Never report
+an unattempted tool call as executed. Unsupported restrictions, unexpected
+permissions or unexplained missing agents stop delegation.
 
 ## Example G11-V1 splitting (without more micro-PRs)
 
