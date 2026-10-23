@@ -14,7 +14,7 @@ import (
 	"github.com/clickbytes/golingua/internal/valency"
 )
 
-const sentenceProviderVersion = "v2026.10.23-g10-16-negation"
+const sentenceProviderVersion = "v2026.10.23-g10-17-present-negation"
 
 type sentenceProvider struct {
 	source   *runtime.SourcePipeline

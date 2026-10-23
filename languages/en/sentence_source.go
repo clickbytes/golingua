@@ -3,6 +3,7 @@ package en
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/clickbytes/golingua/internal/analyzer"
 	"github.com/clickbytes/golingua/internal/construction"
@@ -18,8 +19,8 @@ import (
 
 // NewSentenceSource compiles the English analysis stages against one exact
 // snapshot. Its complete declarative attestation is limited to attested
-// third-person singular and plural present visual and auditory predicates,
-// singular visual negation, explicit articles, and the registered past receiving route.
+// third-person singular and plural present visual, auditory, and directed-looking
+// predicates, bounded present negation, explicit articles, and past receiving.
 func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if snapshot == nil {
 		return nil, fmt.Errorf("English sentence source requires a snapshot")
@@ -59,7 +60,7 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	}
 	return &runtime.SourcePipeline{
 		Language: "en", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}},
-		AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "does": true, "not": true},
+		AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "do": true, "does": true, "not": true},
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
@@ -87,7 +88,7 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 				// and numbers, so no agreement feature is required for this cell.
 				receivingSense: {{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"}},
 			},
-			AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "does": true, "not": true},
+			AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "do": true, "does": true, "not": true},
 		}},
 	}, nil
 }
@@ -97,20 +98,40 @@ type englishSentenceEvidenceBuilder struct {
 }
 
 func (builder englishSentenceEvidenceBuilder) Build(ctx context.Context, lattice analyzer.LexicalLattice, candidates []parser.PhraseCandidate, forest parser.Forest) (runtime.CompositionEvidence, error) {
-	notSpan, hasNot := englishTerminalSpan(lattice, "not")
+	hasNot := false
+	for _, token := range lattice.Tokens {
+		if token.Token.Folded == "not" {
+			hasNot = true
+			break
+		}
+	}
 	if !hasNot {
 		return builder.base.Build(ctx, lattice, candidates, forest)
 	}
-	if !englishDoesNotSeeInput(lattice) {
+	if _, uniqueNot := englishTerminalSpan(lattice, "not"); !uniqueNot {
 		return runtime.CompositionEvidence{}, nil
 	}
-	seeingSense, err := ids.NewSenseID("en.see.visual")
-	if err != nil {
-		return runtime.CompositionEvidence{}, err
+	route, number, notSpan, supported := englishPresentNegationInput(lattice)
+	if !supported {
+		return runtime.CompositionEvidence{}, nil
 	}
 	base := builder.base
 	base.PredicateFeatureAlternativesBySense = cloneEnglishPredicateAlternatives(builder.base.PredicateFeatureAlternativesBySense)
-	base.PredicateFeatureAlternativesBySense[seeingSense] = append(base.PredicateFeatureAlternativesBySense[seeingSense], map[features.FeatureID]features.FeatureValueID{"verb_form": "base"})
+	for _, negativeRoute := range englishPresentNegationRoutes {
+		senseID, err := ids.NewSenseID(strings.TrimPrefix(negativeRoute.sense, "sense:"))
+		if err != nil {
+			return runtime.CompositionEvidence{}, err
+		}
+		for _, verbNumber := range []string{"singular", "plural"} {
+			base.PredicateFeatureAlternativesBySense[senseID] = append(
+				base.PredicateFeatureAlternativesBySense[senseID],
+				map[features.FeatureID]features.FeatureValueID{
+					"verb_form": "base", "tense": "present", "person": "third",
+					"number": features.FeatureValueID(verbNumber), "verb_number": features.FeatureValueID(verbNumber),
+				},
+			)
+		}
+	}
 	evidence, err := base.Build(ctx, lattice, candidates, forest)
 	if err != nil || !evidence.OperatorCoverageComplete {
 		return evidence, err
@@ -119,11 +140,11 @@ func (builder englishSentenceEvidenceBuilder) Build(ctx context.Context, lattice
 	for _, candidate := range candidates {
 		byID[candidate.ID] = candidate
 	}
-	negativeFamily, err := ids.NewConstructionID("en.transitive_negative")
+	negativeFamily, err := ids.NewConstructionID(strings.TrimPrefix(route.family, "construction:"))
 	if err != nil {
 		return runtime.CompositionEvidence{}, err
 	}
-	negativeVariant, err := ids.NewConstructionID("en.transitive_negative.svo")
+	negativeVariant, err := ids.NewConstructionID(strings.TrimPrefix(route.variantForNumber(number), "construction:"))
 	if err != nil {
 		return runtime.CompositionEvidence{}, err
 	}
@@ -133,7 +154,7 @@ func (builder englishSentenceEvidenceBuilder) Build(ctx context.Context, lattice
 			continue
 		}
 		for _, alternative := range node.Alternatives {
-			if alternative.FamilyID != negativeFamily || alternative.VariantID.String() != negativeVariant.String() {
+			if alternative.FamilyID != negativeFamily || alternative.VariantID.String() != negativeVariant.String() || alternative.Permission.SenseID.String() != route.sense {
 				return runtime.CompositionEvidence{}, nil
 			}
 			for _, slot := range alternative.Slots {
@@ -142,7 +163,9 @@ func (builder englishSentenceEvidenceBuilder) Build(ctx context.Context, lattice
 				}
 				for _, candidateID := range slot.CandidateIDs {
 					candidate, exists := byID[candidateID]
-					if !exists || !englishNegatedSeeCandidate(lattice, candidate) {
+					candidateRoute, candidateNumber, negated := englishNegatedPredicateContext(lattice, candidate)
+					if !exists || !negated || candidateRoute.sense != route.sense || candidateNumber != number ||
+						candidate.Features["verb_form"] != "base" || string(candidate.Features["number"]) != number {
 						continue
 					}
 					evidence.Operators = append(evidence.Operators, semantic.OperatorEvidence{
@@ -171,41 +194,6 @@ func cloneEnglishPredicateAlternatives(source map[ids.SenseID][]map[features.Fea
 	return result
 }
 
-func englishTerminalSpan(lattice analyzer.LexicalLattice, terminal string) (text.Span, bool) {
-	var span text.Span
-	found := false
-	for _, token := range lattice.Tokens {
-		if token.Token.Folded != terminal {
-			continue
-		}
-		if found {
-			return text.Span{}, false
-		}
-		span, found = token.Token.Span, true
-	}
-	return span, found
-}
-
-func englishDoesNotSeeInput(lattice analyzer.LexicalLattice) bool {
-	for index := 0; index+2 < len(lattice.Tokens); index++ {
-		if lattice.Tokens[index].Token.Folded == "does" && lattice.Tokens[index+1].Token.Folded == "not" && lattice.Tokens[index+2].Token.Folded == "see" {
-			return true
-		}
-	}
-	return false
-}
-
-func englishNegatedSeeCandidate(lattice analyzer.LexicalLattice, candidate parser.PhraseCandidate) bool {
-	return candidate.Features["verb_form"] == "base" && englishNegatedSeeToken(lattice, candidate)
-}
-
-func englishNegatedSeeToken(lattice analyzer.LexicalLattice, candidate parser.PhraseCandidate) bool {
-	if candidate.Category != construction.CategoryVP || candidate.LexemeID.String() != "lexeme:en.see.v" || candidate.TokenStart < 2 || candidate.TokenStart >= len(lattice.Tokens) {
-		return false
-	}
-	return lattice.Tokens[candidate.TokenStart-2].Token.Folded == "does" && lattice.Tokens[candidate.TokenStart-1].Token.Folded == "not"
-}
-
 type englishDeterminerNPBuilder struct {
 	inner   runtime.SimplePhraseEvidenceBuilder
 	lexicon *lexicon.Index
@@ -229,18 +217,21 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 			if englishNegationAuxiliaryCandidate(lattice, candidate) {
 				continue
 			}
-			if englishNegatedSeeToken(lattice, candidate) {
+			route, number, negated := englishNegatedPredicateContext(lattice, candidate)
+			if negated {
 				if candidate.Features["mood"] != "imperative" || negatedBaseSeen[candidate.TokenStart] {
 					continue
 				}
 				// In this exact auxiliary context, the imperative cell supplies
-				// the English base surface; finite readings are not licensed here.
+				// the English base surface; do-support carries person and number.
 				candidate.Features = map[features.FeatureID]features.FeatureValueID{
-					"verb_form": "base", "number": "singular", "verb_number": "singular",
+					"verb_form": "base", "tense": "present", "person": "third",
+					"number": features.FeatureValueID(number), "verb_number": features.FeatureValueID(number),
+					"mood": "indicative", "voice": "active",
 				}
 				negatedBaseSeen[candidate.TokenStart] = true
 			}
-			if !supportedEnglishPredicateRoute(candidate) && !englishNegatedSeeCandidate(lattice, candidate) {
+			if !supportedEnglishPredicateRoute(candidate) && (!negated || candidate.LexemeID.String() != route.lexeme) {
 				continue
 			}
 			filtered = append(filtered, candidate)
@@ -300,12 +291,6 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 		}
 	}
 	return filtered, parseContext, nil
-}
-
-func englishNegationAuxiliaryCandidate(lattice analyzer.LexicalLattice, candidate parser.PhraseCandidate) bool {
-	start := candidate.TokenStart
-	return candidate.Category == construction.CategoryVP && start >= 0 && start+1 < len(lattice.Tokens) &&
-		lattice.Tokens[start].Token.Folded == "does" && lattice.Tokens[start+1].Token.Folded == "not"
 }
 
 func supportedEnglishPredicateRoute(candidate parser.PhraseCandidate) bool {

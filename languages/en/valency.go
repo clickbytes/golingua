@@ -52,8 +52,8 @@ var englishIndefiniteAllomorphConstructionSource = provenance.SourceRef{
 }
 
 var englishNegationConstructionSource = provenance.SourceRef{
-	ID: "golingua-g10-16-negated-seeing", URI: "https://github.com/clickbytes/golingua/issues/245#issuecomment-6358351181",
-	Version: "2026-10-23", License: "internal", Author: "Codex by owner delegation",
+	ID: "golingua-g10-17-present-negation", URI: "https://github.com/clickbytes/golingua/issues/247#issuecomment-6358687010",
+	Version: "2026-10-23-g10-17", License: "internal", Author: "Codex by owner delegation",
 }
 
 type frameDeclaration struct {
@@ -68,6 +68,7 @@ type constructionBindingDeclaration struct {
 
 var englishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive_negative", "en.transitive_negative.svo"},
+	{"en.see.visual", "en.see.visual.transitive", "en.transitive_negative", "en.transitive_negative.svo.plural"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo.indefinite_object"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo.indefinite_subject"},
@@ -88,6 +89,8 @@ var englishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_object_a"},
 	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_object_an"},
 	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_mass_object"},
+	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive_negative", "en.transitive_negative.svo"},
+	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive_negative", "en.transitive_negative.svo.plural"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo.mass_object"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo.indefinite_object"},
@@ -110,6 +113,8 @@ var englishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_subject_a_target_an"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_subject_an_target_a"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_subject_an_target_an"},
+	{"en.look.directed", "en.look.directed.at", "en.oblique_negative", "en.oblique_negative.svo"},
+	{"en.look.directed", "en.look.directed.at", "en.oblique_negative", "en.oblique_negative.svo.plural"},
 }
 
 var englishFrames = []frameDeclaration{
@@ -169,10 +174,17 @@ func CompileValency() (*valency.Index, error) {
 			Arguments:        append([]valency.ArgumentSlot(nil), item.arguments...),
 			AllowedFamilyIDs: []ids.ConstructionID{familyID}, Provenance: englishValencySource,
 		}
-		if item.id == "en.see.visual.transitive" {
+		switch item.id {
+		case "en.see.visual.transitive", "en.hear.auditory.transitive":
 			negativeFamilyID, err := ids.NewConstructionID("en.transitive_negative")
 			if err != nil {
 				return nil, fmt.Errorf("English negative frame family: %w", err)
+			}
+			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
+		case "en.look.directed.at":
+			negativeFamilyID, err := ids.NewConstructionID("en.oblique_negative")
+			if err != nil {
+				return nil, fmt.Errorf("English negative oblique frame family: %w", err)
 			}
 			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
 		}
@@ -202,7 +214,7 @@ func CompileValency() (*valency.Index, error) {
 }
 
 func englishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
-	if item.family == "en.transitive_negative" {
+	if strings.HasSuffix(item.family, "_negative") {
 		return englishNegationConstructionSource
 	}
 	variant := item.variant
