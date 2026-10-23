@@ -1174,7 +1174,8 @@ var englishParadigmByLexeme = map[string]string{
 	// mass nouns stay on the explicit singular-only class below.
 	"en.mother.n": "en_noun_regular", "en.father.n": "en_noun_regular",
 	"en.cat.n": "en_noun_regular", "en.book.n": "en_noun_regular",
-	"en.house.n": "en_noun_regular", "en.car.n": "en_noun_regular",
+	"en.house.n": "en_noun_regular", "en.household.n": "en_noun_regular",
+	"en.car.n":  "en_noun_regular",
 	"en.bird.n": "en_noun_regular", "en.neighbor.n": "en_noun_regular",
 	"en.customer.n": "en_noun_regular", "en.dog.n": "en_noun_regular",
 	"en.teacher.n": "en_noun_regular", "en.doctor.n": "en_noun_regular",
@@ -1242,7 +1243,7 @@ var englishParadigmByLexeme = map[string]string{
 // receive an indefinite realization until their article form is declared.
 var englishAArticleLexemes = map[string]struct{}{
 	"en.mother.n": {}, "en.father.n": {}, "en.cat.n": {}, "en.book.n": {},
-	"en.house.n": {}, "en.car.n": {}, "en.bird.n": {}, "en.neighbor.n": {},
+	"en.house.n": {}, "en.household.n": {}, "en.car.n": {}, "en.bird.n": {}, "en.neighbor.n": {},
 	"en.customer.n": {}, "en.dog.n": {}, "en.teacher.n": {}, "en.doctor.n": {},
 	"en.tree.n": {}, "en.child.n": {}, "en.message.n": {},
 }
