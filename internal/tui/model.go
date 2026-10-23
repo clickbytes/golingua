@@ -60,6 +60,8 @@ type model struct {
 	concepts                                          conceptsState
 	languages                                         languagesState
 	preferences                                       preferencesState
+	snapshot                                          snapshotState
+	quitAfterApply                                    bool
 	selectedID                                        string
 	candidateDetail                                   bool
 	pendingPreview                                    uint64
@@ -159,7 +161,10 @@ func (m model) focusNames() []string {
 		return []string{"prompt", "direction", "candidates", "preview", "result", "tabs"}
 	}
 	if m.screen == 4 {
-		return []string{"prompt", "validate", "level", "default_direction", "store", "save", "cancel", "result", "tabs"}
+		if m.snapshot.dialog {
+			return []string{"snapshot_cancel", "snapshot_apply"}
+		}
+		return []string{"prompt", "validate", "level", "default_direction", "store", "snapshot_preview", "snapshot_apply", "save", "cancel", "result", "tabs"}
 	}
 	if m.screen == 1 {
 		if m.forms.generate {
@@ -219,10 +224,62 @@ func (m *model) runtimeDraftChanged() {
 	m.runtime = app.RuntimeValidationResult{}
 }
 func (m *model) cancelPreferencesDraft() {
+	oldStore := comparableStorePath(m.preferences.store.text)
 	m.preferences.reset(m.preferences.active)
+	if oldStore != comparableStorePath(m.preferences.store.text) {
+		m.storeDraftChanged()
+	}
 	m.drafts[4].set(m.preferences.active.RuntimeConfig)
 	m.runtimeDraftChanged()
 	m.settingsNotice = "Preference drafts reset to saved values."
+}
+func comparableStorePath(text string) string {
+	if strings.TrimSpace(text) == "" {
+		return ""
+	}
+	path, err := filepath.Abs(text)
+	if err != nil {
+		return text
+	}
+	return path
+}
+func (m *model) storeDraftChanged() {
+	m.snapshot.invalidate()
+	m.snapshot.path = ""
+}
+func (m *model) previewSnapshot() tea.Cmd {
+	if !m.loaded || m.snapshot.pendingApply != 0 {
+		return nil
+	}
+	m.snapshot.invalidate()
+	m.snapshot.path = ""
+	path, err := normalizeSnapshotPath(m.preferences.store.text)
+	if err != nil {
+		m.snapshot.result = &app.SnapshotResult{Status: status.OutcomeInvalid, Diagnostics: []status.Diagnostic{{Code: "SNAPSHOT_STORE_PATH_REQUIRED", Message: err.Error(), Path: "snapshot.store_path", Severity: status.SeverityError}}}
+		return nil
+	}
+	m.snapshot.path = path
+	id := m.next()
+	m.snapshot.pendingPreview = id
+	return snapshotPreviewCmd(m.service, m.ctx, path, id, m.snapshot.revision)
+}
+func (m *model) openSnapshotApply() {
+	if !m.loaded || m.snapshot.pendingApply != 0 {
+		return
+	}
+	path, err := normalizeSnapshotPath(m.preferences.store.text)
+	if err != nil || path != m.snapshot.path || m.snapshot.preview == nil || m.snapshot.preview.Status != status.OutcomeOK || m.snapshot.preview.Preview == nil || m.snapshot.preview.Preview.Digest == "" {
+		msg := "A successful Preview for the current store path is required before Apply."
+		if err != nil {
+			msg = err.Error()
+		}
+		m.snapshot.result = &app.SnapshotResult{Status: status.OutcomeInvalid, Diagnostics: []status.Diagnostic{{Code: "SNAPSHOT_PREVIEW_REQUIRED", Message: msg, Path: "snapshot.preview", Severity: status.SeverityError}}}
+		return
+	}
+	m.snapshot.dialog = true
+	m.snapshot.confirmApply = false
+	m.help = false
+	m.focuses[4] = 0
 }
 func (m *model) savePreferences() tea.Cmd {
 	if !m.loaded || m.pendingSave != 0 {
@@ -320,6 +377,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.languages.validation = v.result
 		}
 	case settingsLoaded:
+		oldStore := comparableStorePath(m.preferences.store.text)
 		m.loaded = true
 		m.settingsFile = v.path
 		if v.err != nil {
@@ -331,6 +389,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		beforeFrom, beforeTo := m.from, m.to
 		m.preferences.reset(v.settings)
+		if oldStore != comparableStorePath(m.preferences.store.text) {
+			m.storeDraftChanged()
+		}
 		m.from = v.settings.DefaultFrom
 		if m.from == "pl" {
 			m.to = "en"
@@ -354,8 +415,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, nil
 			}
 			activeSettings := m.preferences.active
+			oldStore := comparableStorePath(m.preferences.store.text)
 			m.preferences.active = v.value
 			m.preferences.reset(v.value)
+			if oldStore != comparableStorePath(m.preferences.store.text) {
+				m.storeDraftChanged()
+			}
 			m.drafts[4].set(v.value.RuntimeConfig)
 			m.selectRuntime(v.value.RuntimeConfig)
 			if activeSettings.DefaultFrom != v.value.DefaultFrom {
@@ -376,6 +441,29 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, tea.Batch(check, m.refreshLanguages())
 			}
 			return m, check
+		}
+	case snapshotDone:
+		if v.id == m.snapshot.pendingPreview && !v.apply && v.revision == m.snapshot.revision && v.path == m.snapshot.path {
+			m.snapshot.pendingPreview = 0
+			m.snapshot.preview = &v.result
+			m.snapshot.result = nil
+		} else if v.id == m.snapshot.pendingApply && v.apply && v.revision == m.snapshot.revision && v.path == m.snapshot.path {
+			m.snapshot.pendingApply = 0
+			m.snapshot.result = &v.result
+			if v.reconfirm && v.result.Preview != nil && !m.quitAfterApply {
+				m.snapshot.preview = &v.result
+				m.snapshot.confirmApply = false
+				m.settingsNotice = "Snapshot changed; review the new digest and confirm Apply again."
+				m.snapshot.dialog = m.screen == 4
+				if m.snapshot.dialog {
+					m.help = false
+					m.palette.open = false
+					m.focuses[4] = 0
+				}
+			}
+			if m.quitAfterApply {
+				return m, tea.Quit
+			}
 		}
 	case runtimeDone:
 		currentPath := m.drafts[4].text
@@ -414,12 +502,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.scroll[1] = 0
 		}
 	case tea.PasteMsg:
+		if m.snapshot.dialog {
+			return m, nil
+		}
 		if m.palette.open {
 			m.palette.input.insert(v.Content)
 			m.palette.selected = -1
 			return m, nil
 		}
-		if m.screen == 4 && m.pendingSave != 0 {
+		if m.screen == 4 && (m.pendingSave != 0 || m.snapshot.pendingApply != 0) {
 			return m, nil
 		}
 		if m.screen == 1 && (m.focus() == "prompt" || m.focus() == "features") {
@@ -430,7 +521,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.forms.revision++
 			}
 		} else if m.screen == 4 && m.focus() == "store" {
+			before := m.preferences.store.revision
 			m.preferences.store.insert(v.Content)
+			if before != m.preferences.store.revision {
+				m.storeDraftChanged()
+			}
 		} else if m.focus() == "prompt" && (m.screen == 0 || m.screen == 4) {
 			before := m.drafts[4].revision
 			m.drafts[m.screen].insert(v.Content)
@@ -447,7 +542,36 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyPressMsg:
 		key := v.String()
 		if key == "ctrl+c" || key == "ctrl+d" {
+			if m.snapshot.pendingApply != 0 {
+				m.quitAfterApply = true
+				m.settingsNotice = "Waiting for snapshot Apply to finish before exit."
+				return m, nil
+			}
 			return m, tea.Quit
+		}
+		if m.snapshot.dialog {
+			switch key {
+			case "tab", "shift+tab", "left", "right", "up", "down":
+				m.snapshot.confirmApply = !m.snapshot.confirmApply
+				m.focuses[4] = 0
+				if m.snapshot.confirmApply {
+					m.focuses[4] = 1
+				}
+			case "esc":
+				m.snapshot.dialog = false
+				m.snapshot.confirmApply = false
+			case "enter":
+				if !m.snapshot.confirmApply {
+					m.snapshot.dialog = false
+					return m, nil
+				}
+				m.snapshot.dialog = false
+				id, path, digest := m.next(), m.snapshot.path, m.snapshot.preview.Preview.Digest
+				m.snapshot.pendingApply = id
+				m.snapshot.result = nil
+				return m, snapshotApplyCmd(m.service, m.ctx, path, digest, id, m.snapshot.revision)
+			}
+			return m, nil
 		}
 		switch key {
 		case "f1", "f2", "f3", "f4", "f5":
@@ -485,7 +609,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, nil
 			}
 			if m.screen == 4 {
-				if m.pendingSave != 0 {
+				if m.pendingSave != 0 || m.snapshot.pendingApply != 0 {
 					return m, nil
 				}
 				m.cancelPreferencesDraft()
@@ -509,7 +633,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, m.paletteKey(v)
 		}
 		focus := m.focus()
-		if m.screen == 4 && m.pendingSave != 0 {
+		if m.screen == 4 && (m.pendingSave != 0 || m.snapshot.pendingApply != 0) {
 			return m, nil
 		}
 		cursor := m.drafts[m.screen].cursor
@@ -594,6 +718,21 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if m.screen == 3 && focus == "refresh" && key == "enter" {
 			return m, m.refreshLanguages()
 		}
+		if m.screen == 4 && focus == "snapshot_preview" && key == "enter" {
+			if !m.loaded {
+				m.settingsNotice = "Settings are still loading; snapshot Preview is unavailable."
+				return m, nil
+			}
+			return m, m.previewSnapshot()
+		}
+		if m.screen == 4 && focus == "snapshot_apply" && key == "enter" {
+			if !m.loaded {
+				m.settingsNotice = "Settings are still loading; snapshot Apply is unavailable."
+				return m, nil
+			}
+			m.openSnapshotApply()
+			return m, nil
+		}
 		if m.screen == 1 && key == "enter" && (focus == "language" || focus == "mode") {
 			if focus == "language" {
 				if m.forms.languageID() == "pl" {
@@ -634,7 +773,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.formsDetails = !m.formsDetails
 			return m, nil
 		}
-		if m.screen == 4 && key == "ctrl+s" {
+		if m.screen == 4 && key == "ctrl+s" && m.snapshot.pendingApply == 0 {
 			return m, m.savePreferences()
 		}
 		if focus == "result" {
@@ -703,7 +842,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.runtimeDraftChanged()
 			}
 		} else if m.screen == 4 && focus == "store" {
+			before := m.preferences.store.revision
 			m.preferences.store.update(v)
+			if before != m.preferences.store.revision {
+				m.storeDraftChanged()
+			}
 		} else if m.screen == 2 && focus == "prompt" {
 			before := m.concepts.filter.revision
 			m.concepts.filter.update(v)
@@ -805,13 +948,19 @@ func (m model) View() tea.View {
 	case 3:
 		body = m.languages.body()
 	case 4:
-		body = m.preferences.body(m.settingsFile, m.settingsNotice, m.runtime, m.pendingRuntime != 0)
-		if !strings.HasSuffix(body, "\n") {
-			body += "\n"
+		if m.snapshot.dialog {
+			body = m.snapshot.dialogBody()
+		} else if m.focus() == "snapshot_preview" || m.focus() == "snapshot_apply" || m.focus() == "result" {
+			body = m.snapshot.body()
+		} else {
+			body = m.preferences.body(m.settingsFile, m.settingsNotice, m.runtime, m.pendingRuntime != 0)
+			if !strings.HasSuffix(body, "\n") {
+				body += "\n"
+			}
+			body += fmt.Sprintf("Runtime config path · active: %s · draft: %s\n", plain(m.runtimePath), plain(m.drafts[4].text))
+			body += "Enter on Validate checks the draft path; Enter on Cancel resets unsaved preference edits.\n"
+			body += "Save applies the captured preferences only after the settings file is written successfully."
 		}
-		body += fmt.Sprintf("Runtime config path · active: %s · draft: %s\n", plain(m.runtimePath), plain(m.drafts[4].text))
-		body += "Enter on Validate checks the draft path; Enter on Cancel resets unsaved preference edits.\n"
-		body += "Save applies the captured preferences only after the settings file is written successfully."
 	}
 	if m.help {
 		body = "Tab/Shift+Tab cycle controls; tabs support Left/Right.\nF1: prompt Enter translates; direction Enter or Alt+D swaps PL/EN.\nF5: prompt Enter validates/selects path; Ctrl+S explicitly saves.\nF1 candidates: Up/Down select, Enter details; Preview control calls service.\nCtrl+P opens navigation palette; Esc cancels. Result focus scrolls. Ctrl+U clears input.\nEsc closes help; Ctrl+C or Ctrl+D restores terminal and exits."
@@ -826,6 +975,9 @@ func (m model) View() tea.View {
 	body = ansi.Hardwrap(body, max(1, m.width), true)
 	lines := strings.Split(body, "\n")
 	start := min(m.scroll[m.screen], max(0, len(lines)-max(1, m.height-6)))
+	if m.screen == 4 && m.snapshot.dialog {
+		start = 0
+	}
 	if m.screen == 2 && (m.palette.open || m.help) {
 		start = 0
 	} else if m.screen == 2 {
@@ -854,8 +1006,12 @@ func (m model) View() tea.View {
 	prompt := m.drafts[m.screen].visible(m.width - 4)
 	if m.screen == 1 {
 		prompt = m.forms.activeEditor(m.focus()).visible(m.width - 4)
+	} else if m.screen == 4 && m.snapshot.dialog {
+		prompt = "Confirm snapshot Apply using the selected action"
 	} else if m.screen == 4 && m.focus() == "store" {
 		prompt = m.preferences.store.visible(m.width - 4)
+	} else if m.screen == 4 && (m.focus() == "snapshot_preview" || m.focus() == "snapshot_apply" || m.focus() == "result") {
+		prompt = "Preview does not activate · Apply requires explicit confirmation"
 	} else if m.screen == 3 {
 		prompt = "F4 inventory and runtime readiness · Enter on Refresh to recheck"
 	} else if m.screen == 2 {
@@ -870,6 +1026,9 @@ func (m model) View() tea.View {
 		footer = plain(m.settingsNotice) + " · F5 details · Ctrl+C Exit"
 	}
 	focus := m.focus()
+	if m.snapshot.dialog {
+		footer = "Cancel is default · Tab/Left/Right selects · Enter confirms · Esc closes"
+	}
 	if m.palette.open {
 		focus = "palette"
 	}
