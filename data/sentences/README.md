@@ -6,17 +6,19 @@ Materiał obejmuje po 25 zdań dla `seeing`, `hearing`, `looking` i `receiving`.
 
 Wszystkie 100 struktur `MeaningGraph` sprawdzono przez `meaning.ValidateMeaning` względem skompilowanego CORE. Skompilowane indeksy leksykalne PL/EN potwierdziły `approved` i `equivalent` dla każdego wskazanego konceptu oraz dokładnych sensów zdarzeń. Ta kontrola dotyczy identyfikatorów i ról, a nie poprawności powierzchni zdań.
 
-Status wszystkich wierszy to `draft_unreviewed`. Autorem powierzchni PL/EN jest Codex; licencja tych nowych propozycji nie została osobno ustalona. Ręczna ocena właściciela: **NOT RUN**. `MeaningGraph` przechowuje tutaj typ zdarzenia i role uczestników; nie koduje czasu, aspektu, liczby ani określoności z zapisanych zdań. Dlatego pliki nie są goldami ani automatyczną bramką expected output.
+Status wszystkich wierszy to `draft_unreviewed`. Autorem powierzchni PL/EN jest Codex; licencja tych nowych propozycji nie została osobno ustalona. Akceptacja właściciela: **NOT RUN**. `MeaningGraph` przechowuje tutaj typ zdarzenia i role uczestników; nie koduje czasu, aspektu, liczby ani określoności z zapisanych zdań. Dlatego pliki nie są goldami ani automatyczną bramką expected output.
 
 ## Obserwacja CLI
 
-Gałęzie #195 i #197 rejestrują skompilowane pakiety oraz etapy PL/EN dla
-ograniczonych, zatwierdzonych szlaków `seeing` i `hearing`. Używają analizy
+Gałęzie #195, #197 i #199 rejestrują skompilowane pakiety oraz etapy PL/EN dla
+ograniczonych, zatwierdzonych szlaków `seeing`, `hearing` i `receiving`. Używają analizy
 składniowej, dokładnych bindingów, ram walencji, planu konstrukcji, jawnych form
-morfologicznych i linearyzacji. Angielski artykuł jest analizowany jako cecha
-`definite`; przy tłumaczeniu z PL określoność nie występuje w `MeaningGraph`,
-więc wybór `the` jest jawnie oznaczany jako założenie i wynik pozostaje
-`incomplete`.
+morfologicznych i linearyzacji. Angielski artykuł analizuje `the` i `a` jako
+cechy; konstrukcja dopuszcza również brak rodzajnika dla bieżących rzeczowników
+niepoliczalnych. Przy tłumaczeniu z PL określoność nie występuje w
+`MeaningGraph`, więc wybór `the` jest jawnie oznaczany jako założenie i wynik
+pozostaje `incomplete`. Trasa `receiving` zachowuje czas przeszły i uzgadnia
+polski czasownik z rodzajem podmiotu w liczbie pojedynczej.
 
 Przykładowe lokalne wywołania na aktywnym snapshotcie:
 
@@ -46,6 +48,24 @@ W tej próbce nierozstrzygnięte przypadki `child`/`doctor` pozostają
 `ambiguous` albo `unsupported`. To są statusy techniczne z wywołań CLI, nie
 ocena jakości ani gold.
 
+Po #199 uruchomiono wszystkie 25 istniejących propozycji `receiving` w obu
+kierunkach, z kodami wyjścia, statusami, diagnostykami i tekstami w
+[observed-2026-10-23-g05-13-receiving.tsv](observed-2026-10-23-g05-13-receiving.tsv).
+Angielski→polski wygenerował tekst dla wody, jedzenia, wiadomości i pieniędzy;
+polski→angielski zachował tekst, lecz zwrócił `incomplete` z powodu jawnego
+założenia rodzajnika `the`. Sensy książki oraz część odczytań `child` i `doctor`
+pozostają niejednoznaczne lub niewspierane. To obserwacje runtime i ocena agenta
+na wejściach właściciela; nie są akceptacją właściciela ani goldem.
+
+**Ocena agenta:** w obsłużonych przykładach dobór `dostał` / `dostała` / `dostało`
+zgadza się z rodzajem podmiotu, a `dostać` zachowuje przeszły czas wejścia
+`got`. Polskie formy i angielskie zdania z `the` są gramatycznie możliwe; wybór
+określoności w EN wymaga kontekstu, którego `MeaningGraph` nie zawiera, więc
+wynik PL→EN pozostaje niekompletny. Nierozstrzygnięte odczytania `book`, `doctor`
+i `child` są poprawnie ujawnione przez runtime; nie należy ich maskować przez
+automatyczny wybór leksykalny. Pełny odbiór semantyczny wymaga kontekstu lub
+rozstrzygnięcia tych sensów.
+
 Wcześniej, przed rejestracją providerów, 200 analogicznych wywołań zwracało
 `unsupported / LANGUAGE_REGISTRY_UNAVAILABLE`; ten historyczny zapis znajduje
 się w [observed-2026-10-23-d05212e.tsv](observed-2026-10-23-d05212e.tsv).
@@ -56,6 +76,7 @@ wszystkie 100 par w obu kierunkach. Historyczne wyjścia znajdują się w
 a 164 `unsupported`. Te statusy opisują stan przed #197, nie są goldami ani
 automatyczną miarą poprawności.
 
-Ręczna ocena właściciela pozostaje **NOT RUN**. Nie zmieniano statusów
-redakcyjnych wierszy. Odbiór językowy wymaga oceny konkretnych wyjść przez
-właściciela projektu.
+Akceptacja właściciela pozostaje **NOT RUN**. Nie zmieniano statusów
+redakcyjnych wierszy. Właściciel delegował agentowi autonomiczną ocenę i
+poprawianie rzeczywistych przykładów; ocena agenta nie jest akceptacją
+właściciela.

@@ -22,8 +22,9 @@ import (
 // supported sense and finite-form feature signature. Other input keeps
 // operator coverage unknown and cannot become an OK semantic candidate.
 type BareDeclarativeEvidenceBuilder struct {
-	SupportedSenses           map[ids.SenseID]bool
-	RequiredPredicateFeatures map[features.FeatureID]features.FeatureValueID
+	SupportedSenses                     map[ids.SenseID]bool
+	RequiredPredicateFeatures           map[features.FeatureID]features.FeatureValueID
+	PredicateFeatureAlternativesBySense map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID
 }
 
 // NoOperatorEvidenceBuilder attests an empty operator inventory only for an
@@ -91,7 +92,7 @@ func (builder BareDeclarativeEvidenceBuilder) Build(ctx context.Context, lattice
 				}
 				for _, id := range slot.CandidateIDs {
 					candidate, exists := byCandidate[id]
-					if !exists || candidate.Category != construction.CategoryVP || !predicateFeaturesMatch(candidate.Features, builder.RequiredPredicateFeatures) {
+					if !exists || candidate.Category != construction.CategoryVP || !builder.matchesPredicateFeatures(alternative.Permission.SenseID, candidate.Features) {
 						return evidence, nil
 					}
 					predicateFound = true
@@ -107,6 +108,18 @@ func (builder BareDeclarativeEvidenceBuilder) Build(ctx context.Context, lattice
 	}
 	evidence.OperatorCoverageComplete = true
 	return evidence, nil
+}
+
+func (builder BareDeclarativeEvidenceBuilder) matchesPredicateFeatures(senseID ids.SenseID, actual map[features.FeatureID]features.FeatureValueID) bool {
+	if alternatives, exists := builder.PredicateFeatureAlternativesBySense[senseID]; exists {
+		for _, required := range alternatives {
+			if predicateFeaturesMatch(actual, required) {
+				return true
+			}
+		}
+		return false
+	}
+	return predicateFeaturesMatch(actual, builder.RequiredPredicateFeatures)
 }
 
 func predicateFeaturesMatch(actual, required map[features.FeatureID]features.FeatureValueID) bool {

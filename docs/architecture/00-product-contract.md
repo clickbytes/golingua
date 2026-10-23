@@ -12,7 +12,7 @@
 
 ## Jak sprawdzamy postęp
 
-**Ręcznie.** Użytkownik daje słowo lub zdanie, kierunek i ewentualne oczekiwania. Po zbudowaniu funkcjonalności uruchamiamy Go CLI, pokazujemy rzeczywisty wynik i poprawiamy mechanizm. Dopóki użytkownik nie dostarczy wejścia, nie ma wymogu generowania przykładowych tłumaczeń.
+**Na rzeczywistych przykładach.** Właściciel może podać słowo, zdanie, kierunek i oczekiwania. Po zbudowaniu funkcjonalności uruchamiamy Go CLI, zapisujemy faktyczny wynik i poprawiamy mechanizm. Właściciel delegował agentowi autonomiczną ocenę dostarczonych przykładów; raport agenta nie oznacza akceptacji właściciela. Nie generujemy dodatkowych masowych korpusów bez polecenia.
 
 Nie istnieje obligatoryjny *numerical accuracy*, zestaw goldów, testów gramatycznych, automatyczny runner, baseline ze starej implementacji ani konieczna liczba zdań przed merge. Ocenę działania zapisujemy w issue krótkim komentarzem, nie systemem metryk. CI sprawdza **tylko budowanie i start programu**.
 
@@ -32,4 +32,4 @@ Nie istnieje obligatoryjny *numerical accuracy*, zestaw goldów, testów gramaty
 
 ## Zakończenie v0
 
-Uruchamialny Go CLI z jawnie zadeklarowanym zakresem PL/EN, później około 1000 konceptów (liczenie osobno od zdolności zdaniowych). Poprawność pierwszych przypadków oceniana **ręcznie przez właściciela**, nie przez automatyczne testy. Zakończenie EPIC oznacza sprawdzone pliki/funkcje i zrozumiały status możliwości, nie określony procent zdanych zdań.
+Uruchamialny Go CLI z jawnie zadeklarowanym zakresem PL/EN, około 1000 konceptów (liczenie osobno od zdolności zdaniowych) oraz rozwijanymi konstrukcjami i procedurami. Pierwsze przypadki oceniane są na rzeczywistych przykładach, autonomicznie w ramach delegacji właściciela albo przez samego właściciela; oba statusy raportujemy osobno. Zakończenie EPIC oznacza sprawdzone pliki/funkcje i zrozumiały status możliwości, nie określony procent zdanych zdań.

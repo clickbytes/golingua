@@ -48,30 +48,39 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if err != nil {
 		return nil, err
 	}
+	receivingSense, err := ids.NewSenseID("en.get.receive")
+	if err != nil {
+		return nil, err
+	}
 	return &runtime.SourcePipeline{
 		Language: "en", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}},
 		Morphology: inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
-		PhraseBuilder: definiteNPBuilder{inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
+		PhraseBuilder: englishDeterminerNPBuilder{inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
 			Categories: map[lexicon.PartOfSpeech][]construction.SlotCategory{
 				"noun": {construction.CategoryNP}, "verb": {construction.CategoryVP},
 			},
 		}}},
 		EvidenceBuilder: runtime.BareDeclarativeEvidenceBuilder{
-			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true},
-			RequiredPredicateFeatures: map[features.FeatureID]features.FeatureValueID{
-				"verb_form": "third_person_singular",
+			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true},
+			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
+				seeingSense:  {{"verb_form": "third_person_singular"}},
+				hearingSense: {{"verb_form": "third_person_singular"}},
+				// The English principal-parts paradigm exposes its past cell as
+				// verb_form=past. Do not require tense here: that value is not
+				// currently declared by the English analysis cell.
+				receivingSense: {{"verb_form": "past"}},
 			},
 		},
 	}, nil
 }
 
-type definiteNPBuilder struct {
+type englishDeterminerNPBuilder struct {
 	inner runtime.SimplePhraseEvidenceBuilder
 }
 
-func (builder definiteNPBuilder) Build(ctx context.Context, lattice analyzer.LexicalLattice) ([]parser.PhraseCandidate, parser.ParseContext, error) {
+func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice analyzer.LexicalLattice) ([]parser.PhraseCandidate, parser.ParseContext, error) {
 	candidates, parseContext, err := builder.inner.Build(ctx, lattice)
 	if err != nil {
 		return nil, parser.ParseContext{}, err
@@ -83,11 +92,15 @@ func (builder definiteNPBuilder) Build(ctx context.Context, lattice analyzer.Lex
 		}
 		previous := lattice.Tokens[candidate.TokenStart-1]
 		for _, reading := range previous.Readings {
-			if reading.HasLexeme && reading.Lexeme.ID.String() == "lexeme:en.the.det" {
+			if reading.HasLexeme && (reading.Lexeme.ID.String() == "lexeme:en.the.det" || reading.Lexeme.ID.String() == "lexeme:en.a.det") {
 				if candidate.Features == nil {
 					candidate.Features = make(map[features.FeatureID]features.FeatureValueID)
 				}
-				candidate.Features["determiner"] = "definite"
+				if reading.Lexeme.ID.String() == "lexeme:en.a.det" {
+					candidate.Features["determiner"] = "indefinite"
+				} else {
+					candidate.Features["determiner"] = "definite"
+				}
 				break
 			}
 		}

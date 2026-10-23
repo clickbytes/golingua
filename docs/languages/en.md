@@ -2,10 +2,11 @@
 
 ## In-code lexical catalog
 
-`en.LexicalDocument()` declares 1001 English lexemes, 1010 distinct senses and 1001
-CORE binding records (19 original lexemes plus 694 noun, 264 verb and 23
-preposition candidates). Twenty delegated review batches and audit #192 approved 996 exact
-equivalent links; 5 records remain pending.
+`en.LexicalDocument()` declares 1002 English lexemes, 1011 distinct senses and 1001
+CORE binding records (the concept inventory plus the sentence-only determiner `a`).
+Twenty delegated review batches and audit #192 approved 996 exact equivalent
+links; 5 records remain pending. The additional determiner sense has no CORE
+binding because it is used only to analyze English noun phrases.
 `en.CompileLexicon(coreGraph)` validates those records against the exact CORE
 snapshot. Meanings such as the institutional sense of `school` and the
 understanding sense of `see` remain separate and unmapped. English records are
@@ -44,7 +45,7 @@ retained 5 pending binding records across 4 concepts. The remaining candidates a
 `en.school.institution` sense is a pending candidate; eight existing senses
 remain unmapped. Construction approvals do not imply these lexical decisions.
 
-The Go package `github.com/clickbytes/golingua/languages/en` loads the bundled `features.json`, `manifest.json`, `morphology/paradigms.json`, and `morphology/lexemes.json`, plus in-code entries. `en.Load()` validates and compiles the package into a shared morphology engine, then builds a finite relation table for inverse analysis. Its `Seed.Generate(lexemeID, featureValues)` and `Seed.Analyze(surface)` methods are available through CLI `forms`. The seed remains a morphology module; the compiled CLI separately enables exact `seeing` and `hearing` sentence routes when it loads an active snapshot.
+The Go package `github.com/clickbytes/golingua/languages/en` loads the bundled `features.json`, `manifest.json`, `morphology/paradigms.json`, and `morphology/lexemes.json`, plus in-code entries. `en.Load()` validates and compiles the package into a shared morphology engine, then builds a finite relation table for inverse analysis. Its `Seed.Generate(lexemeID, featureValues)` and `Seed.Analyze(surface)` methods are available through CLI `forms`. The compiled CLI enables exact `seeing`, `hearing`, and `receiving` routes when it loads an active snapshot. The last route uses the declared principal parts `get`, `gets`, `got`, `gotten`, `getting`; its sentence slice analyzes `got` and realizes past tense only.
 
 ## Included classes
 
@@ -55,4 +56,4 @@ The Go package `github.com/clickbytes/golingua/languages/en` loads the bundled `
 
 `Analyze` preserves all readings: for example, the finite table contains separate `past` and `past_participle` readings for `walked`. Surfaces use NFC normalization only; case and diacritics remain significant.
 
-This is a small declared seed, not a complete English grammar. It does not implement silent-e deletion, consonant doubling, y-to-i changes, irregular plural rules, general person/number agreement, auxiliaries, or sentence realization. The compiled sentence routes add only the explicitly declared present singular forms needed for `see`, `hear` and their current noun inventory. Additional irregular exception rules require their own valid provenance and review metadata. The owner's manual language review remains **NOT RUN**; CLI outputs recorded for the requested sentence corpus are implementation observations only.
+This is a small declared seed, not a complete English grammar. It does not implement silent-e deletion, consonant doubling, y-to-i changes, irregular plural rules, general person/number agreement, auxiliaries, or unrestricted sentence realization. The compiled sentence routes add explicitly declared forms for `see`, `hear`, and past `get`; English `food`, `money`, and `water` are marked as mass nouns for target number selection. The transitive source construction recognizes `the`, `a`, and a bare object where current lexical/morphology data allow it. Additional irregular exception rules require their own valid provenance. The owner-delegated CLI observations are in [`data/sentences/observed-2026-10-23-g05-13-receiving.tsv`](../../data/sentences/observed-2026-10-23-g05-13-receiving.tsv); owner sign-off remains **NOT RUN**.

@@ -100,9 +100,11 @@ type compiledPlan struct {
 }
 
 type compiledSymbol struct {
-	Position int
-	Slot     *construction.SlotSpec
-	Terminal string
+	Position       int
+	Slot           *construction.SlotSpec
+	Terminal       string
+	Optional       bool
+	AcceptedInputs []string
 }
 
 // PhraseCandidate is lexical or phrase-level evidence that may fill a

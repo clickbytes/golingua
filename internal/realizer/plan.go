@@ -624,6 +624,18 @@ func sameSequence(left, right []construction.SequenceToken) bool {
 		return false
 	}
 	for index := range left {
+		if left[index].Kind != right[index].Kind || left[index].SlotID != right[index].SlotID || left[index].Terminal != right[index].Terminal || left[index].Optional != right[index].Optional || !sameSequenceStrings(left[index].AcceptedInputs, right[index].AcceptedInputs) {
+			return false
+		}
+	}
+	return true
+}
+
+func sameSequenceStrings(left, right []string) bool {
+	if len(left) != len(right) {
+		return false
+	}
+	for index := range left {
 		if left[index] != right[index] {
 			return false
 		}
@@ -816,10 +828,10 @@ func cloneConstructionPlan(plan construction.ConstructionPlan) construction.Cons
 
 func cloneCompiledVariant(variant construction.CompiledVariant) construction.CompiledVariant {
 	copy := variant
-	copy.Variant.Sequence = append([]construction.SequenceToken(nil), variant.Variant.Sequence...)
+	copy.Variant.Sequence = construction.CloneSequenceTokens(variant.Variant.Sequence)
 	copy.Variant.Conditions = append([]construction.Condition(nil), variant.Variant.Conditions...)
-	copy.FirstAllowed = append([]construction.SequenceToken(nil), variant.FirstAllowed...)
-	copy.LastAllowed = append([]construction.SequenceToken(nil), variant.LastAllowed...)
+	copy.FirstAllowed = construction.CloneSequenceTokens(variant.FirstAllowed)
+	copy.LastAllowed = construction.CloneSequenceTokens(variant.LastAllowed)
 	return copy
 }
 

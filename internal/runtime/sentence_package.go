@@ -12,8 +12,9 @@ import (
 )
 
 const (
-	sentenceSeeingCapabilityEvidenceID  = "sentence.seeing.present.singular.v1"
-	sentenceHearingCapabilityEvidenceID = "sentence.hearing.present.singular.v1"
+	sentenceSeeingCapabilityEvidenceID    = "sentence.seeing.present.singular.v1"
+	sentenceHearingCapabilityEvidenceID   = "sentence.hearing.present.singular.v1"
+	sentenceReceivingCapabilityEvidenceID = "sentence.receiving.past.singular.v1"
 )
 
 // BuildSentenceLanguagePackage exposes only requested exact approved sentence
@@ -31,7 +32,7 @@ func BuildSentenceLanguagePackage(languageID features.LanguageID, version string
 	}
 	expectedSenseNames, ok := currentSentenceSenseNames(languageID)
 	if !ok || len(allowedSenses) != len(expectedSenseNames) {
-		return language.Package{}, fmt.Errorf("sentence package currently requires the exact seeing and hearing routes for Polish or English")
+		return language.Package{}, fmt.Errorf("sentence package currently requires the exact seeing, hearing, and receiving routes for Polish or English")
 	}
 	for _, name := range expectedSenseNames {
 		expectedSense, err := ids.NewSenseID(name)
@@ -85,15 +86,15 @@ func SentenceCapabilityEvidence() []language.CapabilityEvidence {
 }
 
 func sentenceCapabilityEvidenceIDs() []string {
-	return []string{sentenceSeeingCapabilityEvidenceID, sentenceHearingCapabilityEvidenceID}
+	return []string{sentenceSeeingCapabilityEvidenceID, sentenceHearingCapabilityEvidenceID, sentenceReceivingCapabilityEvidenceID}
 }
 
 func currentSentenceSenseNames(languageID features.LanguageID) ([]string, bool) {
 	switch languageID {
 	case "en":
-		return []string{"en.see.visual", "en.hear.auditory"}, true
+		return []string{"en.see.visual", "en.hear.auditory", "en.get.receive"}, true
 	case "pl":
-		return []string{"pl.widziec.visual", "pl.slyszec.auditory"}, true
+		return []string{"pl.widziec.visual", "pl.slyszec.auditory", "pl.dostac.receive"}, true
 	default:
 		return nil, false
 	}

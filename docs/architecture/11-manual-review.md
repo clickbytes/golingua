@@ -6,7 +6,7 @@
 
 **Technicznie (GitHub CI):** gofmt, go vet, go build, uruchomienie CLI z `--version` i `--help`. To weryfikuje, że projekt się buduje i startuje. Nie jest dowodem jakości tłumaczenia.
 
-**Językowo (ręcznie):** właściciel wybiera dowolne zdania/słowa i kierunek. Agent, gdy ma możliwość faktycznego wykonania Go, pokazuje command, stdout/stderr, SHA i ewentualnie MeaningGraph/diagnostyki. Właściciel komentuje wynik. Jeżeli nie uruchomiono CLI, status brzmi `NIE SPRAWDZONO RĘCZNIE`, nie zakładamy sukcesu.
+**Językowo (na realnych danych):** właściciel dostarcza zdania/słowa i kierunek. Agent, gdy ma możliwość faktycznego wykonania Go, zapisuje komendę, wynik, SHA i ewentualne MeaningGraph/diagnostyki. Od 2026-10-23 właściciel deleguje agentowi autonomiczną ocenę i poprawki dla dostarczonych przykładów. Ocena agenta i akceptacja właściciela to odrębne statusy; agent kontynuuje bez oczekiwania na odpowiedź, ale nie przypisuje właścicielowi własnej oceny. Jeżeli nie uruchomiono CLI, status brzmi `NOT RUN`.
 
 Można mieć zero udostępnionych przykładów na starcie i nadal pracować nad architekturą. Nie wolno udawać, że brak błędów zgłoszonych przez użytkownika to 100% poprawności.
 
@@ -19,7 +19,8 @@ Kierunek: pl → en
 Wejście: <zdanie od użytkownika>
 Polecenie: <rzeczywiste CLI>
 Wynik: <dokładny output i ewentualny status>
-Ocena właściciela: OK | DO POPRAWY | BRAK OBSŁUGI | NIE OCENIONO
+Ocena agenta: OK | DO POPRAWY | NIEPEWNE | BRAK OBSŁUGI | NOT RUN
+Akceptacja właściciela: OK | DO POPRAWY | NOT RUN
 Poprawka: <klasa/leksem/rekcja/generator/ConstructionPlan>
 ```
 
@@ -34,7 +35,7 @@ Takie notatki nie są automatycznie wykonywane, nie są testami obowiązkowymi i
 - Trace z LexemeID/SenseID/ConstructionID i wykorzystanych reguł, przynajmniej w trybie diagnostycznym.
 - Odróżnienie faktów od definicji pojęć i pytania od asercji, jeśli później dojdzie reasoning.
 
-To **wymagania logiki**, nie zadania polegające na napisaniu setek sprawdzianów. Ich niedokładności będziemy wykrywać i korygować na konkretnych przypadkach ręcznych.
+To **wymagania logiki**, nie zadania polegające na napisaniu setek sprawdzianów. Ich niedokładności wykrywamy i korygujemy na konkretnych przykładach właściciela.
 
 ## Czego nie implementować
 
@@ -46,4 +47,4 @@ To **wymagania logiki**, nie zadania polegające na napisaniu setek sprawdzianó
 
 ## Później
 
-Gdy baza będzie stabilniejsza, można osobną decyzją użytkownika dodać konkretne testy i pomiary. Nie projektuj już dziś ich skomplikowanych kontraktów. Jedyny obecny obowiązek to uczciwa informacja: czy kod się kompiluje, co faktycznie powiedział Go i jak wynik ocenił właściciel.
+Gdy baza będzie stabilniejsza, można osobną decyzją użytkownika dodać konkretne testy i pomiary. Nie projektuj już dziś ich skomplikowanych kontraktów. Jedyny obecny obowiązek to uczciwa informacja: czy kod się kompiluje, co faktycznie powiedział Go, jak wynik ocenił agent i czy właściciel osobno go zaakceptował.

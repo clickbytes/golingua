@@ -159,7 +159,7 @@ func CompileConstruction(input CompileInput) (CompiledConstructionPlan, error) {
 		}
 		bindings = append(bindings, CompiledArgumentBinding{ArgumentID: argument.ID, Role: string(argument.Role), Required: argument.Required, SlotID: slotID, CasePolicy: policy, Adposition: adposition})
 	}
-	plan := CompiledConstructionPlan{Language: string(family.Language), ProfileVersion: profile.Version, ProfileProvenance: profile.Provenance, Permissions: []SensePermission{{SenseID: frame.SenseID, FrameID: frame.ID}}, FamilyID: family.ID, VariantID: compiled.Variant.ID, ArgumentBindings: bindings, Constraints: cloneConstraints(input.Constraints), Linearization: append([]SequenceToken(nil), compiled.Variant.Sequence...), ProcedureIDs: procedureIDs}
+	plan := CompiledConstructionPlan{Language: string(family.Language), ProfileVersion: profile.Version, ProfileProvenance: profile.Provenance, Permissions: []SensePermission{{SenseID: frame.SenseID, FrameID: frame.ID}}, FamilyID: family.ID, VariantID: compiled.Variant.ID, ArgumentBindings: bindings, Constraints: cloneConstraints(input.Constraints), Linearization: CloneSequenceTokens(compiled.Variant.Sequence), ProcedureIDs: procedureIDs}
 	plan.ID = canonicalPlanID(plan)
 	plan.PermissionDigest = permissionDigest(plan.Permissions)
 	return plan, nil
@@ -271,7 +271,7 @@ func clonePlan(plan CompiledConstructionPlan) CompiledConstructionPlan {
 	result.Permissions = append([]SensePermission(nil), plan.Permissions...)
 	result.ArgumentBindings = append([]CompiledArgumentBinding(nil), plan.ArgumentBindings...)
 	result.Constraints = cloneConstraints(plan.Constraints)
-	result.Linearization = append([]SequenceToken(nil), plan.Linearization...)
+	result.Linearization = CloneSequenceTokens(plan.Linearization)
 	result.ProcedureIDs = append([]string(nil), plan.ProcedureIDs...)
 	return result
 }
