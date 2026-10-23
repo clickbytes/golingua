@@ -16,10 +16,12 @@ assumed.
 
 `en.CompileValency()` compiles five sense-specific frames. In particular,
 directed `look` uses an `at` oblique argument, whereas visual `see` uses a
-direct object. The construction index currently has 48 approved EN sense/frame/family/variant
+direct object. The construction index currently has 96 approved EN sense/frame/family/variant
 bindings, including the distinct oblique `look at` route from G05 #201 and
-negative present routes from G10-16/#245 and G10-17/#247. These are exact
-construction approvals, separate from CORE lexical bindings.
+negative present routes from G10-16/#245 through G10-18/#249. G10-18 adds
+`a`/`an`/`the` alternatives to those routes, subject to lexical allomorph and
+number constraints. These are exact construction approvals, separate from CORE
+lexical bindings.
 Remaining candidate lexical links stay pending; neither they nor the approved
 EN links alone authorize translation.
 Source metadata points to the project-authored Go files and records the license
@@ -80,6 +82,12 @@ third-person singular and plural with hard subject–verb number agreement; past
 are marked as mass nouns for target number selection. The transitive source
 construction recognizes `the`, `a`, and a bare object where current
 lexical/morphology data allow it. The oblique `look at` route recognizes the
-exact `at` terminal. Owner-authored `looking` CLI observations are in
+exact `at` terminal. Present negation on `see`, `hear` and `look at` retains
+the same licensed articles in both numbers; `a/an` remains constrained by
+explicit lexical properties. EN→PL uses those articles, while PL→EN keeps
+determiner candidates and assumptions when the source does not encode
+definiteness. Negative article CLI observations are in
+[`data/sentences/observed-2026-10-23-g10-18-negative-article-alternatives.tsv`](../../data/sentences/observed-2026-10-23-g10-18-negative-article-alternatives.tsv).
+Owner-authored `looking` CLI observations are in
 [`data/sentences/observed-2026-10-23-g05-14-looking.tsv`](../../data/sentences/observed-2026-10-23-g05-14-looking.tsv);
 Full current-runtime CLI outputs for all 100 existing sentence rows in both directions are in [`data/sentences/observed-2026-10-23-g10-14-full-corpus.tsv`](../../data/sentences/observed-2026-10-23-g10-14-full-corpus.tsv); plural route observations are in [`data/sentences/observed-2026-10-23-g10-13-plural-agreement.tsv`](../../data/sentences/observed-2026-10-23-g10-13-plural-agreement.tsv); owner sign-off remains **NOT RUN**.

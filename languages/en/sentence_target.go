@@ -315,7 +315,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 			return false
 		}
 		number, known := englishPresentNegationNumber(source, candidate, sourceRoute)
-		if !known || candidate.CompiledVariant.Variant.ID.String() != sourceRoute.variantForNumber(number) {
+		if !known || !sourceRoute.variantMatchesNumber(candidate.CompiledVariant.Variant.ID.String(), number) {
 			return false
 		}
 	}
@@ -436,10 +436,31 @@ type englishDeterminers struct {
 
 func englishDeterminerVariant(id string) (englishDeterminers, bool) {
 	variant, exists := englishDeterminerVariants[id]
+	if !exists {
+		if variant, exists = englishNegativeDeterminerVariant(id, "construction:en.transitive_negative.svo", englishNegativeTransitiveDeterminerVariants); exists {
+			return variant, true
+		}
+		if variant, exists = englishNegativeDeterminerVariant(id, "construction:en.oblique_negative.svo", englishNegativeObliqueDeterminerVariants); exists {
+			return variant, true
+		}
+	}
 	const pastPrefix = "construction:en.transitive_past."
 	if !exists && len(id) > len(pastPrefix) && id[:len(pastPrefix)] == pastPrefix {
 		variant, exists = englishDeterminerVariants["construction:en.transitive."+id[len(pastPrefix):]]
 	}
+	return variant, exists
+}
+
+func englishNegativeDeterminerVariant(id, prefix string, variants map[string]englishDeterminers) (englishDeterminers, bool) {
+	rest, found := strings.CutPrefix(id, prefix)
+	if !found {
+		return englishDeterminers{}, false
+	}
+	rest = strings.TrimPrefix(rest, ".plural")
+	if rest == "" {
+		return englishDeterminers{subject: "the", object: "the", target: "the"}, true
+	}
+	variant, exists := variants[rest]
 	return variant, exists
 }
 
@@ -469,6 +490,28 @@ var englishDeterminerVariants = map[string]englishDeterminers{
 	"construction:en.oblique.svo.indefinite_subject_an_target_an":      {subject: "an", target: "an"},
 	"construction:en.oblique_negative.svo":                             {subject: "the", target: "the"},
 	"construction:en.oblique_negative.svo.plural":                      {subject: "the", target: "the"},
+}
+
+var englishNegativeTransitiveDeterminerVariants = map[string]englishDeterminers{
+	".indefinite_object":               {subject: "the", object: "a"},
+	".indefinite_subject":              {subject: "a", object: "the"},
+	".indefinite_subject_object":       {subject: "a", object: "a"},
+	".indefinite_object_an":            {subject: "the", object: "an"},
+	".indefinite_subject_an":           {subject: "an", object: "the"},
+	".indefinite_subject_a_object_an":  {subject: "a", object: "an"},
+	".indefinite_subject_an_object_a":  {subject: "an", object: "a"},
+	".indefinite_subject_an_object_an": {subject: "an", object: "an"},
+}
+
+var englishNegativeObliqueDeterminerVariants = map[string]englishDeterminers{
+	".indefinite_target":               {subject: "the", target: "a"},
+	".indefinite_subject":              {subject: "a", target: "the"},
+	".indefinite_subject_target":       {subject: "a", target: "a"},
+	".indefinite_target_an":            {subject: "the", target: "an"},
+	".indefinite_subject_an":           {subject: "an", target: "the"},
+	".indefinite_subject_a_target_an":  {subject: "a", target: "an"},
+	".indefinite_subject_an_target_a":  {subject: "an", target: "a"},
+	".indefinite_subject_an_target_an": {subject: "an", target: "an"},
 }
 
 func englishStandardDeterminerVariant(familyID string) string {

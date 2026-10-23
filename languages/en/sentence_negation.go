@@ -1,6 +1,8 @@
 package en
 
 import (
+	"strings"
+
 	"github.com/clickbytes/golingua/internal/analyzer"
 	"github.com/clickbytes/golingua/internal/construction"
 	"github.com/clickbytes/golingua/internal/ids"
@@ -73,6 +75,17 @@ func (route englishPresentNegationRoute) variantForNumber(number string) string 
 	default:
 		return ""
 	}
+}
+
+func (route englishPresentNegationRoute) variantMatchesNumber(variantID, number string) bool {
+	base := route.variantForNumber(number)
+	if base == "" {
+		return false
+	}
+	if number == "singular" && strings.HasPrefix(variantID, route.pluralVariant) {
+		return false
+	}
+	return variantID == base || strings.HasPrefix(variantID, base+".")
 }
 
 func englishPresentNegationInput(lattice analyzer.LexicalLattice) (englishPresentNegationRoute, string, text.Span, bool) {
