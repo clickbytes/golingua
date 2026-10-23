@@ -7,9 +7,9 @@
 | ID | Decyzja |
 | --- | --- |
 | D-01 | Nowy kod Go; stary JS jedynie opcjonalnym źródłem inspiracji/danych. Brak implementacyjnej zgodności ze starą architekturą. |
-| D-02 | Jeden agent, jeden aktywny EPIC/task/PR. |
+| D-02 | Jeden koordynator Codex Sol Medium, jeden aktywny EPIC/child/branch/PR i najwyżej jeden piszący agent. Opcjonalnie do dwóch pomocników łącznie, w tym Luna Low/OpenCode YOLO, bez uprawnień do GitHub. |
 | D-03 | Kontrola CI minimalna: gofmt, vet, build, help/version; bez automatycznych testów językowych i Go unit suite. |
-| D-04 | Tłumaczenia i odmiany sprawdza ręcznie właściciel na wybranych wejściach. |
+| D-04 | Agent może ręcznie oceniać dostępne wejścia właściciela/korpusu w ramach delegacji; ocena właściciela jest zawsze osobna i nie może być domniemana z wyniku agenta/CI. |
 | D-05 | ConceptGraph pozostaje niezależny od języków. |
 | D-06 | MorphLexeme ≠ LexicalSense ≠ SemanticBinding ≠ Concept; możliwa morfologia bez CORE. |
 | D-07 | ValencyFrame per sens, ConstructionFamily/Variant jako first-class graf konstrukcji. |
@@ -23,7 +23,9 @@
 | D-15 | Około 1000 konceptów PL/EN to cel słownikowy, nie certyfikat jakości mowy ani 1000 testów. |
 | D-16 | Pamięć długoterminowa i uczenie odroczone. |
 | D-17 | Licencje/provenance zewnętrznych zasobów są obowiązkiem prawnym, nie frameworkiem testowym. |
-| D-18 | Każde issue zachowuje ścieżki, symbole i DoD funkcji, ale nie wymaga goldów/fixtures/CI sprawdzającego tekst. |
+| D-18 | Aktywne issue wyznacza jedyne dozwolone ścieżki, symbole, kontrakty i DoD; nowe testy tylko gdy to issue dokładnie je wskazuje i właściciel zatwierdził zmianę polityki. Nie tworzymy domyślnych goldów/fixtures/CI sprawdzającego tekst. |
+| D-19 | W GoLingua v0 nie tworzymy hipotetycznego v2, migracji ani przyszłościowych adapterów zgodności. Zatwierdzona zależność Bubble Tea v2 nie zmienia tej zasady. |
+| D-20 | Obowiązkowe działanie użytkownika musi być naprawdę zaobserwowane przed DONE; NOT RUN to PARTIAL/BLOCKED albo wymaga jawnego zwolnienia przez właściciela. Delegacja ma jeden przebieg i najwyżej jedną korektę. |
 
 ## Ryzyka, które akceptujemy w świadomym prototypie
 
@@ -34,6 +36,10 @@
 - **Zielony CI nie sprawdza semantyki.** Poprawność zależy od późniejszej ręcznej recenzji rezultatów.
 - **Wydajność Go nie jest automatyczna.** Na razie proste typowane struktury, profilowanie tylko gdy pojawi się realny problem.
 - **Fakty językowe a fakty świata** to różne dziedziny; answer bez faktów musi pozostać unknown.
+
+## Protokół pracy nad issue
+
+Patrz [docs/agent-execution.md](../agent-execution.md): Codex Sol Medium koordynuje, a Luna Low/OpenCode są opcjonalnymi, ograniczonymi workerami. Historyczne decyzje o jednym agencie należy czytać jako jeden koordynator i jeden piszący agent naraz, nie jako zakaz osobnego read-only review.
 
 ## Otwarta przyszłość
 
