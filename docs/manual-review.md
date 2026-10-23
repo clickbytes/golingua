@@ -114,6 +114,37 @@ wariant jest językowo akceptowalny. Akceptacja właściciela pozostaje
 **NOT RUN**. Kontrole review commita: `gofmt`, `git diff --check`, `go vet ./...`,
 `go build ./cmd/golingua`, `--help` i `--version`; `go test ./...` nie uruchamiano.
 
+### G08-02 — bare object dla angielskiego rzeczownika niepoliczalnego — 2026-10-23
+
+Ręczne uruchomienia wykonano z binarki zbudowanej z commita
+`e9d36e9568eda689117bad04dc8d61f215719d12` i snapshotu
+`/tmp/golingua-g06-128-runtime.json`. Wejścia pochodzą z istniejących rekordów
+S077, S079 i S076 w `data/sentences/100-pl-en.tsv`; rekordy nadal są
+`draft_unreviewed`. Właściciel wybrał dla S077 angielskie `water` bez
+rodzajnika. Pozostałe wyjścia są obserwacją agenta, nie ich akceptacją.
+
+Komendy translacji (filtr `jq` ogranicza wydruk do pól istotnych dla ręcznej
+obserwacji; exit code pochodzi z CLI przez `set -o pipefail`):
+
+```sh
+set -o pipefail; /tmp/golingua-g08-66-final translate --from pl --to en --text 'Nauczyciel dostał wodę.' --runtime-config /tmp/golingua-g06-128-runtime.json --json | jq -c '{status,text,candidates:[.candidates[]|{outcome,text,assumptions}],diagnostics}'
+set -o pipefail; /tmp/golingua-g08-66-final translate --from pl --to en --text 'Nauczyciel dostał wiadomość.' --runtime-config /tmp/golingua-g06-128-runtime.json --json | jq -c '{status,text,candidates:[.candidates[]|{outcome,text,assumptions}],diagnostics}'
+set -o pipefail; /tmp/golingua-g08-66-final translate --from en --to pl --text 'The teacher got water.' --runtime-config /tmp/golingua-g06-128-runtime.json --json | jq -c '{status,text,candidates:[.candidates[]|{outcome,text,assumptions}],diagnostics}'
+/tmp/golingua-g08-66-final translate --from pl --to en --text 'Nauczyciel dostał książkę.' --runtime-config /tmp/golingua-g06-128-runtime.json --json
+```
+
+| Rekord | Kierunek | Exit/status | Tekst / obserwacja |
+| --- | --- | --- | --- |
+| S077 | PL→EN | `7` / `incomplete` | Candidate: `The teacher got water.`. Założenia: `determiner=bare` dla `event/ref0` (water) oraz `determiner=definite` dla `event/ref1` (teacher). Diagnostyka `TRANSLATION_NOT_OK`; stdout JSON, stderr pusty. |
+| S079 | PL→EN | `7` / `incomplete` | Candidate: `The teacher got the message.`. Oba uczestniki mają `determiner=definite`; wariant dla rzeczownika policzalnego pozostał bez zmian. Diagnostyka `TRANSLATION_NOT_OK`; stdout JSON, stderr pusty. |
+| S077 | EN→PL | `0` / `ok` | `Nauczyciel dostał wodę.`; bez assumptions i diagnostyk; stderr pusty. |
+| S076 | PL→EN | `3` / `unsupported` | Tekstu brak: polski `książkę` ma konkurencyjny sens `pl.ksiazka.work` bez zatwierdzonego równoważnego CORE bindingu (`ROLE_MAPPING_UNAVAILABLE`); to istniejąca luka leksykalna, nie wynik wyboru bare-object. |
+
+S077 potwierdza wybraną formę bez rodzajnika i zachowuje `incomplete`, bo
+Meaning nie koduje określoności obiektu ani odbiorcy. S079 pokazuje, że jawnie
+policzalny leksem korzysta ze starego wariantu z `the`. Właścicielska akceptacja
+językowa pozostaje **NOT RUN**.
+
 Bez tekstu dostarczonego przez właściciela oznacz ocenę językową **NOT EVALUATED**. Jeśli nie uruchomiono konkretnej próby na wejściu właściciela, oznacz ją **NOT RUN**. Gdy właściciel deleguje autonomiczną ocenę, agent może opisać własną ocenę na tych wejściach, ale status akceptacji właściciela pozostaje osobny. Techniczne smoke testy z tekstem zastępczym nie są wejściem do oceny językowej. Dokładny kontrakt i przykład komendy opisuje [docs/cli.md](cli.md); nie przedstawiaj go jako dowodu, że provider jest skonfigurowany.
 
 Nie ma obowiązku zapisywania każdego outputu do pliku. Jeśli zapis jest przydatny, prowadź opcjonalnie krótką notatkę w issue lub `examples/manual/`:
