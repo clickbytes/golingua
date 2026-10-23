@@ -2,10 +2,12 @@ package runtime
 
 import (
 	"context"
-	"crypto/rand"
+	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"sort"
+	"strconv"
+	"strings"
 
 	"github.com/clickbytes/golingua/internal/analyzer"
 	"github.com/clickbytes/golingua/internal/construction"
@@ -158,11 +160,7 @@ func (builder BareDeclarativeEvidenceBuilder) Build(ctx context.Context, lattice
 	if err := ctx.Err(); err != nil {
 		return CompositionEvidence{}, err
 	}
-	var random [16]byte
-	if _, err := rand.Read(random[:]); err != nil {
-		return CompositionEvidence{}, fmt.Errorf("request context identity: %w", err)
-	}
-	evidence := CompositionEvidence{RequestContextID: "request-" + hex.EncodeToString(random[:])}
+	evidence := CompositionEvidence{RequestContextID: stableRequestContextID(lattice)}
 	if forest.Outcome != status.OutcomeOK || len(forest.Roots) == 0 || len(forest.Unmatched) != 0 || len(lattice.MWEs) != 0 {
 		return evidence, nil
 	}
@@ -220,6 +218,29 @@ func (builder BareDeclarativeEvidenceBuilder) Build(ctx context.Context, lattice
 	}
 	evidence.OperatorCoverageComplete = true
 	return evidence, nil
+}
+
+// stableRequestContextID makes candidate IDs reusable across identical
+// sentence requests without persisting request context between invocations.
+func stableRequestContextID(lattice analyzer.LexicalLattice) string {
+	var signature strings.Builder
+	write := func(value string) {
+		signature.WriteString(strconv.Itoa(len(value)))
+		signature.WriteByte(':')
+		signature.WriteString(value)
+	}
+	write(string(lattice.Language))
+	for _, token := range lattice.Tokens {
+		write(strconv.Itoa(token.Index))
+		write(strconv.Itoa(token.Token.Span.Start))
+		write(strconv.Itoa(token.Token.Span.End))
+		write(token.Token.Surface)
+		write(token.Token.Normalized)
+		write(token.Token.Folded)
+		write(string(token.Token.Kind))
+	}
+	digest := sha256.Sum256([]byte(signature.String()))
+	return "request-" + hex.EncodeToString(digest[:16])
 }
 
 func (builder BareDeclarativeEvidenceBuilder) matchesPredicateFeatures(senseID ids.SenseID, actual map[features.FeatureID]features.FeatureValueID) bool {

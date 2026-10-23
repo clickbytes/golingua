@@ -228,12 +228,16 @@ func (result TranslationResult) Validate() error {
 			if result.Status != status.OutcomeAmbiguous && result.Status != status.OutcomeIncomplete {
 				return invalid("preview_id", "preview is allowed only for ambiguous or incomplete results")
 			}
-			if !validID(result.PreviewID) || selected == nil || selected.Outcome != status.OutcomeOK || selected.Text == "" || result.Text != selected.Text {
+			if !validID(result.PreviewID) || selected == nil || !previewableAlternative(*selected) || result.Text != selected.Text {
 				return invalid("preview_id", "preview must identify a candidate whose text matches the result")
 			}
 		}
 	}
 	return nil
+}
+
+func previewableAlternative(candidate TranslationAlternative) bool {
+	return candidate.Text != "" && (candidate.Outcome == status.OutcomeOK || candidate.Outcome == status.OutcomeIncomplete)
 }
 
 func validRawLanguage(value string) bool {
