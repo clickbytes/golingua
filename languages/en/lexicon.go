@@ -24,6 +24,7 @@ type lexicalEntry struct {
 var englishEntries = []lexicalEntry{
 	{"en.the.det", "the", "determiner", []lexicalMeaning{{"en.the.definite", "definite determiner", ""}}},
 	{"en.a.det", "a", "determiner", []lexicalMeaning{{"en.a.indefinite", "indefinite determiner", ""}}},
+	{"en.an.det", "an", "determiner", []lexicalMeaning{{"en.an.indefinite", "indefinite determiner before a vowel sound", ""}}},
 	{"en.dog.n", "dog", "noun", []lexicalMeaning{{"en.dog.animal", "domestic canine animal", "dog"}}},
 	{"en.cat.n", "cat", "noun", []lexicalMeaning{{"en.cat.animal", "domestic feline animal", "cat"}}},
 	{"en.child.n", "child", "noun", []lexicalMeaning{{"en.child.person", "young person", "child"}}},
@@ -151,6 +152,11 @@ var englishLexicalReviewBatch20Source = provenance.SourceRef{
 	URI:     "https://github.com/clickbytes/golingua/issues/61#issuecomment-6352214892",
 	Version: "2026-10-22-batch-20", License: "unknown", Author: "Codex by owner delegation",
 }
+var englishOffspringReviewSource = provenance.SourceRef{
+	ID:      "golingua-en-delegated-lexical-review",
+	URI:     "https://github.com/clickbytes/golingua/issues/237#issuecomment-6357615617",
+	Version: "2026-10-23-g10-12", License: "unknown", Author: "Codex by owner delegation",
+}
 var englishPendingAuditSource = provenance.SourceRef{
 	ID:      "golingua-en-delegated-pending-audit",
 	URI:     "https://github.com/clickbytes/golingua/issues/192#issuecomment-6353300680",
@@ -166,6 +172,7 @@ var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
 	"en.infant.early_child":                        englishPendingAuditSource,
 	"en.person.human":                              englishLexicalReviewBatch1Source,
 	"en.child.person":                              englishLexicalReviewBatch1Source,
+	"en.offspring.child":                           englishOffspringReviewSource,
 	"en.animal.organism":                           englishLexicalReviewBatch1Source,
 	"en.dog.animal":                                englishLexicalReviewBatch1Source,
 	"en.cat.animal":                                englishLexicalReviewBatch1Source,
@@ -1166,6 +1173,7 @@ var englishFrameBySense = map[string]lexicon.ValencyID{
 var englishParadigmByLexeme = map[string]string{
 	"en.the.det": "en_determiner_definite",
 	"en.a.det":   "en_determiner_indefinite",
+	"en.an.det":  "en_determiner_indefinite",
 	"en.see.v":   "en_verb_finite_principal_parts",
 	"en.hear.v":  "en_verb_finite_principal_parts",
 	"en.look.v":  "en_verb_finite_principal_parts",
@@ -1218,6 +1226,7 @@ var englishParadigmByLexeme = map[string]string{
 	"en.foot.n": "en_noun_principal_parts", "en.tooth.n": "en_noun_principal_parts",
 	"en.leaf_plant.n": "en_noun_principal_parts", "en.knife_utensil.n": "en_noun_principal_parts",
 	"en.fish_animal.n": "en_noun_zero_plural", "en.sheep.n": "en_noun_zero_plural",
+	"en.offspring.n":         "en_noun_zero_plural",
 	"en.printing_document.v": "en_verb_finite_regular", "en.cooking_food.v": "en_verb_finite_regular",
 	"en.boiling_food.v": "en_verb_finite_regular", "en.cleaning_home.v": "en_verb_finite_regular",
 	"en.planting_seed.v":   "en_verb_finite_regular",
@@ -1248,6 +1257,10 @@ var englishAArticleLexemes = map[string]struct{}{
 	"en.tree.n": {}, "en.child.n": {}, "en.message.n": {},
 }
 
+var englishAnArticleLexemes = map[string]struct{}{
+	"en.offspring.n": {},
+}
+
 // LexicalDocument builds the English lexical records from Go declarations.
 // It keeps polysemous senses distinct and leaves unmapped meanings unresolved.
 func LexicalDocument() (lexicon.Document, error) {
@@ -1267,6 +1280,9 @@ func LexicalDocument() (lexicon.Document, error) {
 			}
 			if _, exists := englishAArticleLexemes[entry.id]; exists {
 				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "indefinite_article", Value: "a"})
+			}
+			if _, exists := englishAnArticleLexemes[entry.id]; exists {
+				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "indefinite_article", Value: "an"})
 			}
 			switch entry.id {
 			case "en.food.n", "en.money.n", "en.water.n":

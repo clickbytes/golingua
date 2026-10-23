@@ -133,3 +133,22 @@ niejednoznaczność i niezatwierdzone odczytania; akceptacja właściciela jest
 **NOT RUN**.
 
 Po G10-11 #235 (PR #236) uzupełniono sentence-facing formy istniejącego EN `household`; zapis CLI dla 10 już obecnych rekordów i obu kierunków znajduje się w [observed-2026-10-23-g10-11-household-morphology.tsv](observed-2026-10-23-g10-11-household-morphology.tsv). Warianty `household` i `house` pozostają osobnymi kandydatami, a wyniki zachowują `ambiguous`/`incomplete`; akceptacja właściciela jest **NOT RUN**.
+
+Po G10-12 #237 (PR #238) ponownie uruchomiono istniejące rekordy S021–S025, S036–S040,
+S071–S075 i S096–S100 w obu kierunkach. Dokładne odpowiedzi kandydatów,
+kody wyjścia, statusy, diagnostyki i teksty znajdują się w
+[observed-2026-10-23-g10-12-offspring-a-an.tsv](observed-2026-10-23-g10-12-offspring-a-an.tsv).
+EN→PL zwróciło 16 wyników `ok` i 4 `incomplete`; niekompletne odczytania
+`book` zachowują `PARTIAL_PARSE_EVIDENCE` i `UNRESOLVED_ROLE_SENSE`. PL→EN
+zachowało 20 wieloznacznych wyników z odrębnymi kandydaturami `child` i
+`offspring` oraz wariantami `a`/`an`/`the`; brak określoności w źródle nadal
+jest jawnym założeniem, a nie automatycznie wybranym tłumaczeniem. W tej
+próbce nie wystąpiły `ROLE_LEXICALIZATION_UNAVAILABLE` ani
+`PRINCIPAL_PARTS_UNAVAILABLE`.
+
+W tym samym pliku osobny wiersz `DERIVED-EN-01` rejestruje dodatkową,
+pochodną próbę `An offspring sees a dog.` → `Dziecko widzi psa.` (`ok`, exit
+0). Forma `A offspring...` została odrzucona przez parser; jawny zero plural
+ma formy `offspring` dla singular i plural, a `an` jest analizowany jako
+determiner indefinite. To obserwacje CLI i ocena agenta, nie formalny gold ani
+akceptacja właściciela. Akceptacja językowa właściciela pozostaje **NOT RUN**.

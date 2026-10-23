@@ -40,11 +40,11 @@
       "id": "construction:en.oblique.svo",
       "family_id": "construction:en.oblique",
       "sequence": [
-        {"kind": "terminal", "terminal": "the", "accepted_inputs": ["a"]},
+        {"kind": "terminal", "terminal": "the", "accepted_inputs": ["a", "an"]},
         {"kind": "slot", "slot_id": "subject"},
         {"kind": "slot", "slot_id": "verb"},
         {"kind": "terminal", "terminal": "at"},
-        {"kind": "terminal", "terminal": "the", "optional": true, "accepted_inputs": ["a"]},
+        {"kind": "terminal", "terminal": "the", "optional": true, "accepted_inputs": ["a", "an"]},
         {"kind": "slot", "slot_id": "target"},
         {"kind": "terminal", "terminal": "."}
       ],
@@ -54,7 +54,7 @@
       "provenance": {
         "id": "golingua-structural-template",
         "path": "languages/en/constructions/oblique.json",
-        "version": "2",
+        "version": "3",
         "license": "internal"
       }
     },
@@ -121,6 +121,221 @@
         "id": "golingua-g10-10-indefinite-subject-target",
         "path": "languages/en/constructions/oblique.json",
         "version": "2026-10-23-g10-10",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.oblique.svo.indefinite_target_an",
+      "family_id": "construction:en.oblique",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "at"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "target"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-g10-12-english-a-an-alternatives",
+        "path": "languages/en/constructions/oblique.json",
+        "version": "2026-10-23-g10-12",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.oblique.svo.indefinite_subject_an",
+      "family_id": "construction:en.oblique",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "at"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "target"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-g10-12-english-a-an-alternatives",
+        "path": "languages/en/constructions/oblique.json",
+        "version": "2026-10-23-g10-12",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.oblique.svo.indefinite_subject_a_target_an",
+      "family_id": "construction:en.oblique",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "at"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "target"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-g10-12-english-a-an-alternatives",
+        "path": "languages/en/constructions/oblique.json",
+        "version": "2026-10-23-g10-12",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.oblique.svo.indefinite_subject_an_target_a",
+      "family_id": "construction:en.oblique",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "at"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "target"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-g10-12-english-a-an-alternatives",
+        "path": "languages/en/constructions/oblique.json",
+        "version": "2026-10-23-g10-12",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.oblique.svo.indefinite_subject_an_target_an",
+      "family_id": "construction:en.oblique",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "at"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "target"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-g10-12-english-a-an-alternatives",
+        "path": "languages/en/constructions/oblique.json",
+        "version": "2026-10-23-g10-12",
         "license": "internal"
       }
     }

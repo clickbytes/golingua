@@ -48,3 +48,26 @@ To **wymagania logiki**, nie zadania polegające na napisaniu setek sprawdzianó
 ## Później
 
 Gdy baza będzie stabilniejsza, można osobną decyzją użytkownika dodać konkretne testy i pomiary. Nie projektuj już dziś ich skomplikowanych kontraktów. Jedyny obecny obowiązek to uczciwa informacja: czy kod się kompiluje, co faktycznie powiedział Go, jak wynik ocenił agent i czy właściciel osobno go zaakceptował.
+
+## G10-12 — `offspring` i allomorfy `a/an`
+
+Agent porównał istniejący sens `en.offspring.child` („a person's child,
+considered in relation to that parent”) z zatwierdzonym polskim
+`pl.dziecko.kinship` („a person in relation to their own parent, at any age”).
+Oba opisują tę samą relację rodzic–dziecko; odróżniono ją od angielskiego
+`en.child.person` oznaczającego młodą osobę. Zapis agenta z provenance znajduje
+się w [G10-12 #237](https://github.com/clickbytes/golingua/issues/237#issuecomment-6357615617).
+Binding `en.offspring.child → concept:child_of_person` ma status `approved`;
+akceptacja właściciela pozostaje **NOT RUN**.
+
+Rzeczywiste wywołania dla 20 istniejących rekordów S021–S025, S036–S040,
+S071–S075 i S096–S100, w obu kierunkach, zapisano w
+[tabeli obserwacji G10-12](../../data/sentences/observed-2026-10-23-g10-12-offspring-a-an.tsv).
+EN→PL zwróciło 16 `ok` i 4 `incomplete`; niekompletne przypadki zachowały
+diagnostyki nierozstrzygniętego sensu `book`. PL→EN zwróciło 20 wyników
+`ambiguous`, w których widoczne są leksykalne alternatywy `child`/`offspring`
+i warianty rodzajnika. Pochodna próba `An offspring sees a dog.` →
+`Dziecko widzi psa.` zwróciła `ok`; nie jest częścią korpusu właściciela. Parser odrzuca
+`A offspring...`, a `an` wyklucza mnogą analizę `offspring`. Agent uznaje
+rozróżnienie form i jawność niepewności za zgodne z zadeklarowanym modelem;
+pełna ocena językowa właściciela nadal **NOT RUN**.
