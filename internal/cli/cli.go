@@ -10,8 +10,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/clickbytes/golingua/internal/engine"
-	"github.com/clickbytes/golingua/internal/features"
+	"github.com/clickbytes/golingua/internal/app"
 	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/status"
 )
@@ -104,7 +103,7 @@ type translateOptions struct {
 // EngineLoader loads one explicitly selected runtime configuration. The
 // executable supplies trusted, compiled providers and stage adapters through
 // this boundary; JSON data cannot install code.
-type EngineLoader func(string) (*engine.Engine, error)
+type EngineLoader = app.EngineLoader
 
 func parseTranslate(args []string) (translateOptions, string) {
 	var options translateOptions
@@ -164,41 +163,23 @@ func parseTranslate(args []string) (translateOptions, string) {
 	return options, ""
 }
 
-func runTranslate(args []string, stdout, stderr io.Writer, loadEngine EngineLoader) int {
+func runTranslate(args []string, stdout, stderr io.Writer, service *app.Service) int {
 	options, parseError := parseTranslate(args)
 	if parseError != "" {
 		result := diagnosticResult(status.OutcomeInvalid, "INVALID_TRANSLATE_ARGUMENTS", parseError, "translate")
 		return writeResult(stdout, stderr, result)
 	}
-	var translator *engine.Engine
-	var err error
-	if options.runtimeConfig != "" {
-		if loadEngine == nil {
-			return writeResult(stdout, stderr, diagnosticResult(status.OutcomeUnsupported, "RUNTIME_LOADER_UNAVAILABLE", "this executable cannot load configured language runtimes", "runtime_config"))
-		}
-		translator, err = loadEngine(options.runtimeConfig)
-	} else {
-		translator, err = engine.New(engine.Config{})
-	}
-	if err != nil {
-		var resultError interface{ Result() status.Result }
-		if errors.As(err, &resultError) {
-			return writeResult(stdout, stderr, resultError.Result())
-		}
-		failure := diagnosticResult(status.OutcomeError, "ENGINE_SETUP_ERROR", "translation engine setup failed unexpectedly", "translate")
-		return writeResult(stdout, stderr, failure)
-	}
-	result, err := translator.Translate(context.Background(), engine.Request{
-		From: features.LanguageID(options.from), To: features.LanguageID(options.to), Text: options.text, PreviewID: options.previewID,
+	response := service.Translate(context.Background(), app.TranslateRequest{
+		From: options.from, To: options.to, Text: options.text,
+		PreviewID: options.previewID, RuntimeConfig: options.runtimeConfig,
 	})
-	if err != nil {
-		var resultError interface{ Result() status.Result }
-		if errors.As(err, &resultError) {
-			return writeResult(stdout, stderr, resultError.Result())
-		}
-		failure := diagnosticResult(status.OutcomeError, "TRANSLATION_RUNTIME_ERROR", "translation failed unexpectedly", "translate")
-		return writeResult(stdout, stderr, failure)
+	if response.Failure != nil {
+		return writeResult(stdout, stderr, *response.Failure)
 	}
+	if response.Result == nil {
+		return writeResult(stdout, stderr, diagnosticResult(status.OutcomeError, "ENGINE_SETUP_ERROR", "translation engine setup failed unexpectedly", "translate"))
+	}
+	result := *response.Result
 	if err := result.Validate(); err != nil {
 		_, _ = fmt.Fprintf(stderr, "INTERNAL_RESULT_ERROR: %v\n", err)
 		return ExitError
@@ -230,6 +211,17 @@ func RunWithInputAndEngineLoader(args []string, input io.Reader, stdout, stderr 
 // RunWithInputAndLoaders adds an optional CORE loader for typed question
 // execution while keeping language runtime loading behind EngineLoader.
 func RunWithInputAndLoaders(args []string, input io.Reader, stdout, stderr io.Writer, loadEngine EngineLoader, loadCore CoreLoader) int {
+	service := app.NewService(app.Config{LoadEngine: loadEngine})
+	return RunWithInputAndService(args, input, stdout, stderr, service, loadEngine, loadCore)
+}
+
+// RunWithInputAndService lets an executable share one application service
+// across its CLI command handlers. loadEngine/loadCore remain available for
+// the legacy question command while it is outside the service boundary.
+func RunWithInputAndService(args []string, input io.Reader, stdout, stderr io.Writer, service *app.Service, loadEngine EngineLoader, loadCore CoreLoader) int {
+	if service == nil {
+		service = app.NewService(app.Config{LoadEngine: loadEngine})
+	}
 	if stdout == nil {
 		if stderr != nil {
 			_, _ = fmt.Fprintln(stderr, "INFRASTRUCTURE_ERROR: stdout writer is nil")
@@ -323,7 +315,7 @@ func RunWithInputAndLoaders(args []string, input io.Reader, stdout, stderr io.Wr
 		return ExitOK
 	}
 	if len(args) > 0 && args[0] == "translate" {
-		return runTranslate(args, stdout, stderr, loadEngine)
+		return runTranslate(args, stdout, stderr, service)
 	}
 	if len(args) > 0 && args[0] == "question" {
 		return runQuestion(args, input, stdout, stderr, loadEngine, loadCore)

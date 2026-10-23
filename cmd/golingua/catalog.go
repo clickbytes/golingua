@@ -1,85 +1,26 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 
-	"github.com/clickbytes/golingua/internal/catalog"
+	"github.com/clickbytes/golingua/internal/app"
 	"github.com/clickbytes/golingua/internal/status"
-	"github.com/clickbytes/golingua/languages/en"
-	"github.com/clickbytes/golingua/languages/pl"
 )
 
-type catalogResponse struct {
-	Status               status.OutcomeKind                `json:"status"`
-	Inventory            *catalog.Inventory                `json:"inventory,omitempty"`
-	CoreRelationTypes    int                               `json:"core_relation_types"`
-	ValencyFrames        *catalogFrameCounts               `json:"valency_frames,omitempty"`
-	ConstructionBindings *catalogConstructionBindingCounts `json:"construction_bindings,omitempty"`
-	Diagnostics          []status.Diagnostic               `json:"diagnostics,omitempty"`
-}
-
-type catalogFrameCounts struct {
-	PL int `json:"pl"`
-	EN int `json:"en"`
-}
-
-type catalogConstructionBindingCounts struct {
-	PLPendingCandidates int `json:"pl_pending_candidates"`
-	ENPendingCandidates int `json:"en_pending_candidates"`
-	PLApproved          int `json:"pl_approved"`
-	ENApproved          int `json:"en_approved"`
-}
+type catalogResponse = app.CatalogResult
+type catalogFrameCounts = app.ValencyFrameCounts
+type catalogConstructionBindingCounts = app.ConstructionBindingCounts
 
 // runCatalog reports only compiled Go catalog data. --details includes one
 // status per stable CORE ID; --summary omits that list.
-func runCatalog(args []string, stdout, stderr io.Writer) int {
+func runCatalog(args []string, stdout, stderr io.Writer, service *app.Service) int {
 	if len(args) != 2 || args[1] != "--json" || args[0] != "--summary" && args[0] != "--details" {
 		return writeCatalog(stdout, stderr, catalogResponse{Status: status.OutcomeInvalid, Diagnostics: []status.Diagnostic{{Code: "INVALID_CATALOG_ARGUMENTS", Message: "use catalog --summary|--details --json", Path: "catalog", Severity: status.SeverityError}}})
 	}
-	graph, err := catalog.Compile()
-	if err != nil {
-		return catalogLoadError(stdout, stderr)
-	}
-	polish, err := pl.CompileLexicon(graph)
-	if err != nil {
-		return catalogLoadError(stdout, stderr)
-	}
-	english, err := en.CompileLexicon(graph)
-	if err != nil {
-		return catalogLoadError(stdout, stderr)
-	}
-	inventory, err := catalog.Inspect(graph, polish, english)
-	if err != nil {
-		return catalogLoadError(stdout, stderr)
-	}
-	polishValency, err := pl.CompileValency()
-	if err != nil {
-		return catalogLoadError(stdout, stderr)
-	}
-	englishValency, err := en.CompileValency()
-	if err != nil {
-		return catalogLoadError(stdout, stderr)
-	}
-	frameCounts := &catalogFrameCounts{PL: len(polishValency.Frames()), EN: len(englishValency.Frames())}
-	constructionBindingCounts := &catalogConstructionBindingCounts{
-		PLPendingCandidates: len(polishValency.Candidates()),
-		ENPendingCandidates: len(englishValency.Candidates()),
-		PLApproved:          len(polishValency.Bindings()),
-		ENApproved:          len(englishValency.Bindings()),
-	}
-	if args[0] == "--summary" {
-		inventory.PerConcept = []catalog.ConceptCoverage{}
-	}
-	return writeCatalog(stdout, stderr, catalogResponse{
-		Status: status.OutcomeOK, Inventory: &inventory, CoreRelationTypes: len(graph.RelationTypes()), ValencyFrames: frameCounts,
-		ConstructionBindings: constructionBindingCounts,
-	})
-}
-
-func catalogLoadError(stdout, stderr io.Writer) int {
-	return writeCatalog(stdout, stderr, catalogResponse{Status: status.OutcomeError, Diagnostics: []status.Diagnostic{{Code: "CATALOG_LOAD_FAILED", Message: "could not compile the bundled Go catalog", Path: "catalog", Severity: status.SeverityError}}})
+	return writeCatalog(stdout, stderr, service.Catalog(context.Background(), app.CatalogRequest{Details: args[0] == "--details"}))
 }
 
 func writeCatalog(stdout, stderr io.Writer, response catalogResponse) int {

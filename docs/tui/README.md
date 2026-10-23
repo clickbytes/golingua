@@ -46,4 +46,4 @@ Minimalny układ docelowy to około 80×24 znaki. Przy mniejszym oknie ekran prz
 
 ## Etapy
 
-G11-01 zamraża kontrakt i decyzje. G11-02 udostępni typowane usługi in-process. G11-03 uzupełni podręcznik CLI. G11-04 doda cykl życia TUI i nawigację. Następne etapy dodadzą ekrany, ustawienia, diagnostykę i ręczne obserwacje po jednym child issue naraz. Do tego czasu wszystkie ekranowe interakcje są planem, nie działającą funkcją.
+G11-01 zamroził kontrakt i decyzje. G11-02 udostępnia typowane usługi in-process opisane w [mapie bindingów](bindings.md). G11-03 uzupełni podręcznik CLI. G11-04 doda cykl życia TUI i nawigację. Następne etapy dodadzą ekrany, ustawienia, diagnostykę i ręczne obserwacje po jednym child issue naraz. Do tego czasu wszystkie ekranowe interakcje są planem, nie działającą funkcją.
