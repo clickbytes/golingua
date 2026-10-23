@@ -549,8 +549,8 @@ metody bez procesu potomnego. Potwierdzenie `SnapshotRequest.Confirmed` jest
 wymagane przed `Apply`; handler CLI przekazuje je wyłącznie dla jawnego
 `snapshot --apply`. Question pozostaje na dotychczasowej ścieżce.
 
-Zbudowany z bieżącego drzewa gałęzi `g11-02-app-services`, bazowego SHA
-`3bee081af76d7907eeb4dd1e13accb5f8f265d3c`:
+CLI zbudowano z implementacji commit `6c3b8ac789c10c4f942c8573c692fb2ecd2469b3`
+na gałęzi `g11-02-app-services`:
 `go build -o /tmp/golingua-g11-02 ./cmd/golingua`. `gofmt`, `git diff --check`,
 `go vet ./...` i build zakończyły się kodem 0. `--help`, `--version`,
 `forms`, `catalog --summary` oraz snapshot CLI zwróciły kod 0 i puste stderr.
@@ -576,8 +576,10 @@ Ręczne wywołanie serwisu potwierdziło, że `LookupConcept(concept:dog)` zwrac
 trafienie, a próba `Apply` z `Confirmed:false` zwraca `invalid` oraz
 `SNAPSHOT_APPLY_CONFIRMATION_REQUIRED`; wskazany store nie powstał. Nie
 zmieniono danych językowych ani tras tłumaczenia. To ocena techniczna agenta,
-nie akceptacja właściciela. `go test ./...`, CI i działające TUI: **NOT RUN**;
-CI zostanie sprawdzony po otwarciu PR. Akceptacja właściciela: **NOT RUN**.
+nie akceptacja właściciela. `go test ./...` i działające TUI: **NOT RUN**.
+GitHub Actions run [#39922637020](https://github.com/clickbytes/golingua/actions/runs/39922637020)
+`go-ci/build` przeszedł formatowanie, vet, build, start CLI, kompilację katalogu
+i smoke polskich form. Akceptacja właściciela: **NOT RUN**.
 
 ## Co NIE jest wymagane
 

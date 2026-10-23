@@ -75,7 +75,8 @@ Question pozostaje poza migracją. Snapshot `Apply` wymaga flagi potwierdzenia
 na granicy usługi; CLI ustawia ją wyłącznie przy jawnym `--apply`. Szczegóły
 bindingów są w [mapie TUI](../tui/bindings.md), a lokalne obserwacje w
 [manual review](../manual-review.md). Vet/build i CLI smoke przeszły lokalnie;
-CI czeka na PR. Akceptacja właściciela pozostaje **NOT RUN**.
+GitHub Actions `go-ci/build` run #39922637020 dla PR #259 przeszedł. Akceptacja
+właściciela pozostaje **NOT RUN**.
 
 ## Kryterium wykonania tasku
 
