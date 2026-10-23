@@ -36,7 +36,9 @@ jeszcze konkretnych wyjść, więc ręczny odbiór translacji i ocena form pozos
 `NOT RUN`. `forms` udostępnia ograniczoną odmianę oraz analizę obecnych seedów
 PL/EN.
 
-Komenda `question --runtime-config <path> --json` przyjmuje typowany MeaningGraph, jawny FactSet oraz mapowanie ról. Nie przyjmuje zdania w języku naturalnym ani nie realizuje odpowiedzi tekstowej. Jej wynik można ręcznie ocenić jako rozumowanie wyłącznie na wejściach dostarczonych przez właściciela. Bez takich wejść, aktywnego CORE snapshotu i uruchomienia konkretnej komendy wpisz **NOT RUN**; nie twórz przykładowych faktów ani twierdzeń.
+Komenda `question --runtime-config <path> --json` przyjmuje typowany MeaningGraph, jawny FactSet oraz mapowanie ról. Nie przyjmuje zdania w języku naturalnym. `--language pl|en` opcjonalnie uruchamia realizację odpowiedzi. Z delegacji właściciela agent może sprawdzić ograniczony przykład oparty na dostępnych danych projektu oraz jawnie oznaczonym fakcie demonstracyjnym; taki fakt jest agent-authored, nietrwały i nie jest wejściem ani akceptacją właściciela. Bez uruchomienia komendy wpisz **NOT RUN**. Właścicielska akceptacja językowa pozostaje osobnym statusem.
+
+W bieżącym runtime dodatnia odpowiedź yes/no może zwrócić tekst PL/EN ze statusem `incomplete` i jawnymi założeniami. Odpowiedź przecząca oraz tekst WH pozostają `unsupported` do czasu dodania zatwierdzonych konstrukcji negacji i samodzielnej frazy NP. Strukturalna odpowiedź reasonera, proof i źródło faktu pozostają dostępne w wyniku.
 
 Bez tekstu dostarczonego przez właściciela oznacz ocenę językową **NOT EVALUATED**. Jeśli nie uruchomiono konkretnej próby na wejściu właściciela, oznacz ją **NOT RUN**. Gdy właściciel deleguje autonomiczną ocenę, agent może opisać własną ocenę na tych wejściach, ale status akceptacji właściciela pozostaje osobny. Smoki techniczne z tekstem zastępczym nie są wejściem do oceny językowej. Dokładny kontrakt i przykład komendy opisuje [docs/cli.md](cli.md); nie przedstawiaj go jako dowodu, że provider jest skonfigurowany.
 

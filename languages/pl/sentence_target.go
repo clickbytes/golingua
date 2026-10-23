@@ -60,7 +60,35 @@ func NewSentenceTarget(snapshot *pack.Pack, registry *language.Registry) (*runti
 		Language: "pl", LanguageRegistry: registry, Lexicon: snapshot.Lexicon(), Valency: valencyIndex,
 		Constructions: constructions, Variants: variants, Core: snapshot.CoreGraph(),
 		OperatorBuilder: runtime.NoOperatorEvidenceBuilder{}, ExecutionBuilder: execution,
+		PlanBuilder: polishSentencePlanAnnotations{},
 	}, nil
+}
+
+type polishSentencePlanAnnotations struct{}
+
+func (polishSentencePlanAnnotations) Annotations(_ context.Context, source semantic.MeaningCandidate, selected realizer.TargetCandidate) ([]realizer.FeatureConstraint, []realizer.FieldAssumption, []realizer.FieldLoss, error) {
+	if len(source.Evidence.Records) != 0 || source.Meaning == nil || selected.Kind != meaning.KindEvent && selected.Kind != meaning.KindState {
+		return nil, nil, nil, nil
+	}
+	predicatePath, found := runtime.MeaningPath(*source.Meaning, selected.NodeID)
+	if !found {
+		return nil, nil, nil, nil
+	}
+	assumptions := []realizer.FieldAssumption{
+		{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning v1 carries no tense; this response uses the approved present-tense route"},
+		{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning v1 carries no grammatical person; this response uses the approved third-person route"},
+		{Path: predicatePath, Field: "number", Value: "singular", Reason: "Meaning v1 carries no grammatical number; this response uses the approved singular route"},
+	}
+	for _, participant := range findSentencePredicate(*source.Meaning, selected.NodeID).Participants {
+		path, ok := runtime.MeaningPath(*source.Meaning, participant.Target)
+		if ok {
+			assumptions = append(assumptions, realizer.FieldAssumption{
+				Path: path, Field: "number", Value: "lexeme_default",
+				Reason: "Meaning v1 carries no noun number feature; this response uses the target lexeme's attested number form",
+			})
+		}
+	}
+	return nil, assumptions, nil, nil
 }
 
 type polishSentenceFeatures struct{}
@@ -69,6 +97,13 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 	if slot.Category == construction.CategoryVP {
 		values, found := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)
 		if !found {
+			if len(source.Evidence.Records) == 0 {
+				return knownPolishFeatures(
+					[2]string{"verb_form", "finite"}, [2]string{"tense", "present"},
+					[2]string{"person", "third"}, [2]string{"number", "singular"},
+					[2]string{"mood", "indicative"}, [2]string{"voice", "active"},
+				), nil
+			}
 			return nil, nil
 		}
 		if values["tense"] == "past" || values["verb_form"] == "past" {
@@ -98,12 +133,15 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 		return nil, nil
 	}
 	values, found := runtime.SourceFeatures(source, slot.ArgumentBinding.SemanticRole, candidate.TransferBinding.CoreRef)
-	if !found {
+	if !found && len(source.Evidence.Records) != 0 {
 		return nil, nil
 	}
 	number := values["number"]
 	if number == "" {
 		number = values["noun_number"]
+	}
+	if !found {
+		number = "singular"
 	}
 	pluralOnly := candidate.Lexeme.ParadigmID == "pl_noun_plural_only_attested"
 	if pluralOnly {

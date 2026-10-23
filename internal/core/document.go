@@ -115,11 +115,13 @@ func (definition ConceptDefinition) MarshalJSON() ([]byte, error) {
 }
 
 type relationDefinitionJSON struct {
-	ID          string         `json:"id"`
-	SubjectKind *[]ConceptKind `json:"subject_kinds"`
-	ObjectKind  *[]ConceptKind `json:"object_kinds"`
-	Symmetric   bool           `json:"symmetric,omitempty"`
-	Transitive  bool           `json:"transitive,omitempty"`
+	ID             string         `json:"id"`
+	SubjectKind    *[]ConceptKind `json:"subject_kinds"`
+	ObjectKind     *[]ConceptKind `json:"object_kinds"`
+	EventConceptID *string        `json:"event_concept_id,omitempty"`
+	ArgumentRoles  *[]string      `json:"argument_roles,omitempty"`
+	Symmetric      bool           `json:"symmetric,omitempty"`
+	Transitive     bool           `json:"transitive,omitempty"`
 }
 
 func (definition *RelationDefinition) UnmarshalJSON(data []byte) error {
@@ -134,13 +136,34 @@ func (definition *RelationDefinition) UnmarshalJSON(data []byte) error {
 	if source.SubjectKind == nil || source.ObjectKind == nil {
 		return fmt.Errorf("subject_kinds and object_kinds are required")
 	}
-	definition.RelationType = RelationType{ID: id, SubjectKind: *source.SubjectKind, ObjectKind: *source.ObjectKind, Symmetric: source.Symmetric, Transitive: source.Transitive}
+	if (source.EventConceptID == nil) != (source.ArgumentRoles == nil) {
+		return fmt.Errorf("event_concept_id and argument_roles must be declared together")
+	}
+	relation := RelationType{ID: id, SubjectKind: *source.SubjectKind, ObjectKind: *source.ObjectKind, Symmetric: source.Symmetric, Transitive: source.Transitive}
+	if source.EventConceptID != nil {
+		eventConceptID, err := ids.ParseConceptID(*source.EventConceptID)
+		if err != nil {
+			return fmt.Errorf("event_concept_id: %w", err)
+		}
+		if len(*source.ArgumentRoles) != 2 {
+			return fmt.Errorf("argument_roles must contain exactly two roles")
+		}
+		relation.EventConceptID = eventConceptID
+		relation.ArgumentRoles = [2]string{(*source.ArgumentRoles)[0], (*source.ArgumentRoles)[1]}
+	}
+	definition.RelationType = relation
 	return nil
 }
 
 func (definition RelationDefinition) MarshalJSON() ([]byte, error) {
 	relation := definition.RelationType
-	return json.Marshal(relationDefinitionJSON{ID: relation.ID.String(), SubjectKind: &relation.SubjectKind, ObjectKind: &relation.ObjectKind, Symmetric: relation.Symmetric, Transitive: relation.Transitive})
+	source := relationDefinitionJSON{ID: relation.ID.String(), SubjectKind: &relation.SubjectKind, ObjectKind: &relation.ObjectKind, Symmetric: relation.Symmetric, Transitive: relation.Transitive}
+	if relation.EventConceptID.String() != "" {
+		eventConceptID := relation.EventConceptID.String()
+		roles := []string{relation.ArgumentRoles[0], relation.ArgumentRoles[1]}
+		source.EventConceptID, source.ArgumentRoles = &eventConceptID, &roles
+	}
+	return json.Marshal(source)
 }
 
 func decodeStrict(data []byte, target any) error {

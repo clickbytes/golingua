@@ -2,6 +2,7 @@
 package semantic
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"unicode/utf8"
@@ -57,10 +58,18 @@ type EvidenceTrace struct {
 	Diagnostics   []status.Diagnostic `json:"diagnostics,omitempty"`
 }
 
+// EvidenceOrigin distinguishes evidence aligned to an analyzed source span
+// from evidence produced while realizing a Meaning that has no source text.
+// The empty value is source-aligned for backwards compatibility.
+type EvidenceOrigin string
+
+const EvidenceOriginGenerated EvidenceOrigin = "generated"
+
 // EvidenceRecord ties one semantic or unresolved claim to source and typed
 // lexical/construction evidence. Empty semantic IDs represent unavailable
 // evidence; they never license a guessed mapping.
 type EvidenceRecord struct {
+	Origin        EvidenceOrigin                  `json:"origin,omitempty"`
 	SourceSpan    text.Span                       `json:"source_span"`
 	CandidateID   string                          `json:"candidate_id,omitempty"`
 	PhraseNodeID  parser.NodeID                   `json:"phrase_node_id,omitempty"`
@@ -77,6 +86,40 @@ type EvidenceRecord struct {
 	Outcome       status.OutcomeKind              `json:"outcome"`
 	Reason        string                          `json:"reason,omitempty"`
 	Provenance    provenance.SourceRef            `json:"provenance,omitempty"`
+}
+
+// MarshalJSON writes typed stable IDs in their external string form. The ID
+// structs intentionally keep their representation private, so encoding them
+// directly would otherwise produce empty JSON objects.
+func (record EvidenceRecord) MarshalJSON() ([]byte, error) {
+	type evidenceRecordJSON struct {
+		Origin        EvidenceOrigin                  `json:"origin,omitempty"`
+		SourceSpan    text.Span                       `json:"source_span"`
+		CandidateID   string                          `json:"candidate_id,omitempty"`
+		PhraseNodeID  parser.NodeID                   `json:"phrase_node_id,omitempty"`
+		ReadingID     string                          `json:"reading_id,omitempty"`
+		SenseID       string                          `json:"sense_id,omitempty"`
+		CoreConceptID string                          `json:"core_concept_id,omitempty"`
+		BindingKey    string                          `json:"binding_key,omitempty"`
+		Role          meaning.Role                    `json:"role,omitempty"`
+		Features      []features.FeatureValue         `json:"features,omitempty"`
+		PlanID        construction.ConstructionPlanID `json:"plan_id,omitempty"`
+		FamilyID      string                          `json:"family_id,omitempty"`
+		VariantID     construction.VariantID          `json:"variant_id,omitempty"`
+		FrameID       valency.FrameID                 `json:"frame_id,omitempty"`
+		Outcome       status.OutcomeKind              `json:"outcome"`
+		Reason        string                          `json:"reason,omitempty"`
+		Provenance    provenance.SourceRef            `json:"provenance,omitempty"`
+	}
+	return json.Marshal(evidenceRecordJSON{
+		Origin: record.Origin, SourceSpan: record.SourceSpan, CandidateID: record.CandidateID,
+		PhraseNodeID: record.PhraseNodeID, ReadingID: record.ReadingID,
+		SenseID: record.SenseID.String(), CoreConceptID: record.CoreConceptID.String(),
+		BindingKey: record.BindingKey, Role: record.Role, Features: record.Features,
+		PlanID: record.PlanID, FamilyID: record.FamilyID.String(), VariantID: record.VariantID,
+		FrameID: record.FrameID, Outcome: record.Outcome, Reason: record.Reason,
+		Provenance: record.Provenance,
+	})
 }
 
 // BindingKeyFor returns the stable composite key for an exact sense-to-CORE
@@ -184,8 +227,17 @@ func validEvidenceFeatureToken(value string) bool {
 }
 
 func validateEvidenceRecord(record EvidenceRecord, path string) error {
-	if record.SourceSpan.Start < 0 || record.SourceSpan.End <= record.SourceSpan.Start || record.SourceSpan.End > status.DefaultBounds().MaxInputBytes {
-		return evidenceError(status.OutcomeInvalid, "INVALID_EVIDENCE_SPAN", path+".source_span", "source span must be a non-empty half-open byte range within the input limit")
+	switch record.Origin {
+	case "":
+		if record.SourceSpan.Start < 0 || record.SourceSpan.End <= record.SourceSpan.Start || record.SourceSpan.End > status.DefaultBounds().MaxInputBytes {
+			return evidenceError(status.OutcomeInvalid, "INVALID_EVIDENCE_SPAN", path+".source_span", "source span must be a non-empty half-open byte range within the input limit")
+		}
+	case EvidenceOriginGenerated:
+		if record.SourceSpan != (text.Span{}) || record.Outcome != status.OutcomeOK || record.CandidateID != "" || record.PhraseNodeID != "" || record.ReadingID != "" || len(record.Features) != 0 || record.Role != "" {
+			return evidenceError(status.OutcomeInvalid, "INVALID_GENERATED_EVIDENCE", path, "generated evidence cannot claim a source span, parse identity, source features, or non-success outcome")
+		}
+	default:
+		return evidenceError(status.OutcomeInvalid, "INVALID_EVIDENCE_ORIGIN", path+".origin", "evidence origin is unsupported")
 	}
 	if !record.Outcome.Valid() {
 		return evidenceError(status.OutcomeInvalid, "INVALID_EVIDENCE_OUTCOME", path+".outcome", "evidence outcome is unsupported")
@@ -230,6 +282,9 @@ func validateEvidenceRecord(record EvidenceRecord, path string) error {
 		return evidenceError(status.OutcomeInvalid, "INVALID_EVIDENCE_ROLE", path+".role", "semantic role must be a bounded lowercase identifier")
 	}
 	planPresent := record.PlanID != "" || record.FamilyID.String() != "" || record.VariantID.String() != "" || record.FrameID != ""
+	if record.Origin == EvidenceOriginGenerated && (!planPresent || record.CoreConceptID.String() == "") {
+		return evidenceError(status.OutcomeInvalid, "INCOMPLETE_GENERATED_EVIDENCE", path, "generated evidence requires an exact CORE binding and construction plan")
+	}
 	if planPresent {
 		if !record.PlanID.Valid() {
 			return evidenceError(status.OutcomeInvalid, "INVALID_EVIDENCE_PLAN_ID", path+".plan_id", "plan ID must be canonical")

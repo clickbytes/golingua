@@ -68,12 +68,13 @@ type SourceAnalyzer interface {
 // SurfaceAlternative is one target-side lexicalization/plan/realization
 // result for exactly one source Meaning candidate.
 type SurfaceAlternative struct {
-	ID          string
-	Outcome     status.OutcomeKind
-	Text        string
-	Evidence    semantic.EvidenceTrace
-	Losses      []realizer.FieldLoss
-	Diagnostics []status.Diagnostic
+	ID          string                     `json:"id"`
+	Outcome     status.OutcomeKind         `json:"outcome"`
+	Text        string                     `json:"text,omitempty"`
+	Evidence    semantic.EvidenceTrace     `json:"evidence"`
+	Assumptions []realizer.FieldAssumption `json:"assumptions,omitempty"`
+	Losses      []realizer.FieldLoss       `json:"losses"`
+	Diagnostics []status.Diagnostic        `json:"diagnostics"`
 }
 
 // SurfaceResult retains target-side alternatives and their stage outcome.
@@ -166,6 +167,21 @@ func (engine *Engine) PackSnapshot() *pack.Pack {
 		return nil
 	}
 	return engine.snapshot
+}
+
+// TargetRealizerFor returns a target adapter only when the selected immutable
+// registry declares realization for that language. Callers still need to
+// retain the adapter's evidence and reject incomplete or unlicensed output.
+func (engine *Engine) TargetRealizerFor(languageID features.LanguageID) (TargetRealizer, bool) {
+	if engine == nil || engine.languages == nil || !validLanguage(string(languageID)) {
+		return nil, false
+	}
+	languagePackage, exists := engine.languages.Language(languageID)
+	if !exists || !supportsCapability(languagePackage.Capabilities, false) {
+		return nil, false
+	}
+	realizer, exists := engine.realizers[languageID]
+	return realizer, exists && realizer != nil
 }
 
 type engineErrorValue struct{ result status.Result }

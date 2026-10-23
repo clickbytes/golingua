@@ -32,9 +32,14 @@ func Candidate() (staging.Candidate, error) {
 	for index, entry := range entries {
 		concepts[index] = entry.Definition
 	}
-	graph, err := core.CompileConceptGraph(concepts, nil)
+	graph, err := catalog.Compile()
 	if err != nil {
 		return staging.Candidate{}, err
+	}
+	compiledRelations := graph.RelationTypes()
+	relations := make([]core.RelationDefinition, len(compiledRelations))
+	for index, relation := range compiledRelations {
+		relations[index] = core.RelationDefinition{RelationType: relation}
 	}
 	polish, err := pl.LexicalDocument()
 	if err != nil {
@@ -52,7 +57,7 @@ func Candidate() (staging.Candidate, error) {
 	if err != nil {
 		return staging.Candidate{}, fmt.Errorf("encode authored lexicon: %w", err)
 	}
-	conceptBytes, err := json.Marshal(core.ConceptDocument{SchemaVersion: 1, Relations: []core.RelationDefinition{}, Concepts: concepts})
+	conceptBytes, err := json.Marshal(core.ConceptDocument{SchemaVersion: 1, Relations: relations, Concepts: concepts})
 	if err != nil {
 		return staging.Candidate{}, fmt.Errorf("encode authored CORE: %w", err)
 	}

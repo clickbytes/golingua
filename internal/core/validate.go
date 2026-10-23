@@ -167,6 +167,10 @@ func CompileConceptGraph(definitions []ConceptDefinition, relationDefinitions []
 			validation.add("INVALID_RELATION", path+".object_kinds", err.Error())
 			continue
 		}
+		if err := validateEventRelationProjection(relation, conceptByKey); err != nil {
+			validation.add("INVALID_EVENT_RELATION_PROJECTION", path, err.Error())
+			continue
+		}
 		if (relation.Symmetric || relation.Transitive) && !sameKinds(relation.SubjectKind, relation.ObjectKind) {
 			validation.add("INVALID_RELATION", path, "symmetric or transitive relation must have matching endpoint kind signatures")
 			continue
@@ -271,6 +275,28 @@ func cloneRelationType(relation RelationType) RelationType {
 	relation.SubjectKind = append([]ConceptKind(nil), relation.SubjectKind...)
 	relation.ObjectKind = append([]ConceptKind(nil), relation.ObjectKind...)
 	return relation
+}
+
+func validateEventRelationProjection(relation RelationType, concepts map[string]ConceptDefinition) error {
+	eventID := relation.EventConceptID.String()
+	hasRole := relation.ArgumentRoles[0] != "" || relation.ArgumentRoles[1] != ""
+	if eventID == "" && !hasRole {
+		return nil
+	}
+	if eventID == "" || relation.ArgumentRoles[0] == "" || relation.ArgumentRoles[1] == "" {
+		return fmt.Errorf("event concept and both ordered argument roles must be declared together")
+	}
+	event, exists := concepts[eventID]
+	if !exists || event.Kind != KindEvent || len(event.RoleTypes) != 2 {
+		return fmt.Errorf("event projection must reference a CORE event with exactly two declared roles")
+	}
+	if event.RoleTypes[0].Name != relation.ArgumentRoles[0] || event.RoleTypes[1].Name != relation.ArgumentRoles[1] {
+		return fmt.Errorf("ordered argument roles must match the referenced event definition")
+	}
+	if !sameKinds(relation.SubjectKind, event.RoleTypes[0].AllowedKinds) || !sameKinds(relation.ObjectKind, event.RoleTypes[1].AllowedKinds) {
+		return fmt.Errorf("relation endpoint kinds must match the referenced event role signatures")
+	}
+	return nil
 }
 
 func cloneDefinition(definition ConceptDefinition) ConceptDefinition {

@@ -30,7 +30,7 @@ func (pack *Pack) Summary() Summary {
 	}
 	lexemes, senses, bindings := pack.lexicon.Len()
 	return Summary{
-		Identity: pack.identity, Concepts: pack.graph.Len(), Lexemes: lexemes,
+		Identity: pack.identity, Concepts: pack.graph.Len(), RelationTypes: len(pack.graph.RelationTypes()), Lexemes: lexemes,
 		Senses: senses, Bindings: bindings, Morphology: "not_included",
 		Construction: "not_included",
 	}

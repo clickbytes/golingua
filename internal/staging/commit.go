@@ -146,6 +146,7 @@ func summarizeDataset(dataset importer.Dataset) Summary {
 	summary := Summary{DatasetID: dataset.Manifest.DatasetID, Version: dataset.Manifest.Version, Files: len(dataset.Manifest.Files)}
 	for _, file := range dataset.Concepts {
 		summary.Concepts += len(file.Concepts)
+		summary.RelationTypes += len(file.Relations)
 	}
 	for _, file := range dataset.Lexicons {
 		summary.Lexemes += len(file.Lexemes)

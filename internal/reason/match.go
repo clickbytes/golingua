@@ -94,6 +94,14 @@ predicateFound:
 	if !exists {
 		return Question{}, queryError(status.OutcomeUnsupported, "UNKNOWN_QUESTION_CONCEPT", "meaning", "question predicate concept is not in CORE")
 	}
+	if relation.EventConceptID.String() != "" {
+		if relation.EventConceptID != conceptID {
+			return Question{}, queryError(status.OutcomeInvalid, "QUERY_EVENT_RELATION_MISMATCH", "mapping.predicate", "relation schema is bound to a different CORE event concept")
+		}
+		if string(roleForArgument[0]) != relation.ArgumentRoles[0] || string(roleForArgument[1]) != relation.ArgumentRoles[1] {
+			return Question{}, queryError(status.OutcomeInvalid, "QUERY_EVENT_ROLE_ORDER_MISMATCH", "mapping.role_to_argument", "role mapping must preserve the event relation's declared argument order")
+		}
+	}
 	declaredRoles := map[meaning.Role]struct{}{}
 	for _, role := range concept.RoleTypes {
 		roleID := meaning.Role(role.Name)

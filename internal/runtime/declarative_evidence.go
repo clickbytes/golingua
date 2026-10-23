@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"sort"
 
 	"github.com/clickbytes/golingua/internal/analyzer"
 	"github.com/clickbytes/golingua/internal/construction"
@@ -16,6 +17,86 @@ import (
 	"github.com/clickbytes/golingua/internal/status"
 	"github.com/clickbytes/golingua/internal/text"
 )
+
+// MeaningPath returns one stable, bounded root-to-node path for attaching
+// realization assumptions to typed meaning fields.
+func MeaningPath(graph meaning.Meaning, target meaning.NodeID) ([]meaning.NodeID, bool) {
+	nodes := make(map[meaning.NodeID]meaning.Node, len(graph.Nodes))
+	for _, node := range graph.Nodes {
+		nodes[node.ID] = node
+	}
+	if _, exists := nodes[target]; !exists {
+		return nil, false
+	}
+	parents := make(map[meaning.NodeID]meaning.NodeID, len(nodes))
+	depths := make(map[meaning.NodeID]int, len(nodes))
+	roots := append([]meaning.NodeID(nil), graph.Roots...)
+	sort.Slice(roots, func(i, j int) bool { return roots[i] < roots[j] })
+	queue := make([]meaning.NodeID, 0, len(roots))
+	for _, root := range roots {
+		if _, exists := nodes[root]; !exists {
+			continue
+		}
+		if _, seen := depths[root]; seen {
+			continue
+		}
+		depths[root] = 1
+		queue = append(queue, root)
+	}
+	for head := 0; head < len(queue); head++ {
+		current := queue[head]
+		if current == target {
+			path := []meaning.NodeID{current}
+			for {
+				parent, exists := parents[current]
+				if !exists {
+					break
+				}
+				path = append(path, parent)
+				current = parent
+			}
+			for left, right := 0, len(path)-1; left < right; left, right = left+1, right-1 {
+				path[left], path[right] = path[right], path[left]
+			}
+			return path, len(path) <= meaning.MaxMeaningDepth
+		}
+		if depths[current] >= meaning.MaxMeaningDepth {
+			continue
+		}
+		children := meaningChildren(nodes[current])
+		sort.Slice(children, func(i, j int) bool { return children[i] < children[j] })
+		for _, child := range children {
+			if _, exists := nodes[child]; !exists {
+				continue
+			}
+			if _, seen := depths[child]; seen {
+				continue
+			}
+			parents[child] = current
+			depths[child] = depths[current] + 1
+			queue = append(queue, child)
+		}
+	}
+	return nil, false
+}
+
+func meaningChildren(node meaning.Node) []meaning.NodeID {
+	switch node.Kind {
+	case meaning.KindDiscourse:
+		return append([]meaning.NodeID(nil), node.Content...)
+	case meaning.KindEvent, meaning.KindState:
+		children := make([]meaning.NodeID, len(node.Participants))
+		for index, participant := range node.Participants {
+			children[index] = participant.Target
+		}
+		return children
+	case meaning.KindQuestion, meaning.KindScope, meaning.KindModality, meaning.KindQuantifier:
+		if node.Target != "" {
+			return []meaning.NodeID{node.Target}
+		}
+	}
+	return nil
+}
 
 // BareDeclarativeEvidenceBuilder attests absence of separate semantic
 // operators only for a complete parse whose predicate has an explicitly
@@ -32,9 +113,9 @@ type BareDeclarativeEvidenceBuilder struct {
 }
 
 // NoOperatorEvidenceBuilder attests an empty operator inventory only for an
-// already complete, supported declarative Meaning candidate. Any explicit
-// question, scope, modality, quantifier or discourse wrapper remains outside
-// this bounded path.
+// already complete, supported declarative Meaning candidate. It accepts one
+// statement discourse wrapper around one lexical target; question, scope,
+// modality and quantifier structures remain outside this bounded path.
 type NoOperatorEvidenceBuilder struct{}
 
 func (NoOperatorEvidenceBuilder) Build(ctx context.Context, candidate semantic.MeaningCandidate) ([]construction.Operator, bool, error) {
@@ -47,8 +128,26 @@ func (NoOperatorEvidenceBuilder) Build(ctx context.Context, candidate semantic.M
 	if candidate.Status != status.OutcomeOK || candidate.Meaning == nil {
 		return nil, false, nil
 	}
+	graph := candidate.Meaning
+	if len(graph.Roots) != 1 {
+		return nil, false, nil
+	}
+	nodes := make(map[meaning.NodeID]meaning.Node, len(graph.Nodes))
+	for _, node := range graph.Nodes {
+		nodes[node.ID] = node
+	}
+	root := nodes[graph.Roots[0]]
+	if root.Kind == meaning.KindDiscourse {
+		if root.Act != meaning.ActStatement || len(root.Content) != 1 {
+			return nil, false, nil
+		}
+		content, exists := nodes[root.Content[0]]
+		if !exists || content.Kind != meaning.KindEvent && content.Kind != meaning.KindState && content.Kind != meaning.KindReferent {
+			return nil, false, nil
+		}
+	}
 	for _, node := range candidate.Meaning.Nodes {
-		if node.Kind != meaning.KindEvent && node.Kind != meaning.KindState && node.Kind != meaning.KindReferent {
+		if node.Kind != meaning.KindEvent && node.Kind != meaning.KindState && node.Kind != meaning.KindReferent && node.Kind != meaning.KindDiscourse {
 			return nil, false, nil
 		}
 	}
