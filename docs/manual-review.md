@@ -207,6 +207,32 @@ tekstem docelowym, a określoność pozostaje jawnym założeniem, bo polski inp
 nie koduje. To ocena tych konkretnych outputów, nie automatyczna bramka ani
 akceptacja właściciela. Akceptacja właściciela pozostaje **NOT RUN**.
 
+### G10-06 — jawny podgląd niekompletnego kandydata — 2026-10-23
+
+Wywołania wykonano binarką z implementacji
+`0da6ad7726af85af6ac92fade774061d3c4e7815` i tym samym aktywnym snapshotem.
+Dokładne komendy, ID, statusy, teksty i diagnostyki zapisano w
+[`observed-2026-10-23-g10-06-explicit-preview.tsv`](../data/sentences/observed-2026-10-23-g10-06-explicit-preview.tsv).
+Te rekordy pochodzą z istniejącej listy zdań i pozostają `draft_unreviewed`.
+
+```sh
+/tmp/golingua-g10-06 translate --from en --to pl --text 'The doctor hears the dog.' --runtime-config /tmp/golingua-g10-04-runtime.json --preview-id translation:c71dddd4d2e8c7e1013e13ffa65a2510df64293a831e5c45950fd582cb90ad8f --json
+/tmp/golingua-g10-06 translate --from pl --to en --text 'Nauczyciel widzi książkę.' --runtime-config /tmp/golingua-g10-04-runtime.json --preview-id translation:beb0937ce5db7011fecea34b89abdb49fc96ca44a31b56314d0bceb718da69b4 --json
+/tmp/golingua-g10-06 translate --from en --to pl --text 'The teacher got a book.' --runtime-config /tmp/golingua-g10-04-runtime.json --preview-id translation:3a59356f7882da043c32eb99336aaf2e1649de7a532ba1419d1235c605c074d1 --json
+```
+
+S031, S003 i S076 zwróciły exit `7` oraz status `incomplete`, a ich jawnie
+wskazany tekst pojawił się zarówno w `text`, jak i w wybranym candidate. Próba
+na S036 pokazała podgląd `The child hears the dog.` z zachowanym statusem
+`ambiguous` i exit `6`; wskazanie drugiego kandydata, który ma status
+`unsupported` i nie ma tekstu, zwróciło `invalid` / exit `2`. Powtórzone
+identyczne wywołania S031 zwróciły to samo candidate ID, więc można skopiować
+ID z odpowiedzi i użyć go w kolejnej komendzie.
+
+**Ocena agenta:** podgląd ujawnia tylko tekst jawnie wskazanego kandydata i nie
+zmienia statusu ani evidence. Akceptacja językowa właściciela pozostaje
+**NOT RUN**.
+
 Bez tekstu dostarczonego przez właściciela oznacz ocenę językową **NOT EVALUATED**. Jeśli nie uruchomiono konkretnej próby na wejściu właściciela, oznacz ją **NOT RUN**. Gdy właściciel deleguje autonomiczną ocenę, agent może opisać własną ocenę na tych wejściach, ale status akceptacji właściciela pozostaje osobny. Techniczne smoke testy z tekstem zastępczym nie są wejściem do oceny językowej. Dokładny kontrakt i przykład komendy opisuje [docs/cli.md](cli.md); nie przedstawiaj go jako dowodu, że provider jest skonfigurowany.
 
 Nie ma obowiązku zapisywania każdego outputu do pliku. Jeśli zapis jest przydatny, prowadź opcjonalnie krótką notatkę w issue lub `examples/manual/`:
