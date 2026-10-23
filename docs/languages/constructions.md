@@ -34,13 +34,17 @@ variants in `languages/*/constructions/transitive.json`. PL also declares an
 intransitive family. `CompileValency` exposes pending construction candidates
 separately from approved bindings. Following the owner's delegated review, the
 index contains four approved PL routes (`widzieć`, `słyszeć`, `dostać`,
-`patrzeć na`) and five approved EN routes (`see`, `hear`, `get`, `read`,
-`look at`). G05 #201 binds `look at` to the English oblique family with an exact
-`at` terminal; the Polish route carries `na` and an accusative complement.
+`patrzeć na`) and seven approved EN sense/frame/family/variant routes across
+`see`, `hear`, three `get` variants, `read`, and `look at`. G05 #201 binds
+`look at` to the English oblique family with an exact `at` terminal; the Polish
+route carries `na` and an accusative complement. G08 #66 (PR #213) added the
+mass-object `get` variant; G10-08 #228 (PR #230) added an indefinite-object
+variant for count singular `receiving` objects where source definiteness is
+missing.
 
 `catalog --summary --json` reports candidate and approved construction-binding
 counts separately. Current counts are **zero pending candidates, four approved
-PL routes and five approved EN routes**. These bindings license only
+PL routes and seven approved EN routes**. These bindings license only
 their exact sense/frame/family/variant routes. The catalog can resolve exact
 approved plans; the compiled CLI registry exposes `seeing`, `hearing`,
 `looking`, and `receiving` sentence routes. The approved `read` route does not
@@ -54,11 +58,11 @@ constraints are reviewed for each language. In particular `patrzeć na` and
 must not silently stand in for those frames. A frame's `AllowedFamilyIDs` is
 only a candidate family reference. It is never treated as approval.
 
-The owner's sentence-level review has not run. The delegated route review adds
-eight explicit construction bindings; the compiled CLI enables the `seeing`
-and `hearing` provider routes. The base language manifests continue to report their
-general analysis/realization capabilities as unsupported; the runtime package
-is generated for these exact routes and verified against its provider evidence.
+The owner's sentence-level review has not run. The compiled CLI enables the
+`seeing`, `hearing`, `looking`, and `receiving` provider routes. The base
+language manifests continue to report their general analysis/realization
+capabilities as unsupported; the runtime package is generated for these exact
+routes and verified against its provider evidence.
 No external lexical or linguistic source is claimed by the current structural
 templates; their provenance records identify them as internal project data.
 
