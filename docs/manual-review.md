@@ -257,6 +257,27 @@ pozostaje założeniem i nie zmieniam statusu na `ok`. Ten konkretny przypadek
 jest ujęty w kolejce jako G10-08 #228. Akceptacja językowa właściciela pozostaje
 **NOT RUN**.
 
+### G10-08 — alternatywy rodzajnika dla `receiving` — 2026-10-23
+
+Po G10-08 uruchomiono istniejące rekordy S076, S077, S079 i S080 z pliku
+[`100-pl-en.tsv`](../data/sentences/100-pl-en.tsv) w obu kierunkach. Dokładne
+kody wyjścia, statusy, candidate ID, teksty i jawne podglądy zapisano w
+[`observed-2026-10-23-g10-08-indefinite-receiving.tsv`](../data/sentences/observed-2026-10-23-g10-08-indefinite-receiving.tsv).
+PL→EN dla S076 zwróciło `The teacher got the book.` i `The teacher got a book.`;
+S079 zwróciło `The teacher got the message.` i `The teacher got a message.`.
+Wynik zbiorczy pozostał `ambiguous`, każdy wariant miał własny status
+`incomplete` i osobne założenie rodzajnika, a oba teksty dało się jawnie
+wyświetlić przez `--preview-id`. S077 i S080 zachowały teksty bez rodzajnika
+(`The teacher got water.` i `The teacher got money.`). EN→PL zachowało
+obserwowane teksty polskie dla tych czterech istniejących wejść.
+
+Podczas pracy wykryto i naprawiono błąd agregacji: globalne `ambiguous` selekcji
+oznaczało wcześniej również podmiot jako niejednoznaczny i blokowało jego
+leksykalizację. Statusy i diagnostyki kandydata są teraz lokalne dla jego węzła
+i trasy; status zbiorczy nadal pokazuje nierozstrzygnięte alternatywy.
+Akceptacja językowa właściciela i redakcyjny status zdań nadal pozostają osobne;
+właścicielska akceptacja pozostaje **NOT RUN**.
+
 Bez tekstu dostarczonego przez właściciela oznacz ocenę językową **NOT EVALUATED**. Jeśli nie uruchomiono konkretnej próby na wejściu właściciela, oznacz ją **NOT RUN**. Gdy właściciel deleguje autonomiczną ocenę, agent może opisać własną ocenę na tych wejściach, ale status akceptacji właściciela pozostaje osobny. Techniczne smoke testy z tekstem zastępczym nie są wejściem do oceny językowej. Dokładny kontrakt i przykład komendy opisuje [docs/cli.md](cli.md); nie przedstawiaj go jako dowodu, że provider jest skonfigurowany.
 
 Nie ma obowiązku zapisywania każdego outputu do pliku. Jeśli zapis jest przydatny, prowadź opcjonalnie krótką notatkę w issue lub `examples/manual/`:

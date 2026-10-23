@@ -113,3 +113,12 @@ pozostają widoczne. Dla policzalnych rzeczowników w liczbie pojedynczej `book`
 przyjęła `the`, podczas gdy zapisane EN pary mają `a`; brak określoności w
 MeaningGraph pozostaje jawny i jest śledzony w G10-08 #228. Akceptacja
 właściciela pozostaje **NOT RUN**.
+
+Po G10-08 #228 zapisano nowe obserwacje z istniejących S076/S077/S079/S080 w
+[observed-2026-10-23-g10-08-indefinite-receiving.tsv](observed-2026-10-23-g10-08-indefinite-receiving.tsv).
+PL→EN zachowuje teraz warianty `a` i `the` dla policzalnych `book` i
+`message`, a oba mają osobne założenia i własne candidate ID. Zbiorczy wynik
+jest `ambiguous`; jawny `--preview-id` wyświetla wybrany tekst bez zmiany tego
+statusu. Jawnie niepoliczalne `water` i `money` nadal realizują się bez
+rodzajnika. EN→PL dla tych samych istniejących par zachowało teksty polskie.
+Wiersze pozostają `draft_unreviewed`; akceptacja właściciela jest **NOT RUN**.
