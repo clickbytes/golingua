@@ -256,3 +256,23 @@ oddzielne angielskie kandydatury ze statusem zbiorczym `ambiguous`. Próby CLI,
 próby ochronne i wynik regresji 200 wywołań są w
 [obserwacji G10-18](observed-2026-10-23-g10-18-negative-article-alternatives.tsv).
 Ocena agenta jest zapisana osobno; odbiór właściciela pozostaje **NOT RUN**.
+
+## Trasa `reading` G10-19 — 2026-10-23
+
+G10-19 aktywuje istniejące zatwierdzone sensy PL/EN `reading` w present 3sg/3pl.
+EN→PL `The teacher reads the message.` i `The teachers read the message.`
+zwróciło `ok`, odpowiednio `Nauczyciel czyta wiadomość.` i `Nauczyciele
+czytają wiadomość.`. PL→EN zachowało odpowiednie angielskie teksty jako
+kandydaty `incomplete` z dwoma jawnymi założeniami `the`, ponieważ polskie
+Meaning nie przechowuje określoności. `forms` analizuje `read/reads` oraz
+`czyta/czytają`; `czytać` ma jawny aspekt imperfective i używa stabilnego ID
+`lexeme:pl.czytac.v`. Niezgodne uzgodnienie, homograficzny past `read` oraz
+negacja pozostają `unsupported`. Regresja 100 istniejących par wykonała 200
+wywołań i zachowała wszystkie statusy oraz zbiory `(candidate outcome, text)`
+G10-14; zero zmienionych grup. Nie zmieniono 100-zdaniowego korpusu. Szczegóły
+i dokładne wyniki są w
+[obserwacji G10-19](observed-2026-10-23-g10-19-reading-route.tsv).
+
+**Ocena agenta:** role czytelnika i materiału, liczba oraz ograniczenie czasu
+są zachowane; PL→EN jawnie ujawnia brak określoności. Akceptacja językowa
+właściciela pozostaje **NOT RUN**.

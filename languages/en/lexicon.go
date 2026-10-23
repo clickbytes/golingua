@@ -1178,6 +1178,7 @@ var englishParadigmByLexeme = map[string]string{
 	"en.hear.v":  "en_verb_finite_principal_parts",
 	"en.look.v":  "en_verb_finite_principal_parts",
 	"en.get.v":   "en_verb_finite_principal_parts",
+	"en.read.v":  "en_verb_finite_principal_parts",
 	// Count nouns use only a spelling class that matches their declared lemma;
 	// mass nouns stay on the explicit singular-only class below.
 	"en.mother.n": "en_noun_regular", "en.father.n": "en_noun_regular",

@@ -33,8 +33,8 @@ The PL and EN packages have independently declared transitive families and
 variants in `languages/*/constructions/transitive.json`. PL also declares an
 intransitive family. `CompileValency` exposes pending construction candidates
 separately from approved bindings. Following the owner's delegated review, the
-index contains four approved PL routes (`widzieć`, `słyszeć`, `dostać`,
-`patrzeć na`) and seven approved EN sense/frame/family/variant routes across
+index contains five approved PL routes (`widzieć`, `słyszeć`, `dostać`,
+`czytać`, `patrzeć na`) and seven approved EN sense/frame/family/variant routes across
 `see`, `hear`, three `get` variants, `read`, and `look at`. G05 #201 binds
 `look at` to the English oblique family with an exact `at` terminal; the Polish
 route carries `na` and an accusative complement. G08 #66 (PR #213) added the
@@ -43,12 +43,13 @@ variant for count singular `receiving` objects where source definiteness is
 missing.
 
 `catalog --summary --json` reports candidate and approved construction-binding
-counts separately. Current counts are **zero pending candidates, four approved
-PL routes and seven approved EN routes**. These bindings license only
+counts separately. Current counts are **zero pending candidates, eight approved
+PL bindings and 96 approved EN bindings**. These bindings license only
 their exact sense/frame/family/variant routes. The catalog can resolve exact
 approved plans; the compiled CLI registry exposes `seeing`, `hearing`,
-`looking`, and `receiving` sentence routes. The approved `read` route does not
-yet have a sentence provider and stage adapter. `Bindings()` returns only approved records;
+`looking`, `reading`, and `receiving` sentence routes. G10-19 activates `read`
+for present third-person singular and plural with explicit morphology in both
+languages. `Bindings()` returns only approved records;
 `Candidates()` is review input and never licenses a runtime path.
 
 Structural templates can be shared by compatible senses only after their

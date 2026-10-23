@@ -451,6 +451,25 @@ dla obsłużonych leksemów; polski brak określoności pozostaje widoczny jako
 oddzielne warianty EN, nie jest po cichu rozstrzygany. Odbiór językowy właściciela
 pozostaje **NOT RUN**.
 
+### G10-19 #251 — `reading` PL/EN — 2026-10-23
+
+Na implementacji `5f1a75fbf176594e85f56fcae6c3de4cee60c0b4` lokalny CLI
+uruchomiono na aktywnym snapshocie. EN→PL `The teacher reads the message.`
+oraz `The teachers read the message.` zwróciły `ok` i odpowiednio
+`Nauczyciel czyta wiadomość.` / `Nauczyciele czytają wiadomość.`. PL→EN
+zachowało `The teacher reads the message.` i `The teachers read the message.`
+jako teksty kandydatów `incomplete`, z jawnymi założeniami rodzajnika `the`.
+`forms` analizuje `read/reads` oraz `czyta/czytają`; polski paradygmat jest
+podłączony do `lexeme:pl.czytac.v` i jawnie oznacza aspekt imperfective.
+Niezgodna liczba, homograficzny angielski past `read` i negacja pozostały
+`unsupported`. Agent ocenia, że role czytelnika i materiału, liczba oraz
+zakres czasu są zachowane; określoność EN pozostaje nierozstrzygnięta w
+Meaning v1. Ponowna próba S001–S100 wykonała 200 wywołań i miała zero zmian
+w statusach oraz parach `(candidate outcome, text)` względem G10-14. Dokładne
+wyjścia są w
+[`data/sentences/observed-2026-10-23-g10-19-reading-route.tsv`](../data/sentences/observed-2026-10-23-g10-19-reading-route.tsv).
+Akceptacja językowa właściciela pozostaje **NOT RUN**.
+
 ## Co NIE jest wymagane
 
 - Przenoszenie dawnych zdań lub ich oczekiwanych rezultatów z JS.

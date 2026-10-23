@@ -20,7 +20,8 @@ import (
 // NewSentenceSource builds the trusted Polish source stages against one exact
 // CORE/lexicon snapshot. The declarative completion attestation covers
 // singular and plural present visual/auditory/looking, present negation for
-// those routes, and third-person past receiving predicates.
+// those routes, third-person past receiving predicates, and reading in the
+// third-person singular and plural present.
 func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if snapshot == nil {
 		return nil, fmt.Errorf("Polish sentence source requires a snapshot")
@@ -58,6 +59,10 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if err != nil {
 		return nil, err
 	}
+	readingSense, err := ids.NewSenseID("pl.czytac.interpret")
+	if err != nil {
+		return nil, err
+	}
 	caseValues := map[features.FeatureValueID]string{}
 	for _, value := range []string{"nominative", "genitive", "dative", "accusative", "instrumental", "locative", "vocative"} {
 		caseValues[features.FeatureValueID(value)] = value
@@ -75,7 +80,7 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 			CaseFeature: "case", CaseValues: caseValues,
 		}},
 		EvidenceBuilder: polishSentenceEvidenceBuilder{base: runtime.BareDeclarativeEvidenceBuilder{
-			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true},
+			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true},
 			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
 				seeingSense: {
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
@@ -86,6 +91,10 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
 				},
 				lookingSense: {
+					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
+					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
+				},
+				readingSense: {
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
 				},

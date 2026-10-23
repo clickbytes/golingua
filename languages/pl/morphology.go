@@ -44,6 +44,7 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 	foundSee := false
 	foundHear := false
 	foundLook := false
+	foundRead := false
 	foundReceive := false
 	for _, lexeme := range document.Lexemes {
 		if lexeme.ID.String() == "lexeme:pl.kot.n" {
@@ -70,6 +71,12 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 				LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "present_stem", Form: "patrz"}},
 			}})
 		}
+		if lexeme.ID.String() == "lexeme:pl.czytac.v" {
+			foundRead = true
+			attested = append(attested, lexemeRecord{Lexeme: lexeme, PrincipalParts: morph.PrincipalParts{
+				LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "present_stem", Form: "czyt"}},
+			}})
+		}
 		if lexeme.ID.String() == "lexeme:pl.dostac.v" {
 			foundReceive = true
 			attested = append(attested, lexemeRecord{Lexeme: lexeme, PrincipalParts: morph.PrincipalParts{
@@ -80,7 +87,7 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 			}})
 		}
 	}
-	if !foundCat || !foundBird || !foundSee || !foundHear || !foundLook || !foundReceive {
+	if !foundCat || !foundBird || !foundSee || !foundHear || !foundLook || !foundRead || !foundReceive {
 		return nil, fmt.Errorf("Polish in-code morphology lexeme is missing")
 	}
 	return attested, nil
