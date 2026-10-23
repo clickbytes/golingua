@@ -30,7 +30,7 @@ TUI pokazuje tylko dane zwrócone przez wybraną usługę. Brak formy pozostaje 
 
 Nie dodajemy innych zakładek ani funkcji asystenta czatu. Granice danych i pakietów opisuje [mapa bindingów](bindings.md), statusy i błędy — [kontrakt błędów](errors.md), własność modelu, zdarzenia, odpowiedzi asynchroniczne i fokus — [kontrakt stanu](state-model.md), a routing promptu — [kontrakt komend](command-contract.md).
 
-Makieta wspólnej ramy w 80×24 i szerokim terminalu jest oznaczona jako projekt w [global-shell mockup](mockups/global-shell.md); nie pokazuje działającego TUI ani wyniku silnika.
+Makieta wspólnej ramy w 80×24 i szerokim terminalu, wraz ze stanem kompaktowym i zawijaniem długiej ścieżki, jest oznaczona jako projekt w [global-shell mockup](mockups/global-shell.md); nie pokazuje działającego TUI ani wyniku silnika.
 
 ## Ustawienia
 

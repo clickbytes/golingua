@@ -104,11 +104,13 @@ przeszły. Implementacja TUI i akceptacja właściciela pozostają **NOT RUN**.
 ### G11-05 #270 — makieta globalnej ramy TUI — 2026-10-23
 
 [Global-shell mockup](../tui/mockups/global-shell.md) pokazuje osobne ramy
-80×24 i 120×32: nagłówek z tekstowym stanem runtime, pięć zakładek, neutralny
-obszar ekranu, miejsce na prompt i skróty klawiszowe. F1 jest aktywny, a fokus
-na pasku zakładek; status runtime jest jawnie `unavailable`. To oznaczony
-projekt, nie rzeczywisty output Go ani makieta biznesowego ekranu. CLI nie
-wymaga uruchomienia; działające TUI i akceptacja właściciela pozostają
+80×24 i 120×32: nagłówek ze stanem runtime, pięć zakładek, neutralny,
+przewijalny obszar ekranu, miejsce na prompt i skróty klawiszowe. Wybrana
+zakładka i fokus mają osobne, tekstowe oznaczenia; status runtime to
+`unavailable`. Dodano też stan terminala 60×6, przykład zawijania długiej
+ścieżki bez ucinania oraz mapę odpowiedzialności powłoki, ekranów i palety.
+To oznaczony projekt, nie rzeczywisty output Go ani makieta biznesowego ekranu.
+CLI nie wymaga uruchomienia; działające TUI i akceptacja właściciela pozostają
 **NOT RUN**.
 
 ## Kryterium wykonania tasku
