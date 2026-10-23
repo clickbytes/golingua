@@ -310,6 +310,30 @@ PL→EN zachowało status `ambiguous` we wszystkich 10 wynikach. W 84 zachowanyc
 
 **Ocena agenta:** dodane formy są regularnym zapisem istniejącego leksemu i odsłaniają kandydatury dla już zapisanych odczytów `dom`; nie rozstrzygają, czy w zdaniu chodzi o budynek, czy gospodarstwo domowe. Wyniki nadal wymagają ręcznej oceny; akceptacja właściciela pozostaje **NOT RUN**.
 
+### G10-12 #237 — `offspring` i allomorfy `a/an` — 2026-10-23
+
+Na implementacji [`0caf552605e9b1c24d57a9b88a4ec65f3a6f8c2f`](../data/sentences/observed-2026-10-23-g10-12-offspring-a-an.tsv)
+uruchomiono S021–S025, S036–S040, S071–S075 i S096–S100 w obu kierunkach,
+czyli 40 wywołań CLI, oraz jedną osobno oznaczoną próbę pochodną. `forms`
+rozpoznało `offspring` jako singular i plural o tej samej powierzchni, a `an`
+jako determiner `indefinite`. EN→PL zwróciło 16 wyników `ok` i 4
+`incomplete`; PL→EN zachowało 20 wyników `ambiguous`. Nie wystąpiły
+`ROLE_LEXICALIZATION_UNAVAILABLE` ani `PRINCIPAL_PARTS_UNAVAILABLE`.
+
+Przykład pochodny `An offspring sees a dog.` został przełożony jako
+`Dziecko widzi psa.` ze statusem `ok`, exit 0. Wymuszenie niezgodnego
+allomorfu w `A offspring sees a dog.` nie dało analizy. Ta poprawka wykryła i
+usunęła niezgodną z `an` mnogą analizę `offspring`.
+
+**Ocena agenta:** gloss `en.offspring.child` opisuje relację rodzica i dziecka
+niezależnie od wieku, zgodnie z zatwierdzonym polskim sensem
+`pl.dziecko.kinship`; nie jest to ten sam sens co młoda osoba `en.child.person`.
+Agent zapisał ocenę i provenance w
+[komentarzu #237](https://github.com/clickbytes/golingua/issues/237#issuecomment-6357615617).
+Wyjścia PL→EN zachowują alternatywy `child`/`offspring` oraz założenia
+rodzajnika. Nierozstrzygnięty `book` nadal daje częściową analizę. Akceptacja
+właściciela pozostaje **NOT RUN**.
+
 Bez tekstu dostarczonego przez właściciela oznacz ocenę językową **NOT EVALUATED**. Jeśli nie uruchomiono konkretnej próby na wejściu właściciela, oznacz ją **NOT RUN**. Gdy właściciel deleguje autonomiczną ocenę, agent może opisać własną ocenę na tych wejściach, ale status akceptacji właściciela pozostaje osobny. Techniczne smoke testy z tekstem zastępczym nie są wejściem do oceny językowej. Dokładny kontrakt i przykład komendy opisuje [docs/cli.md](cli.md); nie przedstawiaj go jako dowodu, że provider jest skonfigurowany.
 
 Nie ma obowiązku zapisywania każdego outputu do pliku. Jeśli zapis jest przydatny, prowadź opcjonalnie krótką notatkę w issue lub `examples/manual/`:
