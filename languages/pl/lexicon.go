@@ -534,15 +534,14 @@ var polishFrameBySense = map[string]lexicon.ValencyID{
 }
 
 var polishParadigmByLexeme = map[string]string{
-	"pl.kot.n":     "pl_masc_animal_regular",
-	"pl.ptak.n":    "pl_masc_animal_regular",
-	"pl.sasiad.n":  "pl_noun_attested_masculine_personal",
-	"pl.klient.n":  "pl_noun_attested_masculine_personal",
-	"pl.widziec.v": "pl_verb_present_i",
-	"pl.slyszec.v": "pl_verb_present_y",
-	"pl.patrzec.v": "pl_verb_present_y",
-	"pl.drzewo.n":  "pl_noun_drzewo_attested",
-	"pl.dostac.v":  "pl_verb_perfective_finite",
+	"pl.sasiad.n":    "pl_noun_attested_masculine_personal",
+	"pl.klient.n":    "pl_noun_attested_masculine_personal",
+	"pl.widziec.v":   "pl_verb_present_i",
+	"pl.slyszec.v":   "pl_verb_present_y",
+	"pl.patrzec.v":   "pl_verb_present_y",
+	"pl.dorosly.adj": "pl_adjective_dorosly_attested",
+	"pl.drzewo.n":    "pl_noun_drzewo_attested",
+	"pl.dostac.v":    "pl_verb_perfective_finite",
 }
 
 // LexicalDocument constructs the Polish lexical data from Go declarations.
@@ -625,15 +624,13 @@ func LexicalDocument() (lexicon.Document, error) {
 			}
 			lexeme := lexicon.MorphLexeme{ID: lexemeID, Language: "pl", Lemma: entry.lemma, POS: entry.pos, ParadigmID: polishParadigmByLexeme[entry.id]}
 			if gender, ok := attestedNounGender(entry.id); ok {
-				lexeme.ParadigmID = "pl_noun_attested_" + gender
+				lexeme.ParadigmID = string(attestedNounParadigmID(entry.id, gender))
 				lexeme.Properties = []lexicon.Property{{Key: "gender", Value: gender}}
 			} else if entry.id == "pl.pieniadze.n" {
 				lexeme.ParadigmID = "pl_noun_plural_only_attested"
 				lexeme.Properties = []lexicon.Property{{Key: "grammatical_number", Value: "plural_only"}}
 			} else if entry.id == "pl.drzewo.n" {
 				lexeme.Properties = []lexicon.Property{{Key: "gender", Value: "neuter"}}
-			} else if lexeme.ParadigmID == "pl_masc_animal_regular" {
-				lexeme.Properties = []lexicon.Property{{Key: "gender", Value: "masculine_animal"}}
 			}
 			document.Lexemes = append(document.Lexemes, lexeme)
 			for _, meaning := range entry.meanings {

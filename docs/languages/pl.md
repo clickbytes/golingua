@@ -54,7 +54,9 @@ Batch 27 adds `celowe działanie` as a pending event noun for intentional action
 
 Existing `pl.Load()` uses a small morphology seed. `pl.Generate()`/`Seed.Analyze()` work only for lexemes that have explicitly assigned compatible paradigms and principal parts.
 
-The new `morphology_attested_nouns.go` provides **22 noun lexemes × 14 explicit form cells = 308 declared forms**, plus seven case forms for the plural-only lexeme `pieniądze`. For each fully inflected noun, the 7 cases in singular and plural are stored as individual principal parts. Five shared, gender-specific `morph.Paradigm` selectors retrieve the declared forms for 21 nouns; `drzewo` has a separate paradigm with explicitly declared forms. The plural-only paradigm contains only its seven explicitly supplied plural cells. These are **not productive rules deriving endings for arbitrary nouns**:
+The noun morphology now provides **30 lexemes × 14 explicit case/number cells = 420 declared forms**, plus seven cells for plural-only `pieniądze`. Seven-case singular and plural forms are stored as individual principal parts. Gender-specific paradigms select those forms; eight newly sourced nouns have lexeme-specific rules so each compiled reading preserves its WSJP reference and unknown license. `kot` and `ptak` now have full 14-cell tables instead of the earlier six-cell suffix pattern. None of these declarations licenses endings for another noun.
+
+`mewa` is currently a morphology-only lexeme: its lemma and 14 WSJP-sourced forms can be queried, while it has no lexical sense or CORE binding. This keeps the inflection work from introducing an unreviewed semantic mapping.
 
 - Masculine animal: `pies`.
 - Masculine inanimate: `dom`, `stół`, `samochód`, `szpital`.
@@ -62,8 +64,9 @@ The new `morphology_attested_nouns.go` provides **22 noun lexemes × 14 explicit
 - Feminine: `woda`, `szkoła`, `książka`, `ręka`, `ryba`, `pizza`, `wiadomość`.
 - Neuter: `oko`, `dziecko`, `jedzenie`, `drzewo` (separately sourced from [WSJP](https://wsjp.pl/haslo/podglad/10895/drzewo/4680852/roslina)).
 - Plural-only: `pieniądze` (seven explicit case forms).
+- Newly sourced: `kot`, `ptak`, `koń`, `miasto`, `mieszkanie`, `rzeka`, `siostra`, `mewa` (each linked to its WSJP entry in `attestedNounExternalSources`).
 
-The older `kot` noun pattern remains restricted to 6 cells; the separate `lexeme:student-n` and `lexeme:czytac-v` seeds retain their existing IDs. G10-02 adds six present indicative cells for imperfective `widzieć`, `słyszeć`, and `patrzeć`. Perfective `dostać` has six future cells and 13 past agreement cells: singular forms mark masculine personal, feminine, or neuter as licensed by person; plural forms distinguish masculine-personal from non-masculine-personal agreement. Its present-tense-looking forms are explicitly marked `tense=future`, not present. These reusable suffix procedures are attached only to the named lexemes through explicit stems. They do not imply a general conjugator for other Polish verbs or provide every aspectual pair, imperative, participle, passive, conditional, or reflexive form. For lexeme `pl.ryba.n`, for example, both its animal and food senses share one morphology entry; morphology alone does not choose a semantic sense.
+The single Polish adjective lexeme `dorosły` has 49 positive agreement cells, 42 comparative cells, and 42 superlative cells. Comparative forms are listed explicitly; superlatives prepend `naj-` to those listed forms. The WSJP higher-degree table does not provide vocative cells, so those remain unavailable. Other adjectives, pronouns, and numerals have no assigned morphology. The separate `lexeme:student-n` and `lexeme:czytac-v` seeds retain their existing IDs. G10-02 adds six present indicative cells for imperfective `widzieć`, `słyszeć`, and `patrzeć`. Perfective `dostać` has six future cells and 13 past agreement cells: singular forms mark masculine personal, feminine, or neuter as licensed by person; plural forms distinguish masculine-personal from non-masculine-personal agreement. Its present-tense-looking forms are explicitly marked `tense=future`, not present. These reusable suffix procedures are attached only to the named lexemes through explicit stems. They do not imply a general conjugator for other Polish verbs or provide every aspectual pair, imperative, participle, passive, conditional, or reflexive form. For lexeme `pl.ryba.n`, for example, both its animal and food senses share one morphology entry; morphology alone does not choose a semantic sense.
 
 ### Manual CLI checks
 
@@ -74,7 +77,16 @@ go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.dziecko.n --feature
 go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.widziec.v --feature verb_form=finite --feature tense=present --feature aspect=imperfective --feature mood=indicative --feature voice=active --feature person=first --feature number=singular --json
 go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.dostac.v --feature verb_form=finite --feature tense=future --feature aspect=perfective --feature mood=indicative --feature voice=active --feature person=second --feature number=singular --json
 go run ./cmd/golingua forms --language pl --surface dostaliśmy --json
+go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.kon.n --feature number=plural --feature case=instrumental --feature gender=masculine_animal --json
+go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.miasto.n --feature number=plural --feature case=genitive --feature gender=neuter --json
+go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.mewa.n --feature number=plural --feature case=instrumental --feature gender=feminine --json
+go run ./cmd/golingua forms --language pl --lexeme lexeme:pl.dorosly.adj --feature degree=superlative --feature number=plural --feature gender=non_masculine_personal --feature case=nominative --json
+go run ./cmd/golingua forms --language pl --surface dorośli --json
 ```
+
+The new noun forms cite their individual WSJP PAN entry URLs in compiled
+provenance; each source license remains `unknown` until established. The
+`dorosły` adjective also carries its WSJP source URI and license status.
 
 These calls must use the actual bundled seed, not the editorial TSV. A technical smoke verifies that a form can be produced/read, **not that it is linguistically approved**.
 
