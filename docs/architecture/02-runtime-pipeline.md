@@ -1,10 +1,16 @@
 # 02 — Przepływy wykonania (nowy Go)
 
-**Zaimplementowano ograniczone szlaki zdań PL/EN dla `seeing`, `hearing` i `receiving`.**
-Pierwsze dwa obsługują jawne formy teraźniejsze 3. osoby liczby pojedynczej;
+**Zaimplementowano ograniczone szlaki zdań PL/EN dla `seeing`, `hearing`, `looking` i `receiving`.**
+Pierwsze trzy obsługują jawne formy teraźniejsze 3. osoby liczby pojedynczej;
 `receiving` obsługuje angielskie `got` i polski czas przeszły 3. osoby liczby
 pojedynczej z uzgodnieniem rodzaju. Inne sensy, formy i profile gramatyczne
 pozostają poza zakresem.
+
+`looking` wiąże angielskie `look at` z `at` + NP oraz polskie `patrzeć na` z
+`na` + NP w bierniku. Szlak obsługuje tylko jawne formy 3. osoby liczby
+pojedynczej i zapisane formy rzeczowników. Niejednoznaczne odczytania rzeczowników
+pozostają widoczne; realizacja PL→EN zgłasza `incomplete`, gdy rodzajnik `the`
+został przyjęty jako jawne założenie.
 
 ## Kompilacja wiedzy
 
@@ -56,4 +62,4 @@ CLI odrzuca pliki konfiguracyjne z nieznanymi lub powtórzonymi kluczami, dodatk
 
 `internal/runtime.TargetPipeline` łączy `SelectTargets → BuildPlan → Execute → Linearize` i sprawdza końcowy wybór względem dokładnego, zatwierdzonego bindingu w zweryfikowanym `language.Registry`. Wymaga skompilowanego `TargetExecutionBuilder`, który podaje principal parts oraz jawne wartości cech dla slotów; adapter nie wyprowadza przypadku, zgody ani innych cech z ról semantycznych. Opcjonalny `TargetOperatorBuilder` dostarcza operatory wyłącznie dla konkretnego kandydata Meaning i jawnie oznacza kompletność pokrycia. Adapter może być przekazany jako `engine.TargetRealizer` w `runtime.Options.Realizers`.
 
-`runtime.Options.LanguageFactory` kompiluje dokładne pakiety z aktywnego packa i wiąże je z zaufanymi providerami; `StageFactory` uruchamia się po weryfikacji `language.Registry`. `cmd/golingua/compiled.go` rejestruje oba elementy dla dokładnych szlaków `seeing`, `hearing` i `receiving` w PL i EN. Pozostałe bindingi nie są deklarowane jako możliwości zdań. Powtórne przypisanie adaptera do tego samego języka jest błędem konfiguracji. Plik JSON nie może uruchamiać ani wybierać kodu providera.
+`runtime.Options.LanguageFactory` kompiluje dokładne pakiety z aktywnego packa i wiąże je z zaufanymi providerami; `StageFactory` uruchamia się po weryfikacji `language.Registry`. `cmd/golingua/compiled.go` rejestruje oba elementy dla dokładnych szlaków `seeing`, `hearing`, `looking` i `receiving` w PL i EN. Pozostałe bindingi nie są deklarowane jako możliwości zdań. Powtórne przypisanie adaptera do tego samego języka jest błędem konfiguracji. Plik JSON nie może uruchamiać ani wybierać kodu providera.

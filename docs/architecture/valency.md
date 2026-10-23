@@ -51,9 +51,9 @@ danych leksykalnych:
 | Sense | Role semantyczne | Slot językowy |
 | --- | --- | --- |
 | EN `see` | experiencer, theme | experiencer: subject; theme: direct object |
-| EN `look at` | experiencer, theme | experiencer: subject; theme: oblique z `at` |
+| EN `look at` | agent, target | agent: subject; target: oblique z `at` |
 | PL `widzieć` | experiencer, theme | experiencer: podmiot w mianowniku; theme: dopełnienie zgodne z zatwierdzoną ramą |
-| PL `patrzeć na` | experiencer, theme | experiencer: podmiot w mianowniku; theme: oblique z `na` i jawnie licencjonowanym przypadkiem |
+| PL `patrzeć na` | agent, target | agent: podmiot w mianowniku; target: oblique z `na` i biernikiem |
 
 Bez zatwierdzonego sensu, semantic binding i construction binding wynik to
 odmowa transferu, a nie zgadywanie najbliższej ramy. Walidator wymaga

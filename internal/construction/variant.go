@@ -214,6 +214,43 @@ type Variant struct {
 	Provenance      provenance.SourceRef `json:"provenance"`
 }
 
+// VariantEmitsAdposition reports whether the exact selected sequence contains
+// the required adposition after its predicate and before the licensed argument
+// slot. This keeps PP surface material explicit in the language-local variant.
+func VariantEmitsAdposition(variant Variant, family ConstructionFamily, slotID, adposition string) bool {
+	if slotID == "" || !validToken(adposition) {
+		return false
+	}
+	var predicatePosition, argumentPosition = -1, -1
+	for position, token := range variant.Sequence {
+		if token.Kind != TokenSlot {
+			continue
+		}
+		for _, slot := range family.SlotSpecs {
+			if slot.ID != token.SlotID {
+				continue
+			}
+			if slot.Category == CategoryVP && predicatePosition < 0 {
+				predicatePosition = position
+			}
+			if token.SlotID == slotID {
+				argumentPosition = position
+			}
+			break
+		}
+	}
+	if predicatePosition < 0 || argumentPosition <= predicatePosition {
+		return false
+	}
+	for position := predicatePosition + 1; position < argumentPosition; position++ {
+		token := variant.Sequence[position]
+		if token.Kind == TokenTerminal && token.Terminal == adposition {
+			return true
+		}
+	}
+	return false
+}
+
 // ConstructionVariant is the descriptive name for Variant in external APIs.
 type ConstructionVariant = Variant
 

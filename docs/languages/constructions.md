@@ -34,17 +34,17 @@ variants in `languages/*/constructions/transitive.json`. PL also declares an
 intransitive family. `CompileValency` exposes pending construction candidates
 separately from approved bindings. Following the owner's delegated review, the
 index contains four approved PL routes (`widzieć`, `słyszeć`, `dostać`,
-`patrzeć na`) and four approved EN routes (`see`, `hear`, `get`, `read`). The
-EN `look at` frame has no oblique family/variant and no binding; generic SVO is
-not a substitute.
+`patrzeć na`) and five approved EN routes (`see`, `hear`, `get`, `read`,
+`look at`). G05 #201 binds `look at` to the English oblique family with an exact
+`at` terminal; the Polish route carries `na` and an accusative complement.
 
 `catalog --summary --json` reports candidate and approved construction-binding
-counts separately. Current counts are **zero pending candidates and four
-approved construction bindings per language**. These bindings license only
+counts separately. Current counts are **zero pending candidates, four approved
+PL routes and five approved EN routes**. These bindings license only
 their exact sense/frame/family/variant routes. The catalog can resolve exact
-approved plans; the compiled CLI registry currently exposes the `seeing` and
-`hearing` routes in each language. Other approved routes do not yet have sentence
-providers and stage adapters. `Bindings()` returns only approved records;
+approved plans; the compiled CLI registry exposes `seeing`, `hearing`,
+`looking`, and `receiving` sentence routes. The approved `read` route does not
+yet have a sentence provider and stage adapter. `Bindings()` returns only approved records;
 `Candidates()` is review input and never licenses a runtime path.
 
 Structural templates can be shared by compatible senses only after their

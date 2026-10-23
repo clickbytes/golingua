@@ -16,7 +16,7 @@ var polishNounSource = provenance.SourceRef{
 
 var polishSentenceFormSource = provenance.SourceRef{
 	ID: "golingua-pl-sentence-forms-authored", Path: "languages/pl/morphology.go",
-	Version: "2026-10-23", License: "internal", Author: "golingua contributors",
+	Version: "2026-10-23-g05-14-looking", License: "internal", Author: "golingua contributors",
 }
 
 // Only cells whose outputs are explicitly declared here are generated. This
@@ -56,9 +56,11 @@ func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm 
 	}
 	result := append([]morph.Paradigm{paradigm}, attestedNounParadigms(profile)...)
 	result = append(result, pluralOnlyNounParadigm(profile))
+	result = append(result, treeNounParadigm(profile))
 	return append(result,
 		presentThirdSingularVerbParadigm(profile, "pl_widziec_present_third_singular", "procedure:pl_widziec.present_third_singular"),
 		presentThirdSingularVerbParadigm(profile, "pl_slyszec_present_third_singular", "procedure:pl_slyszec.present_third_singular"),
+		presentThirdSingularVerbParadigm(profile, "pl_patrzec_present_third_singular", "procedure:pl_patrzec.present_third_singular"),
 		pastThirdSingularVerbParadigm(profile),
 	)
 }
@@ -126,10 +128,16 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 		return nil, err
 	}
 	attested = append(attested, pluralOnly...)
+	treeNouns, err := treeNounRecords(document.Lexemes)
+	if err != nil {
+		return nil, err
+	}
+	attested = append(attested, treeNouns...)
 	foundCat := false
 	foundBird := false
 	foundSee := false
 	foundHear := false
+	foundLook := false
 	foundReceive := false
 	for _, lexeme := range document.Lexemes {
 		if lexeme.ID.String() == "lexeme:pl.widziec.v" {
@@ -142,6 +150,12 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 			foundHear = true
 			attested = append(attested, lexemeRecord{Lexeme: lexeme, PrincipalParts: morph.PrincipalParts{
 				LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "present_third_singular", Form: "słyszy"}},
+			}})
+		}
+		if lexeme.ID.String() == "lexeme:pl.patrzec.v" {
+			foundLook = true
+			attested = append(attested, lexemeRecord{Lexeme: lexeme, PrincipalParts: morph.PrincipalParts{
+				LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "present_third_singular", Form: "patrzy"}},
 			}})
 		}
 		if lexeme.ID.String() == "lexeme:pl.dostac.v" {
@@ -166,7 +180,7 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 			})
 		}
 	}
-	if !foundCat || !foundBird || !foundSee || !foundHear || !foundReceive {
+	if !foundCat || !foundBird || !foundSee || !foundHear || !foundLook || !foundReceive {
 		return nil, fmt.Errorf("Polish in-code morphology lexeme is missing")
 	}
 	return attested, nil

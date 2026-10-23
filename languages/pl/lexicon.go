@@ -540,6 +540,8 @@ var polishParadigmByLexeme = map[string]string{
 	"pl.klient.n":  "pl_noun_attested_masculine_personal",
 	"pl.widziec.v": "pl_widziec_present_third_singular",
 	"pl.slyszec.v": "pl_slyszec_present_third_singular",
+	"pl.patrzec.v": "pl_patrzec_present_third_singular",
+	"pl.drzewo.n":  "pl_noun_drzewo_attested",
 	"pl.dostac.v":  "pl_verb_past_third_singular",
 }
 
@@ -628,6 +630,8 @@ func LexicalDocument() (lexicon.Document, error) {
 			} else if entry.id == "pl.pieniadze.n" {
 				lexeme.ParadigmID = "pl_noun_plural_only_attested"
 				lexeme.Properties = []lexicon.Property{{Key: "grammatical_number", Value: "plural_only"}}
+			} else if entry.id == "pl.drzewo.n" {
+				lexeme.Properties = []lexicon.Property{{Key: "gender", Value: "neuter"}}
 			} else if lexeme.ParadigmID == "pl_masc_animal_regular" {
 				lexeme.Properties = []lexicon.Property{{Key: "gender", Value: "masculine_animal"}}
 			}

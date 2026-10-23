@@ -18,6 +18,12 @@ var attestedNounSource = provenance.SourceRef{
 	Author:  "golingua contributors",
 }
 
+var treeNounFormSource = provenance.SourceRef{
+	ID:      "golingua-pl-tree-forms-wsj",
+	URI:     "https://wsjp.pl/haslo/podglad/10895/drzewo/4680852/roslina",
+	Version: "2026-10-23", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
+}
+
 // attestedNounForms contains every declared case/number form explicitly.
 // Shared paradigms select these principal parts; they NEVER invent a suffix,
 // sound change, missing form or an unreviewed alternate reading.
@@ -204,4 +210,64 @@ func attestedNounRecords(lexemes []lexicon.MorphLexeme) ([]lexemeRecord, error) 
 		result = append(result, lexemeRecord{Lexeme: lexeme, PrincipalParts: parts})
 	}
 	return result, nil
+}
+
+func treeNounParadigm(profile *features.LanguageFeatureProfile) morph.Paradigm {
+	paradigm := morph.Paradigm{
+		SchemaVersion:  morph.ParadigmSchemaVersion,
+		ID:             "pl_noun_drzewo_attested",
+		Language:       "pl",
+		ProfileVersion: profile.Version(),
+		POS:            "noun",
+	}
+	for _, number := range []string{"singular", "plural"} {
+		prefix := "sg"
+		if number == "plural" {
+			prefix = "pl"
+		}
+		for _, grammaticalCase := range attestedNounCases {
+			partID := morph.PrincipalPartID(prefix + "_" + grammaticalCase)
+			stemID := procedure.StemID(partID)
+			cellID := morph.CellID(partID)
+			paradigm.PrincipalPartRequirements = append(paradigm.PrincipalPartRequirements, morph.PrincipalPartRequirement{
+				StemID: stemID, PartID: partID, Required: true,
+			})
+			paradigm.Cells = append(paradigm.Cells, morph.ParadigmCell{
+				ID: cellID,
+				Features: []features.FeatureValue{
+					{Feature: "number", State: features.StateKnown, Value: features.FeatureValueID(number)},
+					{Feature: "case", State: features.StateKnown, Value: features.FeatureValueID(grammaticalCase)},
+					{Feature: "gender", State: features.StateKnown, Value: "neuter"},
+				},
+			})
+			paradigm.Rules = append(paradigm.Rules, morph.CellRule{
+				CellID: cellID, ProcedureID: "procedure:pl_noun_drzewo_attested." + string(cellID),
+				Provenance: treeNounFormSource,
+				Steps:      []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: stemID}},
+			})
+		}
+	}
+	return paradigm
+}
+
+func treeNounRecords(lexemes []lexicon.MorphLexeme) ([]lexemeRecord, error) {
+	for _, lexeme := range lexemes {
+		if lexeme.ID.String() != "lexeme:pl.drzewo.n" {
+			continue
+		}
+		if lexeme.Lemma != "drzewo" || lexeme.ParadigmID != "pl_noun_drzewo_attested" {
+			return nil, fmt.Errorf("Polish tree noun has an incompatible lexical declaration")
+		}
+		singular := [7]string{"drzewo", "drzewa", "drzewu", "drzewo", "drzewem", "drzewie", "drzewo"}
+		plural := [7]string{"drzewa", "drzew", "drzewom", "drzewa", "drzewami", "drzewach", "drzewa"}
+		parts := morph.PrincipalParts{LexemeID: lexeme.ID, Parts: make([]morph.PrincipalPart, 0, 14)}
+		for index, grammaticalCase := range attestedNounCases {
+			parts.Parts = append(parts.Parts,
+				morph.PrincipalPart{ID: morph.PrincipalPartID("sg_" + grammaticalCase), Form: singular[index]},
+				morph.PrincipalPart{ID: morph.PrincipalPartID("pl_" + grammaticalCase), Form: plural[index]},
+			)
+		}
+		return []lexemeRecord{{Lexeme: lexeme, PrincipalParts: parts}}, nil
+	}
+	return nil, fmt.Errorf("Polish tree noun lexeme is missing")
 }

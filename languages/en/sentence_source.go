@@ -52,9 +52,14 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if err != nil {
 		return nil, err
 	}
+	lookingSense, err := ids.NewSenseID("en.look.directed")
+	if err != nil {
+		return nil, err
+	}
 	return &runtime.SourcePipeline{
 		Language: "en", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}},
-		Morphology: inverse, MWEPlans: []construction.CompiledMWEPlan{},
+		AllowedUnlexicalizedTerminals: map[string]bool{"at": true},
+		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
 		PhraseBuilder: englishDeterminerNPBuilder{inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
@@ -63,15 +68,17 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 			},
 		}}},
 		EvidenceBuilder: runtime.BareDeclarativeEvidenceBuilder{
-			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true},
+			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true},
 			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
 				seeingSense:  {{"verb_form": "third_person_singular"}},
 				hearingSense: {{"verb_form": "third_person_singular"}},
+				lookingSense: {{"verb_form": "third_person_singular"}},
 				// The English principal-parts paradigm exposes its past cell as
 				// verb_form=past. Do not require tense here: that value is not
 				// currently declared by the English analysis cell.
 				receivingSense: {{"verb_form": "past"}},
 			},
+			AllowedUnlexicalizedTerminals: map[string]bool{"at": true},
 		},
 	}, nil
 }
