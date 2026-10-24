@@ -1,0 +1,275 @@
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"flag"
+	"fmt"
+	"os"
+	"path/filepath"
+	"runtime"
+	"runtime/pprof"
+	"sort"
+	"time"
+
+	"github.com/clickbytes/golingua/internal/engine"
+	"github.com/clickbytes/golingua/internal/features"
+	"github.com/clickbytes/golingua/tests/matrix"
+)
+
+const (
+	warmupPerInput   = 10
+	measuredPerInput = 100
+	profileRequests  = 1000
+)
+
+type testInput struct {
+	From features.LanguageID `json:"from"`
+	To   features.LanguageID `json:"to"`
+	Text string              `json:"text"`
+}
+
+var inputs = [...]testInput{
+	{From: "en", To: "pl", Text: "The teacher sees the dog."},
+	{From: "en", To: "pl", Text: "The teacher reads the message."},
+	{From: "pl", To: "en", Text: "Nauczyciel nie widzi psa."},
+	{From: "pl", To: "en", Text: "Czarny kot widzi psa."},
+}
+
+type metadata struct {
+	SourceSHA  string `json:"source_sha"`
+	Go         string `json:"go"`
+	OS         string `json:"os"`
+	Arch       string `json:"arch"`
+	NumCPU     int    `json:"num_cpu"`
+	GOMAXPROCS int    `json:"gomaxprocs"`
+}
+
+type initMeasurement struct {
+	RuntimeInitMS            float64 `json:"runtime_init_ms"`
+	AllocatedBytes           uint64  `json:"allocated_bytes"`
+	LiveHeapAfterInitGCBytes uint64  `json:"live_heap_after_init_gc_bytes"`
+}
+
+type requestCounts struct {
+	Statuses        map[string]int `json:"status_counts"`
+	CandidateCounts map[string]int `json:"candidate_count_counts"`
+	Requests        int            `json:"requests"`
+}
+
+type translationMeasurement struct {
+	Input                    testInput `json:"input"`
+	WarmupRequests           int       `json:"warmup_requests"`
+	MeasuredRequests         int       `json:"measured_requests"`
+	MedianMS                 float64   `json:"median_ms"`
+	P95MS                    float64   `json:"p95_ms"`
+	AllocatedBytesPerRequest float64   `json:"allocated_bytes_per_request"`
+	MallocsPerRequest        float64   `json:"mallocs_per_request"`
+	requestCounts
+}
+
+type measurementReport struct {
+	Metadata metadata                 `json:"metadata"`
+	Init     initMeasurement          `json:"initialization"`
+	Results  []translationMeasurement `json:"translations"`
+}
+
+type profileReport struct {
+	Metadata metadata        `json:"metadata"`
+	Init     initMeasurement `json:"initialization"`
+	Profile  struct {
+		WarmupPerInput int `json:"warmup_per_input"`
+		Requests       int `json:"requests"`
+		requestCounts
+	} `json:"profile"`
+	Files struct {
+		AllocationsStart string `json:"allocations_start"`
+		CPU              string `json:"cpu"`
+		AllocationsEnd   string `json:"allocations_end"`
+	} `json:"files"`
+}
+
+func main() {
+	if err := run(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+}
+
+func run() error {
+	var sourceSHA, outDir string
+	var profile bool
+	flag.StringVar(&sourceSHA, "sha", "", "source revision label for this measurement")
+	flag.StringVar(&outDir, "out", "", "directory for JSON and optional profile files")
+	flag.BoolVar(&profile, "profile", false, "write separate CPU and allocation profiles")
+	flag.Parse()
+	if sourceSHA == "" || outDir == "" || flag.NArg() != 0 {
+		return errors.New("usage: measure -sha <source-label> -out <directory> [-profile]")
+	}
+	if err := os.MkdirAll(outDir, 0o755); err != nil {
+		return fmt.Errorf("create output directory: %w", err)
+	}
+
+	runtime.GC()
+	var before, after runtime.MemStats
+	runtime.ReadMemStats(&before)
+	started := time.Now()
+	engine, err := matrix.NewRuntime()
+	if err != nil {
+		return fmt.Errorf("initialize production runtime: %w", err)
+	}
+	initMS := float64(time.Since(started).Nanoseconds()) / 1e6
+	runtime.GC()
+	runtime.ReadMemStats(&after)
+	init := initMeasurement{
+		RuntimeInitMS:            initMS,
+		AllocatedBytes:           after.TotalAlloc - before.TotalAlloc,
+		LiveHeapAfterInitGCBytes: after.HeapAlloc,
+	}
+	meta := metadata{
+		SourceSHA:  sourceSHA,
+		Go:         runtime.Version(),
+		OS:         runtime.GOOS,
+		Arch:       runtime.GOARCH,
+		NumCPU:     runtime.NumCPU(),
+		GOMAXPROCS: runtime.GOMAXPROCS(0),
+	}
+	ctx := context.Background()
+	if profile {
+		err = runProfiles(ctx, engine, outDir, meta, init)
+	} else {
+		err = runMeasurements(ctx, engine, outDir, meta, init)
+	}
+	runtime.KeepAlive(engine)
+	return err
+}
+
+func runMeasurements(ctx context.Context, eng *engine.Engine, outDir string, meta metadata, init initMeasurement) error {
+	report := measurementReport{Metadata: meta, Init: init, Results: make([]translationMeasurement, 0, len(inputs))}
+	for _, input := range inputs {
+		request := engine.Request{From: input.From, To: input.To, Text: input.Text}
+		for i := 0; i < warmupPerInput; i++ {
+			if _, err := eng.Translate(ctx, request); err != nil {
+				return fmt.Errorf("warmup %q: %w", input.Text, err)
+			}
+		}
+		var before, after runtime.MemStats
+		runtime.ReadMemStats(&before)
+		durations := make([]float64, measuredPerInput)
+		counts := requestCounts{Statuses: map[string]int{}, CandidateCounts: map[string]int{}, Requests: measuredPerInput}
+		for i := 0; i < measuredPerInput; i++ {
+			started := time.Now()
+			result, err := eng.Translate(ctx, request)
+			durations[i] = float64(time.Since(started).Nanoseconds()) / 1e6
+			if err != nil {
+				return fmt.Errorf("translate %q: %w", input.Text, err)
+			}
+			countResult(&counts, result)
+		}
+		runtime.ReadMemStats(&after)
+		sort.Float64s(durations)
+		report.Results = append(report.Results, translationMeasurement{
+			Input: input, WarmupRequests: warmupPerInput, MeasuredRequests: measuredPerInput,
+			MedianMS: durations[49], P95MS: durations[94],
+			AllocatedBytesPerRequest: float64(after.TotalAlloc-before.TotalAlloc) / measuredPerInput,
+			MallocsPerRequest:        float64(after.Mallocs-before.Mallocs) / measuredPerInput,
+			requestCounts:            counts,
+		})
+	}
+	return writeJSON(filepath.Join(outDir, "measurement.json"), report)
+}
+
+func runProfiles(ctx context.Context, eng *engine.Engine, outDir string, meta metadata, init initMeasurement) error {
+	for _, input := range inputs {
+		request := engine.Request{From: input.From, To: input.To, Text: input.Text}
+		for i := 0; i < warmupPerInput; i++ {
+			if _, err := eng.Translate(ctx, request); err != nil {
+				return fmt.Errorf("profile warmup %q: %w", input.Text, err)
+			}
+		}
+	}
+	runtime.GC()
+	startPath := filepath.Join(outDir, "allocs-start.pprof")
+	if err := writeAllocationProfile(startPath); err != nil {
+		return err
+	}
+	cpuPath := filepath.Join(outDir, "cpu.pprof")
+	cpuFile, err := os.Create(cpuPath)
+	if err != nil {
+		return fmt.Errorf("create CPU profile: %w", err)
+	}
+	if err := pprof.StartCPUProfile(cpuFile); err != nil {
+		_ = cpuFile.Close()
+		return fmt.Errorf("start CPU profile: %w", err)
+	}
+	counts := requestCounts{Statuses: map[string]int{}, CandidateCounts: map[string]int{}, Requests: profileRequests}
+	for i := 0; i < profileRequests; i++ {
+		input := inputs[i%len(inputs)]
+		result, translateErr := eng.Translate(ctx, engine.Request{From: input.From, To: input.To, Text: input.Text})
+		if translateErr != nil {
+			pprof.StopCPUProfile()
+			_ = cpuFile.Close()
+			return fmt.Errorf("profile translation %q: %w", input.Text, translateErr)
+		}
+		countResult(&counts, result)
+	}
+	pprof.StopCPUProfile()
+	if err := cpuFile.Close(); err != nil {
+		return fmt.Errorf("close CPU profile: %w", err)
+	}
+	runtime.GC()
+	endPath := filepath.Join(outDir, "allocs-end.pprof")
+	if err := writeAllocationProfile(endPath); err != nil {
+		return err
+	}
+	report := profileReport{Metadata: meta, Init: init}
+	report.Profile.WarmupPerInput = warmupPerInput
+	report.Profile.Requests = profileRequests
+	report.Profile.requestCounts = counts
+	report.Files.AllocationsStart = startPath
+	report.Files.CPU = cpuPath
+	report.Files.AllocationsEnd = endPath
+	return writeJSON(filepath.Join(outDir, "profile.json"), report)
+}
+
+func countResult(counts *requestCounts, result engine.TranslationResult) {
+	counts.Statuses[string(result.Status)]++
+	counts.CandidateCounts[fmt.Sprint(len(result.Candidates))]++
+}
+
+func writeAllocationProfile(path string) error {
+	file, err := os.Create(path)
+	if err != nil {
+		return fmt.Errorf("create allocation profile: %w", err)
+	}
+	profile := pprof.Lookup("allocs")
+	if profile == nil {
+		_ = file.Close()
+		return errors.New("allocation profile is unavailable")
+	}
+	if err := profile.WriteTo(file, 0); err != nil {
+		_ = file.Close()
+		return fmt.Errorf("write allocation profile: %w", err)
+	}
+	if err := file.Close(); err != nil {
+		return fmt.Errorf("close allocation profile: %w", err)
+	}
+	return nil
+}
+
+func writeJSON(path string, value any) error {
+	data, err := json.MarshalIndent(value, "", "  ")
+	if err != nil {
+		return fmt.Errorf("encode report: %w", err)
+	}
+	data = append(data, '\n')
+	if err := os.WriteFile(path, data, 0o644); err != nil {
+		return fmt.Errorf("write report: %w", err)
+	}
+	_, err = os.Stdout.Write(data)
+	if err != nil {
+		return fmt.Errorf("write report to stdout: %w", err)
+	}
+	return nil
+}

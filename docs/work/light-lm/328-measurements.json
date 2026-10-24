@@ -1,0 +1,787 @@
+{
+  "base_sha": "57e4882e79eb6596caed5126108fa272177e6982",
+  "after_sha": "e2173740f1bf930f5f37302f98d95b5972599b48",
+  "date": "2026-10-25",
+  "cpu": "Intel Core i7-11800H @2.30GHz",
+  "note": "Three separate processes per revision; identical probe and inputs, GOMAXPROCS16. Wall times are observations on a shared workstation, not a benchmark gate or energy measurement. Probe bookkeeping is included in allocation counters.",
+  "before": [
+    {
+      "metadata": {
+        "source_sha": "57e4882e79eb6596caed5126108fa272177e6982",
+        "go": "go1.27.0",
+        "os": "linux",
+        "arch": "amd64",
+        "num_cpu": 16,
+        "gomaxprocs": 16
+      },
+      "initialization": {
+        "runtime_init_ms": 1097.258897,
+        "allocated_bytes": 763303432,
+        "live_heap_after_init_gc_bytes": 18980040
+      },
+      "translations": [
+        {
+          "input": {
+            "from": "en",
+            "to": "pl",
+            "text": "The teacher sees the dog."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 2.148697,
+          "p95_ms": 4.621839,
+          "allocated_bytes_per_request": 3930119.44,
+          "mallocs_per_request": 16605.35,
+          "status_counts": {
+            "incomplete": 100
+          },
+          "candidate_count_counts": {
+            "1": 100
+          },
+          "requests": 100
+        },
+        {
+          "input": {
+            "from": "en",
+            "to": "pl",
+            "text": "The teacher reads the message."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 2.094227,
+          "p95_ms": 4.489301,
+          "allocated_bytes_per_request": 3849445.6,
+          "mallocs_per_request": 14653.9,
+          "status_counts": {
+            "incomplete": 100
+          },
+          "candidate_count_counts": {
+            "1": 100
+          },
+          "requests": 100
+        },
+        {
+          "input": {
+            "from": "pl",
+            "to": "en",
+            "text": "Nauczyciel nie widzi psa."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 5.453749,
+          "p95_ms": 7.710286,
+          "allocated_bytes_per_request": 6094019.84,
+          "mallocs_per_request": 47066.04,
+          "status_counts": {
+            "ambiguous": 100
+          },
+          "candidate_count_counts": {
+            "4": 100
+          },
+          "requests": 100
+        },
+        {
+          "input": {
+            "from": "pl",
+            "to": "en",
+            "text": "Czarny kot widzi psa."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 6.921065,
+          "p95_ms": 9.436176,
+          "allocated_bytes_per_request": 7046479.92,
+          "mallocs_per_request": 60889.72,
+          "status_counts": {
+            "ambiguous": 100
+          },
+          "candidate_count_counts": {
+            "4": 100
+          },
+          "requests": 100
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "source_sha": "57e4882e79eb6596caed5126108fa272177e6982",
+        "go": "go1.27.0",
+        "os": "linux",
+        "arch": "amd64",
+        "num_cpu": 16,
+        "gomaxprocs": 16
+      },
+      "initialization": {
+        "runtime_init_ms": 1056.233147,
+        "allocated_bytes": 763311728,
+        "live_heap_after_init_gc_bytes": 18988352
+      },
+      "translations": [
+        {
+          "input": {
+            "from": "en",
+            "to": "pl",
+            "text": "The teacher sees the dog."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 2.140815,
+          "p95_ms": 4.693001,
+          "allocated_bytes_per_request": 3930308.32,
+          "mallocs_per_request": 16605.86,
+          "status_counts": {
+            "incomplete": 100
+          },
+          "candidate_count_counts": {
+            "1": 100
+          },
+          "requests": 100
+        },
+        {
+          "input": {
+            "from": "en",
+            "to": "pl",
+            "text": "The teacher reads the message."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 2.113109,
+          "p95_ms": 4.30758,
+          "allocated_bytes_per_request": 3849771.6,
+          "mallocs_per_request": 14653.94,
+          "status_counts": {
+            "incomplete": 100
+          },
+          "candidate_count_counts": {
+            "1": 100
+          },
+          "requests": 100
+        },
+        {
+          "input": {
+            "from": "pl",
+            "to": "en",
+            "text": "Nauczyciel nie widzi psa."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 5.464505,
+          "p95_ms": 7.749784,
+          "allocated_bytes_per_request": 6095806.72,
+          "mallocs_per_request": 47068.68,
+          "status_counts": {
+            "ambiguous": 100
+          },
+          "candidate_count_counts": {
+            "4": 100
+          },
+          "requests": 100
+        },
+        {
+          "input": {
+            "from": "pl",
+            "to": "en",
+            "text": "Czarny kot widzi psa."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 6.977287,
+          "p95_ms": 9.448593,
+          "allocated_bytes_per_request": 7046112.8,
+          "mallocs_per_request": 60889.85,
+          "status_counts": {
+            "ambiguous": 100
+          },
+          "candidate_count_counts": {
+            "4": 100
+          },
+          "requests": 100
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "source_sha": "57e4882e79eb6596caed5126108fa272177e6982",
+        "go": "go1.27.0",
+        "os": "linux",
+        "arch": "amd64",
+        "num_cpu": 16,
+        "gomaxprocs": 16
+      },
+      "initialization": {
+        "runtime_init_ms": 1112.011442,
+        "allocated_bytes": 762124488,
+        "live_heap_after_init_gc_bytes": 18980016
+      },
+      "translations": [
+        {
+          "input": {
+            "from": "en",
+            "to": "pl",
+            "text": "The teacher sees the dog."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 2.23946,
+          "p95_ms": 4.585802,
+          "allocated_bytes_per_request": 3930466.32,
+          "mallocs_per_request": 16606.36,
+          "status_counts": {
+            "incomplete": 100
+          },
+          "candidate_count_counts": {
+            "1": 100
+          },
+          "requests": 100
+        },
+        {
+          "input": {
+            "from": "en",
+            "to": "pl",
+            "text": "The teacher reads the message."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 2.091097,
+          "p95_ms": 4.17623,
+          "allocated_bytes_per_request": 3849967.84,
+          "mallocs_per_request": 14654.89,
+          "status_counts": {
+            "incomplete": 100
+          },
+          "candidate_count_counts": {
+            "1": 100
+          },
+          "requests": 100
+        },
+        {
+          "input": {
+            "from": "pl",
+            "to": "en",
+            "text": "Nauczyciel nie widzi psa."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 5.108338,
+          "p95_ms": 7.322376,
+          "allocated_bytes_per_request": 6094889.92,
+          "mallocs_per_request": 47067.61,
+          "status_counts": {
+            "ambiguous": 100
+          },
+          "candidate_count_counts": {
+            "4": 100
+          },
+          "requests": 100
+        },
+        {
+          "input": {
+            "from": "pl",
+            "to": "en",
+            "text": "Czarny kot widzi psa."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 6.647869,
+          "p95_ms": 8.923643,
+          "allocated_bytes_per_request": 7046773.12,
+          "mallocs_per_request": 60889.37,
+          "status_counts": {
+            "ambiguous": 100
+          },
+          "candidate_count_counts": {
+            "4": 100
+          },
+          "requests": 100
+        }
+      ]
+    }
+  ],
+  "after": [
+    {
+      "metadata": {
+        "source_sha": "e2173740f1bf930f5f37302f98d95b5972599b48",
+        "go": "go1.27.0",
+        "os": "linux",
+        "arch": "amd64",
+        "num_cpu": 16,
+        "gomaxprocs": 16
+      },
+      "initialization": {
+        "runtime_init_ms": 1360.652815,
+        "allocated_bytes": 763396440,
+        "live_heap_after_init_gc_bytes": 18986120
+      },
+      "translations": [
+        {
+          "input": {
+            "from": "en",
+            "to": "pl",
+            "text": "The teacher sees the dog."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 1.05739,
+          "p95_ms": 2.519029,
+          "allocated_bytes_per_request": 799354.56,
+          "mallocs_per_request": 10489.61,
+          "status_counts": {
+            "incomplete": 100
+          },
+          "candidate_count_counts": {
+            "1": 100
+          },
+          "requests": 100
+        },
+        {
+          "input": {
+            "from": "en",
+            "to": "pl",
+            "text": "The teacher reads the message."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 0.866293,
+          "p95_ms": 1.439646,
+          "allocated_bytes_per_request": 718542.72,
+          "mallocs_per_request": 8537.81,
+          "status_counts": {
+            "incomplete": 100
+          },
+          "candidate_count_counts": {
+            "1": 100
+          },
+          "requests": 100
+        },
+        {
+          "input": {
+            "from": "pl",
+            "to": "en",
+            "text": "Nauczyciel nie widzi psa."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 3.872168,
+          "p95_ms": 6.135691,
+          "allocated_bytes_per_request": 2961300.56,
+          "mallocs_per_request": 40948.5,
+          "status_counts": {
+            "ambiguous": 100
+          },
+          "candidate_count_counts": {
+            "4": 100
+          },
+          "requests": 100
+        },
+        {
+          "input": {
+            "from": "pl",
+            "to": "en",
+            "text": "Czarny kot widzi psa."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 5.15887,
+          "p95_ms": 7.552479,
+          "allocated_bytes_per_request": 3917760.24,
+          "mallocs_per_request": 54879.62,
+          "status_counts": {
+            "ambiguous": 100
+          },
+          "candidate_count_counts": {
+            "4": 100
+          },
+          "requests": 100
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "source_sha": "e2173740f1bf930f5f37302f98d95b5972599b48",
+        "go": "go1.27.0",
+        "os": "linux",
+        "arch": "amd64",
+        "num_cpu": 16,
+        "gomaxprocs": 16
+      },
+      "initialization": {
+        "runtime_init_ms": 1092.652637,
+        "allocated_bytes": 763339344,
+        "live_heap_after_init_gc_bytes": 18984720
+      },
+      "translations": [
+        {
+          "input": {
+            "from": "en",
+            "to": "pl",
+            "text": "The teacher sees the dog."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 1.00553,
+          "p95_ms": 1.951633,
+          "allocated_bytes_per_request": 799793.2,
+          "mallocs_per_request": 10489.99,
+          "status_counts": {
+            "incomplete": 100
+          },
+          "candidate_count_counts": {
+            "1": 100
+          },
+          "requests": 100
+        },
+        {
+          "input": {
+            "from": "en",
+            "to": "pl",
+            "text": "The teacher reads the message."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 0.871828,
+          "p95_ms": 1.818103,
+          "allocated_bytes_per_request": 718794.64,
+          "mallocs_per_request": 8537.74,
+          "status_counts": {
+            "incomplete": 100
+          },
+          "candidate_count_counts": {
+            "1": 100
+          },
+          "requests": 100
+        },
+        {
+          "input": {
+            "from": "pl",
+            "to": "en",
+            "text": "Nauczyciel nie widzi psa."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 3.986397,
+          "p95_ms": 6.063431,
+          "allocated_bytes_per_request": 2955985.6,
+          "mallocs_per_request": 40947.98,
+          "status_counts": {
+            "ambiguous": 100
+          },
+          "candidate_count_counts": {
+            "4": 100
+          },
+          "requests": 100
+        },
+        {
+          "input": {
+            "from": "pl",
+            "to": "en",
+            "text": "Czarny kot widzi psa."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 5.174662,
+          "p95_ms": 7.386793,
+          "allocated_bytes_per_request": 3917792.32,
+          "mallocs_per_request": 54879.65,
+          "status_counts": {
+            "ambiguous": 100
+          },
+          "candidate_count_counts": {
+            "4": 100
+          },
+          "requests": 100
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "source_sha": "e2173740f1bf930f5f37302f98d95b5972599b48",
+        "go": "go1.27.0",
+        "os": "linux",
+        "arch": "amd64",
+        "num_cpu": 16,
+        "gomaxprocs": 16
+      },
+      "initialization": {
+        "runtime_init_ms": 1073.564269,
+        "allocated_bytes": 763363568,
+        "live_heap_after_init_gc_bytes": 18983304
+      },
+      "translations": [
+        {
+          "input": {
+            "from": "en",
+            "to": "pl",
+            "text": "The teacher sees the dog."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 1.009715,
+          "p95_ms": 1.920222,
+          "allocated_bytes_per_request": 799561.6,
+          "mallocs_per_request": 10489.88,
+          "status_counts": {
+            "incomplete": 100
+          },
+          "candidate_count_counts": {
+            "1": 100
+          },
+          "requests": 100
+        },
+        {
+          "input": {
+            "from": "en",
+            "to": "pl",
+            "text": "The teacher reads the message."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 0.855417,
+          "p95_ms": 1.306809,
+          "allocated_bytes_per_request": 718644.4,
+          "mallocs_per_request": 8537.68,
+          "status_counts": {
+            "incomplete": 100
+          },
+          "candidate_count_counts": {
+            "1": 100
+          },
+          "requests": 100
+        },
+        {
+          "input": {
+            "from": "pl",
+            "to": "en",
+            "text": "Nauczyciel nie widzi psa."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 3.945652,
+          "p95_ms": 6.893016,
+          "allocated_bytes_per_request": 2959935.12,
+          "mallocs_per_request": 40947.77,
+          "status_counts": {
+            "ambiguous": 100
+          },
+          "candidate_count_counts": {
+            "4": 100
+          },
+          "requests": 100
+        },
+        {
+          "input": {
+            "from": "pl",
+            "to": "en",
+            "text": "Czarny kot widzi psa."
+          },
+          "warmup_requests": 10,
+          "measured_requests": 100,
+          "median_ms": 5.199083,
+          "p95_ms": 7.882919,
+          "allocated_bytes_per_request": 3916480.56,
+          "mallocs_per_request": 54879.92,
+          "status_counts": {
+            "ambiguous": 100
+          },
+          "candidate_count_counts": {
+            "4": 100
+          },
+          "requests": 100
+        }
+      ]
+    }
+  ],
+  "cli_fresh_process_before": [
+    {
+      "command": [
+        "/tmp/golingua-light-f3",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The teacher sees the dog.",
+        "--runtime-config",
+        "/tmp/golingua-light-f3-runtime.json",
+        "--json"
+      ],
+      "milliseconds": 890.5424060067162,
+      "exit": 7,
+      "status": "incomplete",
+      "texts": [
+        "Nauczyciel widzi psa."
+      ]
+    },
+    {
+      "command": [
+        "/tmp/golingua-light-f3",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The teacher sees the dog.",
+        "--runtime-config",
+        "/tmp/golingua-light-f3-runtime.json",
+        "--json"
+      ],
+      "milliseconds": 877.8504799120128,
+      "exit": 7,
+      "status": "incomplete",
+      "texts": [
+        "Nauczyciel widzi psa."
+      ]
+    },
+    {
+      "command": [
+        "/tmp/golingua-light-f3",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The teacher sees the dog.",
+        "--runtime-config",
+        "/tmp/golingua-light-f3-runtime.json",
+        "--json"
+      ],
+      "milliseconds": 907.4351349845529,
+      "exit": 7,
+      "status": "incomplete",
+      "texts": [
+        "Nauczyciel widzi psa."
+      ]
+    }
+  ],
+  "cli_fresh_process_after": [
+    {
+      "command": [
+        "/tmp/golingua-light-f4",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The teacher sees the dog.",
+        "--runtime-config",
+        "/tmp/golingua-light-f4-runtime.json",
+        "--json"
+      ],
+      "milliseconds": 930.1850988995284,
+      "exit": 7,
+      "status": "incomplete",
+      "texts": [
+        "Nauczyciel widzi psa."
+      ]
+    },
+    {
+      "command": [
+        "/tmp/golingua-light-f4",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The teacher sees the dog.",
+        "--runtime-config",
+        "/tmp/golingua-light-f4-runtime.json",
+        "--json"
+      ],
+      "milliseconds": 918.4117210097611,
+      "exit": 7,
+      "status": "incomplete",
+      "texts": [
+        "Nauczyciel widzi psa."
+      ]
+    },
+    {
+      "command": [
+        "/tmp/golingua-light-f4",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The teacher sees the dog.",
+        "--runtime-config",
+        "/tmp/golingua-light-f4-runtime.json",
+        "--json"
+      ],
+      "milliseconds": 965.9732999280095,
+      "exit": 7,
+      "status": "incomplete",
+      "texts": [
+        "Nauczyciel widzi psa."
+      ]
+    }
+  ],
+  "profile_before": {
+    "metadata": {
+      "source_sha": "57e4882e79eb6596caed5126108fa272177e6982",
+      "go": "go1.27.0",
+      "os": "linux",
+      "arch": "amd64",
+      "num_cpu": 16,
+      "gomaxprocs": 16
+    },
+    "initialization": {
+      "runtime_init_ms": 1008.359969,
+      "allocated_bytes": 763392584,
+      "live_heap_after_init_gc_bytes": 18987088
+    },
+    "profile": {
+      "warmup_per_input": 10,
+      "requests": 1000,
+      "status_counts": {
+        "ambiguous": 500,
+        "incomplete": 500
+      },
+      "candidate_count_counts": {
+        "1": 500,
+        "4": 500
+      }
+    },
+    "files": {
+      "allocations_start": "/tmp/light-f4-before-profile/allocs-start.pprof",
+      "cpu": "/tmp/light-f4-before-profile/cpu.pprof",
+      "allocations_end": "/tmp/light-f4-before-profile/allocs-end.pprof"
+    }
+  },
+  "profile_after": {
+    "metadata": {
+      "source_sha": "e2173740f1bf930f5f37302f98d95b5972599b48",
+      "go": "go1.27.0",
+      "os": "linux",
+      "arch": "amd64",
+      "num_cpu": 16,
+      "gomaxprocs": 16
+    },
+    "initialization": {
+      "runtime_init_ms": 1070.197466,
+      "allocated_bytes": 762124720,
+      "live_heap_after_init_gc_bytes": 18983056
+    },
+    "profile": {
+      "warmup_per_input": 10,
+      "requests": 1000,
+      "status_counts": {
+        "ambiguous": 500,
+        "incomplete": 500
+      },
+      "candidate_count_counts": {
+        "1": 500,
+        "4": 500
+      }
+    },
+    "files": {
+      "allocations_start": "/tmp/light-f4-after-profile/allocs-start.pprof",
+      "cpu": "/tmp/light-f4-after-profile/cpu.pprof",
+      "allocations_end": "/tmp/light-f4-after-profile/allocs-end.pprof"
+    }
+  }
+}

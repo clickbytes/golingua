@@ -1,0 +1,233 @@
+File: golingua-light-f4-measure-after
+Build ID: f5e0edcd4fac62aad670d01a59388e1370a48586
+Type: cpu
+Time: 2026-10-25 01:10:27 CEST
+Duration: 3.02s, Total samples = 4.45s (147.53%)
+Showing nodes accounting for 3.44s, 77.30% of 4.45s total
+Dropped 224 nodes (cum <= 0.02s)
+      flat  flat%   sum%        cum   cum%
+         0     0%     0%      3.10s 69.66%  github.com/clickbytes/golingua/internal/engine.(*Engine).Translate
+         0     0%     0%      3.10s 69.66%  main.main
+         0     0%     0%      3.10s 69.66%  main.run
+         0     0%     0%      3.10s 69.66%  main.runProfiles
+         0     0%     0%      3.10s 69.66%  runtime.main
+     0.01s  0.22%  0.22%      2.49s 55.96%  github.com/clickbytes/golingua/internal/runtime.(*TargetPipeline).Realize
+     0.03s  0.67%   0.9%      1.62s 36.40%  github.com/clickbytes/golingua/internal/realizer.SelectTargets
+         0     0%   0.9%      1.31s 29.44%  runtime.systemstack
+         0     0%   0.9%      1.15s 25.84%  runtime.gcBgMarkWorker
+         0     0%   0.9%      1.13s 25.39%  runtime.gcBgMarkWorker.func2
+         0     0%   0.9%      1.13s 25.39%  runtime.gcDrain
+     0.02s  0.45%  1.35%      1.06s 23.82%  github.com/clickbytes/golingua/internal/ids.Symbol.Canonical
+         0     0%  1.35%      1.06s 23.82%  github.com/clickbytes/golingua/internal/ids.canonicalString (inline)
+     0.03s  0.67%  2.02%      0.97s 21.80%  github.com/clickbytes/golingua/internal/ids.NewSymbol
+     0.03s  0.67%  2.70%      0.83s 18.65%  github.com/clickbytes/golingua/internal/ids.canonicalName
+         0     0%  2.70%      0.77s 17.30%  github.com/clickbytes/golingua/internal/ids.ConstructionID.String (inline)
+         0     0%  2.70%      0.75s 16.85%  runtime.gcDrainMarkWorkerDedicated (inline)
+     0.45s 10.11% 12.81%      0.68s 15.28%  runtime.tryDeferToSpanScan
+     0.06s  1.35% 14.16%      0.64s 14.38%  runtime.mallocgc
+     0.01s  0.22% 14.38%      0.57s 12.81%  github.com/clickbytes/golingua/internal/valency.ValencyFrame.Validate
+     0.13s  2.92% 17.30%      0.57s 12.81%  runtime.scanObject
+     0.04s   0.9% 18.20%      0.54s 12.13%  runtime.scanSpan
+         0     0% 18.20%      0.46s 10.34%  github.com/clickbytes/golingua/internal/construction.BindFrame
+     0.02s  0.45% 18.65%      0.40s  8.99%  github.com/clickbytes/golingua/internal/construction.Compose
+         0     0% 18.65%      0.39s  8.76%  github.com/clickbytes/golingua/internal/construction.ValidateVariantForFrame
+         0     0% 18.65%      0.38s  8.54%  runtime.gcDrainMarkWorkerIdle (inline)
+         0     0% 18.65%      0.34s  7.64%  github.com/clickbytes/golingua/internal/valency.ValidateFrame
+         0     0% 18.65%      0.33s  7.42%  github.com/clickbytes/golingua/internal/realizer.Execute
+     0.02s  0.45% 19.10%      0.32s  7.19%  github.com/clickbytes/golingua/internal/ids.parseTyped
+         0     0% 19.10%      0.32s  7.19%  sort.Slice
+     0.05s  1.12% 20.22%      0.32s  7.19%  strings.Join
+         0     0% 20.22%      0.31s  6.97%  sort.pdqsort_func
+     0.06s  1.35% 21.57%      0.31s  6.97%  strings.genSplit
+     0.02s  0.45% 22.02%      0.30s  6.74%  github.com/clickbytes/golingua/internal/meaning.ValidateStructure
+         0     0% 22.02%      0.30s  6.74%  github.com/clickbytes/golingua/internal/runtime.(*SourcePipeline).Analyze
+     0.01s  0.22% 22.25%      0.30s  6.74%  runtime.concatstring3
+     0.03s  0.67% 22.92%      0.29s  6.52%  github.com/clickbytes/golingua/internal/ids.Parse
+         0     0% 22.92%      0.29s  6.52%  github.com/clickbytes/golingua/internal/language.(*Registry).Language
+         0     0% 22.92%      0.29s  6.52%  github.com/clickbytes/golingua/internal/language.cloneBindings
+         0     0% 22.92%      0.29s  6.52%  github.com/clickbytes/golingua/internal/language.cloneLanguage
+         0     0% 22.92%      0.29s  6.52%  github.com/clickbytes/golingua/internal/valency.validConstructionID
+     0.14s  3.15% 26.07%      0.29s  6.52%  runtime.concatstrings
+     0.01s  0.22% 26.29%      0.27s  6.07%  strings.Split (inline)
+         0     0% 26.29%      0.26s  5.84%  github.com/clickbytes/golingua/internal/language.cloneBindings.func1
+     0.01s  0.22% 26.52%      0.24s  5.39%  github.com/clickbytes/golingua/internal/construction.ConstructionFamily.Validate
+         0     0% 26.52%      0.21s  4.72%  github.com/clickbytes/golingua/internal/ids.SenseID.String (inline)
+     0.01s  0.22% 26.74%      0.21s  4.72%  github.com/clickbytes/golingua/internal/meaning.ValidateMeaning
+         0     0% 26.74%      0.21s  4.72%  github.com/clickbytes/golingua/internal/realizer.BuildPlan
+         0     0% 26.74%      0.21s  4.72%  github.com/clickbytes/golingua/internal/semantic.Disambiguate
+     0.01s  0.22% 26.97%      0.21s  4.72%  github.com/clickbytes/golingua/languages/en.englishDeterminerCandidatePolicy.KeepTargetCandidate
+     0.01s  0.22% 27.19%      0.21s  4.72%  runtime.makeslice
+         0     0% 27.19%      0.20s  4.49%  encoding/json.Marshal (inline)
+         0     0% 27.19%      0.20s  4.49%  encoding/json/v2.Marshal
+     0.08s  1.80% 28.99%      0.20s  4.49%  github.com/clickbytes/golingua/internal/ids.canonicalSegment
+     0.06s  1.35% 30.34%      0.19s  4.27%  encoding/json/v2.makeStructArshaler.func2
+         0     0% 30.34%      0.19s  4.27%  encoding/json/v2.marshalEncode
+         0     0% 30.34%      0.19s  4.27%  github.com/clickbytes/golingua/internal/construction.CompileVariant
+         0     0% 30.34%      0.19s  4.27%  strings.(*Builder).Grow
+         0     0% 30.34%      0.18s  4.04%  github.com/clickbytes/golingua/internal/morph.Generate
+     0.01s  0.22% 30.56%      0.18s  4.04%  github.com/clickbytes/golingua/internal/semantic.Compose
+         0     0% 30.56%      0.18s  4.04%  github.com/clickbytes/golingua/internal/semantic.EvidenceTrace.ValidateWithBudget
+     0.03s  0.67% 31.24%      0.18s  4.04%  strings.(*Builder).grow
+         0     0% 31.24%      0.17s  3.82%  github.com/clickbytes/golingua/internal/provenance.SourceRef.Validate
+         0     0% 31.24%      0.16s  3.60%  github.com/clickbytes/golingua/internal/runtime.targetBindingEvidence
+         0     0% 31.24%      0.15s  3.37%  github.com/clickbytes/golingua/internal/construction.validFamilyID
+     0.03s  0.67% 31.91%      0.15s  3.37%  internal/bytealg.MakeNoZero
+     0.01s  0.22% 32.13%      0.15s  3.37%  sort.insertionSort_func
+         0     0% 32.13%      0.14s  3.15%  github.com/clickbytes/golingua/internal/semantic.validateEvidenceRecord
+     0.05s  1.12% 33.26%      0.14s  3.15%  runtime.mapaccess2_faststr
+         0     0% 33.26%      0.14s  3.15%  sort.partialInsertionSort_func
+         0     0% 33.26%      0.13s  2.92%  github.com/clickbytes/golingua/internal/ids.ParseConceptID (inline)
+     0.01s  0.22% 33.48%      0.13s  2.92%  github.com/clickbytes/golingua/internal/meaning.validateNodeShape
+         0     0% 33.48%      0.13s  2.92%  github.com/clickbytes/golingua/internal/realizer.realizationPlanID
+         0     0% 33.48%      0.12s  2.70%  encoding/json/v2.makeSliceArshaler.func2
+     0.01s  0.22% 33.71%      0.12s  2.70%  fmt.Sprintf
+         0     0% 33.71%      0.12s  2.70%  github.com/clickbytes/golingua/internal/ids.ParseConstructionID (inline)
+         0     0% 33.71%      0.12s  2.70%  internal/runtime/gc/scan.ScanSpanPacked (inline)
+         0     0% 33.71%      0.12s  2.70%  internal/runtime/gc/scan.ScanSpanPackedAVX512
+     0.12s  2.70% 36.40%      0.12s  2.70%  internal/runtime/gc/scan.scanSpanPackedAVX512
+         0     0% 36.40%      0.12s  2.70%  runtime.bgsweep
+     0.05s  1.12% 37.53%      0.12s  2.70%  runtime.mapassign_faststr
+     0.12s  2.70% 40.22%      0.12s  2.70%  runtime.memmove
+     0.12s  2.70% 42.92%      0.12s  2.70%  runtime.spanClass.sizeclass (inline)
+     0.01s  0.22% 43.15%      0.12s  2.70%  runtime.sweepone
+     0.06s  1.35% 44.49%      0.12s  2.70%  strings.(*Builder).WriteString (inline)
+     0.12s  2.70% 47.19%      0.12s  2.70%  strings.ToLower
+     0.01s  0.22% 47.42%      0.11s  2.47%  github.com/clickbytes/golingua/internal/ids.canonicalNamespace
+         0     0% 47.42%      0.11s  2.47%  github.com/clickbytes/golingua/internal/provenance.validateURI
+         0     0% 47.42%      0.11s  2.47%  github.com/clickbytes/golingua/internal/semantic.composeAlternative
+         0     0% 47.42%      0.11s  2.47%  runtime.newobject (partial-inline)
+     0.01s  0.22% 47.64%      0.11s  2.47%  runtime.rawstringtmp
+     0.11s  2.47% 50.11%      0.11s  2.47%  unicode/utf8.ValidString
+     0.01s  0.22% 50.34%      0.10s  2.25%  github.com/clickbytes/golingua/internal/construction.planID
+         0     0% 50.34%      0.10s  2.25%  github.com/clickbytes/golingua/internal/morph.ResolveStem
+         0     0% 50.34%      0.10s  2.25%  github.com/clickbytes/golingua/internal/morph.resolveGenerationStems
+         0     0% 50.34%      0.10s  2.25%  github.com/clickbytes/golingua/internal/runtime.MorphologyExecutionBuilder.Build
+         0     0% 50.34%      0.10s  2.25%  github.com/clickbytes/golingua/internal/valency.validSenseID
+     0.01s  0.22% 50.56%      0.10s  2.25%  runtime.growslice
+     0.03s  0.67% 51.24%      0.10s  2.25%  runtime.mallocgcSmallScanNoHeader
+     0.07s  1.57% 52.81%      0.10s  2.25%  runtime.mallocgcSmallScanNoHeaderSC4
+     0.01s  0.22% 53.03%      0.10s  2.25%  runtime.rawstring (inline)
+         0     0% 53.03%      0.09s  2.02%  net/url.Parse
+     0.02s  0.45% 53.48%      0.09s  2.02%  runtime.(*sweepLocked).sweep
+     0.04s   0.9% 54.38%      0.09s  2.02%  runtime.findObject
+     0.07s  1.57% 55.96%      0.09s  2.02%  runtime.mallocgcSmallNoScanSC3
+     0.06s  1.35% 57.30%      0.08s  1.80%  fmt.(*pp).doPrintf
+     0.08s  1.80% 59.10%      0.08s  1.80%  internal/runtime/maps.memHashAES
+         0     0% 59.10%      0.08s  1.80%  net/url.parse
+         0     0% 59.10%      0.08s  1.80%  runtime.(*mcache).nextFree
+         0     0% 59.10%      0.07s  1.57%  github.com/clickbytes/golingua/internal/construction.(*Registry).ByID
+         0     0% 59.10%      0.07s  1.57%  github.com/clickbytes/golingua/internal/construction.Variant.Validate
+     0.03s  0.67% 59.78%      0.07s  1.57%  github.com/clickbytes/golingua/internal/construction.cloneFamily
+     0.01s  0.22% 60.00%      0.07s  1.57%  github.com/clickbytes/golingua/internal/engine.TranslationResult.Validate
+         0     0% 60.00%      0.07s  1.57%  github.com/clickbytes/golingua/internal/engine.finalizeResult
+         0     0% 60.00%      0.07s  1.57%  github.com/clickbytes/golingua/internal/realizer.validateTarget
+         0     0% 60.00%      0.07s  1.57%  github.com/clickbytes/golingua/internal/semantic.buildMeaningCandidate
+     0.01s  0.22% 60.22%      0.07s  1.57%  github.com/clickbytes/golingua/languages/en.englishSentenceFeatures.Features
+     0.03s  0.67% 60.90%      0.07s  1.57%  internal/runtime/maps.(*Map).getWithoutKeySmallFastStr
+         0     0% 60.90%      0.07s  1.57%  internal/runtime/maps.(*Map).putSlotSmall
+         0     0% 60.90%      0.07s  1.57%  runtime.(*mcache).refill
+     0.06s  1.35% 62.25%      0.07s  1.57%  runtime.mallocgcSmallScanNoHeaderSC5
+         0     0% 62.25%      0.07s  1.57%  runtime.mapassign
+     0.03s  0.67% 62.92%      0.07s  1.57%  runtime.scanObjectsSmall
+     0.02s  0.45% 63.37%      0.06s  1.35%  gcWriteBarrier
+         0     0% 63.37%      0.06s  1.35%  github.com/clickbytes/golingua/internal/construction.validateSlot
+         0     0% 63.37%      0.06s  1.35%  github.com/clickbytes/golingua/internal/lexicon.SemanticBinding.TransferAuthorized
+         0     0% 63.37%      0.06s  1.35%  github.com/clickbytes/golingua/internal/meaning.validateAcyclic
+     0.01s  0.22% 63.60%      0.06s  1.35%  github.com/clickbytes/golingua/internal/provenance.validMetadata
+         0     0% 63.60%      0.06s  1.35%  internal/runtime/maps.newobject
+         0     0% 63.60%      0.06s  1.35%  runtime.findRunnable
+     0.05s  1.12% 64.72%      0.06s  1.35%  runtime.heapArenaOf (inline)
+         0     0% 64.72%      0.06s  1.35%  runtime.mcall
+         0     0% 64.72%      0.06s  1.35%  runtime.park_m
+         0     0% 64.72%      0.06s  1.35%  runtime.schedule
+         0     0% 64.72%      0.05s  1.12%  github.com/clickbytes/golingua/internal/construction.writePlanPart
+         0     0% 64.72%      0.05s  1.12%  github.com/clickbytes/golingua/internal/core.(*ConceptGraph).Lookup
+         0     0% 64.72%      0.05s  1.12%  github.com/clickbytes/golingua/internal/ids.ConceptID.String (inline)
+         0     0% 64.72%      0.05s  1.12%  github.com/clickbytes/golingua/internal/meaning.CanonicalEqual
+         0     0% 64.72%      0.05s  1.12%  github.com/clickbytes/golingua/internal/meaning.CanonicalJSON
+         0     0% 64.72%      0.05s  1.12%  github.com/clickbytes/golingua/internal/semantic.finalizeComposition
+         0     0% 64.72%      0.05s  1.12%  github.com/clickbytes/golingua/languages/en.englishMultiplicityEvidenceConsistent
+         0     0% 64.72%      0.05s  1.12%  github.com/clickbytes/golingua/languages/en.englishPredicateEvidenceConsistent
+     0.01s  0.22% 64.94%      0.05s  1.12%  internal/runtime/maps.(*Map).putSlotSmallFastStr
+     0.02s  0.45% 65.39%      0.05s  1.12%  internal/stringslite.Index
+         0     0% 65.39%      0.05s  1.12%  runtime.mapaccess1_faststr
+         0     0% 65.39%      0.05s  1.12%  runtime.wbBufFlush
+         0     0% 65.39%      0.05s  1.12%  runtime.wbBufFlush.func1
+         0     0% 65.39%      0.05s  1.12%  runtime.wbBufFlush1
+         0     0% 65.39%      0.05s  1.12%  strings.Index (inline)
+         0     0% 65.39%      0.05s  1.12%  strings.SplitN (inline)
+     0.05s  1.12% 66.52%      0.05s  1.12%  strings.TrimSpace
+         0     0% 66.52%      0.04s   0.9%  encoding/json/v2.makeStringArshaler.func1
+     0.02s  0.45% 66.97%      0.04s   0.9%  github.com/clickbytes/golingua/internal/construction.validToken
+         0     0% 66.97%      0.04s   0.9%  github.com/clickbytes/golingua/internal/ids.ParseLexemeID (inline)
+         0     0% 66.97%      0.04s   0.9%  github.com/clickbytes/golingua/internal/morph.validLexemeID
+         0     0% 66.97%      0.04s   0.9%  github.com/clickbytes/golingua/internal/runtime.SourceFeatures
+         0     0% 66.97%      0.04s   0.9%  github.com/clickbytes/golingua/internal/semantic.evidenceRecordStrings
+         0     0% 66.97%      0.04s   0.9%  github.com/clickbytes/golingua/internal/valency.validateBindingStructure
+         0     0% 66.97%      0.04s   0.9%  github.com/clickbytes/golingua/languages/en.englishAttributedSeeingContextsValid
+     0.01s  0.22% 67.19%      0.04s   0.9%  github.com/clickbytes/golingua/languages/en.englishAttributedSeeingShape
+         0     0% 67.19%      0.04s   0.9%  github.com/clickbytes/golingua/languages/en.englishNegativeIdentificationState
+         0     0% 67.19%      0.04s   0.9%  internal/chacha8rand.(*State).Refill
+     0.04s   0.9% 68.09%      0.04s   0.9%  internal/chacha8rand.block
+     0.02s  0.45% 68.54%      0.04s   0.9%  internal/runtime/maps.NewMap
+         0     0% 68.54%      0.04s   0.9%  runtime.(*mcentral).cacheSpan
+         0     0% 68.54%      0.04s   0.9%  runtime.(*mcentral).grow
+         0     0% 68.54%      0.04s   0.9%  runtime.(*mheap).alloc
+         0     0% 68.54%      0.04s   0.9%  runtime.(*mheap).alloc.func1
+         0     0% 68.54%      0.04s   0.9%  runtime.(*mheap).allocSpan
+     0.04s   0.9% 69.44%      0.04s   0.9%  runtime.futex
+         0     0% 69.44%      0.04s   0.9%  runtime.futexsleep
+         0     0% 69.44%      0.04s   0.9%  runtime.mPark (inline)
+         0     0% 69.44%      0.04s   0.9%  runtime.makemap
+     0.01s  0.22% 69.66%      0.04s   0.9%  runtime.mapaccess2
+     0.04s   0.9% 70.56%      0.04s   0.9%  runtime.memclrNoHeapPointers
+         0     0% 70.56%      0.04s   0.9%  runtime.notesleep
+         0     0% 70.56%      0.04s   0.9%  runtime.rand
+     0.04s   0.9% 71.46%      0.04s   0.9%  runtime.spanOf (inline)
+         0     0% 71.46%      0.04s   0.9%  runtime.stopm
+     0.04s   0.9% 72.36%      0.04s   0.9%  unicode.IsControl (inline)
+     0.02s  0.45% 72.81%      0.03s  0.67%  encoding/json/internal/jsonwire.AppendQuote
+         0     0% 72.81%      0.03s  0.67%  fmt.newPrinter
+     0.01s  0.22% 73.03%      0.03s  0.67%  github.com/clickbytes/golingua/internal/analyzer.BuildLattice
+         0     0% 73.03%      0.03s  0.67%  github.com/clickbytes/golingua/internal/construction.(*Registry).FamilyFor
+         0     0% 73.03%      0.03s  0.67%  github.com/clickbytes/golingua/internal/construction.ParseVariantID
+         0     0% 73.03%      0.03s  0.67%  github.com/clickbytes/golingua/internal/construction.cloneRecord (inline)
+         0     0% 73.03%      0.03s  0.67%  github.com/clickbytes/golingua/internal/construction.validVariantID (inline)
+         0     0% 73.03%      0.03s  0.67%  github.com/clickbytes/golingua/internal/core.compiledConcept.view
+         0     0% 73.03%      0.03s  0.67%  github.com/clickbytes/golingua/internal/ids.LexemeID.String (inline)
+         0     0% 73.03%      0.03s  0.67%  github.com/clickbytes/golingua/internal/ids.ParseSenseID (inline)
+         0     0% 73.03%      0.03s  0.67%  github.com/clickbytes/golingua/internal/meaning.ValidateReferences
+         0     0% 73.03%      0.03s  0.67%  github.com/clickbytes/golingua/internal/morph.validPrincipalForm
+         0     0% 73.03%      0.03s  0.67%  github.com/clickbytes/golingua/internal/procedure.ExecPlan
+         0     0% 73.03%      0.03s  0.67%  github.com/clickbytes/golingua/internal/procedure.ValidateOperations
+         0     0% 73.03%      0.03s  0.67%  github.com/clickbytes/golingua/internal/realizer.Linearize
+         0     0% 73.03%      0.03s  0.67%  github.com/clickbytes/golingua/internal/realizer.unrepresentedWrapperLosses
+         0     0% 73.03%      0.03s  0.67%  github.com/clickbytes/golingua/languages/en.englishAttributedSeeingMainCandidate
+         0     0% 73.03%      0.03s  0.67%  internal/runtime/maps.MemHash
+         0     0% 73.03%      0.03s  0.67%  internal/runtime/maps.StrHash (inline)
+     0.03s  0.67% 73.71%      0.03s  0.67%  internal/runtime/maps.ctrlGroup.matchH2 (inline)
+         0     0% 73.71%      0.03s  0.67%  internal/runtime/maps.rand
+         0     0% 73.71%      0.03s  0.67%  internal/stringslite.IndexByte (inline)
+         0     0% 73.71%      0.03s  0.67%  runtime.(*inlineUnwinder).resolveInternal (inline)
+         0     0% 73.71%      0.03s  0.67%  runtime.(*mcentral).uncacheSpan
+         0     0% 73.71%      0.03s  0.67%  runtime.(*mheap).freeSpan (inline)
+         0     0% 73.71%      0.03s  0.67%  runtime.(*mheap).freeSpan.func1
+         0     0% 73.71%      0.03s  0.67%  runtime.(*mheap).freeSpanLocked
+     0.03s  0.67% 74.38%      0.03s  0.67%  runtime.(*spanSet).push
+     0.03s  0.67% 75.06%      0.03s  0.67%  runtime.acquirem (inline)
+     0.03s  0.67% 75.73%      0.03s  0.67%  runtime.alignDown (inline)
+         0     0% 75.73%      0.03s  0.67%  runtime.callers
+         0     0% 75.73%      0.03s  0.67%  runtime.callers.func1
+     0.01s  0.22% 75.96%      0.03s  0.67%  runtime.convTslice
+         0     0% 75.96%      0.03s  0.67%  runtime.mProf_Malloc
+     0.01s  0.22% 76.18%      0.03s  0.67%  runtime.mallocgcSmallNoScanSC6
+         0     0% 76.18%      0.03s  0.67%  runtime.mallocgcSmallScanHeader
+         0     0% 76.18%      0.03s  0.67%  runtime.newInlineUnwinder
+         0     0% 76.18%      0.03s  0.67%  runtime.pcdatavalue1
+     0.01s  0.22% 76.40%      0.03s  0.67%  runtime.pcvalue
+         0     0% 76.40%      0.03s  0.67%  runtime.profilealloc
+         0     0% 76.40%      0.03s  0.67%  runtime.strhash
+         0     0% 76.40%      0.03s  0.67%  runtime.tracebackPCs
+         0     0% 76.40%      0.03s  0.67%  runtime.typedslicecopy
+     0.02s  0.45% 76.85%      0.03s  0.67%  strings.Count
+     0.02s  0.45% 77.30%      0.03s  0.67%  sync.(*Pool).Get

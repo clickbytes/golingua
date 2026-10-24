@@ -1,0 +1,125 @@
+File: golingua-light-f4-measure
+Build ID: e1c248d061a02b2f7cd32e6201e3adccd502a99e
+Type: alloc_space
+Time: 2026-10-25 01:03:48 CEST
+Showing nodes accounting for 4643.88MB, 92.48% of 5021.76MB total
+Dropped 242 nodes (cum <= 25.11MB)
+      flat  flat%   sum%        cum   cum%
+ 1404.67MB 27.97% 27.97%  3135.48MB 62.44%  github.com/clickbytes/golingua/internal/realizer.SelectTargets
+  911.07MB 18.14% 46.11%   953.57MB 18.99%  github.com/clickbytes/golingua/internal/lexicon.cloneDocument
+  360.66MB  7.18% 53.30%   360.66MB  7.18%  reflect.deepValueEqual
+  278.20MB  5.54% 58.84%   421.20MB  8.39%  github.com/clickbytes/golingua/internal/core.(*ConceptGraph).Concepts
+  243.01MB  4.84% 63.68%   243.01MB  4.84%  strings.genSplit
+  163.51MB  3.26% 66.93%   532.52MB 10.60%  github.com/clickbytes/golingua/internal/ids.Symbol.Canonical
+     129MB  2.57% 69.50%      129MB  2.57%  internal/bytealg.MakeNoZero
+  114.51MB  2.28% 71.78%   437.52MB  8.71%  github.com/clickbytes/golingua/internal/ids.canonicalName
+  105.52MB  2.10% 73.88%   212.53MB  4.23%  github.com/clickbytes/golingua/internal/meaning.ValidateStructure
+   88.01MB  1.75% 75.63%    88.01MB  1.75%  github.com/clickbytes/golingua/internal/meaning.nodeFieldsForKind
+   83.51MB  1.66% 77.30%    83.51MB  1.66%  github.com/clickbytes/golingua/internal/core.cloneRoles (inline)
+   78.02MB  1.55% 78.85%    78.02MB  1.55%  github.com/clickbytes/golingua/internal/construction.cloneFamily
+      74MB  1.47% 80.32%   157.51MB  3.14%  github.com/clickbytes/golingua/internal/core.compiledConcept.view
+   54.02MB  1.08% 81.40%    54.02MB  1.08%  strings.(*Builder).WriteString (inline)
+   53.44MB  1.06% 82.46%    53.44MB  1.06%  bytes.Clone (inline)
+   48.01MB  0.96% 83.42%    51.51MB  1.03%  github.com/clickbytes/golingua/internal/runtime.SourceFeatures
+   39.08MB  0.78% 84.20%   223.59MB  4.45%  github.com/clickbytes/golingua/internal/language.cloneBindings
+      39MB  0.78% 84.97%       39MB  0.78%  github.com/clickbytes/golingua/internal/lexicon.cloneSense (inline)
+      34MB  0.68% 85.65%       34MB  0.68%  net/url.parse
+   32.52MB  0.65% 86.30%    41.02MB  0.82%  github.com/clickbytes/golingua/internal/semantic.evidenceRecordStrings
+   30.51MB  0.61% 86.91%    30.51MB  0.61%  github.com/clickbytes/golingua/internal/construction.CloneSequenceTokens (inline)
+   25.53MB  0.51% 87.42%   215.64MB  4.29%  github.com/clickbytes/golingua/internal/realizer.Execute
+   25.51MB  0.51% 87.92%    25.51MB  0.51%  github.com/clickbytes/golingua/internal/morph.cloneFeatureValues (inline)
+   25.04MB   0.5% 88.42%    64.55MB  1.29%  github.com/clickbytes/golingua/internal/morph.cloneParadigm
+   22.87MB  0.46% 88.88%    38.13MB  0.76%  encoding/json/jsontext.(*encoderState).reformatValue
+   22.50MB  0.45% 89.33%   117.52MB  2.34%  github.com/clickbytes/golingua/internal/meaning.ValidateMeaning
+   20.20MB   0.4% 89.73%  3782.55MB 75.32%  github.com/clickbytes/golingua/internal/runtime.(*TargetPipeline).Realize
+      19MB  0.38% 90.11%   121.53MB  2.42%  github.com/clickbytes/golingua/internal/construction.planID
+   18.53MB  0.37% 90.48%    73.04MB  1.45%  github.com/clickbytes/golingua/internal/runtime.MorphologyExecutionBuilder.Build
+   15.27MB   0.3% 90.78%    38.13MB  0.76%  encoding/json/jsontext.(*encoderState).reformatObject
+   13.11MB  0.26% 91.04%    87.41MB  1.74%  encoding/json/v2.makeStructArshaler.func2
+   12.02MB  0.24% 91.28%    58.65MB  1.17%  github.com/clickbytes/golingua/internal/realizer.realizationPlanID
+   12.01MB  0.24% 91.52%    33.51MB  0.67%  github.com/clickbytes/golingua/internal/parser.(*matcher).walk
+       8MB  0.16% 91.68%    26.51MB  0.53%  internal/reflectlite.Swapper
+    6.50MB  0.13% 91.81%    50.01MB     1%  github.com/clickbytes/golingua/internal/construction.canonicalFamily
+    5.51MB  0.11% 91.92%    45.01MB   0.9%  github.com/clickbytes/golingua/internal/semantic.buildMeaningCandidate
+       5MB   0.1% 92.02%   173.01MB  3.45%  github.com/clickbytes/golingua/internal/valency.ValidateFrame
+       4MB  0.08% 92.10%    43.01MB  0.86%  github.com/clickbytes/golingua/languages/en.englishAttributedSeeingShape
+       3MB  0.06% 92.16%    62.56MB  1.25%  github.com/clickbytes/golingua/internal/realizer.Linearize
+       3MB  0.06% 92.22%    27.50MB  0.55%  github.com/clickbytes/golingua/internal/morph.resolveGenerationStems
+       2MB  0.04% 92.26%   213.03MB  4.24%  github.com/clickbytes/golingua/internal/construction.Compose
+       2MB  0.04% 92.30%   103.54MB  2.06%  github.com/clickbytes/golingua/internal/semantic.Compose
+    1.50MB  0.03% 92.33%   228.59MB  4.55%  github.com/clickbytes/golingua/internal/language.cloneLanguage
+    1.50MB  0.03% 92.36%    62.52MB  1.25%  github.com/clickbytes/golingua/internal/meaning.CanonicalJSON
+       1MB  0.02% 92.38%   156.55MB  3.12%  github.com/clickbytes/golingua/internal/runtime.targetBindingEvidence
+       1MB  0.02% 92.40%  5016.80MB 99.90%  github.com/clickbytes/golingua/internal/engine.(*Engine).Translate
+       1MB  0.02% 92.42%    94.53MB  1.88%  github.com/clickbytes/golingua/internal/semantic.Disambiguate
+       1MB  0.02% 92.44%   102.02MB  2.03%  github.com/clickbytes/golingua/internal/construction.CompileVariant
+    0.50MB  0.01% 92.45%   129.55MB  2.58%  github.com/clickbytes/golingua/internal/morph.Generate
+    0.50MB  0.01% 92.46%   118.24MB  2.35%  github.com/clickbytes/golingua/internal/engine.TranslationResult.Validate
+    0.50MB  0.01% 92.47%    96.08MB  1.91%  github.com/clickbytes/golingua/internal/realizer.BuildPlan
+    0.50MB  0.01% 92.48%   205.03MB  4.08%  github.com/clickbytes/golingua/internal/construction.BindFrame
+         0     0% 92.48%   147.37MB  2.93%  encoding/json.Marshal (inline)
+         0     0% 92.48%    38.13MB  0.76%  encoding/json/jsontext.(*Encoder).WriteValue (inline)
+         0     0% 92.48%    38.13MB  0.76%  encoding/json/jsontext.(*encoderState).WriteValue
+         0     0% 92.48%   147.37MB  2.93%  encoding/json/v2.Marshal
+         0     0% 92.48%    62.15MB  1.24%  encoding/json/v2.makeMethodArshaler.func3
+         0     0% 92.48%    80.89MB  1.61%  encoding/json/v2.makeSliceArshaler.func2
+         0     0% 92.48%   101.43MB  2.02%  encoding/json/v2.marshalEncode
+         0     0% 92.48%       26MB  0.52%  github.com/clickbytes/golingua/internal/construction.(*Registry).ByID
+         0     0% 92.48%       45MB   0.9%  github.com/clickbytes/golingua/internal/construction.ConstructionFamily.Validate
+         0     0% 92.48%   130.02MB  2.59%  github.com/clickbytes/golingua/internal/construction.ValidateVariantForFrame
+         0     0% 92.48%    27.01MB  0.54%  github.com/clickbytes/golingua/internal/construction.cloneRecord (inline)
+         0     0% 92.48%    60.50MB  1.20%  github.com/clickbytes/golingua/internal/construction.validFamilyID
+         0     0% 92.48%    56.02MB  1.12%  github.com/clickbytes/golingua/internal/construction.writePlanPart
+         0     0% 92.48%   129.25MB  2.57%  github.com/clickbytes/golingua/internal/engine.finalizeResult
+         0     0% 92.48%   392.52MB  7.82%  github.com/clickbytes/golingua/internal/ids.ConstructionID.String (inline)
+         0     0% 92.48%   443.02MB  8.82%  github.com/clickbytes/golingua/internal/ids.NewSymbol
+         0     0% 92.48%      119MB  2.37%  github.com/clickbytes/golingua/internal/ids.Parse
+         0     0% 92.48%    28.50MB  0.57%  github.com/clickbytes/golingua/internal/ids.ParseConceptID (inline)
+         0     0% 92.48%    52.50MB  1.05%  github.com/clickbytes/golingua/internal/ids.ParseConstructionID (inline)
+         0     0% 92.48%    25.50MB  0.51%  github.com/clickbytes/golingua/internal/ids.ParseSenseID (inline)
+         0     0% 92.48%      102MB  2.03%  github.com/clickbytes/golingua/internal/ids.SenseID.String (inline)
+         0     0% 92.48%   532.52MB 10.60%  github.com/clickbytes/golingua/internal/ids.canonicalString (inline)
+         0     0% 92.48%      119MB  2.37%  github.com/clickbytes/golingua/internal/ids.parseTyped
+         0     0% 92.48%   229.09MB  4.56%  github.com/clickbytes/golingua/internal/language.(*Registry).Language
+         0     0% 92.48%   166.51MB  3.32%  github.com/clickbytes/golingua/internal/language.cloneBindings.func1
+         0     0% 92.48%   953.57MB 18.99%  github.com/clickbytes/golingua/internal/lexicon.(*Index).Document (inline)
+         0     0% 92.48%    62.52MB  1.25%  github.com/clickbytes/golingua/internal/meaning.CanonicalEqual
+         0     0% 92.48%   100.01MB  1.99%  github.com/clickbytes/golingua/internal/meaning.validateNodeShape
+         0     0% 92.48%    64.55MB  1.29%  github.com/clickbytes/golingua/internal/morph.(*CompiledParadigms).Lookup
+         0     0% 92.48%    32.52MB  0.65%  github.com/clickbytes/golingua/internal/morph.(*CompiledParadigms).SelectCell
+         0     0% 92.48%   196.78MB  3.92%  github.com/clickbytes/golingua/internal/pack.(*Pack).Concepts (inline)
+         0     0% 92.48%    33.51MB  0.67%  github.com/clickbytes/golingua/internal/parser.(*matcher).matchPlan
+         0     0% 92.48%    40.01MB   0.8%  github.com/clickbytes/golingua/internal/parser.Parse
+         0     0% 92.48%       34MB  0.68%  github.com/clickbytes/golingua/internal/provenance.SourceRef.Validate
+         0     0% 92.48%       34MB  0.68%  github.com/clickbytes/golingua/internal/provenance.validateURI
+         0     0% 92.48%   201.58MB  4.01%  github.com/clickbytes/golingua/internal/runtime.(*SourcePipeline).Analyze
+         0     0% 92.48%    71.01MB  1.41%  github.com/clickbytes/golingua/internal/semantic.EvidenceTrace.ValidateWithBudget
+         0     0% 92.48%    64.53MB  1.29%  github.com/clickbytes/golingua/internal/semantic.composeAlternative
+         0     0% 92.48%    33.51MB  0.67%  github.com/clickbytes/golingua/internal/semantic.finalizeComposition
+         0     0% 92.48%    38.50MB  0.77%  github.com/clickbytes/golingua/internal/semantic.validateEvidenceRecord
+         0     0% 92.48%   182.01MB  3.62%  github.com/clickbytes/golingua/internal/valency.ValencyFrame.Validate
+         0     0% 92.48%      123MB  2.45%  github.com/clickbytes/golingua/internal/valency.validConstructionID
+         0     0% 92.48%       64MB  1.27%  github.com/clickbytes/golingua/internal/valency.validSenseID
+         0     0% 92.48%    45.50MB  0.91%  github.com/clickbytes/golingua/internal/valency.validateBindingStructure
+         0     0% 92.48%    53.52MB  1.07%  github.com/clickbytes/golingua/languages/en.englishAttributedSeeingContextsValid
+         0     0% 92.48%    45.51MB  0.91%  github.com/clickbytes/golingua/languages/en.englishAttributedSeeingMainCandidate
+         0     0% 92.48%    28.01MB  0.56%  github.com/clickbytes/golingua/languages/en.englishAttributedSeeingModifierCandidate
+         0     0% 92.48%   137.03MB  2.73%  github.com/clickbytes/golingua/languages/en.englishDeterminerCandidatePolicy.KeepTargetCandidate
+         0     0% 92.48%    34.01MB  0.68%  github.com/clickbytes/golingua/languages/en.englishMultiplicityEvidenceConsistent
+         0     0% 92.48%    35.51MB  0.71%  github.com/clickbytes/golingua/languages/en.englishPredicateEvidenceConsistent
+         0     0% 92.48%    43.51MB  0.87%  github.com/clickbytes/golingua/languages/en.englishSentenceFeatures.Features
+         0     0% 92.48%  5020.20MB   100%  main.main
+         0     0% 92.48%  5020.20MB   100%  main.run
+         0     0% 92.48%  5020.20MB   100%  main.runProfiles
+         0     0% 92.48%       34MB  0.68%  net/url.Parse
+         0     0% 92.48%   360.66MB  7.18%  reflect.DeepEqual
+         0     0% 92.48%  5020.20MB   100%  runtime.main
+         0     0% 92.48%   210.02MB  4.18%  sort.Slice
+         0     0% 92.48%       64MB  1.27%  sort.insertionSort_func
+         0     0% 92.48%   101.51MB  2.02%  sort.partialInsertionSort_func
+         0     0% 92.48%   183.51MB  3.65%  sort.pdqsort_func
+         0     0% 92.48%      129MB  2.57%  strings.(*Builder).Grow
+         0     0% 92.48%      129MB  2.57%  strings.(*Builder).grow
+         0     0% 92.48%      129MB  2.57%  strings.Join
+         0     0% 92.48%   197.51MB  3.93%  strings.Split (inline)
+         0     0% 92.48%    45.50MB  0.91%  strings.SplitN (inline)

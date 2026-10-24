@@ -1,0 +1,32 @@
+[
+  {
+    "file": "before-allocs-start.pprof",
+    "bytes": 37467,
+    "sha256": "eb567e9c6ff4db6dcae9bf7f177759b6a7dde255cafa794f7070e3def415ad04"
+  },
+  {
+    "file": "before-allocs-end.pprof",
+    "bytes": 72867,
+    "sha256": "6b4270794de8b6fc51265b7297d1b058db2f3508d16c24dd71127becaef1e44d"
+  },
+  {
+    "file": "before-cpu.pprof",
+    "bytes": 40701,
+    "sha256": "dc9a636fa26cd037a56ef250c16135dc04d0e778539a3403fcca8825df336fc4"
+  },
+  {
+    "file": "after-allocs-start.pprof",
+    "bytes": 39329,
+    "sha256": "88241cc58754db8cf184624aa683c13e5168996dd16c584f60091d121bc5ec1a"
+  },
+  {
+    "file": "after-allocs-end.pprof",
+    "bytes": 72248,
+    "sha256": "af1254a9433bbdc83595664276f1062ed6eacd4ff574e321534a81785f759a76"
+  },
+  {
+    "file": "after-cpu.pprof",
+    "bytes": 31114,
+    "sha256": "7bec2af78b95a5a781878d6d19fbf8fee1969937df2bf43ea50a235cc4d4fad2"
+  }
+]

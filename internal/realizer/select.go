@@ -177,16 +177,6 @@ func SelectTargets(input Input) (Result, error) {
 	if lexemeCount > lexicon.MaxLexemes || senseCount > lexicon.MaxSenses || bindingCount > lexicon.MaxBindings {
 		return Result{}, selectionError(status.OutcomeResourceLimit, "LEXICON_INDEX_LIMIT", "lexicon", "lexicon inventory exceeds the supported selection bound")
 	}
-	document := input.Lexicon.Document()
-	senseByID := make(map[ids.SenseID]lexicon.LexicalSense, len(document.Senses))
-	lexemeByID := make(map[ids.LexemeID]lexicon.MorphLexeme, len(document.Lexemes))
-	for _, sense := range document.Senses {
-		senseByID[sense.ID] = sense
-	}
-	for _, lexeme := range document.Lexemes {
-		lexemeByID[lexeme.ID] = lexeme
-	}
-
 	ordered := append([]semantic.MeaningCandidate(nil), input.Candidates...)
 	sort.Slice(ordered, func(i, j int) bool {
 		if ordered[i].SemanticID != ordered[j].SemanticID {
@@ -365,11 +355,11 @@ func SelectTargets(input Input) (Result, error) {
 					if transfer.CoreRef != concept || !transfer.TransferAuthorized() {
 						continue
 					}
-					sense, exists := senseByID[transfer.SenseID]
+					sense, exists := input.Lexicon.BySenseID(transfer.SenseID)
 					if !exists {
 						return Result{}, selectionError(status.OutcomeInvalid, "UNKNOWN_TRANSFER_SENSE", "lexicon.bindings", "approved CORE transfer refers to an absent lexical sense")
 					}
-					lexeme, exists := lexemeByID[sense.LexemeID]
+					lexeme, exists := input.Lexicon.ByLexemeID(sense.LexemeID)
 					if !exists {
 						return Result{}, selectionError(status.OutcomeInvalid, "UNKNOWN_SENSE_LEXEME", "lexicon.senses", "target sense refers to an absent lexeme")
 					}
@@ -413,11 +403,11 @@ func SelectTargets(input Input) (Result, error) {
 				if transfer.CoreRef != concept || !transfer.TransferAuthorized() {
 					continue
 				}
-				sense, exists := senseByID[transfer.SenseID]
+				sense, exists := input.Lexicon.BySenseID(transfer.SenseID)
 				if !exists {
 					return Result{}, selectionError(status.OutcomeInvalid, "UNKNOWN_TRANSFER_SENSE", "lexicon.bindings", "approved CORE transfer refers to an absent lexical sense")
 				}
-				lexeme, exists := lexemeByID[sense.LexemeID]
+				lexeme, exists := input.Lexicon.ByLexemeID(sense.LexemeID)
 				if !exists {
 					return Result{}, selectionError(status.OutcomeInvalid, "UNKNOWN_SENSE_LEXEME", "lexicon.senses", "target sense refers to an absent lexeme")
 				}

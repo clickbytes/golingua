@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"reflect"
 	"strings"
 	"unicode/utf8"
 
@@ -80,7 +79,7 @@ func (engine *Engine) Translate(ctx context.Context, request Request) (Translati
 	if engine.core == nil || engine.snapshot == nil {
 		return emptyResult(request, status.OutcomeUnknown, diagnostic("RUNTIME_SNAPSHOT_UNAVAILABLE", "snapshot", "validated CORE and pack snapshots are required")), nil
 	}
-	if !reflect.DeepEqual(engine.snapshot.Concepts(), engine.core.Concepts()) {
+	if !engine.snapshotMatchesCore {
 		return emptyResult(request, status.OutcomeInvalid, diagnostic("RUNTIME_SNAPSHOT_MISMATCH", "snapshot", "CORE concept inventory does not match the configured pack snapshot")), nil
 	}
 
