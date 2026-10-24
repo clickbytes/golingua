@@ -28,6 +28,7 @@ Pomiar lokalny Go 1.27.0, Linux amd64, i7-11800H, GOMAXPROCS=16: inicjalizacja 1
 - [Lokalne dowody odbioru 325](325-evidence.md) i [obserwacje CLI](325-observations.jsonl); bieżący stan merge/CI jest zapisany w issue/PR.
 - #325 scalono przez [PR 330](https://github.com/clickbytes/golingua/pull/330): main `1707590ead2892f16f065fe52eaaf935e9e9216e`; [CI PR](https://github.com/clickbytes/golingua/actions/runs/40134700533) i [CI main](https://github.com/clickbytes/golingua/actions/runs/40134811089) SUCCESS. Drzewo merge jest zgodne ze sprawdzonym head PR.
 - [Kontrakt klas 326](326-contract.md) i [briefy oraz przekazania](326-jobs.md).
+- [Dowody odbioru 326](326-evidence.md) i [obserwacje CLI](326-observations.jsonl).
 - Ocena techniczna agenta nie oznacza akceptacji właściciela, obecnie NOT EVALUATED.
 
 OpenCode: dzienna kontrola 2026-10-24, izolowany obraz `ghcr.io/anomalyco/opencode:2.0.15`, jawny worker i limit 12 kroków. Config wskazywał plik, ale `debug agents` zwrócił pustą listę; katalogi modeli były puste, a katalog kosztów odpowiadał 403. Model, darmowy koszt i worker nie zostały zweryfikowane. Próba odpowiedzi i odmowy uprawnień: NOT RUN; `--auto` nie uruchomiono. Zgodnie z AGENTS stosujemy ograniczone zadania Luna Low. Źródła kontroli: [config](https://dev.opencode.ai/v2/docs/config/), [permissions](https://dev.opencode.ai/v2/docs/permissions/), [agents](https://dev.opencode.ai/v2/docs/agents/). Konfiguracja narzędzia i poświadczenia nie są danymi produktu.
