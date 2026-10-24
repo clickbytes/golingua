@@ -54,7 +54,7 @@ func NewSentenceProvider(snapshot *pack.Pack) (language.Package, language.Langua
 func (provider *sentenceProvider) Language() features.LanguageID { return "en" }
 func (provider *sentenceProvider) Version() string               { return sentenceProviderVersion }
 func (provider *sentenceProvider) Evidence() []language.CapabilityEvidence {
-	return runtime.SentenceCapabilityEvidence()
+	return runtime.SentenceCapabilityEvidence("en")
 }
 
 func (provider *sentenceProvider) Analyze(ctx context.Context, surface string) ([]language.AnalysisCandidate, error) {

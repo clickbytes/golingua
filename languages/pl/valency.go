@@ -41,6 +41,8 @@ type constructionBindingDeclaration struct {
 }
 
 var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
+	{"pl.byc.class_membership", "pl.byc.class_membership.frame", "pl.identification", "pl.identification.to"},
+	{"pl.czarny.black", "pl.czarny.black.frame", "pl.attribution", "pl.attribution.ten"},
 	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.transitive_negative", "pl.transitive_negative.svo"},
 	{"pl.slyszec.auditory", "pl.slyszec.auditory.transitive", "pl.transitive_negative", "pl.transitive_negative.svo"},
 	{"pl.patrzec.directed", "pl.patrzec.directed.na", "pl.oblique_negative", "pl.oblique_negative.svo"},
@@ -54,6 +56,12 @@ var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
 // Families are explicit per frame, never silently assumed transitive.
 // They are structural candidates, not approved construction bindings.
 var polishFrames = []frameDeclaration{
+	{"pl.byc.class_membership.frame", "pl.byc.class_membership", "pl.identification", []meaning.Role{"member"}, []valency.ArgumentSlot{
+		{ID: "member", Role: "member", Required: true, GrammaticalFunction: "complement", Case: "nominative"},
+	}},
+	{"pl.czarny.black.frame", "pl.czarny.black", "pl.attribution", []meaning.Role{"bearer"}, []valency.ArgumentSlot{
+		{ID: "bearer", Role: "bearer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+	}},
 	{"pl.widziec.visual.transitive", "pl.widziec.visual", "pl.transitive", []meaning.Role{"experiencer", "stimulus"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "experiencer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "object", Role: "stimulus", Required: true, GrammaticalFunction: "object", Case: "accusative"},
@@ -157,6 +165,9 @@ func CompileValency() (*valency.Index, error) {
 			Arguments:        append([]valency.ArgumentSlot(nil), item.arguments...),
 			AllowedFamilyIDs: []ids.ConstructionID{familyID}, Provenance: polishValencySource,
 		}
+		if item.id == "pl.byc.class_membership.frame" || item.id == "pl.czarny.black.frame" {
+			frame.Provenance = polishIdentificationSource
+		}
 		switch item.id {
 		case "pl.widziec.visual.transitive", "pl.slyszec.auditory.transitive":
 			negativeFamilyID, err := ids.NewConstructionID("pl.transitive_negative")
@@ -197,6 +208,9 @@ func CompileValency() (*valency.Index, error) {
 }
 
 func polishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.sense == "pl.byc.class_membership" || item.sense == "pl.czarny.black" {
+		return polishIdentificationSource
+	}
 	if item.sense == "pl.czytac.interpret" {
 		return polishReadingConstructionSource
 	}

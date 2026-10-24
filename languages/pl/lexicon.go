@@ -513,27 +513,40 @@ var polishPendingAuditSource = provenance.SourceRef{
 	Version: "2026-10-23-pending-audit", License: "unknown", Author: "codex-owner-delegated",
 }
 
+var polishIdentificationSource = provenance.SourceRef{
+	ID: "golingua-pl-identification-316", URI: "https://github.com/clickbytes/golingua/issues/316",
+	Version: "2026-10-24", License: "internal", Author: "Codex by owner delegation",
+}
+
+var polishApprovedIdentificationSenses = map[string]struct{}{
+	"pl.byc.class_membership": {}, "pl.czarny.black": {},
+}
+
 var polishApprovedPendingAuditSenses = map[string]struct{}{
 	"pl.nauczyciel.role": {}, "pl.ruch.motion": {}, "pl.malzonek.spouse": {},
 	"pl.partner.romantic": {}, "pl.pieszy.person": {}, "pl.slodycz.quality": {},
 }
 
 var polishFrameBySense = map[string]lexicon.ValencyID{
-	"pl.widziec.visual":     "pl.widziec.visual.transitive",
-	"pl.patrzec.directed":   "pl.patrzec.directed.na",
-	"pl.slyszec.auditory":   "pl.slyszec.auditory.transitive",
-	"pl.dostac.receive":     "pl.dostac.receive.transitive",
-	"pl.dac.transfer":       "pl.dac.transfer.ditransitive",
-	"pl.pytac.request_info": "pl.pytac.request_info.frame",
-	"pl.odpowiadac.answer":  "pl.odpowiadac.answer.frame",
-	"pl.czytac.interpret":   "pl.czytac.interpret.frame",
-	"pl.uczyc.instruct":     "pl.uczyc.instruct.frame",
-	"pl.uczyc_sie.acquire":  "pl.uczyc_sie.acquire.frame",
-	"pl.jesc.eat":           "pl.jesc.eat.frame",
-	"pl.spac.sleep":         "pl.spac.sleep.frame",
+	"pl.byc.class_membership": "pl.byc.class_membership.frame",
+	"pl.czarny.black":         "pl.czarny.black.frame",
+	"pl.widziec.visual":       "pl.widziec.visual.transitive",
+	"pl.patrzec.directed":     "pl.patrzec.directed.na",
+	"pl.slyszec.auditory":     "pl.slyszec.auditory.transitive",
+	"pl.dostac.receive":       "pl.dostac.receive.transitive",
+	"pl.dac.transfer":         "pl.dac.transfer.ditransitive",
+	"pl.pytac.request_info":   "pl.pytac.request_info.frame",
+	"pl.odpowiadac.answer":    "pl.odpowiadac.answer.frame",
+	"pl.czytac.interpret":     "pl.czytac.interpret.frame",
+	"pl.uczyc.instruct":       "pl.uczyc.instruct.frame",
+	"pl.uczyc_sie.acquire":    "pl.uczyc_sie.acquire.frame",
+	"pl.jesc.eat":             "pl.jesc.eat.frame",
+	"pl.spac.sleep":           "pl.spac.sleep.frame",
 }
 
 var polishParadigmByLexeme = map[string]string{
+	"pl.byc.v":       "pl_identification_byc_present_3sg",
+	"pl.czarny.adj":  "pl_identification_czarny_masculine_animal_nominative",
 	"pl.sasiad.n":    "pl_noun_attested_masculine_personal",
 	"pl.klient.n":    "pl_noun_attested_masculine_personal",
 	"pl.widziec.v":   "pl_verb_present_i",
@@ -615,8 +628,12 @@ func LexicalDocument() (lexicon.Document, error) {
 	if err := polishPendingAuditSource.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish pending audit source: %w", err)
 	}
+	if err := polishIdentificationSource.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish identification source: %w", err)
+	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
 	groups := append([][]lexicalEntry{polishEntries}, lexicalGroups()...)
+	groups = append(groups, identificationEntries)
 	for _, group := range groups {
 		for _, entry := range group {
 			lexemeID, err := ids.NewLexemeID(entry.id)
@@ -765,6 +782,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishPendingAuditSource
+				}
+				if _, approved := polishApprovedIdentificationSenses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishIdentificationSource
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}

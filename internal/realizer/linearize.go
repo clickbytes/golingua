@@ -134,15 +134,15 @@ func Linearize(plan RealizationPlan, family construction.ConstructionFamily, slo
 			familyRoles[slot.ArgumentBinding.SemanticRole] = struct{}{}
 		}
 		if slot.ArgumentBinding == nil {
-			if slot.Category != construction.CategoryVP {
-				return LinearizedResult{}, linearizeError(status.OutcomeUnsupported, "UNBOUND_NON_PREDICATE_SLOT", "family.slot_specs."+slot.ID, "only an unbound predicate VP slot may be linearized")
+			if !slot.Category.IsPredicate() {
+				return LinearizedResult{}, linearizeError(status.OutcomeUnsupported, "UNBOUND_NON_PREDICATE_SLOT", "family.slot_specs."+slot.ID, "only an unbound predicate VP/AP slot may be linearized")
 			}
 			predicateSlot = slot.ID
 			predicateSlotCount++
 		}
 	}
 	if predicateSlotCount != 1 {
-		return LinearizedResult{}, linearizeError(status.OutcomeUnsupported, "PREDICATE_SLOT_CARDINALITY", "family.slot_specs", "surface linearization requires exactly one unbound predicate VP slot")
+		return LinearizedResult{}, linearizeError(status.OutcomeUnsupported, "PREDICATE_SLOT_CARDINALITY", "family.slot_specs", "surface linearization requires exactly one unbound predicate VP/AP slot")
 	}
 	seenRoles := make(map[meaning.Role]struct{}, len(plan.Roles))
 	for _, role := range plan.Roles {

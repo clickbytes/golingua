@@ -62,12 +62,14 @@ func (budget Budget) Validate() error {
 	return budget.Meaning.Validate()
 }
 
-// ReferenceEvidence is explicit request-local identity evidence. Equal CORE
+// ReferenceEvidence either resolves a mention to explicit request-local
+// identity evidence or preserves an unresolved deictic anchor. Equal CORE
 // concepts alone never join mentions into one referent.
 type ReferenceEvidence struct {
 	CandidateID string
 	ReferentID  meaning.ReferentID
 	EvidenceID  string
+	Anchor      *meaning.DeicticAnchor
 }
 
 // OperatorEvidence supplies a construction operator and its explicit target
@@ -164,8 +166,22 @@ func Compose(input CompositionInput) (ComposeResult, error) {
 	}
 	referenceByCandidate := make(map[string]ReferenceEvidence, len(input.References))
 	for _, reference := range input.References {
-		if _, exists := candidateByID[reference.CandidateID]; !exists || reference.CandidateID == "" || reference.ReferentID == "" || reference.EvidenceID == "" {
-			return ComposeResult{}, semanticError(status.OutcomeInvalid, "INVALID_REFERENCE_EVIDENCE", "references", "reference evidence requires an existing candidate, referent ID and evidence ID")
+		if _, exists := candidateByID[reference.CandidateID]; !exists || reference.CandidateID == "" {
+			return ComposeResult{}, semanticError(status.OutcomeInvalid, "INVALID_REFERENCE_EVIDENCE", "references", "reference evidence requires an existing candidate")
+		}
+		resolved := reference.ReferentID != "" && reference.EvidenceID != ""
+		unresolved := reference.ReferentID == "" && reference.EvidenceID == "" && reference.Anchor != nil
+		if !resolved && !unresolved {
+			return ComposeResult{}, semanticError(status.OutcomeInvalid, "INVALID_REFERENCE_EVIDENCE", "references", "reference evidence requires both identity fields or an unresolved anchor")
+		}
+		if reference.Anchor != nil {
+			anchorContext := meaning.RequestContext{
+				ID:       "reference-validation",
+				Mentions: []meaning.Mention{{ID: "mention", NodeID: "node", Anchor: reference.Anchor}},
+			}
+			if err := anchorContext.Validate(); err != nil {
+				return ComposeResult{}, semanticError(status.OutcomeInvalid, "INVALID_REFERENCE_ANCHOR", "references.anchor", err.Error())
+			}
 		}
 		if _, exists := referenceByCandidate[reference.CandidateID]; exists {
 			return ComposeResult{}, semanticError(status.OutcomeInvalid, "DUPLICATE_REFERENCE_EVIDENCE", "references", "candidate has more than one reference resolution")
@@ -196,8 +212,8 @@ func Compose(input CompositionInput) (ComposeResult, error) {
 			predicateNodes := make([]parser.PackedNode, 0, 1)
 			for _, slot := range alternative.Slots {
 				for _, nodeID := range slot.NodeIDs {
-					if node, found := rootByID[nodeID]; found && node.Category == construction.CategoryVP {
-						// Packed VP nodes can be shared by several readings. The
+					if node, found := rootByID[nodeID]; found && node.Category.IsPredicate() {
+						// Packed predicate nodes can be shared by several readings. The
 						// alternative's slot binding is the candidate selection for
 						// this exact derivation; retain it when composing meaning.
 						if len(slot.CandidateIDs) != 0 {
@@ -389,6 +405,9 @@ func validateCompositionInputs(input CompositionInput, sourceBytes int) error {
 		if !addText(reference.CandidateID, string(reference.ReferentID), reference.EvidenceID) {
 			return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", fmt.Sprintf("references[%d]", i), "reference evidence exceeds the semantic text budget")
 		}
+		if reference.Anchor != nil && !addText(reference.Anchor.Kind, reference.Anchor.Value) {
+			return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", fmt.Sprintf("references[%d].anchor", i), "reference anchor text exceeds the semantic text budget")
+		}
 	}
 	for i, operator := range input.Operators {
 		if !addText(operator.TargetCandidateID, string(operator.Operator.Kind), string(operator.Operator.Value), string(operator.Operator.SemanticScope.TargetNodeID), string(operator.Operator.SemanticScope.ScopeNodeID)) {
@@ -529,6 +548,7 @@ func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlter
 	for index, role := range roles {
 		identity := "candidate:" + role.candidate.ID
 		refEvidence, resolved := references[role.candidate.ID]
+		resolved = resolved && refEvidence.ReferentID != ""
 		if resolved {
 			identity = "referent:" + string(refEvidence.ReferentID)
 		}
@@ -553,11 +573,16 @@ func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlter
 				refs.Referents = append(refs.Referents, meaning.Referent{ID: refEvidence.ReferentID, Concept: meaning.ConceptRefFromID(role.mapping.binding.CoreRef)})
 			}
 		}
+		mention := meaning.Mention{ID: meaning.MentionID("m" + strconv.Itoa(index)), NodeID: nodeID}
 		if resolved {
-			refs.Mentions = append(refs.Mentions, meaning.Mention{ID: meaning.MentionID("m" + strconv.Itoa(index)), NodeID: nodeID, ReferentID: refEvidence.ReferentID, EvidenceID: refEvidence.EvidenceID})
-		} else {
-			refs.Mentions = append(refs.Mentions, meaning.Mention{ID: meaning.MentionID("m" + strconv.Itoa(index)), NodeID: nodeID})
+			mention.ReferentID = refEvidence.ReferentID
+			mention.EvidenceID = refEvidence.EvidenceID
 		}
+		if refEvidence.Anchor != nil {
+			anchor := *refEvidence.Anchor
+			mention.Anchor = &anchor
+		}
+		refs.Mentions = append(refs.Mentions, mention)
 		participants = append(participants, meaning.Participant{Role: role.role, Target: nodeID})
 		records = append(records, EvidenceRecord{SourceSpan: role.span, CandidateID: role.candidate.ID, PhraseNodeID: phraseNodes[role.candidate.ID], ReadingID: firstString(role.candidate.ReadingIDs), SenseID: role.mapping.sense, CoreConceptID: role.mapping.binding.CoreRef, BindingKey: BindingKeyFor(role.mapping.sense, role.mapping.binding.CoreRef), Role: role.role, Outcome: status.OutcomeOK, Features: evidenceFeatures(role.candidate.Features), Provenance: role.mapping.binding.Provenance})
 	}
@@ -733,7 +758,7 @@ func resolveRoles(input CompositionInput, alternative parser.ParseAlternative, c
 		if !ok {
 			return nil, status.OutcomeUnknown, "role candidate does not resolve"
 		}
-		if candidate.Category == construction.CategoryVP {
+		if candidate.Category.IsPredicate() {
 			continue
 		}
 		mappings := transferMappings(input.Lexicon, candidate, nil)

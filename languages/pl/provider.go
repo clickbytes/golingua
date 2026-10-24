@@ -54,7 +54,7 @@ func NewSentenceProvider(snapshot *pack.Pack) (language.Package, language.Langua
 func (provider *sentenceProvider) Language() features.LanguageID { return "pl" }
 func (provider *sentenceProvider) Version() string               { return sentenceProviderVersion }
 func (provider *sentenceProvider) Evidence() []language.CapabilityEvidence {
-	return runtime.SentenceCapabilityEvidence()
+	return runtime.SentenceCapabilityEvidence("pl")
 }
 
 func (provider *sentenceProvider) Analyze(ctx context.Context, surface string) ([]language.AnalysisCandidate, error) {
@@ -73,8 +73,8 @@ func (provider *sentenceProvider) Analyze(ctx context.Context, surface string) (
 }
 
 func sentenceSenseIDs() ([]ids.SenseID, error) {
-	senseIDs := make([]ids.SenseID, 0, 5)
-	for _, value := range []string{"pl.widziec.visual", "pl.slyszec.auditory", "pl.dostac.receive", "pl.patrzec.directed", "pl.czytac.interpret"} {
+	senseIDs := make([]ids.SenseID, 0, 7)
+	for _, value := range []string{"pl.widziec.visual", "pl.slyszec.auditory", "pl.dostac.receive", "pl.patrzec.directed", "pl.czytac.interpret", "pl.byc.class_membership", "pl.czarny.black"} {
 		senseID, err := ids.NewSenseID(value)
 		if err != nil {
 			return nil, err

@@ -171,9 +171,9 @@ func compilePlanInput(input PlanInput, path string) (compiledPlan, error) {
 			}
 			slotCopy := cloneSlot(slot)
 			symbol.Slot = &slotCopy
-			if slot.Category == construction.CategoryVP {
+			if slot.Category.IsPredicate() {
 				if headSlotID != "" {
-					return compiledPlan{}, newParserError(path+".variant.sequence", "analysis plan must have exactly one VP predicate slot")
+					return compiledPlan{}, newParserError(path+".variant.sequence", "analysis plan must have exactly one predicate VP/AP slot")
 				}
 				headSlotID = slot.ID
 			}
@@ -187,7 +187,7 @@ func compilePlanInput(input PlanInput, path string) (compiledPlan, error) {
 		sequence[i] = symbol
 	}
 	if headSlotID == "" {
-		return compiledPlan{}, newParserError(path+".variant.sequence", "analysis plan must have exactly one VP predicate slot")
+		return compiledPlan{}, newParserError(path+".variant.sequence", "analysis plan must have exactly one predicate VP/AP slot")
 	}
 	return compiledPlan{
 		plan: plan, family: family, variant: variant, frame: frame, headSlotID: headSlotID,
