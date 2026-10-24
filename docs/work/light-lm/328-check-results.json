@@ -1,0 +1,185 @@
+{
+  "source_sha": "e2173740f1bf930f5f37302f98d95b5972599b48",
+  "go": "go1.27.0",
+  "checks": [
+    {
+      "name": "runtime_translation_before_mutations",
+      "passed": true,
+      "details": {
+        "outcome": "incomplete",
+        "candidate_count": 1,
+        "candidate_texts": [
+          "Nauczyciel widzi psa."
+        ],
+        "diagnostic_codes": [
+          "TRANSLATION_NOT_OK"
+        ]
+      }
+    },
+    {
+      "name": "known_sense_matches_document",
+      "passed": true,
+      "details": {
+        "found": true,
+        "matches_document": true,
+        "sense_id": "sense:en.black.color"
+      }
+    },
+    {
+      "name": "nil_and_missing_sense_lookup",
+      "passed": true,
+      "details": {
+        "missing_found": false,
+        "nil_found": false
+      }
+    },
+    {
+      "name": "sense_slice_mutation_is_defensive",
+      "passed": true,
+      "details": {
+        "relookup_matches_document": true,
+        "usage_present": true,
+        "valency_ids_present": true
+      }
+    },
+    {
+      "name": "lexeme_property_mutation_is_defensive",
+      "passed": true,
+      "details": {
+        "lexeme_id": "lexeme:en.apartment.n",
+        "property_value_before": "count",
+        "relookup_matches_document": true
+      }
+    },
+    {
+      "name": "core_concept_views_are_defensive",
+      "passed": true,
+      "details": {
+        "concept_id": "concept:seeing",
+        "concepts_view_mutated": true,
+        "lookup_after_mutations_matches_original": true,
+        "lookup_view_mutated": true,
+        "role_count": 2
+      }
+    },
+    {
+      "name": "translation_unchanged_after_view_mutations",
+      "passed": true,
+      "details": {
+        "after": {
+          "outcome": "incomplete",
+          "candidate_count": 1,
+          "candidate_texts": [
+            "Nauczyciel widzi psa."
+          ],
+          "diagnostic_codes": [
+            "TRANSLATION_NOT_OK"
+          ]
+        },
+        "before": {
+          "outcome": "incomplete",
+          "candidate_count": 1,
+          "candidate_texts": [
+            "Nauczyciel widzi psa."
+          ],
+          "diagnostic_codes": [
+            "TRANSLATION_NOT_OK"
+          ]
+        },
+        "results_equal": true
+      }
+    },
+    {
+      "name": "same_pointer_runtime",
+      "passed": true,
+      "details": {
+        "matches_baseline": true,
+        "new_error": "",
+        "result": {
+          "outcome": "incomplete",
+          "candidate_count": 1,
+          "candidate_texts": [
+            "Nauczyciel widzi psa."
+          ],
+          "diagnostic_codes": [
+            "TRANSLATION_NOT_OK"
+          ]
+        },
+        "translation_error": ""
+      }
+    },
+    {
+      "name": "separate_equivalent_core",
+      "passed": true,
+      "details": {
+        "concepts_equal": true,
+        "distinct_core_pointer": true,
+        "matches_baseline": true,
+        "new_error": "",
+        "result": {
+          "outcome": "incomplete",
+          "candidate_count": 1,
+          "candidate_texts": [
+            "Nauczyciel widzi psa."
+          ],
+          "diagnostic_codes": [
+            "TRANSLATION_NOT_OK"
+          ]
+        },
+        "translation_error": ""
+      }
+    },
+    {
+      "name": "mismatched_core_is_rejected_at_request",
+      "passed": true,
+      "details": {
+        "expected_code_present": true,
+        "new_error": "",
+        "result": {
+          "outcome": "invalid",
+          "candidate_count": 0,
+          "candidate_texts": [],
+          "diagnostic_codes": [
+            "RUNTIME_SNAPSHOT_MISMATCH"
+          ]
+        },
+        "translation_error": ""
+      }
+    },
+    {
+      "name": "missing_core_remains_request_unknown",
+      "passed": true,
+      "details": {
+        "expected_code_present": true,
+        "new_error": "",
+        "result": {
+          "outcome": "unknown",
+          "candidate_count": 0,
+          "candidate_texts": [],
+          "diagnostic_codes": [
+            "RUNTIME_SNAPSHOT_UNAVAILABLE"
+          ]
+        },
+        "translation_error": ""
+      }
+    },
+    {
+      "name": "missing_pack_remains_request_unknown",
+      "passed": true,
+      "details": {
+        "expected_code_present": true,
+        "new_error": "",
+        "result": {
+          "outcome": "unknown",
+          "candidate_count": 0,
+          "candidate_texts": [],
+          "diagnostic_codes": [
+            "RUNTIME_SNAPSHOT_UNAVAILABLE"
+          ]
+        },
+        "translation_error": ""
+      }
+    }
+  ],
+  "passed": true
+}
