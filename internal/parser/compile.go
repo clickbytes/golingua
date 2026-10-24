@@ -147,6 +147,9 @@ func compilePlanInput(input PlanInput, path string) (compiledPlan, error) {
 	if err := validatePlanArgumentBindings(input.Plan, input.Family, input.Frame, path+".plan.argument_bindings"); err != nil {
 		return compiledPlan{}, err
 	}
+	if err := validatePlanModifierBindings(input.Plan, input.Family, path+".plan.modifier_bindings"); err != nil {
+		return compiledPlan{}, err
+	}
 	permission := construction.SensePermission{SenseID: input.Frame.SenseID, FrameID: input.Frame.ID}
 	if !hasPermission(input.Plan.Permissions, permission) {
 		return compiledPlan{}, newParserError(path+".plan.permissions", "compiled plan does not grant the supplied sense and frame permission")
@@ -171,7 +174,7 @@ func compilePlanInput(input PlanInput, path string) (compiledPlan, error) {
 			}
 			slotCopy := cloneSlot(slot)
 			symbol.Slot = &slotCopy
-			if slot.Category.IsPredicate() {
+			if slot.IsMainPredicate() {
 				if headSlotID != "" {
 					return compiledPlan{}, newParserError(path+".variant.sequence", "analysis plan must have exactly one predicate VP/AP slot")
 				}
@@ -279,6 +282,29 @@ func validatePlanArgumentBindings(plan construction.CompiledConstructionPlan, fa
 	return nil
 }
 
+func validatePlanModifierBindings(plan construction.CompiledConstructionPlan, family construction.ConstructionFamily, path string) error {
+	expected := make([]construction.CompiledModifierBinding, 0, 1)
+	for _, slot := range family.SlotSpecs {
+		if slot.ModifierBinding == nil {
+			continue
+		}
+		expected = append(expected, construction.CompiledModifierBinding{
+			SlotID: slot.ID, TargetSlot: slot.ModifierBinding.TargetSlot,
+			SemanticRole: string(slot.ModifierBinding.SemanticRole),
+		})
+	}
+	sort.Slice(expected, func(i, j int) bool { return expected[i].SlotID < expected[j].SlotID })
+	if len(plan.ModifierBindings) > construction.MaxSlotsPerFamily || len(plan.ModifierBindings) != len(expected) {
+		return newParserError(path, "compiled modifier bindings do not match the supplied family")
+	}
+	for index, binding := range plan.ModifierBindings {
+		if binding != expected[index] {
+			return newParserError(path, "compiled modifier bindings do not match the supplied family")
+		}
+	}
+	return nil
+}
+
 func countInputItems(current int, input PlanInput) int {
 	count := current
 	add := func(size int) {
@@ -314,6 +340,7 @@ func countInputItems(current int, input PlanInput) int {
 	}
 	add(len(input.Plan.Permissions))
 	add(len(input.Plan.ArgumentBindings))
+	add(len(input.Plan.ModifierBindings))
 	add(len(input.Plan.Constraints))
 	add(len(input.Plan.Linearization))
 	for _, token := range input.Plan.Linearization {
@@ -396,6 +423,18 @@ func validatePlanScalars(plan construction.CompiledConstructionPlan, path string
 			{binding.CasePolicy, "case_policy"}, {binding.Adposition, "adposition"},
 		} {
 			if err := add(value.value, fmt.Sprintf("argument_bindings[%d].%s", i, value.name)); err != nil {
+				return err
+			}
+		}
+	}
+	if len(plan.ModifierBindings) > construction.MaxSlotsPerFamily {
+		return newParserError(path+".modifier_bindings", "compiled modifier binding count exceeds the slot limit")
+	}
+	for i, binding := range plan.ModifierBindings {
+		for _, value := range []struct{ value, name string }{
+			{binding.SlotID, "slot_id"}, {binding.TargetSlot, "target_slot"}, {binding.SemanticRole, "semantic_role"},
+		} {
+			if err := add(value.value, fmt.Sprintf("modifier_bindings[%d].%s", i, value.name)); err != nil {
 				return err
 			}
 		}
@@ -493,6 +532,10 @@ func cloneSlot(slot construction.SlotSpec) construction.SlotSpec {
 		binding := *slot.ArgumentBinding
 		slot.ArgumentBinding = &binding
 	}
+	if slot.ModifierBinding != nil {
+		binding := *slot.ModifierBinding
+		slot.ModifierBinding = &binding
+	}
 	return slot
 }
 
@@ -517,6 +560,7 @@ func cloneVariant(variant construction.Variant) construction.Variant {
 func cloneCompiledPlan(plan construction.CompiledConstructionPlan) construction.CompiledConstructionPlan {
 	plan.Permissions = append([]construction.SensePermission(nil), plan.Permissions...)
 	plan.ArgumentBindings = append([]construction.CompiledArgumentBinding(nil), plan.ArgumentBindings...)
+	plan.ModifierBindings = append([]construction.CompiledModifierBinding(nil), plan.ModifierBindings...)
 	plan.Constraints = append([]construction.CompiledConstraint(nil), plan.Constraints...)
 	for i := range plan.Constraints {
 		plan.Constraints[i].Features = append([]features.FeatureID(nil), plan.Constraints[i].Features...)

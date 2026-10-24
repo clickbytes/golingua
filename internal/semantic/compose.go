@@ -215,9 +215,19 @@ func Compose(input CompositionInput) (ComposeResult, error) {
 		}
 		for _, alternative := range root.Alternatives {
 			predicateNodes := make([]parser.PackedNode, 0, 1)
+			familyRecord, familyFound := input.Constructions.ByID(alternative.FamilyID)
 			for _, slot := range alternative.Slots {
+				mainPredicateSlot := false
+				if familyFound {
+					for _, familySlot := range familyRecord.Family.SlotSpecs {
+						if familySlot.ID == slot.SlotID {
+							mainPredicateSlot = familySlot.IsMainPredicate()
+							break
+						}
+					}
+				}
 				for _, nodeID := range slot.NodeIDs {
-					if node, found := rootByID[nodeID]; found && node.Category.IsPredicate() {
+					if node, found := rootByID[nodeID]; found && node.Category.IsPredicate() && (!familyFound || mainPredicateSlot) {
 						// Packed predicate nodes can be shared by several readings. The
 						// alternative's slot binding is the candidate selection for
 						// this exact derivation; retain it when composing meaning.
@@ -517,13 +527,19 @@ func composeAlternative(result *ComposeResult, input CompositionInput, alternati
 			combinations = [][]roleOption{{}}
 		}
 		for _, combination := range combinations {
-			*work += len(input.Operators) + 1
+			modifierCost := 0
+			if record, found := input.Constructions.ByID(alternative.FamilyID); found {
+				if _, declared := familyModifier(record.Family); declared {
+					modifierCost = 1
+				}
+			}
+			*work += len(input.Operators) + 1 + modifierCost
 			if *work > budget.MaxExpansions {
 				result.Outcome = status.OutcomeResourceLimit
 				result.Diagnostics = appendDiagnostic(result.Diagnostics, semanticDiagnostic("RESOURCE_LIMIT", "semantic mapping expansion budget exhausted", "budget"))
 				return nil
 			}
-			candidate, _, misses, outcome, diagnostics, err := buildMeaningCandidate(input, alternative, predicate, predicateMapping, frame, binding, combination, references, attributes, partialStatus, partialReason, phraseNodes, sourceBytes, budget)
+			candidate, _, misses, outcome, diagnostics, err := buildMeaningCandidate(input, alternative, predicate, predicateMapping, frame, binding, combination, references, attributes, candidates, partialStatus, partialReason, phraseNodes, sourceBytes, budget)
 			if err != nil {
 				return err
 			}
@@ -550,12 +566,13 @@ func composeAlternative(result *ComposeResult, input CompositionInput, alternati
 	return nil
 }
 
-func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlternative, predicate parser.PhraseCandidate, predicateMapping transfer, frame valency.ValencyFrame, binding valency.ConstructionBinding, roles []roleOption, references map[string]ReferenceEvidence, attributes map[string]NodeAttributesEvidence, partialStatus status.OutcomeKind, partialReason string, phraseNodes map[string]parser.NodeID, sourceBytes int, budget Budget) (MeaningCandidate, []EvidenceRecord, []valency.SoftConstraintMiss, status.OutcomeKind, []status.Diagnostic, error) {
+func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlternative, predicate parser.PhraseCandidate, predicateMapping transfer, frame valency.ValencyFrame, binding valency.ConstructionBinding, roles []roleOption, references map[string]ReferenceEvidence, attributes map[string]NodeAttributesEvidence, candidates map[string]parser.PhraseCandidate, partialStatus status.OutcomeKind, partialReason string, phraseNodes map[string]parser.NodeID, sourceBytes int, budget Budget) (MeaningCandidate, []EvidenceRecord, []valency.SoftConstraintMiss, status.OutcomeKind, []status.Diagnostic, error) {
 	id := semanticAlternativeID(alternative, predicate.ID, predicateMapping.binding.CoreRef, roles)
 	nodes := []meaning.Node{}
 	participants := []meaning.Participant{}
 	refs := meaning.RequestContext{ID: input.RequestContextID, Referents: []meaning.Referent{}, Mentions: []meaning.Mention{}}
 	refNodeByIdentity := map[string]meaning.NodeID{}
+	referentNodeByCandidate := map[string]meaning.NodeID{}
 	refNodeIndexByIdentity := map[string]int{}
 	refConceptByIdentity := map[string]ids.ConceptID{}
 	records := []EvidenceRecord{{SourceSpan: predicate.Span, CandidateID: predicate.ID, PhraseNodeID: phraseNodes[predicate.ID], ReadingID: firstString(predicate.ReadingIDs), SenseID: predicateMapping.sense, CoreConceptID: predicateMapping.binding.CoreRef, BindingKey: BindingKeyFor(predicateMapping.sense, predicateMapping.binding.CoreRef), PlanID: alternative.PlanID, FamilyID: alternative.FamilyID, VariantID: alternative.VariantID, FrameID: alternative.Permission.FrameID, Outcome: status.OutcomeOK, Features: evidenceFeatures(predicate.Features), Provenance: predicateMapping.binding.Provenance}}
@@ -606,6 +623,7 @@ func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlter
 			anchor := *refEvidence.Anchor
 			mention.Anchor = &anchor
 		}
+		referentNodeByCandidate[role.candidate.ID] = nodeID
 		refs.Mentions = append(refs.Mentions, mention)
 		participants = append(participants, meaning.Participant{Role: role.role, Target: nodeID})
 		records = append(records, EvidenceRecord{SourceSpan: role.span, CandidateID: role.candidate.ID, PhraseNodeID: phraseNodes[role.candidate.ID], ReadingID: firstString(role.candidate.ReadingIDs), SenseID: role.mapping.sense, CoreConceptID: role.mapping.binding.CoreRef, BindingKey: BindingKeyFor(role.mapping.sense, role.mapping.binding.CoreRef), Role: role.role, Outcome: status.OutcomeOK, Features: evidenceFeatures(role.candidate.Features), Provenance: role.mapping.binding.Provenance})
@@ -631,6 +649,20 @@ func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlter
 		event.TemporalFrame = attribute.TemporalFrame
 	}
 	nodes = append(nodes, event)
+	var modifierStateID meaning.NodeID
+	if familyRecord, familyFound := input.Constructions.ByID(alternative.FamilyID); familyFound {
+		if _, declared := familyModifier(familyRecord.Family); declared {
+			modifier, modifierOutcome, modifierRecords, diagnostic := modifierCompositionFor(input, alternative, familyRecord.Family, candidates, phraseNodes, referentNodeByCandidate, nodes, attributes)
+			if modifierOutcome != status.OutcomeOK {
+				failedRecords := append(append([]EvidenceRecord(nil), records...), modifierRecords...)
+				candidate := evidenceOnlyMeaningCandidate(id, modifierOutcome, failedRecords, diagnostic)
+				return candidate, failedRecords, nil, modifierOutcome, []status.Diagnostic{diagnostic}, nil
+			}
+			modifierStateID = modifier.state.ID
+			nodes = append(nodes, modifier.state)
+			records = append(records, modifierRecords...)
+		}
+	}
 	operators, operatorNodes, opRecords, opOutcome, opDiagnostics := materializeOperators(input, alternative, predicate, sourceBytes)
 	nodes = append(nodes, operatorNodes...)
 	records = append(records, opRecords...)
@@ -647,6 +679,9 @@ func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlter
 	if len(input.Operators) == 1 && len(operatorNodes) == 1 &&
 		operatorNodes[0].Kind == meaning.KindScope && operatorNodes[0].Operator == meaning.OperatorNegation && operatorNodes[0].Target == "event" {
 		roots = []meaning.NodeID{operatorNodes[0].ID}
+	}
+	if modifierStateID != "" {
+		roots = append(roots, modifierStateID)
 	}
 	graph, err := meaning.Build(roots, graphNodes, budget.Meaning)
 	if err != nil {

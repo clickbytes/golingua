@@ -1269,7 +1269,8 @@ var englishAnArticleLexemes = map[string]struct{}{
 }
 
 var englishCountNounLexemes = map[string]struct{}{
-	"en.mother.n": {}, "en.father.n": {}, "en.dog.n": {}, "en.house.n": {}, "en.household.n": {},
+	"en.offspring.n": {},
+	"en.mother.n":    {}, "en.father.n": {}, "en.dog.n": {}, "en.house.n": {}, "en.household.n": {},
 	"en.school.n": {}, "en.book.n": {}, "en.hand.n": {}, "en.eye.n": {},
 	"en.child.n": {}, "en.table.n": {}, "en.teacher.n": {}, "en.doctor.n": {},
 	"en.car.n": {}, "en.fish_animal.n": {}, "en.hospital_building.n": {},

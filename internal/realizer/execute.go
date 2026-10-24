@@ -181,6 +181,9 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 	if err := input.Family.Validate(); err != nil {
 		return ExecuteResult{}, executeWrapError(err)
 	}
+	if !CoversLexicalMeaning(input.SourceMeaning, plan.NodeID, input.Family) {
+		return ExecuteResult{}, executeError(status.OutcomeUnsupported, "MEANING_NOT_COVERED_BY_FAMILY", "source.meaning", "selected construction does not cover every lexical node in the source Meaning")
+	}
 	if input.Family.ID != plan.FamilyID || plan.CompiledVariant.FamilyID != plan.FamilyID || plan.CompiledVariant.PlanID != plan.FamilyPlanID {
 		return ExecuteResult{}, executeError(status.OutcomeInvalid, "PLAN_FAMILY_MISMATCH", "family", "supplied family identity or plan version differs from the selected plan")
 	}
@@ -224,7 +227,7 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 	predicateSlots := 0
 	for _, slot := range slots {
 		slotByID[slot.ID] = slot
-		if slot.Category.IsPredicate() && slot.ArgumentBinding == nil {
+		if slot.IsMainPredicate() {
 			predicateSlots++
 		}
 	}
@@ -243,7 +246,7 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 	for _, slot := range slots {
 		req, supplied := input.Slots[slot.ID]
 		if !supplied {
-			if slot.Category.IsPredicate() && slot.ArgumentBinding == nil {
+			if slot.IsMainPredicate() {
 				return ExecuteResult{}, executeError(status.OutcomeIncomplete, "PREDICATE_SLOT_UNAVAILABLE", "slots."+slot.ID, "the selected event/state predicate requires an explicit lexicalization request")
 			}
 			if slot.ArgumentBinding != nil {
@@ -303,7 +306,28 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 		role := meaning.Role("")
 		var sourcePath []meaning.NodeID
 		var sourceNode meaning.Node
-		if slot.ArgumentBinding != nil {
+		if slot.ModifierBinding != nil {
+			modifier, ok := FindModifier(input.SourceMeaning, plan.NodeID, input.Family, slot.ID)
+			if !ok {
+				return ExecuteResult{}, executeError(status.OutcomeUnsupported, "MODIFIER_STATE_UNAVAILABLE", "meaning."+string(plan.NodeID), "declared modifier slot has no unique linked root state")
+			}
+			modifierConceptID, parseErr := ids.ParseConceptID(string(modifier.Concept))
+			if parseErr != nil {
+				return ExecuteResult{}, executeError(status.OutcomeUnsupported, "MODIFIER_PROPERTY_UNSUPPORTED", "meaning."+string(modifier.ID)+".concept", "modifier state does not identify a CORE property")
+			}
+			modifierConcept, exists := input.Core.Lookup(modifierConceptID)
+			if !exists || modifierConcept.Kind != core.KindProperty {
+				return ExecuteResult{}, executeError(status.OutcomeUnsupported, "MODIFIER_PROPERTY_UNSUPPORTED", "meaning."+string(modifier.ID)+".concept", "modifier binding requires a CORE property concept")
+			}
+			if req.NodeID != modifier.ID {
+				return ExecuteResult{}, executeError(status.OutcomeInvalid, "SLOT_NODE_MODIFIER_MISMATCH", "slots."+slot.ID+".node_id", "slot node does not match the exact modifier state linked to its NP target")
+			}
+			sourcePath, sourceNode, found = pathToNode(input.SourceMeaning, modifier.ID, meaning.DefaultBudget().MaxDepth)
+			if !found {
+				return ExecuteResult{}, executeError(status.OutcomeUnknown, "MODIFIER_NODE_UNREACHABLE", "slots."+slot.ID+".node_id", "modifier state is absent or unreachable in source Meaning")
+			}
+			role = slot.ModifierBinding.SemanticRole
+		} else if slot.ArgumentBinding != nil {
 			role = slot.ArgumentBinding.SemanticRole
 			participant, count := participantByRole(predicate, role)
 			if count == 0 {
@@ -320,7 +344,7 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 				return ExecuteResult{}, executeError(status.OutcomeUnknown, "SLOT_NODE_UNREACHABLE", "slots."+slot.ID+".node_id", "argument node is absent or unreachable in source Meaning")
 			}
 		} else {
-			if !slot.Category.IsPredicate() || req.NodeID != plan.NodeID {
+			if !slot.IsMainPredicate() || req.NodeID != plan.NodeID {
 				return ExecuteResult{}, executeError(status.OutcomeUnsupported, "UNBOUND_NON_PREDICATE_SLOT", "family.slot_specs."+slot.ID, "only the predicate VP/AP slot may be unbound to a semantic argument role")
 			}
 			sourceNode, sourcePath = predicate, path
@@ -642,6 +666,10 @@ func cloneExecutionFamily(family construction.ConstructionFamily) construction.C
 		if slot.ArgumentBinding != nil {
 			binding := *slot.ArgumentBinding
 			result.SlotSpecs[index].ArgumentBinding = &binding
+		}
+		if slot.ModifierBinding != nil {
+			binding := *slot.ModifierBinding
+			result.SlotSpecs[index].ModifierBinding = &binding
 		}
 	}
 	result.Constraints = make([]construction.FamilyConstraint, len(family.Constraints))

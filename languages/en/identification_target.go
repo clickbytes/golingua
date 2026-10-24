@@ -5,6 +5,7 @@ import (
 	"github.com/clickbytes/golingua/internal/realizer"
 	"github.com/clickbytes/golingua/internal/runtime"
 	"github.com/clickbytes/golingua/internal/semantic"
+	"github.com/clickbytes/golingua/internal/status"
 )
 
 type englishIdentification struct {
@@ -43,7 +44,7 @@ func englishIdentificationState(source semantic.MeaningCandidate) (englishIdenti
 			return id, true
 		}
 		referent := findMeaningNode(*source.Meaning, node.Participants[0].Target)
-		if referent.Kind != meaning.KindReferent || string(referent.Concept) != "concept:cat" {
+		if referent.Kind != meaning.KindReferent || referent.Concept == "" {
 			id.valid = false
 			return id, true
 		}
@@ -110,7 +111,7 @@ func englishNegativeIdentificationState(source semantic.MeaningCandidate) (engli
 			return id, true
 		}
 	}
-	if scope.ID == "" || state.ID == "" || ref.ID == "" || source.Meaning.Roots[0] != scope.ID || scope.Operator != meaning.OperatorNegation || scope.Target != state.ID || string(state.Concept) != "concept:class_membership" || string(ref.Concept) != "concept:cat" || len(state.Participants) != 1 || state.Participants[0].Role != "member" || state.Participants[0].Target != ref.ID {
+	if scope.ID == "" || state.ID == "" || ref.ID == "" || source.Meaning.Roots[0] != scope.ID || scope.Operator != meaning.OperatorNegation || scope.Target != state.ID || string(state.Concept) != "concept:class_membership" || ref.Concept == "" || len(state.Participants) != 1 || state.Participants[0].Role != "member" || state.Participants[0].Target != ref.ID {
 		return id, true
 	}
 	id.stateID, id.referent, id.concept = state.ID, ref.ID, ref.Concept
@@ -174,6 +175,47 @@ func englishNegativeIdentificationContext(context semantic.MeaningContext, expec
 func englishIdentificationContextForSource(source semantic.MeaningCandidate) (englishIdentification, bool) {
 	id, recognized := englishIdentificationState(source)
 	return id, recognized && id.valid
+}
+
+// englishIdentificationMemberCountSupported admits class-membership routes
+// only when the exact Meaning referent has an approved count-noun target.
+func englishIdentificationMemberCountSupported(source semantic.MeaningCandidate, expected englishIdentification, candidates []realizer.TargetCandidate) bool {
+	if expected.role != "member" {
+		return true
+	}
+	if source.Meaning == nil || expected.referent == "" || expected.concept == "" {
+		return false
+	}
+	var referent meaning.Node
+	for _, node := range source.Meaning.Nodes {
+		if node.ID == expected.referent {
+			referent = node
+			break
+		}
+	}
+	if referent.ID == "" || referent.Kind != meaning.KindReferent || referent.Concept != expected.concept {
+		return false
+	}
+	for _, candidate := range candidates {
+		if candidate.Kind != meaning.KindReferent || candidate.NodeID != expected.referent || candidate.Outcome != status.OutcomeOK || candidate.TransferBinding.CoreRef.String() != string(referent.Concept) {
+			continue
+		}
+		mass, pluralOnly := englishNumberClass(candidate.Lexeme.Properties, candidate.Lexeme.ParadigmID)
+		explicitCount := false
+		for _, property := range candidate.Lexeme.Properties {
+			if property.Key == "number_behavior" && property.Value == "count" {
+				explicitCount = true
+				break
+			}
+		}
+		article, articleKnown := englishIndefiniteArticle(candidate.Lexeme.Properties)
+		// The current classification variants emit a fixed "a". A different
+		// or undeclared article is not licensed by these constructions.
+		if explicitCount && !mass && !pluralOnly && articleKnown && article == "a" {
+			return true
+		}
+	}
+	return false
 }
 
 func englishIdentificationContext(context semantic.MeaningContext, expected englishIdentification) (string, bool) {
