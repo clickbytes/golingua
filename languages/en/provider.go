@@ -73,8 +73,8 @@ func (provider *sentenceProvider) Analyze(ctx context.Context, surface string) (
 }
 
 func sentenceSenseIDs() ([]ids.SenseID, error) {
-	senseIDs := make([]ids.SenseID, 0, 5)
-	for _, value := range []string{"en.see.visual", "en.hear.auditory", "en.get.receive", "en.look.directed", "en.read.text"} {
+	senseIDs := make([]ids.SenseID, 0, 7)
+	for _, value := range []string{"en.see.visual", "en.hear.auditory", "en.get.receive", "en.look.directed", "en.read.text", "en.be.class_membership", "en.black.color"} {
 		senseID, err := ids.NewSenseID(value)
 		if err != nil {
 			return nil, err

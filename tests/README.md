@@ -46,7 +46,7 @@ Kontrola samego I, bez uruchamiania PL/EN:
 go test ./tests/interlingua/... -run Identification -count=1 -v
 ```
 
-Po A1-T03 polska analiza i niezależna realizacja identyfikacji przechodzą kontrakt; angielska strona nadal jest luką A1-T04. Ma gotowe wzorce, więc jest raportowana jako GAP, a nie SPEC_PENDING. Pozostałe 16 rekordów poza identyfikacją i widzeniem nadal nie ma zamkniętych wzorców I.
+Po A1-T04 niezależne I, PL/EN analiza i realizacja oraz cztery integracje identyfikacji przechodzą zamknięty kontrakt. Pozostałe 16 rekordów poza identyfikacją i widzeniem nadal nie ma zamkniętych wzorców I; pełna macierz zgłasza je jako SPEC_PENDING / NOT RUN.
 
 ## Uruchamianie i odczyt wyniku
 
@@ -90,6 +90,30 @@ Negatywna kontrola I z nierozstrzygniętym sposobem odniesienia w opisie koloru 
 Produkcja korzysta z jawnych form `jest` i `czarny`, skompilowanych konstrukcji/walencji oraz kategorii AP dla predykatu przymiotnikowego. Kotwica z dowodu konstrukcji trafia do nierozstrzygniętej Mention; to nie jest rozstrzygnięcie tożsamości. Nowe trasy są zarejestrowane w zweryfikowanym pakiecie PL. Do ich użycia w CLI trzeba przygotować świeży snapshot z bieżącego Go, jak w instrukcji poniżej.
 
 Obserwacje na bazie `9c2847005205eb120f98d67026af8f4d62286a7a` + zmiany A1-T03: PL→EN obu zdań w CLI zwrócił `unsupported`/exit 3, zachowując poprawne I i diagnostykę `NO_LICENSED_TARGET`; angielski cel nie jest jeszcze zaimplementowany. **Nie jest to ukończona integracja.** Dane sesji: `/tmp/a1-t03-cli.json`; pełne lokalne kontrole: `/tmp/a1-t03-coordinator-{pl,i,seeing,full}.log`. Polecenie pełnej macierzy kończy się niepowodzeniem z powodu EN GAP i innych SPEC_PENDING. Ocena agenta PL: PASS; właściciel: `NOT_EVALUATED`.
+
+## Angielska identyfikacja (A1-T04)
+
+Obowiązkowy odbiór wszystkich stron identyfikacji:
+
+```sh
+go test ./tests/interlingua/... -run Identification -count=1 -v
+go test ./tests/languages/pl/A1/... -run Identification -count=1 -v
+go test ./tests/languages/en/A1/... -run Identification -count=1 -v
+go test ./tests/translation/... -run Identification -count=1 -v
+```
+
+Analiza EN zachowuje dokładne `This is a cat` bez kropki oraz `This cat is black.`. Natywne I z kotwicą proximal daje tylko `This is a cat.` / `This cat is black.` bez fałszywej assumption `reference`. Realizacja z PL zachowuje wszystkie uzgodnione warianty; wybór this/that/it jest jawnym założeniem każdego odpowiedniego kandydata. Artykuł `a` w klasyfikacji jest częścią predykacji klasy, nie identycznością z drugim, konkretnym kotem.
+
+CLI na bazie `07f3a916b24d1a69b7ed8fcad464d9cde17ed3d9` + A1-T04 rzeczywiście wykonał cztery przepływy:
+
+| Rekord | Teksty kandydatów | Status / exit |
+| --- | --- | --- |
+| A1-ID-001-EN-PL | `To jest kot.` | `incomplete` / 7; strata `deixis` |
+| A1-ID-002-PL-EN | `This is a cat.`, `That is a cat.`, `It is a cat.` | `ambiguous` / 6; jawna assumption `reference` |
+| A1-ID-003-EN-PL | `Ten kot jest czarny.` | `incomplete` / 7; strata `deixis` |
+| A1-ID-004-PL-EN | `This cat is black.`, `That cat is black.` | `ambiguous` / 6; jawna assumption `reference` |
+
+To wyniki zgodne z kontraktem, nie dowód rozstrzygnięcia wskazania czy tożsamości. Rzeczywiste grafy, założenia, straty i diagnostyki zapisano w `/tmp/a1-t04-cli.json`; logi kontrolne `/tmp/a1-t04-coordinator-{i,pl,en,translation,seeing,full}.log`. Ocena agenta identyfikacji: PASS. Akceptacja językowa właściciela: `NOT_EVALUATED`.
 
 ## Odtworzenie obserwacji CLI
 

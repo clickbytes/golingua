@@ -23,11 +23,12 @@ func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm 
 				Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "form"}}}},
 		}
 	}
-	return []morph.Paradigm{
+	result := []morph.Paradigm{
 		makeParadigm("en_noun_singular_attested", "noun", "noun_number", "singular"),
 		makeParadigm("en_determiner_definite", "determiner", "determiner", "definite"),
 		makeParadigm("en_determiner_indefinite", "determiner", "determiner", "indefinite"),
 	}
+	return append(result, identificationParadigms(profile)...)
 }
 
 // inCodeMorphRecords uses a regular seed only where its spelling rule applies.
@@ -55,6 +56,8 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 		}
 		principalParts := morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{part}}
 		switch lexeme.ID.String() {
+		case "lexeme:en.be.v", "lexeme:en.black.adj":
+			principalParts, _ = identificationMorphRecords(lexeme)
 		case "lexeme:en.see.v":
 			principalParts = finiteEnglishPrincipalParts(lexeme, "see", "sees", "saw", "seen", "seeing")
 		case "lexeme:en.hear.v":

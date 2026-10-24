@@ -163,6 +163,8 @@ var englishPendingAuditSource = provenance.SourceRef{
 	Version: "2026-10-23-pending-audit", License: "unknown", Author: "codex-owner-delegated",
 }
 var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
+	"en.be.class_membership":                       englishIdentificationSource,
+	"en.black.color":                               englishIdentificationSource,
 	"en.adult.person":                              englishPendingAuditSource,
 	"en.teacher.role":                              englishPendingAuditSource,
 	"en.student.learner":                           englishPendingAuditSource,
@@ -1163,22 +1165,26 @@ var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
 }
 
 var englishFrameBySense = map[string]lexicon.ValencyID{
-	"en.see.visual":    "en.see.visual.transitive",
-	"en.look.directed": "en.look.directed.at",
-	"en.hear.auditory": "en.hear.auditory.transitive",
-	"en.get.receive":   "en.get.receive.transitive",
-	"en.read.text":     "en.read.text.transitive",
+	"en.be.class_membership": "en.be.class_membership.frame",
+	"en.black.color":         "en.black.color.frame",
+	"en.see.visual":          "en.see.visual.transitive",
+	"en.look.directed":       "en.look.directed.at",
+	"en.hear.auditory":       "en.hear.auditory.transitive",
+	"en.get.receive":         "en.get.receive.transitive",
+	"en.read.text":           "en.read.text.transitive",
 }
 
 var englishParadigmByLexeme = map[string]string{
-	"en.the.det": "en_determiner_definite",
-	"en.a.det":   "en_determiner_indefinite",
-	"en.an.det":  "en_determiner_indefinite",
-	"en.see.v":   "en_verb_finite_principal_parts",
-	"en.hear.v":  "en_verb_finite_principal_parts",
-	"en.look.v":  "en_verb_finite_principal_parts",
-	"en.get.v":   "en_verb_finite_principal_parts",
-	"en.read.v":  "en_verb_finite_principal_parts",
+	"en.be.v":      "en_identification_be_present_3sg",
+	"en.black.adj": "en_identification_black_positive",
+	"en.the.det":   "en_determiner_definite",
+	"en.a.det":     "en_determiner_indefinite",
+	"en.an.det":    "en_determiner_indefinite",
+	"en.see.v":     "en_verb_finite_principal_parts",
+	"en.hear.v":    "en_verb_finite_principal_parts",
+	"en.look.v":    "en_verb_finite_principal_parts",
+	"en.get.v":     "en_verb_finite_principal_parts",
+	"en.read.v":    "en_verb_finite_principal_parts",
 	// Count nouns use only a spelling class that matches their declared lemma;
 	// mass nouns stay on the explicit singular-only class below.
 	"en.mother.n": "en_noun_regular", "en.father.n": "en_noun_regular",
@@ -1266,7 +1272,8 @@ var englishAnArticleLexemes = map[string]struct{}{
 // It keeps polysemous senses distinct and leaves unmapped meanings unresolved.
 func LexicalDocument() (lexicon.Document, error) {
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
-	for _, group := range englishLexiconGroups() {
+	groups := append(englishLexiconGroups(), lexicalGroup{source: englishIdentificationSource, entries: identificationEntries})
+	for _, group := range groups {
 		if err := group.source.Validate(); err != nil {
 			return lexicon.Document{}, fmt.Errorf("English lexical source %q: %w", group.source.ID, err)
 		}

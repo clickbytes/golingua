@@ -63,19 +63,27 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if err != nil {
 		return nil, err
 	}
+	classificationSense, err := ids.NewSenseID("en.be.class_membership")
+	if err != nil {
+		return nil, err
+	}
+	attributionSense, err := ids.NewSenseID("en.black.color")
+	if err != nil {
+		return nil, err
+	}
 	return &runtime.SourcePipeline{
 		Language: "en", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}},
-		AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "do": true, "does": true, "not": true},
+		AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "do": true, "does": true, "not": true, "this": true, "that": true, "it": true, "is": true, "a": true},
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
-		PhraseBuilder: englishDeterminerNPBuilder{inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
+		PhraseBuilder: englishIdentificationPhraseBuilder{inner: englishDeterminerNPBuilder{inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
 			Categories: map[lexicon.PartOfSpeech][]construction.SlotCategory{
-				"noun": {construction.CategoryNP}, "verb": {construction.CategoryVP},
+				"noun": {construction.CategoryNP}, "verb": {construction.CategoryVP}, "adjective": {construction.CategoryAP},
 			},
-		}}, lexicon: snapshot.Lexicon()},
+		}}, lexicon: snapshot.Lexicon()}},
 		EvidenceBuilder: englishSentenceEvidenceBuilder{base: runtime.BareDeclarativeEvidenceBuilder{
-			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true},
+			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true},
 			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
 				seeingSense: {
 					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
@@ -96,9 +104,11 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 				},
 				// English simple past is finite but has one form for all persons
 				// and numbers, so no agreement feature is required for this cell.
-				receivingSense: {{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"}},
+				receivingSense:      {{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"}},
+				classificationSense: {{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "number": "singular", "verb_number": "singular"}},
+				attributionSense:    {{"adjective_degree": "positive"}},
 			},
-			AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "do": true, "does": true, "not": true},
+			AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "do": true, "does": true, "not": true, "this": true, "that": true, "it": true, "is": true, "a": true},
 		}},
 	}, nil
 }
@@ -116,7 +126,11 @@ func (builder englishSentenceEvidenceBuilder) Build(ctx context.Context, lattice
 		}
 	}
 	if !hasNot {
-		return builder.base.Build(ctx, lattice, candidates, forest)
+		evidence, err := builder.base.Build(ctx, lattice, candidates, forest)
+		if err != nil || !evidence.OperatorCoverageComplete {
+			return evidence, err
+		}
+		return addEnglishIdentificationReferences(evidence, candidates, forest), nil
 	}
 	if _, uniqueNot := englishTerminalSpan(lattice, "not"); !uniqueNot {
 		return runtime.CompositionEvidence{}, nil
