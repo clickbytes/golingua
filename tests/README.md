@@ -1,65 +1,73 @@
-# Macierz językowa według poziomu i partii
+# Lokalna macierz znaczenia i języków
 
-Na polecenie właściciela z 2026-10-23 powstaje jawna macierz przypadków do realizacji. Pierwszym celem jest A1 dla PL↔EN. To mała próbka zachowań komunikacyjnych, nie pełne pokrycie ani certyfikacja CEFR. Jako kontekst doboru tematów wykorzystano [deskryptory Rady Europy](https://rm.coe.int/16809ea0d4); zdania i propozycje przekładów są własną redakcją, nie kopią materiału egzaminacyjnego.
+Na polecenie właściciela macierz A1 wykonujemy standardowym `go test`, **poza CI językowym**. Techniczne CI nadal sprawdza formatowanie, vet, build i dotychczasowe smoke. Próbka to 12 par zdań i 24 rekordy kierunkowe; nie jest pełnym A1 ani certyfikacją CEFR. Kontekst tematów: [deskryptory Rady Europy](https://rm.coe.int/16809ea0d4). Zdania są własną redakcją, bez porównań do JavaScriptu.
 
-## Układ
+## Dane i odpowiedzialności
 
 ```text
 tests/
-  README.md
-  A1/
-    cases.go
-    identification.testdomain.go
-    possession.testdomain.go
-    location_quantity.testdomain.go
-    actions.testdomain.go
-    negation.testdomain.go
-    questions.testdomain.go
+  interlingua/              # niezależne, ręcznie zapisane wzorce I
+  languages/pl/A1/          # polska analiza i polska realizacja
+  languages/en/A1/          # angielska analiza i angielska realizacja
+  translation/cases.go      # 24 stabilne ID i odwołania do obu stron
+  translation/pl-en/        # kontrole PL→I→EN
+  translation/en-pl/        # kontrole EN→I→PL
+  matrix/                  # wspólne typy, walidowany runtime i pomocniki
 ```
 
-`A1/` jest pierwszą partią. Przyszłe `A1.1/`, `A1.2/` oznaczą kolejne partie tego samego celu A1, nie odrębne poziomy CEFR. Nie tworzymy ich przed określeniem zakresu. Nazwa domeny mówi, jakie zachowanie sprawdzamy; stabilne ID identyfikuje konkretny kierunek i wejście. Nowa partia nie zastępuje ani nie przepisuje starszych przypadków.
+`*.testdomain.go` to zwykłe dane Go; `*_test.go` wykonuje kontrole. Przyszłe A1.1 i A1.2 oznaczają kolejne partie A1 konkretnego języka i wymagają osobno określonego zakresu.
 
-Pierwsza próbka zawiera 12 par zdań i 24 jawne rekordy kierunkowe. Obejmuje identyfikację/opis, posiadanie, lokalizację/liczbę, proste czynności i zamianę ról, przeczenie oraz pytania. Włącza dokładne wejście właściciela `This is a cat`, znaną działającą trasę widzenia i nowe konstrukcje, których silnik obecnie może nie obsługiwać. Nie dobieramy macierzy wyłącznie do istniejącej implementacji.
+Każdy oryginalny rekord zachowuje ID w `translation.Cases`. Odwołuje się do analizy `ID:analyze` w języku źródłowym oraz realizacji `ID:realize` w docelowym. Analiza przechowuje dokładne wejście, `MustPreserve`, nierozstrzygnięcia i pochodzenie wejścia. Realizacja przechowuje osobno `ProposalTexts`, autorstwo propozycji i ewentualny zamknięty kontrakt `AllowedTexts` oraz `AllowedAssumptionFields`. Brak wzorca I nie jest dowodem błędu parsera. Propozycje innych domen nie stają się automatycznie asercjami tekstowymi.
 
-## Co opisuje rekord
+W A1-T01 zamknięto dwa znaczenia kontrolne: `seeing.teacher-dog` i `seeing.dog-teacher`. Wzorce zawierają zdarzenie `concept:seeing`, role `experiencer`/`stimulus` i odrębne referenty. Nie ustalają konkretnej tożsamości, czasu, liczby ani angielskiej określoności. Realizacja z samego I musi ujawnić potrzebne założenia; angielski zachowuje cztery warianty rodzajników. Zamiana ról zmienia kontrakt.
 
-- `ID`, `From`, `To`, `Input`: stabilna tożsamość, kierunek i dokładny tekst źródłowy.
-- `MustPreserve`: wymagane zachowanie znaczenia, np. role uczestników, negacja, liczba albo pytanie zamiast stwierdzenia.
-- `ReferenceTexts`: niepełna lista przykładowych propozycji przekładu. Nie jest listą wszystkich dopuszczalnych wyników ani automatyczną asercją równości napisu.
-- `AmbiguityNote`: czego nie można rozstrzygnąć bez kontekstu. Przykładowo PL→EN nie wymusza jednego rodzajnika, a polskie „to” wymaga rozważenia `this`/`that`/`it`.
-- `InputOrigin`, `ReferenceOrigin`: pochodzenie wejścia oraz oddzielne autorstwo propozycji. Wynik obecnego silnika nie staje się źródłem oczekiwania.
-- `OwnerAcceptance`: akceptacja właściciela; początkowo `NOT_EVALUATED`. Dostarczenie samego wejścia nie oznacza zatwierdzenia proponowanego przekładu.
+`GraphMatches` porównuje strukturę z bijekcją lokalnych NodeID, niezależnie od kolejności węzłów i ról. Zachowuje współdzielenie węzłów i odrębność referentów o tym samym ConceptID. To porównanie kontraktu z nierozstrzygniętymi referentami, **nie dowód identyczności osobników** ani zamiennik `meaning.SemanticEquivalence`. Wzorce powstają bez analizatora, a realizacja nie uruchamia analizy innego języka.
 
-Brak obsługi wpisu jest luką do zrealizowania. Nie zmieniamy oczekiwania na `unsupported` tylko po to, żeby przypadek wyglądał na zaliczony. Nie wymuszamy `ok` ani jednego tekstu, gdy wejście dopuszcza kilka odczytań. Obserwację, ocenę agenta i akceptację właściciela zapisujemy oddzielnie.
+Runtime kompiluje `bundled.Candidate`, waliduje pakiet i rejestr języków, następnie używa produkcyjnych konstruktorów PL/EN z CLI. Nie wymaga konfiguracji ani aktywnego store użytkownika.
 
-## Odczyt i wykonanie
+## Uruchamianie i odczyt wyniku
 
-Ta pierwsza dostawa jest **macierzą danych do realizacji, bez runnera**. Pliki `*.testdomain.go` są zwykłymi kompilowanymi źródłami Go z rekordami; sam przyrostek nie uruchamia ich przez `go test`. Nie ma ukrytych pominięć, testów zawsze zielonych ani automatycznej akceptacji propozycji.
-
-Można obejrzeć konkretną domenę standardowym narzędziem Go:
+Z katalogu głównego zapisz SHA wraz z poleceniem; dla niezatwierdzonych zmian dodaj opis working tree:
 
 ```sh
-go doc -src ./tests/A1 IdentificationCases
-go doc -src ./tests/A1 QuestionCases
+export GOLINGUA_MATRIX_SHA="$(git rev-parse HEAD)+working-tree"
+go test ./tests/interlingua/... -run Seeing -count=1 -v
+go test ./tests/languages/pl/A1/... -run Seeing -count=1 -v
+go test ./tests/languages/en/A1/... -run Seeing -count=1 -v
+go test ./tests/translation/... -run Seeing -count=1 -v
+go test ./tests/... -count=1 -v
 ```
 
-Przypadek wykonuje się dziś jawnym CLI z wybranym aktywnym runtime’em, np.:
+Po commicie użyj dokładnego SHA bez `+working-tree`. Kontrole adapterów logują SHA oraz surowy wynik z kandydaturami, grafami, tekstami, założeniami, stratami i diagnostykami. Bez zmiennej SHA log zawiera `UNRECORDED`; nie przypisuj takiego logu do konkretnego commita. Polecenie, exit code i ocenę zapisz obok logu. Obserwacje nie nadpisują oczekiwań.
+
+| Ocena | Znaczenie |
+| --- | --- |
+| PASS | Wykonany przypadek spełnia kontrakt; standardowe `go test` pokazuje PASS |
+| FAIL | Wynik narusza kontrakt |
+| GAP_ANALYZE | Brak wymaganej analizy języka |
+| GAP_REALIZE | Brak wymaganej realizacji języka |
+| GAP_I | I nie potrafi wyrazić uzgodnionego znaczenia |
+| SPEC_PENDING / NOT RUN | Brak niezależnego, zamkniętego wzorca do porównania |
+| INFRA | Runtime lub środowisko uniemożliwia wykonanie |
+
+Status silnika (`ok`, `ambiguous`, `incomplete`, `unsupported`) jest oddzielony od oceny. Samo `ok` nie daje PASS. Nie używamy `t.Skip`, procentowych progów ani automatycznej akceptacji propozycji. Pełne `go test ./tests/...` ma niezerowy exit code, dopóki jakiekolwiek zadeklarowane wymaganie pozostaje niezaliczone. Inwentarz kontroluje wszystkie 24 ID i odwołania, również bez wzorców I.
+
+Akceptacja językowa właściciela pozostaje `NOT_EVALUATED`. Zamknięcie kontraktu i ocena techniczna przez agenta nie oznaczają jego akceptacji.
+
+## Odtworzenie obserwacji CLI
+
+Macierz nie potrzebuje store. CLI używa jawnie przygotowanego snapshotu; przykład zapisuje go poza repozytorium:
 
 ```sh
-go run ./cmd/golingua translate --from en --to pl --text 'This is a cat' --runtime-config .local/runtime.json --json
+go build -o /tmp/golingua-a1 ./cmd/golingua
+/tmp/golingua-a1 snapshot --apply --store /tmp/golingua-a1-store --json
+cat > /tmp/golingua-a1-runtime.json <<'JSON'
+{"schema_version":1,"dataset_store":"/tmp/golingua-a1-store","dataset_id":"golingua-authored","language_package_dirs":[]}
+JSON
+/tmp/golingua-a1 translate --from en --to pl --text 'The teacher sees the dog.' --runtime-config /tmp/golingua-a1-runtime.json --json
+/tmp/golingua-a1 translate --from pl --to en --text 'Nauczyciel widzi psa.' --runtime-config /tmp/golingua-a1-runtime.json --json
 ```
 
-Ścieżka `.local/runtime.json` jest lokalną konfiguracją użytkownika, nie częścią macierzy; przygotowanie snapshotu i konfiguracji opisuje [CLI](../docs/cli.md). Zapisuj rzeczywisty status, tekst/kandydatury, diagnostyki, exit code i SHA, bez nadpisywania propozycji przez aktualny output. Format opisu obserwacji jest w [procedurze przeglądu](../docs/manual-review.md).
+W obserwacji A1-T01 na bazie `a922fff84a663976ec46324ff6a7a9359665e38e` EN→PL zwrócił `ok`/exit 0 i `Nauczyciel widzi psa.`; zamiana ról dała `Pies widzi nauczyciela.`. PL→EN zwrócił `ambiguous`/exit 6 i cztery warianty `a/the` dla obu uczestników, także po zamianie ról. Ocena agenta: zachowane role i jawna niejednoznaczność rodzajników. Właściciel: `NOT_EVALUATED`. Surowe JSON sesji: `/tmp/golingua-a1-t01-cli.json` (lokalny dowód, nie fixture produktu).
 
-Decyzja o wykonywanych testach i ich asercjach jest osobnym krokiem. Obecna próbka nie dodaje `*_test.go`, frameworka, automatycznej bramki językowej w CI, procentowych metryk ani porównania z JS. Istniejące gofmt/vet/build sprawdzają tylko poprawność techniczną pakietu.
-
-## Rzeczywiste obserwacje startowe
-
-Silnik: `0e2933c911f9b86ba92d53740a7dde310d55f9e9`. Kompilowany lokalnie jako `/tmp/golingua-unsupported-analysis`; aktywna konfiguracja `/home/ppotepa/git/work/golingua/.local/runtime.json`. Zapis nie twierdzi, że wykonano całą macierz.
-
-| ID | Dokładne wejście EN→PL | Wynik silnika / exit | Ocena agenta | Akceptacja właściciela |
-| --- | --- | --- | --- | --- |
-| A1-ID-001-EN-PL | `This is a cat` | `unsupported` / 3; brak tekstu, `UNKNOWN_SURFACE` dla This/is, `NO_START_PLAN`, `UNMATCHED_PARSE_CANDIDATE` | BRAK OBSŁUGI konstrukcji identyfikacyjnej | NOT_EVALUATED |
-| A1-AC-001-EN-PL | `The teacher sees the dog.` | `ok` / 0; `Nauczyciel widzi psa.` | przekład zachowuje role i sens na tym wejściu | NOT_EVALUATED |
-
-Pozostałe rekordy tej próbki nie zostały wykonane w ramach #309: **NOT RUN**. Historyczne pochodzenie części wejść nie jest nowym uruchomieniem ani akceptacją właściciela. Pełne surowe JSON z dwóch powyższych wywołań zapisano lokalnie jako `/tmp/golingua-a1-owner-observed.json` i `/tmp/golingua-a1-existing-observed.json`; są dowodami sesji, nie fixtures produktu. Zlecenie i końcowe wyniki kontroli technicznych: [issue #309](https://github.com/clickbytes/golingua/issues/309).
+Pierwsza dostawa danych: [#309](https://github.com/clickbytes/golingua/issues/309). Fundament: [#312](https://github.com/clickbytes/golingua/issues/312); epik: [#311](https://github.com/clickbytes/golingua/issues/311). Szczegóły: [CLI](../docs/cli.md), [przegląd ręczny](../docs/manual-review.md).

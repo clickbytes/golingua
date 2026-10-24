@@ -184,6 +184,20 @@ func (engine *Engine) TargetRealizerFor(languageID features.LanguageID) (TargetR
 	return realizer, exists && realizer != nil
 }
 
+// SourceAnalyzerFor returns a source adapter only when the selected immutable
+// registry declares analysis for that language.
+func (engine *Engine) SourceAnalyzerFor(languageID features.LanguageID) (SourceAnalyzer, bool) {
+	if engine == nil || engine.languages == nil || !validLanguage(string(languageID)) {
+		return nil, false
+	}
+	languagePackage, exists := engine.languages.Language(languageID)
+	if !exists || !supportsCapability(languagePackage.Capabilities, true) {
+		return nil, false
+	}
+	analyzer, exists := engine.analyzers[languageID]
+	return analyzer, exists && analyzer != nil
+}
+
 type engineErrorValue struct{ result status.Result }
 
 func (failure *engineErrorValue) Error() string {
