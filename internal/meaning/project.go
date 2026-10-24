@@ -21,13 +21,16 @@ const (
 )
 
 // Assertion is a proposition explicitly wrapped by a statement discourse act.
-// It retains the source path that licensed projection; it is not world truth.
+// It retains the source path, temporal frame and direct participant referents
+// that licensed projection; it is not world truth.
 type Assertion struct {
-	NodeID       NodeID        `json:"node_id"`
-	Kind         NodeKind      `json:"kind"`
-	Concept      ConceptRef    `json:"concept"`
-	Participants []Participant `json:"participants,omitempty"`
-	SourcePath   []NodeID      `json:"source_path"`
+	NodeID        NodeID        `json:"node_id"`
+	Kind          NodeKind      `json:"kind"`
+	Concept       ConceptRef    `json:"concept"`
+	TemporalFrame TemporalFrame `json:"temporal_frame,omitempty"`
+	Participants  []Participant `json:"participants,omitempty"`
+	Referents     []Node        `json:"referents,omitempty"`
+	SourcePath    []NodeID      `json:"source_path"`
 }
 
 // Unresolved records a semantic scope that cannot be projected as a positive
@@ -132,10 +135,25 @@ func ProjectAsserted(meaning Meaning, budget Budget) (AssertedProjection, error)
 				}
 				return participants[i].Target < participants[j].Target
 			})
+			referents := make([]Node, 0, len(participants))
+			seenReferents := make(map[NodeID]struct{}, len(participants))
+			for _, participant := range participants {
+				target := nodes[participant.Target]
+				if target.Kind != KindReferent {
+					continue
+				}
+				if _, exists := seenReferents[target.ID]; exists {
+					continue
+				}
+				seenReferents[target.ID] = struct{}{}
+				referents = append(referents, target)
+			}
+			sort.Slice(referents, func(i, j int) bool { return referents[i].ID < referents[j].ID })
 			projection.Asserted = append(projection.Asserted, Assertion{
 				NodeID: node.ID, Kind: node.Kind, Concept: node.Concept,
-				Participants: participants,
-				SourcePath:   append([]NodeID(nil), frame.path...),
+				TemporalFrame: node.TemporalFrame,
+				Participants:  participants, Referents: referents,
+				SourcePath: append([]NodeID(nil), frame.path...),
 			})
 		case KindReferent:
 			appendUnresolved(UnresolvedNonProposition)

@@ -40,6 +40,16 @@ var polishEntries = []lexicalEntry{
 	{"pl.dostac.v", "dostać", "verb", []lexicalMeaning{{"pl.dostac.receive", "become recipient of a theme", "receiving"}, {"pl.dostac.receive_message", "Obtaining a message delivered from another participant.", "receiving_message"}}},
 }
 
+var polishCountNounLexemes = map[string]struct{}{
+	"pl.matka.n": {}, "pl.ojciec.n": {}, "pl.pies.n": {}, "pl.dom.n": {},
+	"pl.szkola.n": {}, "pl.ksiazka.n": {}, "pl.reka.n": {}, "pl.oko.n": {},
+	"pl.dziecko.n": {}, "pl.stol.n": {}, "pl.nauczyciel.n": {}, "pl.lekarz.n": {},
+	"pl.samochod.n": {}, "pl.ryba.n": {}, "pl.szpital.n": {}, "pl.pizza.n": {},
+	"pl.sasiad.n": {}, "pl.klient.n": {}, "pl.wiadomosc.n": {}, "pl.kot.n": {},
+	"pl.ptak.n": {}, "pl.kon.n": {}, "pl.miasto.n": {}, "pl.mieszkanie.n": {},
+	"pl.rzeka.n": {}, "pl.siostra.n": {}, "pl.mewa.n": {}, "pl.drzewo.n": {},
+}
+
 var polishLexicalSource = provenance.SourceRef{
 	ID: "golingua-pl-authored", Path: "languages/pl/lexicon.go",
 	Version: "2026-10-23-receiving", License: "unknown", Author: "golingua contributors",
@@ -649,6 +659,13 @@ func LexicalDocument() (lexicon.Document, error) {
 				lexeme.Properties = []lexicon.Property{{Key: "grammatical_number", Value: "plural_only"}}
 			} else if entry.id == "pl.drzewo.n" {
 				lexeme.Properties = []lexicon.Property{{Key: "gender", Value: "neuter"}}
+			}
+			if _, countable := polishCountNounLexemes[entry.id]; countable {
+				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "number_behavior", Value: "count"})
+			}
+			switch entry.id {
+			case "pl.woda.n", "pl.jedzenie.n", "pl.pieniadze.n":
+				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "number_behavior", Value: "mass"})
 			}
 			document.Lexemes = append(document.Lexemes, lexeme)
 			for _, meaning := range entry.meanings {

@@ -25,6 +25,19 @@ func (node *Node) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(kindData, &kind); err != nil || !kind.Valid() {
 		return fmt.Errorf("node.kind is invalid")
 	}
+	for _, field := range []string{"temporal_frame", "multiplicity"} {
+		value, present := fields[field]
+		if !present {
+			continue
+		}
+		if bytes.Equal(bytes.TrimSpace(value), []byte("null")) {
+			return fmt.Errorf("node.%s cannot be null", field)
+		}
+		var decoded string
+		if err := json.Unmarshal(value, &decoded); err != nil || decoded == "" {
+			return fmt.Errorf("node.%s must be a non-empty string", field)
+		}
+	}
 	allowed := nodeFieldsForKind(kind)
 	type wireNode Node
 	var decoded wireNode

@@ -30,6 +30,7 @@ type PhraseEvidenceBuilder interface {
 // lexical identity, including referent identity and construction operators.
 type CompositionEvidence struct {
 	References               []semantic.ReferenceEvidence
+	NodeAttributes           []semantic.NodeAttributesEvidence
 	RequestContextID         string
 	Operators                []semantic.OperatorEvidence
 	OperatorCoverageComplete bool
@@ -130,6 +131,7 @@ func (pipeline *SourcePipeline) Analyze(ctx context.Context, input string) (sema
 		Forest: forest, Candidates: candidates, Lattice: lattice, SourceBytes: len(input),
 		Lexicon: pipeline.Lexicon, Valency: pipeline.Valency, Core: pipeline.Core,
 		Constructions: pipeline.Constructions, References: compositionEvidence.References,
+		NodeAttributes:           compositionEvidence.NodeAttributes,
 		RequestContextID:         compositionEvidence.RequestContextID,
 		Operators:                compositionEvidence.Operators,
 		OperatorCoverageComplete: compositionEvidence.OperatorCoverageComplete,

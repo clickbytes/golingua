@@ -86,6 +86,9 @@ func Plan(input QuestionInput, ontology *core.ConceptGraph, budget meaning.Budge
 	return Question{}, queryError(status.OutcomeResourceLimit, "QUERY_SCOPE_DEPTH", "meaning", "question scope exceeds the traversal bound")
 
 predicateFound:
+	if current.TemporalFrame != "" {
+		return Question{}, queryError(status.OutcomeUnsupported, "UNSUPPORTED_QUESTION_TEMPORAL_FRAME", "meaning.nodes."+string(current.ID)+".temporal_frame", "fact questions do not map temporal frames to query time")
+	}
 	conceptID, err := ids.ParseConceptID(string(current.Concept))
 	if err != nil {
 		return Question{}, queryError(status.OutcomeInvalid, "INVALID_QUESTION_CONCEPT", "meaning", "question predicate concept is malformed")
@@ -144,6 +147,9 @@ predicateFound:
 		targetNode := nodes[target]
 		if targetNode.Kind != meaning.KindReferent {
 			return Question{}, queryError(status.OutcomeUnsupported, "UNSUPPORTED_QUESTION_ARGUMENT", "meaning.nodes."+string(target)+".kind", "binary fact questions require grounded referent arguments")
+		}
+		if targetNode.Multiplicity == meaning.MultiplicityMany {
+			return Question{}, queryError(status.OutcomeUnsupported, "UNSUPPORTED_QUESTION_MULTIPLICITY", "meaning.nodes."+string(target)+".multiplicity", "fact questions do not enumerate or aggregate multiple referents")
 		}
 		referent, err := resolveQuestionReferent(input.Context, target)
 		if err != nil {

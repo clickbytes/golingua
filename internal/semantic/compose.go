@@ -92,6 +92,7 @@ type CompositionInput struct {
 	Core                     *core.ConceptGraph
 	Constructions            *construction.Registry
 	References               []ReferenceEvidence
+	NodeAttributes           []NodeAttributesEvidence
 	RequestContextID         string
 	Operators                []OperatorEvidence
 	OperatorCoverageComplete bool
@@ -164,6 +165,10 @@ func Compose(input CompositionInput) (ComposeResult, error) {
 	for _, candidate := range input.Candidates {
 		candidateByID[candidate.ID] = candidate
 	}
+	attributesByCandidate, err := validateNodeAttributes(input.NodeAttributes, candidateByID)
+	if err != nil {
+		return ComposeResult{}, err
+	}
 	referenceByCandidate := make(map[string]ReferenceEvidence, len(input.References))
 	for _, reference := range input.References {
 		if _, exists := candidateByID[reference.CandidateID]; !exists || reference.CandidateID == "" {
@@ -229,7 +234,7 @@ func Compose(input CompositionInput) (ComposeResult, error) {
 				result.Diagnostics = appendDiagnostic(result.Diagnostics, semanticDiagnostic("RESOURCE_LIMIT", "semantic alternative or expansion budget exhausted", "budget"))
 				return finalizeComposition(result, input.Core, budget)
 			}
-			if err := composeAlternative(&result, input, alternative, root.Span, sourceBytes, candidateByID, referenceByCandidate, predicateNodes, phraseNodeByCandidate, &work, budget); err != nil {
+			if err := composeAlternative(&result, input, alternative, root.Span, sourceBytes, candidateByID, referenceByCandidate, attributesByCandidate, predicateNodes, phraseNodeByCandidate, &work, budget); err != nil {
 				return ComposeResult{}, err
 			}
 		}
@@ -401,6 +406,14 @@ func validateCompositionInputs(input CompositionInput, sourceBytes int) error {
 	if len(input.References) > len(input.Candidates) || !addText(input.RequestContextID) {
 		return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "references", "reference inventory or request context exceeds the semantic text budget")
 	}
+	if len(input.NodeAttributes) > len(input.Candidates) {
+		return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "node_attributes", "node attribute evidence exceeds the candidate inventory")
+	}
+	for i, attribute := range input.NodeAttributes {
+		if !addText(attribute.CandidateID, string(attribute.TemporalFrame), string(attribute.Multiplicity)) {
+			return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", fmt.Sprintf("node_attributes[%d]", i), "node attribute evidence exceeds the semantic text budget")
+		}
+	}
 	for i, reference := range input.References {
 		if !addText(reference.CandidateID, string(reference.ReferentID), reference.EvidenceID) {
 			return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", fmt.Sprintf("references[%d]", i), "reference evidence exceeds the semantic text budget")
@@ -421,7 +434,7 @@ func validateCompositionInputs(input CompositionInput, sourceBytes int) error {
 	return nil
 }
 
-func composeAlternative(result *ComposeResult, input CompositionInput, alternative parser.ParseAlternative, span text.Span, sourceBytes int, candidates map[string]parser.PhraseCandidate, references map[string]ReferenceEvidence, predicateNodes []parser.PackedNode, phraseNodes map[string]parser.NodeID, work *int, budget Budget) error {
+func composeAlternative(result *ComposeResult, input CompositionInput, alternative parser.ParseAlternative, span text.Span, sourceBytes int, candidates map[string]parser.PhraseCandidate, references map[string]ReferenceEvidence, attributes map[string]NodeAttributesEvidence, predicateNodes []parser.PackedNode, phraseNodes map[string]parser.NodeID, work *int, budget Budget) error {
 	baseRecords := []EvidenceRecord{}
 	if span.End <= span.Start {
 		span = firstSourceSpan(input.Lattice)
@@ -510,7 +523,7 @@ func composeAlternative(result *ComposeResult, input CompositionInput, alternati
 				result.Diagnostics = appendDiagnostic(result.Diagnostics, semanticDiagnostic("RESOURCE_LIMIT", "semantic mapping expansion budget exhausted", "budget"))
 				return nil
 			}
-			candidate, _, misses, outcome, diagnostics, err := buildMeaningCandidate(input, alternative, predicate, predicateMapping, frame, binding, combination, references, partialStatus, partialReason, phraseNodes, sourceBytes, budget)
+			candidate, _, misses, outcome, diagnostics, err := buildMeaningCandidate(input, alternative, predicate, predicateMapping, frame, binding, combination, references, attributes, partialStatus, partialReason, phraseNodes, sourceBytes, budget)
 			if err != nil {
 				return err
 			}
@@ -537,12 +550,13 @@ func composeAlternative(result *ComposeResult, input CompositionInput, alternati
 	return nil
 }
 
-func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlternative, predicate parser.PhraseCandidate, predicateMapping transfer, frame valency.ValencyFrame, binding valency.ConstructionBinding, roles []roleOption, references map[string]ReferenceEvidence, partialStatus status.OutcomeKind, partialReason string, phraseNodes map[string]parser.NodeID, sourceBytes int, budget Budget) (MeaningCandidate, []EvidenceRecord, []valency.SoftConstraintMiss, status.OutcomeKind, []status.Diagnostic, error) {
+func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlternative, predicate parser.PhraseCandidate, predicateMapping transfer, frame valency.ValencyFrame, binding valency.ConstructionBinding, roles []roleOption, references map[string]ReferenceEvidence, attributes map[string]NodeAttributesEvidence, partialStatus status.OutcomeKind, partialReason string, phraseNodes map[string]parser.NodeID, sourceBytes int, budget Budget) (MeaningCandidate, []EvidenceRecord, []valency.SoftConstraintMiss, status.OutcomeKind, []status.Diagnostic, error) {
 	id := semanticAlternativeID(alternative, predicate.ID, predicateMapping.binding.CoreRef, roles)
 	nodes := []meaning.Node{}
 	participants := []meaning.Participant{}
 	refs := meaning.RequestContext{ID: input.RequestContextID, Referents: []meaning.Referent{}, Mentions: []meaning.Mention{}}
 	refNodeByIdentity := map[string]meaning.NodeID{}
+	refNodeIndexByIdentity := map[string]int{}
 	refConceptByIdentity := map[string]ids.ConceptID{}
 	records := []EvidenceRecord{{SourceSpan: predicate.Span, CandidateID: predicate.ID, PhraseNodeID: phraseNodes[predicate.ID], ReadingID: firstString(predicate.ReadingIDs), SenseID: predicateMapping.sense, CoreConceptID: predicateMapping.binding.CoreRef, BindingKey: BindingKeyFor(predicateMapping.sense, predicateMapping.binding.CoreRef), PlanID: alternative.PlanID, FamilyID: alternative.FamilyID, VariantID: alternative.VariantID, FrameID: alternative.Permission.FrameID, Outcome: status.OutcomeOK, Features: evidenceFeatures(predicate.Features), Provenance: predicateMapping.binding.Provenance}}
 	for index, role := range roles {
@@ -563,6 +577,7 @@ func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlter
 			if err != nil {
 				return MeaningCandidate{}, nil, nil, status.OutcomeInvalid, nil, err
 			}
+			refNodeIndexByIdentity[identity] = len(nodes)
 			nodes = append(nodes, node)
 			refNodeByIdentity[identity] = nodeID
 			refConceptByIdentity[identity] = role.mapping.binding.CoreRef
@@ -572,6 +587,15 @@ func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlter
 				}
 				refs.Referents = append(refs.Referents, meaning.Referent{ID: refEvidence.ReferentID, Concept: meaning.ConceptRefFromID(role.mapping.binding.CoreRef)})
 			}
+		}
+		if attribute, supplied := attributes[role.candidate.ID]; supplied && attribute.Multiplicity != "" {
+			nodeIndex := refNodeIndexByIdentity[identity]
+			current := nodes[nodeIndex].Multiplicity
+			if current != "" && current != attribute.Multiplicity {
+				diagnostic := semanticDiagnostic("REFERENT_MULTIPLICITY_CONFLICT", "explicitly co-referred mentions have conflicting multiplicity evidence", "node_attributes")
+				return evidenceOnlyMeaningCandidate(id, status.OutcomeAmbiguous, records, diagnostic), records, nil, status.OutcomeAmbiguous, []status.Diagnostic{diagnostic}, nil
+			}
+			nodes[nodeIndex].Multiplicity = attribute.Multiplicity
 		}
 		mention := meaning.Mention{ID: meaning.MentionID("m" + strconv.Itoa(index)), NodeID: nodeID}
 		if resolved {
@@ -602,6 +626,9 @@ func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlter
 	}
 	if err != nil {
 		return MeaningCandidate{}, nil, nil, status.OutcomeInvalid, nil, err
+	}
+	if attribute, supplied := attributes[predicate.ID]; supplied {
+		event.TemporalFrame = attribute.TemporalFrame
 	}
 	nodes = append(nodes, event)
 	operators, operatorNodes, opRecords, opOutcome, opDiagnostics := materializeOperators(input, alternative, predicate, sourceBytes)
@@ -1118,6 +1145,12 @@ func semanticGraphID(graph meaning.Meaning, context meaning.RequestContext, alte
 			return "", fmt.Errorf("semantic graph target %q is absent", id)
 		}
 		parts := []string{string(node.Kind), string(node.Concept), string(node.Operator), string(node.Modality), string(node.Act)}
+		if node.TemporalFrame != "" {
+			parts = append(parts, "temporal_frame", string(node.TemporalFrame))
+		}
+		if node.Multiplicity != "" {
+			parts = append(parts, "multiplicity", string(node.Multiplicity))
+		}
 		switch node.Kind {
 		case meaning.KindReferent:
 			if referent := referents[id]; referent != "" {

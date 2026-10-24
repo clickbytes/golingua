@@ -23,6 +23,8 @@ The sample illustrates shape only; it does not add lexical data or claim an appr
 
 ## Validation and boundaries
 
+Event/state nodes may carry `temporal_frame` (`past` or `present` reference frame); referents may carry `multiplicity` (`one` or `many`). Missing values remain unresolved. These are semantic distinctions, not tense morphology or noun-number features. Mass nouns do not acquire cardinality from grammatical number. The [attribute contract](meaning-attributes.md) defines strict JSON validation, source mapping, independent realization and unsupported fact-query boundaries.
+
 `Build` and `ValidateStructure` check the closed tagged union, bounded IDs, unique node/root IDs, resolved references, acyclic structure and node/edge/depth budgets. `ValidateMeaning` additionally resolves concept IDs and checks event/state/referent concept kinds, declared CORE roles and allowed target kinds. A role signature describes which roles may occur; this version does not infer that every declared role must be present.
 
 Strict JSON decoding rejects unknown fields, extra JSON values, unsupported schema versions and oversized input. Invalid data returns `invalid`; unresolved node/concept references return `unknown`; exhausted work returns `resource_limit`. Errors carry the shared typed status plus bounded diagnostics. Canonical JSON, equality and SHA-256 hash use no pointer addresses.

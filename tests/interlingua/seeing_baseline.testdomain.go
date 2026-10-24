@@ -37,14 +37,17 @@ func Seeing(id string) (meaning.Meaning, bool, error) {
 	if err != nil {
 		return meaning.Meaning{}, false, err
 	}
+	event.TemporalFrame = meaning.TemporalFramePresent
 	teacherNode, err := meaning.NewReferent("t", teacher)
 	if err != nil {
 		return meaning.Meaning{}, false, err
 	}
+	teacherNode.Multiplicity = meaning.MultiplicityOne
 	dogNode, err := meaning.NewReferent("d", dog)
 	if err != nil {
 		return meaning.Meaning{}, false, err
 	}
+	dogNode.Multiplicity = meaning.MultiplicityOne
 	graph, err := meaning.Build([]meaning.NodeID{"e"}, []meaning.Node{event, teacherNode, dogNode}, meaning.DefaultBudget())
 	if err != nil {
 		return meaning.Meaning{}, false, err

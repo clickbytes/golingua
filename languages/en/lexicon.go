@@ -1268,6 +1268,17 @@ var englishAnArticleLexemes = map[string]struct{}{
 	"en.offspring.n": {},
 }
 
+var englishCountNounLexemes = map[string]struct{}{
+	"en.mother.n": {}, "en.father.n": {}, "en.dog.n": {}, "en.house.n": {}, "en.household.n": {},
+	"en.school.n": {}, "en.book.n": {}, "en.hand.n": {}, "en.eye.n": {},
+	"en.child.n": {}, "en.table.n": {}, "en.teacher.n": {}, "en.doctor.n": {},
+	"en.car.n": {}, "en.fish_animal.n": {}, "en.hospital_building.n": {},
+	"en.hospital_institution.n": {}, "en.pizza_food.n": {}, "en.neighbor.n": {},
+	"en.customer.n": {}, "en.message.n": {}, "en.cat.n": {}, "en.bird.n": {},
+	"en.horse.n": {}, "en.city.n": {}, "en.apartment.n": {}, "en.river.n": {},
+	"en.sister.n": {}, "en.tree.n": {},
+}
+
 // LexicalDocument builds the English lexical records from Go declarations.
 // It keeps polysemous senses distinct and leaves unmapped meanings unresolved.
 func LexicalDocument() (lexicon.Document, error) {
@@ -1295,6 +1306,9 @@ func LexicalDocument() (lexicon.Document, error) {
 			switch entry.id {
 			case "en.food.n", "en.money.n", "en.water.n":
 				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "number_behavior", Value: "mass"})
+			}
+			if _, countable := englishCountNounLexemes[entry.id]; countable {
+				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "number_behavior", Value: "count"})
 			}
 			document.Lexemes = append(document.Lexemes, lexeme)
 			for _, meaning := range entry.meanings {

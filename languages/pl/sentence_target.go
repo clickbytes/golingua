@@ -74,15 +74,12 @@ func (polishSentencePlanAnnotations) Annotations(_ context.Context, source seman
 		predicatePath, predicateFound := runtime.MeaningPath(*source.Meaning, selected.NodeID)
 		referentPath, referentFound := runtime.MeaningPath(*source.Meaning, referentID)
 		mode, contextOK := polishNegatedClassificationReferenceMode(source, selected.NodeID)
-		if !predicateFound || !referentFound || !contextOK {
+		predicate := findSentencePredicate(*source.Meaning, selected.NodeID)
+		if !predicateFound || !referentFound || !contextOK ||
+			!polishIdentificationAttributesAllowed(source, selected.NodeID, "member", referentID, selected.TransferBinding.CoreRef) {
 			return nil, nil, nil, fmt.Errorf("Polish negative identification realization requires a valid unresolved or proximal member reference context")
 		}
-		assumptions := []realizer.FieldAssumption{
-			{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning v1 carries no tense; this negative identification route uses the approved present form"},
-			{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning v1 carries no grammatical person; this negative identification route uses the approved third-person form"},
-			{Path: predicatePath, Field: "number", Value: "singular", Reason: "Meaning v1 carries no grammatical number; this negative identification route uses the approved singular form"},
-			{Path: referentPath, Field: "number", Value: "singular", Reason: "Meaning v1 carries no noun number; this negative identification route uses the attested singular cat form"},
-		}
+		assumptions := polishIdentificationDefaults(predicatePath, referentPath, predicate, source.Meaning.Nodes, referentID, "negative identification")
 		var losses []realizer.FieldLoss
 		if mode == "proximal" {
 			losses = append(losses, realizer.FieldLoss{Path: referentPath, Field: "deixis", Outcome: status.OutcomeIncomplete, Reason: "Polish to nie preserves demonstrative reference but does not encode the source's explicit proximal distance"})
@@ -93,43 +90,72 @@ func (polishSentencePlanAnnotations) Annotations(_ context.Context, source seman
 		predicatePath, predicateFound := runtime.MeaningPath(*source.Meaning, selected.NodeID)
 		referentPath, referentFound := runtime.MeaningPath(*source.Meaning, referentID)
 		mode, contextOK := polishIdentificationReferenceMode(source, selected.NodeID)
-		if !predicateFound || !referentFound || !contextOK {
+		predicate := findSentencePredicate(*source.Meaning, selected.NodeID)
+		if !predicateFound || !referentFound || !contextOK ||
+			!polishIdentificationAttributesAllowed(source, selected.NodeID, role, referentID, selected.TransferBinding.CoreRef) {
 			return nil, nil, nil, fmt.Errorf("Polish identification realization requires a valid unresolved %s reference context", role)
 		}
-		assumptions := []realizer.FieldAssumption{
-			{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning v1 carries no tense; this identification route uses the approved present form"},
-			{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning v1 carries no grammatical person; this identification route uses the approved third-person form"},
-			{Path: predicatePath, Field: "number", Value: "singular", Reason: "Meaning v1 carries no grammatical number; this identification route uses the approved singular form"},
-			{Path: referentPath, Field: "number", Value: "singular", Reason: "Meaning v1 carries no noun number; this identification route uses the attested singular cat form"},
-		}
+		assumptions := polishIdentificationDefaults(predicatePath, referentPath, predicate, source.Meaning.Nodes, referentID, "identification")
 		var losses []realizer.FieldLoss
 		if mode == "proximal" {
 			losses = append(losses, realizer.FieldLoss{Path: referentPath, Field: "deixis", Outcome: status.OutcomeIncomplete, Reason: "Polish to/ten preserves demonstrative reference but does not encode the source's explicit proximal distance"})
 		}
 		return nil, assumptions, losses, nil
 	}
-	if len(source.Evidence.Records) != 0 || source.Meaning == nil || selected.Kind != meaning.KindEvent && selected.Kind != meaning.KindState {
+	if source.Meaning == nil || selected.Kind != meaning.KindEvent && selected.Kind != meaning.KindState {
 		return nil, nil, nil, nil
 	}
-	predicatePath, found := runtime.MeaningPath(*source.Meaning, selected.NodeID)
-	if !found {
+	predicate, found := polishMeaningNode(source, selected.NodeID)
+	predicatePath, pathFound := runtime.MeaningPath(*source.Meaning, selected.NodeID)
+	if !found || !pathFound {
 		return nil, nil, nil, nil
 	}
-	assumptions := []realizer.FieldAssumption{
-		{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning v1 carries no tense; this response uses the approved present-tense route"},
-		{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning v1 carries no grammatical person; this response uses the approved third-person route"},
-		{Path: predicatePath, Field: "number", Value: "singular", Reason: "Meaning v1 carries no grammatical number; this response uses the approved singular route"},
+	if !polishPredicateEvidenceConsistent(source, selected) {
+		return nil, nil, nil, fmt.Errorf("Polish target realization has Meaning attributes that conflict with explicit source evidence")
 	}
-	for _, participant := range findSentencePredicate(*source.Meaning, selected.NodeID).Participants {
+	assumptions := []realizer.FieldAssumption{}
+	if predicate.TemporalFrame == "" {
+		assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning carries no temporal frame; this response uses the approved present-tense route"})
+	}
+	assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning carries no grammatical person; this response uses the approved third-person route"})
+	_, subjectID, hasSubject := polishSubjectTarget(source, selected)
+	if hasSubject {
+		if subject, exists := polishMeaningNode(source, subjectID); exists && subject.Multiplicity == "" {
+			assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "number", Value: "lexeme_default", Reason: "Meaning carries no subject multiplicity; predicate agreement follows the target subject's local lexical class"})
+		}
+	}
+	for _, participant := range predicate.Participants {
+		referent, exists := polishMeaningNode(source, participant.Target)
+		if !exists || referent.Kind != meaning.KindReferent || referent.Multiplicity != "" {
+			continue
+		}
 		path, ok := runtime.MeaningPath(*source.Meaning, participant.Target)
 		if ok {
 			assumptions = append(assumptions, realizer.FieldAssumption{
 				Path: path, Field: "number", Value: "lexeme_default",
-				Reason: "Meaning v1 carries no noun number feature; this response uses the target lexeme's attested number form",
+				Reason: "Meaning carries no referent multiplicity; this response uses the target lexeme's local number class",
 			})
 		}
 	}
 	return nil, assumptions, nil, nil
+}
+
+func polishIdentificationDefaults(predicatePath, referentPath []meaning.NodeID, predicate meaning.Node, nodes []meaning.Node, referentID meaning.NodeID, route string) []realizer.FieldAssumption {
+	assumptions := []realizer.FieldAssumption{}
+	if predicate.TemporalFrame == "" {
+		assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning carries no temporal frame; this " + route + " route uses the approved present form"})
+	}
+	assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning carries no grammatical person; this " + route + " route uses the approved third-person form"})
+	for _, node := range nodes {
+		if node.ID == referentID && node.Multiplicity == "" {
+			assumptions = append(assumptions,
+				realizer.FieldAssumption{Path: predicatePath, Field: "number", Value: "singular", Reason: "Meaning carries no referent multiplicity; this licensed identification route uses the singular count-noun form"},
+				realizer.FieldAssumption{Path: referentPath, Field: "number", Value: "singular", Reason: "Meaning carries no referent multiplicity; this licensed identification route uses the singular count-noun form"},
+			)
+			break
+		}
+	}
+	return assumptions
 }
 
 type polishSentenceFeatures struct{}
@@ -143,7 +169,7 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 		if !found {
 			return nil, nil
 		}
-		gender, number, found := polishIdentificationReferentFeatures(referentID, candidates)
+		gender, number, found := polishIdentificationReferentFeatures(source, referentID, candidates)
 		if !found {
 			return nil, nil
 		}
@@ -154,43 +180,34 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 	}
 	if slot.Category == construction.CategoryVP {
 		if _, event, route, found := polishNegatedPresent(source); found && event.ID == predicate.NodeID && predicate.Sense.ID.String() == route.sense {
-			number, known := polishPresentNegationNumber(source, predicate, route)
+			number, known := polishPresentNegationNumber(source, predicate, route, candidates)
 			if !known {
-				return nil, nil
+				return nil, fmt.Errorf("Polish negative predicate cannot realize its Meaning number or temporal frame")
 			}
 			return knownPolishFeatures(
 				[2]string{"verb_form", "finite"}, [2]string{"tense", "present"}, [2]string{"aspect", "imperfective"},
 				[2]string{"person", "third"}, [2]string{"number", number}, [2]string{"mood", "indicative"}, [2]string{"voice", "active"},
 			), nil
 		}
-		values, found := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)
-		if !found {
-			if len(source.Evidence.Records) == 0 {
-				return knownPolishFeatures(
-					[2]string{"verb_form", "finite"}, [2]string{"tense", "present"}, [2]string{"aspect", "imperfective"},
-					[2]string{"person", "third"}, [2]string{"number", "singular"},
-					[2]string{"mood", "indicative"}, [2]string{"voice", "active"},
-				), nil
-			}
+		predicateMeaning, exists := polishMeaningNode(source, predicate.NodeID)
+		if !exists {
 			return nil, nil
 		}
-		if values["tense"] == "past" || values["verb_form"] == "past" {
-			number := string(values["number"])
-			if number == "" {
-				number = string(values["verb_number"])
-			}
-			subjectNumber, subjectNumberKnown := polishSubjectNumber(source, predicate, candidates)
-			if number == "" && subjectNumberKnown {
-				number = subjectNumber
-			} else if number != "" && subjectNumberKnown && number != subjectNumber {
-				return nil, nil
-			}
-			if number != "singular" && number != "plural" {
-				return nil, nil
+		if !polishFrameEvidenceConsistent(source, predicate.NodeID, predicate.TransferBinding.CoreRef) {
+			return nil, fmt.Errorf("Polish predicate temporal frame conflicts with explicit source evidence")
+		}
+		tense := predicateMeaning.TemporalFrame
+		if tense == "" {
+			tense = meaning.TemporalFramePresent
+		}
+		if tense == meaning.TemporalFramePast {
+			number, known := polishPredicateNumber(source, predicate, candidates)
+			if !known {
+				return nil, fmt.Errorf("Polish past predicate cannot realize subject multiplicity")
 			}
 			gender, known := polishSubjectPastGender(source, predicate, candidates, number)
 			if !known {
-				return nil, nil
+				return nil, fmt.Errorf("Polish past predicate cannot realize the selected subject's lexical agreement class")
 			}
 			aspect := "perfective"
 			if predicate.Sense.ID.String() == "sense:pl.czytac.interpret" {
@@ -206,47 +223,36 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 				[2]string{"gender", gender},
 			), nil
 		}
-		number := values["number"]
-		if number == "" {
-			number = values["verb_number"]
+		number, known := polishPredicateNumber(source, predicate, candidates)
+		if !known {
+			return nil, fmt.Errorf("Polish predicate cannot realize subject multiplicity")
 		}
-		presentSingular := values["verb_form"] == "third_person_singular" && (number == "" || number == "singular") ||
-			values["verb_form"] == "finite" && values["tense"] == "present" && values["person"] == "third" && number == "singular"
-		presentPlural := values["verb_form"] == "finite" && values["tense"] == "present" && values["person"] == "third" && number == "plural"
-		if presentSingular || presentPlural {
-			finiteNumber := number
-			if presentSingular && finiteNumber == "" {
-				finiteNumber = "singular"
-			}
-			return knownPolishFeatures(
-				[2]string{"verb_form", "finite"}, [2]string{"tense", "present"},
-				[2]string{"aspect", "imperfective"},
-				[2]string{"person", "third"}, [2]string{"number", string(finiteNumber)},
-				[2]string{"mood", "indicative"}, [2]string{"voice", "active"},
-			), nil
-		}
-		return nil, nil
+		return knownPolishFeatures(
+			[2]string{"verb_form", "finite"}, [2]string{"tense", "present"},
+			[2]string{"aspect", "imperfective"},
+			[2]string{"person", "third"}, [2]string{"number", number},
+			[2]string{"mood", "indicative"}, [2]string{"voice", "active"},
+		), nil
 	}
 	if slot.Category != construction.CategoryNP || slot.ArgumentBinding == nil || slot.Case == "" {
 		return nil, nil
 	}
-	values, found := runtime.SourceFeatures(source, slot.ArgumentBinding.SemanticRole, candidate.TransferBinding.CoreRef)
-	if !found && len(source.Evidence.Records) != 0 {
-		return nil, nil
+	number, meaningNumber, numberOK := polishTargetNumber(source, candidate.NodeID, candidate.Lexeme.Properties, candidate.Lexeme.ParadigmID)
+	if !numberOK {
+		return nil, fmt.Errorf("Polish lexical number class cannot realize the Meaning multiplicity")
 	}
-	number := values["number"]
-	if number == "" {
-		number = values["noun_number"]
-	}
-	if !found {
-		number = "singular"
+	if meaningNumber {
+		referent, exists := polishMeaningNode(source, candidate.NodeID)
+		checkPredicateNumber := polishPredicateSubjectRole(predicate, slot.ArgumentBinding.SemanticRole)
+		if !exists || !polishMultiplicityEvidenceConsistent(source, predicate.NodeID, slot.ArgumentBinding.SemanticRole, referent, predicate.TransferBinding.CoreRef, checkPredicateNumber) {
+			return nil, fmt.Errorf("Polish referent multiplicity conflicts with explicit source evidence")
+		}
 	}
 	pluralOnly := candidate.Lexeme.ParadigmID == "pl_noun_plural_only_attested"
-	if pluralOnly {
-		number = "plural"
-	}
-	if number != "singular" && number != "plural" {
-		return nil, nil
+	for _, property := range candidate.Lexeme.Properties {
+		if property.Key == "grammatical_number" && property.Value == "plural_only" {
+			pluralOnly = true
+		}
 	}
 	gender := ""
 	for _, property := range candidate.Lexeme.Properties {
@@ -263,54 +269,6 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 		featureValues = append(featureValues, [2]string{"gender", gender})
 	}
 	return knownPolishFeatures(featureValues...), nil
-}
-
-func polishPresentNegationNumber(source semantic.MeaningCandidate, predicate realizer.TargetCandidate, route polishPresentNegationRoute) (string, bool) {
-	values, found := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)
-	if found {
-		if person := values["person"]; person != "" && person != "third" {
-			return "", false
-		}
-		if tense := values["tense"]; tense != "" && tense != "present" {
-			return "", false
-		}
-		number := string(values["number"])
-		if number == "" {
-			number = string(values["verb_number"])
-		}
-		return number, number == "singular" || number == "plural"
-	}
-	if source.Meaning == nil {
-		return "", false
-	}
-	event := findSentencePredicate(*source.Meaning, predicate.NodeID)
-	for _, participant := range event.Participants {
-		if participant.Role != route.subjectRole {
-			continue
-		}
-		for _, subject := range source.Meaning.Nodes {
-			if subject.ID != participant.Target || subject.Kind != meaning.KindReferent {
-				continue
-			}
-			conceptID, err := ids.ParseConceptID(string(subject.Concept))
-			if err != nil {
-				continue
-			}
-			roleValues, roleFound := runtime.SourceFeatures(source, route.subjectRole, conceptID)
-			if !roleFound {
-				continue
-			}
-			number := string(roleValues["number"])
-			if number == "" {
-				number = string(roleValues["noun_number"])
-			}
-			return number, number == "singular" || number == "plural"
-		}
-	}
-	if len(source.Evidence.Records) == 0 {
-		return "singular", true
-	}
-	return "", false
 }
 
 type polishSentenceOperatorBuilder struct{}
@@ -345,18 +303,23 @@ func (polishSentenceOperatorBuilder) Build(ctx context.Context, source semantic.
 type polishSentenceCandidatePolicy struct{}
 
 func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, _ []realizer.TargetCandidate) bool {
+	if (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState) && !polishPredicateEvidenceConsistent(source, candidate) {
+		return false
+	}
 	if concept := polishIdentificationPredicateConcept(source, candidate.NodeID); concept != "" {
 		if concept == "concept:class_membership" {
 			if sourceHasScope(source) {
-				scopeID, _, validGraph := polishNegatedClassificationState(source, candidate.NodeID)
+				scopeID, referentID, validGraph := polishNegatedClassificationState(source, candidate.NodeID)
 				mode, validContext := polishNegatedClassificationReferenceMode(source, candidate.NodeID)
 				return validGraph && validContext && (mode == "unresolved" || mode == "proximal") && scopeID != "" &&
+					polishIdentificationAttributesAllowed(source, candidate.NodeID, "member", referentID, candidate.TransferBinding.CoreRef) &&
 					candidate.Sense.ID.String() == "sense:pl.byc.class_membership" &&
 					string(candidate.Frame.ID) == "pl.byc.class_membership.frame" &&
 					candidate.Family.Family.ID.String() == "construction:pl.identification_negative" &&
 					candidate.CompiledVariant.Variant.ID.String() == "construction:pl.identification_negative.to"
 			}
-			if _, _, _, valid := polishIdentificationState(source, candidate.NodeID); !valid {
+			role, referentID, _, valid := polishIdentificationState(source, candidate.NodeID)
+			if !valid || !polishIdentificationAttributesAllowed(source, candidate.NodeID, role, referentID, candidate.TransferBinding.CoreRef) {
 				return false
 			}
 			mode, valid := polishIdentificationReferenceMode(source, candidate.NodeID)
@@ -367,7 +330,8 @@ func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.Meaning
 				candidate.CompiledVariant.Variant.ID.String() == "construction:pl.identification.to"
 		}
 		mode, valid := polishIdentificationReferenceMode(source, candidate.NodeID)
-		if !valid {
+		role, referentID, _, validState := polishIdentificationState(source, candidate.NodeID)
+		if !valid || !validState || !polishIdentificationAttributesAllowed(source, candidate.NodeID, role, referentID, candidate.TransferBinding.CoreRef) {
 			return false
 		}
 		switch concept {
@@ -380,10 +344,33 @@ func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.Meaning
 	}
 	route, negativeFamily := polishPresentNegationRouteForFamily(candidate.Family.Family.ID)
 	if !negativeFamily {
+		if polishNegatedPredicateTarget(source, candidate.NodeID) {
+			return false
+		}
 		return true
 	}
 	_, event, sourceRoute, negated := polishNegatedPresent(source)
-	return negated && event.ID == candidate.NodeID && sourceRoute.sense == candidate.Sense.ID.String() && sourceRoute.family == route.family
+	if !negated || event.ID != candidate.NodeID || sourceRoute.sense != candidate.Sense.ID.String() || sourceRoute.family != route.family ||
+		event.TemporalFrame == meaning.TemporalFramePast || !polishFrameEvidenceConsistent(source, event.ID, candidate.TransferBinding.CoreRef) {
+		return false
+	}
+	referent, exists := polishReferentForRole(source, event.ID, route.subjectRole)
+	if !exists || route.concept == "concept:class_membership" && referent.Multiplicity == meaning.MultiplicityMany {
+		return false
+	}
+	return polishMultiplicityEvidenceConsistent(source, event.ID, route.subjectRole, referent, candidate.TransferBinding.CoreRef, true)
+}
+
+func polishNegatedPredicateTarget(source semantic.MeaningCandidate, predicateID meaning.NodeID) bool {
+	if source.Meaning == nil {
+		return false
+	}
+	for _, node := range source.Meaning.Nodes {
+		if node.Kind == meaning.KindScope && node.Operator == meaning.OperatorNegation && node.Target == predicateID {
+			return true
+		}
+	}
+	return false
 }
 
 func sourceHasScope(source semantic.MeaningCandidate) bool {
@@ -426,40 +413,17 @@ func polishSubjectNumber(source semantic.MeaningCandidate, predicate realizer.Ta
 	if !found {
 		return "", false
 	}
-	number := ""
-	for _, candidate := range candidates {
-		if candidate.Kind != meaning.KindReferent || candidate.NodeID != targetNode || candidate.Outcome != status.OutcomeOK {
-			continue
-		}
-		values, found := runtime.SourceFeatures(source, role, candidate.TransferBinding.CoreRef)
-		if !found {
-			continue
-		}
-		candidateNumber := string(values["number"])
-		if candidateNumber == "" {
-			candidateNumber = string(values["noun_number"])
-		}
-		if candidateNumber != "singular" && candidateNumber != "plural" {
-			continue
-		}
-		if number != "" && number != candidateNumber {
-			return "", false
-		}
-		number = candidateNumber
+	return polishNumberForReferentCandidates(source, targetNode, role, predicate.NodeID, predicate.TransferBinding.CoreRef, candidates)
+}
+
+func polishPredicateNumber(source semantic.MeaningCandidate, predicate realizer.TargetCandidate, candidates []realizer.TargetCandidate) (string, bool) {
+	if role, referentID, _, valid := polishIdentificationState(source, predicate.NodeID); valid {
+		return polishNumberForReferentCandidates(source, referentID, role, predicate.NodeID, predicate.TransferBinding.CoreRef, candidates)
 	}
-	return number, number != ""
+	return polishSubjectNumber(source, predicate, candidates)
 }
 
 func polishSubjectPastGender(source semantic.MeaningCandidate, predicate realizer.TargetCandidate, candidates []realizer.TargetCandidate, number string) (string, bool) {
-	if number == "plural" {
-		values, found := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)
-		if found {
-			genderClass := string(values["gender"])
-			if genderClass == "masculine_personal" || genderClass == "non_masculine_personal" {
-				return genderClass, true
-			}
-		}
-	}
 	gender, found := polishSubjectGender(source, predicate, candidates)
 	if !found {
 		return "", false

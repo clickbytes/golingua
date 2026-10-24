@@ -8,14 +8,16 @@ import (
 )
 
 type englishIdentification struct {
-	stateID  meaning.NodeID
-	referent meaning.NodeID
-	role     string
-	concept  meaning.ConceptRef
-	senseID  string
-	family   string
-	mode     string
-	valid    bool
+	stateID       meaning.NodeID
+	referent      meaning.NodeID
+	role          string
+	concept       meaning.ConceptRef
+	senseID       string
+	family        string
+	mode          string
+	temporalFrame meaning.TemporalFrame
+	multiplicity  meaning.Multiplicity
+	valid         bool
 }
 
 func englishIdentificationState(source semantic.MeaningCandidate) (englishIdentification, bool) {
@@ -46,6 +48,7 @@ func englishIdentificationState(source semantic.MeaningCandidate) (englishIdenti
 			return id, true
 		}
 		id.referent, id.concept = referent.ID, referent.Concept
+		id.temporalFrame, id.multiplicity = node.TemporalFrame, referent.Multiplicity
 		if len(source.Contexts) == 0 {
 			id.valid = false
 			return id, true
@@ -111,6 +114,7 @@ func englishNegativeIdentificationState(source semantic.MeaningCandidate) (engli
 		return id, true
 	}
 	id.stateID, id.referent, id.concept = state.ID, ref.ID, ref.Concept
+	id.temporalFrame, id.multiplicity = state.TemporalFrame, ref.Multiplicity
 	if len(source.Contexts) == 0 {
 		return id, true
 	}
@@ -157,7 +161,7 @@ func englishNegativeIdentificationContext(context semantic.MeaningContext, expec
 			return "", false
 		}
 	}
-	if scope.ID == "" || state.ID == "" || ref.ID == "" || m.Roots[0] != scope.ID || scope.Operator != meaning.OperatorNegation || scope.Target != state.ID || string(state.Concept) != "concept:class_membership" || string(ref.Concept) != string(expected.concept) || len(state.Participants) != 1 || state.Participants[0].Role != "member" || state.Participants[0].Target != ref.ID {
+	if scope.ID == "" || state.ID == "" || ref.ID == "" || m.Roots[0] != scope.ID || scope.Operator != meaning.OperatorNegation || scope.Target != state.ID || string(state.Concept) != "concept:class_membership" || string(ref.Concept) != string(expected.concept) || state.TemporalFrame != expected.temporalFrame || ref.Multiplicity != expected.multiplicity || len(state.Participants) != 1 || state.Participants[0].Role != "member" || state.Participants[0].Target != ref.ID {
 		return "", false
 	}
 	mention := context.Context.Mentions[0]
@@ -193,7 +197,7 @@ func englishIdentificationContext(context semantic.MeaningContext, expected engl
 			return "", false
 		}
 	}
-	if state.ID == "" || referent.ID == "" || context.Meaning.Roots[0] != state.ID || string(state.Concept) != string(findMeaningNode(context.Meaning, state.ID).Concept) || string(state.Concept) != englishIdentificationConcept(expected.senseID) || string(referent.Concept) != string(expected.concept) || len(state.Participants) != 1 || state.Participants[0].Role != meaning.Role(expected.role) || state.Participants[0].Target != referent.ID {
+	if state.ID == "" || referent.ID == "" || context.Meaning.Roots[0] != state.ID || string(state.Concept) != string(findMeaningNode(context.Meaning, state.ID).Concept) || string(state.Concept) != englishIdentificationConcept(expected.senseID) || string(referent.Concept) != string(expected.concept) || state.TemporalFrame != expected.temporalFrame || referent.Multiplicity != expected.multiplicity || len(state.Participants) != 1 || state.Participants[0].Role != meaning.Role(expected.role) || state.Participants[0].Target != referent.ID {
 		return "", false
 	}
 	mention := context.Context.Mentions[0]

@@ -156,7 +156,7 @@ func semanticRoots(meaning Meaning, context RequestContext, budget Budget) ([]st
 			}
 			childSignatures[index] = value
 		}
-		value := fmt.Sprintf("kind=%s;concept=%s;act=%s;operator=%s;modality=%s;", node.Kind, node.Concept, node.Act, node.Operator, node.Modality)
+		value := fmt.Sprintf("kind=%s;concept=%s;act=%s;operator=%s;modality=%s;temporal_frame=%s;multiplicity=%s;", node.Kind, node.Concept, node.Act, node.Operator, node.Modality, node.TemporalFrame, node.Multiplicity)
 		switch node.Kind {
 		case KindReferent:
 			set := bindings[id]

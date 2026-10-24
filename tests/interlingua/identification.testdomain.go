@@ -53,10 +53,12 @@ func Identification(id string) (IdentificationMeaning, bool, error) {
 	if err != nil {
 		return IdentificationMeaning{}, false, fmt.Errorf("build identification state: %w", err)
 	}
+	state.TemporalFrame = meaning.TemporalFramePresent
 	referent, err := meaning.NewReferent("r", catID)
 	if err != nil {
 		return IdentificationMeaning{}, false, fmt.Errorf("build identification referent: %w", err)
 	}
+	referent.Multiplicity = meaning.MultiplicityOne
 	graph, err := meaning.Build([]meaning.NodeID{"s"}, []meaning.Node{state, referent}, meaning.DefaultBudget())
 	if err != nil {
 		return IdentificationMeaning{}, false, fmt.Errorf("build identification Meaning: %w", err)

@@ -107,6 +107,8 @@ func polishNegatedClassificationReferenceMode(source semantic.MeaningCandidate, 
 	if !ok || source.Meaning == nil || len(source.Contexts) == 0 {
 		return "", false
 	}
+	sourcePredicate, _ := polishMeaningNode(source, predicateID)
+	sourceReferent, _ := polishMeaningNode(source, sourceReferentID)
 	var commonMode string
 	for _, candidateContext := range source.Contexts {
 		graph, context := candidateContext.Meaning, candidateContext.Context
@@ -145,6 +147,9 @@ func polishNegatedClassificationReferenceMode(source semantic.MeaningCandidate, 
 		if sourceReferent := sourceNodeConcept(*source.Meaning, sourceReferentID); sourceReferent != referent.Concept {
 			return "", false
 		}
+		if predicate.TemporalFrame != sourcePredicate.TemporalFrame || referent.Multiplicity != sourceReferent.Multiplicity {
+			return "", false
+		}
 		mention := context.Mentions[0]
 		if mention.NodeID != referent.ID || mention.ReferentID != "" || mention.EvidenceID != "" || mention.Anchor == nil || mention.Anchor.Kind != "deixis" {
 			return "", false
@@ -167,6 +172,8 @@ func polishIdentificationReferenceMode(source semantic.MeaningCandidate, predica
 	if !ok || len(source.Contexts) == 0 {
 		return "", false
 	}
+	sourcePredicate, _ := polishMeaningNode(source, predicateID)
+	sourceReferent, _ := polishMeaningNode(source, sourceReferentID)
 	var commonMode string
 	for _, candidateContext := range source.Contexts {
 		graph := candidateContext.Meaning
@@ -205,6 +212,7 @@ func polishIdentificationReferenceMode(source semantic.MeaningCandidate, predica
 		}
 		if contextPredicate.ID == "" || contextReferent.ID == "" || contextReferent.Kind != meaning.KindReferent ||
 			string(contextReferent.Concept) != string(sourceNodeConcept(*source.Meaning, sourceReferentID)) || mention.NodeID != contextReferent.ID ||
+			contextPredicate.TemporalFrame != sourcePredicate.TemporalFrame || contextReferent.Multiplicity != sourceReferent.Multiplicity ||
 			len(graph.Roots) != 1 || graph.Roots[0] != contextPredicate.ID {
 			return "", false
 		}
@@ -221,7 +229,7 @@ func sourceNodeConcept(graph meaning.Meaning, nodeID meaning.NodeID) meaning.Con
 	return ""
 }
 
-func polishIdentificationReferentFeatures(referentID meaning.NodeID, candidates []realizer.TargetCandidate) (string, string, bool) {
+func polishIdentificationReferentFeatures(source semantic.MeaningCandidate, referentID meaning.NodeID, candidates []realizer.TargetCandidate) (string, string, bool) {
 	gender, number := "", ""
 	found := false
 	for _, candidate := range candidates {
@@ -229,15 +237,14 @@ func polishIdentificationReferentFeatures(referentID meaning.NodeID, candidates 
 			continue
 		}
 		candidateGender := ""
-		candidateNumber := "singular"
+		candidateNumber, _, numberOK := polishTargetNumber(source, referentID, candidate.Lexeme.Properties, candidate.Lexeme.ParadigmID)
+		if !numberOK {
+			return "", "", false
+		}
 		for _, property := range candidate.Lexeme.Properties {
 			switch property.Key {
 			case "gender":
 				candidateGender = property.Value
-			case "grammatical_number":
-				if property.Value == "plural_only" {
-					candidateNumber = "plural"
-				}
 			}
 		}
 		if candidateGender == "" || found && (gender != candidateGender || number != candidateNumber) {
