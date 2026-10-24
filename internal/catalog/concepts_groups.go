@@ -36,5 +36,10 @@ func conceptGroups() []catalogGroup {
 		{source: draftSource(), rows: propertiesDeclarations()},
 		{source: draftSource(), rows: relationsDeclarations()},
 		{source: draftSource(), rows: abstractDeclarations()},
+		{source: provenance.SourceRef{
+			ID:  "golingua-identification-agent-contract",
+			URI: "https://github.com/clickbytes/golingua/issues/314", Version: "2026-10-24",
+			License: "internal", Author: "Codex by owner delegation; owner language acceptance NOT_EVALUATED",
+		}, rows: identificationDeclarations()},
 	}
 }

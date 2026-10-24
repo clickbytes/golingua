@@ -25,6 +25,29 @@ W A1-T01 zamknięto dwa znaczenia kontrolne: `seeing.teacher-dog` i `seeing.dog-
 
 Runtime kompiluje `bundled.Candidate`, waliduje pakiet i rejestr języków, następnie używa produkcyjnych konstruktorów PL/EN z CLI. Nie wymaga konfiguracji ani aktywnego store użytkownika.
 
+## Kontrakt identyfikacji (A1-T02)
+
+Wzorce są niezależne od parserów. `class_membership(member → cat)` to predykacja, że wskazany referent należy do klasy zapisanej w jego `ConceptRef`, a nie identyczność dwóch osobników. `black(bearer → cat)` przypisuje czarny kolor temu kotu. Oba są węzłami `state`; CORE zawiera odpowiednie właściwości i role. Nie zapisujemy faktu w ontologii ani nie dopowiadamy płci.
+
+| MeaningID | Wskazanie w nierozstrzygniętej Mention |
+| --- | --- |
+| `identification.classification.this` | `deixis=proximal` |
+| `identification.classification.to` | `deixis=unresolved` |
+| `identification.black.this` | `deixis=proximal` |
+| `identification.black.ten` | `deixis=demonstrative`, odległość nierozstrzygnięta |
+
+`ReferentID` i `EvidenceID` pozostają puste. Kotwica jest informacją o sposobie odniesienia, nie ustaloną tożsamością zwierzęcia. Porównanie kontraktu sprawdza też kontekst, z uwzględnieniem zmienionych lokalnych NodeID; nie rozwiązuje tożsamości przez równość ConceptID.
+
+Realizacja EN z nierozstrzygniętego `to` wymaga kandydatur `This is a cat.`, `That is a cat.` i `It is a cat.`; z `ten` zachowuje `This cat is black.` i `That cat is black.`. Każda kandydatura jawnie deklaruje wybór `reference`. Przy realizacji angielskiego `this` jako polskie `to`/`ten` obowiązkowa strata `deixis` ujawnia brak jawnego oznaczenia bliskości. Propozycje historyczne pozostają osobno; te dopuszczenia i straty są kontraktem agenta, nie akceptacją właściciela.
+
+Kontrola samego I, bez uruchamiania PL/EN:
+
+```sh
+go test ./tests/interlingua/... -run Identification -count=1 -v
+```
+
+Po A1-T02 analiza i realizacja identyfikacji pozostają rzeczywistymi lukami do wykonania w A1-T03/T04. Mają gotowe wzorce, więc są raportowane jako GAP, a nie SPEC_PENDING. Pozostałe 16 rekordów poza identyfikacją i widzeniem nadal nie ma zamkniętych wzorców I.
+
 ## Uruchamianie i odczyt wyniku
 
 Z katalogu głównego zapisz SHA wraz z poleceniem; dla niezatwierdzonych zmian dodaj opis working tree:
