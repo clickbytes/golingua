@@ -60,6 +60,13 @@ type ArgumentBinding struct {
 	SemanticRole meaning.Role `json:"semantic_role"`
 }
 
+// ModifierBinding links an attributive phrase slot to the semantic role it
+// modifies. It is not an argument of the construction's main predicate.
+type ModifierBinding struct {
+	TargetSlot   string       `json:"target_slot"`
+	SemanticRole meaning.Role `json:"semantic_role"`
+}
+
 // SlotSpec describes one ordered NP, VP, or PP position in a family.
 type SlotSpec struct {
 	ID              string           `json:"id"`
@@ -68,8 +75,15 @@ type SlotSpec struct {
 	Cardinality     Cardinality      `json:"cardinality"`
 	Optionality     Optionality      `json:"optionality"`
 	ArgumentBinding *ArgumentBinding `json:"argument_binding,omitempty"`
+	ModifierBinding *ModifierBinding `json:"modifier_binding,omitempty"`
 	Case            string           `json:"case,omitempty"`
 	Adposition      string           `json:"adposition,omitempty"`
+}
+
+// IsMainPredicate reports whether this slot carries the construction's main
+// predicate rather than an argument or an attributive modifier.
+func (slot SlotSpec) IsMainPredicate() bool {
+	return slot.Category.IsPredicate() && slot.ArgumentBinding == nil && slot.ModifierBinding == nil
 }
 
 // ConstraintStrength distinguishes an obligatory structural rule from a
@@ -146,6 +160,14 @@ func validateSlot(slot SlotSpec, index int) error {
 	if slot.ArgumentBinding != nil {
 		if !validToken(string(slot.ArgumentBinding.SemanticRole)) {
 			return invalid("INVALID_ARGUMENT_BINDING", path+".argument_binding", "argument binding requires a bounded semantic role")
+		}
+	}
+	if slot.ModifierBinding != nil {
+		if !validToken(slot.ModifierBinding.TargetSlot) || !validToken(string(slot.ModifierBinding.SemanticRole)) {
+			return invalid("INVALID_MODIFIER_BINDING", path+".modifier_binding", "modifier binding requires a bounded target slot and semantic role")
+		}
+		if slot.Category != CategoryAP || slot.ArgumentBinding != nil || slot.Adposition != "" || slot.Optionality != SlotRequired || slot.Cardinality.Minimum != 1 || slot.Cardinality.Maximum != 1 {
+			return invalid("INVALID_MODIFIER_SLOT", path+".modifier_binding", "modifier binding requires one required AP occurrence without argument binding or adposition")
 		}
 	}
 	return nil

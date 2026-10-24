@@ -308,7 +308,10 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 	if err != nil {
 		return nil, parser.ParseContext{}, err
 	}
-	filtered := candidates[:0]
+	// Do not reuse candidates' backing array while scanning it: the modifier
+	// lookup below still needs the original AP entries after earlier NPs have
+	// been appended to filtered.
+	filtered := make([]parser.PhraseCandidate, 0, len(candidates))
 	negatedBaseSeen := make(map[int]bool)
 	for _, candidate := range candidates {
 		if candidate.Features == nil {
@@ -350,7 +353,31 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 			filtered = append(filtered, candidate)
 			continue
 		}
-		previous := lattice.Tokens[candidate.TokenStart-1]
+		determinerToken := candidate.TokenStart - 1
+		_, hasDeterminer := englishArticleAt(lattice, determinerToken)
+		modifiedByBlack := false
+		if !hasDeterminer {
+			for _, phrase := range candidates {
+				if phrase.Category != construction.CategoryAP || phrase.LexemeID.String() != "lexeme:en.black.adj" ||
+					!containsEnglishSenseName(phrase.SenseIDs, "en.black.color") || phrase.TokenEnd != candidate.TokenStart || phrase.TokenStart == 0 {
+					continue
+				}
+				articleToken := phrase.TokenStart - 1
+				_, found := englishArticleAt(lattice, articleToken)
+				if found {
+					determinerToken, hasDeterminer, modifiedByBlack = articleToken, true, true
+					break
+				}
+			}
+		}
+		if !hasDeterminer {
+			if number := candidate.Features["noun_number"]; number != "" {
+				candidate.Features["number"] = number
+			}
+			filtered = append(filtered, candidate)
+			continue
+		}
+		previous := lattice.Tokens[determinerToken]
 		keep := true
 		for _, reading := range previous.Readings {
 			if reading.HasLexeme && (reading.Lexeme.ID.String() == "lexeme:en.the.det" || reading.Lexeme.ID.String() == "lexeme:en.a.det" || reading.Lexeme.ID.String() == "lexeme:en.an.det") {
@@ -366,7 +393,15 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 							if reading.Lexeme.ID.String() == "lexeme:en.an.det" {
 								article = "an"
 							}
-							if expectedArticle, hasLexicalArticle := englishIndefiniteArticle(noun.Properties); hasLexicalArticle && expectedArticle != article {
+							expectedArticle, hasLexicalArticle := englishIndefiniteArticle(noun.Properties)
+							if modifiedByBlack {
+								expectedArticle, hasLexicalArticle = "a", true
+							}
+							if hasLexicalArticle && expectedArticle != article {
+								keep = false
+								break
+							}
+							if !hasNumberBehavior(builder.lexicon, candidate.LexemeID, "count") {
 								keep = false
 								break
 							}
@@ -395,6 +430,35 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 		}
 	}
 	return filtered, parseContext, nil
+}
+
+func englishArticleAt(lattice analyzer.LexicalLattice, index int) (string, bool) {
+	if index < 0 || index >= len(lattice.Tokens) {
+		return "", false
+	}
+	for _, reading := range lattice.Tokens[index].Readings {
+		if !reading.HasLexeme {
+			continue
+		}
+		switch reading.Lexeme.ID.String() {
+		case "lexeme:en.a.det":
+			return "a", true
+		case "lexeme:en.an.det":
+			return "an", true
+		case "lexeme:en.the.det":
+			return "the", true
+		}
+	}
+	return "", false
+}
+
+func containsEnglishSenseName(senses []ids.SenseID, expected string) bool {
+	for _, sense := range senses {
+		if sense.String() == "sense:"+expected {
+			return true
+		}
+	}
+	return false
 }
 
 func supportedEnglishPredicateRoute(candidate parser.PhraseCandidate) bool {

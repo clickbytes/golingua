@@ -57,7 +57,7 @@ func polishIdentificationState(source semantic.MeaningCandidate, predicateID mea
 			break
 		}
 	}
-	if referent.ID == "" || referent.Kind != meaning.KindReferent || string(referent.Concept) != "concept:cat" {
+	if referent.ID == "" || referent.Kind != meaning.KindReferent || referent.Concept == "" {
 		return "", "", "", false
 	}
 	return role, referent.ID, string(predicate.Concept), true
@@ -96,7 +96,7 @@ func polishNegatedClassificationState(source semantic.MeaningCandidate, predicat
 	if scope.ID == "" || scope.ID != graph.Roots[0] || scope.Operator != meaning.OperatorNegation || scope.Target != predicateID ||
 		predicate.ID != predicateID || predicate.Concept != "concept:class_membership" || len(predicate.Participants) != 1 ||
 		predicate.Participants[0].Role != "member" || predicate.Participants[0].Target != referent.ID ||
-		referent.ID == "" || referent.Concept != "concept:cat" {
+		referent.ID == "" || referent.Concept == "" {
 		return "", "", false
 	}
 	return scope.ID, referent.ID, true
@@ -141,7 +141,7 @@ func polishNegatedClassificationReferenceMode(source semantic.MeaningCandidate, 
 		if scope.ID == "" || graph.Roots[0] != scope.ID || scope.Operator != meaning.OperatorNegation || scope.Target != predicate.ID ||
 			predicate.ID == "" || predicate.Concept != "concept:class_membership" || len(predicate.Participants) != 1 ||
 			predicate.Participants[0].Role != "member" || predicate.Participants[0].Target != referent.ID ||
-			referent.ID == "" || referent.Concept != "concept:cat" {
+			referent.ID == "" || referent.Concept == "" {
 			return "", false
 		}
 		if sourceReferent := sourceNodeConcept(*source.Meaning, sourceReferentID); sourceReferent != referent.Concept {
@@ -230,10 +230,15 @@ func sourceNodeConcept(graph meaning.Meaning, nodeID meaning.NodeID) meaning.Con
 }
 
 func polishIdentificationReferentFeatures(source semantic.MeaningCandidate, referentID meaning.NodeID, candidates []realizer.TargetCandidate) (string, string, bool) {
+	referent, exists := polishMeaningNode(source, referentID)
+	if !exists || referent.Kind != meaning.KindReferent || referent.Concept == "" {
+		return "", "", false
+	}
+	expectedConcept := string(referent.Concept)
 	gender, number := "", ""
 	found := false
 	for _, candidate := range candidates {
-		if candidate.Kind != meaning.KindReferent || candidate.NodeID != referentID || candidate.Outcome != status.OutcomeOK || candidate.TransferBinding.CoreRef.String() != "concept:cat" {
+		if candidate.Kind != meaning.KindReferent || candidate.NodeID != referentID || candidate.Outcome != status.OutcomeOK || candidate.TransferBinding.CoreRef.String() != expectedConcept {
 			continue
 		}
 		candidateGender := ""

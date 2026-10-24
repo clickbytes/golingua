@@ -21,6 +21,12 @@ type CompiledArgumentBinding struct {
 	Adposition string `json:"adposition,omitempty"`
 }
 
+type CompiledModifierBinding struct {
+	SlotID       string `json:"slot_id"`
+	TargetSlot   string `json:"target_slot"`
+	SemanticRole string `json:"semantic_role"`
+}
+
 type SensePermission struct {
 	SenseID ids.SenseID     `json:"sense_id"`
 	FrameID valency.FrameID `json:"frame_id"`
@@ -36,6 +42,7 @@ type CompiledConstructionPlan struct {
 	FamilyID          ids.ConstructionID        `json:"family_id"`
 	VariantID         VariantID                 `json:"variant_id"`
 	ArgumentBindings  []CompiledArgumentBinding `json:"argument_bindings"`
+	ModifierBindings  []CompiledModifierBinding `json:"modifier_bindings,omitempty"`
 	Constraints       []CompiledConstraint      `json:"constraints"`
 	Linearization     []SequenceToken           `json:"linearization"`
 	ProcedureIDs      []string                  `json:"procedure_ids,omitempty"`

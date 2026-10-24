@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "language": "pl",
+  "family": {
+    "id": "construction:pl.attributed_seeing",
+    "language": "pl",
+    "slot_specs": [
+      {"id":"modifier","position":0,"category":"AP","cardinality":{"minimum":1,"maximum":1},"optionality":"required","modifier_binding":{"target_slot":"subject","semantic_role":"bearer"}},
+      {"id":"subject","position":1,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required","argument_binding":{"semantic_role":"experiencer"},"case":"nominative"},
+      {"id":"verb","position":2,"category":"VP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"},
+      {"id":"object","position":3,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required","argument_binding":{"semantic_role":"stimulus"},"case":"accusative"}
+    ],
+    "constraints": [
+      {"id":"subject_verb_number","kind":"agreement","strength":"hard","controller_slot":"subject","target_slot":"verb","features":["number"]},
+      {"id":"subject_modifier_agreement","kind":"agreement","strength":"hard","controller_slot":"subject","target_slot":"modifier","features":["number","gender","case"]}
+    ],
+    "provenance":{"id":"golingua-pl-attributed-seeing-327","uri":"https://github.com/clickbytes/golingua/issues/327","version":"2026-10-25","license":"internal","author":"Codex by owner delegation"}
+  },
+  "variants": [
+    {
+      "id":"construction:pl.attributed_seeing.svo",
+      "family_id":"construction:pl.attributed_seeing",
+      "sequence":[{"kind":"slot","slot_id":"modifier"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"."}],
+      "markedness":"neutral",
+      "priority":0,
+      "direction_policy":"both",
+      "conditions":[
+        {"kind":"feature_equals","slot_id":"verb","feature":"tense","value":"present"},
+        {"kind":"feature_equals","slot_id":"subject","feature":"number","value":"singular"},
+        {"kind":"feature_equals","slot_id":"object","feature":"number","value":"singular"}
+      ],
+      "provenance":{"id":"golingua-pl-attributed-seeing-327","uri":"https://github.com/clickbytes/golingua/issues/327","version":"2026-10-25","license":"internal","author":"Codex by owner delegation"}
+    }
+  ]
+}

@@ -133,8 +133,8 @@ func Linearize(plan RealizationPlan, family construction.ConstructionFamily, slo
 		if slot.ArgumentBinding != nil {
 			familyRoles[slot.ArgumentBinding.SemanticRole] = struct{}{}
 		}
-		if slot.ArgumentBinding == nil {
-			if !slot.Category.IsPredicate() {
+		if slot.ArgumentBinding == nil && slot.ModifierBinding == nil {
+			if !slot.IsMainPredicate() {
 				return LinearizedResult{}, linearizeError(status.OutcomeUnsupported, "UNBOUND_NON_PREDICATE_SLOT", "family.slot_specs."+slot.ID, "only an unbound predicate VP/AP slot may be linearized")
 			}
 			predicateSlot = slot.ID
@@ -185,14 +185,23 @@ func Linearize(plan RealizationPlan, family construction.ConstructionFamily, slo
 				return LinearizedResult{}, linearizeError(status.OutcomeUnsupported, "ADPOSITION_SEQUENCE_UNAVAILABLE", path+".slot_id", "an adpositional argument requires its exact adposition terminal before the slot in the selected construction")
 			}
 		}
-		if spec.ArgumentBinding == nil && form.Role != "" || spec.ArgumentBinding != nil && form.Role != spec.ArgumentBinding.SemanticRole {
+		expectedRole := meaning.Role("")
+		if spec.ArgumentBinding != nil {
+			expectedRole = spec.ArgumentBinding.SemanticRole
+		} else if spec.ModifierBinding != nil {
+			expectedRole = spec.ModifierBinding.SemanticRole
+		}
+		if form.Role != expectedRole {
 			return LinearizedResult{}, linearizeError(status.OutcomeInvalid, "SLOT_ROLE_LICENSE_MISMATCH", path+".role", "slot form role does not match the family slot binding")
 		}
 		if spec.ArgumentBinding != nil && !containsRole(plan.Roles, spec.ArgumentBinding.SemanticRole) {
 			return LinearizedResult{}, linearizeError(status.OutcomeUnsupported, "SLOT_ROLE_ABSENT_FROM_MEANING", path+".role", "slot form supplies a role absent from the selected Meaning")
 		}
-		if spec.ArgumentBinding == nil && (form.NodeID != plan.NodeID || form.LexemeID != plan.LexemeID || form.SenseID != plan.SenseID) {
+		if spec.IsMainPredicate() && (form.NodeID != plan.NodeID || form.LexemeID != plan.LexemeID || form.SenseID != plan.SenseID) {
 			return LinearizedResult{}, linearizeError(status.OutcomeInvalid, "PREDICATE_SLOT_PLAN_MISMATCH", path, "predicate slot form must match the selected plan node, lexeme, and sense")
+		}
+		if spec.ModifierBinding != nil && form.NodeID == plan.NodeID {
+			return LinearizedResult{}, linearizeError(status.OutcomeInvalid, "MODIFIER_SLOT_PLAN_MISMATCH", path, "modifier form must identify its own state rather than the main predicate")
 		}
 		if !containsNode(form.MeaningPath, form.NodeID) {
 			return LinearizedResult{}, linearizeError(status.OutcomeInvalid, "SLOT_MEANING_PATH_MISMATCH", path+".meaning_path", "slot source node must occur in its declared Meaning path")

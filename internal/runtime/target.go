@@ -86,7 +86,7 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 			return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
 		}
 	}
-	selection, err := realizer.SelectTargets(realizer.Input{
+	selectionInput := realizer.Input{
 		Candidates: []semantic.MeaningCandidate{source}, Outcome: source.Status,
 		Diagnostics: source.Evidence.Diagnostics, Operators: operators,
 		CandidatePolicy:          pipeline.CandidatePolicy,
@@ -94,7 +94,8 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 		Language:                 lexicon.LanguageID(pipeline.Language), Lexicon: pipeline.Lexicon,
 		Valency: pipeline.Valency, Constructions: pipeline.Constructions,
 		Variants: pipeline.Variants, Core: pipeline.Core, Budget: pipeline.SelectionBudget,
-	})
+	}
+	selection, err := realizer.SelectTargets(selectionInput)
 	if err != nil {
 		return engine.SurfaceResult{}, err
 	}
@@ -121,12 +122,17 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 	neededIDs := targetExecutionNodeIDs(*source.Meaning, surfaceIDs)
 	candidates := make([]realizer.TargetCandidate, 0, len(selection.Candidates))
 	surfaceCandidates := make([]realizer.TargetCandidate, 0, len(selection.Candidates))
+	coverageRejected := 0
 	for _, candidate := range selection.Candidates {
 		if neededIDs[candidate.NodeID] && (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState || candidate.Kind == meaning.KindReferent) {
 			candidates = append(candidates, candidate)
 		}
 		if surfaceIDs[candidate.NodeID] && (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState || candidate.Kind == meaning.KindReferent) {
-			surfaceCandidates = append(surfaceCandidates, candidate)
+			if realizer.CoversLexicalMeaning(*source.Meaning, candidate.NodeID, candidate.Family.Family) {
+				surfaceCandidates = append(surfaceCandidates, candidate)
+			} else {
+				coverageRejected++
+			}
 		}
 	}
 	if len(surfaceCandidates) > engine.MaxTranslationAlternatives {
@@ -135,6 +141,14 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 		result.Diagnostics = appendTargetDiagnostics(result.Diagnostics, status.Diagnostic{
 			Code: "RESOURCE_LIMIT", Path: "target.candidates",
 			Message:  "target candidates were truncated at the engine alternative limit",
+			Severity: status.SeverityWarning,
+		})
+	}
+	if len(surfaceCandidates) == 0 && coverageRejected > 0 {
+		result.Outcome = combineTargetOutcomes(result.Outcome, status.OutcomeUnsupported)
+		result.Diagnostics = appendTargetDiagnostics(result.Diagnostics, status.Diagnostic{
+			Code: "TARGET_LEXICAL_COVERAGE_UNAVAILABLE", Path: "target.candidates",
+			Message:  "no selected construction covers every lexical node in the supplied Meaning",
 			Severity: status.SeverityWarning,
 		})
 	}

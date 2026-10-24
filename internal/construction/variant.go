@@ -230,7 +230,7 @@ func VariantEmitsAdposition(variant Variant, family ConstructionFamily, slotID, 
 			if slot.ID != token.SlotID {
 				continue
 			}
-			if slot.Category.IsPredicate() && predicatePosition < 0 {
+			if slot.IsMainPredicate() && predicatePosition < 0 {
 				predicatePosition = position
 			}
 			if token.SlotID == slotID {

@@ -30,6 +30,11 @@ var polishIdentificationNegationSource = provenance.SourceRef{
 	Version: "2026-10-24", License: "internal", Author: "Codex by owner delegation",
 }
 
+var polishAttributedSeeingSource = provenance.SourceRef{
+	ID: "golingua-pl-attributed-seeing-327", URI: "https://github.com/clickbytes/golingua/issues/327",
+	Version: "2026-10-25", License: "internal", Author: "Codex by owner delegation",
+}
+
 var polishReadingConstructionSource = provenance.SourceRef{
 	ID: "golingua-g10-19-reading-route-review", URI: "https://github.com/clickbytes/golingua/issues/251#issuecomment-6359339236",
 	Version: "2026-10-23-g10-19", License: "internal", Author: "Codex by owner delegation",
@@ -46,6 +51,7 @@ type constructionBindingDeclaration struct {
 }
 
 var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing", "pl.attributed_seeing.svo"},
 	{"pl.byc.class_membership", "pl.byc.class_membership.frame", "pl.identification", "pl.identification.to"},
 	{"pl.byc.class_membership", "pl.byc.class_membership.frame", "pl.identification_negative", "pl.identification_negative.to"},
 	{"pl.czarny.black", "pl.czarny.black.frame", "pl.attribution", "pl.attribution.ten"},
@@ -187,6 +193,13 @@ func CompileValency() (*valency.Index, error) {
 				return nil, fmt.Errorf("Polish negative frame family: %w", err)
 			}
 			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
+			if item.id == "pl.widziec.visual.transitive" {
+				attributedFamilyID, err := ids.NewConstructionID("pl.attributed_seeing")
+				if err != nil {
+					return nil, fmt.Errorf("Polish attributed seeing frame family: %w", err)
+				}
+				frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, attributedFamilyID)
+			}
 		case "pl.patrzec.directed.na":
 			negativeFamilyID, err := ids.NewConstructionID("pl.oblique_negative")
 			if err != nil {
@@ -220,6 +233,9 @@ func CompileValency() (*valency.Index, error) {
 }
 
 func polishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.family == "pl.attributed_seeing" {
+		return polishAttributedSeeingSource
+	}
 	if item.family == "pl.identification_negative" {
 		return polishIdentificationNegationSource
 	}

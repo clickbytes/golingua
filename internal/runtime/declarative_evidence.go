@@ -115,8 +115,8 @@ type BareDeclarativeEvidenceBuilder struct {
 }
 
 // NoOperatorEvidenceBuilder attests an empty operator inventory only for an
-// already complete, supported declarative Meaning candidate. It accepts one
-// statement discourse wrapper around one lexical target; question, scope,
+// already complete, supported declarative Meaning candidate. It accepts
+// multiple lexical roots or one statement discourse wrapper; question, scope,
 // modality and quantifier structures remain outside this bounded path.
 type NoOperatorEvidenceBuilder struct{}
 
@@ -131,21 +131,40 @@ func (NoOperatorEvidenceBuilder) Build(ctx context.Context, candidate semantic.M
 		return nil, false, nil
 	}
 	graph := candidate.Meaning
-	if len(graph.Roots) != 1 {
+	if len(graph.Roots) == 0 {
 		return nil, false, nil
 	}
 	nodes := make(map[meaning.NodeID]meaning.Node, len(graph.Nodes))
 	for _, node := range graph.Nodes {
 		nodes[node.ID] = node
 	}
-	root := nodes[graph.Roots[0]]
-	if root.Kind == meaning.KindDiscourse {
-		if root.Act != meaning.ActStatement || len(root.Content) != 1 {
+	discourseRoots := 0
+	for _, rootID := range graph.Roots {
+		root, exists := nodes[rootID]
+		if !exists {
+			return nil, false, nil
+		}
+		if root.Kind != meaning.KindDiscourse {
+			continue
+		}
+		discourseRoots++
+		if len(graph.Roots) != 1 || root.Act != meaning.ActStatement || len(root.Content) != 1 {
 			return nil, false, nil
 		}
 		content, exists := nodes[root.Content[0]]
 		if !exists || content.Kind != meaning.KindEvent && content.Kind != meaning.KindState && content.Kind != meaning.KindReferent {
 			return nil, false, nil
+		}
+	}
+	if discourseRoots > 1 {
+		return nil, false, nil
+	}
+	if discourseRoots == 0 {
+		for _, rootID := range graph.Roots {
+			root := nodes[rootID]
+			if root.Kind != meaning.KindEvent && root.Kind != meaning.KindState && root.Kind != meaning.KindReferent {
+				return nil, false, nil
+			}
 		}
 	}
 	for _, node := range candidate.Meaning.Nodes {
@@ -195,20 +214,26 @@ func (builder BareDeclarativeEvidenceBuilder) Build(ctx context.Context, lattice
 			if len(alternative.Unresolved) != 0 || !builder.SupportedSenses[alternative.Permission.SenseID] {
 				return evidence, nil
 			}
-			predicateFound := false
+			predicateCount := 0
 			for _, slot := range alternative.Slots {
 				if slot.Role != "" {
 					continue
 				}
 				for _, id := range slot.CandidateIDs {
 					candidate, exists := byCandidate[id]
-					if !exists || !candidate.Category.IsPredicate() || !builder.matchesPredicateFeatures(alternative.Permission.SenseID, candidate.Features) {
+					if !exists || !candidate.Category.IsPredicate() {
+						continue
+					}
+					if !candidateHasSense(candidate.SenseIDs, alternative.Permission.SenseID) {
+						continue
+					}
+					if !builder.matchesPredicateFeatures(alternative.Permission.SenseID, candidate.Features) {
 						return evidence, nil
 					}
-					predicateFound = true
+					predicateCount++
 				}
 			}
-			if !predicateFound {
+			if predicateCount != 1 {
 				return evidence, nil
 			}
 		}
@@ -218,6 +243,15 @@ func (builder BareDeclarativeEvidenceBuilder) Build(ctx context.Context, lattice
 	}
 	evidence.OperatorCoverageComplete = true
 	return evidence, nil
+}
+
+func candidateHasSense(senses []ids.SenseID, wanted ids.SenseID) bool {
+	for _, sense := range senses {
+		if sense == wanted {
+			return true
+		}
+	}
+	return false
 }
 
 // stableRequestContextID makes candidate IDs reusable across identical

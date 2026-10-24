@@ -73,6 +73,18 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 	if (predicate.Kind == meaning.KindEvent || predicate.Kind == meaning.KindState) && !englishPredicateEvidenceConsistent(source, predicate) {
 		return nil, fmt.Errorf("English target Meaning attributes conflict with explicit source evidence")
 	}
+	if slot.ModifierBinding != nil && englishAttributedSeeingFamily(predicate) {
+		shape, valid := englishAttributedSeeingShape(source)
+		if !valid || source.Meaning == nil {
+			return nil, fmt.Errorf("English attributed seeing adjective requires the licensed two-root Meaning")
+		}
+		modifier, modifierFound := realizer.FindModifier(*source.Meaning, predicate.NodeID, predicate.Family.Family, slot.ID)
+		if !englishAttributedSeeingContextsValid(source) || !modifierFound || modifier.ID != shape.property.ID || candidate.NodeID != modifier.ID ||
+			candidate.Sense.ID.String() != "sense:en.black.color" || candidate.Lexeme.ID.String() != "lexeme:en.black.adj" || candidate.TransferBinding.CoreRef.String() != "concept:black" {
+			return nil, fmt.Errorf("English attributed seeing adjective is not linked to the selected subject property")
+		}
+		return knownFeature("adjective_degree", "positive"), nil
+	}
 	if identification, recognized := englishNegativeIdentificationState(source); recognized && identification.stateID == predicate.NodeID {
 		if !identification.valid || !englishIdentificationAttributesAllowed(source, predicate.NodeID, identification.role, identification.referent, predicate.TransferBinding.CoreRef) {
 			return nil, fmt.Errorf("English negative identification cannot realize the supplied Meaning attributes")
@@ -81,6 +93,9 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 			return englishFiniteVerbFeatures("present", "third", "singular"), nil
 		}
 		if slot.Category == construction.CategoryNP && slot.ArgumentBinding != nil && string(slot.ArgumentBinding.SemanticRole) == identification.role {
+			if !englishIdentificationMemberCountSupported(source, identification, []realizer.TargetCandidate{candidate}) {
+				return nil, fmt.Errorf("English class membership requires an explicit count-noun target for its member referent")
+			}
 			return []features.FeatureValue{{Feature: "noun_number", State: features.StateKnown, Value: "singular"}, {Feature: "number", State: features.StateKnown, Value: "singular"}}, nil
 		}
 	}
@@ -92,6 +107,9 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 			return englishFiniteVerbFeatures("present", "third", "singular"), nil
 		}
 		if slot.Category == construction.CategoryNP && slot.ArgumentBinding != nil && string(slot.ArgumentBinding.SemanticRole) == identification.role {
+			if !englishIdentificationMemberCountSupported(source, identification, []realizer.TargetCandidate{candidate}) {
+				return nil, fmt.Errorf("English class membership requires an explicit count-noun target for its member referent")
+			}
 			return []features.FeatureValue{{Feature: "noun_number", State: features.StateKnown, Value: "singular"}, {Feature: "number", State: features.StateKnown, Value: "singular"}}, nil
 		}
 	}
@@ -336,14 +354,27 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 		transitiveFamily     = "construction:en.transitive"
 		transitivePastFamily = "construction:en.transitive_past"
 		obliqueFamily        = "construction:en.oblique"
+		attributedFamily     = "construction:en.attributed_seeing"
 	)
 	familyID := candidate.Family.Family.ID.String()
 	if (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState) && !englishPredicateEvidenceConsistent(source, candidate) {
 		return false
 	}
+	if familyID == attributedFamily && !englishAttributedSeeingMainCandidate(source, candidate) {
+		return false
+	}
+	if shape, valid := englishAttributedSeeingShape(source); valid {
+		if candidate.NodeID == shape.property.ID {
+			return englishAttributedSeeingModifierCandidate(source, candidate, candidates)
+		}
+		if candidate.NodeID == shape.event.ID && familyID != attributedFamily {
+			return false
+		}
+	}
 	if identification, recognized := englishNegativeIdentificationState(source); recognized {
 		if candidate.Kind == meaning.KindState && candidate.NodeID == identification.stateID {
-			if !identification.valid || !englishIdentificationAttributesAllowed(source, candidate.NodeID, identification.role, identification.referent, candidate.TransferBinding.CoreRef) || familyID != identification.family || candidate.Sense.ID.String() != identification.senseID || candidate.CompiledVariant.Variant.DirectionPolicy == construction.DirectionAnalyze {
+			if !identification.valid || !englishIdentificationAttributesAllowed(source, candidate.NodeID, identification.role, identification.referent, candidate.TransferBinding.CoreRef) ||
+				!englishIdentificationMemberCountSupported(source, identification, candidates) || familyID != identification.family || candidate.Sense.ID.String() != identification.senseID || candidate.CompiledVariant.Variant.DirectionPolicy == construction.DirectionAnalyze {
 				return false
 			}
 			variant := candidate.CompiledVariant.Variant.ID.String()
@@ -359,7 +390,8 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 	}
 	if identification, recognized := englishIdentificationState(source); recognized {
 		if candidate.Kind == meaning.KindState && candidate.NodeID == identification.stateID {
-			if !identification.valid || !englishIdentificationAttributesAllowed(source, candidate.NodeID, identification.role, identification.referent, candidate.TransferBinding.CoreRef) {
+			if !identification.valid || !englishIdentificationAttributesAllowed(source, candidate.NodeID, identification.role, identification.referent, candidate.TransferBinding.CoreRef) ||
+				!englishIdentificationMemberCountSupported(source, identification, candidates) {
 				return false
 			}
 			variant := candidate.CompiledVariant.Variant.ID.String()
@@ -393,7 +425,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 			return false
 		}
 	}
-	if candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || familyID != transitiveFamily && familyID != transitivePastFamily && familyID != obliqueFamily && !isNegativeFamily {
+	if candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || familyID != transitiveFamily && familyID != transitivePastFamily && familyID != obliqueFamily && familyID != attributedFamily && !isNegativeFamily {
 		return true
 	}
 	variant, knownVariant := englishDeterminerVariant(candidate.CompiledVariant.Variant.ID.String())
@@ -469,6 +501,11 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 			number = ""
 		}
 		indefiniteArticle, hasCommonIndefiniteArticle := commonEnglishIndefiniteArticle(lexicalCandidates)
+		if familyID == attributedFamily && slot.ID == "subject" {
+			// The first pronounced word of this licensed NP is the modifier
+			// black, even when the noun itself takes an (for example offspring).
+			indefiniteArticle, hasCommonIndefiniteArticle = "a", true
+		}
 		mass := allMass
 		if mass {
 			number = "singular"
@@ -578,31 +615,37 @@ func englishNegativeDeterminerVariant(id, prefix string, variants map[string]eng
 }
 
 var englishDeterminerVariants = map[string]englishDeterminers{
-	"construction:en.transitive.svo":                                   {subject: "the", object: "the"},
-	"construction:en.transitive_negative.svo":                          {subject: "the", object: "the"},
-	"construction:en.transitive_negative.svo.plural":                   {subject: "the", object: "the"},
-	"construction:en.transitive.svo.indefinite_object":                 {subject: "the", object: "a"},
-	"construction:en.transitive.svo.indefinite_subject":                {subject: "a", object: "the"},
-	"construction:en.transitive.svo.indefinite_subject_object":         {subject: "a", object: "a"},
-	"construction:en.transitive.svo.mass_object":                       {subject: "the", object: "bare"},
-	"construction:en.transitive.svo.indefinite_subject_mass_object":    {subject: "a", object: "bare"},
-	"construction:en.transitive.svo.indefinite_object_an":              {subject: "the", object: "an"},
-	"construction:en.transitive.svo.indefinite_subject_an":             {subject: "an", object: "the"},
-	"construction:en.transitive.svo.indefinite_subject_a_object_an":    {subject: "a", object: "an"},
-	"construction:en.transitive.svo.indefinite_subject_an_object_a":    {subject: "an", object: "a"},
-	"construction:en.transitive.svo.indefinite_subject_an_object_an":   {subject: "an", object: "an"},
-	"construction:en.transitive.svo.indefinite_subject_an_mass_object": {subject: "an", object: "bare"},
-	"construction:en.oblique.svo":                                      {subject: "the", target: "the"},
-	"construction:en.oblique.svo.indefinite_target":                    {subject: "the", target: "a"},
-	"construction:en.oblique.svo.indefinite_subject":                   {subject: "a", target: "the"},
-	"construction:en.oblique.svo.indefinite_subject_target":            {subject: "a", target: "a"},
-	"construction:en.oblique.svo.indefinite_target_an":                 {subject: "the", target: "an"},
-	"construction:en.oblique.svo.indefinite_subject_an":                {subject: "an", target: "the"},
-	"construction:en.oblique.svo.indefinite_subject_a_target_an":       {subject: "a", target: "an"},
-	"construction:en.oblique.svo.indefinite_subject_an_target_a":       {subject: "an", target: "a"},
-	"construction:en.oblique.svo.indefinite_subject_an_target_an":      {subject: "an", target: "an"},
-	"construction:en.oblique_negative.svo":                             {subject: "the", target: "the"},
-	"construction:en.oblique_negative.svo.plural":                      {subject: "the", target: "the"},
+	"construction:en.attributed_seeing.svo":                                {subject: "the", object: "the"},
+	"construction:en.attributed_seeing.svo.indefinite_object":              {subject: "the", object: "a"},
+	"construction:en.attributed_seeing.svo.indefinite_object_an":           {subject: "the", object: "an"},
+	"construction:en.attributed_seeing.svo.indefinite_subject":             {subject: "a", object: "the"},
+	"construction:en.attributed_seeing.svo.indefinite_subject_object":      {subject: "a", object: "a"},
+	"construction:en.attributed_seeing.svo.indefinite_subject_a_object_an": {subject: "a", object: "an"},
+	"construction:en.transitive.svo":                                       {subject: "the", object: "the"},
+	"construction:en.transitive_negative.svo":                              {subject: "the", object: "the"},
+	"construction:en.transitive_negative.svo.plural":                       {subject: "the", object: "the"},
+	"construction:en.transitive.svo.indefinite_object":                     {subject: "the", object: "a"},
+	"construction:en.transitive.svo.indefinite_subject":                    {subject: "a", object: "the"},
+	"construction:en.transitive.svo.indefinite_subject_object":             {subject: "a", object: "a"},
+	"construction:en.transitive.svo.mass_object":                           {subject: "the", object: "bare"},
+	"construction:en.transitive.svo.indefinite_subject_mass_object":        {subject: "a", object: "bare"},
+	"construction:en.transitive.svo.indefinite_object_an":                  {subject: "the", object: "an"},
+	"construction:en.transitive.svo.indefinite_subject_an":                 {subject: "an", object: "the"},
+	"construction:en.transitive.svo.indefinite_subject_a_object_an":        {subject: "a", object: "an"},
+	"construction:en.transitive.svo.indefinite_subject_an_object_a":        {subject: "an", object: "a"},
+	"construction:en.transitive.svo.indefinite_subject_an_object_an":       {subject: "an", object: "an"},
+	"construction:en.transitive.svo.indefinite_subject_an_mass_object":     {subject: "an", object: "bare"},
+	"construction:en.oblique.svo":                                          {subject: "the", target: "the"},
+	"construction:en.oblique.svo.indefinite_target":                        {subject: "the", target: "a"},
+	"construction:en.oblique.svo.indefinite_subject":                       {subject: "a", target: "the"},
+	"construction:en.oblique.svo.indefinite_subject_target":                {subject: "a", target: "a"},
+	"construction:en.oblique.svo.indefinite_target_an":                     {subject: "the", target: "an"},
+	"construction:en.oblique.svo.indefinite_subject_an":                    {subject: "an", target: "the"},
+	"construction:en.oblique.svo.indefinite_subject_a_target_an":           {subject: "a", target: "an"},
+	"construction:en.oblique.svo.indefinite_subject_an_target_a":           {subject: "an", target: "a"},
+	"construction:en.oblique.svo.indefinite_subject_an_target_an":          {subject: "an", target: "an"},
+	"construction:en.oblique_negative.svo":                                 {subject: "the", target: "the"},
+	"construction:en.oblique_negative.svo.plural":                          {subject: "the", target: "the"},
 }
 
 var englishNegativeTransitiveDeterminerVariants = map[string]englishDeterminers{
@@ -639,6 +682,8 @@ func englishStandardDeterminerVariant(familyID string) string {
 		return "construction:en.oblique.svo"
 	case "construction:en.oblique_negative":
 		return "construction:en.oblique_negative.svo"
+	case "construction:en.attributed_seeing":
+		return "construction:en.attributed_seeing.svo"
 	default:
 		return ""
 	}
@@ -646,7 +691,7 @@ func englishStandardDeterminerVariant(familyID string) string {
 
 func englishDeterminerForRole(candidate realizer.TargetCandidate, role meaning.Role) (string, bool) {
 	familyID := candidate.Family.Family.ID.String()
-	if familyID != "construction:en.transitive" && familyID != "construction:en.transitive_past" && familyID != "construction:en.transitive_negative" && familyID != "construction:en.oblique" && familyID != "construction:en.oblique_negative" {
+	if familyID != "construction:en.transitive" && familyID != "construction:en.transitive_past" && familyID != "construction:en.transitive_negative" && familyID != "construction:en.oblique" && familyID != "construction:en.oblique_negative" && familyID != "construction:en.attributed_seeing" {
 		return "", false
 	}
 	variant, exists := englishDeterminerVariant(candidate.CompiledVariant.Variant.ID.String())

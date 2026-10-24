@@ -6,6 +6,7 @@ import (
 
 	"github.com/clickbytes/golingua/internal/construction"
 	"github.com/clickbytes/golingua/internal/features"
+	"github.com/clickbytes/golingua/internal/lexicon"
 	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/morph"
 	"github.com/clickbytes/golingua/internal/realizer"
@@ -70,7 +71,34 @@ func (builder MorphologyExecutionBuilder) Build(ctx context.Context, source sema
 		}
 		var candidate realizer.TargetCandidate
 		var nodeID meaning.NodeID
-		if slot.Category.IsPredicate() && slot.ArgumentBinding == nil {
+		if slot.ModifierBinding != nil {
+			modifier, ok := realizer.FindModifier(*source.Meaning, plan.NodeID, selected.Family.Family, slot.ID)
+			if !ok {
+				return realizer.ExecuteInput{}, runtimeError(status.OutcomeUnsupported, "MODIFIER_STATE_UNAVAILABLE", "source.meaning", "declared modifier slot has no unique linked root state")
+			}
+			choices := make(map[string]realizer.TargetCandidate)
+			for _, available := range candidates {
+				if available.SourceCandidateID != source.ID || available.SemanticID != source.SemanticID ||
+					available.NodeID != modifier.ID || available.Kind != meaning.KindState || available.Outcome != status.OutcomeOK ||
+					available.TransferBinding.CoreRef.String() != string(modifier.Concept) || available.Lexeme.POS != lexicon.PartOfSpeech("adjective") {
+					continue
+				}
+				key := available.Lexeme.ID.String() + "\x00" + available.Sense.ID.String() + "\x00" + available.TransferBinding.CoreRef.String()
+				if _, exists := choices[key]; !exists {
+					choices[key] = available
+				}
+			}
+			if len(choices) == 0 {
+				return realizer.ExecuteInput{}, runtimeError(status.OutcomeUnsupported, "MODIFIER_LEXICALIZATION_UNAVAILABLE", "target.slots."+slot.ID, "no licensed adjective candidate is available for the exact modifier state")
+			}
+			if len(choices) > 1 {
+				return realizer.ExecuteInput{}, runtimeError(status.OutcomeAmbiguous, "MODIFIER_LEXICALIZATION_AMBIGUOUS", "target.slots."+slot.ID, "multiple lexical identities remain for the exact modifier state")
+			}
+			for _, selectedModifier := range choices {
+				candidate = selectedModifier
+			}
+			nodeID = modifier.ID
+		} else if slot.IsMainPredicate() {
 			candidate = selected
 			nodeID = plan.NodeID
 		} else if slot.ArgumentBinding != nil {
@@ -99,7 +127,7 @@ func (builder MorphologyExecutionBuilder) Build(ctx context.Context, source sema
 			}
 			candidate = choices[0]
 		} else {
-			return realizer.ExecuteInput{}, runtimeError(status.OutcomeUnsupported, "UNBOUND_SLOT_UNSUPPORTED", "target.slots."+slot.ID, "only predicate VP/AP slots and explicitly role-bound argument slots are supported")
+			return realizer.ExecuteInput{}, runtimeError(status.OutcomeUnsupported, "UNBOUND_SLOT_UNSUPPORTED", "target.slots."+slot.ID, "only the main predicate, declared modifiers, and explicitly role-bound argument slots are supported")
 		}
 		if slot.Category != construction.CategoryNP && !slot.Category.IsPredicate() && slot.Category != construction.CategoryPP {
 			return realizer.ExecuteInput{}, runtimeError(status.OutcomeUnsupported, "SLOT_CATEGORY_UNSUPPORTED", "target.slots."+slot.ID, "slot execution does not yet realize PP slots")

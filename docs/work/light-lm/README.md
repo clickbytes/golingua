@@ -8,8 +8,8 @@ Decyzja właściciela z 2026-10-24: rozwijać silnik pojęciowo-językowy z proc
 | --- | --- | --- |
 | Fundament znaczenia, procedur i uogólniania | [epik 324](https://github.com/clickbytes/golingua/issues/324) | ACTIVE |
 | Czas i wielość uczestników w I | [325](https://github.com/clickbytes/golingua/issues/325) | DONE |
-| Wspólne proceduralne klasy odmiany | [326](https://github.com/clickbytes/golingua/issues/326) | ACTIVE |
-| Składanie i realizacja niezależne od konkretnego kota | [327](https://github.com/clickbytes/golingua/issues/327) | QUEUED |
+| Wspólne proceduralne klasy odmiany | [326](https://github.com/clickbytes/golingua/issues/326) | DONE |
+| Składanie i realizacja niezależne od konkretnego kota | [327](https://github.com/clickbytes/golingua/issues/327) | ACTIVE |
 | Ograniczenie kopiowania danych w runtime | [328](https://github.com/clickbytes/golingua/issues/328) | QUEUED |
 | Jawne uczenie i trwałe użycie nabytej wiedzy | [epik 329](https://github.com/clickbytes/golingua/issues/329) | QUEUED |
 
@@ -29,6 +29,10 @@ Pomiar lokalny Go 1.27.0, Linux amd64, i7-11800H, GOMAXPROCS=16: inicjalizacja 1
 - #325 scalono przez [PR 330](https://github.com/clickbytes/golingua/pull/330): main `1707590ead2892f16f065fe52eaaf935e9e9216e`; [CI PR](https://github.com/clickbytes/golingua/actions/runs/40134700533) i [CI main](https://github.com/clickbytes/golingua/actions/runs/40134811089) SUCCESS. Drzewo merge jest zgodne ze sprawdzonym head PR.
 - [Kontrakt klas 326](326-contract.md) i [briefy oraz przekazania](326-jobs.md).
 - [Dowody odbioru 326](326-evidence.md) i [obserwacje CLI](326-observations.jsonl).
+- #326 scalono przez [PR 331](https://github.com/clickbytes/golingua/pull/331): main `11772b75729ac1ef1f7dc1f4abff51a5f7269363`, drzewo zgodne z odebranym head. [CI PR](https://github.com/clickbytes/golingua/actions/runs/40135648747) i [CI main](https://github.com/clickbytes/golingua/actions/runs/40135704117) SUCCESS.
+- [Kontrakt składania 327](327-contract.md) i [briefy oraz przekazania](327-jobs.md).
 - Ocena techniczna agenta nie oznacza akceptacji właściciela, obecnie NOT EVALUATED.
 
 OpenCode: dzienna kontrola 2026-10-24, izolowany obraz `ghcr.io/anomalyco/opencode:2.0.15`, jawny worker i limit 12 kroków. Config wskazywał plik, ale `debug agents` zwrócił pustą listę; katalogi modeli były puste, a katalog kosztów odpowiadał 403. Model, darmowy koszt i worker nie zostały zweryfikowane. Próba odpowiedzi i odmowy uprawnień: NOT RUN; `--auto` nie uruchomiono. Zgodnie z AGENTS stosujemy ograniczone zadania Luna Low. Źródła kontroli: [config](https://dev.opencode.ai/v2/docs/config/), [permissions](https://dev.opencode.ai/v2/docs/permissions/), [agents](https://dev.opencode.ai/v2/docs/agents/). Konfiguracja narzędzia i poświadczenia nie są danymi produktu.
+
+Odświeżenie 2026-10-25 (Europe/Warsaw), ten sam obraz v2.0.15, nowy izolowany kontener bez `.git` i poświadczeń: jawny config został odczytany; `models` pokazało dziewięć darmowych modeli, a [katalog cen](https://models.dev/api.json) pobrany w kontenerze potwierdził zerowe stawki. Diagnostyczne `opencode/glm-5.3-flash-free` odpowiedziało `READY`, koszt próby narzędziowej 0. `debug agents` nadal nie wykazało wskazanego workera, mimo przyjęcia `--agent` w run. Rzeczywisty odczyt pliku poza workspace został odrzucony przez `external_directory`; dla shell, sieci i subagenta nie zaobserwowano prób narzędziowych (model zgłosił ich brak), więc wymagane trzy odmowy pozostają NOT VERIFIED. Pełna bramka nadal niespełniona, bez `--auto`; kolejne zamknięte zadania używają Luna Low. Przegląd [SWE-bench](https://www.swebench.com/) i [Terminal-Bench](https://www.tbench.ai/) nie dostarczył odczytywalnego wyniku dla dokładnego darmowego endpointu, więc nie przypisano mu pozycji w rankingu. Notatka i surowe próby koordynatora: `/tmp/golingua-opencode-audit-20261025/`; kontener po kontroli usunięto.

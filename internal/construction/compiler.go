@@ -127,12 +127,20 @@ func CompileConstruction(input CompileInput) (CompiledConstructionPlan, error) {
 	}
 	slots := make(map[string]SlotSpec, len(family.SlotSpecs))
 	roleSlots := make(map[string]string)
+	modifierBindings := make([]CompiledModifierBinding, 0, 1)
 	for _, slot := range family.SlotSpecs {
 		slots[slot.ID] = slot
 		if slot.ArgumentBinding != nil {
 			roleSlots[string(slot.ArgumentBinding.SemanticRole)] = slot.ID
 		}
+		if slot.ModifierBinding != nil {
+			modifierBindings = append(modifierBindings, CompiledModifierBinding{
+				SlotID: slot.ID, TargetSlot: slot.ModifierBinding.TargetSlot,
+				SemanticRole: string(slot.ModifierBinding.SemanticRole),
+			})
+		}
 	}
+	sort.Slice(modifierBindings, func(i, j int) bool { return modifierBindings[i].SlotID < modifierBindings[j].SlotID })
 	bindings := make([]CompiledArgumentBinding, 0, len(frame.Arguments))
 	for _, argument := range frame.Arguments {
 		slotID, ok := roleSlots[string(argument.Role)]
@@ -159,7 +167,7 @@ func CompileConstruction(input CompileInput) (CompiledConstructionPlan, error) {
 		}
 		bindings = append(bindings, CompiledArgumentBinding{ArgumentID: argument.ID, Role: string(argument.Role), Required: argument.Required, SlotID: slotID, CasePolicy: policy, Adposition: adposition})
 	}
-	plan := CompiledConstructionPlan{Language: string(family.Language), ProfileVersion: profile.Version, ProfileProvenance: profile.Provenance, Permissions: []SensePermission{{SenseID: frame.SenseID, FrameID: frame.ID}}, FamilyID: family.ID, VariantID: compiled.Variant.ID, ArgumentBindings: bindings, Constraints: cloneConstraints(input.Constraints), Linearization: CloneSequenceTokens(compiled.Variant.Sequence), ProcedureIDs: procedureIDs}
+	plan := CompiledConstructionPlan{Language: string(family.Language), ProfileVersion: profile.Version, ProfileProvenance: profile.Provenance, Permissions: []SensePermission{{SenseID: frame.SenseID, FrameID: frame.ID}}, FamilyID: family.ID, VariantID: compiled.Variant.ID, ArgumentBindings: bindings, ModifierBindings: modifierBindings, Constraints: cloneConstraints(input.Constraints), Linearization: CloneSequenceTokens(compiled.Variant.Sequence), ProcedureIDs: procedureIDs}
 	plan.ID = canonicalPlanID(plan)
 	plan.PermissionDigest = permissionDigest(plan.Permissions)
 	return plan, nil
@@ -206,6 +214,11 @@ func CompilePlanIndex(inputs []CompileInput) (*PlanIndex, error) {
 	itemCount := 0
 	for _, input := range inputs {
 		itemCount += len(input.Family.SlotSpecs) + len(input.Family.Constraints) + len(input.Frame.Arguments) + len(input.Constraints) + len(input.Variant.Sequence) + len(input.ProcedureIDs)
+		for _, slot := range input.Family.SlotSpecs {
+			if slot.ModifierBinding != nil {
+				itemCount++
+			}
+		}
 		if itemCount > MaxCompileItems {
 			return nil, resourceLimit("compile_items", itemCount, MaxCompileItems)
 		}
@@ -270,6 +283,7 @@ func clonePlan(plan CompiledConstructionPlan) CompiledConstructionPlan {
 	result := plan
 	result.Permissions = append([]SensePermission(nil), plan.Permissions...)
 	result.ArgumentBindings = append([]CompiledArgumentBinding(nil), plan.ArgumentBindings...)
+	result.ModifierBindings = append([]CompiledModifierBinding(nil), plan.ModifierBindings...)
 	result.Constraints = cloneConstraints(plan.Constraints)
 	result.Linearization = CloneSequenceTokens(plan.Linearization)
 	result.ProcedureIDs = append([]string(nil), plan.ProcedureIDs...)

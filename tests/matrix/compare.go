@@ -10,10 +10,14 @@ import (
 	"github.com/clickbytes/golingua/tests/interlingua"
 )
 
-const maxComparisonNodes = 32
+const (
+	maxComparisonNodes        = 32
+	maxRootAssignmentAttempts = 4096
+)
 
-// GraphMatches compares two single-root Meaning graphs while ignoring local
-// node IDs and node order. Every node must have a one-to-one counterpart.
+// GraphMatches compares Meaning graphs while ignoring root order, local node
+// IDs, and node order. Every node must have a one-to-one counterpart across
+// the complete graph.
 // This is an alpha-structural contract comparison, not semantic equivalence
 // and not evidence of entity identity.
 func GraphMatches(want, got meaning.Meaning) (bool, error) {
@@ -31,8 +35,11 @@ func GraphMatches(want, got meaning.Meaning) (bool, error) {
 	if err := meaning.ValidateStructure(got, budget); err != nil {
 		return false, fmt.Errorf("invalid actual Meaning graph: %w", err)
 	}
-	if len(want.Roots) != 1 || len(got.Roots) != 1 {
-		return false, fmt.Errorf("Meaning comparison requires exactly one root")
+	if len(want.Roots) == 0 || len(got.Roots) == 0 {
+		return false, fmt.Errorf("Meaning comparison requires non-empty root sets")
+	}
+	if len(want.Roots) != len(got.Roots) {
+		return false, nil
 	}
 	if len(want.Nodes) != len(got.Nodes) {
 		return false, nil
@@ -90,13 +97,51 @@ func GraphMatches(want, got meaning.Meaning) (bool, error) {
 		return true
 	}
 
-	if !match(want.Roots[0], got.Roots[0]) {
-		return false, nil
+	cloneMap := func(source map[meaning.NodeID]meaning.NodeID) map[meaning.NodeID]meaning.NodeID {
+		copy := make(map[meaning.NodeID]meaning.NodeID, len(source))
+		for key, value := range source {
+			copy[key] = value
+		}
+		return copy
 	}
-	if len(wantToGot) != len(want.Nodes) || len(gotToWant) != len(got.Nodes) {
-		return false, nil
+	usedRoots := make([]bool, len(got.Roots))
+	attempts := 0
+	exhausted := false
+	var assignRoots func(int) bool
+	assignRoots = func(index int) bool {
+		if index == len(want.Roots) {
+			return len(wantToGot) == len(want.Nodes) && len(gotToWant) == len(got.Nodes)
+		}
+		for gotIndex, gotRoot := range got.Roots {
+			if usedRoots[gotIndex] {
+				continue
+			}
+			attempts++
+			if attempts > maxRootAssignmentAttempts {
+				exhausted = true
+				return false
+			}
+			wantSnapshot := cloneMap(wantToGot)
+			gotSnapshot := cloneMap(gotToWant)
+			if match(want.Roots[index], gotRoot) {
+				usedRoots[gotIndex] = true
+				if assignRoots(index + 1) {
+					return true
+				}
+				usedRoots[gotIndex] = false
+			}
+			wantToGot, gotToWant = wantSnapshot, gotSnapshot
+			if exhausted {
+				return false
+			}
+		}
+		return false
 	}
-	return true, nil
+	matched := assignRoots(0)
+	if exhausted {
+		return false, fmt.Errorf("Meaning root assignment exceeded comparison limit of %d attempts", maxRootAssignmentAttempts)
+	}
+	return matched, nil
 }
 
 // IdentificationMatches compares an analyzed candidate with an independent

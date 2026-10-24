@@ -95,6 +95,22 @@ go test ./tests/... -run 'MeaningAttributes|Negation|Identification|Seeing|Inven
 
 Present Reading używa istniejącej trasy the/the z jawnymi założeniami określoności; past zachowuje licencjonowane warianty rodzajnika. To granica dotychczasowego zakresu G10-19/G10-20, nie nowa ocena pełnego języka.
 
+## Złożona cecha podmiotu i uogólnienie
+
+Kontrakt [LIGHT-F3](../docs/work/light-lm/327-contract.md) dodaje cztery niezależne I: `composition.black-cat-sees-dog`, `composition.black-dog-sees-cat`, `composition.black-bird-sees-dog` i `composition.black-cat-sees-cat`. Każde łączy stan `black` z rolą `bearer` wskazującą dokładnie referent podmiotu oraz zdarzenie `seeing` w czasie teraźniejszym. Oba referenty mają `one`; pozostają odrębnymi węzłami także wtedy, gdy oba mają ConceptID kota. Przykładowe uogólnienie referenta psa obejmuje `This is a dog` / `To jest pies.`, `This dog is black.` / `Ten pies jest czarny.` i `This is not a dog.` / `To nie jest pies.`.
+
+Złożona trasa widzenia jest ograniczona do jednego teraźniejszego zdarzenia, jednego nieczasowanego stanu `black`, podmiotu z zatwierdzonym leksemem i obsługiwaną formą oraz dwóch referentów o znanej liczbie pojedynczej. Nie rozstrzyga tożsamości ani płci. PL realizuje zgodę z podmiotem; EN zachowuje jawne warianty określoności. Inne modyfikatory, czasy, liczby, brak wiązania lub formy wymaganej do realizacji wymagają odmowy. Kontrole są lokalne i nie zmieniają 24 rekordów próbki ani CI.
+
+```sh
+go test ./tests/interlingua/... -run Composition -count=1 -v
+go test ./tests/languages/pl/A1/... -run Composition -count=1 -v
+go test ./tests/languages/en/A1/... -run Composition -count=1 -v
+go test ./tests/translation/... -run Composition -count=1 -v
+go test ./tests/languages/pl/A1/... -run Generalization -count=1 -v
+go test ./tests/languages/en/A1/... -run Generalization -count=1 -v
+go test ./tests/... -run 'Composition|Generalization' -count=1 -v
+```
+
 ```sh
 go test ./tests/interlingua/... -run Seeing -count=1 -v
 go test ./tests/languages/pl/A1/... -run Seeing -count=1 -v

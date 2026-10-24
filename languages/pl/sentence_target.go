@@ -161,6 +161,27 @@ func polishIdentificationDefaults(predicatePath, referentPath []meaning.NodeID, 
 type polishSentenceFeatures struct{}
 
 func (polishSentenceFeatures) Features(_ context.Context, source semantic.MeaningCandidate, predicate realizer.TargetCandidate, slot construction.SlotSpec, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) ([]features.FeatureValue, error) {
+	if slot.ModifierBinding != nil && polishAttributedSeeingFamily(predicate) {
+		shape, valid := polishAttributedSeeingShape(source)
+		if !valid || source.Meaning == nil {
+			return nil, fmt.Errorf("Polish attributed seeing adjective requires the licensed two-root Meaning")
+		}
+		modifier, modifierFound := realizer.FindModifier(*source.Meaning, predicate.NodeID, predicate.Family.Family, slot.ID)
+		_, subjectID, subjectFound := polishSubjectTarget(source, predicate)
+		if !polishAttributedSeeingContextsValid(source) || !modifierFound || modifier.ID != shape.property.ID ||
+			!subjectFound || subjectID != shape.subject.ID || candidate.NodeID != modifier.ID ||
+			candidate.Sense.ID.String() != "sense:pl.czarny.black" || candidate.TransferBinding.CoreRef.String() != "concept:black" || candidate.Lexeme.ID.String() != "lexeme:pl.czarny.adj" {
+			return nil, fmt.Errorf("Polish attributed seeing adjective is not linked to the selected subject property")
+		}
+		gender, number, found := polishIdentificationReferentFeatures(source, subjectID, candidates)
+		if !found {
+			return nil, fmt.Errorf("Polish attributed seeing adjective has no unique compatible subject lexical class")
+		}
+		return knownPolishFeatures(
+			[2]string{"degree", "positive"}, [2]string{"number", number},
+			[2]string{"gender", gender}, [2]string{"case", "nominative"},
+		), nil
+	}
 	if slot.Category == construction.CategoryAP {
 		if predicate.Sense.ID.String() != "sense:pl.czarny.black" || candidate.Lexeme.ID.String() != "lexeme:pl.czarny.adj" {
 			return nil, nil
@@ -302,9 +323,20 @@ func (polishSentenceOperatorBuilder) Build(ctx context.Context, source semantic.
 
 type polishSentenceCandidatePolicy struct{}
 
-func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, _ []realizer.TargetCandidate) bool {
+func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, all []realizer.TargetCandidate) bool {
 	if (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState) && !polishPredicateEvidenceConsistent(source, candidate) {
 		return false
+	}
+	if polishAttributedSeeingFamily(candidate) {
+		return polishAttributedSeeingMainCandidate(source, candidate)
+	}
+	if shape, valid := polishAttributedSeeingShape(source); valid {
+		if candidate.NodeID == shape.property.ID {
+			return polishAttributedSeeingModifierCandidate(source, candidate, all)
+		}
+		if candidate.NodeID == shape.event.ID {
+			return false
+		}
 	}
 	if concept := polishIdentificationPredicateConcept(source, candidate.NodeID); concept != "" {
 		if concept == "concept:class_membership" {

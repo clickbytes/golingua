@@ -61,6 +61,11 @@ var englishIdentificationNegationSource = provenance.SourceRef{
 	Version: "2026-10-24", License: "internal", Author: "Codex by owner delegation",
 }
 
+var englishAttributedSeeingSource = provenance.SourceRef{
+	ID: "golingua-en-attributed-seeing-327", URI: "https://github.com/clickbytes/golingua/issues/327",
+	Version: "2026-10-25", License: "internal", Author: "Codex by owner delegation",
+}
+
 var englishNegativeArticleConstructionSource = provenance.SourceRef{
 	ID: "golingua-g10-18-negative-article-alternatives", URI: "https://github.com/clickbytes/golingua/issues/249#issuecomment-6359036189",
 	Version: "2026-10-23-g10-18", License: "internal", Author: "Codex by owner delegation",
@@ -82,6 +87,12 @@ type constructionBindingDeclaration struct {
 }
 
 var englishConstructionBindingDeclarations = append(append([]constructionBindingDeclaration{
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_object"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_object_an"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_subject"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_subject_object"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_subject_a_object_an"},
 	{"en.be.class_membership", "en.be.class_membership.frame", "en.identification", "en.identification.this"},
 	{"en.be.class_membership", "en.be.class_membership.frame", "en.identification", "en.identification.that"},
 	{"en.be.class_membership", "en.be.class_membership.frame", "en.identification", "en.identification.it"},
@@ -288,6 +299,13 @@ func CompileValency() (*valency.Index, error) {
 				return nil, fmt.Errorf("English negative frame family: %w", err)
 			}
 			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
+			if item.id == "en.see.visual.transitive" {
+				attributedFamilyID, err := ids.NewConstructionID("en.attributed_seeing")
+				if err != nil {
+					return nil, fmt.Errorf("English attributed seeing frame family: %w", err)
+				}
+				frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, attributedFamilyID)
+			}
 		case "en.read.text.transitive":
 			pastFamilyID, err := ids.NewConstructionID("en.transitive_past")
 			if err != nil {
@@ -327,6 +345,9 @@ func CompileValency() (*valency.Index, error) {
 }
 
 func englishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.family == "en.attributed_seeing" {
+		return englishAttributedSeeingSource
+	}
 	if item.family == "en.identification_negative" {
 		return englishIdentificationNegationSource
 	}

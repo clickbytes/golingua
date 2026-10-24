@@ -82,6 +82,7 @@ func (family ConstructionFamily) Validate() error {
 	slotsByID := make(map[string]SlotSpec, len(family.SlotSpecs))
 	positions := make(map[int]struct{}, len(family.SlotSpecs))
 	argumentRoles := make(map[string]struct{})
+	modifierSlots := make([]SlotSpec, 0, 1)
 	for index, slot := range family.SlotSpecs {
 		if err := validateSlot(slot, index); err != nil {
 			return err
@@ -100,6 +101,21 @@ func (family ConstructionFamily) Validate() error {
 				return invalid("DUPLICATE_ARGUMENT_ROLE_BINDING", "family.slot_specs."+slot.ID, "one family slot may bind a semantic role only once")
 			}
 			argumentRoles[role] = struct{}{}
+		}
+		if slot.ModifierBinding != nil {
+			modifierSlots = append(modifierSlots, slot)
+		}
+	}
+	if len(modifierSlots) > 1 {
+		return invalid("MULTIPLE_MODIFIER_BINDINGS", "family.slot_specs", "a family may declare at most one modifier binding")
+	}
+	for _, slot := range modifierSlots {
+		target, exists := slotsByID[slot.ModifierBinding.TargetSlot]
+		if !exists {
+			return unknown("UNKNOWN_MODIFIER_TARGET_SLOT", "family.slot_specs."+slot.ID+".modifier_binding.target_slot", "modifier target slot does not exist")
+		}
+		if target.ID == slot.ID || target.Category != CategoryNP || target.ArgumentBinding == nil || target.Optionality != SlotRequired || target.Cardinality.Minimum != 1 || target.Cardinality.Maximum != 1 {
+			return invalid("INVALID_MODIFIER_TARGET_SLOT", "family.slot_specs."+slot.ID+".modifier_binding.target_slot", "modifier must target a distinct required single NP slot with an argument binding")
 		}
 	}
 	for position := 0; position < len(family.SlotSpecs); position++ {
@@ -235,6 +251,10 @@ func cloneFamily(family ConstructionFamily) ConstructionFamily {
 			binding := *slot.ArgumentBinding
 			result.SlotSpecs[index].ArgumentBinding = &binding
 		}
+		if slot.ModifierBinding != nil {
+			binding := *slot.ModifierBinding
+			result.SlotSpecs[index].ModifierBinding = &binding
+		}
 	}
 	result.Constraints = make([]FamilyConstraint, len(family.Constraints))
 	for index, constraint := range family.Constraints {
@@ -264,6 +284,11 @@ func planID(family ConstructionFamily) ConstructionPlanID {
 			writePlanPart(&builder, "-")
 		} else {
 			writePlanPart(&builder, string(slot.ArgumentBinding.SemanticRole))
+		}
+		if slot.ModifierBinding != nil {
+			writePlanPart(&builder, "modifier_binding")
+			writePlanPart(&builder, slot.ModifierBinding.TargetSlot)
+			writePlanPart(&builder, string(slot.ModifierBinding.SemanticRole))
 		}
 	}
 	writePlanPart(&builder, strconv.Itoa(len(canonical.Constraints)))
@@ -311,6 +336,26 @@ func roleLayoutKey(slots []SlotSpec) string {
 			writePlanPart(&builder, "-")
 		} else {
 			writePlanPart(&builder, string(slot.ArgumentBinding.SemanticRole))
+		}
+	}
+	modifierCount := 0
+	for _, slot := range canonical {
+		if slot.ModifierBinding != nil {
+			modifierCount++
+		}
+	}
+	if modifierCount > 0 {
+		writePlanPart(&builder, "modifier_bindings")
+		writePlanPart(&builder, strconv.Itoa(modifierCount))
+		for _, slot := range canonical {
+			if slot.ModifierBinding == nil {
+				continue
+			}
+			writePlanPart(&builder, strconv.Itoa(slot.Position))
+			writePlanPart(&builder, string(slot.Category))
+			writePlanPart(&builder, slot.ID)
+			writePlanPart(&builder, slot.ModifierBinding.TargetSlot)
+			writePlanPart(&builder, string(slot.ModifierBinding.SemanticRole))
 		}
 	}
 	return builder.String()
