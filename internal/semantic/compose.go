@@ -617,6 +617,10 @@ func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlter
 			roots = append(roots, node.ID)
 		}
 	}
+	if len(input.Operators) == 1 && len(operatorNodes) == 1 &&
+		operatorNodes[0].Kind == meaning.KindScope && operatorNodes[0].Operator == meaning.OperatorNegation && operatorNodes[0].Target == "event" {
+		roots = []meaning.NodeID{operatorNodes[0].ID}
+	}
 	graph, err := meaning.Build(roots, graphNodes, budget.Meaning)
 	if err != nil {
 		outcome, diagnostics := errorOutcome(err)

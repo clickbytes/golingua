@@ -74,6 +74,8 @@ func addEnglishIdentificationReferences(evidence runtime.CompositionEvidence, ca
 			variant := string(alternative.VariantID)
 			var slotID string
 			switch {
+			case sense == "en.be.class_membership" && frame == "en.be.class_membership.frame" && family == "construction:en.identification_negative" && variant == "construction:en.identification_negative.this":
+				slotID = "member"
 			case sense == "en.be.class_membership" && frame == "en.be.class_membership.frame" && family == "construction:en.identification" && variant == "construction:en.identification.this":
 				slotID = "member"
 			case sense == "en.black.color" && frame == "en.black.color.frame" && family == "construction:en.attribution" && variant == "construction:en.attribution.this":

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "language": "pl",
+  "family": {
+    "id": "construction:pl.identification_negative",
+    "language": "pl",
+    "slot_specs": [
+      {"id":"predicate","position":0,"category":"VP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"},
+      {"id":"member","position":1,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required","case":"nominative"}
+    ],
+    "constraints":[{"id":"member_predicate_number","kind":"agreement","strength":"hard","controller_slot":"member","target_slot":"predicate","features":["number"]}],
+    "operators":["negate"],
+    "capabilities":["negation-negated","negation","surface_negation"],
+    "provenance":{"id":"golingua-pl-identification-negation-322","path":"languages/pl/constructions/identification_negative.json","version":"2026-10-24","license":"internal"}
+  },
+  "variants": [
+    {"id":"construction:pl.identification_negative.to","family_id":"construction:pl.identification_negative","sequence":[{"kind":"terminal","terminal":"to"},{"kind":"terminal","terminal":"nie"},{"kind":"slot","slot_id":"predicate"},{"kind":"slot","slot_id":"member"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"both","provenance":{"id":"golingua-pl-identification-negation-322","path":"languages/pl/constructions/identification_negative.json","version":"2026-10-24","license":"internal"}}
+  ]
+}

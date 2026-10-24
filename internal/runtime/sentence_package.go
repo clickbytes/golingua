@@ -24,6 +24,10 @@ const (
 	sentenceIdentificationBlackEvidenceID   = "A1-ID-004-PL-EN"
 	englishIdentificationClassEvidenceID    = "A1-ID-001-EN-PL"
 	englishIdentificationBlackEvidenceID    = "A1-ID-003-EN-PL"
+	sentencePolishNegativeClassEvidenceID   = "A1-NEG-002-PL-EN"
+	sentencePolishNegativeSeeingEvidenceID  = "A1-NEG-004-PL-EN"
+	sentenceEnglishNegativeClassEvidenceID  = "A1-NEG-001-EN-PL"
+	sentenceEnglishNegativeSeeingEvidenceID = "A1-NEG-003-EN-PL"
 )
 
 // BuildSentenceLanguagePackage exposes only requested exact approved sentence
@@ -117,9 +121,9 @@ func SentenceCapabilityEvidence(languageID features.LanguageID) []language.Capab
 func sentenceCapabilityEvidenceIDs(languageID features.LanguageID) []string {
 	caseIDs := []string{sentenceSeeingCapabilityEvidenceID, sentenceSeeingNegationEvidenceID, sentencePresentNegationEvidenceID, sentenceHearingCapabilityEvidenceID, sentenceReceivingCapabilityEvidenceID, sentenceLookingCapabilityEvidenceID, sentenceReadingCapabilityEvidenceID, sentenceReadingPastCapabilityEvidenceID}
 	if languageID == "pl" {
-		caseIDs = append(caseIDs, sentenceIdentificationClassEvidenceID, sentenceIdentificationBlackEvidenceID)
+		caseIDs = append(caseIDs, sentenceIdentificationClassEvidenceID, sentenceIdentificationBlackEvidenceID, sentencePolishNegativeClassEvidenceID, sentencePolishNegativeSeeingEvidenceID)
 	} else if languageID == "en" {
-		caseIDs = append(caseIDs, englishIdentificationClassEvidenceID, englishIdentificationBlackEvidenceID)
+		caseIDs = append(caseIDs, englishIdentificationClassEvidenceID, englishIdentificationBlackEvidenceID, sentenceEnglishNegativeClassEvidenceID, sentenceEnglishNegativeSeeingEvidenceID)
 	}
 	return caseIDs
 }

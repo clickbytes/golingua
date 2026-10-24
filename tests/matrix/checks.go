@@ -387,6 +387,9 @@ func contains(values []string, value string) bool {
 }
 
 func loadFixture(id string) (meaning.Meaning, *interlingua.IdentificationMeaning, bool, error) {
+	if graph, identification, ok, err := interlingua.Negation(id); err != nil || ok {
+		return graph, identification, ok, err
+	}
 	if graph, ok, err := interlingua.Seeing(id); err != nil || ok {
 		return graph, nil, ok, err
 	}

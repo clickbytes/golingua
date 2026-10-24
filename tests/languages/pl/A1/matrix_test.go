@@ -24,10 +24,24 @@ func TestIdentificationRealization(t *testing.T) {
 	matrix.RunRealization(t, features.LanguageID("pl"), a1pl.IdentificationRealizationCases)
 }
 
+func TestNegationAnalysis(t *testing.T) {
+	matrix.RunAnalysis(t, features.LanguageID("pl"), a1pl.NegationAnalysisCases)
+}
+
+func TestNegationRealization(t *testing.T) {
+	matrix.RunRealization(t, features.LanguageID("pl"), a1pl.NegationRealizationCases)
+	matrix.RunRealization(t, features.LanguageID("pl"), []matrix.RealizationCase{{
+		ID: "I-PL-negative-classification-to", MeaningID: "negation.classification.to",
+		ProposalTexts: []string{"To nie jest kot."}, AllowedTexts: []string{"To nie jest kot."},
+		AllowedAssumptionFields: []string{"tense", "person", "number"},
+		ReferenceOrigin:         "authored interlingua fixture", OwnerAcceptance: "NOT_EVALUATED",
+	}})
+}
+
 func TestOtherAnalysis(t *testing.T) {
-	matrix.RunAnalysis(t, features.LanguageID("pl"), append(append(append(append([]matrix.AnalysisCase{}, a1pl.LocationQuantityAnalysisCases...), a1pl.NegationAnalysisCases...), a1pl.PossessionAnalysisCases...), a1pl.QuestionAnalysisCases...))
+	matrix.RunAnalysis(t, features.LanguageID("pl"), append(append(append([]matrix.AnalysisCase{}, a1pl.LocationQuantityAnalysisCases...), a1pl.PossessionAnalysisCases...), a1pl.QuestionAnalysisCases...))
 }
 
 func TestOtherRealization(t *testing.T) {
-	matrix.RunRealization(t, features.LanguageID("pl"), append(append(append(append([]matrix.RealizationCase{}, a1pl.LocationQuantityRealizationCases...), a1pl.NegationRealizationCases...), a1pl.PossessionRealizationCases...), a1pl.QuestionRealizationCases...))
+	matrix.RunRealization(t, features.LanguageID("pl"), append(append(append([]matrix.RealizationCase{}, a1pl.LocationQuantityRealizationCases...), a1pl.PossessionRealizationCases...), a1pl.QuestionRealizationCases...))
 }

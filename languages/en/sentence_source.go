@@ -135,6 +135,9 @@ func (builder englishSentenceEvidenceBuilder) Build(ctx context.Context, lattice
 	if _, uniqueNot := englishTerminalSpan(lattice, "not"); !uniqueNot {
 		return runtime.CompositionEvidence{}, nil
 	}
+	if englishNegativeClassificationInput(lattice) {
+		return builder.buildEnglishNegativeClassification(ctx, lattice, candidates, forest)
+	}
 	route, number, notSpan, supported := englishPresentNegationInput(lattice)
 	if !supported {
 		return runtime.CompositionEvidence{}, nil
@@ -203,6 +206,73 @@ func (builder englishSentenceEvidenceBuilder) Build(ctx context.Context, lattice
 		}
 	}
 	evidence.OperatorCoverageComplete = operatorCount > 0
+	return evidence, nil
+}
+
+func englishNegativeClassificationInput(lattice analyzer.LexicalLattice) bool {
+	words := make([]string, len(lattice.Tokens))
+	for i, token := range lattice.Tokens {
+		words[i] = token.Token.Folded
+	}
+	if len(words) < 5 || words[0] != "this" || words[1] != "is" || words[2] != "not" || words[3] != "a" {
+		return false
+	}
+	for _, word := range words[4:] {
+		if word == "not" {
+			return false
+		}
+	}
+	return true
+}
+
+func (builder englishSentenceEvidenceBuilder) buildEnglishNegativeClassification(ctx context.Context, lattice analyzer.LexicalLattice, candidates []parser.PhraseCandidate, forest parser.Forest) (runtime.CompositionEvidence, error) {
+	evidence, err := builder.base.Build(ctx, lattice, candidates, forest)
+	if err != nil || !evidence.OperatorCoverageComplete {
+		return evidence, err
+	}
+	familyID, err := ids.NewConstructionID("en.identification_negative")
+	if err != nil {
+		return runtime.CompositionEvidence{}, err
+	}
+	notSpan, _ := englishTerminalSpan(lattice, "not")
+	byID := make(map[string]parser.PhraseCandidate, len(candidates))
+	for _, candidate := range candidates {
+		byID[candidate.ID] = candidate
+	}
+	count := 0
+	for _, node := range forest.Nodes {
+		if node.Category != "clause" {
+			continue
+		}
+		for _, alternative := range node.Alternatives {
+			if alternative.FamilyID != familyID || alternative.VariantID.String() != "construction:en.identification_negative.this" || alternative.Permission.SenseID.String() != "sense:en.be.class_membership" {
+				continue
+			}
+			for _, slot := range alternative.Slots {
+				if slot.Role != "" {
+					continue
+				}
+				for _, candidateID := range slot.CandidateIDs {
+					candidate, ok := byID[candidateID]
+					if !ok || candidate.Category != construction.CategoryVP || candidate.LexemeID.String() != "lexeme:en.be.v" || candidate.Features["verb_form"] != "finite" || candidate.Features["tense"] != "present" || candidate.Features["person"] != "third" || candidate.Features["verb_number"] != "singular" {
+						continue
+					}
+					evidence.Operators = append(evidence.Operators, semantic.OperatorEvidence{
+						Operator: construction.Operator{ID: "negate", Kind: construction.OperatorNegation, Value: construction.ValueNegated,
+							InputFamilyID: familyID, OutputFamilyID: familyID,
+							SemanticScope: construction.SemanticScope{TargetNodeID: "event"},
+							Capabilities:  []construction.Capability{"negation-negated"}, Provenance: englishIdentificationNegationSource},
+						TargetCandidateID: candidateID, Span: notSpan,
+					})
+					count++
+				}
+			}
+		}
+	}
+	evidence.OperatorCoverageComplete = count > 0
+	if evidence.OperatorCoverageComplete {
+		evidence = addEnglishIdentificationReferences(evidence, candidates, forest)
+	}
 	return evidence, nil
 }
 

@@ -63,6 +63,105 @@ func polishIdentificationState(source semantic.MeaningCandidate, predicateID mea
 	return role, referent.ID, string(predicate.Concept), true
 }
 
+func polishNegatedClassificationState(source semantic.MeaningCandidate, predicateID meaning.NodeID) (meaning.NodeID, meaning.NodeID, bool) {
+	if source.Meaning == nil || meaning.ValidateStructure(*source.Meaning, meaning.DefaultBudget()) != nil {
+		return "", "", false
+	}
+	graph := *source.Meaning
+	if len(graph.Roots) != 1 || len(graph.Nodes) != 3 {
+		return "", "", false
+	}
+	var scope, predicate, referent meaning.Node
+	for _, node := range graph.Nodes {
+		switch node.Kind {
+		case meaning.KindScope:
+			if scope.ID != "" {
+				return "", "", false
+			}
+			scope = node
+		case meaning.KindState:
+			if predicate.ID != "" {
+				return "", "", false
+			}
+			predicate = node
+		case meaning.KindReferent:
+			if referent.ID != "" {
+				return "", "", false
+			}
+			referent = node
+		default:
+			return "", "", false
+		}
+	}
+	if scope.ID == "" || scope.ID != graph.Roots[0] || scope.Operator != meaning.OperatorNegation || scope.Target != predicateID ||
+		predicate.ID != predicateID || predicate.Concept != "concept:class_membership" || len(predicate.Participants) != 1 ||
+		predicate.Participants[0].Role != "member" || predicate.Participants[0].Target != referent.ID ||
+		referent.ID == "" || referent.Concept != "concept:cat" {
+		return "", "", false
+	}
+	return scope.ID, referent.ID, true
+}
+
+func polishNegatedClassificationReferenceMode(source semantic.MeaningCandidate, predicateID meaning.NodeID) (string, bool) {
+	_, sourceReferentID, ok := polishNegatedClassificationState(source, predicateID)
+	if !ok || source.Meaning == nil || len(source.Contexts) == 0 {
+		return "", false
+	}
+	var commonMode string
+	for _, candidateContext := range source.Contexts {
+		graph, context := candidateContext.Meaning, candidateContext.Context
+		if meaning.ValidateReferences(graph, context, meaning.DefaultBudget()) != nil || len(graph.Roots) != 1 || len(graph.Nodes) != 3 ||
+			len(context.Referents) != 0 || len(context.Mentions) != 1 {
+			return "", false
+		}
+		var scope, predicate, referent meaning.Node
+		for _, node := range graph.Nodes {
+			switch node.Kind {
+			case meaning.KindScope:
+				if scope.ID != "" {
+					return "", false
+				}
+				scope = node
+			case meaning.KindState:
+				if predicate.ID != "" {
+					return "", false
+				}
+				predicate = node
+			case meaning.KindReferent:
+				if referent.ID != "" {
+					return "", false
+				}
+				referent = node
+			default:
+				return "", false
+			}
+		}
+		if scope.ID == "" || graph.Roots[0] != scope.ID || scope.Operator != meaning.OperatorNegation || scope.Target != predicate.ID ||
+			predicate.ID == "" || predicate.Concept != "concept:class_membership" || len(predicate.Participants) != 1 ||
+			predicate.Participants[0].Role != "member" || predicate.Participants[0].Target != referent.ID ||
+			referent.ID == "" || referent.Concept != "concept:cat" {
+			return "", false
+		}
+		if sourceReferent := sourceNodeConcept(*source.Meaning, sourceReferentID); sourceReferent != referent.Concept {
+			return "", false
+		}
+		mention := context.Mentions[0]
+		if mention.NodeID != referent.ID || mention.ReferentID != "" || mention.EvidenceID != "" || mention.Anchor == nil || mention.Anchor.Kind != "deixis" {
+			return "", false
+		}
+		mode := mention.Anchor.Value
+		if mode != "proximal" && mode != "unresolved" {
+			return "", false
+		}
+		if commonMode == "" {
+			commonMode = mode
+		} else if commonMode != mode {
+			return "", false
+		}
+	}
+	return commonMode, commonMode != ""
+}
+
 func polishIdentificationReferenceMode(source semantic.MeaningCandidate, predicateID meaning.NodeID) (string, bool) {
 	role, sourceReferentID, concept, ok := polishIdentificationState(source, predicateID)
 	if !ok || len(source.Contexts) == 0 {
