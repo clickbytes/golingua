@@ -25,7 +25,7 @@ Pomiar lokalny Go 1.27.0, Linux amd64, i7-11800H, GOMAXPROCS=16: inicjalizacja 1
 
 - [Kontrakt czasu i wielości](../../architecture/meaning-attributes.md).
 - [Briefy i przekazania 325](325-jobs.md).
-- Wyniki odbioru zostaną zapisane w `325-evidence.md` po rzeczywistym uruchomieniu; do tego czasu nowe kryteria mają NOT RUN.
+- [Lokalne dowody odbioru 325](325-evidence.md) i [obserwacje CLI](325-observations.jsonl); bieżący stan merge/CI jest zapisany w issue/PR.
 - Ocena techniczna agenta nie oznacza akceptacji właściciela, obecnie NOT EVALUATED.
 
 OpenCode: dzienna kontrola 2026-10-24, izolowany obraz `ghcr.io/anomalyco/opencode:2.0.15`, jawny worker i limit 12 kroków. Config wskazywał plik, ale `debug agents` zwrócił pustą listę; katalogi modeli były puste, a katalog kosztów odpowiadał 403. Model, darmowy koszt i worker nie zostały zweryfikowane. Próba odpowiedzi i odmowy uprawnień: NOT RUN; `--auto` nie uruchomiono. Zgodnie z AGENTS stosujemy ograniczone zadania Luna Low. Źródła kontroli: [config](https://dev.opencode.ai/v2/docs/config/), [permissions](https://dev.opencode.ai/v2/docs/permissions/), [agents](https://dev.opencode.ai/v2/docs/agents/). Konfiguracja narzędzia i poświadczenia nie są danymi produktu.
