@@ -13,6 +13,8 @@ type RealizationCase struct {
 	ID, MeaningID                                   string
 	ProposalTexts, AllowedTexts                     []string
 	AllowedAssumptionFields                         []string
+	RequiredAssumptionFields                        []string
+	AllowedLossFields, RequiredLossFields           []string
 	AmbiguityNote, ReferenceOrigin, OwnerAcceptance string
 }
 

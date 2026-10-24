@@ -6,6 +6,8 @@ import (
 	"fmt"
 
 	"github.com/clickbytes/golingua/internal/meaning"
+	"github.com/clickbytes/golingua/internal/semantic"
+	"github.com/clickbytes/golingua/tests/interlingua"
 )
 
 const maxComparisonNodes = 32
@@ -95,6 +97,90 @@ func GraphMatches(want, got meaning.Meaning) (bool, error) {
 		return false, nil
 	}
 	return true, nil
+}
+
+// IdentificationMatches compares an analyzed candidate with an independent
+// identification contract and checks its unresolved request-scoped mention.
+func IdentificationMatches(want interlingua.IdentificationMeaning, got semantic.MeaningCandidate) (bool, error) {
+	if got.Meaning == nil {
+		return false, fmt.Errorf("candidate has no Meaning graph")
+	}
+	if err := meaning.ValidateReferences(want.Graph, want.Context, meaning.DefaultBudget()); err != nil {
+		return false, fmt.Errorf("invalid expected identification fixture: %w", err)
+	}
+	if !hasOneReferent(want.Graph) || !hasOneExpectedMention(want.Context) {
+		return false, fmt.Errorf("expected identification fixture must contain one referent and one unresolved anchored mention")
+	}
+	if matches, err := GraphMatches(want.Graph, *got.Meaning); err != nil || !matches {
+		return matches, err
+	}
+	if !hasOneReferent(*got.Meaning) {
+		return false, fmt.Errorf("candidate Meaning must contain exactly one referent")
+	}
+	if len(got.Contexts) == 0 {
+		return false, fmt.Errorf("candidate has no request context for the identification mention")
+	}
+	for index, context := range got.Contexts {
+		if err := meaning.ValidateReferences(context.Meaning, context.Context, meaning.DefaultBudget()); err != nil {
+			return false, fmt.Errorf("invalid candidate request context %d: %w", index, err)
+		}
+		if matches, err := GraphMatches(*got.Meaning, context.Meaning); err != nil || !matches {
+			if err != nil {
+				return false, fmt.Errorf("candidate request context %d has invalid Meaning: %w", index, err)
+			}
+			return false, fmt.Errorf("candidate request context %d Meaning differs from candidate Meaning", index)
+		}
+		if len(context.Context.Referents) != 0 {
+			return false, fmt.Errorf("candidate request context %d resolves an entity identity", index)
+		}
+		referentID, ok := onlyReferent(context.Meaning)
+		if !ok || len(context.Context.Mentions) != 1 {
+			return false, fmt.Errorf("candidate request context %d must contain exactly one mention of its only referent", index)
+		}
+		mention := context.Context.Mentions[0]
+		if mention.NodeID != referentID || mention.ReferentID != "" || mention.EvidenceID != "" || mention.Anchor == nil {
+			return false, fmt.Errorf("candidate request context %d mention must be unresolved and anchored to the sole referent", index)
+		}
+		wantAnchor := want.Context.Mentions[0].Anchor
+		if wantAnchor == nil || *mention.Anchor != *wantAnchor {
+			return false, fmt.Errorf("candidate request context %d anchor differs from the identification fixture", index)
+		}
+	}
+	return true, nil
+}
+
+func hasOneReferent(graph meaning.Meaning) bool {
+	_, ok := onlyReferent(graph)
+	if !ok {
+		return false
+	}
+	count := 0
+	for _, node := range graph.Nodes {
+		if node.Kind == meaning.KindReferent {
+			count++
+		}
+	}
+	return count == 1
+}
+
+func onlyReferent(graph meaning.Meaning) (meaning.NodeID, bool) {
+	var id meaning.NodeID
+	count := 0
+	for _, node := range graph.Nodes {
+		if node.Kind == meaning.KindReferent {
+			id = node.ID
+			count++
+		}
+	}
+	return id, count == 1
+}
+
+func hasOneExpectedMention(context meaning.RequestContext) bool {
+	if len(context.Referents) != 0 || len(context.Mentions) != 1 {
+		return false
+	}
+	mention := context.Mentions[0]
+	return mention.ReferentID == "" && mention.EvidenceID == "" && mention.Anchor != nil
 }
 
 func nodeIndex(graph meaning.Meaning) map[meaning.NodeID]meaning.Node {

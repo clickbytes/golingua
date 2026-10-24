@@ -46,7 +46,7 @@ func RunAnalysis(t *testing.T, lang features.LanguageID, cases []AnalysisCase) {
 		c := testCase
 		t.Run(c.ID, func(t *testing.T) {
 			t.Helper()
-			want, ok, err := interlingua.Seeing(c.MeaningID)
+			want, identification, ok, err := loadFixture(c.MeaningID)
 			if err != nil {
 				t.Fatalf("INFRA: build fixture %q: %v", c.MeaningID, err)
 			}
@@ -85,14 +85,21 @@ func RunAnalysis(t *testing.T, lang features.LanguageID, cases []AnalysisCase) {
 					t.Errorf("FAIL: candidate %q has status %s", candidate.ID, candidate.Status)
 					continue
 				}
-				matches, compareErr := GraphMatches(want, *candidate.Meaning)
-				if compareErr != nil || !matches {
-					t.Errorf("FAIL: candidate %q Meaning does not match fixture (matches=%t, error=%v)", candidate.ID, matches, compareErr)
-				}
-				for _, context := range candidate.Contexts {
-					for _, mention := range context.Context.Mentions {
-						if mention.ReferentID != "" {
-							t.Errorf("FAIL: candidate %q resolves identity without a fixture for it", candidate.ID)
+				if identification != nil {
+					matches, compareErr := IdentificationMatches(*identification, candidate)
+					if compareErr != nil || !matches {
+						t.Errorf("FAIL: candidate %q does not match identification contract (matches=%t, error=%v)", candidate.ID, matches, compareErr)
+					}
+				} else {
+					matches, compareErr := GraphMatches(want, *candidate.Meaning)
+					if compareErr != nil || !matches {
+						t.Errorf("FAIL: candidate %q Meaning does not match fixture (matches=%t, error=%v)", candidate.ID, matches, compareErr)
+					}
+					for _, context := range candidate.Contexts {
+						for _, mention := range context.Context.Mentions {
+							if mention.ReferentID != "" {
+								t.Errorf("FAIL: candidate %q resolves identity without a fixture for it", candidate.ID)
+							}
 						}
 					}
 				}
@@ -116,7 +123,7 @@ func RunRealization(t *testing.T, lang features.LanguageID, cases []RealizationC
 		c := testCase
 		t.Run(c.ID, func(t *testing.T) {
 			t.Helper()
-			want, ok, err := interlingua.Seeing(c.MeaningID)
+			want, identification, ok, err := loadFixture(c.MeaningID)
 			if err != nil {
 				t.Fatalf("INFRA: build fixture %q: %v", c.MeaningID, err)
 			}
@@ -136,6 +143,9 @@ func RunRealization(t *testing.T, lang features.LanguageID, cases []RealizationC
 				ID: c.MeaningID, SemanticID: c.MeaningID, Meaning: &want,
 				Status:   status.OutcomeOK,
 				Evidence: semantic.EvidenceTrace{AlternativeID: c.MeaningID, Outcome: status.OutcomeOK},
+			}
+			if identification != nil {
+				candidate.Contexts = []semantic.MeaningContext{{Meaning: want, Context: identification.Context}}
 			}
 			result, realizeErr := realizer.Realize(context.Background(), candidate)
 			logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "result": result, "error": errorText(realizeErr)})
@@ -161,7 +171,7 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 		if c.AnalysisID != analysis.ID || c.RealizationID != realization.ID {
 			t.Fatalf("SPEC_PENDING: translation references do not match supplied cases")
 		}
-		want, ok, err := interlingua.Seeing(analysis.MeaningID)
+		want, identification, ok, err := loadFixture(analysis.MeaningID)
 		if err != nil {
 			t.Fatalf("INFRA: build fixture %q: %v", analysis.MeaningID, err)
 		}
@@ -172,6 +182,42 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 		runtime := Runtime(t)
 		if err := meaning.ValidateMeaning(want, runtime.CoreGraph(), meaning.DefaultBudget()); err != nil {
 			t.Fatalf("INFRA: fixture %q does not validate against CORE: %v", analysis.MeaningID, err)
+		}
+		sourceGap := false
+		if identification != nil {
+			analyzer, exists := runtime.SourceAnalyzerFor(features.LanguageID(c.From))
+			if !exists || analyzer == nil {
+				t.Fatalf("INFRA: source analyzer for %q is unavailable", c.From)
+			}
+			analysisResult, analysisErr := analyzer.Analyze(context.Background(), analysis.Input)
+			logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "identification_source_analysis", "result": analysisResult, "error": errorText(analysisErr)})
+			if analysisErr != nil {
+				if infraError(analysisErr) {
+					t.Errorf("INFRA: source analysis %q: %v", c.ID, analysisErr)
+					return
+				} else {
+					sourceGap = true
+					t.Errorf("GAP_ANALYZE: source analysis %q failed: %v", c.ID, analysisErr)
+				}
+			} else if analysisResult.Outcome == status.OutcomeUnsupported || len(analysisResult.Candidates) == 0 {
+				sourceGap = true
+				t.Errorf("GAP_ANALYZE: source analysis %q returned %s without candidates", c.ID, analysisResult.Outcome)
+			} else {
+				for _, candidate := range analysisResult.Candidates {
+					if candidate.Status == status.OutcomeUnsupported || candidate.Meaning == nil {
+						sourceGap = true
+						t.Errorf("GAP_ANALYZE: source candidate %q has status %s and no supported Meaning", candidate.ID, candidate.Status)
+						continue
+					}
+					if candidate.Status != status.OutcomeOK {
+						t.Errorf("FAIL: source candidate %q has status %s", candidate.ID, candidate.Status)
+						continue
+					}
+					if matches, matchErr := IdentificationMatches(*identification, candidate); matchErr != nil || !matches {
+						t.Errorf("FAIL: source candidate %q does not match identification contract (matches=%t, error=%v)", candidate.ID, matches, matchErr)
+					}
+				}
+			}
 		}
 		result, translateErr := runtime.Translate(context.Background(), engine.Request{From: features.LanguageID(c.From), To: features.LanguageID(c.To), Text: analysis.Input})
 		logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "result": result, "error": errorText(translateErr)})
@@ -185,6 +231,9 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 		}
 		if result.Status == status.OutcomeUnsupported {
 			kind := "GAP_REALIZE"
+			if sourceGap {
+				kind = "GAP_ANALYZE"
+			}
 			for _, diagnostic := range result.Diagnostics {
 				if strings.Contains(diagnostic.Code, "SOURCE") || strings.Contains(diagnostic.Code, "ANALYSIS") {
 					kind = "GAP_ANALYZE"
@@ -195,7 +244,11 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 			return
 		}
 		if len(result.Candidates) == 0 {
-			t.Errorf("GAP_REALIZE: translation returned no candidates")
+			kind := "GAP_REALIZE"
+			if sourceGap {
+				kind = "GAP_ANALYZE"
+			}
+			t.Errorf("%s: translation returned no candidates", kind)
 			return
 		}
 		converted := make([]engine.SurfaceAlternative, 0, len(result.Candidates))
@@ -238,16 +291,34 @@ func checkSurfaces(t *testing.T, c RealizationCase, outcome status.OutcomeKind, 
 		if surface.Text != "" {
 			seen[surface.Text] = true
 		}
-		if len(surface.Losses) != 0 {
-			t.Errorf("FAIL: target candidate %q reports information loss: %+v", surface.ID, surface.Losses)
-		}
+		assumptionFields := make(map[string]bool, len(surface.Assumptions))
 		for _, assumption := range surface.Assumptions {
-			if !contains(c.AllowedAssumptionFields, assumption.Field) || len(assumption.Path) == 0 || strings.TrimSpace(assumption.Reason) == "" {
+			if !contains(c.AllowedAssumptionFields, assumption.Field) || len(assumption.Path) == 0 || strings.TrimSpace(assumption.Reason) == "" || strings.TrimSpace(assumption.Value) == "" {
 				t.Errorf("FAIL: target candidate %q has unlicensed or incomplete assumption: %+v", surface.ID, assumption)
 			}
+			assumptionFields[assumption.Field] = true
 		}
-		if (outcome == status.OutcomeIncomplete || surface.Outcome == status.OutcomeIncomplete) && len(surface.Assumptions) == 0 {
-			t.Errorf("FAIL: incomplete target candidate %q has no explicit allowed assumption", surface.ID)
+		for _, required := range c.RequiredAssumptionFields {
+			if !assumptionFields[required] {
+				t.Errorf("FAIL: target candidate %q lacks required assumption field %q", surface.ID, required)
+			}
+		}
+		lossFields := make(map[string]bool, len(surface.Losses))
+		for _, loss := range surface.Losses {
+			if !contains(c.AllowedLossFields, loss.Field) || loss.Outcome != status.OutcomeIncomplete || len(loss.Path) == 0 || strings.TrimSpace(loss.Reason) == "" {
+				t.Errorf("FAIL: target candidate %q has unlicensed or incomplete loss: %+v", surface.ID, loss)
+			}
+			lossFields[loss.Field] = true
+		}
+		for _, required := range c.RequiredLossFields {
+			if !lossFields[required] {
+				t.Errorf("FAIL: target candidate %q lacks required loss field %q", surface.ID, required)
+			}
+		}
+		if outcome == status.OutcomeIncomplete || surface.Outcome == status.OutcomeIncomplete {
+			if len(assumptionFields) == 0 && len(lossFields) == 0 {
+				t.Errorf("FAIL: incomplete target candidate %q has neither an allowed assumption nor an allowed loss", surface.ID)
+			}
 		}
 		if surface.Outcome != status.OutcomeOK && surface.Outcome != status.OutcomeAmbiguous && surface.Outcome != status.OutcomeIncomplete {
 			if surface.Outcome == status.OutcomeUnsupported || surface.Outcome == status.OutcomeUnknown {
@@ -313,4 +384,15 @@ func contains(values []string, value string) bool {
 		}
 	}
 	return false
+}
+
+func loadFixture(id string) (meaning.Meaning, *interlingua.IdentificationMeaning, bool, error) {
+	if graph, ok, err := interlingua.Seeing(id); err != nil || ok {
+		return graph, nil, ok, err
+	}
+	fixture, ok, err := interlingua.Identification(id)
+	if err != nil || !ok {
+		return meaning.Meaning{}, nil, ok, err
+	}
+	return fixture.Graph, &fixture, true, nil
 }

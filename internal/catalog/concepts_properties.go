@@ -81,3 +81,12 @@ func propertiesDeclarations() []declaration {
 		{"pain_sensation", "property", "An unpleasant sensory and affective experience associated with actual or potential bodily harm.", core.KindProperty, nil},
 	}
 }
+
+// identificationDeclarations belongs to the separate agent-authored source in
+// conceptGroups, rather than the historical 1000-concept proposal file.
+func identificationDeclarations() []declaration {
+	return []declaration{
+		{"class_membership", "property", "Categorical predication that the member instantiates the class given by that referent node ConceptRef; neither identity between individuals nor an ontology update.", core.KindProperty, []core.RoleType{{Name: "member", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"black", "color", "Black color attributed to one bearer, without identity or biological sex claims.", core.KindProperty, []core.RoleType{{Name: "bearer", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+	}
+}
