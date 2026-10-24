@@ -202,7 +202,7 @@ func participantsByRole(participants []meaning.Participant) map[meaning.Role]mea
 func sameNodeFields(want, got meaning.Node) bool {
 	if want.Kind != got.Kind || want.Concept != got.Concept || want.Operator != got.Operator ||
 		want.Modality != got.Modality || want.Act != got.Act || len(want.Participants) != len(got.Participants) ||
-		len(want.Content) != len(got.Content) {
+		len(want.Content) != len(got.Content) || want.TemporalFrame != got.TemporalFrame || want.Multiplicity != got.Multiplicity {
 		return false
 	}
 	if (want.Quantifier == nil) != (got.Quantifier == nil) {

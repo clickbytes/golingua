@@ -69,8 +69,14 @@ func NewSentenceTarget(snapshot *pack.Pack, registry *language.Registry) (*runti
 
 type englishSentenceFeatures struct{}
 
-func (englishSentenceFeatures) Features(_ context.Context, source semantic.MeaningCandidate, predicate realizer.TargetCandidate, slot construction.SlotSpec, candidate realizer.TargetCandidate, _ []realizer.TargetCandidate) ([]features.FeatureValue, error) {
-	if identification, recognized := englishNegativeIdentificationState(source); recognized && identification.valid && identification.stateID == predicate.NodeID {
+func (englishSentenceFeatures) Features(_ context.Context, source semantic.MeaningCandidate, predicate realizer.TargetCandidate, slot construction.SlotSpec, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) ([]features.FeatureValue, error) {
+	if (predicate.Kind == meaning.KindEvent || predicate.Kind == meaning.KindState) && !englishPredicateEvidenceConsistent(source, predicate) {
+		return nil, fmt.Errorf("English target Meaning attributes conflict with explicit source evidence")
+	}
+	if identification, recognized := englishNegativeIdentificationState(source); recognized && identification.stateID == predicate.NodeID {
+		if !identification.valid || !englishIdentificationAttributesAllowed(source, predicate.NodeID, identification.role, identification.referent, predicate.TransferBinding.CoreRef) {
+			return nil, fmt.Errorf("English negative identification cannot realize the supplied Meaning attributes")
+		}
 		if slot.Category == construction.CategoryVP && predicate.Sense.ID.String() == identification.senseID {
 			return englishFiniteVerbFeatures("present", "third", "singular"), nil
 		}
@@ -78,15 +84,15 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 			return []features.FeatureValue{{Feature: "noun_number", State: features.StateKnown, Value: "singular"}, {Feature: "number", State: features.StateKnown, Value: "singular"}}, nil
 		}
 	}
-	if identification, recognized := englishIdentificationContextForSource(source); recognized && identification.stateID == predicate.NodeID {
+	if identification, recognized := englishIdentificationState(source); recognized && identification.stateID == predicate.NodeID {
+		if !identification.valid || !englishIdentificationAttributesAllowed(source, predicate.NodeID, identification.role, identification.referent, predicate.TransferBinding.CoreRef) {
+			return nil, fmt.Errorf("English identification cannot realize the supplied Meaning attributes")
+		}
 		if slot.Category == construction.CategoryVP && predicate.Sense.ID.String() == identification.senseID {
 			return englishFiniteVerbFeatures("present", "third", "singular"), nil
 		}
 		if slot.Category == construction.CategoryNP && slot.ArgumentBinding != nil && string(slot.ArgumentBinding.SemanticRole) == identification.role {
-			return []features.FeatureValue{
-				{Feature: "noun_number", State: features.StateKnown, Value: "singular"},
-				{Feature: "number", State: features.StateKnown, Value: "singular"},
-			}, nil
+			return []features.FeatureValue{{Feature: "noun_number", State: features.StateKnown, Value: "singular"}, {Feature: "number", State: features.StateKnown, Value: "singular"}}, nil
 		}
 	}
 	if slot.Category == construction.CategoryAP && predicate.Sense.ID.String() == "sense:en.black.color" && candidate.Sense.ID.String() == "sense:en.black.color" && candidate.Lexeme.ID.String() == "lexeme:en.black.adj" {
@@ -95,11 +101,14 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 	if slot.Category == construction.CategoryVP {
 		if _, event, route, found := englishNegatedPresent(source); found && event.ID == predicate.NodeID && predicate.Sense.ID.String() == route.sense {
 			if route.statePredicate {
+				if event.TemporalFrame == meaning.TemporalFramePast {
+					return nil, fmt.Errorf("English negative identification does not support a past temporal frame")
+				}
 				return englishFiniteVerbFeatures("present", "third", "singular"), nil
 			}
-			number, known := englishPresentNegationNumber(source, predicate, route)
+			number, known := englishPresentNegationNumber(source, predicate, route, candidates)
 			if !known {
-				return nil, nil
+				return nil, fmt.Errorf("English present negation cannot realize the supplied subject multiplicity")
 			}
 			return []features.FeatureValue{
 				{Feature: "verb_form", State: features.StateKnown, Value: "imperative"},
@@ -109,103 +118,50 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 				{Feature: "verb_number", State: features.StateKnown, Value: features.FeatureValueID(number)},
 			}, nil
 		}
-		values, found := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)
-		if !found {
-			if len(source.Evidence.Records) == 0 {
-				return englishFiniteVerbFeatures("present", "third", "singular"), nil
-			}
+		predicateMeaning, exists := englishMeaningNode(source, predicate.NodeID)
+		if !exists {
 			return nil, nil
 		}
-		if values["verb_form"] == "past" || values["tense"] == "past" {
+		if !englishFrameEvidenceConsistent(source, predicate.NodeID, predicate.TransferBinding.CoreRef) {
+			return nil, fmt.Errorf("English temporal frame conflicts with explicit source evidence")
+		}
+		tense := predicateMeaning.TemporalFrame
+		if tense == "" {
+			tense = meaning.TemporalFramePresent
+		}
+		if tense == meaning.TemporalFramePast {
 			return englishFiniteVerbFeatures("past", "", ""), nil
 		}
-		if values["verb_form"] == "third_person_singular" {
-			return englishFiniteVerbFeatures("present", "third", "singular"), nil
+		number, _, known := englishPredicateNumber(source, predicate, candidates)
+		if !known {
+			return nil, fmt.Errorf("English present predicate cannot realize subject multiplicity")
 		}
-		if values["verb_form"] == "finite" && values["tense"] == "present" {
-			number := values["verb_number"]
-			if number == "" {
-				number = values["number"]
-			}
-			if (values["person"] == "first" || values["person"] == "second" || values["person"] == "third") &&
-				(number == "singular" || number == "plural") {
-				return englishFiniteVerbFeatures("present", string(values["person"]), string(number)), nil
+		person := "third"
+		if values, found := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef); found {
+			if explicit := string(values["person"]); explicit == "first" || explicit == "second" || explicit == "third" {
+				person = explicit
 			}
 		}
-		return nil, nil
+		return englishFiniteVerbFeatures("present", person, number), nil
 	}
 	if slot.Category != construction.CategoryNP || slot.ArgumentBinding == nil {
 		return nil, nil
 	}
-	values, found := runtime.SourceFeatures(source, slot.ArgumentBinding.SemanticRole, candidate.TransferBinding.CoreRef)
-	if !found && len(source.Evidence.Records) != 0 {
-		return nil, nil
+	number, semanticNumber, ok := englishTargetNumber(source, candidate.NodeID, candidate.Lexeme.Properties, candidate.Lexeme.ParadigmID)
+	if !ok {
+		return nil, fmt.Errorf("English target lexical number class cannot realize the Meaning multiplicity")
 	}
-	number := values["number"]
-	if number == "" {
-		number = values["noun_number"]
-	}
-	if !found {
-		number = "singular"
-	}
-	for _, property := range candidate.Lexeme.Properties {
-		if property.Key == "number_behavior" && property.Value == "mass" {
-			// English mass nouns use the singular attested form even when the
-			// source language lexicalizes the same substance as plural.
-			number = "singular"
-			break
+	if semanticNumber {
+		referent, exists := englishMeaningNode(source, candidate.NodeID)
+		checkPredicateNumber := englishPredicateNumberApplies(predicate, slot.ArgumentBinding.SemanticRole)
+		if !exists || !englishMultiplicityEvidenceConsistent(source, predicate.NodeID, slot.ArgumentBinding.SemanticRole, referent, predicate.TransferBinding.CoreRef, checkPredicateNumber) {
+			return nil, fmt.Errorf("English referent multiplicity conflicts with explicit source evidence")
 		}
-	}
-	if number != "singular" && number != "plural" {
-		return nil, nil
 	}
 	return []features.FeatureValue{
 		{Feature: "noun_number", State: features.StateKnown, Value: features.FeatureValueID(number)},
 		{Feature: "number", State: features.StateKnown, Value: features.FeatureValueID(number)},
 	}, nil
-}
-
-func englishPresentNegationNumber(source semantic.MeaningCandidate, predicate realizer.TargetCandidate, route englishPresentNegationRoute) (string, bool) {
-	values, found := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)
-	if found {
-		if person := values["person"]; person != "" && person != "third" {
-			return "", false
-		}
-		if tense := values["tense"]; tense != "" && tense != "present" {
-			return "", false
-		}
-		number := string(values["number"])
-		if number == "" {
-			number = string(values["verb_number"])
-		}
-		return number, number == "singular" || number == "plural"
-	}
-	if source.Meaning == nil {
-		return "", false
-	}
-	event := findMeaningNode(*source.Meaning, predicate.NodeID)
-	for _, participant := range event.Participants {
-		if participant.Role != route.subjectRole {
-			continue
-		}
-		referent := findMeaningNode(*source.Meaning, participant.Target)
-		if referent.ID == "" {
-			continue
-		}
-		roleValues, roleFound := runtime.SourceFeatures(source, route.subjectRole, coreConcept(referent))
-		if !roleFound {
-			continue
-		}
-		number := string(roleValues["number"])
-		if number == "" {
-			number = string(roleValues["noun_number"])
-		}
-		return number, number == "singular" || number == "plural"
-	}
-	if len(source.Evidence.Records) == 0 {
-		return "singular", true
-	}
-	return "", false
 }
 
 type englishSentenceOperatorBuilder struct{}
@@ -265,18 +221,16 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 		return nil, nil, nil, nil
 	}
 	if identification, recognized := englishNegativeIdentificationState(source); recognized && identification.stateID == predicate.ID {
-		if !identification.valid {
-			return nil, nil, nil, nil
+		if !identification.valid || !englishIdentificationAttributesAllowed(source, predicate.ID, identification.role, identification.referent, selected.TransferBinding.CoreRef) {
+			return nil, nil, nil, fmt.Errorf("English negative identification cannot realize the supplied Meaning attributes")
 		}
 		predicatePath, found := runtime.MeaningPath(*source.Meaning, predicate.ID)
-		if !found {
-			return nil, nil, nil, nil
+		referentPath, referentPathFound := runtime.MeaningPath(*source.Meaning, identification.referent)
+		referent, referentFound := englishMeaningNode(source, identification.referent)
+		if !found || !referentPathFound || !referentFound {
+			return nil, nil, nil, fmt.Errorf("English negative identification is missing its Meaning paths")
 		}
-		assumptions := []realizer.FieldAssumption{
-			{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning v1 carries no tense; this response uses the approved present-tense route"},
-			{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning v1 carries no grammatical person; this response uses the approved third-person route"},
-			{Path: predicatePath, Field: "number", Value: "singular", Reason: "Meaning v1 carries no grammatical number; this response uses the approved singular route"},
-		}
+		assumptions := englishIdentificationDefaults(source, predicatePath, referentPath, predicate, referent, selected.TransferBinding.CoreRef)
 		if identification.mode == "unresolved" {
 			value, ok := englishIdentificationReferenceChoice(selected.CompiledVariant.Variant.ID.String(), identification.family)
 			if !ok {
@@ -286,16 +240,17 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 		}
 		return nil, assumptions, nil, nil
 	}
-	if identification, valid := englishIdentificationContextForSource(source); valid && identification.stateID == predicate.ID {
+	if identification, recognized := englishIdentificationState(source); recognized && identification.stateID == predicate.ID {
+		if !identification.valid || !englishIdentificationAttributesAllowed(source, predicate.ID, identification.role, identification.referent, selected.TransferBinding.CoreRef) {
+			return nil, nil, nil, fmt.Errorf("English identification cannot realize the supplied Meaning attributes")
+		}
 		predicatePath, found := runtime.MeaningPath(*source.Meaning, predicate.ID)
-		if !found {
-			return nil, nil, nil, nil
+		referentPath, referentPathFound := runtime.MeaningPath(*source.Meaning, identification.referent)
+		referent, referentFound := englishMeaningNode(source, identification.referent)
+		if !found || !referentPathFound || !referentFound {
+			return nil, nil, nil, fmt.Errorf("English identification is missing its Meaning paths")
 		}
-		assumptions := []realizer.FieldAssumption{
-			{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning v1 carries no tense; this response uses the approved present-tense route"},
-			{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning v1 carries no grammatical person; this response uses the approved third-person route"},
-			{Path: predicatePath, Field: "number", Value: "singular", Reason: "Meaning v1 carries no grammatical number; this response uses the approved singular route"},
-		}
+		assumptions := englishIdentificationDefaults(source, predicatePath, referentPath, predicate, referent, selected.TransferBinding.CoreRef)
 		mode := identification.mode
 		if mode == "unresolved" || mode == "demonstrative" {
 			value, ok := englishIdentificationReferenceChoice(selected.CompiledVariant.Variant.ID.String(), identification.family)
@@ -306,18 +261,25 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 		}
 		return nil, assumptions, nil, nil
 	}
+	if !englishPredicateEvidenceConsistent(source, selected) {
+		return nil, nil, nil, fmt.Errorf("English target Meaning attributes conflict with explicit source evidence")
+	}
 	assumptions := make([]realizer.FieldAssumption, 0, 3+2*len(predicate.Participants))
 	losses := make([]realizer.FieldLoss, 0, len(predicate.Participants))
 	predicatePath, pathFound := runtime.MeaningPath(*source.Meaning, selected.NodeID)
 	if !pathFound {
 		return nil, nil, nil, nil
 	}
-	if len(source.Evidence.Records) == 0 {
-		assumptions = append(assumptions,
-			realizer.FieldAssumption{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning v1 carries no tense; this response uses the approved present-tense route"},
-			realizer.FieldAssumption{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning v1 carries no grammatical person; this response uses the approved third-person route"},
-			realizer.FieldAssumption{Path: predicatePath, Field: "number", Value: "singular", Reason: "Meaning v1 carries no grammatical number; this response uses the approved singular route"},
-		)
+	if predicate.TemporalFrame == "" {
+		assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning carries no temporal frame; this response uses the approved present-tense route"})
+	}
+	if values, found := runtime.SourceFeatures(source, "", selected.TransferBinding.CoreRef); !found || values["person"] == "" {
+		assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning carries no grammatical person; this response uses the approved third-person form"})
+	}
+	if role := englishPredicateSubjectRoleForTarget(selected); role != "" {
+		if referent, found := englishReferentForRole(source, selected.NodeID, role); found && referent.Multiplicity == "" {
+			assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "number", Value: "lexeme_default", Reason: "Meaning carries no subject multiplicity; agreement follows the target subject's local lexical class"})
+		}
 	}
 	for _, participant := range predicate.Participants {
 		referent := findMeaningNode(*source.Meaning, participant.Target)
@@ -327,6 +289,9 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 		referentPath, pathFound := runtime.MeaningPath(*source.Meaning, participant.Target)
 		if !pathFound {
 			continue
+		}
+		if referent.Multiplicity == "" {
+			assumptions = append(assumptions, realizer.FieldAssumption{Path: referentPath, Field: "number", Value: "lexeme_default", Reason: "Meaning carries no referent multiplicity; the target uses its local number class"})
 		}
 		values, found := runtime.SourceFeatures(source, participant.Role, coreConcept(referent))
 		article, targetDeterminerKnown := englishDeterminerForRole(selected, participant.Role)
@@ -357,12 +322,6 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 		assumptions = append(assumptions, realizer.FieldAssumption{
 			Path: referentPath, Field: "determiner", Value: determiner, Reason: reason,
 		})
-		if len(source.Evidence.Records) == 0 {
-			assumptions = append(assumptions, realizer.FieldAssumption{
-				Path: referentPath, Field: "number", Value: "singular",
-				Reason: "Meaning v1 identifies individual referents but carries no noun number feature; this response uses the approved singular form",
-			})
-		}
 	}
 	return nil, assumptions, losses, nil
 }
@@ -379,9 +338,12 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 		obliqueFamily        = "construction:en.oblique"
 	)
 	familyID := candidate.Family.Family.ID.String()
+	if (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState) && !englishPredicateEvidenceConsistent(source, candidate) {
+		return false
+	}
 	if identification, recognized := englishNegativeIdentificationState(source); recognized {
 		if candidate.Kind == meaning.KindState && candidate.NodeID == identification.stateID {
-			if !identification.valid || familyID != identification.family || candidate.Sense.ID.String() != identification.senseID || candidate.CompiledVariant.Variant.DirectionPolicy == construction.DirectionAnalyze {
+			if !identification.valid || !englishIdentificationAttributesAllowed(source, candidate.NodeID, identification.role, identification.referent, candidate.TransferBinding.CoreRef) || familyID != identification.family || candidate.Sense.ID.String() != identification.senseID || candidate.CompiledVariant.Variant.DirectionPolicy == construction.DirectionAnalyze {
 				return false
 			}
 			variant := candidate.CompiledVariant.Variant.ID.String()
@@ -397,7 +359,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 	}
 	if identification, recognized := englishIdentificationState(source); recognized {
 		if candidate.Kind == meaning.KindState && candidate.NodeID == identification.stateID {
-			if !identification.valid {
+			if !identification.valid || !englishIdentificationAttributesAllowed(source, candidate.NodeID, identification.role, identification.referent, candidate.TransferBinding.CoreRef) {
 				return false
 			}
 			variant := candidate.CompiledVariant.Variant.ID.String()
@@ -426,7 +388,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 		if !negated || event.ID != candidate.NodeID || sourceRoute.family != negativeRoute.family || sourceRoute.sense != candidate.Sense.ID.String() {
 			return false
 		}
-		number, known := englishPresentNegationNumber(source, candidate, sourceRoute)
+		number, known := englishPresentNegationNumber(source, candidate, sourceRoute, candidates)
 		if !known || !sourceRoute.variantMatchesNumber(candidate.CompiledVariant.Variant.ID.String(), number) {
 			return false
 		}
@@ -484,21 +446,35 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 		if found {
 			determiner = string(values["determiner"])
 		}
-		number := values["number"]
-		if number == "" {
-			number = values["noun_number"]
-		}
 		allMass := true
+		allPluralOnly := true
+		number := ""
+		numberSet, numberConflict := false, false
 		for _, lexicalCandidate := range lexicalCandidates {
-			allMass = allMass && hasLexicalProperty(lexicalCandidate.Lexeme.Properties, "number_behavior", "mass")
+			mass, pluralOnly := englishNumberClass(lexicalCandidate.Lexeme.Properties, lexicalCandidate.Lexeme.ParadigmID)
+			allMass = allMass && mass
+			allPluralOnly = allPluralOnly && pluralOnly
+			candidateNumber, _, numberOK := englishTargetNumber(source, referent.ID, lexicalCandidate.Lexeme.Properties, lexicalCandidate.Lexeme.ParadigmID)
+			if !numberOK {
+				return false
+			}
+			if !numberSet {
+				number = candidateNumber
+				numberSet = true
+			} else if number != candidateNumber {
+				numberConflict = true
+			}
+		}
+		if numberConflict {
+			number = ""
 		}
 		indefiniteArticle, hasCommonIndefiniteArticle := commonEnglishIndefiniteArticle(lexicalCandidates)
 		mass := allMass
 		if mass {
 			number = "singular"
 		}
-		if number == "" && !found && len(source.Evidence.Records) == 0 {
-			number = "singular"
+		if allPluralOnly {
+			number = "plural"
 		}
 		actualArticle := englishDeterminerForSlot(variant, slot.ID)
 		actualDeterminer := englishDeterminerFeature(actualArticle)
@@ -544,15 +520,21 @@ func englishReadingTargetFamilyMatches(source semantic.MeaningCandidate, candida
 	if familyID != presentFamily && familyID != pastFamily {
 		return true
 	}
-	values, found := runtime.SourceFeatures(source, "", candidate.TransferBinding.CoreRef)
+	predicate, found := englishMeaningNode(source, candidate.NodeID)
 	if !found {
-		return len(source.Evidence.Records) == 0 && familyID == presentFamily
+		return false
 	}
-	isPast := values["tense"] == "past" || values["verb_form"] == "past"
+	if !englishFrameEvidenceConsistent(source, candidate.NodeID, candidate.TransferBinding.CoreRef) {
+		return false
+	}
+	frame := predicate.TemporalFrame
+	if frame == "" {
+		frame = meaning.TemporalFramePresent
+	}
 	if familyID == pastFamily {
-		return isPast
+		return frame == meaning.TemporalFramePast
 	}
-	return !isPast && (values["tense"] == "present" || values["verb_form"] == "third_person_singular" || values["verb_form"] == "finite")
+	return frame == meaning.TemporalFramePresent
 }
 
 type englishDeterminers struct {

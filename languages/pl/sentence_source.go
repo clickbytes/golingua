@@ -87,7 +87,7 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 			},
 			CaseFeature: "case", CaseValues: caseValues,
 		}}},
-		EvidenceBuilder: polishSentenceEvidenceBuilder{base: runtime.BareDeclarativeEvidenceBuilder{
+		EvidenceBuilder: polishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), base: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true},
 			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
 				seeingSense: {
@@ -129,10 +129,24 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 }
 
 type polishSentenceEvidenceBuilder struct {
-	base runtime.BareDeclarativeEvidenceBuilder
+	base    runtime.BareDeclarativeEvidenceBuilder
+	lexicon *lexicon.Index
 }
 
 func (builder polishSentenceEvidenceBuilder) Build(ctx context.Context, lattice analyzer.LexicalLattice, candidates []parser.PhraseCandidate, forest parser.Forest) (runtime.CompositionEvidence, error) {
+	evidence, err := builder.buildSyntax(ctx, lattice, candidates, forest)
+	if err != nil || !evidence.OperatorCoverageComplete {
+		return evidence, err
+	}
+	attributes, err := polishNodeAttributes(builder.base.SupportedSenses, builder.lexicon, candidates, forest)
+	if err != nil {
+		return runtime.CompositionEvidence{}, err
+	}
+	evidence.NodeAttributes = attributes
+	return evidence, nil
+}
+
+func (builder polishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, lattice analyzer.LexicalLattice, candidates []parser.PhraseCandidate, forest parser.Forest) (runtime.CompositionEvidence, error) {
 	notSpan, hasNegation := polishTerminalSpan(lattice, "nie")
 	if !hasNegation {
 		for _, token := range lattice.Tokens {

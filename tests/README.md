@@ -83,6 +83,18 @@ Ostatnie polecenie sprawdza również zgodność polaryzacji grafu znaczenia i k
 
 ## Seeing, inwentarz i pełny obraz
 
+Zakres [LIGHT-F1](../docs/work/light-lm/README.md) dodaje ograniczone kontrole `MeaningAttributes` dla istniejących tras, bez nowych rekordów A1. Wzorce Reading są zapisane niezależnie od analizatorów; Seeing i Identification mają jawne present/one. Testy sprawdzają osobno analizę, przygotowane I bez Evidence parsera, integrację, walidację i diagnostykę sprzecznych danych. Kontrakt: [czas i wielość](../docs/architecture/meaning-attributes.md).
+
+```sh
+go test ./tests/interlingua/... -run MeaningAttributes -count=1 -v
+go test ./tests/languages/pl/A1/... -run MeaningAttributes -count=1 -v
+go test ./tests/languages/en/A1/... -run MeaningAttributes -count=1 -v
+go test ./tests/translation/... -run MeaningAttributes -count=1 -v
+go test ./tests/... -run 'MeaningAttributes|Negation|Identification|Seeing|Inventory' -count=1 -v
+```
+
+Present Reading używa istniejącej trasy the/the z jawnymi założeniami określoności; past zachowuje licencjonowane warianty rodzajnika. To granica dotychczasowego zakresu G10-19/G10-20, nie nowa ocena pełnego języka.
+
 ```sh
 go test ./tests/interlingua/... -run Seeing -count=1 -v
 go test ./tests/languages/pl/A1/... -run Seeing -count=1 -v

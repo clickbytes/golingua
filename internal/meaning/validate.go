@@ -244,6 +244,9 @@ func validateNodeShape(node Node, path string) error {
 	allowed := nodeFieldsForKind(node.Kind)
 	switch node.Kind {
 	case KindEvent, KindState:
+		if node.TemporalFrame != "" && !node.TemporalFrame.Valid() {
+			return invalid("INVALID_TEMPORAL_FRAME", path+".temporal_frame", "temporal frame is unsupported")
+		}
 		if node.Concept == "" {
 			return invalid("MISSING_CONCEPT", path+".concept", "event/state node requires a concept ID")
 		}
@@ -261,6 +264,9 @@ func validateNodeShape(node Node, path string) error {
 			seenRoles[string(participant.Role)] = struct{}{}
 		}
 	case KindReferent:
+		if node.Multiplicity != "" && !node.Multiplicity.Valid() {
+			return invalid("INVALID_MULTIPLICITY", path+".multiplicity", "referent multiplicity is unsupported")
+		}
 		if node.Concept == "" {
 			return invalid("MISSING_CONCEPT", path+".concept", "referent node requires a concept ID")
 		}
@@ -334,6 +340,16 @@ func validateNodeShape(node Node, path string) error {
 	if node.Content != nil {
 		if _, allowedField := allowed["content"]; !allowedField {
 			return invalid("UNEXPECTED_NODE_FIELD", path+".content", "field does not belong to this node kind")
+		}
+	}
+	if node.TemporalFrame != "" {
+		if _, allowedField := allowed["temporal_frame"]; !allowedField {
+			return invalid("UNEXPECTED_NODE_FIELD", path+".temporal_frame", "field does not belong to this node kind")
+		}
+	}
+	if node.Multiplicity != "" {
+		if _, allowedField := allowed["multiplicity"]; !allowedField {
+			return invalid("UNEXPECTED_NODE_FIELD", path+".multiplicity", "field does not belong to this node kind")
 		}
 	}
 	return nil

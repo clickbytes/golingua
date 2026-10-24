@@ -138,6 +138,13 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 			Severity: status.SeverityWarning,
 		})
 	}
+	if len(surfaceCandidates) == 0 && len(result.Diagnostics) == 0 {
+		result.Diagnostics = appendTargetDiagnostics(result.Diagnostics, status.Diagnostic{
+			Code: "TARGET_NO_SURFACE_CANDIDATE", Path: "target.candidates",
+			Message:  "no licensed surface candidate for the supplied Meaning, context and evidence",
+			Severity: status.SeverityWarning,
+		})
+	}
 	for _, selected := range surfaceCandidates {
 		if err := ctx.Err(); err != nil {
 			return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")

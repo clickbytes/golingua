@@ -82,7 +82,7 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 				"noun": {construction.CategoryNP}, "verb": {construction.CategoryVP}, "adjective": {construction.CategoryAP},
 			},
 		}}, lexicon: snapshot.Lexicon()}},
-		EvidenceBuilder: englishSentenceEvidenceBuilder{base: runtime.BareDeclarativeEvidenceBuilder{
+		EvidenceBuilder: englishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), base: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true},
 			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
 				seeingSense: {
@@ -114,10 +114,24 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 }
 
 type englishSentenceEvidenceBuilder struct {
-	base runtime.BareDeclarativeEvidenceBuilder
+	base    runtime.BareDeclarativeEvidenceBuilder
+	lexicon *lexicon.Index
 }
 
 func (builder englishSentenceEvidenceBuilder) Build(ctx context.Context, lattice analyzer.LexicalLattice, candidates []parser.PhraseCandidate, forest parser.Forest) (runtime.CompositionEvidence, error) {
+	evidence, err := builder.buildSyntax(ctx, lattice, candidates, forest)
+	if err != nil || !evidence.OperatorCoverageComplete {
+		return evidence, err
+	}
+	attributes, err := englishNodeAttributes(builder.base.SupportedSenses, builder.lexicon, candidates, forest, evidence)
+	if err != nil {
+		return runtime.CompositionEvidence{}, err
+	}
+	evidence.NodeAttributes = attributes
+	return evidence, nil
+}
+
+func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, lattice analyzer.LexicalLattice, candidates []parser.PhraseCandidate, forest parser.Forest) (runtime.CompositionEvidence, error) {
 	hasNot := false
 	for _, token := range lattice.Tokens {
 		if token.Token.Folded == "not" {
