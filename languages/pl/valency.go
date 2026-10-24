@@ -25,6 +25,11 @@ var polishNegationConstructionSource = provenance.SourceRef{
 	Version: "2026-10-23-g10-17", License: "internal", Author: "Codex by owner delegation",
 }
 
+var polishIdentificationNegationSource = provenance.SourceRef{
+	ID: "golingua-pl-identification-negation-322", URI: "https://github.com/clickbytes/golingua/issues/322",
+	Version: "2026-10-24", License: "internal", Author: "Codex by owner delegation",
+}
+
 var polishReadingConstructionSource = provenance.SourceRef{
 	ID: "golingua-g10-19-reading-route-review", URI: "https://github.com/clickbytes/golingua/issues/251#issuecomment-6359339236",
 	Version: "2026-10-23-g10-19", License: "internal", Author: "Codex by owner delegation",
@@ -42,6 +47,7 @@ type constructionBindingDeclaration struct {
 
 var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"pl.byc.class_membership", "pl.byc.class_membership.frame", "pl.identification", "pl.identification.to"},
+	{"pl.byc.class_membership", "pl.byc.class_membership.frame", "pl.identification_negative", "pl.identification_negative.to"},
 	{"pl.czarny.black", "pl.czarny.black.frame", "pl.attribution", "pl.attribution.ten"},
 	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.transitive_negative", "pl.transitive_negative.svo"},
 	{"pl.slyszec.auditory", "pl.slyszec.auditory.transitive", "pl.transitive_negative", "pl.transitive_negative.svo"},
@@ -169,6 +175,12 @@ func CompileValency() (*valency.Index, error) {
 			frame.Provenance = polishIdentificationSource
 		}
 		switch item.id {
+		case "pl.byc.class_membership.frame":
+			negativeFamilyID, err := ids.NewConstructionID("pl.identification_negative")
+			if err != nil {
+				return nil, fmt.Errorf("Polish identification negative frame family: %w", err)
+			}
+			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
 		case "pl.widziec.visual.transitive", "pl.slyszec.auditory.transitive":
 			negativeFamilyID, err := ids.NewConstructionID("pl.transitive_negative")
 			if err != nil {
@@ -208,6 +220,9 @@ func CompileValency() (*valency.Index, error) {
 }
 
 func polishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.family == "pl.identification_negative" {
+		return polishIdentificationNegationSource
+	}
 	if item.sense == "pl.byc.class_membership" || item.sense == "pl.czarny.black" {
 		return polishIdentificationSource
 	}

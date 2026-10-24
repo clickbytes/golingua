@@ -177,12 +177,16 @@ func (builder polishSentenceEvidenceBuilder) Build(ctx context.Context, lattice 
 					if !exists || !polishNegatedPresentCandidate(candidate, route) {
 						continue
 					}
+					operatorProvenance := polishNegationConstructionSource
+					if route.family == "construction:pl.identification_negative" {
+						operatorProvenance = polishIdentificationNegationSource
+					}
 					evidence.Operators = append(evidence.Operators, semantic.OperatorEvidence{
 						Operator: construction.Operator{
 							ID: "negate", Kind: construction.OperatorNegation, Value: construction.ValueNegated,
 							InputFamilyID: negativeFamily, OutputFamilyID: negativeFamily,
 							SemanticScope: construction.SemanticScope{TargetNodeID: "event"},
-							Capabilities:  []construction.Capability{"negation-negated"}, Provenance: polishNegationConstructionSource,
+							Capabilities:  []construction.Capability{"negation-negated"}, Provenance: operatorProvenance,
 						},
 						TargetCandidateID: candidateID, Span: notSpan,
 					})
@@ -192,5 +196,8 @@ func (builder polishSentenceEvidenceBuilder) Build(ctx context.Context, lattice 
 		}
 	}
 	evidence.OperatorCoverageComplete = operatorCount > 0
-	return evidence, nil
+	if !evidence.OperatorCoverageComplete {
+		return evidence, nil
+	}
+	return addPolishIdentificationReferences(evidence, candidates, forest), nil
 }

@@ -70,6 +70,14 @@ func NewSentenceTarget(snapshot *pack.Pack, registry *language.Registry) (*runti
 type englishSentenceFeatures struct{}
 
 func (englishSentenceFeatures) Features(_ context.Context, source semantic.MeaningCandidate, predicate realizer.TargetCandidate, slot construction.SlotSpec, candidate realizer.TargetCandidate, _ []realizer.TargetCandidate) ([]features.FeatureValue, error) {
+	if identification, recognized := englishNegativeIdentificationState(source); recognized && identification.valid && identification.stateID == predicate.NodeID {
+		if slot.Category == construction.CategoryVP && predicate.Sense.ID.String() == identification.senseID {
+			return englishFiniteVerbFeatures("present", "third", "singular"), nil
+		}
+		if slot.Category == construction.CategoryNP && slot.ArgumentBinding != nil && string(slot.ArgumentBinding.SemanticRole) == identification.role {
+			return []features.FeatureValue{{Feature: "noun_number", State: features.StateKnown, Value: "singular"}, {Feature: "number", State: features.StateKnown, Value: "singular"}}, nil
+		}
+	}
 	if identification, recognized := englishIdentificationContextForSource(source); recognized && identification.stateID == predicate.NodeID {
 		if slot.Category == construction.CategoryVP && predicate.Sense.ID.String() == identification.senseID {
 			return englishFiniteVerbFeatures("present", "third", "singular"), nil
@@ -86,6 +94,9 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 	}
 	if slot.Category == construction.CategoryVP {
 		if _, event, route, found := englishNegatedPresent(source); found && event.ID == predicate.NodeID && predicate.Sense.ID.String() == route.sense {
+			if route.statePredicate {
+				return englishFiniteVerbFeatures("present", "third", "singular"), nil
+			}
 			number, known := englishPresentNegationNumber(source, predicate, route)
 			if !known {
 				return nil, nil
@@ -214,11 +225,15 @@ func (englishSentenceOperatorBuilder) Build(ctx context.Context, source semantic
 	if err != nil {
 		return nil, false, err
 	}
+	provenanceSource := englishNegationConstructionSource
+	if route.statePredicate {
+		provenanceSource = englishIdentificationNegationSource
+	}
 	return []construction.Operator{{
 		ID: "negate", Kind: construction.OperatorNegation, Value: construction.ValueNegated,
 		InputFamilyID: familyID, OutputFamilyID: familyID,
 		SemanticScope: construction.SemanticScope{TargetNodeID: event.ID, ScopeNodeID: scope.ID},
-		Capabilities:  []construction.Capability{"negation-negated"}, Provenance: englishNegationConstructionSource,
+		Capabilities:  []construction.Capability{"negation-negated"}, Provenance: provenanceSource,
 	}}, true, nil
 }
 
@@ -248,6 +263,28 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 	predicate := findMeaningNode(*source.Meaning, selected.NodeID)
 	if predicate.ID == "" {
 		return nil, nil, nil, nil
+	}
+	if identification, recognized := englishNegativeIdentificationState(source); recognized && identification.stateID == predicate.ID {
+		if !identification.valid {
+			return nil, nil, nil, nil
+		}
+		predicatePath, found := runtime.MeaningPath(*source.Meaning, predicate.ID)
+		if !found {
+			return nil, nil, nil, nil
+		}
+		assumptions := []realizer.FieldAssumption{
+			{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning v1 carries no tense; this response uses the approved present-tense route"},
+			{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning v1 carries no grammatical person; this response uses the approved third-person route"},
+			{Path: predicatePath, Field: "number", Value: "singular", Reason: "Meaning v1 carries no grammatical number; this response uses the approved singular route"},
+		}
+		if identification.mode == "unresolved" {
+			value, ok := englishIdentificationReferenceChoice(selected.CompiledVariant.Variant.ID.String(), identification.family)
+			if !ok {
+				return nil, nil, nil, nil
+			}
+			assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "reference", Value: value, Reason: "the source preserves unresolved reference; this candidate selects the named English deictic form"})
+		}
+		return nil, assumptions, nil, nil
 	}
 	if identification, valid := englishIdentificationContextForSource(source); valid && identification.stateID == predicate.ID {
 		predicatePath, found := runtime.MeaningPath(*source.Meaning, predicate.ID)
@@ -342,6 +379,22 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 		obliqueFamily        = "construction:en.oblique"
 	)
 	familyID := candidate.Family.Family.ID.String()
+	if identification, recognized := englishNegativeIdentificationState(source); recognized {
+		if candidate.Kind == meaning.KindState && candidate.NodeID == identification.stateID {
+			if !identification.valid || familyID != identification.family || candidate.Sense.ID.String() != identification.senseID || candidate.CompiledVariant.Variant.DirectionPolicy == construction.DirectionAnalyze {
+				return false
+			}
+			variant := candidate.CompiledVariant.Variant.ID.String()
+			if identification.mode == "proximal" {
+				return variant == identification.family+".this"
+			}
+			_, allowed := englishIdentificationReferenceChoice(variant, identification.family)
+			return allowed && (variant == identification.family+".this" || variant == identification.family+".that" || variant == identification.family+".it")
+		}
+		if candidate.Family.Family.ID.String() == "construction:en.identification" || candidate.Family.Family.ID.String() == "construction:en.attribution" {
+			return false
+		}
+	}
 	if identification, recognized := englishIdentificationState(source); recognized {
 		if candidate.Kind == meaning.KindState && candidate.NodeID == identification.stateID {
 			if !identification.valid {

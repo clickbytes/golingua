@@ -56,6 +56,11 @@ var englishNegationConstructionSource = provenance.SourceRef{
 	Version: "2026-10-23-g10-17", License: "internal", Author: "Codex by owner delegation",
 }
 
+var englishIdentificationNegationSource = provenance.SourceRef{
+	ID: "golingua-en-identification-negation-322", URI: "https://github.com/clickbytes/golingua/issues/322",
+	Version: "2026-10-24", License: "internal", Author: "Codex by owner delegation",
+}
+
 var englishNegativeArticleConstructionSource = provenance.SourceRef{
 	ID: "golingua-g10-18-negative-article-alternatives", URI: "https://github.com/clickbytes/golingua/issues/249#issuecomment-6359036189",
 	Version: "2026-10-23-g10-18", License: "internal", Author: "Codex by owner delegation",
@@ -80,6 +85,9 @@ var englishConstructionBindingDeclarations = append(append([]constructionBinding
 	{"en.be.class_membership", "en.be.class_membership.frame", "en.identification", "en.identification.this"},
 	{"en.be.class_membership", "en.be.class_membership.frame", "en.identification", "en.identification.that"},
 	{"en.be.class_membership", "en.be.class_membership.frame", "en.identification", "en.identification.it"},
+	{"en.be.class_membership", "en.be.class_membership.frame", "en.identification_negative", "en.identification_negative.this"},
+	{"en.be.class_membership", "en.be.class_membership.frame", "en.identification_negative", "en.identification_negative.that"},
+	{"en.be.class_membership", "en.be.class_membership.frame", "en.identification_negative", "en.identification_negative.it"},
 	{"en.black.color", "en.black.color.frame", "en.attribution", "en.attribution.this"},
 	{"en.black.color", "en.black.color.frame", "en.attribution", "en.attribution.that"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive_negative", "en.transitive_negative.svo"},
@@ -268,6 +276,12 @@ func CompileValency() (*valency.Index, error) {
 			frame.Provenance = englishIdentificationSource
 		}
 		switch item.id {
+		case "en.be.class_membership.frame":
+			negativeFamilyID, err := ids.NewConstructionID("en.identification_negative")
+			if err != nil {
+				return nil, fmt.Errorf("English identification negative frame family: %w", err)
+			}
+			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
 		case "en.see.visual.transitive", "en.hear.auditory.transitive":
 			negativeFamilyID, err := ids.NewConstructionID("en.transitive_negative")
 			if err != nil {
@@ -313,6 +327,9 @@ func CompileValency() (*valency.Index, error) {
 }
 
 func englishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.family == "en.identification_negative" {
+		return englishIdentificationNegationSource
+	}
 	if item.sense == "en.be.class_membership" || item.sense == "en.black.color" {
 		return englishIdentificationSource
 	}

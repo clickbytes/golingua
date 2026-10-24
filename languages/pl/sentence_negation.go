@@ -17,12 +17,14 @@ type polishPresentNegationRoute struct {
 	family      string
 	variant     string
 	subjectRole meaning.Role
+	kind        meaning.NodeKind
 }
 
 var polishPresentNegationRoutes = []polishPresentNegationRoute{
-	{concept: "concept:seeing", sense: "sense:pl.widziec.visual", lexeme: "lexeme:pl.widziec.v", family: "construction:pl.transitive_negative", variant: "construction:pl.transitive_negative.svo", subjectRole: "experiencer"},
-	{concept: "concept:hearing", sense: "sense:pl.slyszec.auditory", lexeme: "lexeme:pl.slyszec.v", family: "construction:pl.transitive_negative", variant: "construction:pl.transitive_negative.svo", subjectRole: "experiencer"},
-	{concept: "concept:looking", sense: "sense:pl.patrzec.directed", lexeme: "lexeme:pl.patrzec.v", family: "construction:pl.oblique_negative", variant: "construction:pl.oblique_negative.svo", subjectRole: "agent"},
+	{concept: "concept:seeing", sense: "sense:pl.widziec.visual", lexeme: "lexeme:pl.widziec.v", family: "construction:pl.transitive_negative", variant: "construction:pl.transitive_negative.svo", subjectRole: "experiencer", kind: meaning.KindEvent},
+	{concept: "concept:hearing", sense: "sense:pl.slyszec.auditory", lexeme: "lexeme:pl.slyszec.v", family: "construction:pl.transitive_negative", variant: "construction:pl.transitive_negative.svo", subjectRole: "experiencer", kind: meaning.KindEvent},
+	{concept: "concept:looking", sense: "sense:pl.patrzec.directed", lexeme: "lexeme:pl.patrzec.v", family: "construction:pl.oblique_negative", variant: "construction:pl.oblique_negative.svo", subjectRole: "agent", kind: meaning.KindEvent},
+	{concept: "concept:class_membership", sense: "sense:pl.byc.class_membership", lexeme: "lexeme:pl.byc.v", family: "construction:pl.identification_negative", variant: "construction:pl.identification_negative.to", subjectRole: "member", kind: meaning.KindState},
 }
 
 func polishPresentNegationRouteForSense(sense ids.SenseID) (polishPresentNegationRoute, bool) {
@@ -36,7 +38,7 @@ func polishPresentNegationRouteForSense(sense ids.SenseID) (polishPresentNegatio
 
 func polishPresentNegationRouteForEvent(event meaning.Node) (polishPresentNegationRoute, bool) {
 	for _, route := range polishPresentNegationRoutes {
-		if route.concept == string(event.Concept) && event.Kind == meaning.KindEvent {
+		if route.concept == string(event.Concept) && event.Kind == route.kind {
 			return route, true
 		}
 	}

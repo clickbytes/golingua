@@ -10,6 +10,7 @@ import (
 
 func TestSeeing(t *testing.T)         { runDomain(t, "A1-AC-") }
 func TestIdentification(t *testing.T) { runDomain(t, "A1-ID-") }
+func TestNegation(t *testing.T)       { runDomain(t, "A1-NEG-") }
 func TestOtherDomains(t *testing.T)   { runDomain(t, "other") }
 
 func runDomain(t *testing.T, prefix string) {
@@ -17,7 +18,7 @@ func runDomain(t *testing.T, prefix string) {
 	selected := 0
 	for _, c := range translation.CasesFor("pl", "en") {
 		if prefix == "other" {
-			if strings.HasPrefix(c.ID, "A1-AC-") || strings.HasPrefix(c.ID, "A1-ID-") {
+			if strings.HasPrefix(c.ID, "A1-AC-") || strings.HasPrefix(c.ID, "A1-ID-") || strings.HasPrefix(c.ID, "A1-NEG-") {
 				continue
 			}
 		} else if !strings.HasPrefix(c.ID, prefix) {

@@ -22,6 +22,13 @@ type englishPresentNegationRoute struct {
 	pluralVariant   string
 	subjectRole     meaning.Role
 	requiresAt      bool
+	statePredicate  bool
+}
+
+var englishIdentificationNegationRoute = englishPresentNegationRoute{
+	concept: "concept:class_membership", sense: "sense:en.be.class_membership", verb: "is",
+	lexeme: "lexeme:en.be.v", family: "construction:en.identification_negative",
+	singularVariant: "construction:en.identification_negative.this", subjectRole: "member", statePredicate: true,
 }
 
 var englishPresentNegationRoutes = []englishPresentNegationRoute{
@@ -55,6 +62,13 @@ func englishPresentNegationRouteForEvent(event meaning.Node) (englishPresentNega
 		}
 	}
 	return englishPresentNegationRoute{}, false
+}
+
+func englishPresentNegationRouteForPredicate(predicate meaning.Node) (englishPresentNegationRoute, bool) {
+	if predicate.Kind == meaning.KindState && string(predicate.Concept) == englishIdentificationNegationRoute.concept {
+		return englishIdentificationNegationRoute, true
+	}
+	return englishPresentNegationRouteForEvent(predicate)
 }
 
 func englishPresentNegationRouteForFamily(family ids.ConstructionID) (englishPresentNegationRoute, bool) {
@@ -181,7 +195,7 @@ func englishNegatedPresent(source semantic.MeaningCandidate) (meaning.Node, mean
 		if node.ID != scope.Target {
 			continue
 		}
-		route, found := englishPresentNegationRouteForEvent(node)
+		route, found := englishPresentNegationRouteForPredicate(node)
 		if found {
 			return scope, node, route, true
 		}

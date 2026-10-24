@@ -23,6 +23,8 @@ Integracja wskazuje ID analizy i realizacji; nie kopiuje ich treści. Inwentarz 
 
 Wzorce `MeaningGraph` są tworzone niezależnie od parserów. Ograniczone porównanie grafów jest niewrażliwe na lokalne NodeID i kolejność węzłów, ale zachowuje role i bijekcję referentów. Nie scala odrębnych węzłów tylko dlatego, że mają ten sam ConceptID. Wzorce nie dopisują tożsamości osobników ani płci zwierzęcia. Kontekst wskazania przechowuje osobną nierozstrzygniętą Mention bez `ReferentID` i `EvidenceID`.
 
+Negacja w obecnym wycinku ma własne znaczenia I: `negation.classification.this` i `.to` umieszczają jeden zakres negacji nad stanem `class_membership`; `negation.seeing.teacher-dog` umieszcza go nad zdarzeniem widzenia. Każdy graf ma jeden korzeń będący zakresem negacji, bez dodatkowego korzenia predykatu. Dla klasyfikacji adapter celu odrzuca kontekst, którego graf ma inną polaryzację niż znaczenie.
+
 Wynik silnika (`ok`, `ambiguous`, `incomplete`, `unsupported`) jest oddzielony od oceny przypadku. Kontrole sprawdzają rzeczywiste grafy, konteksty, teksty, założenia, straty i diagnostyki; sam status `ok` nie oznacza PASS. Brak zamkniętego wzorca daje `SPEC_PENDING`, nie domyślny PASS ani udowodniony błąd parsera. Nie używamy `t.Skip`.
 
 | Ocena | Znaczenie |
@@ -65,6 +67,20 @@ go test ./tests/languages/en/A1/... -run Identification -count=1 -v
 go test ./tests/translation/... -run Identification -count=1 -v
 ```
 
+## Odbiór negacji
+
+Uruchom cztery niezależne kontrole negacji oraz kontrolne Seeing i inwentarz:
+
+```sh
+go test ./tests/interlingua/... -run Negation -count=1 -v
+go test ./tests/languages/pl/A1/... -run Negation -count=1 -v
+go test ./tests/languages/en/A1/... -run Negation -count=1 -v
+go test ./tests/translation/... -run Negation -count=1 -v
+go test ./tests/... -run 'Negation|Identification|Seeing|Inventory' -count=1 -v
+```
+
+Ostatnie polecenie sprawdza również zgodność polaryzacji grafu znaczenia i kontekstu wskazania w obu adapterach. Przykłady negacji nie zastępują kontroli zamiany ról z istniejących przypadków Seeing.
+
 ## Seeing, inwentarz i pełny obraz
 
 ```sh
@@ -76,7 +92,7 @@ go test ./tests/translation/... -run Inventory -count=1 -v
 go test ./tests/... -count=1 -v
 ```
 
-Pełna macierz jest celowo niezaliczona, dopóki pozostałe wymagania nie mają zamkniętych wzorców i działających tras. Obecnie oczekiwany jest niezerowy exit wyłącznie z **48 kontrolami `SPEC_PENDING` dotyczącymi 16 rekordów poza Seeing i identyfikacją**. Każdy oryginalny rekord nadal pojawia się w raporcie; `SPEC_PENDING` ani `NOT RUN` nie są pomijane i nie oznaczają PASS. Językowe kontrole pozostają poza CI; techniczne CI repozytorium pozostaje bez zmian.
+Pełna macierz jest celowo niezaliczona, dopóki pozostałe wymagania nie mają zamkniętych wzorców i działających tras. Na końcowym snapshotcie oczekiwany był niezerowy exit wyłącznie z **36 kontrolami `SPEC_PENDING` dotyczącymi 12 rekordów domen LQ, PO i Q**. Pozostałe 12 rekordów obejmuje Seeing, identyfikację i negację. Każdy z 24 oryginalnych rekordów nadal pojawia się w raporcie; `SPEC_PENDING` ani `NOT RUN` nie są pomijane i nie oznaczają PASS. Językowe kontrole pozostają poza CI; techniczne CI repozytorium pozostaje bez zmian.
 
 ## Obserwacje CLI dla czterech oryginalnych zdań
 
@@ -91,41 +107,65 @@ Na dostępnej próbce otrzymano następujące obserwacje z CLI:
 
 Są to wyniki silnika zgodne z ograniczonym kontraktem testowanej próbki; `incomplete` i `ambiguous` są jawne i nie rozstrzygają tożsamości ani płci. Końcowy surowy JSON z SHA i poleceniami: `/tmp/a1-t05-cli.json` (pierwsze cztery obserwacje to identyfikacja; kolejne to wybrane kontrole istniejących tras). Odtworzenie tych czterech wejść wykonuje się po przygotowaniu runtime poniżej.
 
+## Obserwacje CLI dla negacji
+
+Na końcowym snapshotcie CLI zwróciło poniższe wyniki. Status i exit CLI są obserwacją silnika; założenia i straty pozostają osobnymi polami.
+
+| ID | Wejście i kierunek | Teksty kandydatów | Status / exit |
+| --- | --- | --- | --- |
+| `A1-NEG-001-EN-PL` | `This is not a cat.` · EN→PL | `To nie jest kot.` | `incomplete` / 7; strata `deixis` |
+| `A1-NEG-002-PL-EN` | `To nie jest kot.` · PL→EN | `It is not a cat.`, `That is not a cat.`, `This is not a cat.` | `ambiguous` / 6; założenie `reference` dla każdej opcji |
+| `A1-NEG-003-EN-PL` | `The teacher does not see the dog.` · EN→PL | `Nauczyciel nie widzi psa.` | `ok` / 0 |
+| `A1-NEG-004-PL-EN` | `Nauczyciel nie widzi psa.` · PL→EN | `The teacher does not see the dog.`, `The teacher does not see a dog.`, `A teacher does not see the dog.`, `A teacher does not see a dog.` | `ambiguous` / 6; dobór `determiner` jest jawny dla każdej opcji |
+
+Wszystkie cztery grafy pośrednie mają jeden korzeń zakresu negacji. Dodatkowe kontrole zachowały zamianę ról, liczbę mnogą przy słuchaniu/patrzeniu, niejednoznaczność czytania, a podwójne lub przestawione `not`/`nie` otrzymały `unsupported`. Surowe obserwacje z poleceniami, exit code i SHA: `/tmp/a1-neg-final-cli.json`; testy I, PL, EN, przekładu, kontrole, vet, build i pełnej macierzy: `/tmp/a1-neg-final-{i,pl,en,translation,controls,vet,build,full}.log`. Pełny przebieg zakończył się niezerowo wyłącznie 36 przypadkami `SPEC_PENDING` opisanymi wyżej.
+
 ## Przygotowanie świeżego snapshotu i CLI
 
 Z katalogu repozytorium zbuduj bieżący program i snapshot do katalogów tymczasowych:
 
 ```sh
-go build -o /tmp/golingua-a1-t05 ./cmd/golingua
-/tmp/golingua-a1-t05 snapshot --apply --store /tmp/golingua-a1-t05-store --json
-cat > /tmp/golingua-a1-t05-runtime.json <<'JSON'
-{"schema_version":1,"dataset_store":"/tmp/golingua-a1-t05-store","dataset_id":"golingua-authored","language_package_dirs":[]}
+go build -o /tmp/golingua-a1-neg ./cmd/golingua
+/tmp/golingua-a1-neg snapshot --apply --store /tmp/golingua-a1-neg-store --json
+cat > /tmp/golingua-a1-neg-runtime.json <<'JSON'
+{"schema_version":1,"dataset_store":"/tmp/golingua-a1-neg-store","dataset_id":"golingua-authored","language_package_dirs":[]}
 JSON
 ```
 
 Uruchom cztery rekordy osobno; `--text` zachowuje dokładny zapis wejścia:
 
 ```sh
-/tmp/golingua-a1-t05 translate --from en --to pl --text 'This is a cat' --runtime-config /tmp/golingua-a1-t05-runtime.json --json
-/tmp/golingua-a1-t05 translate --from pl --to en --text 'To jest kot.' --runtime-config /tmp/golingua-a1-t05-runtime.json --json
-/tmp/golingua-a1-t05 translate --from en --to pl --text 'This cat is black.' --runtime-config /tmp/golingua-a1-t05-runtime.json --json
-/tmp/golingua-a1-t05 translate --from pl --to en --text 'Ten kot jest czarny.' --runtime-config /tmp/golingua-a1-t05-runtime.json --json
+/tmp/golingua-a1-neg translate --from en --to pl --text 'This is a cat' --runtime-config /tmp/golingua-a1-neg-runtime.json --json
+/tmp/golingua-a1-neg translate --from pl --to en --text 'To jest kot.' --runtime-config /tmp/golingua-a1-neg-runtime.json --json
+/tmp/golingua-a1-neg translate --from en --to pl --text 'This cat is black.' --runtime-config /tmp/golingua-a1-neg-runtime.json --json
+/tmp/golingua-a1-neg translate --from pl --to en --text 'Ten kot jest czarny.' --runtime-config /tmp/golingua-a1-neg-runtime.json --json
+```
+
+Odtwórz cztery nowe przepływy negacji tym samym snapshotem:
+
+```sh
+/tmp/golingua-a1-neg translate --from en --to pl --text 'This is not a cat.' --runtime-config /tmp/golingua-a1-neg-runtime.json --json
+/tmp/golingua-a1-neg translate --from pl --to en --text 'To nie jest kot.' --runtime-config /tmp/golingua-a1-neg-runtime.json --json
+/tmp/golingua-a1-neg translate --from en --to pl --text 'The teacher does not see the dog.' --runtime-config /tmp/golingua-a1-neg-runtime.json --json
+/tmp/golingua-a1-neg translate --from pl --to en --text 'Nauczyciel nie widzi psa.' --runtime-config /tmp/golingua-a1-neg-runtime.json --json
 ```
 
 ## Odtworzenie zaobserwowanych przepływów TUI
 
-Obserwację wykonano w rzeczywistym terminalu z binarium zbudowanym na kodzie A1-T04 i izolowaną konfiguracją użytkownika. Uruchomienie w TTY (ścieżka binarium może wskazywać własny build):
+Obserwacje czterech przepływów identyfikacji wykonano w rzeczywistym terminalu z binarium zbudowanym na kodzie A1-T04 i izolowaną konfiguracją użytkownika. Uruchomienie w TTY (ścieżka binarium może wskazywać własny build):
 
 ```sh
-TERM=xterm-256color XDG_CONFIG_HOME=/tmp/golingua-a1-t05-config /tmp/golingua-a1-t05
+TERM=xterm-256color XDG_CONFIG_HOME=/tmp/golingua-a1-neg-config /tmp/golingua-a1-neg
 ```
 
-W UI naciśnij `F5`, wpisz `/tmp/golingua-a1-t05-runtime.json` i `Ctrl+S` (zaobserwowane: ustawienia zapisane, runtime `ok`, `ready:true`). Naciśnij `F1`, wpisz dokładne zdanie i Enter. Dla EN→PL sprawdź `This is a cat` oraz `This cat is black.`. Użyj `Alt+D`, by przełączyć kierunek PL→EN, i sprawdź `To jest kot.` oraz `Ten kot jest czarny.`. `Tab` przechodzi między kierunkiem, kandydatami i podglądem; `Up`/`Down` wybierają kandydata, Enter otwiera szczegóły, `Esc` wraca/resetuje fokus, a `Ctrl+U` czyści prompt. Podgląd zachowuje status `incomplete` lub `ambiguous`; w szczegółach widoczne są odpowiednio strata `deixis` lub wybór `reference`. Zakończ `Ctrl+C`.
+W UI naciśnij `F5`, wpisz `/tmp/golingua-a1-neg-runtime.json` i `Ctrl+S` (zaobserwowane: ustawienia zapisane, runtime `ok`, `ready:true`). Naciśnij `F1`, wpisz dokładne zdanie i Enter. Dla EN→PL sprawdź `This is a cat` oraz `This cat is black.`. Użyj `Alt+D`, by przełączyć kierunek PL→EN, i sprawdź `To jest kot.` oraz `Ten kot jest czarny.`. `Tab` przechodzi między kierunkiem, kandydatami i podglądem; `Up`/`Down` wybierają kandydata, Enter otwiera szczegóły, `Esc` wraca/resetuje fokus, a `Ctrl+U` czyści prompt. Podgląd zachowuje status `incomplete` lub `ambiguous`; w szczegółach widoczne są odpowiednio strata `deixis` lub wybór `reference`. Zakończ `Ctrl+C`.
 
-Rzeczywista obserwacja potwierdziła wszystkie cztery przepływy TUI i czysty exit po `Ctrl+C`; konfiguracja użytkownika nie została zmieniona. Notatka dowodowa: `/tmp/a1-t05-tui-observation.md` (zawiera też build metadata i sumę binarium).
+Rzeczywista obserwacja potwierdziła cztery przepływy TUI identyfikacji i czysty exit po `Ctrl+C`; konfiguracja użytkownika nie została zmieniona. Notatka dowodowa: `/tmp/a1-t05-tui-observation.md` (zawiera też build metadata i sumę binarium).
+
+Dla negacji użyto świeżego binarium `/tmp/golingua-a1-neg` z runtime `/tmp/golingua-a1-neg-runtime.json` oraz odizolowanego `XDG_CONFIG_HOME`. TUI pokazało `To nie jest kot.` ze statusem `incomplete` i stratą `deixis`, `Nauczyciel nie widzi psa.` ze statusem `ok`, trzy warianty EN dla `To nie jest kot.` ze statusem `ambiguous` i widocznym wyborem `reference=this`, oraz cztery warianty rodzajników dla `Nauczyciel nie widzi psa.` ze statusem `ambiguous` i założeniami `determiner`. Podgląd zachował status `ambiguous` i wybrany tekst. Wszystkie cztery przepływy zakończono `Ctrl+C` z exit 0; ustawienia użytkownika nie uległy zmianie. Notatka: `/tmp/a1-neg-tui-observation.md`; surowy transcript: `/tmp/a1-neg-tui.typescript`.
 
 ## Status i pochodzenie
 
-Ocena techniczna agenta dla zamkniętej identyfikacji: PASS. Akceptacja językowa właściciela: `NOT_EVALUATED`. Pozostałe domeny A1 pozostają poza ukończonym zakresem.
+Ocena techniczna agenta dla zamkniętej identyfikacji i negacji: PASS. Akceptacja językowa właściciela: `NOT_EVALUATED`. Pozostałe domeny A1 pozostają poza ukończonym zakresem.
 
-Powiązane zadania: epik [#311](https://github.com/clickbytes/golingua/issues/311), fundament [#312](https://github.com/clickbytes/golingua/issues/312), identyfikacja I [#314](https://github.com/clickbytes/golingua/issues/314), PL [#316](https://github.com/clickbytes/golingua/issues/316), EN [#318](https://github.com/clickbytes/golingua/issues/318), integracja [#320](https://github.com/clickbytes/golingua/issues/320). Dodatkowe informacje: [architektura](../docs/architecture/README.md), [CLI](../docs/cli.md), [przegląd ręczny](../docs/manual-review.md).
+Powiązane zadania: epik [#311](https://github.com/clickbytes/golingua/issues/311), fundament [#312](https://github.com/clickbytes/golingua/issues/312), identyfikacja I [#314](https://github.com/clickbytes/golingua/issues/314), PL [#316](https://github.com/clickbytes/golingua/issues/316), EN [#318](https://github.com/clickbytes/golingua/issues/318), integracja [#320](https://github.com/clickbytes/golingua/issues/320), negacja [#322](https://github.com/clickbytes/golingua/issues/322). Dodatkowe informacje: [architektura](../docs/architecture/README.md), [CLI](../docs/cli.md), [przegląd ręczny](../docs/manual-review.md).

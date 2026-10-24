@@ -70,6 +70,25 @@ func NewSentenceTarget(snapshot *pack.Pack, registry *language.Registry) (*runti
 type polishSentencePlanAnnotations struct{}
 
 func (polishSentencePlanAnnotations) Annotations(_ context.Context, source semantic.MeaningCandidate, selected realizer.TargetCandidate) ([]realizer.FeatureConstraint, []realizer.FieldAssumption, []realizer.FieldLoss, error) {
+	if _, referentID, negated := polishNegatedClassificationState(source, selected.NodeID); negated {
+		predicatePath, predicateFound := runtime.MeaningPath(*source.Meaning, selected.NodeID)
+		referentPath, referentFound := runtime.MeaningPath(*source.Meaning, referentID)
+		mode, contextOK := polishNegatedClassificationReferenceMode(source, selected.NodeID)
+		if !predicateFound || !referentFound || !contextOK {
+			return nil, nil, nil, fmt.Errorf("Polish negative identification realization requires a valid unresolved or proximal member reference context")
+		}
+		assumptions := []realizer.FieldAssumption{
+			{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning v1 carries no tense; this negative identification route uses the approved present form"},
+			{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning v1 carries no grammatical person; this negative identification route uses the approved third-person form"},
+			{Path: predicatePath, Field: "number", Value: "singular", Reason: "Meaning v1 carries no grammatical number; this negative identification route uses the approved singular form"},
+			{Path: referentPath, Field: "number", Value: "singular", Reason: "Meaning v1 carries no noun number; this negative identification route uses the attested singular cat form"},
+		}
+		var losses []realizer.FieldLoss
+		if mode == "proximal" {
+			losses = append(losses, realizer.FieldLoss{Path: referentPath, Field: "deixis", Outcome: status.OutcomeIncomplete, Reason: "Polish to nie preserves demonstrative reference but does not encode the source's explicit proximal distance"})
+		}
+		return nil, assumptions, losses, nil
+	}
 	if role, referentID, _, ok := polishIdentificationState(source, selected.NodeID); ok {
 		predicatePath, predicateFound := runtime.MeaningPath(*source.Meaning, selected.NodeID)
 		referentPath, referentFound := runtime.MeaningPath(*source.Meaning, referentID)
@@ -311,11 +330,15 @@ func (polishSentenceOperatorBuilder) Build(ctx context.Context, source semantic.
 	if err != nil {
 		return nil, false, err
 	}
+	operatorProvenance := polishNegationConstructionSource
+	if route.family == "construction:pl.identification_negative" {
+		operatorProvenance = polishIdentificationNegationSource
+	}
 	return []construction.Operator{{
 		ID: "negate", Kind: construction.OperatorNegation, Value: construction.ValueNegated,
 		InputFamilyID: familyID, OutputFamilyID: familyID,
 		SemanticScope: construction.SemanticScope{TargetNodeID: event.ID, ScopeNodeID: scope.ID},
-		Capabilities:  []construction.Capability{"negation-negated"}, Provenance: polishNegationConstructionSource,
+		Capabilities:  []construction.Capability{"negation-negated"}, Provenance: operatorProvenance,
 	}}, true, nil
 }
 
@@ -323,6 +346,26 @@ type polishSentenceCandidatePolicy struct{}
 
 func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, _ []realizer.TargetCandidate) bool {
 	if concept := polishIdentificationPredicateConcept(source, candidate.NodeID); concept != "" {
+		if concept == "concept:class_membership" {
+			if sourceHasScope(source) {
+				scopeID, _, validGraph := polishNegatedClassificationState(source, candidate.NodeID)
+				mode, validContext := polishNegatedClassificationReferenceMode(source, candidate.NodeID)
+				return validGraph && validContext && (mode == "unresolved" || mode == "proximal") && scopeID != "" &&
+					candidate.Sense.ID.String() == "sense:pl.byc.class_membership" &&
+					string(candidate.Frame.ID) == "pl.byc.class_membership.frame" &&
+					candidate.Family.Family.ID.String() == "construction:pl.identification_negative" &&
+					candidate.CompiledVariant.Variant.ID.String() == "construction:pl.identification_negative.to"
+			}
+			if _, _, _, valid := polishIdentificationState(source, candidate.NodeID); !valid {
+				return false
+			}
+			mode, valid := polishIdentificationReferenceMode(source, candidate.NodeID)
+			return valid && (mode == "proximal" || mode == "unresolved") &&
+				candidate.Sense.ID.String() == "sense:pl.byc.class_membership" &&
+				string(candidate.Frame.ID) == "pl.byc.class_membership.frame" &&
+				candidate.Family.Family.ID.String() == "construction:pl.identification" &&
+				candidate.CompiledVariant.Variant.ID.String() == "construction:pl.identification.to"
+		}
 		mode, valid := polishIdentificationReferenceMode(source, candidate.NodeID)
 		if !valid {
 			return false
@@ -341,6 +384,18 @@ func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.Meaning
 	}
 	_, event, sourceRoute, negated := polishNegatedPresent(source)
 	return negated && event.ID == candidate.NodeID && sourceRoute.sense == candidate.Sense.ID.String() && sourceRoute.family == route.family
+}
+
+func sourceHasScope(source semantic.MeaningCandidate) bool {
+	if source.Meaning == nil {
+		return false
+	}
+	for _, node := range source.Meaning.Nodes {
+		if node.Kind == meaning.KindScope {
+			return true
+		}
+	}
+	return false
 }
 
 func polishSubjectGender(source semantic.MeaningCandidate, predicate realizer.TargetCandidate, candidates []realizer.TargetCandidate) (string, bool) {
