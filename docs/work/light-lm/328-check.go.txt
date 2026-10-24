@@ -1,0 +1,337 @@
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"flag"
+	"fmt"
+	"os"
+	"reflect"
+	"runtime"
+
+	"github.com/clickbytes/golingua/internal/bundled"
+	"github.com/clickbytes/golingua/internal/core"
+	"github.com/clickbytes/golingua/internal/engine"
+	"github.com/clickbytes/golingua/internal/features"
+	"github.com/clickbytes/golingua/internal/ids"
+	"github.com/clickbytes/golingua/internal/lexicon"
+	"github.com/clickbytes/golingua/internal/pack"
+	"github.com/clickbytes/golingua/internal/status"
+	"github.com/clickbytes/golingua/tests/matrix"
+)
+
+const requestText = "The teacher sees the dog."
+
+type check struct {
+	Name    string `json:"name"`
+	Passed  bool   `json:"passed"`
+	Details any    `json:"details,omitempty"`
+}
+
+type report struct {
+	SourceSHA string  `json:"source_sha"`
+	Go        string  `json:"go"`
+	Checks    []check `json:"checks"`
+	Passed    bool    `json:"passed"`
+}
+
+type translationObservation struct {
+	Outcome         status.OutcomeKind `json:"outcome"`
+	CandidateCount  int                `json:"candidate_count"`
+	CandidateTexts  []string           `json:"candidate_texts"`
+	DiagnosticCodes []string           `json:"diagnostic_codes"`
+}
+
+func main() {
+	if err := run(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+}
+
+func run() error {
+	var sourceSHA, outPath string
+	flag.StringVar(&sourceSHA, "sha", "", "source revision label")
+	flag.StringVar(&outPath, "out", "", "optional JSON output file (defaults to stdout)")
+	flag.Parse()
+	if sourceSHA == "" || flag.NArg() != 0 {
+		return errors.New("usage: check -sha <source-label> [-out <json-file>]")
+	}
+	report := report{SourceSHA: sourceSHA, Go: runtime.Version(), Checks: []check{}}
+	if err := runChecks(&report); err != nil {
+		report.Checks = append(report.Checks, check{Name: "probe_setup", Passed: false, Details: err.Error()})
+	}
+	report.Passed = true
+	for _, item := range report.Checks {
+		report.Passed = report.Passed && item.Passed
+	}
+	data, err := json.MarshalIndent(report, "", "  ")
+	if err != nil {
+		return fmt.Errorf("encode probe results: %w", err)
+	}
+	data = append(data, '\n')
+	if outPath != "" {
+		if err := os.WriteFile(outPath, data, 0o644); err != nil {
+			return fmt.Errorf("write probe results: %w", err)
+		}
+	}
+	if _, err := os.Stdout.Write(data); err != nil {
+		return fmt.Errorf("write probe results to stdout: %w", err)
+	}
+	if !report.Passed {
+		return errors.New("one or more observed checks failed; see JSON output")
+	}
+	return nil
+}
+
+func runChecks(output *report) error {
+	runtimeEngine, err := matrix.NewRuntime()
+	if err != nil {
+		return fmt.Errorf("initialize production runtime: %w", err)
+	}
+	ctx := context.Background()
+	request := engine.Request{From: "en", To: "pl", Text: requestText}
+	baseline, baselineErr := runtimeEngine.Translate(ctx, request)
+	baselineObservation := observe(baseline, baselineErr)
+	baselineUsable := baselineErr == nil && baseline.Status.Valid() && baselineObservation.CandidateCount > 0 && len(baselineObservation.CandidateTexts) > 0
+	add(output, "runtime_translation_before_mutations", baselineUsable, baselineObservation)
+	if baselineErr != nil {
+		return fmt.Errorf("baseline translation: %w", baselineErr)
+	}
+
+	lexicalIndex := runtimeEngine.PackSnapshot().Lexicon()
+	document := lexicalIndex.Document()
+	blackID, err := ids.ParseSenseID("sense:en.black.color")
+	if err != nil {
+		return fmt.Errorf("parse known sense ID: %w", err)
+	}
+	var documentSense lexicon.LexicalSense
+	for _, sense := range document.Senses {
+		if sense.ID == blackID {
+			documentSense = sense
+			break
+		}
+	}
+	indexedSense, indexedSenseFound := lexicalIndex.BySenseID(blackID)
+	add(output, "known_sense_matches_document", indexedSenseFound && reflect.DeepEqual(indexedSense, documentSense), map[string]any{
+		"sense_id": blackID.String(), "found": indexedSenseFound, "matches_document": reflect.DeepEqual(indexedSense, documentSense),
+	})
+	var nilIndex *lexicon.Index
+	_, nilFound := nilIndex.BySenseID(blackID)
+	missingID, err := ids.ParseSenseID("sense:probe.missing")
+	if err != nil {
+		return fmt.Errorf("parse missing sense ID: %w", err)
+	}
+	_, missingFound := lexicalIndex.BySenseID(missingID)
+	add(output, "nil_and_missing_sense_lookup", !nilFound && !missingFound, map[string]bool{"nil_found": nilFound, "missing_found": missingFound})
+
+	senseCopy, senseFound := lexicalIndex.BySenseID(blackID)
+	usagePresent, valencyPresent := len(senseCopy.Usage) > 0, len(senseCopy.ValencyIDs) > 0
+	if usagePresent {
+		senseCopy.Usage[0] = "probe mutation"
+	}
+	if valencyPresent {
+		senseCopy.ValencyIDs[0] = lexicon.ValencyID("probe.mutation")
+	}
+	senseAfterMutation, senseAfterFound := lexicalIndex.BySenseID(blackID)
+	senseDefensive := senseFound && usagePresent && valencyPresent && senseAfterFound && reflect.DeepEqual(senseAfterMutation, documentSense)
+	add(output, "sense_slice_mutation_is_defensive", senseDefensive, map[string]any{
+		"usage_present": usagePresent, "valency_ids_present": valencyPresent,
+		"relookup_matches_document": senseAfterFound && reflect.DeepEqual(senseAfterMutation, documentSense),
+	})
+
+	var propertyLexeme lexicon.MorphLexeme
+	for _, lexeme := range document.Lexemes {
+		if len(lexeme.Properties) > 0 {
+			propertyLexeme = lexeme
+			break
+		}
+	}
+	propertyCopy, propertyFound := lexicalIndex.ByLexemeID(propertyLexeme.ID)
+	propertyBefore := ""
+	if len(propertyCopy.Properties) > 0 {
+		propertyBefore = propertyCopy.Properties[0].Value
+		propertyCopy.Properties[0].Value = "probe mutation"
+	}
+	propertyAfter, propertyAfterFound := lexicalIndex.ByLexemeID(propertyLexeme.ID)
+	propertyDefensive := propertyFound && propertyAfterFound && len(propertyAfter.Properties) > 0 && reflect.DeepEqual(propertyAfter, propertyLexeme)
+	add(output, "lexeme_property_mutation_is_defensive", propertyDefensive, map[string]any{
+		"lexeme_id": propertyLexeme.ID.String(), "property_value_before": propertyBefore,
+		"relookup_matches_document": propertyAfterFound && reflect.DeepEqual(propertyAfter, propertyLexeme),
+	})
+
+	coreGraph := runtimeEngine.CoreGraph()
+	seeingID, err := ids.ParseConceptID("concept:seeing")
+	if err != nil {
+		return fmt.Errorf("parse seeing concept ID: %w", err)
+	}
+	seeingBefore, seeingFound := coreGraph.Lookup(seeingID)
+	conceptViews := coreGraph.Concepts()
+	conceptViewMutated := false
+	for index := range conceptViews {
+		if conceptViews[index].ID == seeingID && len(conceptViews[index].RoleTypes) > 0 {
+			conceptViews[index].RoleTypes[0].Name = "probe mutation"
+			conceptViewMutated = true
+			break
+		}
+	}
+	lookupView, lookupFound := coreGraph.Lookup(seeingID)
+	lookupViewMutated := false
+	if lookupFound && len(lookupView.RoleTypes) > 0 {
+		lookupView.RoleTypes[0].Name = "probe mutation"
+		lookupViewMutated = true
+	}
+	seeingAfter, seeingAfterFound := coreGraph.Lookup(seeingID)
+	coreDefensive := seeingFound && seeingAfterFound && conceptViewMutated && lookupViewMutated && reflect.DeepEqual(seeingBefore, seeingAfter)
+	add(output, "core_concept_views_are_defensive", coreDefensive, map[string]any{
+		"concept_id": seeingID.String(), "role_count": len(seeingBefore.RoleTypes),
+		"concepts_view_mutated": conceptViewMutated, "lookup_view_mutated": lookupViewMutated,
+		"lookup_after_mutations_matches_original": seeingAfterFound && reflect.DeepEqual(seeingBefore, seeingAfter),
+	})
+
+	afterMutations, afterMutationErr := runtimeEngine.Translate(ctx, request)
+	add(output, "translation_unchanged_after_view_mutations", afterMutationErr == nil && reflect.DeepEqual(baseline, afterMutations), map[string]any{
+		"before": observe(baseline, nil), "after": observe(afterMutations, afterMutationErr),
+		"results_equal": afterMutationErr == nil && reflect.DeepEqual(baseline, afterMutations),
+	})
+
+	analyzers, realizers, err := adaptersFrom(runtimeEngine)
+	if err != nil {
+		return err
+	}
+	registry := runtimeEngine.LanguageRegistry()
+	packSnapshot := runtimeEngine.PackSnapshot()
+	pointerEngine, pointerErr := engine.New(engine.Config{
+		Core: coreGraph, LanguageRegistry: registry, PackSnapshot: packSnapshot,
+		Analyzers: analyzers, Realizers: realizers,
+	})
+	pointerResult, pointerTranslateErr := translateIfEngine(pointerEngine, ctx, request)
+	add(output, "same_pointer_runtime", pointerErr == nil && pointerTranslateErr == nil && reflect.DeepEqual(baseline, pointerResult), map[string]any{
+		"new_error": errorText(pointerErr), "translation_error": errorText(pointerTranslateErr),
+		"result":           observe(pointerResult, pointerTranslateErr),
+		"matches_baseline": pointerTranslateErr == nil && reflect.DeepEqual(baseline, pointerResult),
+	})
+
+	candidate, err := bundled.Candidate()
+	if err != nil {
+		return fmt.Errorf("load second bundled candidate: %w", err)
+	}
+	secondPack, err := pack.Compile(candidate)
+	if err != nil {
+		return fmt.Errorf("compile second bundled pack: %w", err)
+	}
+	equivalentCore := secondPack.CoreGraph()
+	equivalentEngine, equivalentErr := engine.New(engine.Config{
+		Core: equivalentCore, LanguageRegistry: registry, PackSnapshot: packSnapshot,
+		Analyzers: analyzers, Realizers: realizers,
+	})
+	equivalentResult, equivalentTranslateErr := translateIfEngine(equivalentEngine, ctx, request)
+	equivalent := equivalentCore != coreGraph && reflect.DeepEqual(equivalentCore.Concepts(), coreGraph.Concepts())
+	add(output, "separate_equivalent_core", equivalent && equivalentErr == nil && equivalentTranslateErr == nil && reflect.DeepEqual(baseline, equivalentResult), map[string]any{
+		"distinct_core_pointer": equivalentCore != coreGraph, "concepts_equal": reflect.DeepEqual(equivalentCore.Concepts(), coreGraph.Concepts()),
+		"new_error": errorText(equivalentErr), "translation_error": errorText(equivalentTranslateErr),
+		"result":           observe(equivalentResult, equivalentTranslateErr),
+		"matches_baseline": equivalentTranslateErr == nil && reflect.DeepEqual(baseline, equivalentResult),
+	})
+
+	emptyCore, err := core.CompileConceptGraph(nil, nil)
+	if err != nil {
+		return fmt.Errorf("compile valid empty CORE: %w", err)
+	}
+	mismatchEngine, mismatchNewErr := engine.New(engine.Config{
+		Core: emptyCore, LanguageRegistry: registry, PackSnapshot: packSnapshot,
+		Analyzers: analyzers, Realizers: realizers,
+	})
+	mismatchResult, mismatchTranslateErr := translateIfEngine(mismatchEngine, ctx, request)
+	mismatchCode := diagnosticCode(mismatchResult, "RUNTIME_SNAPSHOT_MISMATCH")
+	mismatchPassed := mismatchNewErr == nil && mismatchTranslateErr == nil && mismatchResult.Status == status.OutcomeInvalid && mismatchCode && len(mismatchResult.Candidates) == 0
+	add(output, "mismatched_core_is_rejected_at_request", mismatchPassed, map[string]any{
+		"new_error": errorText(mismatchNewErr), "translation_error": errorText(mismatchTranslateErr),
+		"result": observe(mismatchResult, mismatchTranslateErr), "expected_code_present": mismatchCode,
+	})
+
+	missingCoreEngine, missingCoreNewErr := engine.New(engine.Config{
+		LanguageRegistry: registry, PackSnapshot: packSnapshot, Analyzers: analyzers, Realizers: realizers,
+	})
+	missingCoreResult, missingCoreTranslateErr := translateIfEngine(missingCoreEngine, ctx, request)
+	missingCoreCode := diagnosticCode(missingCoreResult, "RUNTIME_SNAPSHOT_UNAVAILABLE")
+	missingCorePassed := missingCoreNewErr == nil && missingCoreTranslateErr == nil && missingCoreResult.Status == status.OutcomeUnknown && missingCoreCode && len(missingCoreResult.Candidates) == 0
+	add(output, "missing_core_remains_request_unknown", missingCorePassed, map[string]any{
+		"new_error": errorText(missingCoreNewErr), "translation_error": errorText(missingCoreTranslateErr),
+		"result": observe(missingCoreResult, missingCoreTranslateErr), "expected_code_present": missingCoreCode,
+	})
+
+	missingPackEngine, missingPackNewErr := engine.New(engine.Config{
+		Core: coreGraph, LanguageRegistry: registry, Analyzers: analyzers, Realizers: realizers,
+	})
+	missingPackResult, missingPackTranslateErr := translateIfEngine(missingPackEngine, ctx, request)
+	missingPackCode := diagnosticCode(missingPackResult, "RUNTIME_SNAPSHOT_UNAVAILABLE")
+	missingPackPassed := missingPackNewErr == nil && missingPackTranslateErr == nil && missingPackResult.Status == status.OutcomeUnknown && missingPackCode && len(missingPackResult.Candidates) == 0
+	add(output, "missing_pack_remains_request_unknown", missingPackPassed, map[string]any{
+		"new_error": errorText(missingPackNewErr), "translation_error": errorText(missingPackTranslateErr),
+		"result": observe(missingPackResult, missingPackTranslateErr), "expected_code_present": missingPackCode,
+	})
+	return nil
+}
+
+func adaptersFrom(runtimeEngine *engine.Engine) (map[features.LanguageID]engine.SourceAnalyzer, map[features.LanguageID]engine.TargetRealizer, error) {
+	analyzers := make(map[features.LanguageID]engine.SourceAnalyzer, 2)
+	realizers := make(map[features.LanguageID]engine.TargetRealizer, 2)
+	for _, languageID := range []features.LanguageID{"en", "pl"} {
+		analyzer, ok := runtimeEngine.SourceAnalyzerFor(languageID)
+		if !ok {
+			return nil, nil, fmt.Errorf("source analyzer unavailable for %s", languageID)
+		}
+		realizer, ok := runtimeEngine.TargetRealizerFor(languageID)
+		if !ok {
+			return nil, nil, fmt.Errorf("target realizer unavailable for %s", languageID)
+		}
+		analyzers[languageID], realizers[languageID] = analyzer, realizer
+	}
+	return analyzers, realizers, nil
+}
+
+func translateIfEngine(runtimeEngine *engine.Engine, ctx context.Context, request engine.Request) (engine.TranslationResult, error) {
+	if runtimeEngine == nil {
+		return engine.TranslationResult{}, errors.New("engine.New returned nil engine")
+	}
+	return runtimeEngine.Translate(ctx, request)
+}
+
+func observe(result engine.TranslationResult, err error) translationObservation {
+	observation := translationObservation{Outcome: result.Status, CandidateCount: len(result.Candidates), CandidateTexts: []string{}, DiagnosticCodes: []string{}}
+	if err != nil {
+		observation.DiagnosticCodes = append(observation.DiagnosticCodes, "ERROR: "+err.Error())
+		return observation
+	}
+	for _, candidate := range result.Candidates {
+		if candidate.Text != "" {
+			observation.CandidateTexts = append(observation.CandidateTexts, candidate.Text)
+		}
+	}
+	for _, diagnostic := range result.Diagnostics {
+		observation.DiagnosticCodes = append(observation.DiagnosticCodes, diagnostic.Code)
+	}
+	return observation
+}
+
+func diagnosticCode(result engine.TranslationResult, wanted string) bool {
+	for _, diagnostic := range result.Diagnostics {
+		if diagnostic.Code == wanted {
+			return true
+		}
+	}
+	return false
+}
+
+func errorText(err error) string {
+	if err == nil {
+		return ""
+	}
+	return err.Error()
+}
+
+func add(output *report, name string, passed bool, details any) {
+	output.Checks = append(output.Checks, check{Name: name, Passed: passed, Details: details})
+}

@@ -4,6 +4,7 @@ package engine
 
 import (
 	"context"
+	"reflect"
 	"time"
 
 	"github.com/clickbytes/golingua/internal/core"
@@ -109,9 +110,11 @@ type Engine struct {
 	core      *core.ConceptGraph
 	languages *language.Registry
 	snapshot  *pack.Pack
-	analyzers map[features.LanguageID]SourceAnalyzer
-	realizers map[features.LanguageID]TargetRealizer
-	budget    Budget
+	// CORE and Pack expose immutable public APIs, so this compatibility check is stable for the engine lifetime.
+	snapshotMatchesCore bool
+	analyzers           map[features.LanguageID]SourceAnalyzer
+	realizers           map[features.LanguageID]TargetRealizer
+	budget              Budget
 }
 
 // New validates finite limits and snapshots the configured adapter maps.
@@ -125,10 +128,16 @@ func New(config Config) (*Engine, error) {
 	if err := budget.Validate(); err != nil {
 		return nil, err
 	}
+	snapshotMatchesCore := false
+	if config.Core != nil && config.PackSnapshot != nil {
+		snapshotCore := config.PackSnapshot.CoreGraph()
+		snapshotMatchesCore = config.Core == snapshotCore || reflect.DeepEqual(config.PackSnapshot.Concepts(), config.Core.Concepts())
+	}
 	engine := &Engine{
 		core: config.Core, languages: config.LanguageRegistry, snapshot: config.PackSnapshot,
-		analyzers: make(map[features.LanguageID]SourceAnalyzer, len(config.Analyzers)),
-		realizers: make(map[features.LanguageID]TargetRealizer, len(config.Realizers)), budget: budget,
+		snapshotMatchesCore: snapshotMatchesCore,
+		analyzers:           make(map[features.LanguageID]SourceAnalyzer, len(config.Analyzers)),
+		realizers:           make(map[features.LanguageID]TargetRealizer, len(config.Realizers)), budget: budget,
 	}
 	for languageID, adapter := range config.Analyzers {
 		if adapter == nil || !validLanguage(string(languageID)) {

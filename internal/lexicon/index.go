@@ -146,6 +146,21 @@ func (index *Index) ByLexemeID(id ids.LexemeID) (MorphLexeme, bool) {
 	return cloneLexeme(index.lexemes[position]), true
 }
 
+// BySenseID returns a defensive copy of the exact lexical sense.
+func (index *Index) BySenseID(id ids.SenseID) (LexicalSense, bool) {
+	if index == nil {
+		return LexicalSense{}, false
+	}
+	key := id.String()
+	position := sort.Search(len(index.senses), func(position int) bool {
+		return index.senses[position].ID.String() >= key
+	})
+	if position >= len(index.senses) || index.senses[position].ID != id {
+		return LexicalSense{}, false
+	}
+	return cloneSense(index.senses[position]), true
+}
+
 // LookupLexeme is a named lookup alias for ByLexemeID.
 func (index *Index) LookupLexeme(id ids.LexemeID) (MorphLexeme, bool) {
 	return index.ByLexemeID(id)
