@@ -70,7 +70,7 @@ func (builder MorphologyExecutionBuilder) Build(ctx context.Context, source sema
 		}
 		var candidate realizer.TargetCandidate
 		var nodeID meaning.NodeID
-		if slot.Category == construction.CategoryVP && slot.ArgumentBinding == nil {
+		if slot.Category.IsPredicate() && slot.ArgumentBinding == nil {
 			candidate = selected
 			nodeID = plan.NodeID
 		} else if slot.ArgumentBinding != nil {
@@ -99,10 +99,10 @@ func (builder MorphologyExecutionBuilder) Build(ctx context.Context, source sema
 			}
 			candidate = choices[0]
 		} else {
-			return realizer.ExecuteInput{}, runtimeError(status.OutcomeUnsupported, "UNBOUND_SLOT_UNSUPPORTED", "target.slots."+slot.ID, "only predicate VP slots and explicitly role-bound argument slots are supported")
+			return realizer.ExecuteInput{}, runtimeError(status.OutcomeUnsupported, "UNBOUND_SLOT_UNSUPPORTED", "target.slots."+slot.ID, "only predicate VP/AP slots and explicitly role-bound argument slots are supported")
 		}
-		if slot.Category != construction.CategoryNP && slot.Category != construction.CategoryVP && slot.Category != construction.CategoryPP {
-			return realizer.ExecuteInput{}, runtimeError(status.OutcomeUnsupported, "SLOT_CATEGORY_UNSUPPORTED", "target.slots."+slot.ID, "slot execution does not yet realize PP or other phrase categories")
+		if slot.Category != construction.CategoryNP && !slot.Category.IsPredicate() && slot.Category != construction.CategoryPP {
+			return realizer.ExecuteInput{}, runtimeError(status.OutcomeUnsupported, "SLOT_CATEGORY_UNSUPPORTED", "target.slots."+slot.ID, "slot execution does not yet realize PP slots")
 		}
 		if slot.Category == construction.CategoryPP || slot.Adposition != "" {
 			if slot.Adposition == "" || !construction.VariantEmitsAdposition(plan.CompiledVariant.Variant, selected.Family.Family, slot.ID, slot.Adposition) {

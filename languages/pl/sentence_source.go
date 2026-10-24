@@ -63,24 +63,32 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if err != nil {
 		return nil, err
 	}
+	classificationSense, err := ids.NewSenseID("pl.byc.class_membership")
+	if err != nil {
+		return nil, err
+	}
+	attributionSense, err := ids.NewSenseID("pl.czarny.black")
+	if err != nil {
+		return nil, err
+	}
 	caseValues := map[features.FeatureValueID]string{}
 	for _, value := range []string{"nominative", "genitive", "dative", "accusative", "instrumental", "locative", "vocative"} {
 		caseValues[features.FeatureValueID(value)] = value
 	}
 	return &runtime.SourcePipeline{
 		Language: "pl", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}},
-		AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "nie": true},
+		AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "nie": true, "to": true, "ten": true, "jest": true},
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
-		PhraseBuilder: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
+		PhraseBuilder: polishIdentificationPhraseBuilder{inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
 			Categories: map[lexicon.PartOfSpeech][]construction.SlotCategory{
-				"noun": {construction.CategoryNP}, "verb": {construction.CategoryVP},
+				"noun": {construction.CategoryNP}, "verb": {construction.CategoryVP}, "adjective": {construction.CategoryAP},
 			},
 			CaseFeature: "case", CaseValues: caseValues,
-		}},
+		}}},
 		EvidenceBuilder: polishSentenceEvidenceBuilder{base: runtime.BareDeclarativeEvidenceBuilder{
-			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true},
+			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true},
 			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
 				seeingSense: {
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
@@ -108,8 +116,14 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 					{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
 					{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"},
 				},
+				classificationSense: {
+					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
+				},
+				attributionSense: {
+					{"degree": "positive", "number": "singular", "gender": "masculine_animal", "case": "nominative"},
+				},
 			},
-			AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "nie": true},
+			AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "nie": true, "to": true, "ten": true, "jest": true},
 		}},
 	}, nil
 }
@@ -126,7 +140,11 @@ func (builder polishSentenceEvidenceBuilder) Build(ctx context.Context, lattice 
 				return runtime.CompositionEvidence{}, nil
 			}
 		}
-		return builder.base.Build(ctx, lattice, candidates, forest)
+		evidence, err := builder.base.Build(ctx, lattice, candidates, forest)
+		if err != nil || !evidence.OperatorCoverageComplete {
+			return evidence, err
+		}
+		return addPolishIdentificationReferences(evidence, candidates, forest), nil
 	}
 	evidence, err := builder.base.Build(ctx, lattice, candidates, forest)
 	if err != nil || !evidence.OperatorCoverageComplete {

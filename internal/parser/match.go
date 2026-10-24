@@ -61,7 +61,7 @@ func Parse(lattice analyzer.LexicalLattice, candidates []PhraseCandidate, contex
 			return Forest{}, err
 		}
 		byID[candidates[i].ID] = i
-		if candidates[i].Category == construction.CategoryVP {
+		if candidates[i].Category.IsPredicate() {
 			headSenses[candidates[i].ID] = candidateHeadSenseSet(candidates[i], lattice)
 		}
 	}
@@ -310,12 +310,12 @@ func validateCandidate(c PhraseCandidate, i int, l analyzer.LexicalLattice, seen
 	if !c.Category.Valid() || c.TokenStart < 0 || c.TokenEnd <= c.TokenStart || c.TokenEnd > len(l.Tokens) {
 		return newParserError(path, "candidate category or token range is invalid")
 	}
-	if c.Category == construction.CategoryVP {
+	if c.Category.IsPredicate() {
 		if c.HeadTokenIndex < c.TokenStart || c.HeadTokenIndex >= c.TokenEnd {
-			return newParserError(path+".head_token_index", "VP candidate head token is outside its span")
+			return newParserError(path+".head_token_index", "predicate VP/AP candidate head token is outside its span")
 		}
 	} else if c.HeadTokenIndex != 0 {
-		return newParserError(path+".head_token_index", "only VP candidates may specify a head token")
+		return newParserError(path+".head_token_index", "only predicate VP/AP candidates may specify a head token")
 	}
 	if c.Span.Start != l.Tokens[c.TokenStart].Token.Span.Start || c.Span.End != l.Tokens[c.TokenEnd-1].Token.Span.End {
 		return newParserError(path+".span", "candidate byte span does not match its half-open token range")
@@ -808,7 +808,7 @@ func (m *matcher) finishUnmatched() {
 		if candidate.Category == construction.CategoryNP {
 			usedNouns[key] = true
 		}
-		if candidate.Category == construction.CategoryVP {
+		if candidate.Category.IsPredicate() {
 			usedPredicates[key] = true
 		}
 	}
@@ -821,7 +821,7 @@ func (m *matcher) finishUnmatched() {
 			// rejected by the frame, not an unresolved lexical meaning.
 			continue
 		}
-		if c.Category == construction.CategoryVP && usedPredicates[fmt.Sprintf("%d:%d:%s:%s", c.TokenStart, c.TokenEnd, c.LexemeID, senseSetKey(c.SenseIDs))] {
+		if c.Category.IsPredicate() && usedPredicates[fmt.Sprintf("%d:%d:%s:%s", c.TokenStart, c.TokenEnd, c.LexemeID, senseSetKey(c.SenseIDs))] {
 			// A homographic inflection of the same predicate lexeme and senses
 			// was considered by the retained parse; it is a feature ambiguity,
 			// not an unsupported competing lexical head.

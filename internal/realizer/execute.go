@@ -224,12 +224,12 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 	predicateSlots := 0
 	for _, slot := range slots {
 		slotByID[slot.ID] = slot
-		if slot.Category == construction.CategoryVP && slot.ArgumentBinding == nil {
+		if slot.Category.IsPredicate() && slot.ArgumentBinding == nil {
 			predicateSlots++
 		}
 	}
 	if predicateSlots != 1 {
-		return ExecuteResult{}, executeError(status.OutcomeUnsupported, "PREDICATE_SLOT_CARDINALITY", "family.slot_specs", "surface execution requires exactly one unbound predicate VP slot")
+		return ExecuteResult{}, executeError(status.OutcomeUnsupported, "PREDICATE_SLOT_CARDINALITY", "family.slot_specs", "surface execution requires exactly one unbound predicate VP/AP slot")
 	}
 	if err := validateMeaningRoleCoverage(predicate, slots); err != nil {
 		return ExecuteResult{}, err
@@ -243,7 +243,7 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 	for _, slot := range slots {
 		req, supplied := input.Slots[slot.ID]
 		if !supplied {
-			if slot.Category == construction.CategoryVP && slot.ArgumentBinding == nil {
+			if slot.Category.IsPredicate() && slot.ArgumentBinding == nil {
 				return ExecuteResult{}, executeError(status.OutcomeIncomplete, "PREDICATE_SLOT_UNAVAILABLE", "slots."+slot.ID, "the selected event/state predicate requires an explicit lexicalization request")
 			}
 			if slot.ArgumentBinding != nil {
@@ -320,8 +320,8 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 				return ExecuteResult{}, executeError(status.OutcomeUnknown, "SLOT_NODE_UNREACHABLE", "slots."+slot.ID+".node_id", "argument node is absent or unreachable in source Meaning")
 			}
 		} else {
-			if slot.Category != construction.CategoryVP || req.NodeID != plan.NodeID {
-				return ExecuteResult{}, executeError(status.OutcomeUnsupported, "UNBOUND_NON_PREDICATE_SLOT", "family.slot_specs."+slot.ID, "only the predicate VP slot may be unbound to a semantic argument role")
+			if !slot.Category.IsPredicate() || req.NodeID != plan.NodeID {
+				return ExecuteResult{}, executeError(status.OutcomeUnsupported, "UNBOUND_NON_PREDICATE_SLOT", "family.slot_specs."+slot.ID, "only the predicate VP/AP slot may be unbound to a semantic argument role")
 			}
 			sourceNode, sourcePath = predicate, path
 		}

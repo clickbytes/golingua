@@ -12,7 +12,8 @@ func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm 
 	result := attestedNounParadigms(profile)
 	result = append(result, pluralOnlyNounParadigm(profile))
 	result = append(result, treeNounParadigm(profile))
-	return append(result, doroslyAdjectiveParadigm(profile))
+	result = append(result, doroslyAdjectiveParadigm(profile))
+	return append(result, identificationParadigms(profile)...)
 }
 
 func inCodeMorphRecords() ([]lexemeRecord, error) {
@@ -39,6 +40,11 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 		return nil, err
 	}
 	attested = append(attested, adjectives...)
+	identification, err := identificationMorphRecords(document.Lexemes)
+	if err != nil {
+		return nil, err
+	}
+	attested = append(attested, identification...)
 	foundCat := false
 	foundBird := false
 	foundSee := false

@@ -20,6 +20,8 @@ const (
 	sentenceLookingCapabilityEvidenceID     = "sentence.looking.present.singular.v1"
 	sentenceReadingCapabilityEvidenceID     = "sentence.reading.present.singular_plural.v1"
 	sentenceReadingPastCapabilityEvidenceID = "sentence.reading.past.third_person.v1"
+	sentenceIdentificationClassEvidenceID   = "A1-ID-002-PL-EN"
+	sentenceIdentificationBlackEvidenceID   = "A1-ID-004-PL-EN"
 )
 
 // BuildSentenceLanguagePackage exposes only requested exact approved sentence
@@ -37,7 +39,7 @@ func BuildSentenceLanguagePackage(languageID features.LanguageID, version string
 	}
 	expectedSenseNames, ok := currentSentenceSenseNames(languageID)
 	if !ok || len(allowedSenses) != len(expectedSenseNames) {
-		return language.Package{}, fmt.Errorf("sentence package currently requires the exact seeing, hearing, receiving, looking, and reading routes for Polish or English")
+		return language.Package{}, fmt.Errorf("sentence package requires the exact declared routes for language %s", languageID)
 	}
 	for _, name := range expectedSenseNames {
 		expectedSense, err := ids.NewSenseID(name)
@@ -93,8 +95,8 @@ func BuildSentenceLanguagePackage(languageID features.LanguageID, version string
 		}
 	}
 	capabilities := []language.Capability{
-		{ID: language.CapabilityAnalyze, Implemented: true, Analyze: true, EvidenceCaseIDs: sentenceCapabilityEvidenceIDs()},
-		{ID: language.CapabilityRealize, Implemented: true, Realize: true, EvidenceCaseIDs: sentenceCapabilityEvidenceIDs()},
+		{ID: language.CapabilityAnalyze, Implemented: true, Analyze: true, EvidenceCaseIDs: sentenceCapabilityEvidenceIDs(languageID)},
+		{ID: language.CapabilityRealize, Implemented: true, Realize: true, EvidenceCaseIDs: sentenceCapabilityEvidenceIDs(languageID)},
 	}
 	return language.Package{Manifest: language.Manifest{
 		SchemaVersion: language.SchemaVersion, Language: languageID, Version: version, Capabilities: capabilities,
@@ -103,15 +105,19 @@ func BuildSentenceLanguagePackage(languageID features.LanguageID, version string
 
 // SentenceCapabilityEvidence returns the exact case claimed by the limited
 // PL/EN providers.
-func SentenceCapabilityEvidence() []language.CapabilityEvidence {
+func SentenceCapabilityEvidence(languageID features.LanguageID) []language.CapabilityEvidence {
 	return []language.CapabilityEvidence{
-		{ID: language.CapabilityAnalyze, Analyze: true, CaseIDs: sentenceCapabilityEvidenceIDs()},
-		{ID: language.CapabilityRealize, Realize: true, CaseIDs: sentenceCapabilityEvidenceIDs()},
+		{ID: language.CapabilityAnalyze, Analyze: true, CaseIDs: sentenceCapabilityEvidenceIDs(languageID)},
+		{ID: language.CapabilityRealize, Realize: true, CaseIDs: sentenceCapabilityEvidenceIDs(languageID)},
 	}
 }
 
-func sentenceCapabilityEvidenceIDs() []string {
-	return []string{sentenceSeeingCapabilityEvidenceID, sentenceSeeingNegationEvidenceID, sentencePresentNegationEvidenceID, sentenceHearingCapabilityEvidenceID, sentenceReceivingCapabilityEvidenceID, sentenceLookingCapabilityEvidenceID, sentenceReadingCapabilityEvidenceID, sentenceReadingPastCapabilityEvidenceID}
+func sentenceCapabilityEvidenceIDs(languageID features.LanguageID) []string {
+	caseIDs := []string{sentenceSeeingCapabilityEvidenceID, sentenceSeeingNegationEvidenceID, sentencePresentNegationEvidenceID, sentenceHearingCapabilityEvidenceID, sentenceReceivingCapabilityEvidenceID, sentenceLookingCapabilityEvidenceID, sentenceReadingCapabilityEvidenceID, sentenceReadingPastCapabilityEvidenceID}
+	if languageID == "pl" {
+		caseIDs = append(caseIDs, sentenceIdentificationClassEvidenceID, sentenceIdentificationBlackEvidenceID)
+	}
+	return caseIDs
 }
 
 func currentSentenceSenseNames(languageID features.LanguageID) ([]string, bool) {
@@ -119,7 +125,7 @@ func currentSentenceSenseNames(languageID features.LanguageID) ([]string, bool) 
 	case "en":
 		return []string{"en.see.visual", "en.hear.auditory", "en.get.receive", "en.look.directed", "en.read.text"}, true
 	case "pl":
-		return []string{"pl.widziec.visual", "pl.slyszec.auditory", "pl.dostac.receive", "pl.patrzec.directed", "pl.czytac.interpret"}, true
+		return []string{"pl.widziec.visual", "pl.slyszec.auditory", "pl.dostac.receive", "pl.patrzec.directed", "pl.czytac.interpret", "pl.byc.class_membership", "pl.czarny.black"}, true
 	default:
 		return nil, false
 	}

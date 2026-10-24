@@ -26,11 +26,17 @@ type SlotCategory string
 const (
 	CategoryNP SlotCategory = "NP"
 	CategoryVP SlotCategory = "VP"
+	CategoryAP SlotCategory = "AP"
 	CategoryPP SlotCategory = "PP"
 )
 
+// IsPredicate reports whether a category may carry the construction predicate.
+func (category SlotCategory) IsPredicate() bool {
+	return category == CategoryVP || category == CategoryAP
+}
+
 func (category SlotCategory) Valid() bool {
-	return category == CategoryNP || category == CategoryVP || category == CategoryPP
+	return category == CategoryNP || category.IsPredicate() || category == CategoryPP
 }
 
 // Optionality states whether a slot must be occupied or may be omitted.
@@ -111,7 +117,7 @@ func validateSlot(slot SlotSpec, index int) error {
 		return invalid("INVALID_SLOT_ID", path+".id", "slot ID must be a bounded lowercase token")
 	}
 	if !slot.Category.Valid() {
-		return invalid("INVALID_SLOT_CATEGORY", path+".category", "slot category must be NP, VP, or PP")
+		return invalid("INVALID_SLOT_CATEGORY", path+".category", "slot category must be NP, VP, AP, or PP")
 	}
 	if slot.Position < 0 || slot.Position >= MaxSlotsPerFamily {
 		return invalid("INVALID_SLOT_POSITION", path+".position", "slot position is outside the supported range")

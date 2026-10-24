@@ -70,6 +70,25 @@ func NewSentenceTarget(snapshot *pack.Pack, registry *language.Registry) (*runti
 type polishSentencePlanAnnotations struct{}
 
 func (polishSentencePlanAnnotations) Annotations(_ context.Context, source semantic.MeaningCandidate, selected realizer.TargetCandidate) ([]realizer.FeatureConstraint, []realizer.FieldAssumption, []realizer.FieldLoss, error) {
+	if role, referentID, _, ok := polishIdentificationState(source, selected.NodeID); ok {
+		predicatePath, predicateFound := runtime.MeaningPath(*source.Meaning, selected.NodeID)
+		referentPath, referentFound := runtime.MeaningPath(*source.Meaning, referentID)
+		mode, contextOK := polishIdentificationReferenceMode(source, selected.NodeID)
+		if !predicateFound || !referentFound || !contextOK {
+			return nil, nil, nil, fmt.Errorf("Polish identification realization requires a valid unresolved %s reference context", role)
+		}
+		assumptions := []realizer.FieldAssumption{
+			{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning v1 carries no tense; this identification route uses the approved present form"},
+			{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning v1 carries no grammatical person; this identification route uses the approved third-person form"},
+			{Path: predicatePath, Field: "number", Value: "singular", Reason: "Meaning v1 carries no grammatical number; this identification route uses the approved singular form"},
+			{Path: referentPath, Field: "number", Value: "singular", Reason: "Meaning v1 carries no noun number; this identification route uses the attested singular cat form"},
+		}
+		var losses []realizer.FieldLoss
+		if mode == "proximal" {
+			losses = append(losses, realizer.FieldLoss{Path: referentPath, Field: "deixis", Outcome: status.OutcomeIncomplete, Reason: "Polish to/ten preserves demonstrative reference but does not encode the source's explicit proximal distance"})
+		}
+		return nil, assumptions, losses, nil
+	}
 	if len(source.Evidence.Records) != 0 || source.Meaning == nil || selected.Kind != meaning.KindEvent && selected.Kind != meaning.KindState {
 		return nil, nil, nil, nil
 	}
@@ -97,6 +116,23 @@ func (polishSentencePlanAnnotations) Annotations(_ context.Context, source seman
 type polishSentenceFeatures struct{}
 
 func (polishSentenceFeatures) Features(_ context.Context, source semantic.MeaningCandidate, predicate realizer.TargetCandidate, slot construction.SlotSpec, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) ([]features.FeatureValue, error) {
+	if slot.Category == construction.CategoryAP {
+		if predicate.Sense.ID.String() != "sense:pl.czarny.black" || candidate.Lexeme.ID.String() != "lexeme:pl.czarny.adj" {
+			return nil, nil
+		}
+		_, referentID, _, found := polishIdentificationState(source, predicate.NodeID)
+		if !found {
+			return nil, nil
+		}
+		gender, number, found := polishIdentificationReferentFeatures(referentID, candidates)
+		if !found {
+			return nil, nil
+		}
+		return knownPolishFeatures(
+			[2]string{"degree", "positive"}, [2]string{"number", number},
+			[2]string{"gender", gender}, [2]string{"case", "nominative"},
+		), nil
+	}
 	if slot.Category == construction.CategoryVP {
 		if _, event, route, found := polishNegatedPresent(source); found && event.ID == predicate.NodeID && predicate.Sense.ID.String() == route.sense {
 			number, known := polishPresentNegationNumber(source, predicate, route)
@@ -286,6 +322,19 @@ func (polishSentenceOperatorBuilder) Build(ctx context.Context, source semantic.
 type polishSentenceCandidatePolicy struct{}
 
 func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, _ []realizer.TargetCandidate) bool {
+	if concept := polishIdentificationPredicateConcept(source, candidate.NodeID); concept != "" {
+		mode, valid := polishIdentificationReferenceMode(source, candidate.NodeID)
+		if !valid {
+			return false
+		}
+		switch concept {
+		case "concept:class_membership":
+			return mode == "proximal" || mode == "unresolved"
+		case "concept:black":
+			return mode == "proximal" || mode == "demonstrative"
+		}
+		return false
+	}
 	route, negativeFamily := polishPresentNegationRouteForFamily(candidate.Family.Family.ID)
 	if !negativeFamily {
 		return true

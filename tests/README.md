@@ -46,7 +46,7 @@ Kontrola samego I, bez uruchamiania PL/EN:
 go test ./tests/interlingua/... -run Identification -count=1 -v
 ```
 
-Po A1-T02 analiza i realizacja identyfikacji pozostają rzeczywistymi lukami do wykonania w A1-T03/T04. Mają gotowe wzorce, więc są raportowane jako GAP, a nie SPEC_PENDING. Pozostałe 16 rekordów poza identyfikacją i widzeniem nadal nie ma zamkniętych wzorców I.
+Po A1-T03 polska analiza i niezależna realizacja identyfikacji przechodzą kontrakt; angielska strona nadal jest luką A1-T04. Ma gotowe wzorce, więc jest raportowana jako GAP, a nie SPEC_PENDING. Pozostałe 16 rekordów poza identyfikacją i widzeniem nadal nie ma zamkniętych wzorców I.
 
 ## Uruchamianie i odczyt wyniku
 
@@ -76,6 +76,20 @@ Po commicie użyj dokładnego SHA bez `+working-tree`. Kontrole adapterów loguj
 Status silnika (`ok`, `ambiguous`, `incomplete`, `unsupported`) jest oddzielony od oceny. Samo `ok` nie daje PASS. Nie używamy `t.Skip`, procentowych progów ani automatycznej akceptacji propozycji. Pełne `go test ./tests/...` ma niezerowy exit code, dopóki jakiekolwiek zadeklarowane wymaganie pozostaje niezaliczone. Inwentarz kontroluje wszystkie 24 ID i odwołania, również bez wzorców I.
 
 Akceptacja językowa właściciela pozostaje `NOT_EVALUATED`. Zamknięcie kontraktu i ocena techniczna przez agenta nie oznaczają jego akceptacji.
+
+## Polska identyfikacja (A1-T03)
+
+```sh
+go test ./tests/languages/pl/A1/... -run Identification -count=1 -v
+```
+
+Analiza dokładnych `To jest kot.` i `Ten kot jest czarny.` daje właściwe stany i kotwice `unresolved`/`demonstrative`. Niezależne I z angielskim wskazaniem bliskości realizuje się jako `To jest kot.` / `Ten kot jest czarny.` ze stratą `deixis`. Osobne kontrole tych samych rodzimych wariantów I (bez parsera EN) dają te teksty bez fałszywej straty wskazania. Potrzebne domyślne czas/osoba/liczba są jawnie podane jako założenia; `incomplete` nie jest automatyczną oceną FAIL.
+
+Negatywna kontrola I z nierozstrzygniętym sposobem odniesienia w opisie koloru wymaga odmowy wyboru demonstratywu i braku tekstu. `unknown` lub `unsupported` opisuje tu odmowę, nie zaliczenie brakującego wariantu językowego. Obowiązkowe dodatnie przypadki nadal wymagają wszystkich właściwych tekstów i metadanych.
+
+Produkcja korzysta z jawnych form `jest` i `czarny`, skompilowanych konstrukcji/walencji oraz kategorii AP dla predykatu przymiotnikowego. Kotwica z dowodu konstrukcji trafia do nierozstrzygniętej Mention; to nie jest rozstrzygnięcie tożsamości. Nowe trasy są zarejestrowane w zweryfikowanym pakiecie PL. Do ich użycia w CLI trzeba przygotować świeży snapshot z bieżącego Go, jak w instrukcji poniżej.
+
+Obserwacje na bazie `9c2847005205eb120f98d67026af8f4d62286a7a` + zmiany A1-T03: PL→EN obu zdań w CLI zwrócił `unsupported`/exit 3, zachowując poprawne I i diagnostykę `NO_LICENSED_TARGET`; angielski cel nie jest jeszcze zaimplementowany. **Nie jest to ukończona integracja.** Dane sesji: `/tmp/a1-t03-cli.json`; pełne lokalne kontrole: `/tmp/a1-t03-coordinator-{pl,i,seeing,full}.log`. Polecenie pełnej macierzy kończy się niepowodzeniem z powodu EN GAP i innych SPEC_PENDING. Ocena agenta PL: PASS; właściciel: `NOT_EVALUATED`.
 
 ## Odtworzenie obserwacji CLI
 
