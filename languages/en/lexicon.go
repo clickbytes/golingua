@@ -1182,7 +1182,7 @@ var englishParadigmByLexeme = map[string]string{
 	"en.an.det":    "en_determiner_indefinite",
 	"en.see.v":     "en_verb_finite_principal_parts",
 	"en.hear.v":    "en_verb_finite_principal_parts",
-	"en.look.v":    "en_verb_finite_principal_parts",
+	"en.look.v":    "en_verb_finite_regular",
 	"en.get.v":     "en_verb_finite_principal_parts",
 	"en.read.v":    "en_verb_finite_principal_parts",
 	// Count nouns use only a spelling class that matches their declared lemma;

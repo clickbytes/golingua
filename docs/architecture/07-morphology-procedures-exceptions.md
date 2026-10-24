@@ -28,7 +28,7 @@ Reguły sprawdzają POS, profil, dostępność komórki i zgodność wyjątków.
 
 G10-01 dodaje do angielskiego profilu `verb_form=finite` oraz jawne komórki czasu teraźniejszego dla sześciu kombinacji osoby i liczby. Tylko 3. osoba liczby pojedynczej ma odmienną powierzchnię; pozostałe wybierają formę podstawową. Czas przeszły ma jedną komórkę wspólną, bo jego powierzchnia nie zmienia się przez osobę ani liczbę. Imperative oraz present/past participle pozostają osobnymi formami.
 
-Regularne procedury wybierają wyłącznie przypisane im leksemy: zwykłe `+s/+ed/+ing`, sybilant `+es`, końcowe nieme `e` oraz spółgłoska + `y`. Nie jest to automatyczny klasyfikator ortografii. `see`, `hear`, `look` i `get` mają jawne principal parts i wybierają je bez zgadywania. Angielski adapter zdań analizuje/generuje ograniczone formy finite teraźniejsze 3. osoby lp. i przeszłe; G10-01 nie oznacza obsługi wszystkich konstrukcji zdaniowych.
+Regularne procedury wybierają wyłącznie przypisane im leksemy: zwykłe `+s/+ed/+ing`, sybilant `+es`, końcowe nieme `e` oraz spółgłoska + `y`. Nie jest to automatyczny klasyfikator ortografii. `see`, `hear`, `get` i `read` mają jawne principal parts i wybierają je bez zgadywania. Od LIGHT-F2 `look` używa istniejącej wspólnej klasy `en_verb_finite_regular`, z jedną bazą i dziesięcioma komórkami, tak jak `print/cook`. Angielski adapter zdań analizuje/generuje ograniczone formy finite; obecność komórki morfologicznej nie oznacza obsługi wszystkich konstrukcji zdaniowych.
 
 ### Angielski rzeczownik: liczba
 
@@ -40,7 +40,9 @@ G10-02 przypisuje jawne klasy tylko `widzieć`, `słyszeć`, `patrzeć` i `dosta
 
 ### Polskie rzeczowniki i przymiotnik
 
-G10-04 deklaruje pełne 7 przypadków × 2 liczby dla ośmiu jawnie wybranych rzeczowników. `kot` i `ptak` przechodzą z ograniczonej sześciokomórkowej reguły na indywidualne, źródłowane formy. Pozostałe nowe wpisy to `koń`, `miasto`, `mieszkanie`, `rzeka`, `siostra` i `mewa`. Każda reguła wskazuje własny rekord WSJP PAN oraz licencję `unknown`; żaden wpis nie tworzy produktywnej reguły dla innych leksemów. `mewa` jest obecnie wyłącznie leksemem morfologicznym bez sensu i bindingu CORE.
+G10-04 deklaruje pełne 7 przypadków × 2 liczby dla ośmiu jawnie wybranych rzeczowników. `kot` i `ptak` przechodzą z ograniczonej sześciokomórkowej reguły na indywidualne, źródłowane formy. Pozostałe nowe wpisy to `koń`, `miasto`, `mieszkanie`, `rzeka`, `siostra` i `mewa`. Reguły zachowują własne rekordy WSJP PAN oraz licencję `unknown`. `mewa` jest obecnie wyłącznie leksemem morfologicznym bez sensu i bindingu CORE.
+
+LIGHT-F2 przypisuje `szkoła`, `ryba`, `rzeka` i `mewa` do wspólnego częściowego profilu: sześć komórek używa `select_stem sg_nominative → strip_suffix a → append`, a osiem pozostaje jawne, w tym formy z alternacją tematu. Klasa jest przypisana danymi, bez rozpoznawania po końcówce. Dotychczasowe źródła oraz ID leksemów i komórek zostają; `rzeka/mewa` zachowują też indywidualne ID paradygmatów. Szczegóły i granice podaje [kontrakt 326](../work/light-lm/326-contract.md).
 
 Jedyny obecny polski przymiotnik `dorosły` ma jawne komórki stopnia równego, wyższego i najwyższego dla dostępnych przypadków, liczb i klas zgody. Formy comparativus są wymienione w principal parts; procedura najwyższego stopnia dodaje `naj-` do tych form. WSJP nie przedstawia vocative dla stopni wyższych, więc tych komórek nie deklarujemy.
 

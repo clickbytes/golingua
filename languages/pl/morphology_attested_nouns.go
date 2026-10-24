@@ -60,12 +60,29 @@ var treeNounFormSource = provenance.SourceRef{
 	Version: "2026-10-23", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
 }
 
-// attestedNounForms contains every declared case/number form explicitly.
-// Shared paradigms select these principal parts; they NEVER invent a suffix,
-// sound change, missing form or an unreviewed alternate reading.
+// attestedNounForms contains the declared case/number forms. Entries assigned
+// to a named partial class omit only cells licensed by that class's procedure.
 type attestedNounEntry struct {
 	id, lemma, gender string
 	singular, plural  [7]string
+}
+
+// These assignments are lexical data. The shared profile derives only the six
+// cells below; all other cells remain explicitly attested per lexeme.
+var attestedNounClassByLexeme = map[string]string{
+	"pl.szkola.n": "feminine_a_partial",
+	"pl.ryba.n":   "feminine_a_partial",
+	"pl.rzeka.n":  "feminine_a_partial",
+	"pl.mewa.n":   "feminine_a_partial",
+}
+
+var feminineAPartialSuffixByCell = map[string]string{
+	"sg_accusative":   "ę",
+	"sg_instrumental": "ą",
+	"sg_vocative":     "o",
+	"pl_dative":       "om",
+	"pl_instrumental": "ami",
+	"pl_locative":     "ach",
 }
 
 var attestedNounForms = []attestedNounEntry{
@@ -74,7 +91,7 @@ var attestedNounForms = []attestedNounEntry{
 	{"pl.pies.n", "pies", "masculine_animal", [7]string{"pies", "psa", "psu", "psa", "psem", "psie", "psie"}, [7]string{"psy", "psów", "psom", "psy", "psami", "psach", "psy"}},
 	{"pl.dom.n", "dom", "masculine_inanimate", [7]string{"dom", "domu", "domowi", "dom", "domem", "domu", "domu"}, [7]string{"domy", "domów", "domom", "domy", "domami", "domach", "domy"}},
 	{"pl.woda.n", "woda", "feminine", [7]string{"woda", "wody", "wodzie", "wodę", "wodą", "wodzie", "wodo"}, [7]string{"wody", "wód", "wodom", "wody", "wodami", "wodach", "wody"}},
-	{"pl.szkola.n", "szkoła", "feminine", [7]string{"szkoła", "szkoły", "szkole", "szkołę", "szkołą", "szkole", "szkoło"}, [7]string{"szkoły", "szkół", "szkołom", "szkoły", "szkołami", "szkołach", "szkoły"}},
+	{"pl.szkola.n", "szkoła", "feminine", [7]string{"szkoła", "szkoły", "szkole", "", "", "szkole", ""}, [7]string{"szkoły", "szkół", "", "szkoły", "", "", "szkoły"}},
 	{"pl.ksiazka.n", "książka", "feminine", [7]string{"książka", "książki", "książce", "książkę", "książką", "książce", "książko"}, [7]string{"książki", "książek", "książkom", "książki", "książkami", "książkach", "książki"}},
 	{"pl.reka.n", "ręka", "feminine", [7]string{"ręka", "ręki", "ręce", "rękę", "ręką", "ręce", "ręko"}, [7]string{"ręce", "rąk", "rękom", "ręce", "rękami", "rękach", "ręce"}},
 	{"pl.oko.n", "oko", "neuter", [7]string{"oko", "oka", "oku", "oko", "okiem", "oku", "oko"}, [7]string{"oczy", "oczu", "oczom", "oczy", "oczami", "oczach", "oczy"}},
@@ -83,7 +100,7 @@ var attestedNounForms = []attestedNounEntry{
 	{"pl.nauczyciel.n", "nauczyciel", "masculine_personal", [7]string{"nauczyciel", "nauczyciela", "nauczycielowi", "nauczyciela", "nauczycielem", "nauczycielu", "nauczycielu"}, [7]string{"nauczyciele", "nauczycieli", "nauczycielom", "nauczycieli", "nauczycielami", "nauczycielach", "nauczyciele"}},
 	{"pl.lekarz.n", "lekarz", "masculine_personal", [7]string{"lekarz", "lekarza", "lekarzowi", "lekarza", "lekarzem", "lekarzu", "lekarzu"}, [7]string{"lekarze", "lekarzy", "lekarzom", "lekarzy", "lekarzami", "lekarzach", "lekarze"}},
 	{"pl.samochod.n", "samochód", "masculine_inanimate", [7]string{"samochód", "samochodu", "samochodowi", "samochód", "samochodem", "samochodzie", "samochodzie"}, [7]string{"samochody", "samochodów", "samochodom", "samochody", "samochodami", "samochodach", "samochody"}},
-	{"pl.ryba.n", "ryba", "feminine", [7]string{"ryba", "ryby", "rybie", "rybę", "rybą", "rybie", "rybo"}, [7]string{"ryby", "ryb", "rybom", "ryby", "rybami", "rybach", "ryby"}},
+	{"pl.ryba.n", "ryba", "feminine", [7]string{"ryba", "ryby", "rybie", "", "", "rybie", ""}, [7]string{"ryby", "ryb", "", "ryby", "", "", "ryby"}},
 	{"pl.szpital.n", "szpital", "masculine_inanimate", [7]string{"szpital", "szpitala", "szpitalowi", "szpital", "szpitalem", "szpitalu", "szpitalu"}, [7]string{"szpitale", "szpitali", "szpitalom", "szpitale", "szpitalami", "szpitalach", "szpitale"}},
 	{"pl.pizza.n", "pizza", "feminine", [7]string{"pizza", "pizzy", "pizzy", "pizzę", "pizzą", "pizzy", "pizzo"}, [7]string{"pizze", "pizz", "pizzom", "pizze", "pizzami", "pizzach", "pizze"}},
 	{"pl.sasiad.n", "sąsiad", "masculine_personal", [7]string{"sąsiad", "sąsiada", "sąsiadowi", "sąsiada", "sąsiadem", "sąsiedzie", "sąsiedzie"}, [7]string{"sąsiedzi", "sąsiadów", "sąsiadom", "sąsiadów", "sąsiadami", "sąsiadach", "sąsiedzi"}},
@@ -95,9 +112,9 @@ var attestedNounForms = []attestedNounEntry{
 	{"pl.kon.n", "koń", "masculine_animal", [7]string{"koń", "konia", "koniowi", "konia", "koniem", "koniu", "koniu"}, [7]string{"konie", "koni", "koniom", "konie", "końmi", "koniach", "konie"}},
 	{"pl.miasto.n", "miasto", "neuter", [7]string{"miasto", "miasta", "miastu", "miasto", "miastem", "mieście", "miasto"}, [7]string{"miasta", "miast", "miastom", "miasta", "miastami", "miastach", "miasta"}},
 	{"pl.mieszkanie.n", "mieszkanie", "neuter", [7]string{"mieszkanie", "mieszkania", "mieszkaniu", "mieszkanie", "mieszkaniem", "mieszkaniu", "mieszkanie"}, [7]string{"mieszkania", "mieszkań", "mieszkaniom", "mieszkania", "mieszkaniami", "mieszkaniach", "mieszkania"}},
-	{"pl.rzeka.n", "rzeka", "feminine", [7]string{"rzeka", "rzeki", "rzece", "rzekę", "rzeką", "rzece", "rzeko"}, [7]string{"rzeki", "rzek", "rzekom", "rzeki", "rzekami", "rzekach", "rzeki"}},
+	{"pl.rzeka.n", "rzeka", "feminine", [7]string{"rzeka", "rzeki", "rzece", "", "", "rzece", ""}, [7]string{"rzeki", "rzek", "", "rzeki", "", "", "rzeki"}},
 	{"pl.siostra.n", "siostra", "feminine", [7]string{"siostra", "siostry", "siostrze", "siostrę", "siostrą", "siostrze", "siostro"}, [7]string{"siostry", "sióstr", "siostrom", "siostry", "siostrami", "siostrach", "siostry"}},
-	{"pl.mewa.n", "mewa", "feminine", [7]string{"mewa", "mewy", "mewie", "mewę", "mewą", "mewie", "mewo"}, [7]string{"mewy", "mew", "mewom", "mewy", "mewami", "mewach", "mewy"}},
+	{"pl.mewa.n", "mewa", "feminine", [7]string{"mewa", "mewy", "mewie", "", "", "mewie", ""}, [7]string{"mewy", "mew", "", "mewy", "", "", "mewy"}},
 }
 
 var attestedNounCases = [7]string{"nominative", "genitive", "dative", "accusative", "instrumental", "locative", "vocative"}
@@ -199,17 +216,22 @@ func pluralOnlyNounRecords(lexemes []lexicon.MorphLexeme) ([]lexemeRecord, error
 
 func attestedNounParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm {
 	genders := []string{"masculine_personal", "masculine_animal", "masculine_inanimate", "feminine", "neuter"}
-	result := make([]morph.Paradigm, 0, len(genders)+len(attestedNounExternalSources))
+	result := make([]morph.Paradigm, 0, len(genders)+len(attestedNounExternalSources)+1)
 	for _, gender := range genders {
 		paradigmID := morph.ParadigmID("pl_noun_attested_" + gender)
 		result = append(result, attestedNounParadigm(profile, paradigmID, gender, attestedNounSource))
 	}
+	result = append(result, attestedNounFeminineAPartialParadigm(profile, "pl_noun_feminine_a_partial", "feminine", attestedNounSource))
 	for _, entry := range attestedNounForms {
 		source, external := attestedNounExternalSources[entry.id]
 		if !external {
 			continue
 		}
 		paradigmID := attestedNounParadigmID(entry.id, entry.gender)
+		if attestedNounClassByLexeme[entry.id] == "feminine_a_partial" {
+			result = append(result, attestedNounFeminineAPartialParadigm(profile, paradigmID, entry.gender, source))
+			continue
+		}
 		result = append(result, attestedNounParadigm(profile, paradigmID, entry.gender, source))
 	}
 	return result
@@ -219,6 +241,9 @@ func attestedNounParadigmID(lexemeID, gender string) morph.ParadigmID {
 	if _, external := attestedNounExternalSources[lexemeID]; external {
 		stableSuffix := strings.NewReplacer(".", "_", "-", "_").Replace(lexemeID)
 		return morph.ParadigmID("pl_noun_attested_" + stableSuffix)
+	}
+	if attestedNounClassByLexeme[lexemeID] == "feminine_a_partial" {
+		return "pl_noun_feminine_a_partial"
 	}
 	return morph.ParadigmID("pl_noun_attested_" + gender)
 }
@@ -256,6 +281,50 @@ func attestedNounParadigm(profile *features.LanguageFeatureProfile, id morph.Par
 	return paradigm
 }
 
+func attestedNounFeminineAPartialParadigm(profile *features.LanguageFeatureProfile, id morph.ParadigmID, gender string, source provenance.SourceRef) morph.Paradigm {
+	paradigm := morph.Paradigm{
+		SchemaVersion: morph.ParadigmSchemaVersion, ID: id, Language: "pl", ProfileVersion: profile.Version(), POS: "noun",
+	}
+	for _, number := range []string{"singular", "plural"} {
+		prefix := "sg"
+		if number == "plural" {
+			prefix = "pl"
+		}
+		for _, grammaticalCase := range attestedNounCases {
+			partID := morph.PrincipalPartID(prefix + "_" + grammaticalCase)
+			cellID := morph.CellID(partID)
+			paradigm.Cells = append(paradigm.Cells, morph.ParadigmCell{
+				ID: cellID,
+				Features: []features.FeatureValue{
+					{Feature: "number", State: features.StateKnown, Value: features.FeatureValueID(number)},
+					{Feature: "case", State: features.StateKnown, Value: features.FeatureValueID(grammaticalCase)},
+					{Feature: "gender", State: features.StateKnown, Value: features.FeatureValueID(gender)},
+				},
+			})
+			if _, derived := feminineAPartialSuffixByCell[string(cellID)]; derived {
+				paradigm.Rules = append(paradigm.Rules, morph.CellRule{
+					CellID: cellID, ProcedureID: "procedure:" + string(paradigm.ID) + "." + string(cellID), Provenance: source,
+					Steps: []procedure.Operation{
+						{Kind: procedure.OperationSelectStem, StemID: "sg_nominative"},
+						{Kind: procedure.OperationStripSuffix, Suffix: "a"},
+						{Kind: procedure.OperationAppend, Text: feminineAPartialSuffixByCell[string(cellID)]},
+					},
+				})
+				continue
+			}
+			stemID := procedure.StemID(partID)
+			paradigm.PrincipalPartRequirements = append(paradigm.PrincipalPartRequirements, morph.PrincipalPartRequirement{
+				StemID: stemID, PartID: partID, Required: true,
+			})
+			paradigm.Rules = append(paradigm.Rules, morph.CellRule{
+				CellID: cellID, ProcedureID: "procedure:" + string(paradigm.ID) + "." + string(cellID), Provenance: source,
+				Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: stemID}},
+			})
+		}
+	}
+	return paradigm
+}
+
 func attestedNounRecords(lexemes []lexicon.MorphLexeme) ([]lexemeRecord, error) {
 	indexed := make(map[string]lexicon.MorphLexeme, len(lexemes))
 	for _, lexeme := range lexemes {
@@ -269,8 +338,22 @@ func attestedNounRecords(lexemes []lexicon.MorphLexeme) ([]lexemeRecord, error) 
 		}
 		parts := morph.PrincipalParts{LexemeID: lexeme.ID, Parts: make([]morph.PrincipalPart, 0, 14)}
 		for caseIndex, grammaticalCase := range attestedNounCases {
-			parts.Parts = append(parts.Parts, morph.PrincipalPart{ID: morph.PrincipalPartID("sg_" + grammaticalCase), Form: entry.singular[caseIndex]})
-			parts.Parts = append(parts.Parts, morph.PrincipalPart{ID: morph.PrincipalPartID("pl_" + grammaticalCase), Form: entry.plural[caseIndex]})
+			for _, item := range []struct {
+				id   string
+				form string
+			}{{"sg_" + grammaticalCase, entry.singular[caseIndex]}, {"pl_" + grammaticalCase, entry.plural[caseIndex]}} {
+				_, derived := feminineAPartialSuffixByCell[item.id]
+				if attestedNounClassByLexeme[entry.id] == "feminine_a_partial" && derived {
+					if item.form != "" {
+						return nil, fmt.Errorf("Polish attested noun %s duplicates procedural form for %s", entry.id, item.id)
+					}
+					continue
+				}
+				if item.form == "" {
+					return nil, fmt.Errorf("Polish attested noun %s is missing explicit form for %s", entry.id, item.id)
+				}
+				parts.Parts = append(parts.Parts, morph.PrincipalPart{ID: morph.PrincipalPartID(item.id), Form: item.form})
+			}
 		}
 		result = append(result, lexemeRecord{Lexeme: lexeme, PrincipalParts: parts})
 	}
