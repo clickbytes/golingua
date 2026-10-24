@@ -70,6 +70,20 @@ func NewSentenceTarget(snapshot *pack.Pack, registry *language.Registry) (*runti
 type englishSentenceFeatures struct{}
 
 func (englishSentenceFeatures) Features(_ context.Context, source semantic.MeaningCandidate, predicate realizer.TargetCandidate, slot construction.SlotSpec, candidate realizer.TargetCandidate, _ []realizer.TargetCandidate) ([]features.FeatureValue, error) {
+	if identification, recognized := englishIdentificationContextForSource(source); recognized && identification.stateID == predicate.NodeID {
+		if slot.Category == construction.CategoryVP && predicate.Sense.ID.String() == identification.senseID {
+			return englishFiniteVerbFeatures("present", "third", "singular"), nil
+		}
+		if slot.Category == construction.CategoryNP && slot.ArgumentBinding != nil && string(slot.ArgumentBinding.SemanticRole) == identification.role {
+			return []features.FeatureValue{
+				{Feature: "noun_number", State: features.StateKnown, Value: "singular"},
+				{Feature: "number", State: features.StateKnown, Value: "singular"},
+			}, nil
+		}
+	}
+	if slot.Category == construction.CategoryAP && predicate.Sense.ID.String() == "sense:en.black.color" && candidate.Sense.ID.String() == "sense:en.black.color" && candidate.Lexeme.ID.String() == "lexeme:en.black.adj" {
+		return knownFeature("adjective_degree", "positive"), nil
+	}
 	if slot.Category == construction.CategoryVP {
 		if _, event, route, found := englishNegatedPresent(source); found && event.ID == predicate.NodeID && predicate.Sense.ID.String() == route.sense {
 			number, known := englishPresentNegationNumber(source, predicate, route)
@@ -235,6 +249,26 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 	if predicate.ID == "" {
 		return nil, nil, nil, nil
 	}
+	if identification, valid := englishIdentificationContextForSource(source); valid && identification.stateID == predicate.ID {
+		predicatePath, found := runtime.MeaningPath(*source.Meaning, predicate.ID)
+		if !found {
+			return nil, nil, nil, nil
+		}
+		assumptions := []realizer.FieldAssumption{
+			{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning v1 carries no tense; this response uses the approved present-tense route"},
+			{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning v1 carries no grammatical person; this response uses the approved third-person route"},
+			{Path: predicatePath, Field: "number", Value: "singular", Reason: "Meaning v1 carries no grammatical number; this response uses the approved singular route"},
+		}
+		mode := identification.mode
+		if mode == "unresolved" || mode == "demonstrative" {
+			value, ok := englishIdentificationReferenceChoice(selected.CompiledVariant.Variant.ID.String(), identification.family)
+			if !ok {
+				return nil, nil, nil, nil
+			}
+			assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "reference", Value: value, Reason: "the source preserves unresolved reference; this candidate selects the named English deictic form"})
+		}
+		return nil, assumptions, nil, nil
+	}
 	assumptions := make([]realizer.FieldAssumption, 0, 3+2*len(predicate.Participants))
 	losses := make([]realizer.FieldLoss, 0, len(predicate.Participants))
 	predicatePath, pathFound := runtime.MeaningPath(*source.Meaning, selected.NodeID)
@@ -308,6 +342,25 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 		obliqueFamily        = "construction:en.oblique"
 	)
 	familyID := candidate.Family.Family.ID.String()
+	if identification, recognized := englishIdentificationState(source); recognized {
+		if candidate.Kind == meaning.KindState && candidate.NodeID == identification.stateID {
+			if !identification.valid {
+				return false
+			}
+			variant := candidate.CompiledVariant.Variant.ID.String()
+			_, allowed := englishIdentificationReferenceChoice(variant, identification.family)
+			if identification.mode == "proximal" {
+				allowed = variant == identification.family+".this"
+			}
+			if identification.mode == "demonstrative" {
+				allowed = identification.family == "construction:en.attribution" && (variant == identification.family+".this" || variant == identification.family+".that")
+			}
+			if identification.mode == "unresolved" {
+				allowed = identification.family == "construction:en.identification" && (variant == identification.family+".this" || variant == identification.family+".that" || variant == identification.family+".it")
+			}
+			return allowed && familyID == identification.family && candidate.Sense.ID.String() == identification.senseID
+		}
+	}
 	if candidate.CompiledVariant.Variant.DirectionPolicy == construction.DirectionAnalyze {
 		return false
 	}

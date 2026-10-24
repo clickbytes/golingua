@@ -22,6 +22,8 @@ const (
 	sentenceReadingPastCapabilityEvidenceID = "sentence.reading.past.third_person.v1"
 	sentenceIdentificationClassEvidenceID   = "A1-ID-002-PL-EN"
 	sentenceIdentificationBlackEvidenceID   = "A1-ID-004-PL-EN"
+	englishIdentificationClassEvidenceID    = "A1-ID-001-EN-PL"
+	englishIdentificationBlackEvidenceID    = "A1-ID-003-EN-PL"
 )
 
 // BuildSentenceLanguagePackage exposes only requested exact approved sentence
@@ -116,6 +118,8 @@ func sentenceCapabilityEvidenceIDs(languageID features.LanguageID) []string {
 	caseIDs := []string{sentenceSeeingCapabilityEvidenceID, sentenceSeeingNegationEvidenceID, sentencePresentNegationEvidenceID, sentenceHearingCapabilityEvidenceID, sentenceReceivingCapabilityEvidenceID, sentenceLookingCapabilityEvidenceID, sentenceReadingCapabilityEvidenceID, sentenceReadingPastCapabilityEvidenceID}
 	if languageID == "pl" {
 		caseIDs = append(caseIDs, sentenceIdentificationClassEvidenceID, sentenceIdentificationBlackEvidenceID)
+	} else if languageID == "en" {
+		caseIDs = append(caseIDs, englishIdentificationClassEvidenceID, englishIdentificationBlackEvidenceID)
 	}
 	return caseIDs
 }
@@ -123,7 +127,7 @@ func sentenceCapabilityEvidenceIDs(languageID features.LanguageID) []string {
 func currentSentenceSenseNames(languageID features.LanguageID) ([]string, bool) {
 	switch languageID {
 	case "en":
-		return []string{"en.see.visual", "en.hear.auditory", "en.get.receive", "en.look.directed", "en.read.text"}, true
+		return []string{"en.see.visual", "en.hear.auditory", "en.get.receive", "en.look.directed", "en.read.text", "en.be.class_membership", "en.black.color"}, true
 	case "pl":
 		return []string{"pl.widziec.visual", "pl.slyszec.auditory", "pl.dostac.receive", "pl.patrzec.directed", "pl.czytac.interpret", "pl.byc.class_membership", "pl.czarny.black"}, true
 	default:

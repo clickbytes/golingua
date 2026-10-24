@@ -77,6 +77,11 @@ type constructionBindingDeclaration struct {
 }
 
 var englishConstructionBindingDeclarations = append(append([]constructionBindingDeclaration{
+	{"en.be.class_membership", "en.be.class_membership.frame", "en.identification", "en.identification.this"},
+	{"en.be.class_membership", "en.be.class_membership.frame", "en.identification", "en.identification.that"},
+	{"en.be.class_membership", "en.be.class_membership.frame", "en.identification", "en.identification.it"},
+	{"en.black.color", "en.black.color.frame", "en.attribution", "en.attribution.this"},
+	{"en.black.color", "en.black.color.frame", "en.attribution", "en.attribution.that"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive_negative", "en.transitive_negative.svo"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive_negative", "en.transitive_negative.svo.plural"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo"},
@@ -197,6 +202,12 @@ func englishNegativeArticleBindingDeclarations() []constructionBindingDeclaratio
 }
 
 var englishFrames = []frameDeclaration{
+	{"en.be.class_membership.frame", "en.be.class_membership", "en.identification", []meaning.Role{"member"}, []valency.ArgumentSlot{
+		{ID: "member", Role: "member", Required: true, GrammaticalFunction: "complement"},
+	}},
+	{"en.black.color.frame", "en.black.color", "en.attribution", []meaning.Role{"bearer"}, []valency.ArgumentSlot{
+		{ID: "bearer", Role: "bearer", Required: true, GrammaticalFunction: "subject"},
+	}},
 	{"en.see.visual.transitive", "en.see.visual", "en.transitive", []meaning.Role{"experiencer", "stimulus"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "experiencer", Required: true, GrammaticalFunction: "subject"},
 		{ID: "object", Role: "stimulus", Required: true, GrammaticalFunction: "object"},
@@ -253,6 +264,9 @@ func CompileValency() (*valency.Index, error) {
 			Arguments:        append([]valency.ArgumentSlot(nil), item.arguments...),
 			AllowedFamilyIDs: []ids.ConstructionID{familyID}, Provenance: englishValencySource,
 		}
+		if item.id == "en.be.class_membership.frame" || item.id == "en.black.color.frame" {
+			frame.Provenance = englishIdentificationSource
+		}
 		switch item.id {
 		case "en.see.visual.transitive", "en.hear.auditory.transitive":
 			negativeFamilyID, err := ids.NewConstructionID("en.transitive_negative")
@@ -299,6 +313,9 @@ func CompileValency() (*valency.Index, error) {
 }
 
 func englishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.sense == "en.be.class_membership" || item.sense == "en.black.color" {
+		return englishIdentificationSource
+	}
 	if item.sense == "en.read.text" && item.family == "en.transitive_past" {
 		return englishReadingPastConstructionSource
 	}
