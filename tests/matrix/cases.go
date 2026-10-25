@@ -4,6 +4,7 @@ package matrix
 // AnalysisCase states what a source language must preserve while analyzing input.
 type AnalysisCase struct {
 	ID, MeaningID, Input                        string
+	AllowedMeaningIDs, RequiredMeaningIDs       []string
 	MustPreserve                                []string
 	SemanticRequirement                         SemanticRequirement
 	AmbiguityNote, InputOrigin, OwnerAcceptance string
@@ -13,12 +14,21 @@ type AnalysisCase struct {
 type RealizationCase struct {
 	ID, MeaningID                                   string
 	ProposalTexts, AllowedTexts, RequiredTexts      []string
+	MeaningVariants                                 []MeaningRealization
 	AllowedAssumptionFields                         []string
 	RequiredAssumptionFields                        []string
 	RequiredTextAssumptions                         []TextAssumptionRequirement
 	SemanticRequirement                             SemanticRequirement
 	AllowedLossFields, RequiredLossFields           []string
 	AmbiguityNote, ReferenceOrigin, OwnerAcceptance string
+}
+
+// MeaningRealization binds text expectations to one allowed authored meaning.
+// It inherits the parent case's assumptions and loss rules.
+type MeaningRealization struct {
+	MeaningID                   string
+	AllowedTexts, RequiredTexts []string
+	RequiredTextAssumptions     []TextAssumptionRequirement
 }
 
 // TranslationCase links one source analysis to a target realization.

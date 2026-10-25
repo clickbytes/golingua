@@ -1,6 +1,6 @@
 # Macierz zachowania PL/EN
 
-Macierz zawiera 24 oryginalne rekordy kierunkowe z próbki A1, po cztery ID z domen `AC`, `ID`, `LQ`, `NEG`, `PO` i `Q` (`001`–`004`). Inwentarz `translation.Cases` jest deklaratywny i może rosnąć o kolejne partie, takie jak A1.1/A1.2; liczba rekordów nie jest ograniczeniem walidatora. To ograniczona próbka, nie pełne A1 ani certyfikacja CEFR; [deskryptory Rady Europy](https://rm.coe.int/16809ea0d4) są jedynie kontekstem. Zdania są własną redakcją, nie kopiami z egzaminu. Oryginalne ID, teksty, wymagania i provenance pozostają w danych językowych; akceptacja właściciela jest zapisana osobno jako `NOT_EVALUATED`.
+Macierz zawiera 56 kierunkowych rekordów: 24 rekordy pierwotnej próbki A1 oraz 32 rekordy A1.1 z 16 wybranych par PL/EN (`S003`, `S010`, `S016`, `S023`, `S028`, `S034`, `S040`, `S043`, `S051`, `S055`, `S063`, `S074`, `S076`, `S081`, `S086`, `S099`). Są to rekordy `draft_unreviewed`, niezatwierdzone językowo. Inwentarz `translation.Cases` pozostaje deklaratywny i może rosnąć o następne partie; liczba rekordów nie jest ograniczeniem walidatora. To ograniczona próbka, nie pełne A1 ani certyfikacja CEFR; [deskryptory Rady Europy](https://rm.coe.int/16809ea0d4) są jedynie kontekstem. Teksty i wymagania zachowują oryginalne ID i provenance, a akceptacja właściciela jest zapisana osobno jako `NOT_EVALUATED`.
 
 ## Układ i kontrakt
 
@@ -9,13 +9,15 @@ tests/
   interlingua/                 # niezależne, ręcznie zapisane znaczenia I
   languages/pl/A1/             # analiza i realizacja po polsku
   languages/en/A1/             # analiza i realizacja po angielsku
+  languages/pl/A1.1/           # wybrane rekordy korpusu po polsku
+  languages/en/A1.1/           # wybrane rekordy korpusu po angielsku
   translation/cases.go         # deklaratywne ID i odwołania do obu stron
   translation/pl-en/           # PL → I → EN
   translation/en-pl/           # EN → I → PL
   matrix/                      # wspólne typy, runtime produkcyjny i kontrole
 ```
 
-A1.1 i A1.2 oznaczają przyszłe partie A1 konkretnego języka; wymagają osobno określonego zakresu i nie zastępują tej próbki.
+A1.1 i A1.2 oznaczają partie A1 konkretnego języka; każda wymaga jawnie określonego zakresu. Obecna partia A1.1 obejmuje wyłącznie 16 wskazanych par z korpusu, bez twierdzenia o zatwierdzeniu ich tekstów.
 
 Pliki `*.testdomain.go` zawierają dane. Pliki `*_test.go` wykonują kontrole standardowym `go test`. Osobny, obserwacyjny workflow GitHub Actions uruchamia pełną macierz na push do `main`, publikuje najnowszy raport w [`tests/results/latest.md`](results/latest.md), a surowy log udostępnia jako artefakt. Wynik macierzy nie blokuje technicznego `go-ci`; lokalne polecenia poniżej nadal pozwalają odtworzyć kontrole. Każdy przypadek analizy zachowuje dokładne wejście, wymagania, nierozstrzygnięcia i pochodzenie wejścia. Przypadek realizacji zachowuje `ProposalTexts`, pochodzenie propozycji i akceptację właściciela oddzielnie od `AllowedTexts` (zbiór dopuszczalny) i `RequiredTexts` (zbiór wymagany dla danego kontraktu), dozwolonych/obowiązkowych założeń i strat. `RequiredTexts` musi być podzbiorem `AllowedTexts`; pusta lista `AllowedTexts` pozostawia rekord bez zamkniętego kontraktu. Propozycja nie staje się automatycznie oczekiwanym wynikiem.
 
