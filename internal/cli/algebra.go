@@ -22,6 +22,18 @@ type algebraOptions struct {
 	json     bool
 }
 
+type algebraNormalizeOutput struct {
+	Status   status.OutcomeKind          `json:"status"`
+	Result   algebra.NormalizationResult `json:"result"`
+	Metadata []metadataReference         `json:"metadata"`
+}
+
+type algebraRewriteVerificationOutput struct {
+	Status   status.OutcomeKind         `json:"status"`
+	Result   algebra.VerificationResult `json:"result"`
+	Metadata []metadataReference        `json:"metadata"`
+}
+
 type algebraOutput struct {
 	Status            status.OutcomeKind        `json:"status"`
 	Checked           algebra.CheckedExpression `json:"checked"`
@@ -91,6 +103,8 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		options.command = "check"
 	} else if args[1] == "build" {
 		options.command = "build"
+	} else if args[1] == "normalize" || args[1] == "verify-rewrite" {
+		options.command = args[1]
 	} else if args[1] == "metadata" {
 		if len(args) < 3 || (args[2] != "inspect" && args[2] != "validate") {
 			return options, "expected algebra metadata inspect or validate"
@@ -98,7 +112,7 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		options.command = "metadata_" + args[2]
 		index = 3
 	} else {
-		return options, "expected algebra check, build, or metadata"
+		return options, "expected algebra check, build, normalize, verify-rewrite, or metadata"
 	}
 	seenJSON, seenInput := false, false
 	for i := index; i < len(args); i++ {
@@ -111,8 +125,8 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			seenJSON = true
 			options.json = true
 		case "--input":
-			if options.command != "check" && options.command != "build" {
-				return options, "--input is only valid for algebra check or build"
+			if options.command != "check" && options.command != "build" && options.command != "normalize" && options.command != "verify-rewrite" {
+				return options, "--input is only valid for algebra check, build, normalize, or verify-rewrite"
 			}
 			if seenInput {
 				return options, "duplicate --input flag"
@@ -153,6 +167,9 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			return options, "algebra build requires at least one --metadata file"
 		}
 	}
+	if (options.command == "normalize" || options.command == "verify-rewrite") && len(options.metadata) == 0 {
+		return options, "algebra normalize and verify-rewrite require at least one --metadata file"
+	}
 	return options, ""
 }
 
@@ -190,6 +207,12 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 	}
 	if options.command == "build" {
 		return runAlgebraBuild(options, input, stdout, stderr, registries)
+	}
+	if options.command == "normalize" {
+		return runAlgebraNormalize(options, input, stdout, stderr, registries)
+	}
+	if options.command == "verify-rewrite" {
+		return runAlgebraVerifyRewrite(options, input, stdout, stderr, registries)
 	}
 	var reader io.Reader
 	if options.input == "" || options.input == "-" {
@@ -257,6 +280,88 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 		return ExitError
 	}
 	return exitCode(checked.Status)
+}
+
+func runAlgebraNormalize(options algebraOptions, input io.Reader, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
+	data, err := readAlgebraInput(options, input, algebra.MaxDocumentBytes, "algebra normalize")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	request, err := algebra.DecodeNormalizationRequest(data)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	environment, err := metamodel.NormalizationEnvironment(request.Document, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	result, err := algebra.Normalize(environment, request.Profile, request.Document.Expression, request.Budget)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	output := algebraNormalizeOutput{Status: result.Status, Result: result, Metadata: metadataReferences(registries)}
+	if err := writeJSON(stdout, output); err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	return exitCode(result.Status)
+}
+
+func runAlgebraVerifyRewrite(options algebraOptions, input io.Reader, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
+	data, err := readAlgebraInput(options, input, algebra.MaxRewriteEnvelopeBytes, "algebra verify-rewrite")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	envelope, err := algebra.DecodeRewriteVerificationRequest(data)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	request := envelope.Request
+	environment, err := metamodel.NormalizationEnvironment(request.Document, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	result, err := algebra.VerifyRewriteCertificate(environment, request.Profile, request.Document.Expression, envelope.Certificate, request.Budget)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	output := algebraRewriteVerificationOutput{Status: result.Status, Result: result, Metadata: metadataReferences(registries)}
+	if err := writeJSON(stdout, output); err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	return exitCode(result.Status)
+}
+
+func readAlgebraInput(options algebraOptions, input io.Reader, maximum int, description string) ([]byte, error) {
+	var reader io.Reader
+	if options.input == "" || options.input == "-" {
+		if input == nil {
+			return nil, &algebraInfrastructureError{message: "stdin reader is unavailable"}
+		}
+		reader = input
+	} else {
+		file, err := os.Open(options.input)
+		if err != nil {
+			return nil, &algebraInfrastructureError{message: fmt.Sprintf("could not open %s input: %v", description, err)}
+		}
+		defer file.Close()
+		reader = file
+	}
+	data, err := io.ReadAll(io.LimitReader(reader, int64(maximum)+1))
+	if err != nil {
+		return nil, &algebraInfrastructureError{message: fmt.Sprintf("could not read %s input: %v", description, err)}
+	}
+	if len(data) > maximum {
+		return nil, &algebra.Error{Status: status.OutcomeResourceLimit, Code: "JSON_BYTE_LIMIT", Path: "input", Message: fmt.Sprintf("input exceeds %d byte limit", maximum)}
+	}
+	return data, nil
+}
+
+func metadataReferences(registries []*metamodel.Registry) []metadataReference {
+	refs := make([]metadataReference, 0, len(registries))
+	for _, registry := range registries {
+		refs = append(refs, metadataReference{ID: registry.ID(), Version: registry.Version(), ResourceFingerprint: registry.ResourceFingerprint()})
+	}
+	return refs
 }
 
 func runAlgebraBuild(options algebraOptions, input io.Reader, stdout, stderr io.Writer, registries []*metamodel.Registry) int {

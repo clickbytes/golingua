@@ -1,0 +1,34 @@
+{
+  "binary": "/tmp/golingua-dse/bin/golingua",
+  "binary_sha256": "d31ee740838b4f7b929c85b2a29b2599e6809a453807e527e88559795070a8aa",
+  "observations": [
+    {
+      "argv": [
+        "/tmp/golingua-dse/bin/golingua",
+        "algebra",
+        "metadata",
+        "inspect",
+        "--metadata",
+        "data/semantic/examples/metadata/neutral.json",
+        "--json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"status\":\"ok\",\"operation\":\"inspect\",\"packages\":[{\"id\":\"example.neutral.metadata\",\"version\":\"1.0.0\",\"profile\":\"positive-facts-v1\",\"resource_fingerprint\":\"sha256:ac995718de4cf5c716fdc35154386a4b241ede89264c8fb3c7636aa666087442\",\"formal_denotation_id\":\"sha256:fd65e13710934621f387de2d3f2c3116a3dc2c3779c6260c5de24e0e58d1db63\",\"sort_count\":1,\"symbol_count\":3,\"primitive_count\":1,\"alias_count\":1,\"opaque_unformalized_count\":1,\"pending_count\":1,\"approved_count\":2,\"provenance\":[{\"id\":\"neutral-example-380\",\"uri\":\"https://github.com/clickbytes/golingua/issues/380\",\"version\":\"2026-10-25\",\"license\":\"internal-neutral-example\"}],\"symbols\":[{\"id\":\"link_q\",\"kind\":\"primitive\",\"label\":\"ordered binary relation\",\"description\":\"Neutral structural example; the label has no execution meaning.\",\"review_status\":\"approved\",\"provenance\":[{\"id\":\"neutral-symbol-link-q\",\"uri\":\"https://github.com/clickbytes/golingua/issues/380\",\"version\":\"2026-10-25\",\"license\":\"internal-neutral-example\"}]},{\"id\":\"opaque_note_q\",\"kind\":\"opaque_unformalized\",\"label\":\"descriptive opaque record\",\"description\":\"Kept for inspection; it has no executable signature.\",\"review_status\":\"pending\",\"provenance\":[{\"id\":\"neutral-opaque-note\",\"uri\":\"https://github.com/clickbytes/golingua/issues/380\",\"version\":\"2026-10-25\",\"license\":\"internal-neutral-example\"}]},{\"id\":\"two_hop_q\",\"kind\":\"alias\",\"label\":\"two-step relation pattern\",\"description\":\"An explicit closed expression, retained as inspectable metadata only.\",\"review_status\":\"approved\",\"provenance\":[{\"id\":\"neutral-alias-two-hop\",\"uri\":\"https://github.com/clickbytes/golingua/issues/380\",\"version\":\"2026-10-25\",\"license\":\"internal-neutral-example\"}]}]}]}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/golingua-dse/bin/golingua",
+        "algebra",
+        "metadata",
+        "inspect",
+        "--metadata",
+        "data/semantic/examples/metadata/after-build.json",
+        "--json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"status\":\"ok\",\"operation\":\"inspect\",\"packages\":[{\"id\":\"after-build.44715a4430b7\",\"version\":\"1.0.0\",\"profile\":\"positive-facts-v1\",\"resource_fingerprint\":\"sha256:a593bb070e517f53788eefd5bffa7616efd28b3a8fb5fac16e199e918c6975d5\",\"formal_denotation_id\":\"sha256:5ca09875ba3ecb99edfc2adaf7d40845b500b095a15b3deab51a701a19c7f13e\",\"sort_count\":1,\"symbol_count\":1,\"primitive_count\":1,\"alias_count\":0,\"opaque_unformalized_count\":0,\"pending_count\":0,\"approved_count\":1,\"provenance\":[{\"id\":\"neutral-example-380\",\"uri\":\"https://github.com/clickbytes/golingua/issues/380\",\"version\":\"2026-10-25\",\"license\":\"internal-neutral-example\"}],\"symbols\":[{\"id\":\"relation_44715a4430b7\",\"kind\":\"primitive\",\"label\":\"label is not executable\",\"description\":\"A fresh uninterpreted relation added after the executable was built\",\"review_status\":\"approved\",\"provenance\":[{\"id\":\"neutral-symbol-link-q\",\"uri\":\"https://github.com/clickbytes/golingua/issues/380\",\"version\":\"2026-10-25\",\"license\":\"internal-neutral-example\"}]}]}]}\n",
+      "stderr": ""
+    }
+  ]
+}

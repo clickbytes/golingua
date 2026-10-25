@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "document": {
+    "schema_version": 1,
+    "references": [
+      {
+        "id": "A",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "id": "B",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "id": "C",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ],
+    "expression": {
+      "kind": "And",
+      "operands": [
+        {
+          "kind": "Exists",
+          "id": "first",
+          "type": {
+            "kind": "Event"
+          },
+          "body": {
+            "kind": "Atom",
+            "symbol": "ev",
+            "args": [
+              {
+                "role": "event",
+                "value": {
+                  "kind": "Var",
+                  "id": "first"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "kind": "Exists",
+          "id": "second",
+          "type": {
+            "kind": "Event"
+          },
+          "body": {
+            "kind": "Atom",
+            "symbol": "ev",
+            "args": [
+              {
+                "role": "event",
+                "value": {
+                  "kind": "Var",
+                  "id": "second"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "profile": {
+    "id": "finite-rewrite-v1",
+    "rules": [
+      "alpha_v1",
+      "beta_v1",
+      "alias_v1",
+      "and_flatten_v1",
+      "and_order_v1",
+      "and_deduplicate_v1"
+    ]
+  },
+  "budget": {}
+}
