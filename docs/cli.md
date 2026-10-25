@@ -48,6 +48,25 @@ Przy `algebra check --metadata ...` wejściowy dokument wyrażenia nie może zaw
 
 Fingerprint zasobu obejmuje metadane dokumentu i jawne piny zależności. Formalny `formal_denotation_id` pomija etykiety, opisy, provenance, status review i krawędzie typowości; obejmuje identyfikatory i strukturę formalną, a dla zależności ich ID oraz formalne denotation ID. Fingerprinty zasobów zależności i ich wersje nie trafiają do tej formalnej projekcji. Żadna klasa lub etykieta nie wybiera procedury. Początkowy allowlist aksjomatów jest pusty; `typical_edges` pozostają opisem, a ograniczenia `arity` i `port_type` są wyłącznie strukturalnymi warunkami deklaracji. Szczegóły: [kontrakt metadanych](architecture/semantic-algebra/metadata.md), [schemat pakietu](../schemas/semantic/package.schema.json), [schemat symboli](../schemas/semantic/symbols.schema.json) i [neutralne przykłady](../data/semantic/examples/metadata/neutral.json).
 
+### Jawne składanie: `algebra build`
+
+`algebra build` wykonuje version-1 recepturę jawnych kroków konstrukcji na wskazanych pakietach metadanych. Każdy krok wskazuje wcześniejsze ID kroku; nie ma tu automatycznego wyszukiwania planu ani wnioskowania z etykiet.
+
+```sh
+go run ./cmd/golingua algebra metadata validate --metadata data/semantic/examples/composition/metadata.json --json
+go run ./cmd/golingua algebra build --metadata data/semantic/examples/composition/metadata.json --input data/semantic/examples/composition/two-hop.json --json
+go run ./cmd/golingua algebra build --metadata data/semantic/examples/composition/metadata.json --input data/semantic/examples/composition/three-hop.json --json
+go run ./cmd/golingua algebra build --metadata data/semantic/examples/composition/metadata.json --input data/semantic/examples/composition/nary.json --json
+```
+
+Wymagany jest co najmniej jeden `--metadata`; powtarzaj flagę dla wszystkich jawnych pakietów i ich zależności. `--input <plik>` czyta wyłącznie wskazany plik; bez flagi albo z `--input -` receptura pochodzi ze stdin. `--json` jest wymagane. Wyjście zawiera `status`, `result_id`, `result_kind`, term wyrażenia lub substytucję, interfejs portów, `checked`, `canonical_document` dla termu, uporządkowany `trace` oraz wybrane pakiety metadanych. Unifikacja ma `result_kind: "substitution"`; również pusty wynik jest jawnie serializowany jako `substitution: {}` i nie oznacza dowodu ani propozycji.
+
+Obsługiwane kroki to `relation`, `value`, `atom`, `and`, `join`, `bind`, `apply`, `restrict`, `project`, `permute` i `unify`. `join` wymaga jawnych par portów tego samego typu; brak mapowania zwraca `incomplete`, a zderzające się nazwy portów wyjściowych wymagają jawnego `outputs`. `Bind` może wskazać dowolny port interfejsu. `Apply` redukuje znany lambda-term. `Project` wiąże egzystencjalnie pominięte porty, a `Permute` wymaga pełnej bijekcji. Kopiowanie i podstawianie zachowują odrębność Param/Ref/Hole/Var i świeże ID binderów; receptura oraz operatory nie zmieniają wejściowych danych.
+
+Profil unifikacji jest ograniczony do zadeklarowanych Param jako zmiennych, Ref, Atom i uporządkowanego And. Typy, symbole, role argumentów i ID referencji muszą być zgodne; occurs check odrzuca podstawienie cykliczne. Hole pozostaje `incomplete`, a wyrażenia lambda, Apply, Exists, arrow-variable i zadania higher-order są `unsupported` w unifikatorze. Sam `build` może użyć wspieranych operacji `Apply`/`Exists` do konstrukcji termu; odmowa unifikacji nie rozstrzyga prawdziwości termów.
+
+`build` używa wyłącznie zatwierdzonych primitive signatures z jawnego rejestru. Pending, aliasy i symbole opaque nie są tutaj rozwijane ani uruchamiane; pole review nie oznacza akceptacji językowej. Wynik jest sprawdzoną reprezentacją, a nie nowym faktem, świadkiem świata, regułą przechodniości ani zarejestrowanym aliasem. Limit wejścia wynosi 1 MiB, maksymalnie 64 kroki, 4096 węzłów i głębokość 64 na wyrażenie, 32 na typ, 512 deklaracji, 16 portów oraz 16384 węzłów termów zachowanych łącznie w rezultatach i śladzie. Przekroczenie daje `resource_limit`, nigdy zgadywanie mapowania. Kody wyjścia pozostają mapowane do statusu: `ok` 0, `invalid` 2, `unsupported` 3, `resource_limit` 4, `unknown` 5, `ambiguous` 6, `incomplete` 7, `error` 1. Pełny opis zachowania znajduje się w [kontrakcie składania](architecture/semantic-algebra/composition.md), [schemacie receptury](../schemas/semantic/construction.schema.json) i [przykładach](../data/semantic/examples/composition/).
+
 ## Interfejs terminalowy
 
 Bezargumentowe `golingua` otwiera TUI, gdy stdin i stdout są TTY (poza `TERM=dumb`). Bez TTY pozostaje pomoc bez ANSI. Jawne komendy, `--help`, `--version`, JSON i kody wyjścia zachowują dotychczasowy kontrakt.

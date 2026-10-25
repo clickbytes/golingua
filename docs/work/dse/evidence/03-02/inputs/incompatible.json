@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "steps": [
+    {
+      "id": "r",
+      "op": "relation",
+      "symbol": "r"
+    },
+    {
+      "id": "h",
+      "op": "relation",
+      "symbol": "h"
+    },
+    {
+      "id": "j",
+      "op": "join",
+      "left": "r",
+      "right": "h",
+      "mapping": [
+        {
+          "left_port": "b",
+          "right_port": "a"
+        }
+      ]
+    }
+  ],
+  "result": "j"
+}

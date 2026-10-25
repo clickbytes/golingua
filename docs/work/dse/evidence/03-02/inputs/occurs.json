@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "steps": [
+    {
+      "id": "p",
+      "op": "value",
+      "value": {
+        "kind": "Param",
+        "id": "P",
+        "type": {
+          "kind": "Prop"
+        }
+      }
+    },
+    {
+      "id": "z",
+      "op": "atom",
+      "symbol": "z",
+      "args": []
+    },
+    {
+      "id": "a",
+      "op": "and",
+      "inputs": [
+        "p",
+        "z"
+      ]
+    },
+    {
+      "id": "u",
+      "op": "unify",
+      "left": "p",
+      "right": "a"
+    }
+  ],
+  "result": "u",
+  "parameters": [
+    {
+      "id": "P",
+      "type": {
+        "kind": "Prop"
+      }
+    }
+  ]
+}

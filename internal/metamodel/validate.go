@@ -118,47 +118,70 @@ func CheckDocument(document algebra.Document, registries []*Registry) (algebra.C
 		checked, err := algebra.Check(document)
 		return checked, document, err
 	}
+	hydrated, symbols, err := declarationContext(document, registries)
+	if err != nil {
+		return algebra.CheckedExpression{}, algebra.Document{}, err
+	}
+	if err := checkSelectedAtoms(document.Expression, symbols); err != nil {
+		return algebra.CheckedExpression{}, algebra.Document{}, err
+	}
+	checked, err := algebra.Check(hydrated)
+	return checked, hydrated, err
+}
+
+// DeclarationContext returns a checked declaration environment suitable for
+// validating a real expression separately. It never synthesizes an AST node.
+// Registry snapshots must be explicitly supplied and previously validated.
+func DeclarationContext(document algebra.Document, registries []*Registry) (algebra.Document, error) {
+	hydrated, _, err := declarationContext(document, registries)
+	return hydrated, err
+}
+
+func declarationContext(document algebra.Document, registries []*Registry) (algebra.Document, map[string]Symbol, error) {
+	if len(registries) == 0 {
+		if err := algebra.CheckDeclarations(document); err != nil {
+			return algebra.Document{}, nil, err
+		}
+		return document, map[string]Symbol{}, nil
+	}
 	if len(document.Sorts) != 0 || len(document.Signatures) != 0 {
-		return algebra.CheckedExpression{}, algebra.Document{}, invalid("INLINE_DECLARATIONS_WITH_METADATA", "document", "inline sorts and signatures are forbidden when metadata registries are selected")
+		return algebra.Document{}, nil, invalid("INLINE_DECLARATIONS_WITH_METADATA", "document", "inline sorts and signatures are forbidden when metadata registries are selected")
 	}
 	if len(registries) > maxPackages {
-		return algebra.CheckedExpression{}, algebra.Document{}, resource("RESOURCE_LIMIT", "registries", "too many registries selected")
+		return algebra.Document{}, nil, resource("RESOURCE_LIMIT", "registries", "too many registries selected")
 	}
 	combinedSorts := make(map[string]algebra.SortDeclaration)
 	combinedSymbols := make(map[string]Symbol)
 	for i, registry := range registries {
 		if registry == nil {
-			return algebra.CheckedExpression{}, algebra.Document{}, invalid("NIL_REGISTRY", fmt.Sprintf("registries[%d]", i), "registry is nil")
+			return algebra.Document{}, nil, invalid("NIL_REGISTRY", fmt.Sprintf("registries[%d]", i), "registry is nil")
 		}
 		if registry.ID() == "" || registry.Version() == "" || registry.ResourceFingerprint() == "" || registry.FormalDenotationID() == "" {
-			return algebra.CheckedExpression{}, algebra.Document{}, invalid("UNVALIDATED_REGISTRY", fmt.Sprintf("registries[%d]", i), "registry has no validated identity and fingerprints")
+			return algebra.Document{}, nil, invalid("UNVALIDATED_REGISTRY", fmt.Sprintf("registries[%d]", i), "registry has no validated identity and fingerprints")
 		}
 		for _, sortDecl := range registry.document.Sorts {
 			if prior, exists := combinedSorts[sortDecl.ID]; exists {
 				if prior != sortDecl {
-					return algebra.CheckedExpression{}, algebra.Document{}, invalid("SORT_COLLISION", "registries", "selected registries declare conflicting sort IDs")
+					return algebra.Document{}, nil, invalid("SORT_COLLISION", "registries", "selected registries declare conflicting sort IDs")
 				}
-				return algebra.CheckedExpression{}, algebra.Document{}, invalid("DUPLICATE_SORT_ID", "registries", "selected registries contain a duplicate sort ID")
+				return algebra.Document{}, nil, invalid("DUPLICATE_SORT_ID", "registries", "selected registries contain a duplicate sort ID")
 			}
 			combinedSorts[sortDecl.ID] = sortDecl
 		}
 		for id, symbol := range registry.symbols {
 			if _, exists := combinedSymbols[id]; exists {
-				return algebra.CheckedExpression{}, algebra.Document{}, invalid("DUPLICATE_SYMBOL_ID", "registries", "selected registries contain a duplicate symbol ID")
+				return algebra.Document{}, nil, invalid("DUPLICATE_SYMBOL_ID", "registries", "selected registries contain a duplicate symbol ID")
 			}
 			combinedSymbols[id] = symbol
 		}
 	}
 	for id := range combinedSorts {
 		if _, conflict := combinedSymbols[id]; conflict {
-			return algebra.CheckedExpression{}, algebra.Document{}, invalid("SORT_SYMBOL_COLLISION", "registries", "sort and symbol IDs must not collide")
+			return algebra.Document{}, nil, invalid("SORT_SYMBOL_COLLISION", "registries", "sort and symbol IDs must not collide")
 		}
 	}
 	if len(combinedSorts)+len(combinedSymbols)+len(document.Parameters)+len(document.References) > maxDeclarations {
-		return algebra.CheckedExpression{}, algebra.Document{}, resource("RESOURCE_LIMIT", "registries", "aggregate declaration count exceeds 512")
-	}
-	if err := checkSelectedAtoms(document.Expression, combinedSymbols); err != nil {
-		return algebra.CheckedExpression{}, algebra.Document{}, err
+		return algebra.Document{}, nil, resource("RESOURCE_LIMIT", "registries", "aggregate declaration count exceeds 512")
 	}
 	hydrated := document
 	hydrated.Sorts = make([]algebra.SortDeclaration, 0, len(combinedSorts))
@@ -174,8 +197,10 @@ func CheckDocument(document algebra.Document, registries []*Registry) (algebra.C
 		hydrated.Signatures = append(hydrated.Signatures, algebra.Signature{ID: id, Label: symbol.Label, Ports: append([]algebra.Port(nil), symbol.Ports...)})
 	}
 	sort.Slice(hydrated.Signatures, func(i, j int) bool { return hydrated.Signatures[i].ID < hydrated.Signatures[j].ID })
-	checked, err := algebra.Check(hydrated)
-	return checked, hydrated, err
+	if err := algebra.CheckDeclarations(hydrated); err != nil {
+		return algebra.Document{}, nil, err
+	}
+	return hydrated, combinedSymbols, nil
 }
 
 func validateDocuments(documents []Document) error {

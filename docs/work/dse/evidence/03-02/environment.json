@@ -1,0 +1,28 @@
+{
+  "recorded_utc": "2026-10-25T22:59:32.621954+00:00",
+  "source_base_sha": "f93cffb1f2c12bf8eacf40d141e98ab622948b40",
+  "source_state": "uncommitted implementation pinned by source hashes",
+  "binary": "/tmp/golingua-dse/bin/golingua",
+  "binary_sha256": "d31ee740838b4f7b929c85b2a29b2599e6809a453807e527e88559795070a8aa",
+  "go_version": "go version go1.27.0 linux/amd64",
+  "source_sha256": {
+    "internal/algebra/scope.go": "ecc3a25f7deea0633174100afa70384655f45e190b1e481bd0e2080c25fc63f5",
+    "internal/algebra/types.go": "c97fc33c1d910209907723872c5efe72bd8d916032038da873524bae5394c8d0",
+    "internal/algebra/check.go": "d42fbf16e9973878c46a95ff15cffff3968436096920e51b12aece1708835ed8",
+    "internal/algebra/substitution.go": "4f6e93a8d0a1abc5b4710a7a5588d0785eb26efe24a8844bdc185fe112a215b4",
+    "internal/algebra/unify.go": "cdc230866fa0bb88b450fce881beea990fbc8aaad910e842df71afb8e245911e",
+    "internal/algebra/operators.go": "8fbfadd0383ed42da7c3fa292d4e3974139bc719ec27e1c60642ebbb33b293fc",
+    "internal/algebra/terms.go": "2b3733f4bbeee2078736b302ee73272387f28b9867f9557e5189f665301500e6",
+    "internal/algebra/json.go": "9b665bbce38253513e9a274faaae8a3784881d4a413039f94115371cbe285a16",
+    "internal/algebra/build.go": "2818132c868e1efb4d269a750d379f26bfdb8d97f746ad8b61fc7a28258d82f7",
+    "internal/metamodel/validate.go": "94a4133baea429f040d5892f4bf069ad7f74b0dc7221d24b6fc2ec858f10fe21",
+    "internal/metamodel/load.go": "e63a3913ecb7052b2a1e0dd355972dd63138debd65471154fc76fe2b94fa07a8",
+    "internal/metamodel/registry.go": "bd81ea314fdcd269ffd20f16f1843fe0ddf1035c95cb64481283e3ff1f5b756b",
+    "internal/metamodel/document.go": "4d7abf3e96159eba95fc54090d9d6ad1ba60d7e46f9190b50de5d021b90790bd",
+    "internal/cli/cli.go": "b8adb8333a2ac3cc38cf56d39f06fd96c7919cde32840b57208a8a23e5c71ddf",
+    "internal/cli/algebra.go": "7d4c41bc191582a51c8a0fdbd12cba5676151655a5be8665f9860e7e363788e6",
+    "internal/cli/question.go": "66afd4b59d8a0d1601c3223a567278d2c015bee6815fa0a43b7ccae36a2b31b5",
+    "go.mod": "1abbf9e7b21e7ed22f1d3eee1fbc78c493d3f6c6a66bc76f4d422386572b3806",
+    "go.sum": "7782d6c8de321f2f78c872559fb65c6f4c002e54e8d9d27c7df557e4b9752d92"
+  }
+}

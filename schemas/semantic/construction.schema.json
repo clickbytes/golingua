@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/clickbytes/golingua/schemas/semantic/construction.schema.json",
+  "title": "GoLingua finite algebra construction request",
+  "description": "A version 1 explicit finite recipe for constructing checked algebra terms and relation functions. It does not describe search, fact evaluation, or proof.",
+  "$comment": "Runtime additionally enforces 1 MiB input, 256-byte UTF-8 identifiers, strict duplicate-key rejection, bounded JSON nesting, only backward step references, at most 64 steps, checker limits, and at most 16384 aggregate retained result/trace term nodes. JSON Schema cannot enforce reference ordering or aggregate expanded output size. Missing join mapping is accepted by design and returns incomplete at runtime.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "steps", "result"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "parameters": {"type": "array", "maxItems": 512, "items": {"$ref": "expression.schema.json#/$defs/declaration"}},
+    "references": {"type": "array", "maxItems": 512, "items": {"$ref": "expression.schema.json#/$defs/declaration"}},
+    "closed": {"type": "boolean"},
+    "limits": {"$ref": "expression.schema.json#/$defs/limits"},
+    "steps": {"type": "array", "minItems": 1, "maxItems": 64, "items": {"$ref": "#/$defs/step"}},
+    "result": {"$ref": "#/$defs/id"}
+  },
+  "$defs": {
+    "id": {"type": "string", "minLength": 1, "maxLength": 256, "$comment": "Runtime bound is 256 UTF-8 bytes."},
+    "stepRef": {"$ref": "#/$defs/id"},
+    "joinPair": {
+      "type": "object", "additionalProperties": false,
+      "required": ["left_port", "right_port"],
+      "properties": {"left_port": {"$ref": "#/$defs/id"}, "right_port": {"$ref": "#/$defs/id"}}
+    },
+    "joinOutput": {
+      "type": "object", "additionalProperties": false,
+      "required": ["side", "port", "as"],
+      "properties": {"side": {"enum": ["left", "right"]}, "port": {"$ref": "#/$defs/id"}, "as": {"$ref": "#/$defs/id"}}
+    },
+    "atomArgument": {
+      "type": "object", "additionalProperties": false,
+      "required": ["role", "value"],
+      "properties": {"role": {"$ref": "#/$defs/id"}, "value": {"$ref": "#/$defs/stepRef"}}
+    },
+    "leafValue": {
+      "oneOf": [
+        {"type": "object", "additionalProperties": false, "required": ["kind", "id", "type"], "properties": {"kind": {"const": "Param"}, "id": {"$ref": "#/$defs/id"}, "type": {"$ref": "expression.schema.json#/$defs/type"}, "label": {"$ref": "expression.schema.json#/$defs/label"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "id", "type"], "properties": {"kind": {"const": "Ref"}, "id": {"$ref": "#/$defs/id"}, "type": {"$ref": "expression.schema.json#/$defs/type"}, "label": {"$ref": "expression.schema.json#/$defs/label"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "id", "type"], "properties": {"kind": {"const": "Hole"}, "id": {"$ref": "#/$defs/id"}, "type": {"$ref": "expression.schema.json#/$defs/type"}, "label": {"$ref": "expression.schema.json#/$defs/label"}}}
+      ]
+    },
+    "step": {
+      "oneOf": [
+        {"$ref": "#/$defs/relation"},
+        {"$ref": "#/$defs/value"},
+        {"$ref": "#/$defs/atom"},
+        {"$ref": "#/$defs/and"},
+        {"$ref": "#/$defs/join"},
+        {"$ref": "#/$defs/bind"},
+        {"$ref": "#/$defs/apply"},
+        {"$ref": "#/$defs/restrict"},
+        {"$ref": "#/$defs/project"},
+        {"$ref": "#/$defs/permute"},
+        {"$ref": "#/$defs/unify"}
+      ]
+    },
+    "relation": {"type": "object", "additionalProperties": false, "required": ["id", "op", "symbol"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "relation"}, "symbol": {"$ref": "#/$defs/id"}}},
+    "value": {"type": "object", "additionalProperties": false, "required": ["id", "op", "value"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "value"}, "value": {"$ref": "#/$defs/leafValue"}}},
+    "atom": {"type": "object", "additionalProperties": false, "required": ["id", "op", "symbol", "args"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "atom"}, "symbol": {"$ref": "#/$defs/id"}, "args": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/atomArgument"}}}},
+    "and": {"type": "object", "additionalProperties": false, "required": ["id", "op", "inputs"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "and"}, "inputs": {"type": "array", "minItems": 1, "maxItems": 4096, "items": {"$ref": "#/$defs/stepRef"}}}},
+    "join": {"type": "object", "additionalProperties": false, "required": ["id", "op", "left", "right"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "join"}, "left": {"$ref": "#/$defs/stepRef"}, "right": {"$ref": "#/$defs/stepRef"}, "mapping": {"type": "array", "maxItems": 4096, "items": {"$ref": "#/$defs/joinPair"}}, "outputs": {"type": "array", "maxItems": 4096, "items": {"$ref": "#/$defs/joinOutput"}}}},
+    "bind": {"type": "object", "additionalProperties": false, "required": ["id", "op", "function", "port", "argument"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "bind"}, "function": {"$ref": "#/$defs/stepRef"}, "port": {"$ref": "#/$defs/id"}, "argument": {"$ref": "#/$defs/stepRef"}}},
+    "apply": {"type": "object", "additionalProperties": false, "required": ["id", "op", "function", "argument"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "apply"}, "function": {"$ref": "#/$defs/stepRef"}, "argument": {"$ref": "#/$defs/stepRef"}}},
+    "restrict": {"type": "object", "additionalProperties": false, "required": ["id", "op", "function", "port", "predicate"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "restrict"}, "function": {"$ref": "#/$defs/stepRef"}, "port": {"$ref": "#/$defs/id"}, "predicate": {"$ref": "#/$defs/stepRef"}}},
+    "project": {"type": "object", "additionalProperties": false, "required": ["id", "op", "function", "ports"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "project"}, "function": {"$ref": "#/$defs/stepRef"}, "ports": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/id"}}}},
+    "permute": {"type": "object", "additionalProperties": false, "required": ["id", "op", "function", "ports"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "permute"}, "function": {"$ref": "#/$defs/stepRef"}, "ports": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/id"}}}},
+    "unify": {"type": "object", "additionalProperties": false, "required": ["id", "op", "left", "right"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "unify"}, "left": {"$ref": "#/$defs/stepRef"}, "right": {"$ref": "#/$defs/stepRef"}}}
+  }
+}

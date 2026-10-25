@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "steps": [
+    {
+      "id": "r",
+      "op": "relation",
+      "symbol": "r"
+    },
+    {
+      "id": "x",
+      "op": "project",
+      "function": "r",
+      "ports": [
+        "a"
+      ]
+    }
+  ],
+  "result": "x"
+}

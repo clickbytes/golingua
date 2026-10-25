@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "steps": [
+    {
+      "id": "p",
+      "op": "value",
+      "value": {
+        "kind": "Param",
+        "id": "P",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    }
+  ],
+  "result": "p",
+  "parameters": [
+    {
+      "id": "P",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ],
+  "closed": true
+}

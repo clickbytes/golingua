@@ -271,11 +271,11 @@
         379
       ],
       "branch_name": "dse/02-01-metadata-registry",
-      "status": "ACTIVE",
+      "status": "DONE",
       "actual_base_sha": "03c82601c3963a322599877a5f504b16a2e9f098",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/02-01-metadata-registry",
-      "pr_url": null,
-      "merge_sha": null,
+      "pr_url": "https://github.com/clickbytes/golingua/pull/404",
+      "merge_sha": "99df8a34f8a5ed2d3321bcedbde821b91d52fc5c",
       "evidence_paths": [
         "docs/architecture/semantic-algebra/metadata.md",
         "docs/work/dse/evidence/02-01/README.md",
@@ -295,12 +295,17 @@
         380
       ],
       "branch_name": "dse/03-02-generic-operators",
-      "status": "QUEUED",
-      "actual_base_sha": null,
-      "branch_url": null,
+      "status": "ACTIVE",
+      "actual_base_sha": "f93cffb1f2c12bf8eacf40d141e98ab622948b40",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/03-02-generic-operators",
       "pr_url": null,
       "merge_sha": null,
-      "evidence_paths": []
+      "evidence_paths": [
+        "docs/architecture/semantic-algebra/composition.md",
+        "docs/work/dse/evidence/03-02/README.md",
+        "docs/work/dse/evidence/03-02/observations.jsonl",
+        "docs/work/dse/evidence/03-02/environment.json"
+      ]
     },
     {
       "issue_number": 382,

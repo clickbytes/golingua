@@ -36,6 +36,14 @@ type metadataReference struct {
 	ResourceFingerprint string `json:"resource_fingerprint"`
 }
 
+type algebraBuildOutput struct {
+	algebra.BuildResult
+	ResultKind   string                `json:"result_kind"`
+	Substitution *algebra.Substitution `json:"substitution,omitempty"`
+	Metadata     []metadataReference   `json:"metadata,omitempty"`
+	Diagnostics  []status.Diagnostic   `json:"diagnostics,omitempty"`
+}
+
 type metadataPackageOutput struct {
 	ID                  string                 `json:"id"`
 	Version             string                 `json:"version"`
@@ -81,6 +89,8 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 	index := 2
 	if args[1] == "check" {
 		options.command = "check"
+	} else if args[1] == "build" {
+		options.command = "build"
 	} else if args[1] == "metadata" {
 		if len(args) < 3 || (args[2] != "inspect" && args[2] != "validate") {
 			return options, "expected algebra metadata inspect or validate"
@@ -88,7 +98,7 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		options.command = "metadata_" + args[2]
 		index = 3
 	} else {
-		return options, "expected algebra check or algebra metadata"
+		return options, "expected algebra check, build, or metadata"
 	}
 	seenJSON, seenInput := false, false
 	for i := index; i < len(args); i++ {
@@ -101,8 +111,8 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			seenJSON = true
 			options.json = true
 		case "--input":
-			if options.command != "check" {
-				return options, "--input is only valid for algebra check"
+			if options.command != "check" && options.command != "build" {
+				return options, "--input is only valid for algebra check or build"
 			}
 			if seenInput {
 				return options, "duplicate --input flag"
@@ -138,6 +148,11 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 	if len(options.metadata) > 16 {
 		return options, "algebra metadata accepts at most 16 files"
 	}
+	if options.command == "build" {
+		if len(options.metadata) == 0 {
+			return options, "algebra build requires at least one --metadata file"
+		}
+	}
 	return options, ""
 }
 
@@ -172,6 +187,9 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 		if err != nil {
 			return writeAlgebraError(stdout, stderr, err)
 		}
+	}
+	if options.command == "build" {
+		return runAlgebraBuild(options, input, stdout, stderr, registries)
 	}
 	var reader io.Reader
 	if options.input == "" || options.input == "-" {
@@ -239,6 +257,88 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 		return ExitError
 	}
 	return exitCode(checked.Status)
+}
+
+func runAlgebraBuild(options algebraOptions, input io.Reader, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
+	if len(registries) == 0 {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeInvalid, Code: "MISSING_METADATA", Path: "metadata", Message: "algebra build requires at least one metadata package"})
+	}
+	var reader io.Reader
+	if options.input == "" || options.input == "-" {
+		if input == nil {
+			_, _ = fmt.Fprintln(stderr, "INFRASTRUCTURE_ERROR: stdin reader is unavailable")
+			return ExitError
+		}
+		reader = input
+	} else {
+		file, err := os.Open(options.input)
+		if err != nil {
+			_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not open algebra build input: %v\n", err)
+			return ExitError
+		}
+		defer file.Close()
+		reader = file
+	}
+	data, err := io.ReadAll(io.LimitReader(reader, algebra.MaxDocumentBytes+1))
+	if err != nil {
+		_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not read algebra build input: %v\n", err)
+		return ExitError
+	}
+	request, err := algebra.DecodeBuildRequest(data)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	context, err := metamodel.DeclarationContext(algebra.Document{SchemaVersion: algebra.SchemaVersion}, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	result, err := algebra.Build(context, request)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	if result.CanonicalDocument != nil && result.Expression != nil {
+		admission := *result.CanonicalDocument
+		admission.Sorts = nil
+		admission.Signatures = nil
+		checked, hydrated, err := metamodel.CheckDocument(admission, registries)
+		if err != nil {
+			return writeAlgebraError(stdout, stderr, err)
+		}
+		result.Status = checked.Status
+		result.Checked = &checked
+		for i := range hydrated.Signatures {
+			if hydrated.Signatures[i].Ports == nil {
+				hydrated.Signatures[i].Ports = []algebra.Port{}
+			}
+		}
+		result.CanonicalDocument = &hydrated
+	}
+	resultKind := ""
+	for _, record := range result.Trace {
+		if record.ID == result.ResultID {
+			resultKind = record.ResultKind
+			break
+		}
+	}
+	output := algebraBuildOutput{BuildResult: result, ResultKind: resultKind}
+	if resultKind == "substitution" {
+		substitution := result.Substitution
+		if substitution == nil {
+			substitution = algebra.Substitution{}
+		}
+		output.Substitution = &substitution
+	}
+	for _, registry := range registries {
+		output.Metadata = append(output.Metadata, metadataReference{ID: registry.ID(), Version: registry.Version(), ResourceFingerprint: registry.ResourceFingerprint()})
+	}
+	if result.Status == status.OutcomeIncomplete && result.Checked != nil && len(result.Checked.Holes) > 0 {
+		output.Diagnostics = []status.Diagnostic{{Code: "EXPRESSION_INCOMPLETE", Message: "typed holes remain unresolved", Path: "result.expression", Severity: status.SeverityWarning}}
+	}
+	if err := writeJSON(stdout, output); err != nil {
+		_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not serialize algebra build result: %v\n", err)
+		return ExitError
+	}
+	return exitCode(result.Status)
 }
 
 func readMetadataRegistries(paths []string) ([]*metamodel.Registry, error) {
