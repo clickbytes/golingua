@@ -37,6 +37,18 @@ type TranslationCase struct {
 	CoverageTags                            []string
 }
 
+// RefusalCase declares malformed or unsupported input that must be rejected.
+// It remains outside the registered translation inventory. Its PASS means
+// unsupported/invalid with no fabricated Meaning or text, except for exact
+// per-stage unknown allowances that include a diagnostic reason.
+type RefusalCase struct {
+	ID, Language, Input, Requirement string
+	InputOrigin, OwnerAcceptance     string
+	AllowUnknownAnalysis             bool
+	AllowUnknownTranslation          bool
+	UnknownAllowanceReason           string
+}
+
 // TextAssumptionRequirement ties a selected surface form to the assumption
 // value that licenses that exact form.
 type TextAssumptionRequirement struct {

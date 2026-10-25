@@ -184,6 +184,12 @@ Odtwórz cztery nowe przepływy negacji tym samym snapshotem:
 /tmp/golingua-a1-neg translate --from pl --to en --text 'Nauczyciel nie widzi psa.' --runtime-config /tmp/golingua-a1-neg-runtime.json --json
 ```
 
+## Odmowy i jawne założenia wieloznaczności
+
+Granice wejścia są osobną kategorią poza `translation.Cases`: 16 autorskich, wadliwych lub nieobsługiwanych wejść sprawdza natywną analizę i pipeline tłumaczenia, łącznie 32 kontrole. Odmowa zalicza się przy `unsupported`/`invalid` bez grafu Meaning ani tekstu. Wąsko dozwolone `unknown` wymaga niepustego uzasadnienia i diagnostyki wyłącznie dla pustego wejścia w natywnym analizatorze oraz nieznanych leksemów w analizatorze i przekładzie. Dla pustego wejścia pipeline tłumaczenia wymagany jest `invalid`. Inne `unknown`, `incomplete`, `ok`, błąd infrastruktury i limit zasobów nie są poprawną odmową. Raport oddziela te granice od zwykłych rekordów i ich liczników PASS. Pochodzenie danych nie oznacza akceptacji właściciela (`NOT_EVALUATED`).
+
+Dodatkowa kontrola `TestAmbiguityAssumptionsFollowRoles` tłumaczy rzeczywiste `Nauczyciel widzi psa.` PL→EN, wymaga czterech wariantów rodzajników i sprawdza, że każda założona wartość `determiner` ma ścieżkę do referenta roli `experiencer` albo `stimulus` zgodnego z niezależnym grafem Seeing.
+
 ## Odtworzenie zaobserwowanych przepływów TUI
 
 Obserwacje czterech przepływów identyfikacji wykonano w rzeczywistym terminalu z binarium zbudowanym na kodzie A1-T04 i izolowaną konfiguracją użytkownika. Uruchomienie w TTY (ścieżka binarium może wskazywać własny build):
