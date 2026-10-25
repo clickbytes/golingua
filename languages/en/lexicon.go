@@ -1277,7 +1277,7 @@ var englishCountNounLexemes = map[string]struct{}{
 	"en.hospital_institution.n": {}, "en.pizza_food.n": {}, "en.neighbor.n": {},
 	"en.customer.n": {}, "en.message.n": {}, "en.cat.n": {}, "en.bird.n": {},
 	"en.horse.n": {}, "en.city.n": {}, "en.apartment.n": {}, "en.river.n": {},
-	"en.sister.n": {}, "en.tree.n": {},
+	"en.sister.n": {}, "en.tree.n": {}, "en.window.n": {}, "en.apple_fruit.n": {}, "en.letter_document.n": {},
 }
 
 // LexicalDocument builds the English lexical records from Go declarations.

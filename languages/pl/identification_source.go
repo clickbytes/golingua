@@ -67,7 +67,7 @@ func addPolishIdentificationReferences(evidence runtime.CompositionEvidence, can
 				slotID, anchorValue = "member", "unresolved"
 			case sense == "pl.byc.class_membership" && frame == "pl.byc.class_membership.frame" && family == "construction:pl.identification_negative" && variant == "construction:pl.identification_negative.to":
 				slotID, anchorValue = "member", "unresolved"
-			case sense == "pl.czarny.black" && frame == "pl.czarny.black.frame" && family == "construction:pl.attribution" && variant == "construction:pl.attribution.ten":
+			case sense == "pl.czarny.black" && frame == "pl.czarny.black.frame" && family == "construction:pl.attribution" && (variant == "construction:pl.attribution.ten" || variant == "construction:pl.attribution.to"):
 				slotID, anchorValue = "bearer", "demonstrative"
 			default:
 				continue

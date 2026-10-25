@@ -370,7 +370,19 @@ func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.Meaning
 		case "concept:class_membership":
 			return mode == "proximal" || mode == "unresolved"
 		case "concept:black":
-			return mode == "proximal" || mode == "demonstrative"
+			gender, _, knownFeatures := polishIdentificationReferentFeatures(source, referentID, all)
+			if !knownFeatures {
+				return false
+			}
+			variant := candidate.CompiledVariant.Variant.ID.String()
+			switch gender {
+			case "masculine_animal":
+				return variant == "construction:pl.attribution.ten" && (mode == "proximal" || mode == "demonstrative")
+			case "neuter":
+				return variant == "construction:pl.attribution.to" && (mode == "proximal" || mode == "demonstrative")
+			default:
+				return false
+			}
 		}
 		return false
 	}
