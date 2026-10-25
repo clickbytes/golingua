@@ -81,18 +81,23 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
-		PhraseBuilder: polishIdentificationPhraseBuilder{inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
+		PhraseBuilder: polishPastSeeingPhraseBuilder{inner: polishIdentificationPhraseBuilder{inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
 			Categories: map[lexicon.PartOfSpeech][]construction.SlotCategory{
 				"noun": {construction.CategoryNP}, "verb": {construction.CategoryVP}, "adjective": {construction.CategoryAP},
 			},
 			CaseFeature: "case", CaseValues: caseValues,
-		}}},
+		}}}},
 		EvidenceBuilder: polishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), base: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true},
 			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
 				seeingSense: {
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
+					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "masculine_personal"},
+					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "feminine"},
+					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "neuter"},
+					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
+					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"},
 				},
 				hearingSense: {
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
@@ -127,6 +132,52 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 			AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "nie": true, "to": true, "ten": true, "jest": true},
 		}},
 	}, nil
+}
+
+type polishPastSeeingPhraseBuilder struct{ inner runtime.PhraseEvidenceBuilder }
+
+func (builder polishPastSeeingPhraseBuilder) Build(ctx context.Context, lattice analyzer.LexicalLattice) ([]parser.PhraseCandidate, parser.ParseContext, error) {
+	candidates, parseContext, err := builder.inner.Build(ctx, lattice)
+	if err != nil {
+		return nil, parser.ParseContext{}, err
+	}
+	filtered := make([]parser.PhraseCandidate, 0, len(candidates))
+	for _, candidate := range candidates {
+		if candidate.Category == construction.CategoryVP && candidate.LexemeID.String() == "lexeme:pl.widziec.v" &&
+			candidate.Features["tense"] == "past" && !polishPastSeeingVerbHasCompatibleSubject(candidate, candidates) {
+			continue
+		}
+		filtered = append(filtered, candidate)
+	}
+	return filtered, parseContext, nil
+}
+
+func polishPastSeeingVerbHasCompatibleSubject(verb parser.PhraseCandidate, candidates []parser.PhraseCandidate) bool {
+	hasKnownMismatch, hasCompatible, hasUnknown := false, false, false
+	for _, subject := range candidates {
+		if subject.Category != construction.CategoryNP || subject.TokenEnd != verb.TokenStart || subject.Features["case"] != "nominative" {
+			continue
+		}
+		subjectGender, subjectNumber := string(subject.Features["gender"]), string(subject.Features["number"])
+		verbGender, verbNumber := string(verb.Features["gender"]), string(verb.Features["number"])
+		if subjectGender == "" || subjectNumber == "" || verbGender == "" || verbNumber == "" {
+			hasUnknown = true
+			continue
+		}
+		expectedGender := subjectGender
+		if subjectNumber == "singular" && (subjectGender == "masculine_animal" || subjectGender == "masculine_inanimate") {
+			expectedGender = "masculine_personal"
+		}
+		if subjectNumber == "plural" && subjectGender != "masculine_personal" {
+			expectedGender = "non_masculine_personal"
+		}
+		if verbNumber == subjectNumber && verbGender == expectedGender {
+			hasCompatible = true
+		} else {
+			hasKnownMismatch = true
+		}
+	}
+	return !hasKnownMismatch || hasCompatible || hasUnknown
 }
 
 type polishSentenceEvidenceBuilder struct {

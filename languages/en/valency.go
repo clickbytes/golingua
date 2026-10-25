@@ -76,6 +76,11 @@ var englishReadingPastConstructionSource = provenance.SourceRef{
 	Version: "2026-10-23-g10-20", License: "internal", Author: "Codex by owner delegation",
 }
 
+var englishSeeingPastConstructionSource = provenance.SourceRef{
+	ID: "golingua-g11-r3-past-seeing-357", URI: "https://github.com/clickbytes/golingua/issues/357",
+	Version: "2026-10-25", License: "internal", Author: "Codex by owner delegation",
+}
+
 type frameDeclaration struct {
 	id, sense, family string
 	roles             []meaning.Role
@@ -125,6 +130,7 @@ var englishConstructionBindingDeclarations = append(append([]constructionBinding
 	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_mass_object"},
 	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive_negative", "en.transitive_negative.svo"},
 	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive_negative", "en.transitive_negative.svo.plural"},
+	{"en.see.visual", "en.see.visual.transitive", "en.transitive_past", "en.transitive_past.svo"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo.mass_object"},
 	{"en.get.receive", "en.get.receive.transitive", "en.transitive_past", "en.transitive_past.svo.indefinite_object"},
@@ -300,6 +306,11 @@ func CompileValency() (*valency.Index, error) {
 			}
 			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
 			if item.id == "en.see.visual.transitive" {
+				pastFamilyID, err := ids.NewConstructionID("en.transitive_past")
+				if err != nil {
+					return nil, fmt.Errorf("English past seeing frame family: %w", err)
+				}
+				frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, pastFamilyID)
 				attributedFamilyID, err := ids.NewConstructionID("en.attributed_seeing")
 				if err != nil {
 					return nil, fmt.Errorf("English attributed seeing frame family: %w", err)
@@ -345,6 +356,9 @@ func CompileValency() (*valency.Index, error) {
 }
 
 func englishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.sense == "en.see.visual" && item.family == "en.transitive_past" {
+		return englishSeeingPastConstructionSource
+	}
 	if item.family == "en.attributed_seeing" {
 		return englishAttributedSeeingSource
 	}

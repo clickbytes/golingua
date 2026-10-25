@@ -231,7 +231,7 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 				return nil, fmt.Errorf("Polish past predicate cannot realize the selected subject's lexical agreement class")
 			}
 			aspect := "perfective"
-			if predicate.Sense.ID.String() == "sense:pl.czytac.interpret" {
+			if predicate.Sense.ID.String() == "sense:pl.czytac.interpret" || predicate.Sense.ID.String() == "sense:pl.widziec.visual" {
 				// The approved reading lexeme is imperfective; do not assign the
 				// receiving route's perfective aspect to this distinct sense.
 				aspect = "imperfective"
@@ -476,6 +476,10 @@ func polishSubjectPastGender(source semantic.MeaningCandidate, predicate realize
 		switch gender {
 		case "masculine_personal", "feminine", "neuter":
 			return gender, true
+		case "masculine_animal", "masculine_inanimate":
+			if predicate.Sense.ID.String() == "sense:pl.widziec.visual" {
+				return "masculine_personal", true
+			}
 		default:
 			return "", false
 		}

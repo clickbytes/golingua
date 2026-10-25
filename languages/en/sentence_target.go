@@ -411,7 +411,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 	if candidate.CompiledVariant.Variant.DirectionPolicy == construction.DirectionAnalyze {
 		return false
 	}
-	if candidate.Sense.ID.String() == "sense:en.read.text" && !englishReadingTargetFamilyMatches(source, candidate, familyID, transitiveFamily, transitivePastFamily) {
+	if (candidate.Sense.ID.String() == "sense:en.read.text" || candidate.Sense.ID.String() == "sense:en.see.visual") && !englishPastTargetFamilyMatches(source, candidate, familyID, transitiveFamily, transitivePastFamily) {
 		return false
 	}
 	negativeRoute, isNegativeFamily := englishPresentNegationRouteForFamily(candidate.Family.Family.ID)
@@ -553,7 +553,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 	return true
 }
 
-func englishReadingTargetFamilyMatches(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, familyID, presentFamily, pastFamily string) bool {
+func englishPastTargetFamilyMatches(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, familyID, presentFamily, pastFamily string) bool {
 	if familyID != presentFamily && familyID != pastFamily {
 		return true
 	}
