@@ -49,6 +49,7 @@ Minimalne CI: formatowanie, vet, build, start CLI. Nie używamy CI jako językow
 21. [12 — decyzje/ryzyka](12-decisions-and-risks.md)
 22. [13 — EPIC-i i kolejność](13-issue-traceability.md)
 23. [14 — przykładowe przebiegi projektowe](14-worked-vertical-slices.md)
+24. [Semantic algebra / DSE contracts](semantic-algebra/README.md)
 
 Dokumenty 04 i 05 opisują typy/statusy oraz manifesty/pochodzenie; nie są bramkami do testów, goldów ani parity. G00-03 dodaje `04-results-and-limits.md`, a G00-04 dodaje `05-data-sources.md`. Nie tworzymy dokumentu `05-parity-policy.md`, generatorów raportów ani oracli.
 
