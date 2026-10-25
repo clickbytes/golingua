@@ -27,7 +27,7 @@
         377,
         378
       ],
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "branch_name": null,
       "actual_base_sha": null,
       "branch_url": null,
@@ -67,7 +67,7 @@
         381,
         383
       ],
-      "status": "QUEUED",
+      "status": "IN_PROGRESS",
       "branch_name": null,
       "actual_base_sha": null,
       "branch_url": null,
@@ -225,11 +225,11 @@
         377
       ],
       "branch_name": "dse/01-02-execution-runbook",
-      "status": "ACTIVE",
+      "status": "DONE",
       "actual_base_sha": "46f40097c238912ede3a64c004782b7e103307fc",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/01-02-execution-runbook",
-      "pr_url": null,
-      "merge_sha": null,
+      "pr_url": "https://github.com/clickbytes/golingua/pull/402",
+      "merge_sha": "2490ee34b9f427a6a6624c6106bb39654c02d703",
       "evidence_paths": [
         "docs/work/dse/README.md",
         "docs/work/dse/execution.md",
@@ -247,12 +247,17 @@
         378
       ],
       "branch_name": "dse/03-01-typed-ir",
-      "status": "QUEUED",
-      "actual_base_sha": null,
-      "branch_url": null,
+      "status": "ACTIVE",
+      "actual_base_sha": "ce4010c2548d8625da4f513cb7f54ecef5960410",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/03-01-typed-ir",
       "pr_url": null,
       "merge_sha": null,
-      "evidence_paths": []
+      "evidence_paths": [
+        "docs/architecture/semantic-algebra/ir.md",
+        "docs/work/dse/evidence/03-01/README.md",
+        "docs/work/dse/evidence/03-01/observations.jsonl",
+        "docs/work/dse/evidence/03-01/environment.json"
+      ]
     },
     {
       "issue_number": 380,

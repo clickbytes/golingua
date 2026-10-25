@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "signatures": [
+    {
+      "id": "r",
+      "ports": [
+        {
+          "role": "agent",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "time",
+          "type": {
+            "kind": "Interval"
+          }
+        }
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "alice",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "t0",
+      "type": {
+        "kind": "Interval"
+      }
+    }
+  ],
+  "expression": {
+    "kind": "And",
+    "operands": [
+      {
+        "kind": "Apply",
+        "function": {
+          "kind": "Lambda",
+          "id": "bound",
+          "label": "display x",
+          "type": {
+            "kind": "Entity"
+          },
+          "body": {
+            "kind": "Atom",
+            "symbol": "r",
+            "args": [
+              {
+                "role": "agent",
+                "value": {
+                  "kind": "Var",
+                  "id": "bound"
+                }
+              },
+              {
+                "role": "time",
+                "value": {
+                  "kind": "Ref",
+                  "id": "t0",
+                  "type": {
+                    "kind": "Interval"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "argument": {
+          "kind": "Param",
+          "id": "p",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      },
+      {
+        "kind": "Atom",
+        "symbol": "r",
+        "args": [
+          {
+            "role": "agent",
+            "value": {
+              "kind": "Ref",
+              "id": "alice",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          },
+          {
+            "role": "time",
+            "value": {
+              "kind": "Hole",
+              "id": "gap",
+              "type": {
+                "kind": "Interval"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "sorts": [
+    {
+      "id": "sort_q",
+      "label": "display only"
+    }
+  ],
+  "parameters": [
+    {
+      "id": "p",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ],
+  "closed": false,
+  "limits": {
+    "max_nodes": 50,
+    "max_depth": 16,
+    "max_type_depth": 16,
+    "max_symbols": 32,
+    "max_ports": 4
+  }
+}

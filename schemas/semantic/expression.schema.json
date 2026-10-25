@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/clickbytes/golingua/schemas/semantic/expression.schema.json",
+  "title": "GoLingua typed semantic expression document",
+  "description": "Strict version 1 in-memory expression and declarations. Runtime additionally enforces UTF-8 byte limits, duplicate-key rejection, and bounded JSON nesting before decoding.",
+  "$comment": "Maximum encoded document size is 1048576 bytes. Runtime limits: 4096 expression nodes, depth 64, type depth 32, 512 aggregate declarations, and 16 ports. Zero requested limits select defaults. Labels are presentation only.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "expression"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "sorts": {
+      "type": "array",
+      "maxItems": 512,
+      "items": {"$ref": "#/$defs/sort"}
+    },
+    "signatures": {
+      "type": "array",
+      "maxItems": 512,
+      "items": {"$ref": "#/$defs/signature"}
+    },
+    "parameters": {
+      "type": "array",
+      "maxItems": 512,
+      "items": {"$ref": "#/$defs/declaration"}
+    },
+    "references": {
+      "type": "array",
+      "maxItems": 512,
+      "items": {"$ref": "#/$defs/declaration"}
+    },
+    "closed": {"type": "boolean"},
+    "expression": {"$ref": "#/$defs/term"},
+    "limits": {"$ref": "#/$defs/limits"}
+  },
+  "$defs": {
+    "id": {"type": "string", "minLength": 1, "maxLength": 256, "$comment": "Runtime additionally enforces a maximum of 256 UTF-8 bytes."},
+    "label": {"type": "string", "maxLength": 1024, "$comment": "Optional presentation text only; runtime maximum: 1024 UTF-8 bytes."},
+    "sort": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {"id": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}}
+    },
+    "type": {
+      "oneOf": [
+        {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "Entity"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "Event"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "Interval"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "Prop"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "sort_id"], "properties": {"kind": {"const": "Nominal"}, "sort_id": {"$ref": "#/$defs/id"}}, "$comment": "sort_id must also appear in the document's sorts list."},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "from", "to"], "properties": {"kind": {"const": "Arrow"}, "from": {"$ref": "#/$defs/type"}, "to": {"$ref": "#/$defs/type"}}}
+      ]
+    },
+    "sort_type": {
+      "oneOf": [
+        {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "Entity"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "Event"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "Interval"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "Prop"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "sort_id"], "properties": {"kind": {"const": "Nominal"}, "sort_id": {"$ref": "#/$defs/id"}}, "$comment": "sort_id must also appear in the document's sorts list."}
+      ]
+    },
+    "port": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "type"],
+      "properties": {"role": {"$ref": "#/$defs/id"}, "type": {"$ref": "#/$defs/sort_type"}}
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "ports"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "label": {"$ref": "#/$defs/label"},
+        "ports": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/port"}}
+      }
+    },
+    "declaration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type"],
+      "properties": {"id": {"$ref": "#/$defs/id"}, "type": {"$ref": "#/$defs/type"}}
+    },
+    "argument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "value"],
+      "properties": {"role": {"$ref": "#/$defs/id"}, "value": {"$ref": "#/$defs/term"}}
+    },
+    "term": {
+      "oneOf": [
+        {"type": "object", "additionalProperties": false, "required": ["kind", "id"], "properties": {"kind": {"const": "Var"}, "id": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "id", "type"], "properties": {"kind": {"const": "Param"}, "id": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}, "type": {"$ref": "#/$defs/type"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "id", "type"], "properties": {"kind": {"const": "Ref"}, "id": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}, "type": {"$ref": "#/$defs/type"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "id", "type"], "properties": {"kind": {"const": "Hole"}, "id": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}, "type": {"$ref": "#/$defs/type"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "symbol", "args"], "properties": {"kind": {"const": "Atom"}, "label": {"$ref": "#/$defs/label"}, "symbol": {"$ref": "#/$defs/id"}, "args": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/argument"}}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "operands"], "properties": {"kind": {"const": "And"}, "label": {"$ref": "#/$defs/label"}, "operands": {"type": "array", "minItems": 1, "maxItems": 4096, "items": {"$ref": "#/$defs/term"}}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "id", "type", "body"], "properties": {"kind": {"const": "Exists"}, "id": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}, "type": {"$ref": "#/$defs/type"}, "body": {"$ref": "#/$defs/term"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "id", "type", "body"], "properties": {"kind": {"const": "Lambda"}, "id": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}, "type": {"$ref": "#/$defs/type"}, "body": {"$ref": "#/$defs/term"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "function", "argument"], "properties": {"kind": {"const": "Apply"}, "label": {"$ref": "#/$defs/label"}, "function": {"$ref": "#/$defs/term"}, "argument": {"$ref": "#/$defs/term"}}}
+      ]
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_nodes": {"type": "integer", "minimum": 0, "maximum": 4096},
+        "max_depth": {"type": "integer", "minimum": 0, "maximum": 64},
+        "max_type_depth": {"type": "integer", "minimum": 0, "maximum": 32},
+        "max_symbols": {"type": "integer", "minimum": 0, "maximum": 512},
+        "max_ports": {"type": "integer", "minimum": 0, "maximum": 16}
+      }
+    }
+  }
+}

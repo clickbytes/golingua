@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "signatures": [
+    {
+      "id": "r",
+      "ports": [
+        {
+          "role": "agent",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "time",
+          "type": {
+            "kind": "Interval"
+          }
+        }
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "alice",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "t0",
+      "type": {
+        "kind": "Interval"
+      }
+    }
+  ],
+  "expression": {
+    "kind": "Lambda",
+    "id": "b1",
+    "type": {
+      "kind": "Entity"
+    },
+    "label": "x",
+    "body": {
+      "kind": "Lambda",
+      "id": "b1",
+      "type": {
+        "kind": "Entity"
+      },
+      "label": "x",
+      "body": {
+        "kind": "Atom",
+        "symbol": "r",
+        "args": [
+          {
+            "role": "agent",
+            "value": {
+              "kind": "Var",
+              "id": "b1"
+            }
+          },
+          {
+            "role": "time",
+            "value": {
+              "kind": "Ref",
+              "id": "t0",
+              "type": {
+                "kind": "Interval"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "source_base_sha": "ce4010c2548d8625da4f513cb7f54ecef5960410",
+  "source_state": "working tree; exact source fingerprints below identify the implementation being built",
+  "binary_sha256": "9bd1a1ce1b1d0b39d52074a75ee21fac8f6778abe03cb8fb8e5eb8abd3f79c1d",
+  "go_version": "go version go1.27.0 linux/amd64",
+  "recorded_utc": "2026-10-25T21:39:40.932540+00:00",
+  "source_sha256": {
+    "internal/algebra/scope.go": "ecc3a25f7deea0633174100afa70384655f45e190b1e481bd0e2080c25fc63f5",
+    "internal/algebra/types.go": "c97fc33c1d910209907723872c5efe72bd8d916032038da873524bae5394c8d0",
+    "internal/algebra/check.go": "c6173a84f2fdba3590488e405382d0e126b9fe3ad2cf3f78501b26411cb2f93a",
+    "internal/algebra/terms.go": "2b3733f4bbeee2078736b302ee73272387f28b9867f9557e5189f665301500e6",
+    "internal/algebra/json.go": "5da276195a607279d5e6d97dd732458f5e5ffbf5c4afc473c65f532075b70213",
+    "internal/cli/algebra.go": "cf34be4a59c51d454ceb694a1968e03322f8d8d32d7fa5c3bda496c1c3b67dad",
+    "internal/cli/cli.go": "7780b043b02f759465262336ff26ca5373154032ddc33769786cfa88eaf5526c",
+    "schemas/semantic/expression.schema.json": "c5f30d865c7e743de9ac62452236cf93f06c2731ffb111683a58bda19b56b55d"
+  },
+  "technical_checks_observed": {
+    "gofmt": {
+      "argv": [
+        "gofmt",
+        "-l",
+        "internal/algebra/scope.go",
+        "internal/algebra/types.go",
+        "internal/algebra/check.go",
+        "internal/algebra/terms.go",
+        "internal/algebra/json.go",
+        "internal/cli/algebra.go",
+        "internal/cli/cli.go"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "go vet ./...": "exit 0, terminal observation before final CLI replay",
+    "go build -o /tmp/golingua-dse/bin/golingua ./cmd/golingua": "exit 0, terminal observation before final CLI replay"
+  },
+  "runtime_claim": "structural type/scope checking only; no reduction, evaluation, fact entailment, synthesis, registry or language integration claim",
+  "owner_language_acceptance": "NOT_EVALUATED",
+  "help": {
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua",
+      "--help"
+    ],
+    "exit_code": 0,
+    "stdout": "golingua v0 preview\nUsage: golingua --help | --version | capabilities --json | meaning canonicalize --json < meaning.json | meaning project --json < meaning.json | question --runtime-config <path> [--language pl|en] --json < question.json | translate --from <lang> --to <lang> --text <text> --json [--preview-id <id>] [--runtime-config <path>] | forms --language pl|en (--lexeme <id> --feature name=value... | --surface <form>) --json | catalog --summary|--details --json | snapshot --preview|--apply --store <path> --json\nAlgebra: golingua algebra check --input <file> --json or golingua algebra check --json < expression.json (or --input - for stdin); type and scope validation only.\nquestion executes typed MeaningGraph requests against caller-supplied FactSets; it does not parse natural language. With --language, supported answers use verified PL/EN sentence routes and retain proof evidence.\nCompiled PL/EN sentence adapters cover limited seeing, hearing, looking, and reading (present 3sg/3pl and past 3sg/3pl), bounded present negation for seeing/hearing/looking in 3sg/3pl (EN do/does not; PL nie), and receiving (past 3sg/3pl); Polish plural past requires known subject number and agreement class. Reading supports English simple past read and Polish czytać past forms in third-person singular and plural; plural English read remains tense-ambiguous. Identification classifies a compatible known referent (for example, cat or dog) and attributes black to that referent in the tested PL/EN routes. English realization retains this/that/it alternatives for unresolved reference and this/that for demonstrative reference, with explicit reference assumptions; Polish to/ten may carry a declared deixis loss when source proximity is not preserved. A bounded positive composition route supports a present seeing event with a black subject and an object, both singular, including compatible known nouns. Other modifier combinations, tenses, numbers, and unsupported or missing lexical forms are refused. These routes do not resolve entity identity or animal sex. translate requires --runtime-config with an active snapshot.\n",
+    "stderr": ""
+  },
+  "version": {
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua",
+      "--version"
+    ],
+    "exit_code": 0,
+    "stdout": "0.1.0-alpha.1\n",
+    "stderr": ""
+  },
+  "module_sha256": {
+    "go.mod": "1abbf9e7b21e7ed22f1d3eee1fbc78c493d3f6c6a66bc76f4d422386572b3806",
+    "go.sum": "7782d6c8de321f2f78c872559fb65c6f4c002e54e8d9d27c7df557e4b9752d92"
+  },
+  "schema_syntax": "JSON parsed; tagged variants reviewed against production codec; no external schema-validator dependency added"
+}
