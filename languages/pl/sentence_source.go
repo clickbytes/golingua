@@ -121,6 +121,7 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 				},
 				attributionSense: {
 					{"degree": "positive", "number": "singular", "gender": "masculine_animal", "case": "nominative"},
+					{"degree": "positive", "number": "singular", "gender": "neuter", "case": "nominative"},
 				},
 			},
 			AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "nie": true, "to": true, "ten": true, "jest": true},

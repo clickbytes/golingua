@@ -64,7 +64,7 @@ func polishNodeAttributes(supported map[ids.SenseID]bool, index *lexicon.Index, 
 						}
 					}
 					if candidate.Category == construction.CategoryAP && sense.String() == "sense:pl.czarny.black" &&
-						alternative.FamilyID.String() == "construction:pl.attribution" && alternative.VariantID.String() == "construction:pl.attribution.ten" {
+						alternative.FamilyID.String() == "construction:pl.attribution" && (alternative.VariantID.String() == "construction:pl.attribution.ten" || alternative.VariantID.String() == "construction:pl.attribution.to") {
 						if err := add(candidate.ID, meaning.TemporalFramePresent, ""); err != nil {
 							return nil, err
 						}

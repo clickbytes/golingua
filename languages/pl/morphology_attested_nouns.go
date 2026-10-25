@@ -94,6 +94,9 @@ var attestedNounForms = []attestedNounEntry{
 	{"pl.szkola.n", "szkoła", "feminine", [7]string{"szkoła", "szkoły", "szkole", "", "", "szkole", ""}, [7]string{"szkoły", "szkół", "", "szkoły", "", "", "szkoły"}},
 	{"pl.ksiazka.n", "książka", "feminine", [7]string{"książka", "książki", "książce", "książkę", "książką", "książce", "książko"}, [7]string{"książki", "książek", "książkom", "książki", "książkami", "książkach", "książki"}},
 	{"pl.reka.n", "ręka", "feminine", [7]string{"ręka", "ręki", "ręce", "rękę", "ręką", "ręce", "ręko"}, [7]string{"ręce", "rąk", "rękom", "ręce", "rękami", "rękach", "ręce"}},
+	{"pl.okno.n", "okno", "neuter", [7]string{"okno", "okna", "oknu", "okno", "oknem", "oknie", "okno"}, [7]string{"okna", "okien", "oknom", "okna", "oknami", "oknach", "okna"}},
+	{"pl.jablko.n", "jabłko", "neuter", [7]string{"jabłko", "jabłka", "jabłku", "jabłko", "jabłkiem", "jabłku", "jabłko"}, [7]string{"jabłka", "jabłek", "jabłkom", "jabłka", "jabłkami", "jabłkach", "jabłka"}},
+	{"pl.list.n", "list", "masculine_inanimate", [7]string{"list", "listu", "listowi", "list", "listem", "liście", "liście"}, [7]string{"listy", "listów", "listom", "listy", "listami", "listach", "listy"}},
 	{"pl.oko.n", "oko", "neuter", [7]string{"oko", "oka", "oku", "oko", "okiem", "oku", "oko"}, [7]string{"oczy", "oczu", "oczom", "oczy", "oczami", "oczach", "oczy"}},
 	{"pl.dziecko.n", "dziecko", "neuter", [7]string{"dziecko", "dziecka", "dziecku", "dziecko", "dzieckiem", "dziecku", "dziecko"}, [7]string{"dzieci", "dzieci", "dzieciom", "dzieci", "dziećmi", "dzieciach", "dzieci"}},
 	{"pl.stol.n", "stół", "masculine_inanimate", [7]string{"stół", "stołu", "stołowi", "stół", "stołem", "stole", "stole"}, [7]string{"stoły", "stołów", "stołom", "stoły", "stołami", "stołach", "stoły"}},
@@ -123,7 +126,7 @@ func attestedNounGender(lexemeID string) (string, bool) {
 	switch lexemeID {
 	case "pl.kot.n", "pl.ptak.n", "pl.kon.n":
 		return "masculine_animal", true
-	case "pl.miasto.n", "pl.mieszkanie.n":
+	case "pl.miasto.n", "pl.mieszkanie.n", "pl.okno.n", "pl.jablko.n":
 		return "neuter", true
 	case "pl.rzeka.n", "pl.siostra.n", "pl.mewa.n":
 		return "feminine", true
@@ -147,7 +150,7 @@ func attestedNounGender(lexemeID string) (string, bool) {
 		return "neuter", true
 	case "pl.dziecko.n":
 		return "neuter", true
-	case "pl.stol.n":
+	case "pl.stol.n", "pl.list.n":
 		return "masculine_inanimate", true
 	case "pl.nauczyciel.n":
 		return "masculine_personal", true

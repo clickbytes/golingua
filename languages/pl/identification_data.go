@@ -46,21 +46,24 @@ func identificationParadigms(profile *features.LanguageFeatureProfile) []morph.P
 		PrincipalPartRequirements: []morph.PrincipalPartRequirement{{
 			StemID: "pl_identification_czarny_form", PartID: "positive_singular_masculine_animal_nominative_form", Required: true,
 		}},
-		Cells: []morph.ParadigmCell{{
-			ID: "positive_singular_masculine_animal_nominative",
-			Features: []features.FeatureValue{
+		Cells: []morph.ParadigmCell{
+			{ID: "positive_singular_masculine_animal_nominative", Features: []features.FeatureValue{
 				{Feature: "case", State: features.StateKnown, Value: "nominative"},
 				{Feature: "degree", State: features.StateKnown, Value: "positive"},
 				{Feature: "gender", State: features.StateKnown, Value: "masculine_animal"},
 				{Feature: "number", State: features.StateKnown, Value: "singular"},
-			},
-		}},
-		Rules: []morph.CellRule{{
-			CellID:      "positive_singular_masculine_animal_nominative",
-			ProcedureID: "procedure:pl_identification_czarny_masculine_animal_nominative.positive_singular_masculine_animal_nominative",
-			Provenance:  polishIdentificationSource,
-			Steps:       []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "pl_identification_czarny_form"}},
-		}},
+			}},
+			{ID: "positive_singular_neuter_nominative", Features: []features.FeatureValue{
+				{Feature: "case", State: features.StateKnown, Value: "nominative"},
+				{Feature: "degree", State: features.StateKnown, Value: "positive"},
+				{Feature: "gender", State: features.StateKnown, Value: "neuter"},
+				{Feature: "number", State: features.StateKnown, Value: "singular"},
+			}},
+		},
+		Rules: []morph.CellRule{
+			{CellID: "positive_singular_masculine_animal_nominative", ProcedureID: "procedure:pl_identification_czarny_masculine_animal_nominative.positive_singular_masculine_animal_nominative", Provenance: polishIdentificationSource, Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "pl_identification_czarny_form"}}},
+			{CellID: "positive_singular_neuter_nominative", ProcedureID: "procedure:pl_identification_czarny_masculine_animal_nominative.positive_singular_neuter_nominative", Provenance: polishIdentificationSource, Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "pl_identification_czarny_form"}, {Kind: procedure.OperationStripSuffix, Suffix: "y"}, {Kind: procedure.OperationAppend, Text: "e"}}},
+		},
 	}
 	return []morph.Paradigm{verb, adjective}
 }

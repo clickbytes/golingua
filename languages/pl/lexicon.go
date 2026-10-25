@@ -45,6 +45,7 @@ var polishCountNounLexemes = map[string]struct{}{
 	"pl.szkola.n": {}, "pl.ksiazka.n": {}, "pl.reka.n": {}, "pl.oko.n": {},
 	"pl.dziecko.n": {}, "pl.stol.n": {}, "pl.nauczyciel.n": {}, "pl.lekarz.n": {},
 	"pl.samochod.n": {}, "pl.ryba.n": {}, "pl.szpital.n": {}, "pl.pizza.n": {},
+	"pl.okno.n": {}, "pl.jablko.n": {}, "pl.list.n": {},
 	"pl.sasiad.n": {}, "pl.klient.n": {}, "pl.wiadomosc.n": {}, "pl.kot.n": {},
 	"pl.ptak.n": {}, "pl.kon.n": {}, "pl.miasto.n": {}, "pl.mieszkanie.n": {},
 	"pl.rzeka.n": {}, "pl.siostra.n": {}, "pl.mewa.n": {}, "pl.drzewo.n": {},

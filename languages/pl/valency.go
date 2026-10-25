@@ -55,6 +55,7 @@ var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"pl.byc.class_membership", "pl.byc.class_membership.frame", "pl.identification", "pl.identification.to"},
 	{"pl.byc.class_membership", "pl.byc.class_membership.frame", "pl.identification_negative", "pl.identification_negative.to"},
 	{"pl.czarny.black", "pl.czarny.black.frame", "pl.attribution", "pl.attribution.ten"},
+	{"pl.czarny.black", "pl.czarny.black.frame", "pl.attribution", "pl.attribution.to"},
 	{"pl.widziec.visual", "pl.widziec.visual.transitive_negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
 	{"pl.slyszec.auditory", "pl.slyszec.auditory.transitive_negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
 	{"pl.patrzec.directed", "pl.patrzec.directed.na", "pl.oblique_negative", "pl.oblique_negative.svo"},
