@@ -5,7 +5,9 @@ import (
 	"testing"
 
 	a1en "github.com/clickbytes/golingua/tests/languages/en/A1"
+	a1en11 "github.com/clickbytes/golingua/tests/languages/en/A1.1"
 	a1pl "github.com/clickbytes/golingua/tests/languages/pl/A1"
+	a1pl11 "github.com/clickbytes/golingua/tests/languages/pl/A1.1"
 	"github.com/clickbytes/golingua/tests/matrix"
 )
 
@@ -41,6 +43,8 @@ func TestInventory(t *testing.T) {
 	}
 	checkCases(t, "pl", a1pl.AnalysisCases, a1pl.RealizationCases, analysisLinks, realizationLinks)
 	checkCases(t, "en", a1en.AnalysisCases, a1en.RealizationCases, analysisLinks, realizationLinks)
+	checkCases(t, "pl-A1.1", a1pl11.CorpusAnalysisCases, a1pl11.CorpusRealizationCases, analysisLinks, realizationLinks)
+	checkCases(t, "en-A1.1", a1en11.CorpusAnalysisCases, a1en11.CorpusRealizationCases, analysisLinks, realizationLinks)
 }
 
 func validCaseID(id, from, to string) bool {
@@ -111,6 +115,20 @@ func checkCases(t *testing.T, lang string, analyses []matrix.AnalysisCase, reali
 		if c.Input == "" || len(c.MustPreserve) == 0 || c.InputOrigin == "" || c.OwnerAcceptance == "" {
 			t.Errorf("%s analysis %q lacks input, requirements, provenance, or owner status", lang, c.ID)
 		}
+		allowedMeanings := map[string]bool{c.MeaningID: true}
+		for _, meaningID := range c.AllowedMeaningIDs {
+			if meaningID == "" || allowedMeanings[meaningID] {
+				t.Errorf("%s analysis %q has an empty or duplicate allowed MeaningID %q", lang, c.ID, meaningID)
+			}
+			allowedMeanings[meaningID] = true
+		}
+		requiredMeanings := map[string]bool{c.MeaningID: true}
+		for _, meaningID := range c.RequiredMeaningIDs {
+			if meaningID == "" || requiredMeanings[meaningID] || !allowedMeanings[meaningID] {
+				t.Errorf("%s analysis %q has an empty, duplicate, or disallowed required MeaningID %q", lang, c.ID, meaningID)
+			}
+			requiredMeanings[meaningID] = true
+		}
 	}
 	for _, c := range realizations {
 		if c.ID == "" || realizationIDs[c.ID] {
@@ -130,6 +148,29 @@ func checkCases(t *testing.T, lang string, analyses []matrix.AnalysisCase, reali
 		for _, rule := range c.RequiredTextAssumptions {
 			if !allowed[rule.Text] || rule.Field == "" || rule.Value == "" {
 				t.Errorf("%s realization %q has invalid per-text assumption rule: %+v", lang, c.ID, rule)
+			}
+		}
+		variantIDs := map[string]bool{c.MeaningID: true}
+		for _, variant := range c.MeaningVariants {
+			if variant.MeaningID == "" || variantIDs[variant.MeaningID] || len(variant.AllowedTexts) == 0 {
+				t.Errorf("%s realization %q has an empty/duplicate Meaning variant or no allowed texts: %+v", lang, c.ID, variant)
+			}
+			variantIDs[variant.MeaningID] = true
+			variantAllowed := make(map[string]bool, len(variant.AllowedTexts))
+			for _, text := range variant.AllowedTexts {
+				variantAllowed[text] = true
+			}
+			for _, rule := range variant.RequiredTextAssumptions {
+				if !variantAllowed[rule.Text] || rule.Field == "" || rule.Value == "" {
+					t.Errorf("%s realization %q variant %q has invalid assumption rule: %+v", lang, c.ID, variant.MeaningID, rule)
+				}
+			}
+			variantRequired := make(map[string]bool, len(variant.RequiredTexts))
+			for _, text := range variant.RequiredTexts {
+				if variantRequired[text] || !variantAllowed[text] {
+					t.Errorf("%s realization %q variant %q requires a repeated or disallowed text %q", lang, c.ID, variant.MeaningID, text)
+				}
+				variantRequired[text] = true
 			}
 		}
 		required := make(map[string]bool, len(c.RequiredTexts))

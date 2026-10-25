@@ -4,7 +4,9 @@ import (
 	"fmt"
 
 	"github.com/clickbytes/golingua/tests/languages/en/A1"
+	a1en11 "github.com/clickbytes/golingua/tests/languages/en/A1.1"
 	"github.com/clickbytes/golingua/tests/languages/pl/A1"
+	a1pl11 "github.com/clickbytes/golingua/tests/languages/pl/A1.1"
 	"github.com/clickbytes/golingua/tests/matrix"
 )
 
@@ -25,9 +27,11 @@ func Resolve(c matrix.TranslationCase) (matrix.AnalysisCase, matrix.RealizationC
 	var realizations []matrix.RealizationCase
 	switch {
 	case c.From == "en" && c.To == "pl":
-		analyses, realizations = a1en.AnalysisCases, a1pl.RealizationCases
+		analyses = append(append([]matrix.AnalysisCase{}, a1en.AnalysisCases...), a1en11.CorpusAnalysisCases...)
+		realizations = append(append([]matrix.RealizationCase{}, a1pl.RealizationCases...), a1pl11.CorpusRealizationCases...)
 	case c.From == "pl" && c.To == "en":
-		analyses, realizations = a1pl.AnalysisCases, a1en.RealizationCases
+		analyses = append(append([]matrix.AnalysisCase{}, a1pl.AnalysisCases...), a1pl11.CorpusAnalysisCases...)
+		realizations = append(append([]matrix.RealizationCase{}, a1en.RealizationCases...), a1en11.CorpusRealizationCases...)
 	default:
 		return matrix.AnalysisCase{}, matrix.RealizationCase{}, fmt.Errorf("unsupported translation direction %q to %q", c.From, c.To)
 	}

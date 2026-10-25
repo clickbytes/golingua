@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"reflect"
 	"strings"
@@ -77,6 +78,14 @@ func RunAnalysis(t *testing.T, lang features.LanguageID, cases []AnalysisCase) {
 			if err := meaning.ValidateMeaning(want, runtime.CoreGraph(), meaning.DefaultBudget()); err != nil {
 				t.Fatalf("INFRA: fixture %q does not validate against CORE: %v", c.MeaningID, err)
 			}
+			allowedIDs, requiredIDs, contractErr := caseMeaningIDs(c.MeaningID, c.AllowedMeaningIDs, c.RequiredMeaningIDs)
+			if contractErr != nil {
+				t.Fatalf("SPEC_PENDING: analysis meaning contract is invalid: %v", contractErr)
+			}
+			fixtures, fixtureErr := loadMeaningFixtures(allowedIDs, runtime)
+			if fixtureErr != nil {
+				t.Fatalf("SPEC_PENDING / NOT RUN: load allowed analysis meanings: %v", fixtureErr)
+			}
 			analyzer, exists := runtime.SourceAnalyzerFor(lang)
 			if !exists || analyzer == nil {
 				t.Fatalf("INFRA: source analyzer for %q is unavailable", lang)
@@ -93,8 +102,12 @@ func RunAnalysis(t *testing.T, lang features.LanguageID, cases []AnalysisCase) {
 			}
 			if result.Outcome == status.OutcomeUnsupported || len(result.Candidates) == 0 {
 				t.Errorf("GAP_ANALYZE: source adapter did not produce a supported candidate (status %s)", result.Outcome)
+				for _, meaningID := range MissingRequiredMeaningIDs(requiredIDs, nil) {
+					t.Errorf("FAIL: required Meaning %q was not produced", meaningID)
+				}
 				return
 			}
+			observedRequired := make(map[string]bool, len(requiredIDs))
 			for _, candidate := range result.Candidates {
 				if candidate.Status == status.OutcomeUnsupported || candidate.Meaning == nil {
 					t.Errorf("GAP_ANALYZE: candidate %q has no supported Meaning (status %s)", candidate.ID, candidate.Status)
@@ -102,17 +115,20 @@ func RunAnalysis(t *testing.T, lang features.LanguageID, cases []AnalysisCase) {
 				}
 				if candidate.Status != status.OutcomeOK {
 					t.Errorf("FAIL: candidate %q has status %s", candidate.ID, candidate.Status)
-					continue
 				}
 				if identification != nil {
 					matches, compareErr := IdentificationMatches(*identification, candidate)
 					if compareErr != nil || !matches {
 						t.Errorf("FAIL: candidate %q does not match identification contract (matches=%t, error=%v)", candidate.ID, matches, compareErr)
+					} else {
+						observedRequired[c.MeaningID] = true
 					}
 				} else {
-					matches, compareErr := GraphMatches(want, *candidate.Meaning)
+					meaningID, matches, compareErr := MatchAllowedMeaning(allowedIDs, fixtures, *candidate.Meaning)
 					if compareErr != nil || !matches {
-						t.Errorf("FAIL: candidate %q Meaning does not match fixture (matches=%t, error=%v)", candidate.ID, matches, compareErr)
+						t.Errorf("FAIL: candidate %q Meaning does not match an allowed fixture (matches=%t, error=%v)", candidate.ID, matches, compareErr)
+					} else {
+						observedRequired[meaningID] = true
 					}
 					for _, context := range candidate.Contexts {
 						for _, mention := range context.Context.Mentions {
@@ -122,6 +138,9 @@ func RunAnalysis(t *testing.T, lang features.LanguageID, cases []AnalysisCase) {
 						}
 					}
 				}
+			}
+			for _, meaningID := range MissingRequiredMeaningIDs(requiredIDs, observedRequired) {
+				t.Errorf("FAIL: required Meaning %q was not produced", meaningID)
 			}
 			if result.Outcome != status.OutcomeOK && result.Outcome != status.OutcomeAmbiguous {
 				t.Errorf("FAIL: source analysis returned status %s", result.Outcome)
@@ -145,45 +164,54 @@ func RunRealization(t *testing.T, lang features.LanguageID, cases []RealizationC
 			if gap := c.SemanticRequirement.RepresentationGap; gap != "" {
 				defer t.Errorf("GAP_I: %s", gap)
 			}
-			want, identification, ok, err := loadFixture(c.MeaningID)
+			contracts, err := realizationMeaningContracts(c)
 			if err != nil {
-				t.Fatalf("INFRA: build fixture %q: %v", c.MeaningID, err)
+				t.Fatalf("SPEC_PENDING: realization meaning contract is invalid: %v", err)
 			}
-			if !ok {
-				if gap := c.SemanticRequirement.RepresentationGap; gap != "" {
-					logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "independent_realization_executed": false, "reason": gap})
-					return
+			for _, contract := range contracts {
+				variant := realizationVariantCase(c, contract)
+				want, identification, ok, err := loadFixture(contract.MeaningID)
+				if err != nil {
+					t.Errorf("INFRA: build fixture %q: %v", contract.MeaningID, err)
+					continue
 				}
-				t.Errorf("SPEC_PENDING / NOT RUN: no independent Meaning fixture for %q", c.MeaningID)
-				return
-			}
-			runtime := Runtime(t)
-			if err := meaning.ValidateMeaning(want, runtime.CoreGraph(), meaning.DefaultBudget()); err != nil {
-				t.Fatalf("INFRA: fixture %q does not validate against CORE: %v", c.MeaningID, err)
-			}
-			realizer, exists := runtime.TargetRealizerFor(lang)
-			if !exists || realizer == nil {
-				t.Fatalf("INFRA: target realizer for %q is unavailable", lang)
-			}
-			candidate := semantic.MeaningCandidate{
-				ID: c.MeaningID, SemanticID: c.MeaningID, Meaning: &want,
-				Status:   status.OutcomeOK,
-				Evidence: semantic.EvidenceTrace{AlternativeID: c.MeaningID, Outcome: status.OutcomeOK},
-			}
-			if identification != nil {
-				candidate.Contexts = []semantic.MeaningContext{{Meaning: want, Context: identification.Context}}
-			}
-			result, realizeErr := realizer.Realize(context.Background(), candidate)
-			logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "result": result, "error": errorText(realizeErr)})
-			if realizeErr != nil {
-				if infraError(realizeErr) {
-					t.Errorf("INFRA: target realization %q: %v", c.ID, realizeErr)
-				} else {
-					t.Errorf("GAP_REALIZE: target realization %q failed: %v", c.ID, realizeErr)
+				if !ok {
+					if gap := c.SemanticRequirement.RepresentationGap; gap != "" {
+						logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "meaning_id": contract.MeaningID, "independent_realization_executed": false, "reason": gap})
+						continue
+					}
+					t.Errorf("SPEC_PENDING / NOT RUN: no independent Meaning fixture for %q", contract.MeaningID)
+					continue
 				}
-				return
+				runtime := Runtime(t)
+				if err := meaning.ValidateMeaning(want, runtime.CoreGraph(), meaning.DefaultBudget()); err != nil {
+					t.Errorf("INFRA: fixture %q does not validate against CORE: %v", contract.MeaningID, err)
+					continue
+				}
+				realizer, exists := runtime.TargetRealizerFor(lang)
+				if !exists || realizer == nil {
+					t.Fatalf("INFRA: target realizer for %q is unavailable", lang)
+				}
+				candidate := semantic.MeaningCandidate{
+					ID: contract.MeaningID, SemanticID: contract.MeaningID, Meaning: &want,
+					Status:   status.OutcomeOK,
+					Evidence: semantic.EvidenceTrace{AlternativeID: contract.MeaningID, Outcome: status.OutcomeOK},
+				}
+				if identification != nil {
+					candidate.Contexts = []semantic.MeaningContext{{Meaning: want, Context: identification.Context}}
+				}
+				result, realizeErr := realizer.Realize(context.Background(), candidate)
+				logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "meaning_id": contract.MeaningID, "result": result, "error": errorText(realizeErr)})
+				if realizeErr != nil {
+					if infraError(realizeErr) {
+						t.Errorf("INFRA: target realization %q: %v", c.ID, realizeErr)
+					} else {
+						t.Errorf("GAP_REALIZE: target realization %q failed: %v", c.ID, realizeErr)
+					}
+					continue
+				}
+				checkSurfaces(t, variant, result.Outcome, result.Alternatives)
 			}
-			checkSurfaces(t, c, result.Outcome, result.Alternatives)
 		})
 	}
 }
@@ -202,6 +230,30 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 		}
 		if !reflect.DeepEqual(analysis.SemanticRequirement, realization.SemanticRequirement) {
 			t.Fatalf("SPEC_PENDING: translation analysis and realization semantic requirements differ")
+		}
+		allowedIDs, requiredIDs, contractErr := caseMeaningIDs(analysis.MeaningID, analysis.AllowedMeaningIDs, analysis.RequiredMeaningIDs)
+		if contractErr != nil {
+			t.Fatalf("SPEC_PENDING: analysis meaning contract is invalid: %v", contractErr)
+		}
+		realizationContracts, contractErr := realizationMeaningContracts(realization)
+		if contractErr != nil {
+			t.Fatalf("SPEC_PENDING: realization meaning contract is invalid: %v", contractErr)
+		}
+		contractsByMeaning := make(map[string]RealizationCase, len(realizationContracts))
+		for _, contract := range realizationContracts {
+			contractsByMeaning[contract.MeaningID] = realizationVariantCase(realization, contract)
+		}
+		allowedSet := make(map[string]bool, len(allowedIDs))
+		for _, meaningID := range allowedIDs {
+			allowedSet[meaningID] = true
+			if _, exists := contractsByMeaning[meaningID]; !exists {
+				t.Fatalf("SPEC_PENDING: analysis allows Meaning %q without a target realization contract", meaningID)
+			}
+		}
+		for meaningID := range contractsByMeaning {
+			if !allowedSet[meaningID] {
+				t.Fatalf("SPEC_PENDING: target realization declares Meaning %q outside the source allowed set", meaningID)
+			}
 		}
 		gap := analysis.SemanticRequirement.RepresentationGap
 		if gap != "" {
@@ -229,6 +281,10 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 		runtime := Runtime(t)
 		if err := meaning.ValidateMeaning(want, runtime.CoreGraph(), meaning.DefaultBudget()); err != nil {
 			t.Fatalf("INFRA: fixture %q does not validate against CORE: %v", analysis.MeaningID, err)
+		}
+		fixtures, fixtureErr := loadMeaningFixtures(allowedIDs, runtime)
+		if fixtureErr != nil {
+			t.Fatalf("SPEC_PENDING / NOT RUN: load allowed translation meanings: %v", fixtureErr)
 		}
 		sourceGap := false
 		if identification != nil {
@@ -288,6 +344,9 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 				}
 			}
 			t.Errorf("%s: translation returned unsupported: %v", kind, result.Diagnostics)
+			for _, meaningID := range MissingRequiredMeaningIDs(requiredIDs, nil) {
+				t.Errorf("FAIL: translation omitted required Meaning %q", meaningID)
+			}
 			return
 		}
 		if len(result.Candidates) == 0 {
@@ -296,23 +355,146 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 				kind = "GAP_ANALYZE"
 			}
 			t.Errorf("%s: translation returned no candidates", kind)
+			for _, meaningID := range MissingRequiredMeaningIDs(requiredIDs, nil) {
+				t.Errorf("FAIL: translation omitted required Meaning %q", meaningID)
+			}
 			return
 		}
-		converted := make([]engine.SurfaceAlternative, 0, len(result.Candidates))
+		convertedByMeaning := make(map[string][]engine.SurfaceAlternative, len(allowedIDs))
+		observedMeaning := make(map[string]bool, len(allowedIDs))
 		for _, candidate := range result.Candidates {
 			if candidate.Meaning == nil {
 				t.Errorf("GAP_ANALYZE: translation candidate %q has no Meaning", candidate.ID)
-			} else if matches, compareErr := GraphMatches(want, *candidate.Meaning); compareErr != nil || !matches {
-				t.Errorf("FAIL: translation candidate %q changed Meaning (matches=%t, error=%v)", candidate.ID, matches, compareErr)
+				continue
 			}
-			converted = append(converted, engine.SurfaceAlternative{
+			meaningID, matches, compareErr := MatchAllowedMeaning(allowedIDs, fixtures, *candidate.Meaning)
+			if compareErr != nil || !matches {
+				t.Errorf("FAIL: translation candidate %q Meaning is not allowed (matches=%t, error=%v)", candidate.ID, matches, compareErr)
+				continue
+			}
+			observedMeaning[meaningID] = true
+			convertedByMeaning[meaningID] = append(convertedByMeaning[meaningID], engine.SurfaceAlternative{
 				ID: candidate.ID, Outcome: candidate.Outcome, Text: candidate.Text,
 				Assumptions: candidate.Assumptions, Losses: candidate.Losses,
 				Diagnostics: candidate.Diagnostics,
 			})
 		}
-		checkSurfaces(t, realization, result.Status, converted)
+		for _, meaningID := range MissingRequiredMeaningIDs(requiredIDs, observedMeaning) {
+			t.Errorf("FAIL: translation omitted required Meaning %q", meaningID)
+		}
+		for meaningID, surfaces := range convertedByMeaning {
+			checkSurfaces(t, contractsByMeaning[meaningID], result.Status, surfaces)
+		}
 	})
+}
+
+func caseMeaningIDs(primary string, allowed, required []string) ([]string, []string, error) {
+	if strings.TrimSpace(primary) == "" {
+		return nil, nil, errors.New("primary MeaningID is empty")
+	}
+	allowedIDs := []string{primary}
+	allowedSet := map[string]bool{primary: true}
+	for _, id := range allowed {
+		if strings.TrimSpace(id) == "" || allowedSet[id] {
+			return nil, nil, fmt.Errorf("allowed MeaningID is empty or duplicated: %q", id)
+		}
+		allowedSet[id] = true
+		allowedIDs = append(allowedIDs, id)
+	}
+	requiredIDs := []string{primary}
+	requiredSet := map[string]bool{primary: true}
+	for _, id := range required {
+		if strings.TrimSpace(id) == "" || requiredSet[id] {
+			return nil, nil, fmt.Errorf("required MeaningID is empty or duplicated: %q", id)
+		}
+		if !allowedSet[id] {
+			return nil, nil, fmt.Errorf("required MeaningID %q is not allowed", id)
+		}
+		requiredSet[id] = true
+		requiredIDs = append(requiredIDs, id)
+	}
+	return allowedIDs, requiredIDs, nil
+}
+
+func realizationMeaningContracts(c RealizationCase) ([]MeaningRealization, error) {
+	if strings.TrimSpace(c.MeaningID) == "" {
+		return nil, errors.New("primary MeaningID is empty")
+	}
+	contracts := []MeaningRealization{{MeaningID: c.MeaningID, AllowedTexts: c.AllowedTexts, RequiredTexts: c.RequiredTexts, RequiredTextAssumptions: c.RequiredTextAssumptions}}
+	seen := map[string]bool{c.MeaningID: true}
+	for _, variant := range c.MeaningVariants {
+		if strings.TrimSpace(variant.MeaningID) == "" || seen[variant.MeaningID] {
+			return nil, fmt.Errorf("variant MeaningID is empty or duplicated: %q", variant.MeaningID)
+		}
+		if len(variant.AllowedTexts) == 0 {
+			return nil, fmt.Errorf("variant MeaningID %q has no allowed texts", variant.MeaningID)
+		}
+		seen[variant.MeaningID] = true
+		contracts = append(contracts, variant)
+	}
+	return contracts, nil
+}
+
+func realizationVariantCase(parent RealizationCase, contract MeaningRealization) RealizationCase {
+	variant := parent
+	variant.MeaningID = contract.MeaningID
+	variant.AllowedTexts = contract.AllowedTexts
+	variant.RequiredTexts = contract.RequiredTexts
+	if contract.RequiredTextAssumptions != nil {
+		variant.RequiredTextAssumptions = contract.RequiredTextAssumptions
+	}
+	return variant
+}
+
+func loadMeaningFixtures(ids []string, runtime *engine.Engine) (map[string]meaning.Meaning, error) {
+	fixtures := make(map[string]meaning.Meaning, len(ids))
+	for _, id := range ids {
+		graph, _, ok, err := loadFixture(id)
+		if err != nil {
+			return nil, fmt.Errorf("build fixture %q: %w", id, err)
+		}
+		if !ok {
+			return nil, fmt.Errorf("no authored fixture for %q", id)
+		}
+		if err := meaning.ValidateMeaning(graph, runtime.CoreGraph(), meaning.DefaultBudget()); err != nil {
+			return nil, fmt.Errorf("fixture %q does not validate against CORE: %w", id, err)
+		}
+		fixtures[id] = graph
+	}
+	return fixtures, nil
+}
+
+// MatchAllowedMeaning returns the unique authored MeaningID matched by a candidate.
+func MatchAllowedMeaning(ids []string, fixtures map[string]meaning.Meaning, candidate meaning.Meaning) (string, bool, error) {
+	matchedID := ""
+	for _, id := range ids {
+		fixture, ok := fixtures[id]
+		if !ok {
+			return "", false, fmt.Errorf("missing allowed fixture %q", id)
+		}
+		matches, err := GraphMatches(fixture, candidate)
+		if err != nil {
+			return "", false, err
+		}
+		if matches {
+			if matchedID != "" {
+				return "", false, fmt.Errorf("candidate matches multiple allowed meanings: %q and %q", matchedID, id)
+			}
+			matchedID = id
+		}
+	}
+	return matchedID, matchedID != "", nil
+}
+
+// MissingRequiredMeaningIDs reports required readings not observed in a result.
+func MissingRequiredMeaningIDs(required []string, observed map[string]bool) []string {
+	var missing []string
+	for _, id := range required {
+		if !observed[id] {
+			missing = append(missing, id)
+		}
+	}
+	return missing
 }
 
 func checkSurfaces(t *testing.T, c RealizationCase, outcome status.OutcomeKind, surfaces []engine.SurfaceAlternative) {
@@ -469,6 +651,9 @@ func loadFixture(id string) (meaning.Meaning, *interlingua.IdentificationMeaning
 		return graph, identification, ok, err
 	}
 	if graph, ok, err := interlingua.Seeing(id); err != nil || ok {
+		return graph, nil, ok, err
+	}
+	if graph, ok, err := interlingua.CorpusEvent(strings.TrimPrefix(id, "corpus.")); err != nil || ok {
 		return graph, nil, ok, err
 	}
 	if graph, ok, err := interlingua.Reading(id); err != nil || ok {
