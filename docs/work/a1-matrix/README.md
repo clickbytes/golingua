@@ -49,3 +49,8 @@ Dodano 40 par / 80 kierunków, domykając wybrane 56 par A1.10. Zwykłe ramy i l
 ## #344 plural-only door correction
 
 Pairs A1.8 negation 9, 25, and 38 now keep Polish `drzwi` count unresolved in source I while English singular sources remain one. This is a contract correction from the architecture rule, not an engine change or owner approval. See [brief](344-door-count-brief.md) and [results](344-door-count-results.md). OwnerAcceptance: `NOT_EVALUATED`.
+
+
+## #344 M8-CASE42 — A1.11 case and adjective order
+
+Added 42 selected pairs / 84 directions. OVS and dative/accusative-fronted inputs retain ordinary role-based I graphs; on-support, open-state, instrument-role, writing-with-instrument, reciprocal conversation, and accompaniment gaps remain explicit without substitute graphs. Row 6 keeps Polish `drzwi` count unknown. Full list and observations: [brief](344-case-brief.md), [selection](344-case-selection.md), [results](344-case-results.md). OwnerAcceptance: `NOT_EVALUATED`.
