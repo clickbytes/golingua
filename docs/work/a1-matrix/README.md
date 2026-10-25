@@ -54,3 +54,8 @@ Pairs A1.8 negation 9, 25, and 38 now keep Polish `drzwi` count unresolved in so
 ## #344 M8-CASE42 — A1.11 case and adjective order
 
 Added 42 selected pairs / 84 directions. OVS and dative/accusative-fronted inputs retain ordinary role-based I graphs; on-support, open-state, instrument-role, writing-with-instrument, reciprocal conversation, and accompaniment gaps remain explicit without substitute graphs. Row 6 keeps Polish `drzwi` count unknown. Full list and observations: [brief](344-case-brief.md), [selection](344-case-selection.md), [results](344-case-results.md). OwnerAcceptance: `NOT_EVALUATED`.
+
+
+## #344 M8-AMB43 — A1.12 ambiguity and reference
+
+Added 43 selected pairs / 86 directions. The independent catalogue preserves licensed read frames, child readings, Polish role swaps, deictic anchors, entity counts, and distinct mentions; unsupported scope, attachment, and parent binding remain full I gaps. See [brief](344-ambiguity-brief.md), [selection](344-ambiguity-selection.md), and [results](344-ambiguity-results.md). OwnerAcceptance: `NOT_EVALUATED`.

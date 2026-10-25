@@ -818,6 +818,12 @@ func loadFixture(id string) (meaning.Meaning, *interlingua.IdentificationMeaning
 		}
 		return fixture.Graph, &fixture, ok, err
 	}
+	if fixture, ok, err := interlingua.AmbiguityExpansion(id); err != nil || ok {
+		if len(fixture.Context.Mentions) == 0 {
+			return fixture.Graph, nil, ok, err
+		}
+		return fixture.Graph, &fixture, ok, err
+	}
 	if fixture, ok, err := interlingua.TimeExpansion(id); err != nil || ok {
 		if len(fixture.Context.Mentions) == 0 {
 			return fixture.Graph, nil, ok, err
