@@ -2,12 +2,12 @@
 
 > Observational report generated on push to `main`. Matrix outcomes do not gate the technical `go-ci` workflow.
 
-- Source SHA: `ad4788a37196e3032fdaf143ab7391edb5214fa0`
-- Generated (UTC): `2026-10-25T08:02:13Z`
+- Source SHA: `458af1b7a0e124d9695f9c55dc317be81895276c`
+- Generated (UTC): `2026-10-25T08:18:30Z`
 - Command: `go test ./tests/... -count=1 -v`
 - Command exit code: `1` (NONZERO)
-- Registered records: 24; record checks: 72
-- Additional observed checks: 152
+- Registered records: 56; record checks: 168
+- Additional observed checks: 154
 
 | Case ID | Direction | Analysis | Realization | Integration | Declared coverage tags |
 |---|---|---|---|---|---|
@@ -35,12 +35,46 @@
 | `A1-Q-002-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | reference, semantic_speech_act, yes_no_question |
 | `A1-Q-003-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | reference, semantic_speech_act, wh_location |
 | `A1-Q-004-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | reference, semantic_speech_act, wh_location |
+| `A1.1-AC-101-EN-PL` | EN → PL | FAIL | PASS | PASS | participant_roles, present, seeing, semantic_event, valency |
+| `A1.1-AC-102-PL-EN` | PL → EN | FAIL | PASS | PASS | participant_roles, present, seeing, semantic_event, valency |
+| `A1.1-AC-103-EN-PL` | EN → PL | FAIL | PASS | PASS | participant_roles, present, seeing, semantic_event, valency |
+| `A1.1-AC-104-PL-EN` | PL → EN | PASS | PASS | PASS | participant_roles, present, seeing, semantic_event, valency |
+| `A1.1-AC-105-EN-PL` | EN → PL | PASS | PASS | PASS | participant_roles, present, seeing, semantic_event, valency |
+| `A1.1-AC-106-PL-EN` | PL → EN | PASS | PASS | PASS | participant_roles, present, seeing, semantic_event, valency |
+| `A1.1-AC-107-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_roles, present, seeing, semantic_event, valency |
+| `A1.1-AC-108-PL-EN` | PL → EN | FAIL | PASS | PASS | participant_roles, present, seeing, semantic_event, valency |
+| `A1.1-AC-109-EN-PL` | EN → PL | PASS | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-110-PL-EN` | PL → EN | PASS | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-111-EN-PL` | EN → PL | FAIL | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-112-PL-EN` | PL → EN | PASS | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-113-EN-PL` | EN → PL | FAIL | PASS | FAIL | hearing, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-114-PL-EN` | PL → EN | PASS | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-115-EN-PL` | EN → PL | PASS | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-116-PL-EN` | PL → EN | PASS | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-117-EN-PL` | EN → PL | FAIL | PASS | PASS | looking, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-118-PL-EN` | PL → EN | FAIL | PASS | PASS | looking, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-119-EN-PL` | EN → PL | PASS | PASS | PASS | looking, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-120-PL-EN` | PL → EN | PASS | PASS | PASS | looking, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-121-EN-PL` | EN → PL | PASS | PASS | PASS | looking, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-122-PL-EN` | PL → EN | PASS | PASS | PASS | looking, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-123-EN-PL` | EN → PL | FAIL | PASS | FAIL | looking, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-124-PL-EN` | PL → EN | PASS | PASS | PASS | looking, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-125-EN-PL` | EN → PL | FAIL | PASS | PASS | participant_roles, past, receiving, semantic_event, valency |
+| `A1.1-AC-126-PL-EN` | PL → EN | FAIL | PASS | PASS | participant_roles, past, receiving, semantic_event, valency |
+| `A1.1-AC-127-EN-PL` | EN → PL | FAIL | PASS | PASS | participant_roles, past, receiving, semantic_event, valency |
+| `A1.1-AC-128-PL-EN` | PL → EN | FAIL | PASS | PASS | participant_roles, past, receiving, semantic_event, valency |
+| `A1.1-AC-129-EN-PL` | EN → PL | FAIL | PASS | PASS | participant_roles, past, receiving, semantic_event, valency |
+| `A1.1-AC-130-PL-EN` | PL → EN | FAIL | PASS | PASS | participant_roles, past, receiving, semantic_event, valency |
+| `A1.1-AC-131-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_roles, past, receiving, semantic_event, valency |
+| `A1.1-AC-132-PL-EN` | PL → EN | FAIL | PASS | FAIL | participant_roles, past, receiving, semantic_event, valency |
 
 ## Additional observed checks
 
 | Package | Check | Status |
 |---|---|---|
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestCompositionMeaning` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestCorpusEventFixturesValidateAndPreserveAuthoredStructure` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestCorpusMeaningAlternativesRequireEachAllowedReading` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestIdentificationMeaning` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/unresolved_time_and_multiplicity=_remain_plannable` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/unresolved_time_and_multiplicity=one_remain_plannable` | PASS |
@@ -199,23 +233,25 @@ Packages with no observed test run are reported as infrastructure/build failures
 
 | Package | Go summary | Observed test names |
 |---|---|---|
-| `github.com/clickbytes/golingua/tests/interlingua` | PASS | 38 |
+| `github.com/clickbytes/golingua/tests/interlingua` | PASS | 40 |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | FAIL | 102 |
+| `github.com/clickbytes/golingua/tests/languages/en/A1.1` | FAIL | 34 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | FAIL | 91 |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1.1` | FAIL | 34 |
 | `github.com/clickbytes/golingua/tests/matrix` | PASS | 1 |
 | `github.com/clickbytes/golingua/tests/translation` | PASS | 16 |
-| `github.com/clickbytes/golingua/tests/translation/en-pl` | FAIL | 16 |
-| `github.com/clickbytes/golingua/tests/translation/pl-en` | FAIL | 16 |
+| `github.com/clickbytes/golingua/tests/translation/en-pl` | FAIL | 32 |
+| `github.com/clickbytes/golingua/tests/translation/pl-en` | FAIL | 32 |
 | `(package summary not observed)` | NOT RUN | 0 |
 
 ## Declared coverage
 
 Declared tags are metadata attached to records; they do not prove that a construction executed successfully.
 
-case: 5 records | clause_negation: 4 records | determiner_ambiguity: 2 records | exactly_two: 2 records | locative: 2 records | number_morphology: 2 records | participant_roles: 8 records | reference: 8 records | semantic_classification: 2 records | semantic_location: 2 records | semantic_polarity_scope: 4 records | semantic_possession: 4 records | semantic_predicate: 4 records | semantic_property_black: 2 records | semantic_quantity: 2 records | semantic_speech_act: 4 records | valency: 8 records | wh_location: 2 records | yes_no_question: 2 records
+case: 5 records | clause_negation: 4 records | determiner_ambiguity: 2 records | exactly_two: 2 records | hearing: 8 records | locative: 2 records | looking: 8 records | number_morphology: 2 records | participant_roles: 40 records | past: 8 records | present: 24 records | receiving: 8 records | reference: 8 records | seeing: 8 records | semantic_classification: 2 records | semantic_event: 32 records | semantic_location: 2 records | semantic_polarity_scope: 4 records | semantic_possession: 4 records | semantic_predicate: 4 records | semantic_property_black: 2 records | semantic_quantity: 2 records | semantic_speech_act: 4 records | valency: 40 records | wh_location: 2 records | yes_no_question: 2 records
 
 ## Counts
 
-PASS: 36 | FAIL: 0 | GAP_ANALYZE: 6 | GAP_REALIZE: 6 | GAP_I: 24 | SPEC_PENDING: 0 | INFRA: 0 | NOT RUN: 0
+PASS: 109 | FAIL: 23 | GAP_ANALYZE: 6 | GAP_REALIZE: 6 | GAP_I: 24 | SPEC_PENDING: 0 | INFRA: 0 | NOT RUN: 0
 
 `SPEC_PENDING` means the check ran but lacks a closed independent contract. `NOT RUN` means no matching record check result was observed. Additional checks retain their own observed statuses above. Consult the full raw log artifact for every run detail.
