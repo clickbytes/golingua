@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "closed": true,
+  "references": [
+    {
+      "id": "a",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "renamed_sort"
+      }
+    },
+    {
+      "id": "b",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "renamed_sort"
+      }
+    }
+  ],
+  "expression": {
+    "kind": "Atom",
+    "symbol": "renamed_symbol",
+    "args": [
+      {
+        "role": "renamed_entry",
+        "value": {
+          "kind": "Ref",
+          "id": "a",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "renamed_sort"
+          }
+        }
+      },
+      {
+        "role": "renamed_exit",
+        "value": {
+          "kind": "Ref",
+          "id": "b",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "renamed_sort"
+          }
+        }
+      }
+    ]
+  }
+}

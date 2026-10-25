@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "id": "parent.neutral.metadata",
+  "version": "1.0.0",
+  "profile": "positive-facts-v1",
+  "provenance": [
+    {
+      "id": "neutral-example-380",
+      "uri": "https://github.com/clickbytes/golingua/issues/380",
+      "version": "2026-10-25",
+      "license": "internal-neutral-example"
+    }
+  ],
+  "sorts": [],
+  "symbols": [
+    {
+      "id": "parent_alias",
+      "kind": "alias",
+      "label": "two-step relation pattern",
+      "description": "An explicit closed expression, retained as inspectable metadata only.",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "neutral-alias-two-hop",
+          "uri": "https://github.com/clickbytes/golingua/issues/380",
+          "version": "2026-10-25",
+          "license": "internal-neutral-example"
+        }
+      ],
+      "ports": [
+        {
+          "role": "left",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "q_entity"
+          }
+        },
+        {
+          "role": "right",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "q_entity"
+          }
+        }
+      ],
+      "alias": {
+        "interface": [
+          {
+            "port": "left",
+            "binder": "b_start"
+          },
+          {
+            "port": "right",
+            "binder": "b_end"
+          }
+        ],
+        "expression": {
+          "kind": "Lambda",
+          "id": "b_start",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "q_entity"
+          },
+          "body": {
+            "kind": "Lambda",
+            "id": "b_end",
+            "type": {
+              "kind": "Nominal",
+              "sort_id": "q_entity"
+            },
+            "body": {
+              "kind": "Atom",
+              "symbol": "two_hop_q",
+              "args": [
+                {
+                  "role": "left",
+                  "value": {
+                    "kind": "Var",
+                    "id": "b_start"
+                  }
+                },
+                {
+                  "role": "right",
+                  "value": {
+                    "kind": "Var",
+                    "id": "b_end"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "example.neutral.metadata",
+      "version": "1.0.0",
+      "fingerprint": "sha256:3a7030458704f5ccabaa6cd39e421fd17c744d390311d60c3fe98f78298d1910"
+    }
+  ],
+  "typical_edges": [],
+  "axioms": []
+}

@@ -1,0 +1,80 @@
+{
+  "binary": "/tmp/golingua-dse/bin/golingua",
+  "binary_sha256_before_new_package": "44715a4430b7b168db6e425c19d9ac08155d43ca8fd4646ae8bae8f0b4b25f1c",
+  "binary_mtime_ns": 1792967039951790344,
+  "new_package_created_utc": "2026-10-25T22:24:56.931664+00:00",
+  "new_package_path": "data/semantic/examples/metadata/after-build.json",
+  "new_package_mtime_ns": 1792967096924274939,
+  "new_package_sha256": "dde309c0cd1e565e136425b2b4ebf16ec88516d29ac74e27fe6f4b3cd3a98173",
+  "new_symbol": "relation_44715a4430b7",
+  "new_sort": "sort_44715a4430b7",
+  "new_roles": [
+    "entry_44715a4430b7",
+    "exit_44715a4430b7"
+  ],
+  "source_base_sha": "03c82601c3963a322599877a5f504b16a2e9f098",
+  "source_state": "working tree pinned by source hashes",
+  "binary_sha256_after": "44715a4430b7b168db6e425c19d9ac08155d43ca8fd4646ae8bae8f0b4b25f1c",
+  "recorded_utc": "2026-10-25T22:28:25.071135+00:00",
+  "go_version": "go version go1.27.0 linux/amd64",
+  "source_sha256": {
+    "internal/metamodel/validate.go": "6a844b59b1f51aac4cf0ef450776ee6b3fa46fc602b5b55ae10c8182cf05edd0",
+    "internal/metamodel/load.go": "e63a3913ecb7052b2a1e0dd355972dd63138debd65471154fc76fe2b94fa07a8",
+    "internal/metamodel/registry.go": "bd81ea314fdcd269ffd20f16f1843fe0ddf1035c95cb64481283e3ff1f5b756b",
+    "internal/metamodel/document.go": "4d7abf3e96159eba95fc54090d9d6ad1ba60d7e46f9190b50de5d021b90790bd",
+    "internal/algebra/scope.go": "ecc3a25f7deea0633174100afa70384655f45e190b1e481bd0e2080c25fc63f5",
+    "internal/algebra/types.go": "c97fc33c1d910209907723872c5efe72bd8d916032038da873524bae5394c8d0",
+    "internal/algebra/check.go": "d42fbf16e9973878c46a95ff15cffff3968436096920e51b12aece1708835ed8",
+    "internal/algebra/terms.go": "2b3733f4bbeee2078736b302ee73272387f28b9867f9557e5189f665301500e6",
+    "internal/algebra/json.go": "9b665bbce38253513e9a274faaae8a3784881d4a413039f94115371cbe285a16",
+    "internal/cli/algebra.go": "f34501a96bfa79aa2382110a4e47b1e84d3fbba7e5c4dffec69a6f8fc7af1d7f",
+    "internal/cli/cli.go": "8cf9cc213ac18d6fab87e664d2bdf8b1b059970ed02f7fba3e12e4b800ce9eb4"
+  },
+  "technical_checks": {
+    "gofmt": {
+      "argv": [
+        "gofmt",
+        "-l",
+        "internal/metamodel/validate.go",
+        "internal/metamodel/load.go",
+        "internal/metamodel/registry.go",
+        "internal/metamodel/document.go",
+        "internal/algebra/scope.go",
+        "internal/algebra/types.go",
+        "internal/algebra/check.go",
+        "internal/algebra/terms.go",
+        "internal/algebra/json.go",
+        "internal/cli/algebra.go",
+        "internal/cli/cli.go"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "go vet ./...": "exit0 terminal observation after the exact alias pointer correction",
+    "go build -o /tmp/golingua-dse/bin/golingua ./cmd/golingua": "exit0 before the new package was created"
+  },
+  "help": {
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua",
+      "--help"
+    ],
+    "exit_code": 0,
+    "stdout": "golingua v0 preview\nUsage: golingua --help | --version | capabilities --json | meaning canonicalize --json < meaning.json | meaning project --json < meaning.json | question --runtime-config <path> [--language pl|en] --json < question.json | translate --from <lang> --to <lang> --text <text> --json [--preview-id <id>] [--runtime-config <path>] | forms --language pl|en (--lexeme <id> --feature name=value... | --surface <form>) --json | catalog --summary|--details --json | snapshot --preview|--apply --store <path> --json\nAlgebra: golingua algebra check --input <file> [--metadata <package.json> ...] --json (or stdin with --input -); golingua algebra metadata inspect|validate --metadata <package.json> [--metadata <package.json> ...] --json. Metadata files are explicit inputs; validation is structural and does not prove world truth.\nquestion executes typed MeaningGraph requests against caller-supplied FactSets; it does not parse natural language. With --language, supported answers use verified PL/EN sentence routes and retain proof evidence.\nCompiled PL/EN sentence adapters cover limited seeing, hearing, looking, and reading (present 3sg/3pl and past 3sg/3pl), bounded present negation for seeing/hearing/looking in 3sg/3pl (EN do/does not; PL nie), and receiving (past 3sg/3pl); Polish plural past requires known subject number and agreement class. Reading supports English simple past read and Polish czytać past forms in third-person singular and plural; plural English read remains tense-ambiguous. Identification classifies a compatible known referent (for example, cat or dog) and attributes black to that referent in the tested PL/EN routes. English realization retains this/that/it alternatives for unresolved reference and this/that for demonstrative reference, with explicit reference assumptions; Polish to/ten may carry a declared deixis loss when source proximity is not preserved. A bounded positive composition route supports a present seeing event with a black subject and an object, both singular, including compatible known nouns. Other modifier combinations, tenses, numbers, and unsupported or missing lexical forms are refused. These routes do not resolve entity identity or animal sex. translate requires --runtime-config with an active snapshot.\n",
+    "stderr": ""
+  },
+  "version": {
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua",
+      "--version"
+    ],
+    "exit_code": 0,
+    "stdout": "0.1.0-alpha.1\n",
+    "stderr": ""
+  },
+  "module_sha256": {
+    "go.mod": "1abbf9e7b21e7ed22f1d3eee1fbc78c493d3f6c6a66bc76f4d422386572b3806",
+    "go.sum": "7782d6c8de321f2f78c872559fb65c6f4c002e54e8d9d27c7df557e4b9752d92"
+  },
+  "owner_language_acceptance": "NOT_EVALUATED"
+}

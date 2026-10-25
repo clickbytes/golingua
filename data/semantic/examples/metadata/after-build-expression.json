@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "closed": true,
+  "references": [
+    {
+      "id": "a",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "sort_44715a4430b7"
+      }
+    },
+    {
+      "id": "b",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "sort_44715a4430b7"
+      }
+    }
+  ],
+  "expression": {
+    "kind": "Atom",
+    "symbol": "relation_44715a4430b7",
+    "args": [
+      {
+        "role": "entry_44715a4430b7",
+        "value": {
+          "kind": "Ref",
+          "id": "a",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "sort_44715a4430b7"
+          }
+        }
+      },
+      {
+        "role": "exit_44715a4430b7",
+        "value": {
+          "kind": "Ref",
+          "id": "b",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "sort_44715a4430b7"
+          }
+        }
+      }
+    ]
+  }
+}

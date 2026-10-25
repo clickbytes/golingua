@@ -47,7 +47,7 @@
         384,
         385
       ],
-      "status": "QUEUED",
+      "status": "IN_PROGRESS",
       "branch_name": null,
       "actual_base_sha": null,
       "branch_url": null,
@@ -247,11 +247,11 @@
         378
       ],
       "branch_name": "dse/03-01-typed-ir",
-      "status": "ACTIVE",
+      "status": "DONE",
       "actual_base_sha": "ce4010c2548d8625da4f513cb7f54ecef5960410",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/03-01-typed-ir",
-      "pr_url": null,
-      "merge_sha": null,
+      "pr_url": "https://github.com/clickbytes/golingua/pull/403",
+      "merge_sha": "ad798d8bb44d9b1308067ed784c49e0639b4743b",
       "evidence_paths": [
         "docs/architecture/semantic-algebra/ir.md",
         "docs/work/dse/evidence/03-01/README.md",
@@ -271,12 +271,18 @@
         379
       ],
       "branch_name": "dse/02-01-metadata-registry",
-      "status": "QUEUED",
-      "actual_base_sha": null,
-      "branch_url": null,
+      "status": "ACTIVE",
+      "actual_base_sha": "03c82601c3963a322599877a5f504b16a2e9f098",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/02-01-metadata-registry",
       "pr_url": null,
       "merge_sha": null,
-      "evidence_paths": []
+      "evidence_paths": [
+        "docs/architecture/semantic-algebra/metadata.md",
+        "docs/work/dse/evidence/02-01/README.md",
+        "docs/work/dse/evidence/02-01/observations.jsonl",
+        "docs/work/dse/evidence/02-01/environment.json",
+        "docs/work/dse/evidence/02-01/invariants.json"
+      ]
     },
     {
       "issue_number": 381,

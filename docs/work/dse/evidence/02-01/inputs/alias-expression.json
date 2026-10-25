@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "references": [
+    {
+      "id": "start",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "q_entity"
+      }
+    },
+    {
+      "id": "finish",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "q_entity"
+      }
+    }
+  ],
+  "closed": true,
+  "expression": {
+    "kind": "Atom",
+    "symbol": "two_hop_q",
+    "args": [
+      {
+        "role": "left",
+        "value": {
+          "kind": "Ref",
+          "id": "start",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "q_entity"
+          }
+        }
+      },
+      {
+        "role": "right",
+        "value": {
+          "kind": "Ref",
+          "id": "finish",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "q_entity"
+          }
+        }
+      }
+    ]
+  }
+}
