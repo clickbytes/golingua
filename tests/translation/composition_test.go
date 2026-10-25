@@ -26,7 +26,7 @@ func TestCompositionTranslation(t *testing.T) {
 	}
 	for _, tc := range cases {
 		t.Run(tc.id+" EN-to-PL", func(t *testing.T) {
-			checkCompositionTranslation(t, runtime, tc.id, "en", "pl", tc.enInput, status.OutcomeIncomplete, []string{tc.plInput})
+			checkCompositionTranslation(t, runtime, tc.id, "en", "pl", tc.enInput, status.OutcomeOK, []string{tc.plInput})
 		})
 		t.Run(tc.id+" PL-to-EN", func(t *testing.T) {
 			checkCompositionTranslation(t, runtime, tc.id, "pl", "en", tc.plInput, status.OutcomeAmbiguous, englishCompositionTextSet(tc.subject, tc.object))
@@ -54,13 +54,17 @@ func checkCompositionTranslation(t *testing.T, runtime *engine.Engine, fixtureID
 		t.Fatalf("translation has no candidates: status=%s diagnostics=%+v", result.Status, result.Diagnostics)
 	}
 	texts := make(map[string]bool, len(result.Candidates))
+	wantCandidateOutcome := status.OutcomeIncomplete
+	if from == "en" {
+		wantCandidateOutcome = status.OutcomeOK
+	}
 	for _, candidate := range result.Candidates {
 		if candidate.Meaning == nil || candidate.Text == "" {
 			t.Errorf("candidate %q lacks a complete Meaning or surface (outcome=%s)", candidate.ID, candidate.Outcome)
 			continue
 		}
-		if candidate.Outcome != status.OutcomeIncomplete {
-			t.Errorf("candidate %q has unsupported/unexpected outcome %s", candidate.ID, candidate.Outcome)
+		if candidate.Outcome != wantCandidateOutcome {
+			t.Errorf("candidate %q has unexpected outcome %s; want %s", candidate.ID, candidate.Outcome, wantCandidateOutcome)
 		}
 		matches, compareErr := matrix.GraphMatches(want, *candidate.Meaning)
 		if compareErr != nil || !matches {
@@ -69,27 +73,21 @@ func checkCompositionTranslation(t *testing.T, runtime *engine.Engine, fixtureID
 		if len(candidate.Losses) != 0 {
 			t.Errorf("candidate %q loses Meaning fields: %+v", candidate.ID, candidate.Losses)
 		}
-		for _, assumption := range candidate.Assumptions {
-			if from == "en" && (assumption.Field != "person" || assumption.Value != "third") {
-				t.Errorf("EN->PL candidate %q has an unlicensed assumption: %+v", candidate.ID, assumption)
-			}
-		}
 		if from == "pl" {
 			assertCompositionDeterminerAssumptions(t, candidate)
 		} else {
-			for _, diagnostic := range candidate.Diagnostics {
-				if diagnostic.Code != "EXPLICIT_REALIZATION_ASSUMPTION" {
-					t.Errorf("EN->PL candidate %q has additional diagnostic: %+v", candidate.ID, diagnostic)
-				}
+			if len(candidate.Assumptions) != 0 {
+				t.Errorf("EN->PL candidate %q has unexpected assumptions: %+v", candidate.ID, candidate.Assumptions)
+			}
+			if len(candidate.Diagnostics) != 0 {
+				t.Errorf("EN->PL candidate %q has unexpected diagnostics: %+v", candidate.ID, candidate.Diagnostics)
 			}
 		}
 		texts[candidate.Text] = true
 	}
 	if from == "en" {
-		for _, diagnostic := range result.Diagnostics {
-			if diagnostic.Code != "TRANSLATION_NOT_OK" {
-				t.Errorf("EN->PL result has additional diagnostic: %+v", diagnostic)
-			}
+		if len(result.Diagnostics) != 0 {
+			t.Errorf("EN->PL result has unexpected diagnostics: %+v", result.Diagnostics)
 		}
 	}
 	gotTexts := make([]string, 0, len(texts))

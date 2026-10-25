@@ -1,0 +1,677 @@
+{
+  "schema_version": 1,
+  "language": "pl",
+  "family": {
+    "id": "construction:pl.transitive_personal",
+    "language": "pl",
+    "slot_specs": [
+      {
+        "id": "subject",
+        "position": 0,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 0,
+          "maximum": 1
+        },
+        "optionality": "optional"
+      },
+      {
+        "id": "verb",
+        "position": 1,
+        "category": "VP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "object",
+        "position": 2,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      }
+    ],
+    "constraints": [],
+    "provenance": {
+      "id": "golingua-pl-personal-construction-358",
+      "path": "languages/pl/constructions/transitive_personal.json",
+      "version": "2026-10-25-358",
+      "license": "internal",
+      "author": "Codex by owner delegation"
+    },
+    "capabilities": [
+      "implicit_participant"
+    ]
+  },
+  "variants": [
+    {
+      "id": "construction:pl.transitive_personal.prodrop.present.first.singular",
+      "family_id": "construction:pl.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "person",
+          "value": "first"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-personal-construction-358",
+        "path": "languages/pl/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.transitive_personal.prodrop.present.first.plural",
+      "family_id": "construction:pl.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "person",
+          "value": "first"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "number",
+          "value": "plural"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-personal-construction-358",
+        "path": "languages/pl/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.transitive_personal.prodrop.present.second.singular",
+      "family_id": "construction:pl.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "person",
+          "value": "second"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-personal-construction-358",
+        "path": "languages/pl/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.transitive_personal.prodrop.present.second.plural",
+      "family_id": "construction:pl.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "person",
+          "value": "second"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "number",
+          "value": "plural"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-personal-construction-358",
+        "path": "languages/pl/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.transitive_personal.prodrop.past.first.singular.masculine_personal",
+      "family_id": "construction:pl.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "person",
+          "value": "first"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "past"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "gender",
+          "value": "masculine_personal"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-personal-construction-358",
+        "path": "languages/pl/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.transitive_personal.prodrop.past.first.singular.feminine",
+      "family_id": "construction:pl.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "person",
+          "value": "first"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "past"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "gender",
+          "value": "feminine"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-personal-construction-358",
+        "path": "languages/pl/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.transitive_personal.prodrop.past.first.plural.masculine_personal",
+      "family_id": "construction:pl.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "person",
+          "value": "first"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "number",
+          "value": "plural"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "past"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "gender",
+          "value": "masculine_personal"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-personal-construction-358",
+        "path": "languages/pl/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.transitive_personal.prodrop.past.first.plural.non_masculine_personal",
+      "family_id": "construction:pl.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "person",
+          "value": "first"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "number",
+          "value": "plural"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "past"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "gender",
+          "value": "non_masculine_personal"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-personal-construction-358",
+        "path": "languages/pl/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.transitive_personal.prodrop.past.second.singular.masculine_personal",
+      "family_id": "construction:pl.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "person",
+          "value": "second"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "past"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "gender",
+          "value": "masculine_personal"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-personal-construction-358",
+        "path": "languages/pl/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.transitive_personal.prodrop.past.second.singular.feminine",
+      "family_id": "construction:pl.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "person",
+          "value": "second"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "past"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "gender",
+          "value": "feminine"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-personal-construction-358",
+        "path": "languages/pl/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.transitive_personal.prodrop.past.second.plural.masculine_personal",
+      "family_id": "construction:pl.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "person",
+          "value": "second"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "number",
+          "value": "plural"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "past"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "gender",
+          "value": "masculine_personal"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-personal-construction-358",
+        "path": "languages/pl/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.transitive_personal.prodrop.past.second.plural.non_masculine_personal",
+      "family_id": "construction:pl.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "person",
+          "value": "second"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "number",
+          "value": "plural"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "past"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "gender",
+          "value": "non_masculine_personal"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-personal-construction-358",
+        "path": "languages/pl/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    }
+  ]
+}

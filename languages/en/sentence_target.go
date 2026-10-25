@@ -70,6 +70,9 @@ func NewSentenceTarget(snapshot *pack.Pack, registry *language.Registry) (*runti
 type englishSentenceFeatures struct{}
 
 func (englishSentenceFeatures) Features(_ context.Context, source semantic.MeaningCandidate, predicate realizer.TargetCandidate, slot construction.SlotSpec, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) ([]features.FeatureValue, error) {
+	if has, valid := englishParticipantContextIntent(source); has && !valid {
+		return nil, fmt.Errorf("English participant anchor context does not match the supplied Meaning")
+	}
 	if (predicate.Kind == meaning.KindEvent || predicate.Kind == meaning.KindState) && !englishPredicateEvidenceConsistent(source, predicate) {
 		return nil, fmt.Errorf("English target Meaning attributes conflict with explicit source evidence")
 	}
@@ -150,6 +153,26 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 		if tense == meaning.TemporalFramePast {
 			return englishFiniteVerbFeatures("past", "", ""), nil
 		}
+		subjectID := englishSubjectNode(source, predicate.NodeID)
+		if englishParticipantAnchorIntent(source, subjectID) {
+			if anchor, anchored := englishParticipantAnchor(source, subjectID); !anchored || anchor.Kind != "participant" {
+				return nil, fmt.Errorf("English participant anchor evidence is inconsistent")
+			} else {
+				person, grammaticalNumber := "", "singular"
+				switch anchor.Value {
+				case "speaker":
+					person = "first"
+				case "speaker_inclusive_group":
+					person = "first"
+					grammaticalNumber = "plural"
+				case "addressee":
+					person = "second"
+				}
+				if person != "" {
+					return englishFiniteVerbFeatures("present", person, grammaticalNumber), nil
+				}
+			}
+		}
 		number, _, known := englishPredicateNumber(source, predicate, candidates)
 		if !known {
 			return nil, fmt.Errorf("English present predicate cannot realize subject multiplicity")
@@ -164,6 +187,24 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 	}
 	if slot.Category != construction.CategoryNP || slot.ArgumentBinding == nil {
 		return nil, nil
+	}
+	if candidate.Lexeme.POS == "pronoun" {
+		if !englishParticipantPronoun(source, candidate.NodeID, candidate.Lexeme.ID.String()) {
+			return nil, fmt.Errorf("English participant pronoun requires its matching explicit anchor")
+		}
+		person, number := "second", "singular"
+		switch candidate.Lexeme.ID.String() {
+		case "lexeme:en.i.pron":
+			person = "first"
+		case "lexeme:en.we.pron":
+			person = "first"
+			number = "plural"
+		}
+		values := []features.FeatureValue{{Feature: "pronoun_case", State: features.StateKnown, Value: "subject"}, {Feature: "pronoun_person", State: features.StateKnown, Value: features.FeatureValueID(person)}}
+		if candidate.Lexeme.ID.String() != "lexeme:en.you.pron" {
+			values = append(values, features.FeatureValue{Feature: "number", State: features.StateKnown, Value: features.FeatureValueID(number)}, features.FeatureValue{Feature: "pronoun_number", State: features.StateKnown, Value: features.FeatureValueID(number)})
+		}
+		return values, nil
 	}
 	number, semanticNumber, ok := englishTargetNumber(source, candidate.NodeID, candidate.Lexeme.Properties, candidate.Lexeme.ParadigmID)
 	if !ok {
@@ -190,6 +231,9 @@ func (englishSentenceOperatorBuilder) Build(ctx context.Context, source semantic
 	}
 	if err := ctx.Err(); err != nil {
 		return nil, false, err
+	}
+	if intent, valid := englishParticipantContextIntent(source); intent && !valid {
+		return nil, false, englishParticipantContextError{}
 	}
 	scope, event, route, found := englishNegatedPresent(source)
 	if !found {
@@ -291,12 +335,20 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 	if predicate.TemporalFrame == "" {
 		assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning carries no temporal frame; this response uses the approved present-tense route"})
 	}
-	if values, found := runtime.SourceFeatures(source, "", selected.TransferBinding.CoreRef); !found || values["person"] == "" {
+	subjectID := englishSubjectNode(source, selected.NodeID)
+	_, participantPersonKnown := englishParticipantAnchor(source, subjectID)
+	subject, subjectExists := englishMeaningNode(source, subjectID)
+	nominalSubject := subjectExists && subject.Kind == meaning.KindReferent && !englishParticipantAnchorIntent(source, subjectID)
+	if values, found := runtime.SourceFeatures(source, "", selected.TransferBinding.CoreRef); (!found || values["person"] == "") && !participantPersonKnown && !nominalSubject {
 		assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning carries no grammatical person; this response uses the approved third-person form"})
 	}
 	if role := englishPredicateSubjectRoleForTarget(selected); role != "" {
 		if referent, found := englishReferentForRole(source, selected.NodeID, role); found && referent.Multiplicity == "" {
-			assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "number", Value: "lexeme_default", Reason: "Meaning carries no subject multiplicity; agreement follows the target subject's local lexical class"})
+			nodeID := englishSubjectNode(source, selected.NodeID)
+			anchor, anchored := englishParticipantAnchor(source, nodeID)
+			if !anchored || anchor.Value != "addressee" {
+				assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "number", Value: "lexeme_default", Reason: "Meaning carries no subject multiplicity; agreement follows the target subject's local lexical class"})
+			}
 		}
 	}
 	for _, participant := range predicate.Participants {
@@ -308,8 +360,15 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 		if !pathFound {
 			continue
 		}
-		if referent.Multiplicity == "" {
+		participantAnchor, participantAnchored := englishParticipantAnchor(source, referent.ID)
+		if referent.Multiplicity == "" && !(participantAnchored && participantAnchor.Value == "addressee") {
 			assumptions = append(assumptions, realizer.FieldAssumption{Path: referentPath, Field: "number", Value: "lexeme_default", Reason: "Meaning carries no referent multiplicity; the target uses its local number class"})
+		}
+		if participantAnchored && participantAnchor.Value == "addressee" && referent.Multiplicity != "" {
+			losses = append(losses, realizer.FieldLoss{Path: referentPath, Field: "number", Outcome: status.OutcomeIncomplete, Reason: "English you does not encode the source addressee number"})
+		}
+		if selected.Family.Family.ID.String() == "construction:en.transitive_personal" && (participant.Role == "experiencer" || participant.Role == "reader") {
+			continue
 		}
 		values, found := runtime.SourceFeatures(source, participant.Role, coreConcept(referent))
 		article, targetDeterminerKnown := englishDeterminerForRole(selected, participant.Role)
@@ -350,6 +409,9 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 type englishDeterminerCandidatePolicy struct{}
 
 func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) bool {
+	if has, valid := englishParticipantContextIntent(source); has && !valid {
+		return false
+	}
 	const (
 		transitiveFamily     = "construction:en.transitive"
 		transitivePastFamily = "construction:en.transitive_past"
@@ -408,9 +470,88 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 			return allowed && familyID == identification.family && candidate.Sense.ID.String() == identification.senseID
 		}
 	}
+	if englishParticipantAnchorIntent(source, candidate.NodeID) {
+		anchor, anchored := englishParticipantAnchor(source, candidate.NodeID)
+		if !anchored || anchor.Kind != "participant" || !englishParticipantPronoun(source, candidate.NodeID, candidate.Lexeme.ID.String()) {
+			return false
+		}
+	} else if candidate.Lexeme.POS == "pronoun" {
+		return false
+	}
+	subjectNode := englishSubjectNode(source, candidate.NodeID)
+	_, hasParticipantAnchor := englishParticipantAnchor(source, subjectNode)
+	if hasParticipantAnchor && familyID != "construction:en.transitive_personal" && (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState) {
+		return false
+	}
 	if candidate.CompiledVariant.Variant.DirectionPolicy == construction.DirectionAnalyze {
 		return false
 	}
+	if familyID == "construction:en.transitive_personal" && (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState) {
+		subject := englishSubjectNode(source, candidate.NodeID)
+		anchor, anchored := englishParticipantAnchor(source, subject)
+		if !anchored || anchor.Kind != "participant" {
+			return false
+		}
+		node, ok := englishMeaningNode(source, candidate.NodeID)
+		if !ok {
+			return false
+		}
+		tense := node.TemporalFrame
+		if tense == "" {
+			tense = meaning.TemporalFramePresent
+		}
+		expected := ""
+		if tense == meaning.TemporalFramePast {
+			if candidate.Sense.ID.String() == "sense:en.read.text" {
+				if anchor.Value == "speaker" || anchor.Value == "speaker_inclusive_group" {
+					expected = "construction:en.transitive_personal.svo.reading.first"
+				} else if anchor.Value == "addressee" {
+					expected = "construction:en.transitive_personal.svo.reading.second"
+				}
+			}
+		} else if anchor.Value == "speaker" || anchor.Value == "speaker_inclusive_group" {
+			expected = "construction:en.transitive_personal.svo.first"
+		} else if anchor.Value == "addressee" {
+			expected = "construction:en.transitive_personal.svo.second"
+		}
+		variantID := candidate.CompiledVariant.Variant.ID.String()
+		if expected == "" || (variantID != expected && !strings.HasPrefix(variantID, expected+".")) {
+			return false
+		}
+		determinerVariant, ok := englishDeterminerVariant(variantID)
+		if !ok {
+			return false
+		}
+		role := meaning.Role("stimulus")
+		if candidate.Sense.ID.String() == "sense:en.read.text" {
+			role = "material"
+		}
+		var ref meaning.Node
+		for _, part := range node.Participants {
+			if part.Role == role {
+				ref = findMeaningNode(*source.Meaning, part.Target)
+				break
+			}
+		}
+		if ref.ID == "" {
+			return false
+		}
+		lexical := []realizer.TargetCandidate{}
+		for _, item := range candidates {
+			if item.NodeID == ref.ID && item.Kind == meaning.KindReferent && item.Lexeme.ID.String() != "" {
+				lexical = append(lexical, item)
+			}
+		}
+		article, articleKnown := commonEnglishIndefiniteArticle(lexical)
+		if (determinerVariant.object == "a" || determinerVariant.object == "an") && (!articleKnown || article != determinerVariant.object) {
+			return false
+		}
+		if values, found := runtime.SourceFeatures(source, role, coreConcept(ref)); found && values["determiner"] != "" && string(values["determiner"]) != englishDeterminerFeature(determinerVariant.object) {
+			return false
+		}
+		return true
+	}
+
 	if (candidate.Sense.ID.String() == "sense:en.read.text" || candidate.Sense.ID.String() == "sense:en.see.visual") && !englishPastTargetFamilyMatches(source, candidate, familyID, transitiveFamily, transitivePastFamily) {
 		return false
 	}
@@ -425,7 +566,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 			return false
 		}
 	}
-	if candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || familyID != transitiveFamily && familyID != transitivePastFamily && familyID != obliqueFamily && familyID != attributedFamily && !isNegativeFamily {
+	if candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || familyID != transitiveFamily && familyID != transitivePastFamily && familyID != obliqueFamily && familyID != attributedFamily && familyID != "construction:en.transitive_personal" && !isNegativeFamily {
 		return true
 	}
 	variant, knownVariant := englishDeterminerVariant(candidate.CompiledVariant.Variant.ID.String())
@@ -440,6 +581,9 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 		return candidate.CompiledVariant.Variant.ID.String() == englishStandardDeterminerVariant(familyID)
 	}
 	for _, slot := range candidate.Family.Family.SlotSpecs {
+		if familyID == "construction:en.transitive_personal" && slot.ID == "subject" {
+			continue
+		}
 		if (slot.ID != "subject" && slot.ID != "object" && slot.ID != "target") || slot.ArgumentBinding == nil {
 			continue
 		}
@@ -582,6 +726,16 @@ type englishDeterminers struct {
 
 func englishDeterminerVariant(id string) (englishDeterminers, bool) {
 	variant, exists := englishDeterminerVariants[id]
+	if !exists && strings.HasPrefix(id, "construction:en.transitive_personal.") {
+		switch {
+		case strings.HasSuffix(id, ".indefinite_object"):
+			return englishDeterminers{object: "a"}, true
+		case strings.HasSuffix(id, ".indefinite_object_an"):
+			return englishDeterminers{object: "an"}, true
+		case strings.HasSuffix(id, ".reading.first") || strings.HasSuffix(id, ".reading.second") || strings.HasSuffix(id, ".svo.first") || strings.HasSuffix(id, ".svo.second"):
+			return englishDeterminers{object: "the"}, true
+		}
+	}
 	if !exists {
 		if id == "construction:en.transitive.svo.reading" || id == "construction:en.transitive_past.svo.reading.realize" {
 			variant, exists = englishDeterminerVariants["construction:en.transitive.svo"]
@@ -691,7 +845,7 @@ func englishStandardDeterminerVariant(familyID string) string {
 
 func englishDeterminerForRole(candidate realizer.TargetCandidate, role meaning.Role) (string, bool) {
 	familyID := candidate.Family.Family.ID.String()
-	if familyID != "construction:en.transitive" && familyID != "construction:en.transitive_past" && familyID != "construction:en.transitive_negative" && familyID != "construction:en.oblique" && familyID != "construction:en.oblique_negative" && familyID != "construction:en.attributed_seeing" {
+	if familyID != "construction:en.transitive" && familyID != "construction:en.transitive_past" && familyID != "construction:en.transitive_negative" && familyID != "construction:en.oblique" && familyID != "construction:en.oblique_negative" && familyID != "construction:en.attributed_seeing" && familyID != "construction:en.transitive_personal" {
 		return "", false
 	}
 	variant, exists := englishDeterminerVariant(candidate.CompiledVariant.Variant.ID.String())
@@ -782,4 +936,20 @@ func findMeaningNode(graph meaning.Meaning, id meaning.NodeID) meaning.Node {
 func coreConcept(node meaning.Node) ids.ConceptID {
 	id, _ := ids.ParseConceptID(string(node.Concept))
 	return id
+}
+
+func englishSubjectNode(source semantic.MeaningCandidate, predicateID meaning.NodeID) meaning.NodeID {
+	if source.Meaning == nil {
+		return ""
+	}
+	for _, node := range source.Meaning.Nodes {
+		if node.ID == predicateID {
+			for _, participant := range node.Participants {
+				if participant.Role == "experiencer" || participant.Role == "reader" {
+					return participant.Target
+				}
+			}
+		}
+	}
+	return ""
 }

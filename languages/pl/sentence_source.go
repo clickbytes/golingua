@@ -15,6 +15,7 @@ import (
 	"github.com/clickbytes/golingua/internal/runtime"
 	"github.com/clickbytes/golingua/internal/semantic"
 	"github.com/clickbytes/golingua/internal/text"
+	"github.com/clickbytes/golingua/internal/valency"
 )
 
 // NewSentenceSource builds the trusted Polish source stages against one exact
@@ -83,14 +84,14 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 		Core: snapshot.CoreGraph(), Constructions: registry,
 		PhraseBuilder: polishPastSeeingPhraseBuilder{inner: polishIdentificationPhraseBuilder{inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
 			Categories: map[lexicon.PartOfSpeech][]construction.SlotCategory{
-				"noun": {construction.CategoryNP}, "verb": {construction.CategoryVP}, "adjective": {construction.CategoryAP},
+				"noun": {construction.CategoryNP}, "pronoun": {construction.CategoryNP}, "verb": {construction.CategoryVP}, "adjective": {construction.CategoryAP},
 			},
 			CaseFeature: "case", CaseValues: caseValues,
 		}}}},
-		EvidenceBuilder: polishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), base: runtime.BareDeclarativeEvidenceBuilder{
+		EvidenceBuilder: polishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), valency: valencyIndex, constructions: registry, base: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true},
 			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
-				seeingSense: {
+				seeingSense: append([]map[features.FeatureID]features.FeatureValueID{
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
 					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "masculine_personal"},
@@ -98,16 +99,16 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "neuter"},
 					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
 					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"},
-				},
-				hearingSense: {
+				}, polishPersonalPredicateFeatures(false)...),
+				hearingSense: append([]map[features.FeatureID]features.FeatureValueID{
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
-				},
+				}, polishPersonalPredicateFeatures(false)...),
 				lookingSense: {
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
 				},
-				readingSense: {
+				readingSense: append([]map[features.FeatureID]features.FeatureValueID{
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
 					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "masculine_personal"},
@@ -115,7 +116,7 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "neuter"},
 					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
 					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"},
-				},
+				}, polishPersonalPredicateFeatures(true)...),
 				receivingSense: {
 					{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "singular"},
 					{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
@@ -141,8 +142,20 @@ func (builder polishPastSeeingPhraseBuilder) Build(ctx context.Context, lattice 
 	if err != nil {
 		return nil, parser.ParseContext{}, err
 	}
+	for index := range candidates {
+		candidate := &candidates[index]
+		if candidate.Category == construction.CategoryNP && !isPolishPersonalPronoun(candidate.LexemeID) {
+			if candidate.Features == nil {
+				candidate.Features = map[features.FeatureID]features.FeatureValueID{}
+			}
+			candidate.Features["person"] = "third"
+		}
+	}
 	filtered := make([]parser.PhraseCandidate, 0, len(candidates))
 	for _, candidate := range candidates {
+		if candidate.Category == construction.CategoryVP && !polishPersonalVerbHasCompatibleSubject(candidate, candidates) {
+			continue
+		}
 		if candidate.Category == construction.CategoryVP && candidate.LexemeID.String() == "lexeme:pl.widziec.v" &&
 			candidate.Features["tense"] == "past" && !polishPastSeeingVerbHasCompatibleSubject(candidate, candidates) {
 			continue
@@ -180,9 +193,35 @@ func polishPastSeeingVerbHasCompatibleSubject(verb parser.PhraseCandidate, candi
 	return !hasKnownMismatch || hasCompatible || hasUnknown
 }
 
+func polishPersonalVerbHasCompatibleSubject(verb parser.PhraseCandidate, candidates []parser.PhraseCandidate) bool {
+	person, number := string(verb.Features["person"]), string(verb.Features["number"])
+	if person == "" || number == "" {
+		return true
+	}
+	knownMismatch, compatible, unknown := false, false, false
+	for _, subject := range candidates {
+		if subject.Category != construction.CategoryNP || subject.TokenEnd != verb.TokenStart || subject.Features["case"] != "nominative" {
+			continue
+		}
+		subjectPerson, subjectNumber := string(subject.Features["person"]), string(subject.Features["number"])
+		if subjectPerson == "" || subjectNumber == "" {
+			unknown = true
+			continue
+		}
+		if subjectPerson == person && subjectNumber == number {
+			compatible = true
+		} else {
+			knownMismatch = true
+		}
+	}
+	return !knownMismatch || compatible || unknown
+}
+
 type polishSentenceEvidenceBuilder struct {
-	base    runtime.BareDeclarativeEvidenceBuilder
-	lexicon *lexicon.Index
+	base          runtime.BareDeclarativeEvidenceBuilder
+	lexicon       *lexicon.Index
+	valency       *valency.Index
+	constructions *construction.Registry
 }
 
 func (builder polishSentenceEvidenceBuilder) Build(ctx context.Context, lattice analyzer.LexicalLattice, candidates []parser.PhraseCandidate, forest parser.Forest) (runtime.CompositionEvidence, error) {
@@ -210,7 +249,8 @@ func (builder polishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, la
 		if err != nil || !evidence.OperatorCoverageComplete {
 			return evidence, err
 		}
-		return addPolishIdentificationReferences(evidence, candidates, forest), nil
+		evidence = addPolishIdentificationReferences(evidence, candidates, forest)
+		return addPolishPersonalEvidence(evidence, candidates, forest, builder.valency, builder.constructions), nil
 	}
 	evidence, err := builder.base.Build(ctx, lattice, candidates, forest)
 	if err != nil || !evidence.OperatorCoverageComplete {

@@ -1,0 +1,21 @@
+# R4 uczestnicy mowy i niewypowiedziany podmiot
+
+Issue #358, epik #354; base 232705cf71b86561ec07034fa302b31d5f465044. Owner semantyki i odbioru: koordynator. Akceptacja językowa właściciela NOT_EVALUATED.
+
+Używamy istniejących I i request contexts: participant=speaker, speaker_inclusive_group, addressee. Speaker ma one, speaker group many; polskie ty/wy zachowują znaną liczbę, angielskie you jej nie rozstrzyga. Istniejące TimeExpansion fixtures już implementują tę zasadę. Nie dodajemy tożsamości osobnika ani biologicznej płci. Rodzaj gramatyczny nie trafia do CORE/I.
+
+Źródłowe PL Widzę/Widzimy/Widzisz/Widzicie daje osobny referent person oraz jego rolę wyłącznie z zatwierdzonej konstrukcji pro-drop i jawnych cech osoby/liczby czasownika. Nie ma fikcyjnego tokenu ja, jego source span ani użycia WHGap do oznajmienia. Jawne Ja/My/Ty/Wy oraz I/We/You korzystają z rzeczywistych odczytów leksykalnych i kotwic. Trzecioosobowe Czyta bez podmiotu nie nabywa domyślnej tożsamości.
+
+Wewnętrzny ImplicitRoleEvidence wiąże derivation ID, optional slot, role, VP candidate, koncept, one/many, anchor i rzeczywisty span czasownika. Musi wskazywać istniejącą kompletną alternatywę, zatwierdzony exact binding, rodzinę z capability implicit_participant oraz pominięty opcjonalny slot zgodny z ramą; nie zastępuje jawnego argumentu. Kompozytor waliduje budżet, unikalność i CORE/role. Tworzy referent i Mention bez ReferentID/EvidenceID. Ślad dowodu odnosi się do rzeczywistego VP/rodziny z jawnym powodem implicit role, nie deklaruje niewypowiedzianego słowa. Stare inputy bez tego dowodu zachowują zachowanie. Publiczny schemat Meaning bez zmian.
+
+Target bierze osobę z kotwicy tego samego węzła podmiotu; I/we/you nie staje się person/człowiek. Jawny nominalny NP wyznacza gramatyczną third bez założenia o nieznanym świecie. PL generuje bezzaimkową powierzchnię z odpowiednią odmianą; dla you o nieznanym count zachowuje sg/pl warianty i jawne założenia number, nie zmieniając I. Dla znanego polskiego ty/wy EN you deklaruje stratę rozróżnienia liczby na powierzchni.
+
+Ograniczone czasowniki: seeing/hearing/reading present. Homograficzne EN I/you/we read zachowuje wymagane present/past analizy; istniejące autorskie I i wymagania targetu past reading nie mogą zostać pominięte. Nie rozbudowujemy ogólnego past personal seeing/hearing, future ani drinking. Warianty przeszłego czytania przy nieznanym rodzaju muszą być jawne, bez udawania ustalenia płci.
+
+Praca: małe sekwencyjne zlecenia z allowlistami, jeden writer, brak GitHub z helperów. Komponenty pomocnicze domykamy w jednym pionowym PR. Focused kontrole obejmują source, niezależne I/context, target, integrację, nieznane you, odmowy sprzecznego kontekstu i prawdziwe source spans. Koordynator wykonuje realne CLI, techniczne kontrole, pełną macierz oraz CI PR/main. Nie zmieniamy expected dla zielonego outputu.
+
+Wspólna licencja pominięcia dotyczy wyłącznie NP z optional, cardinality 0..1, role binding i capability implicit_participant, którego nie ma w sequence wybranego wariantu. Nie tworzymy ukrytego SlotRequest ani SlotForm. Konstrukcja nadal musi pokrywać wszystkie role Meaning; twarde agreement odwołujące się do pominiętego slotu zachowuje odmowę. Runtime i Execute wymagają zgodnych, walidowanych kontekstów kotwicy person; lokalny planner PL wyznacza cechy VP. CompileVariant/BuildPlan oraz linearizacja respektują tę samą wąską licencję.
+
+Kontrola kontraktu porównań kontekstu: wymaganie jawnych kotwic nie oznacza zakazu dodatkowej wzmianki unresolved bez anchor, ReferentID i EvidenceID dla obiektu. Taka wzmianka nie ustala tożsamości ani deiksy. Porównanie ma nadal walidować cały kontekst, odmawiać dopisanych tożsamości, wymagać dokładnej liczby kotwic oraz ich związania z właściwą rolą przy alpha-renaming. Zmieniamy jedynie błędne utożsamienie liczby wszystkich mentions z liczbą wymaganych kotwic; nie usuwamy dowodów z kompozycji.
+
+Doprecyzowanie odbioru: brak gramatycznej osoby w I przy jawnym nominalnym NP nie oznacza nieznanej osoby formy czasownika. Third wynika z konstrukcji. Złożone EN→PL black+seeing na kompletnym autorskim I wymaga więc OK i braku pozornych założeń, nie dawnego incomplete z person=third. PL→EN nadal wymaga wariantów rodzajnika i jawnych założeń. Stan niekompletnego źródła nie może zostać ukryty przez to doprecyzowanie.

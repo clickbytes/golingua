@@ -163,6 +163,9 @@ var englishPendingAuditSource = provenance.SourceRef{
 	Version: "2026-10-23-pending-audit", License: "unknown", Author: "codex-owner-delegated",
 }
 var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
+	"en.i.speaker":                                 englishPersonalPronounSource,
+	"en.we.speaker_group":                          englishPersonalPronounSource,
+	"en.you.addressee":                             englishPersonalPronounSource,
 	"en.be.class_membership":                       englishIdentificationSource,
 	"en.black.color":                               englishIdentificationSource,
 	"en.adult.person":                              englishPendingAuditSource,
@@ -1180,6 +1183,9 @@ var englishParadigmByLexeme = map[string]string{
 	"en.the.det":   "en_determiner_definite",
 	"en.a.det":     "en_determiner_indefinite",
 	"en.an.det":    "en_determiner_indefinite",
+	"en.i.pron":    "en_personal_pronoun_i",
+	"en.we.pron":   "en_personal_pronoun_we",
+	"en.you.pron":  "en_personal_pronoun_you",
 	"en.see.v":     "en_verb_finite_principal_parts",
 	"en.hear.v":    "en_verb_finite_principal_parts",
 	"en.look.v":    "en_verb_finite_regular",
@@ -1261,7 +1267,7 @@ var englishAArticleLexemes = map[string]struct{}{
 	"en.mother.n": {}, "en.father.n": {}, "en.cat.n": {}, "en.book.n": {},
 	"en.house.n": {}, "en.household.n": {}, "en.car.n": {}, "en.bird.n": {}, "en.neighbor.n": {},
 	"en.customer.n": {}, "en.dog.n": {}, "en.teacher.n": {}, "en.doctor.n": {},
-	"en.tree.n": {}, "en.child.n": {}, "en.message.n": {},
+	"en.tree.n": {}, "en.child.n": {}, "en.message.n": {}, "en.letter_document.n": {},
 }
 
 var englishAnArticleLexemes = map[string]struct{}{

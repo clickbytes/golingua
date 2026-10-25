@@ -191,8 +191,20 @@ func ContextMatches(want interlingua.IdentificationMeaning, got semantic.Meaning
 		if err := meaning.ValidateReferences(actual.Meaning, actual.Context, meaning.DefaultBudget()); err != nil {
 			return false, fmt.Errorf("invalid candidate request context %d: %w", contextIndex, err)
 		}
-		if len(actual.Context.Referents) != 0 || len(actual.Context.Mentions) != len(want.Context.Mentions) {
-			return false, contextMismatchError{fmt.Sprintf("candidate request context %d has resolved identities or a different mention count", contextIndex)}
+		if len(actual.Context.Referents) != 0 {
+			return false, contextMismatchError{fmt.Sprintf("candidate request context %d has resolved identities", contextIndex)}
+		}
+		anchoredMentions := make([]meaning.Mention, 0, len(actual.Context.Mentions))
+		for _, mention := range actual.Context.Mentions {
+			if mention.ReferentID != "" || mention.EvidenceID != "" {
+				return false, contextMismatchError{fmt.Sprintf("candidate request context %d has a resolved mention", contextIndex)}
+			}
+			if mention.Anchor != nil {
+				anchoredMentions = append(anchoredMentions, mention)
+			}
+		}
+		if len(anchoredMentions) != len(want.Context.Mentions) {
+			return false, contextMismatchError{fmt.Sprintf("candidate request context %d has a different anchored mention count", contextIndex)}
 		}
 		if matches, err := GraphMatches(*got.Meaning, actual.Meaning); err != nil || !matches {
 			if err != nil {
@@ -200,7 +212,7 @@ func ContextMatches(want interlingua.IdentificationMeaning, got semantic.Meaning
 			}
 			return false, contextMismatchError{fmt.Sprintf("candidate request context %d Meaning differs from candidate Meaning", contextIndex)}
 		}
-		used := make([]bool, len(actual.Context.Mentions))
+		used := make([]bool, len(anchoredMentions))
 		attempts := 0
 		var assign func(int, map[meaning.NodeID]meaning.NodeID) (bool, error)
 		assign = func(index int, constraints map[meaning.NodeID]meaning.NodeID) (bool, error) {
@@ -208,7 +220,7 @@ func ContextMatches(want interlingua.IdentificationMeaning, got semantic.Meaning
 				return graphMatchesWithNodeConstraints(want.Graph, actual.Meaning, constraints)
 			}
 			wantMention := want.Context.Mentions[index]
-			for actualIndex, gotMention := range actual.Context.Mentions {
+			for actualIndex, gotMention := range anchoredMentions {
 				if used[actualIndex] || gotMention.Anchor == nil || *gotMention.Anchor != *wantMention.Anchor ||
 					gotMention.ReferentID != "" || gotMention.EvidenceID != "" {
 					continue

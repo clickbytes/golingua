@@ -82,6 +82,22 @@ func englishNodeAttributes(supported map[ids.SenseID]bool, index *lexicon.Index,
 		}
 	}
 	for _, candidate := range candidates {
+		if candidate.Category == construction.CategoryNP {
+			switch candidate.LexemeID.String() {
+			case "lexeme:en.i.pron":
+				if err := add(candidate.ID, "", meaning.MultiplicityOne); err != nil {
+					return nil, err
+				}
+				continue
+			case "lexeme:en.we.pron":
+				if err := add(candidate.ID, "", meaning.MultiplicityMany); err != nil {
+					return nil, err
+				}
+				continue
+			case "lexeme:en.you.pron":
+				continue
+			}
+		}
 		if candidate.Category != construction.CategoryNP || !hasNumberBehavior(index, candidate.LexemeID, "count") {
 			continue
 		}

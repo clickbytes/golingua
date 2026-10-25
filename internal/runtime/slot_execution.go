@@ -65,6 +65,10 @@ func (builder MorphologyExecutionBuilder) Build(ctx context.Context, source sema
 		Slots:                make(map[string]realizer.SlotRequest, len(selected.Family.Family.SlotSpecs)),
 		InformationStructure: map[meaning.Role]construction.InformationValue{},
 	}
+	input.SourceContexts = make([]meaning.RequestContext, 0, len(source.Contexts))
+	for _, candidateContext := range source.Contexts {
+		input.SourceContexts = append(input.SourceContexts, candidateContext.Context)
+	}
 	for _, slot := range selected.Family.Family.SlotSpecs {
 		if err := ctx.Err(); err != nil {
 			return realizer.ExecuteInput{}, runtimeError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
@@ -113,6 +117,18 @@ func (builder MorphologyExecutionBuilder) Build(ctx context.Context, source sema
 				return realizer.ExecuteInput{}, runtimeError(status.OutcomeAmbiguous, "MEANING_ROLE_AMBIGUOUS", "source.meaning."+string(plan.NodeID)+".participants", "source Meaning has multiple targets for one construction role")
 			}
 			nodeID = participant.Target
+			if _, licensed := construction.ImplicitParticipantSlot(selected.Family.Family, plan.CompiledVariant.Variant, slot.ID); licensed {
+				for _, paired := range source.Contexts {
+					same, err := meaning.StructuralEquivalence(*source.Meaning, paired.Meaning, meaning.DefaultBudget())
+					if err != nil || !same {
+						return realizer.ExecuteInput{}, runtimeError(status.OutcomeUnsupported, "IMPLICIT_PARTICIPANT_CONTEXT_MISMATCH", "source.contexts."+string(nodeID), "an omitted participant requires contexts paired with the selected Meaning graph")
+					}
+				}
+				if _, anchored := realizer.ImplicitParticipantAnchor(*source.Meaning, input.SourceContexts, nodeID); anchored {
+					continue
+				}
+				return realizer.ExecuteInput{}, runtimeError(status.OutcomeUnsupported, "IMPLICIT_PARTICIPANT_CONTEXT_UNAVAILABLE", "source.contexts."+string(nodeID), "an omitted optional subject role requires a person referent with one consistent participant anchor")
+			}
 			choices := make([]realizer.TargetCandidate, 0, 2)
 			for _, available := range candidates {
 				if available.NodeID == nodeID && available.Kind == meaning.KindReferent && available.Outcome == status.OutcomeOK {

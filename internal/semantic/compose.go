@@ -72,6 +72,20 @@ type ReferenceEvidence struct {
 	Anchor      *meaning.DeicticAnchor
 }
 
+// ImplicitRoleEvidence licenses one omitted optional argument from a complete
+// construction alternative and an actual predicate phrase. It never claims a
+// surface lexical candidate for the implicit participant.
+type ImplicitRoleEvidence struct {
+	DerivationID         string
+	SlotID               string
+	PredicateCandidateID string
+	Role                 meaning.Role
+	CoreConceptID        ids.ConceptID
+	Multiplicity         meaning.Multiplicity
+	ParticipantAnchor    meaning.DeicticAnchor
+	SourceSpan           text.Span
+}
+
 // OperatorEvidence supplies a construction operator and its explicit target
 // candidate. Only operators representable in Meaning v1 are composed.
 type OperatorEvidence struct {
@@ -92,6 +106,7 @@ type CompositionInput struct {
 	Core                     *core.ConceptGraph
 	Constructions            *construction.Registry
 	References               []ReferenceEvidence
+	ImplicitRoles            []ImplicitRoleEvidence
 	NodeAttributes           []NodeAttributesEvidence
 	RequestContextID         string
 	Operators                []OperatorEvidence
@@ -115,6 +130,7 @@ type roleOption struct {
 	candidate parser.PhraseCandidate
 	mapping   transfer
 	span      text.Span
+	implicit  *ImplicitRoleEvidence
 }
 
 // Compose converts each retained parser alternative independently, retaining
@@ -164,6 +180,9 @@ func Compose(input CompositionInput) (ComposeResult, error) {
 	candidateByID := make(map[string]parser.PhraseCandidate, len(input.Candidates))
 	for _, candidate := range input.Candidates {
 		candidateByID[candidate.ID] = candidate
+	}
+	if err := validateImplicitRoleEvidence(input, candidateByID, sourceBytes); err != nil {
+		return ComposeResult{}, err
 	}
 	attributesByCandidate, err := validateNodeAttributes(input.NodeAttributes, candidateByID)
 	if err != nil {
@@ -432,6 +451,18 @@ func validateCompositionInputs(input CompositionInput, sourceBytes int) error {
 			return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", fmt.Sprintf("references[%d].anchor", i), "reference anchor text exceeds the semantic text budget")
 		}
 	}
+	if len(input.ImplicitRoles) > parser.DefaultBudget().MaxExpansions {
+		return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "implicit_roles", "implicit role evidence exceeds the parser expansion limit")
+	}
+	nestedItems += len(input.ImplicitRoles)
+	if err := checkInventory("implicit_roles"); err != nil {
+		return err
+	}
+	for i, implicit := range input.ImplicitRoles {
+		if !addText(implicit.DerivationID, implicit.SlotID, implicit.PredicateCandidateID, string(implicit.Role), implicit.CoreConceptID.String(), string(implicit.Multiplicity), implicit.ParticipantAnchor.Kind, implicit.ParticipantAnchor.Value) {
+			return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", fmt.Sprintf("implicit_roles[%d]", i), "implicit role evidence exceeds the semantic text budget")
+		}
+	}
 	for i, operator := range input.Operators {
 		if !addText(operator.TargetCandidateID, string(operator.Operator.Kind), string(operator.Operator.Value), string(operator.Operator.SemanticScope.TargetNodeID), string(operator.Operator.SemanticScope.ScopeNodeID)) {
 			return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", fmt.Sprintf("operators[%d]", i), "operator evidence exceeds the semantic text budget")
@@ -442,6 +473,140 @@ func validateCompositionInputs(input CompositionInput, sourceBytes int) error {
 		}
 	}
 	return nil
+}
+
+func validateImplicitRoleEvidence(input CompositionInput, candidates map[string]parser.PhraseCandidate, sourceBytes int) error {
+	if len(input.ImplicitRoles) == 0 {
+		return nil
+	}
+	personID, err := ids.NewConceptID("person")
+	if err != nil {
+		return semanticError(status.OutcomeInvalid, "IMPLICIT_ROLE_CONCEPT_UNAVAILABLE", "implicit_roles", "CORE person concept ID is unavailable")
+	}
+	if _, ok := input.Core.Lookup(personID); !ok {
+		return semanticError(status.OutcomeInvalid, "IMPLICIT_ROLE_CONCEPT_UNAVAILABLE", "implicit_roles", "implicit participant concept is absent from CORE")
+	}
+	rootByID := make(map[parser.NodeID]parser.PackedNode, len(input.Forest.Nodes))
+	for _, node := range input.Forest.Nodes {
+		rootByID[node.ID] = node
+	}
+	alternatives := make(map[string][]parser.ParseAlternative)
+	for _, rootID := range input.Forest.Roots {
+		root, ok := rootByID[rootID]
+		if !ok {
+			continue
+		}
+		for _, alternative := range root.Alternatives {
+			alternatives[alternative.DerivationID] = append(alternatives[alternative.DerivationID], alternative)
+		}
+	}
+	seen := make(map[string]bool, len(input.ImplicitRoles))
+	for index, evidence := range input.ImplicitRoles {
+		path := fmt.Sprintf("implicit_roles[%d]", index)
+		if evidence.DerivationID == "" || len(evidence.DerivationID) > 256 || evidence.SlotID == "" || len(evidence.SlotID) > 256 ||
+			evidence.PredicateCandidateID == "" || len(evidence.PredicateCandidateID) > 256 || evidence.Role == "" || len(evidence.Role) > 128 || evidence.CoreConceptID != personID {
+			return semanticError(status.OutcomeInvalid, "INVALID_IMPLICIT_ROLE_EVIDENCE", path, "implicit role evidence requires exact derivation, slot, predicate, role and CORE person concept")
+		}
+		if evidence.Multiplicity != meaning.MultiplicityOne && evidence.Multiplicity != meaning.MultiplicityMany {
+			return semanticError(status.OutcomeInvalid, "INVALID_IMPLICIT_ROLE_MULTIPLICITY", path+".multiplicity", "implicit participant multiplicity must be known one or many")
+		}
+		anchor := evidence.ParticipantAnchor
+		if anchor.Kind != "participant" || (anchor.Value != "speaker" && anchor.Value != "speaker_inclusive_group" && anchor.Value != "addressee") {
+			return semanticError(status.OutcomeInvalid, "INVALID_IMPLICIT_ROLE_ANCHOR", path+".participant_anchor", "implicit participant anchor must be an existing participant anchor value")
+		}
+		if anchor.Value == "speaker" && evidence.Multiplicity != meaning.MultiplicityOne ||
+			anchor.Value == "speaker_inclusive_group" && evidence.Multiplicity != meaning.MultiplicityMany {
+			return semanticError(status.OutcomeInvalid, "IMPLICIT_ROLE_ANCHOR_COUNT_CONFLICT", path, "speaker anchor and known participant multiplicity conflict")
+		}
+		anchorContext := meaning.RequestContext{ID: "implicit-role-validation", Mentions: []meaning.Mention{{ID: "mention", NodeID: "participant", Anchor: &anchor}}}
+		if err := anchorContext.Validate(); err != nil {
+			return semanticError(status.OutcomeInvalid, "INVALID_IMPLICIT_ROLE_ANCHOR", path+".participant_anchor", err.Error())
+		}
+		if evidence.SourceSpan.Start < 0 || evidence.SourceSpan.End <= evidence.SourceSpan.Start || evidence.SourceSpan.End > sourceBytes {
+			return semanticError(status.OutcomeInvalid, "INVALID_IMPLICIT_ROLE_SPAN", path+".source_span", "implicit role evidence span must be a bounded non-empty source range")
+		}
+		key := evidence.DerivationID + "\x00" + evidence.SlotID
+		if seen[key] {
+			return semanticError(status.OutcomeInvalid, "DUPLICATE_IMPLICIT_ROLE_EVIDENCE", path, "one optional slot has duplicate implicit role evidence")
+		}
+		seen[key] = true
+		matches := alternatives[evidence.DerivationID]
+		if len(matches) != 1 || len(matches[0].Unresolved) != 0 {
+			return semanticError(status.OutcomeInvalid, "STALE_IMPLICIT_ROLE_DERIVATION", path+".derivation_id", "implicit role evidence must identify exactly one complete retained parse alternative")
+		}
+		alternative := matches[0]
+		frame, _, bound := exactFrameBinding(input, alternative)
+		if !bound {
+			return semanticError(status.OutcomeInvalid, "UNBOUND_IMPLICIT_ROLE_DERIVATION", path, "implicit role evidence requires the approved exact sense/frame/family/variant binding")
+		}
+		familyRecord, familyFound := input.Constructions.ByID(alternative.FamilyID)
+		if !familyFound {
+			return semanticError(status.OutcomeInvalid, "IMPLICIT_ROLE_CAPABILITY_REQUIRED", path, "construction family does not exist")
+		}
+		familyRecord, bindErr := construction.BindFrame(familyRecord, frame)
+		if bindErr != nil {
+			return semanticError(status.OutcomeInvalid, "IMPLICIT_ROLE_FRAME_BINDING_INVALID", path, "construction family could not be bound to the selected frame")
+		}
+		if !containsConstructionCapability(familyRecord.Family.Capabilities, construction.CapabilityImplicitParticipant) {
+			return semanticError(status.OutcomeInvalid, "IMPLICIT_ROLE_CAPABILITY_REQUIRED", path, "construction family does not license implicit participants")
+		}
+		familySlot, familySlotEligible := construction.ImplicitParticipantFamilySlot(familyRecord.Family, evidence.SlotID)
+		if !familySlotEligible || familySlot.ArgumentBinding.SemanticRole != evidence.Role {
+			return semanticError(status.OutcomeInvalid, "INVALID_IMPLICIT_ROLE_SLOT", path+".slot_id", "implicit role must match a zero-minimum optional argument slot in the selected family")
+		}
+		frameRoleFound := false
+		for _, argument := range frame.Arguments {
+			if argument.Role == evidence.Role {
+				frameRoleFound = true
+				break
+			}
+		}
+		if !frameRoleFound {
+			return semanticError(status.OutcomeInvalid, "UNLICENSED_IMPLICIT_ROLE", path+".role", "selected valency frame does not license the implicit semantic role")
+		}
+		// Parser retain emits bindings only for slots reached in the selected
+		// variant sequence. Requiring this optional slot to be absent therefore
+		// proves that the selected variant does not sequence it.
+		for _, slot := range alternative.Slots {
+			if slot.SlotID != evidence.SlotID {
+				continue
+			}
+			return semanticError(status.OutcomeInvalid, "IMPLICIT_ROLE_SLOT_SEQUENCE_PRESENT", path+".slot_id", "selected construction variant still sequences the optional slot")
+		}
+		for _, slot := range alternative.Slots {
+			if slot.SlotID != evidence.SlotID && slot.Role == evidence.Role && (len(slot.CandidateIDs) != 0 || len(slot.NodeIDs) != 0) {
+				return semanticError(status.OutcomeInvalid, "IMPLICIT_ROLE_REPLACES_EXPLICIT_ROLE", path, "an explicit candidate already fills the selected semantic role")
+			}
+		}
+		predicate, ok := candidates[evidence.PredicateCandidateID]
+		if !ok || predicate.Category != construction.CategoryVP || predicate.Span != evidence.SourceSpan {
+			return semanticError(status.OutcomeInvalid, "INVALID_IMPLICIT_ROLE_PREDICATE", path+".predicate_candidate_id", "implicit role must point to the actual VP candidate and its exact source span")
+		}
+		predicateSlotFound := false
+		for _, slotSpec := range familyRecord.Family.SlotSpecs {
+			if !slotSpec.IsMainPredicate() {
+				continue
+			}
+			for _, slot := range alternative.Slots {
+				if slot.SlotID == slotSpec.ID && len(slot.CandidateIDs) == 1 && slot.CandidateIDs[0] == predicate.ID {
+					predicateSlotFound = true
+				}
+			}
+		}
+		if !predicateSlotFound || !containsSense(predicate.SenseIDs, alternative.Permission.SenseID) || len(transferMappings(input.Lexicon, predicate, &alternative.Permission.SenseID)) == 0 {
+			return semanticError(status.OutcomeInvalid, "UNBOUND_IMPLICIT_ROLE_PREDICATE", path+".predicate_candidate_id", "selected VP is not the parse alternative's exact approved predicate binding")
+		}
+	}
+	return nil
+}
+
+func containsConstructionCapability(values []construction.Capability, wanted construction.Capability) bool {
+	for _, value := range values {
+		if value == wanted {
+			return true
+		}
+	}
+	return false
 }
 
 func composeAlternative(result *ComposeResult, input CompositionInput, alternative parser.ParseAlternative, span text.Span, sourceBytes int, candidates map[string]parser.PhraseCandidate, references map[string]ReferenceEvidence, attributes map[string]NodeAttributesEvidence, predicateNodes []parser.PackedNode, phraseNodes map[string]parser.NodeID, work *int, budget Budget) error {
@@ -577,6 +742,35 @@ func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlter
 	refConceptByIdentity := map[string]ids.ConceptID{}
 	records := []EvidenceRecord{{SourceSpan: predicate.Span, CandidateID: predicate.ID, PhraseNodeID: phraseNodes[predicate.ID], ReadingID: firstString(predicate.ReadingIDs), SenseID: predicateMapping.sense, CoreConceptID: predicateMapping.binding.CoreRef, BindingKey: BindingKeyFor(predicateMapping.sense, predicateMapping.binding.CoreRef), PlanID: alternative.PlanID, FamilyID: alternative.FamilyID, VariantID: alternative.VariantID, FrameID: alternative.Permission.FrameID, Outcome: status.OutcomeOK, Features: evidenceFeatures(predicate.Features), Provenance: predicateMapping.binding.Provenance}}
 	for index, role := range roles {
+		if role.implicit != nil {
+			implicit := role.implicit
+			nodeID := meaning.NodeID("ref" + strconv.Itoa(index))
+			node, err := meaning.NewReferent(nodeID, implicit.CoreConceptID)
+			if err != nil {
+				return MeaningCandidate{}, nil, nil, status.OutcomeInvalid, nil, err
+			}
+			node.Multiplicity = implicit.Multiplicity
+			nodes = append(nodes, node)
+			if refs.ID == "" {
+				refs.ID = input.RequestContextID
+			}
+			anchor := implicit.ParticipantAnchor
+			refs.Mentions = append(refs.Mentions, meaning.Mention{
+				ID: meaning.MentionID("m" + strconv.Itoa(index)), NodeID: nodeID, Anchor: &anchor,
+			})
+			participants = append(participants, meaning.Participant{Role: role.role, Target: nodeID})
+			reason := "implicit participant role " + string(role.role) + " licensed by construction evidence; no surface subject"
+			records = append(records, EvidenceRecord{
+				SourceSpan: implicit.SourceSpan, CandidateID: predicate.ID, PhraseNodeID: phraseNodes[predicate.ID],
+				ReadingID: firstString(predicate.ReadingIDs), SenseID: predicateMapping.sense,
+				CoreConceptID: predicateMapping.binding.CoreRef,
+				BindingKey:    BindingKeyFor(predicateMapping.sense, predicateMapping.binding.CoreRef),
+				PlanID:        alternative.PlanID, FamilyID: alternative.FamilyID, VariantID: alternative.VariantID,
+				FrameID: alternative.Permission.FrameID, Outcome: status.OutcomeOK, Reason: reason,
+				Provenance: predicateMapping.binding.Provenance,
+			})
+			continue
+		}
 		identity := "candidate:" + role.candidate.ID
 		refEvidence, resolved := references[role.candidate.ID]
 		resolved = resolved && refEvidence.ReferentID != ""
@@ -814,7 +1008,10 @@ func resolveRoles(input CompositionInput, alternative parser.ParseAlternative, c
 	options := [][]roleOption{}
 	var unresolvedReason string
 	for _, slot := range alternative.Slots {
-		if slot.Role == "" || len(slot.CandidateIDs) == 0 {
+		if len(slot.CandidateIDs) == 0 {
+			continue
+		}
+		if slot.Role == "" {
 			continue
 		}
 		if len(slot.CandidateIDs) != 1 {
@@ -847,6 +1044,12 @@ func resolveRoles(input CompositionInput, alternative parser.ParseAlternative, c
 			roleChoices = append(roleChoices, roleOption{role: slot.Role, candidate: candidate, mapping: mapping, span: candidate.Span})
 		}
 		options = append(options, roleChoices)
+	}
+	for index := range input.ImplicitRoles {
+		evidence := &input.ImplicitRoles[index]
+		if evidence.DerivationID == alternative.DerivationID {
+			options = append(options, []roleOption{{role: evidence.Role, span: evidence.SourceSpan, implicit: evidence}})
+		}
 	}
 	if unresolvedReason != "" {
 		return options, status.OutcomeIncomplete, unresolvedReason
@@ -1154,6 +1357,10 @@ func alternativeID(a parser.ParseAlternative, parts ...string) string {
 func semanticAlternativeID(a parser.ParseAlternative, predicate string, concept ids.ConceptID, roles []roleOption) string {
 	parts := []string{predicate, concept.String()}
 	for _, role := range roles {
+		if role.implicit != nil {
+			parts = append(parts, "implicit", string(role.role), role.implicit.SlotID, role.implicit.CoreConceptID.String(), string(role.implicit.Multiplicity), role.implicit.ParticipantAnchor.Kind, role.implicit.ParticipantAnchor.Value)
+			continue
+		}
 		parts = append(parts, string(role.role), role.candidate.ID, role.mapping.sense.String(), role.mapping.binding.CoreRef.String())
 	}
 	return alternativeID(a, parts...)

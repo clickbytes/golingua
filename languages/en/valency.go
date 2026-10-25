@@ -108,6 +108,30 @@ var englishConstructionBindingDeclarations = append(append([]constructionBinding
 	{"en.black.color", "en.black.color.frame", "en.attribution", "en.attribution.that"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive_negative", "en.transitive_negative.svo"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive_negative", "en.transitive_negative.svo.plural"},
+	{"en.see.visual", "en.see.visual.transitive", "en.transitive_personal", "en.transitive_personal.svo.first"},
+	{"en.see.visual", "en.see.visual.transitive", "en.transitive_personal", "en.transitive_personal.svo.second"},
+	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive_personal", "en.transitive_personal.svo.first"},
+	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive_personal", "en.transitive_personal.svo.second"},
+	{"en.read.text", "en.read.text.transitive", "en.transitive_personal", "en.transitive_personal.svo.first"},
+	{"en.read.text", "en.read.text.transitive", "en.transitive_personal", "en.transitive_personal.svo.second"},
+	{"en.read.text", "en.read.text.transitive", "en.transitive_personal", "en.transitive_personal.svo.reading.first"},
+	{"en.read.text", "en.read.text.transitive", "en.transitive_personal", "en.transitive_personal.svo.reading.second"},
+	{"en.see.visual", "en.see.visual.transitive", "en.transitive_personal", "en.transitive_personal.svo.first.indefinite_object"},
+	{"en.see.visual", "en.see.visual.transitive", "en.transitive_personal", "en.transitive_personal.svo.first.indefinite_object_an"},
+	{"en.see.visual", "en.see.visual.transitive", "en.transitive_personal", "en.transitive_personal.svo.second.indefinite_object"},
+	{"en.see.visual", "en.see.visual.transitive", "en.transitive_personal", "en.transitive_personal.svo.second.indefinite_object_an"},
+	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive_personal", "en.transitive_personal.svo.first.indefinite_object"},
+	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive_personal", "en.transitive_personal.svo.first.indefinite_object_an"},
+	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive_personal", "en.transitive_personal.svo.second.indefinite_object"},
+	{"en.hear.auditory", "en.hear.auditory.transitive", "en.transitive_personal", "en.transitive_personal.svo.second.indefinite_object_an"},
+	{"en.read.text", "en.read.text.transitive", "en.transitive_personal", "en.transitive_personal.svo.first.indefinite_object"},
+	{"en.read.text", "en.read.text.transitive", "en.transitive_personal", "en.transitive_personal.svo.first.indefinite_object_an"},
+	{"en.read.text", "en.read.text.transitive", "en.transitive_personal", "en.transitive_personal.svo.second.indefinite_object"},
+	{"en.read.text", "en.read.text.transitive", "en.transitive_personal", "en.transitive_personal.svo.second.indefinite_object_an"},
+	{"en.read.text", "en.read.text.transitive", "en.transitive_personal", "en.transitive_personal.svo.reading.first.indefinite_object"},
+	{"en.read.text", "en.read.text.transitive", "en.transitive_personal", "en.transitive_personal.svo.reading.first.indefinite_object_an"},
+	{"en.read.text", "en.read.text.transitive", "en.transitive_personal", "en.transitive_personal.svo.reading.second.indefinite_object"},
+	{"en.read.text", "en.read.text.transitive", "en.transitive_personal", "en.transitive_personal.svo.reading.second.indefinite_object_an"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo.indefinite_object"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive", "en.transitive.svo.indefinite_subject"},
@@ -300,6 +324,11 @@ func CompileValency() (*valency.Index, error) {
 			}
 			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
 		case "en.see.visual.transitive", "en.hear.auditory.transitive":
+			personalFamilyID, err := ids.NewConstructionID("en.transitive_personal")
+			if err != nil {
+				return nil, fmt.Errorf("English personal family: %w", err)
+			}
+			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, personalFamilyID)
 			negativeFamilyID, err := ids.NewConstructionID("en.transitive_negative")
 			if err != nil {
 				return nil, fmt.Errorf("English negative frame family: %w", err)
@@ -318,6 +347,11 @@ func CompileValency() (*valency.Index, error) {
 				frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, attributedFamilyID)
 			}
 		case "en.read.text.transitive":
+			personalFamilyID, err := ids.NewConstructionID("en.transitive_personal")
+			if err != nil {
+				return nil, fmt.Errorf("English personal family: %w", err)
+			}
+			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, personalFamilyID)
 			pastFamilyID, err := ids.NewConstructionID("en.transitive_past")
 			if err != nil {
 				return nil, fmt.Errorf("English past reading frame family: %w", err)

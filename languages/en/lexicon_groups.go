@@ -11,6 +11,7 @@ type lexicalGroup struct {
 func englishLexiconGroups() []lexicalGroup {
 	return []lexicalGroup{
 		{source: englishLexicalSource, entries: englishEntries},
+		{source: englishPersonalPronounSource, entries: englishPersonalPronounEntries},
 		{source: englishNounSource, entries: englishNounEntries},
 		{source: englishPeopleSource, entries: englishPeopleEntries},
 		{source: englishSocialGroupsSource, entries: englishSocialGroupEntries},
