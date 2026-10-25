@@ -6,9 +6,11 @@ import (
 	"github.com/clickbytes/golingua/tests/languages/en/A1"
 	a1en11 "github.com/clickbytes/golingua/tests/languages/en/A1.1"
 	a1en12 "github.com/clickbytes/golingua/tests/languages/en/A1.2"
+	a1en13 "github.com/clickbytes/golingua/tests/languages/en/A1.3"
 	"github.com/clickbytes/golingua/tests/languages/pl/A1"
 	a1pl11 "github.com/clickbytes/golingua/tests/languages/pl/A1.1"
 	a1pl12 "github.com/clickbytes/golingua/tests/languages/pl/A1.2"
+	a1pl13 "github.com/clickbytes/golingua/tests/languages/pl/A1.3"
 	"github.com/clickbytes/golingua/tests/matrix"
 )
 
@@ -29,11 +31,11 @@ func Resolve(c matrix.TranslationCase) (matrix.AnalysisCase, matrix.RealizationC
 	var realizations []matrix.RealizationCase
 	switch {
 	case c.From == "en" && c.To == "pl":
-		analyses = append(append(append([]matrix.AnalysisCase{}, a1en.AnalysisCases...), a1en11.CorpusAnalysisCases...), a1en12.ContrastAnalysisCases...)
-		realizations = append(append(append([]matrix.RealizationCase{}, a1pl.RealizationCases...), a1pl11.CorpusRealizationCases...), a1pl12.ContrastRealizationCases...)
+		analyses = append(append(append(append([]matrix.AnalysisCase{}, a1en.AnalysisCases...), a1en11.CorpusAnalysisCases...), a1en12.ContrastAnalysisCases...), a1en13.CompositionAnalysisCases...)
+		realizations = append(append(append(append([]matrix.RealizationCase{}, a1pl.RealizationCases...), a1pl11.CorpusRealizationCases...), a1pl12.ContrastRealizationCases...), a1pl13.CompositionRealizationCases...)
 	case c.From == "pl" && c.To == "en":
-		analyses = append(append(append([]matrix.AnalysisCase{}, a1pl.AnalysisCases...), a1pl11.CorpusAnalysisCases...), a1pl12.ContrastAnalysisCases...)
-		realizations = append(append(append([]matrix.RealizationCase{}, a1en.RealizationCases...), a1en11.CorpusRealizationCases...), a1en12.ContrastRealizationCases...)
+		analyses = append(append(append(append([]matrix.AnalysisCase{}, a1pl.AnalysisCases...), a1pl11.CorpusAnalysisCases...), a1pl12.ContrastAnalysisCases...), a1pl13.CompositionAnalysisCases...)
+		realizations = append(append(append(append([]matrix.RealizationCase{}, a1en.RealizationCases...), a1en11.CorpusRealizationCases...), a1en12.ContrastRealizationCases...), a1en13.CompositionRealizationCases...)
 	default:
 		return matrix.AnalysisCase{}, matrix.RealizationCase{}, fmt.Errorf("unsupported translation direction %q to %q", c.From, c.To)
 	}

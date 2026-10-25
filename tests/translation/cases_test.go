@@ -7,9 +7,11 @@ import (
 	a1en "github.com/clickbytes/golingua/tests/languages/en/A1"
 	a1en11 "github.com/clickbytes/golingua/tests/languages/en/A1.1"
 	a1en12 "github.com/clickbytes/golingua/tests/languages/en/A1.2"
+	a1en13 "github.com/clickbytes/golingua/tests/languages/en/A1.3"
 	a1pl "github.com/clickbytes/golingua/tests/languages/pl/A1"
 	a1pl11 "github.com/clickbytes/golingua/tests/languages/pl/A1.1"
 	a1pl12 "github.com/clickbytes/golingua/tests/languages/pl/A1.2"
+	a1pl13 "github.com/clickbytes/golingua/tests/languages/pl/A1.3"
 	"github.com/clickbytes/golingua/tests/matrix"
 )
 
@@ -49,6 +51,8 @@ func TestInventory(t *testing.T) {
 	checkCases(t, "en-A1.1", a1en11.CorpusAnalysisCases, a1en11.CorpusRealizationCases, analysisLinks, realizationLinks)
 	checkCases(t, "pl-A1.2", a1pl12.ContrastAnalysisCases, a1pl12.ContrastRealizationCases, analysisLinks, realizationLinks)
 	checkCases(t, "en-A1.2", a1en12.ContrastAnalysisCases, a1en12.ContrastRealizationCases, analysisLinks, realizationLinks)
+	checkCases(t, "pl-A1.3", a1pl13.CompositionAnalysisCases, a1pl13.CompositionRealizationCases, analysisLinks, realizationLinks)
+	checkCases(t, "en-A1.3", a1en13.CompositionAnalysisCases, a1en13.CompositionRealizationCases, analysisLinks, realizationLinks)
 }
 
 func validCaseID(id, from, to string) bool {
