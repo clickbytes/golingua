@@ -2,12 +2,12 @@
 
 > Observational report generated on push to `main`. Matrix outcomes do not gate the technical `go-ci` workflow.
 
-- Source SHA: `eaf9b308d18d331a2f86a60c7336fa66ff012b2e`
-- Generated (UTC): `2026-10-25T18:18:16Z`
+- Source SHA: `b27caa605cf0ee066fb52f2d2f86524ad107cfd4`
+- Generated (UTC): `2026-10-25T18:35:24Z`
 - Command: `go test ./tests/... -count=1 -v`
 - Command exit code: `1` (NONZERO)
 - Registered records: 1000; record checks: 3000
-- Additional observed checks: 263
+- Additional observed checks: 279
 
 | Case ID | Direction | Analysis | Realization | Integration | Declared coverage tags |
 |---|---|---|---|---|---|
@@ -47,7 +47,7 @@
 | `A1.1-AC-110-PL-EN` | PL → EN | PASS | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-111-EN-PL` | EN → PL | FAIL | PASS | FAIL | hearing, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-112-PL-EN` | PL → EN | PASS | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
-| `A1.1-AC-113-EN-PL` | EN → PL | FAIL | PASS | FAIL | hearing, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-113-EN-PL` | EN → PL | PASS | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-114-PL-EN` | PL → EN | PASS | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-115-EN-PL` | EN → PL | PASS | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-116-PL-EN` | PL → EN | PASS | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
@@ -57,7 +57,7 @@
 | `A1.1-AC-120-PL-EN` | PL → EN | PASS | PASS | PASS | looking, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-121-EN-PL` | EN → PL | PASS | PASS | PASS | looking, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-122-PL-EN` | PL → EN | PASS | PASS | PASS | looking, participant_roles, present, semantic_event, valency |
-| `A1.1-AC-123-EN-PL` | EN → PL | FAIL | PASS | FAIL | looking, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-123-EN-PL` | EN → PL | PASS | PASS | PASS | looking, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-124-PL-EN` | PL → EN | PASS | PASS | PASS | looking, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-125-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_roles, past, receiving, semantic_event, valency |
 | `A1.1-AC-126-PL-EN` | PL → EN | FAIL | PASS | PASS | participant_roles, past, receiving, semantic_event, valency |
@@ -65,7 +65,7 @@
 | `A1.1-AC-128-PL-EN` | PL → EN | FAIL | PASS | PASS | participant_roles, past, receiving, semantic_event, valency |
 | `A1.1-AC-129-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_roles, past, receiving, semantic_event, valency |
 | `A1.1-AC-130-PL-EN` | PL → EN | FAIL | PASS | PASS | participant_roles, past, receiving, semantic_event, valency |
-| `A1.1-AC-131-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_roles, past, receiving, semantic_event, valency |
+| `A1.1-AC-131-EN-PL` | EN → PL | PASS | PASS | PASS | participant_roles, past, receiving, semantic_event, valency |
 | `A1.1-AC-132-PL-EN` | PL → EN | PASS | PASS | PASS | participant_roles, past, receiving, semantic_event, valency |
 | `A1.10-TIME-1001-EN-PL` | EN → PL | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1002-PL-EN` | PL → EN | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
@@ -81,7 +81,7 @@
 | `A1.10-TIME-1012-PL-EN` | PL → EN | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1013-EN-PL` | EN → PL | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1014-PL-EN` | PL → EN | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1015-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1015-EN-PL` | EN → PL | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1016-PL-EN` | PL → EN | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1017-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1018-PL-EN` | PL → EN | FAIL | PASS | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
@@ -215,7 +215,7 @@
 | `A1.11-CASE-1134-PL-EN` | PL → EN | GAP_ANALYZE | PASS | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1135-EN-PL` | EN → PL | FAIL | PASS | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1136-PL-EN` | PL → EN | GAP_ANALYZE | PASS | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1137-EN-PL` | EN → PL | FAIL | PASS | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1137-EN-PL` | EN → PL | PASS | PASS | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1138-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1139-EN-PL` | EN → PL | PASS | PASS | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1140-PL-EN` | PL → EN | GAP_ANALYZE | PASS | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
@@ -231,7 +231,7 @@
 | `A1.11-CASE-1150-PL-EN` | PL → EN | GAP_ANALYZE | PASS | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1151-EN-PL` | EN → PL | FAIL | PASS | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1152-PL-EN` | PL → EN | GAP_ANALYZE | PASS | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1153-EN-PL` | EN → PL | FAIL | PASS | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1153-EN-PL` | EN → PL | PASS | PASS | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1154-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1155-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1156-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
@@ -285,19 +285,19 @@
 | `A1.12-AMB-1220-PL-EN` | PL → EN | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1221-EN-PL` | EN → PL | FAIL | PASS | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1222-PL-EN` | PL → EN | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1223-EN-PL` | EN → PL | FAIL | PASS | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1223-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1224-PL-EN` | PL → EN | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1225-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1226-PL-EN` | PL → EN | GAP_ANALYZE | PASS | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1227-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1228-PL-EN` | PL → EN | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1229-EN-PL` | EN → PL | FAIL | PASS | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1230-PL-EN` | PL → EN | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1231-EN-PL` | EN → PL | FAIL | PASS | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1229-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1230-PL-EN` | PL → EN | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1231-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1232-PL-EN` | PL → EN | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1233-EN-PL` | EN → PL | FAIL | PASS | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1234-PL-EN` | PL → EN | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1235-EN-PL` | EN → PL | FAIL | PASS | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1233-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1234-PL-EN` | PL → EN | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1235-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1236-PL-EN` | PL → EN | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1237-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1238-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
@@ -827,8 +827,8 @@
 | `A1.8-NEG-820-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | clause_negation, semantic_polarity_scope |
 | `A1.8-NEG-821-EN-PL` | EN → PL | PASS | PASS | PASS | clause_negation, semantic_polarity_scope |
 | `A1.8-NEG-822-PL-EN` | PL → EN | PASS | PASS | PASS | clause_negation, semantic_polarity_scope |
-| `A1.8-NEG-823-EN-PL` | EN → PL | FAIL | PASS | FAIL | clause_negation, semantic_polarity_scope |
-| `A1.8-NEG-824-PL-EN` | PL → EN | PASS | FAIL | FAIL | clause_negation, semantic_polarity_scope |
+| `A1.8-NEG-823-EN-PL` | EN → PL | PASS | PASS | PASS | clause_negation, semantic_polarity_scope |
+| `A1.8-NEG-824-PL-EN` | PL → EN | PASS | PASS | PASS | clause_negation, semantic_polarity_scope |
 | `A1.8-NEG-825-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | clause_negation, semantic_polarity_scope |
 | `A1.8-NEG-826-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | clause_negation, semantic_polarity_scope |
 | `A1.8-NEG-827-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | clause_negation, semantic_polarity_scope |
@@ -1093,13 +1093,13 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_unknown` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_frame_on_referent` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_on_predicate` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_participant_roles_swapped` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/temporal_frames` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/referent_multiplicity` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/temporal_frames` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestNegationExpansionFixturesValidateAndRetainScope` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestNegationExpansionGapLabelsHaveNoFixture` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestNegationExpansionPluralOnlyDoorCountVariants` | PASS |
@@ -1299,6 +1299,22 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/translation` | `TestInventoryIdentifierSupportsBatches` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestA18NegationLinksHaveMatchingMeaningContracts` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestAmbiguityAssumptionsFollowRoles` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestChildAgeAndOffspringRoutes/R6-child-source-en-01` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestChildAgeAndOffspringRoutes/R6-child-source-en-02` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestChildAgeAndOffspringRoutes/R6-child-source-en-03` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestChildAgeAndOffspringRoutes/R6-child-negative-source-en-01` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestChildAgeAndOffspringRoutes/R6-child-source-pl-01` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestChildAgeAndOffspringRoutes/R6-child-source-pl-02` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestChildAgeAndOffspringRoutes/R6-child-source-pl-03` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestChildAgeAndOffspringRoutes/R6-child-negative-source-pl-01` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestChildAgeAndOffspringRoutes/R6-child-target-pl-01` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestChildAgeAndOffspringRoutes/R6-child-target-pl-02` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestChildAgeAndOffspringRoutes/R6-child-target-pl-03` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestChildAgeAndOffspringRoutes/R6-child-negative-target-pl-01` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestChildAgeAndOffspringRoutes/R6-child-target-en-01` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestChildAgeAndOffspringRoutes/R6-child-target-en-02` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestChildAgeAndOffspringRoutes/R6-child-target-en-03` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestChildAgeAndOffspringRoutes/R6-child-negative-target-en-01` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestCompositionTranslation/composition.black-cat-sees-dog_EN-to-PL` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestCompositionTranslation/composition.black-cat-sees-dog_PL-to-EN` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestCompositionTranslation/composition.black-dog-sees-cat_EN-to-PL` | PASS |
@@ -1357,7 +1373,7 @@ Packages with no observed test run are reported as infrastructure/build failures
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.8` | FAIL | 92 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.9` | FAIL | 118 |
 | `github.com/clickbytes/golingua/tests/matrix` | PASS | 12 |
-| `github.com/clickbytes/golingua/tests/translation` | FAIL | 46 |
+| `github.com/clickbytes/golingua/tests/translation` | FAIL | 63 |
 | `github.com/clickbytes/golingua/tests/translation/en-pl` | FAIL | 504 |
 | `github.com/clickbytes/golingua/tests/translation/pl-en` | FAIL | 504 |
 | `(package summary not observed)` | NOT RUN | 0 |
@@ -1391,12 +1407,12 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 
 | Group | Direction | Stage | Check outcome | Records |
 |---|---|---|---|---:|
-| actions | en → pl | analysis | FAIL | 11 |
+| actions | en → pl | analysis | FAIL | 8 |
 | actions | en → pl | analysis | GAP_ANALYZE | 47 |
-| actions | en → pl | analysis | PASS | 7 |
-| actions | en → pl | integration | FAIL | 11 |
+| actions | en → pl | analysis | PASS | 10 |
+| actions | en → pl | integration | FAIL | 8 |
 | actions | en → pl | integration | GAP_ANALYZE | 47 |
-| actions | en → pl | integration | PASS | 7 |
+| actions | en → pl | integration | PASS | 10 |
 | actions | en → pl | realization | GAP_REALIZE | 47 |
 | actions | en → pl | realization | PASS | 18 |
 | actions | pl → en | analysis | FAIL | 6 |
@@ -1406,14 +1422,14 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 | actions | pl → en | integration | PASS | 18 |
 | actions | pl → en | realization | GAP_REALIZE | 47 |
 | actions | pl → en | realization | PASS | 18 |
-| ambiguity_reference | en → pl | analysis | FAIL | 10 |
+| ambiguity_reference | en → pl | analysis | FAIL | 5 |
 | ambiguity_reference | en → pl | analysis | GAP_ANALYZE | 13 |
 | ambiguity_reference | en → pl | analysis | GAP_I | 7 |
-| ambiguity_reference | en → pl | analysis | PASS | 15 |
-| ambiguity_reference | en → pl | integration | FAIL | 10 |
+| ambiguity_reference | en → pl | analysis | PASS | 20 |
+| ambiguity_reference | en → pl | integration | FAIL | 5 |
 | ambiguity_reference | en → pl | integration | GAP_ANALYZE | 13 |
 | ambiguity_reference | en → pl | integration | GAP_I | 7 |
-| ambiguity_reference | en → pl | integration | PASS | 15 |
+| ambiguity_reference | en → pl | integration | PASS | 20 |
 | ambiguity_reference | en → pl | realization | FAIL | 6 |
 | ambiguity_reference | en → pl | realization | GAP_I | 7 |
 | ambiguity_reference | en → pl | realization | GAP_REALIZE | 7 |
@@ -1422,22 +1438,22 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 | ambiguity_reference | pl → en | analysis | GAP_ANALYZE | 14 |
 | ambiguity_reference | pl → en | analysis | GAP_I | 7 |
 | ambiguity_reference | pl → en | analysis | PASS | 15 |
-| ambiguity_reference | pl → en | integration | FAIL | 10 |
+| ambiguity_reference | pl → en | integration | FAIL | 8 |
 | ambiguity_reference | pl → en | integration | GAP_ANALYZE | 14 |
 | ambiguity_reference | pl → en | integration | GAP_I | 7 |
-| ambiguity_reference | pl → en | integration | PASS | 14 |
-| ambiguity_reference | pl → en | realization | FAIL | 10 |
+| ambiguity_reference | pl → en | integration | PASS | 16 |
+| ambiguity_reference | pl → en | realization | FAIL | 8 |
 | ambiguity_reference | pl → en | realization | GAP_I | 7 |
 | ambiguity_reference | pl → en | realization | GAP_REALIZE | 7 |
-| ambiguity_reference | pl → en | realization | PASS | 21 |
-| case_adjective_order | en → pl | analysis | FAIL | 6 |
+| ambiguity_reference | pl → en | realization | PASS | 23 |
+| case_adjective_order | en → pl | analysis | FAIL | 4 |
 | case_adjective_order | en → pl | analysis | GAP_ANALYZE | 25 |
 | case_adjective_order | en → pl | analysis | GAP_I | 7 |
-| case_adjective_order | en → pl | analysis | PASS | 7 |
-| case_adjective_order | en → pl | integration | FAIL | 6 |
+| case_adjective_order | en → pl | analysis | PASS | 9 |
+| case_adjective_order | en → pl | integration | FAIL | 4 |
 | case_adjective_order | en → pl | integration | GAP_ANALYZE | 25 |
 | case_adjective_order | en → pl | integration | GAP_I | 7 |
-| case_adjective_order | en → pl | integration | PASS | 7 |
+| case_adjective_order | en → pl | integration | PASS | 9 |
 | case_adjective_order | en → pl | realization | GAP_I | 7 |
 | case_adjective_order | en → pl | realization | GAP_REALIZE | 25 |
 | case_adjective_order | en → pl | realization | PASS | 13 |
@@ -1501,14 +1517,14 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 | location_quantity | pl → en | analysis | GAP_I | 50 |
 | location_quantity | pl → en | integration | GAP_I | 50 |
 | location_quantity | pl → en | realization | GAP_I | 50 |
-| negation | en → pl | analysis | FAIL | 3 |
+| negation | en → pl | analysis | FAIL | 2 |
 | negation | en → pl | analysis | GAP_ANALYZE | 33 |
 | negation | en → pl | analysis | GAP_I | 9 |
-| negation | en → pl | analysis | PASS | 5 |
-| negation | en → pl | integration | FAIL | 3 |
+| negation | en → pl | analysis | PASS | 6 |
+| negation | en → pl | integration | FAIL | 2 |
 | negation | en → pl | integration | GAP_ANALYZE | 33 |
 | negation | en → pl | integration | GAP_I | 9 |
-| negation | en → pl | integration | PASS | 5 |
+| negation | en → pl | integration | PASS | 6 |
 | negation | en → pl | realization | GAP_I | 9 |
 | negation | en → pl | realization | GAP_REALIZE | 32 |
 | negation | en → pl | realization | PASS | 9 |
@@ -1516,14 +1532,13 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 | negation | pl → en | analysis | GAP_ANALYZE | 31 |
 | negation | pl → en | analysis | GAP_I | 9 |
 | negation | pl → en | analysis | PASS | 8 |
-| negation | pl → en | integration | FAIL | 2 |
+| negation | pl → en | integration | FAIL | 1 |
 | negation | pl → en | integration | GAP_ANALYZE | 31 |
 | negation | pl → en | integration | GAP_I | 9 |
-| negation | pl → en | integration | PASS | 8 |
-| negation | pl → en | realization | FAIL | 1 |
+| negation | pl → en | integration | PASS | 9 |
 | negation | pl → en | realization | GAP_I | 9 |
 | negation | pl → en | realization | GAP_REALIZE | 32 |
-| negation | pl → en | realization | PASS | 8 |
+| negation | pl → en | realization | PASS | 9 |
 | possession | en → pl | analysis | GAP_I | 40 |
 | possession | en → pl | integration | GAP_I | 40 |
 | possession | en → pl | realization | GAP_I | 40 |
@@ -1544,14 +1559,14 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 | questions | pl → en | realization | FAIL | 1 |
 | questions | pl → en | realization | GAP_I | 42 |
 | questions | pl → en | realization | GAP_REALIZE | 17 |
-| time_agreement | en → pl | analysis | FAIL | 6 |
+| time_agreement | en → pl | analysis | FAIL | 5 |
 | time_agreement | en → pl | analysis | GAP_ANALYZE | 30 |
 | time_agreement | en → pl | analysis | GAP_I | 8 |
-| time_agreement | en → pl | analysis | PASS | 16 |
-| time_agreement | en → pl | integration | FAIL | 6 |
+| time_agreement | en → pl | analysis | PASS | 17 |
+| time_agreement | en → pl | integration | FAIL | 5 |
 | time_agreement | en → pl | integration | GAP_ANALYZE | 30 |
 | time_agreement | en → pl | integration | GAP_I | 8 |
-| time_agreement | en → pl | integration | PASS | 16 |
+| time_agreement | en → pl | integration | PASS | 17 |
 | time_agreement | en → pl | realization | GAP_I | 8 |
 | time_agreement | en → pl | realization | GAP_REALIZE | 30 |
 | time_agreement | en → pl | realization | PASS | 22 |
@@ -1572,10 +1587,10 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 
 - Inventory records parsed: 1000 / 1000 declared directions.
 - Snapshot identity records: 1.
-- Sense catalogue associations parsed: 2030 (not morphology execution coverage).
+- Sense catalogue associations parsed: 2031 (not morphology execution coverage).
 - Declared Meaning ID references: 1094 allowed; 1094 required.
 - Inventory fields preserve declared tags, source semantics, allowed/required Meaning IDs, and owner status separately from runtime observations.
-- Inventory source SHA `eaf9b308d18d331a2f86a60c7336fa66ff012b2e`: 1000 directions.
+- Inventory source SHA `b27caa605cf0ee066fb52f2d2f86524ad107cfd4`: 1000 directions.
 
 ### Declared source requirements
 
@@ -1648,7 +1663,7 @@ Aggregates below summarize authored source requirements; they are not observed a
 | `writing_message` | 2 |
 
 Declared role mentions: `agent` 16, `asset` 4, `associate` 4, `associated` 22, `author` 4, `back` 8, `bearer` 24, `beneficiary` 6, `choice_restriction` 2, `companion` 2, `content` 2, `destination` 2, `document` 2, `drinker` 16, `eater` 12, `entity` 2, `existence` 50, `experiencer` 160, `figure` 4, `food` 10, `friend_a` 2, `friend_b` 2, `front` 8, `giver` 20, `helper` 6, `higher` 6, `holder` 50, `instrument` 4, `item` 4, `landmark` 32, `landmark_a` 4, `landmark_b` 4, `liquid` 12, `located` 34, `location` 10, `lower` 6, `manner` 2, `material` 38, `member` 2, `object` 56, `occupant` 6, `owner` 4, `partner` 2, `person_variable` 6, `possessor` 18, `quantified_set` 50, `reader` 38, `reason` 2, `recipient` 24, `runner` 4, `sibling_a` 4, `sibling_b` 4, `sleeper` 22, `source` 2, `speaker` 4, `stimulus` 160, `support` 2, `supported` 2, `target` 4, `thanker` 2, `theme` 20, `time` 4, `tool` 2, `user` 2, `walker` 2, `writer` 2.
-- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "411b04d982e14cb7deab47dc6797c062deffad1fa335c47eac6d690aeac6dcc1", "format_version": 1}`; inventory source SHA: `eaf9b308d18d331a2f86a60c7336fa66ff012b2e`.
+- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "e62fdf8903c59fd27690aa46e58b00d199a10a0e1108869e3aa8d47a8f7196f0", "format_version": 1}`; inventory source SHA: `b27caa605cf0ee066fb52f2d2f86524ad107cfd4`.
 
 Catalogue sense associations are not proof that a paradigm form or morphology procedure ran. Aggregates below describe declared pack associations only.
 
@@ -1658,7 +1673,7 @@ Catalogue sense associations are not proof that a paradigm form or morphology pr
 | associated | en | determiner | en_determiner_definite | 1 |
 | associated | en | determiner | en_determiner_indefinite | 2 |
 | associated | en | noun | en_noun_consonant_y | 19 |
-| associated | en | noun | en_noun_principal_parts | 8 |
+| associated | en | noun | en_noun_principal_parts | 9 |
 | associated | en | noun | en_noun_regular | 52 |
 | associated | en | noun | en_noun_sibilant | 13 |
 | associated | en | noun | en_noun_singular_attested | 3 |
@@ -1715,9 +1730,9 @@ Runtime calls are separate from check outcomes. A false adapter marker is runtim
 |---|---|---:|
 | context_source_analysis | true | 152 |
 | independent_realization | false | 362 |
-| independent_realization | true | 746 |
+| independent_realization | true | 762 |
 | integration | true | 1000 |
-| native_analysis | true | 1004 |
+| native_analysis | true | 1012 |
 | source_gap_probe | true | 347 |
 
 ### Independent realization runtime NOT RUN
@@ -1860,9 +1875,9 @@ Observed top-level outcomes by runtime stage; these do not replace check statuse
 |---|---|---:|
 | analysis | unknown | 4 |
 | analysis | unsupported | 12 |
-| context_source_analysis | ambiguous | 5 |
+| context_source_analysis | ambiguous | 6 |
 | context_source_analysis | incomplete | 11 |
-| context_source_analysis | ok | 55 |
+| context_source_analysis | ok | 54 |
 | context_source_analysis | unknown | 7 |
 | context_source_analysis | unsupported | 74 |
 | direct_result |  | 1 |
@@ -1872,19 +1887,19 @@ Observed top-level outcomes by runtime stage; these do not replace check statuse
 | direct_result | unknown | 22 |
 | direct_result | unsupported | 27 |
 | independent_realization |  | 25 |
-| independent_realization | ambiguous | 154 |
+| independent_realization | ambiguous | 162 |
 | independent_realization | incomplete | 27 |
-| independent_realization | ok | 121 |
+| independent_realization | ok | 129 |
 | independent_realization | unknown | 47 |
 | independent_realization | unsupported | 372 |
-| integration | ambiguous | 110 |
+| integration | ambiguous | 120 |
 | integration | incomplete | 43 |
-| integration | ok | 54 |
+| integration | ok | 44 |
 | integration | unknown | 28 |
 | integration | unsupported | 765 |
-| native_analysis | ambiguous | 19 |
+| native_analysis | ambiguous | 38 |
 | native_analysis | incomplete | 43 |
-| native_analysis | ok | 154 |
+| native_analysis | ok | 143 |
 | native_analysis | unknown | 23 |
 | native_analysis | unsupported | 765 |
 | source_gap_probe | unknown | 1 |
@@ -1897,16 +1912,16 @@ Observed top-level outcomes by runtime stage; these do not replace check statuse
 
 These are the authored graphs supplied to the realizer, distinct from source analyzer and runtime result graphs. Repeated identical inputs are deduplicated by case/stage/MeaningID.
 
-- Unique authored Meaning inputs observed: 746
+- Unique authored Meaning inputs observed: 762
 
 | Authored graph property | Value | Count |
 |---|---|---:|
 | node kind | discourse | 48 |
-| node kind | event | 646 |
+| node kind | event | 662 |
 | node kind | quantifier | 8 |
 | node kind | question | 38 |
-| node kind | referent | 1358 |
-| node kind | scope | 124 |
+| node kind | referent | 1390 |
+| node kind | scope | 128 |
 | node kind | state | 202 |
 | participant role | agent | 52 |
 | participant role | bearer | 136 |
@@ -1915,7 +1930,7 @@ These are the authored graphs supplied to the realizer, distinct from source ana
 | participant role | carrier | 4 |
 | participant role | drinker | 46 |
 | participant role | eater | 36 |
-| participant role | experiencer | 288 |
+| participant role | experiencer | 304 |
 | participant role | food | 36 |
 | participant role | giver | 32 |
 | participant role | goods | 8 |
@@ -1934,54 +1949,54 @@ These are the authored graphs supplied to the realizer, distinct from source ana
 | participant role | runner | 18 |
 | participant role | seller | 4 |
 | participant role | sleeper | 28 |
-| participant role | stimulus | 284 |
+| participant role | stimulus | 300 |
 | participant role | target | 20 |
 | participant role | thanker | 4 |
 | participant role | theme | 46 |
 | participant role | walker | 8 |
 | participant role | worker | 2 |
 | temporal_frame | past | 109 |
-| temporal_frame | present | 661 |
-| temporal_frame | unknown | 1654 |
-| referent multiplicity | many | 228 |
-| referent multiplicity | one | 1020 |
+| temporal_frame | present | 677 |
+| temporal_frame | unknown | 1690 |
+| referent multiplicity | many | 232 |
+| referent multiplicity | one | 1048 |
 | referent multiplicity | unknown | 110 |
 
 ## Observed source/result Meaning graphs
 
 Authored `meaning_input` supplied to independent realization is excluded from observed graphs below. Graph summaries deduplicate identical graphs within a case and stage. Missing temporal frames or multiplicities are counted as unknown.
 
-- Unique observed graph snapshots: 625
+- Unique observed graph snapshots: 670
 
 | Graph property | Value | Count |
 |---|---|---:|
-| node kind | event | 480 |
-| node kind | referent | 1105 |
-| node kind | scope | 42 |
+| node kind | event | 525 |
+| node kind | referent | 1195 |
+| node kind | scope | 48 |
 | node kind | state | 184 |
-| predicate (event) | `concept:hearing` | 93 |
-| predicate (event) | `concept:looking` | 22 |
-| predicate (event) | `concept:reading` | 136 |
-| predicate (event) | `concept:receiving` | 20 |
-| predicate (event) | `concept:seeing` | 209 |
+| predicate (event) | `concept:hearing` | 112 |
+| predicate (event) | `concept:looking` | 24 |
+| predicate (event) | `concept:reading` | 140 |
+| predicate (event) | `concept:receiving` | 22 |
+| predicate (event) | `concept:seeing` | 227 |
 | predicate (state) | `concept:black` | 81 |
 | predicate (state) | `concept:class_membership` | 103 |
-| participant role | agent | 22 |
+| participant role | agent | 24 |
 | participant role | bearer | 81 |
-| participant role | experiencer | 302 |
-| participant role | material | 136 |
+| participant role | experiencer | 339 |
+| participant role | material | 140 |
 | participant role | member | 103 |
-| participant role | reader | 136 |
-| participant role | recipient | 20 |
-| participant role | stimulus | 302 |
-| participant role | target | 22 |
-| participant role | theme | 20 |
-| temporal_frame | past | 78 |
-| temporal_frame | present | 545 |
-| temporal_frame | unknown | 1188 |
-| referent multiplicity | many | 209 |
-| referent multiplicity | one | 866 |
-| referent multiplicity | unknown | 30 |
+| participant role | reader | 140 |
+| participant role | recipient | 22 |
+| participant role | stimulus | 339 |
+| participant role | target | 24 |
+| participant role | theme | 22 |
+| temporal_frame | past | 82 |
+| temporal_frame | present | 586 |
+| temporal_frame | unknown | 1284 |
+| referent multiplicity | many | 221 |
+| referent multiplicity | one | 941 |
+| referent multiplicity | unknown | 33 |
 
 ## Observed trace and feature associations
 
@@ -2008,51 +2023,51 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:en.oblique` | `construction:en.oblique.svo.indefinite_subject_an_target_a` | `en.look.directed.at` | ok | 2 |
 | `construction:en.oblique` | `construction:en.oblique.svo.indefinite_subject_target` | `en.look.directed.at` | ok | 10 |
 | `construction:en.oblique` | `construction:en.oblique.svo.indefinite_target` | `en.look.directed.at` | ok | 10 |
-| `construction:en.transitive` | `construction:en.transitive.svo` | `en.hear.auditory.transitive` | ok | 57 |
-| `construction:en.transitive` | `construction:en.transitive.svo` | `en.see.visual.transitive` | ok | 112 |
+| `construction:en.transitive` | `construction:en.transitive.svo` | `en.hear.auditory.transitive` | ok | 59 |
+| `construction:en.transitive` | `construction:en.transitive.svo` | `en.see.visual.transitive` | ok | 116 |
 | `construction:en.transitive` | `construction:en.transitive.svo.bare_object.subject_a` | `en.hear.auditory.transitive` | ok | 1 |
 | `construction:en.transitive` | `construction:en.transitive.svo.bare_object.subject_a` | `en.see.visual.transitive` | ok | 2 |
 | `construction:en.transitive` | `construction:en.transitive.svo.bare_object.subject_the` | `en.hear.auditory.transitive` | ok | 7 |
 | `construction:en.transitive` | `construction:en.transitive.svo.bare_object.subject_the` | `en.see.visual.transitive` | ok | 15 |
 | `construction:en.transitive` | `construction:en.transitive.svo.bare_subject.analyze` | `en.read.text.transitive` | ok | 1 |
 | `construction:en.transitive` | `construction:en.transitive.svo.bare_subject.analyze` | `en.see.visual.transitive` | ok | 3 |
-| `construction:en.transitive` | `construction:en.transitive.svo.bare_subject.object_a` | `en.hear.auditory.transitive` | ok | 5 |
+| `construction:en.transitive` | `construction:en.transitive.svo.bare_subject.object_a` | `en.hear.auditory.transitive` | ok | 6 |
 | `construction:en.transitive` | `construction:en.transitive.svo.bare_subject.object_a` | `en.read.text.transitive` | ok | 15 |
 | `construction:en.transitive` | `construction:en.transitive.svo.bare_subject.object_a` | `en.see.visual.transitive` | ok | 4 |
 | `construction:en.transitive` | `construction:en.transitive.svo.bare_subject.object_bare` | `en.hear.auditory.transitive` | ok | 6 |
 | `construction:en.transitive` | `construction:en.transitive.svo.bare_subject.object_bare` | `en.see.visual.transitive` | ok | 14 |
-| `construction:en.transitive` | `construction:en.transitive.svo.bare_subject.object_the` | `en.hear.auditory.transitive` | ok | 11 |
+| `construction:en.transitive` | `construction:en.transitive.svo.bare_subject.object_the` | `en.hear.auditory.transitive` | ok | 12 |
 | `construction:en.transitive` | `construction:en.transitive.svo.bare_subject.object_the` | `en.read.text.transitive` | ok | 15 |
 | `construction:en.transitive` | `construction:en.transitive.svo.bare_subject.object_the` | `en.see.visual.transitive` | ok | 17 |
-| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object` | `en.hear.auditory.transitive` | ok | 20 |
+| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object` | `en.hear.auditory.transitive` | ok | 21 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object` | `en.read.text.transitive` | ok | 23 |
-| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object` | `en.see.visual.transitive` | ok | 40 |
+| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object` | `en.see.visual.transitive` | ok | 42 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object_an` | `en.hear.auditory.transitive` | ok | 1 |
-| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object_an` | `en.see.visual.transitive` | ok | 4 |
+| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object_an` | `en.see.visual.transitive` | ok | 5 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject` | `en.hear.auditory.transitive` | ok | 16 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject` | `en.read.text.transitive` | ok | 8 |
-| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject` | `en.see.visual.transitive` | ok | 38 |
+| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject` | `en.see.visual.transitive` | ok | 40 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_a_object_an` | `en.hear.auditory.transitive` | ok | 1 |
-| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_a_object_an` | `en.see.visual.transitive` | ok | 4 |
+| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_a_object_an` | `en.see.visual.transitive` | ok | 5 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_an` | `en.hear.auditory.transitive` | ok | 3 |
-| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_an` | `en.see.visual.transitive` | ok | 5 |
+| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_an` | `en.see.visual.transitive` | ok | 6 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_an_object_a` | `en.hear.auditory.transitive` | ok | 3 |
-| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_an_object_a` | `en.see.visual.transitive` | ok | 5 |
+| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_an_object_a` | `en.see.visual.transitive` | ok | 6 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_object` | `en.hear.auditory.transitive` | ok | 15 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_object` | `en.read.text.transitive` | ok | 9 |
-| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_object` | `en.see.visual.transitive` | ok | 36 |
+| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_object` | `en.see.visual.transitive` | ok | 38 |
 | `construction:en.transitive` | `construction:en.transitive.svo.reading` | `en.read.text.transitive` | ok | 55 |
-| `construction:en.transitive_negative` | `construction:en.transitive_negative.svo` | `en.hear.auditory.transitive` | ok | 7 |
+| `construction:en.transitive_negative` | `construction:en.transitive_negative.svo` | `en.hear.auditory.transitive` | ok | 9 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo` | `en.see.visual.transitive` | ok | 17 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.bare_object.subject_a` | `en.hear.auditory.transitive` | ok | 3 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.bare_object.subject_the` | `en.hear.auditory.transitive` | ok | 3 |
-| `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_object` | `en.hear.auditory.transitive` | ok | 2 |
+| `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_object` | `en.hear.auditory.transitive` | ok | 3 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_object` | `en.see.visual.transitive` | ok | 8 |
-| `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_object_an` | `en.hear.auditory.transitive` | ok | 2 |
-| `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_subject` | `en.hear.auditory.transitive` | ok | 5 |
+| `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_object_an` | `en.hear.auditory.transitive` | ok | 3 |
+| `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_subject` | `en.hear.auditory.transitive` | ok | 6 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_subject` | `en.see.visual.transitive` | ok | 8 |
-| `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_subject_a_object_an` | `en.hear.auditory.transitive` | ok | 2 |
-| `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_subject_object` | `en.hear.auditory.transitive` | ok | 2 |
+| `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_subject_a_object_an` | `en.hear.auditory.transitive` | ok | 3 |
+| `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_subject_object` | `en.hear.auditory.transitive` | ok | 3 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_subject_object` | `en.see.visual.transitive` | ok | 8 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.plural` | `en.hear.auditory.transitive` | ok | 4 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.plural` | `en.see.visual.transitive` | ok | 6 |
@@ -2103,9 +2118,9 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:pl.oblique` | `construction:pl.oblique.svo` | `pl.patrzec.directed.na` | ok | 20 |
 | `construction:pl.transitive` | `construction:pl.transitive.svo` | `pl.czytac.interpret.frame` | ok | 69 |
 | `construction:pl.transitive` | `construction:pl.transitive.svo` | `pl.dostac.receive.transitive` | ok | 17 |
-| `construction:pl.transitive` | `construction:pl.transitive.svo` | `pl.slyszec.auditory.transitive` | ok | 52 |
-| `construction:pl.transitive` | `construction:pl.transitive.svo` | `pl.widziec.visual.transitive` | ok | 113 |
-| `construction:pl.transitive_negative` | `construction:pl.transitive_negative.svo` | `pl.slyszec.auditory.transitive_negative` | ok | 11 |
+| `construction:pl.transitive` | `construction:pl.transitive.svo` | `pl.slyszec.auditory.transitive` | ok | 54 |
+| `construction:pl.transitive` | `construction:pl.transitive.svo` | `pl.widziec.visual.transitive` | ok | 117 |
+| `construction:pl.transitive_negative` | `construction:pl.transitive_negative.svo` | `pl.slyszec.auditory.transitive_negative` | ok | 13 |
 | `construction:pl.transitive_negative` | `construction:pl.transitive_negative.svo` | `pl.widziec.visual.transitive_negative` | ok | 24 |
 | `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.past.first.plural.masculine_personal` | `pl.czytac.interpret.frame` | ok | 4 |
 | `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.past.first.plural.non_masculine_personal` | `pl.czytac.interpret.frame` | ok | 4 |
@@ -2133,41 +2148,41 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | Feature | State | Value | Deduplicated observations |
 |---|---|---|---:|
 | `adjective_degree` | known | positive | 48 |
-| `aspect` | known | imperfective | 247 |
+| `aspect` | known | imperfective | 251 |
 | `aspect` | known | perfective | 9 |
-| `case` | known | accusative | 178 |
-| `case` | known | genitive | 19 |
-| `case` | known | nominative | 235 |
+| `case` | known | accusative | 181 |
+| `case` | known | genitive | 20 |
+| `case` | known | nominative | 239 |
 | `degree` | known | positive | 35 |
 | `determiner` | known | bare | 8 |
-| `determiner` | known | definite | 220 |
+| `determiner` | known | definite | 224 |
 | `determiner` | known | indefinite | 63 |
 | `gender` | known | feminine | 81 |
-| `gender` | known | masculine_animal | 143 |
+| `gender` | known | masculine_animal | 147 |
 | `gender` | known | masculine_inanimate | 25 |
 | `gender` | known | masculine_personal | 98 |
-| `gender` | known | neuter | 40 |
+| `gender` | known | neuter | 44 |
 | `gender` | known | non_masculine_personal | 2 |
-| `mood` | known | indicative | 526 |
-| `noun_number` | known | plural | 58 |
-| `noun_number` | known | singular | 273 |
-| `number` | known | plural | 160 |
-| `number` | known | singular | 532 |
+| `mood` | known | indicative | 534 |
+| `noun_number` | known | plural | 59 |
+| `noun_number` | known | singular | 277 |
+| `number` | known | plural | 162 |
+| `number` | known | singular | 540 |
 | `person` | known | first | 44 |
 | `person` | known | second | 36 |
-| `person` | known | third | 568 |
+| `person` | known | third | 576 |
 | `pronoun_case` | known | subject | 40 |
 | `pronoun_number` | known | plural | 13 |
 | `pronoun_number` | known | singular | 9 |
 | `pronoun_person` | known | first | 22 |
 | `pronoun_person` | known | second | 18 |
 | `tense` | known | past | 78 |
-| `tense` | known | present | 481 |
-| `verb_form` | known | base | 15 |
-| `verb_form` | known | finite | 511 |
-| `verb_number` | known | plural | 82 |
-| `verb_number` | known | singular | 168 |
-| `voice` | known | active | 526 |
+| `tense` | known | present | 489 |
+| `verb_form` | known | base | 16 |
+| `verb_form` | known | finite | 518 |
+| `verb_number` | known | plural | 83 |
+| `verb_number` | known | singular | 171 |
+| `voice` | known | active | 534 |
 
 ## Representation gap diagnosis
 
@@ -2351,7 +2366,7 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | analysis | `UNKNOWN_SURFACE` | 6 |
 | analysis | `UNMATCHED_PARSE_CANDIDATE` | 51 |
 | context_source_analysis | `AMBIGUOUS_PARSE` | 5 |
-| context_source_analysis | `DISAMBIGUATION_INCOMPLETE` | 2 |
+| context_source_analysis | `DISAMBIGUATION_INCOMPLETE` | 3 |
 | context_source_analysis | `NO_PARSE` | 5 |
 | context_source_analysis | `NO_SEMANTIC_ALTERNATIVES` | 7 |
 | context_source_analysis | `NO_START_PLAN` | 60 |
@@ -2370,41 +2385,41 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | direct_result | `TARGET_NO_SURFACE_CANDIDATE` | 22 |
 | direct_result | `UNMATCHED_PARSE_CANDIDATE` | 28 |
 | independent_realization | `DISCOURSE_ACT_UNSUPPORTED` | 40 |
-| independent_realization | `EXPLICIT_REALIZATION_ASSUMPTION` | 1086 |
+| independent_realization | `EXPLICIT_REALIZATION_ASSUMPTION` | 1150 |
 | independent_realization | `NO_LICENSED_TARGET` | 246 |
 | independent_realization | `OPERATOR_COVERAGE_UNKNOWN` | 116 |
 | independent_realization | `OPERATOR_MAPPING_UNAVAILABLE` | 120 |
 | independent_realization | `REALIZATION_FIELD_LOSS` | 70 |
-| independent_realization | `TARGET_ALTERNATIVES_AMBIGUOUS` | 219 |
+| independent_realization | `TARGET_ALTERNATIVES_AMBIGUOUS` | 227 |
 | independent_realization | `TARGET_LEXICAL_COVERAGE_UNAVAILABLE` | 72 |
 | independent_realization | `TARGET_NO_SURFACE_CANDIDATE` | 47 |
 | independent_realization | `TARGET_OPERATOR_COVERAGE_UNAVAILABLE` | 116 |
 | integration | `AMBIGUOUS_PARSE` | 13 |
-| integration | `DISAMBIGUATION_INCOMPLETE` | 11 |
-| integration | `EXPLICIT_REALIZATION_ASSUMPTION` | 796 |
+| integration | `DISAMBIGUATION_INCOMPLETE` | 22 |
+| integration | `EXPLICIT_REALIZATION_ASSUMPTION` | 800 |
 | integration | `NO_PARSE` | 73 |
 | integration | `NO_SEMANTIC_ALTERNATIVES` | 23 |
 | integration | `NO_START_PLAN` | 248 |
 | integration | `OPERATOR_COVERAGE_UNKNOWN` | 3 |
-| integration | `PARTIAL_PARSE_EVIDENCE` | 229 |
+| integration | `PARTIAL_PARSE_EVIDENCE` | 231 |
 | integration | `PRINCIPAL_PARTS_UNAVAILABLE` | 2 |
 | integration | `REALIZATION_FIELD_LOSS` | 64 |
-| integration | `TARGET_ALTERNATIVES_AMBIGUOUS` | 117 |
+| integration | `TARGET_ALTERNATIVES_AMBIGUOUS` | 118 |
 | integration | `TARGET_NO_SURFACE_CANDIDATE` | 16 |
 | integration | `TRANSLATION_NOT_OK` | 17 |
 | integration | `UNKNOWN_SURFACE` | 1128 |
 | integration | `UNMATCHED_PARSE_CANDIDATE` | 4851 |
-| integration | `UNRESOLVED_ROLE_SENSE` | 229 |
+| integration | `UNRESOLVED_ROLE_SENSE` | 231 |
 | native_analysis | `AMBIGUOUS_PARSE` | 13 |
-| native_analysis | `DISAMBIGUATION_INCOMPLETE` | 11 |
+| native_analysis | `DISAMBIGUATION_INCOMPLETE` | 30 |
 | native_analysis | `NO_PARSE` | 73 |
 | native_analysis | `NO_SEMANTIC_ALTERNATIVES` | 23 |
 | native_analysis | `NO_START_PLAN` | 248 |
 | native_analysis | `OPERATOR_COVERAGE_UNKNOWN` | 2 |
-| native_analysis | `PARTIAL_PARSE_EVIDENCE` | 90 |
+| native_analysis | `PARTIAL_PARSE_EVIDENCE` | 91 |
 | native_analysis | `UNKNOWN_SURFACE` | 1128 |
 | native_analysis | `UNMATCHED_PARSE_CANDIDATE` | 2808 |
-| native_analysis | `UNRESOLVED_ROLE_SENSE` | 90 |
+| native_analysis | `UNRESOLVED_ROLE_SENSE` | 91 |
 | source_gap_probe | `NO_PARSE` | 62 |
 | source_gap_probe | `NO_SEMANTIC_ALTERNATIVES` | 1 |
 | source_gap_probe | `NO_START_PLAN` | 22 |
@@ -2419,6 +2434,6 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 
 ## Counts
 
-PASS: 503 | FAIL: 153 | GAP_ANALYZE: 856 | GAP_REALIZE: 408 | GAP_I: 1080 | SPEC_PENDING: 0 | INFRA: 0 | NOT RUN: 0
+PASS: 533 | FAIL: 123 | GAP_ANALYZE: 856 | GAP_REALIZE: 408 | GAP_I: 1080 | SPEC_PENDING: 0 | INFRA: 0 | NOT RUN: 0
 
 `SPEC_PENDING` means the check ran but lacks a closed independent contract. `NOT RUN` means no matching record check result was observed. Runtime adapter NOT RUN markers are counted separately above. Additional checks retain their own statuses. Consult the full raw log artifact for every individual observation.
