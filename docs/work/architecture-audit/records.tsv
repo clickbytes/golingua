@@ -1,0 +1,1001 @@
+case_id	from	to	input	meaning_id	primary_group	owner_status
+A1-AC-001-EN-PL	en	pl	The teacher sees the dog.	seeing.teacher-dog	actions	NOT_EVALUATED
+A1-AC-002-PL-EN	pl	en	Nauczyciel widzi psa.	seeing.teacher-dog	actions	NOT_EVALUATED
+A1-AC-003-EN-PL	en	pl	The dog sees the teacher.	seeing.dog-teacher	actions	NOT_EVALUATED
+A1-AC-004-PL-EN	pl	en	Pies widzi nauczyciela.	seeing.dog-teacher	actions	NOT_EVALUATED
+A1-ID-001-EN-PL	en	pl	This is a cat	identification.classification.this	identification	NOT_EVALUATED
+A1-ID-002-PL-EN	pl	en	To jest kot.	identification.classification.to	identification	NOT_EVALUATED
+A1-ID-003-EN-PL	en	pl	This cat is black.	identification.black.this	identification	NOT_EVALUATED
+A1-ID-004-PL-EN	pl	en	Ten kot jest czarny.	identification.black.ten	identification	NOT_EVALUATED
+A1-LQ-001-EN-PL	en	pl	The cat is on the chair.	location.on-chair	location_quantity	NOT_EVALUATED
+A1-LQ-002-PL-EN	pl	en	Kot jest na krześle.	location.on-chair	location_quantity	NOT_EVALUATED
+A1-LQ-003-EN-PL	en	pl	There are two cats.	quantity.exactly-two-cats.present	location_quantity	NOT_EVALUATED
+A1-LQ-004-PL-EN	pl	en	Są dwa koty.	quantity.exactly-two-cats.present	location_quantity	NOT_EVALUATED
+A1-NEG-001-EN-PL	en	pl	This is not a cat.	negation.classification.this	negation	NOT_EVALUATED
+A1-NEG-002-PL-EN	pl	en	To nie jest kot.	negation.classification.to	negation	NOT_EVALUATED
+A1-NEG-003-EN-PL	en	pl	The teacher does not see the dog.	negation.seeing.teacher-dog	negation	NOT_EVALUATED
+A1-NEG-004-PL-EN	pl	en	Nauczyciel nie widzi psa.	negation.seeing.teacher-dog	negation	NOT_EVALUATED
+A1-PO-001-EN-PL	en	pl	I have a cat.	possession.temporary	possession	NOT_EVALUATED
+A1-PO-002-PL-EN	pl	en	Mam kota.	possession.temporary	possession	NOT_EVALUATED
+A1-PO-003-EN-PL	en	pl	She has a book.	possession.temporary	possession	NOT_EVALUATED
+A1-PO-004-PL-EN	pl	en	Ona ma książkę.	possession.temporary	possession	NOT_EVALUATED
+A1-Q-001-EN-PL	en	pl	Is this a cat?	question.classification.this	questions	NOT_EVALUATED
+A1-Q-002-PL-EN	pl	en	Czy to jest kot?	question.classification.to	questions	NOT_EVALUATED
+A1-Q-003-EN-PL	en	pl	Where is the cat?	question.location	questions	NOT_EVALUATED
+A1-Q-004-PL-EN	pl	en	Gdzie jest kot?	question.location	questions	NOT_EVALUATED
+A1.1-AC-101-EN-PL	en	pl	The teacher sees the book.	corpus.S003	actions	NOT_EVALUATED
+A1.1-AC-102-PL-EN	pl	en	Nauczyciel widzi książkę.	corpus.S003	actions	NOT_EVALUATED
+A1.1-AC-103-EN-PL	en	pl	The doctor sees the car.	corpus.S010	actions	NOT_EVALUATED
+A1.1-AC-104-PL-EN	pl	en	Lekarz widzi samochód.	corpus.S010	actions	NOT_EVALUATED
+A1.1-AC-105-EN-PL	en	pl	The father sees the dog.	corpus.S016	actions	NOT_EVALUATED
+A1.1-AC-106-PL-EN	pl	en	Ojciec widzi psa.	corpus.S016	actions	NOT_EVALUATED
+A1.1-AC-107-EN-PL	en	pl	The child sees the book.	corpus.S023	actions	NOT_EVALUATED
+A1.1-AC-108-PL-EN	pl	en	Dziecko widzi książkę.	corpus.S023	actions	NOT_EVALUATED
+A1.1-AC-109-EN-PL	en	pl	The teacher hears the bird.	corpus.S028	actions	NOT_EVALUATED
+A1.1-AC-110-PL-EN	pl	en	Nauczyciel słyszy ptaka.	corpus.S028	actions	NOT_EVALUATED
+A1.1-AC-111-EN-PL	en	pl	The doctor hears the mother.	corpus.S034	actions	NOT_EVALUATED
+A1.1-AC-112-PL-EN	pl	en	Lekarz słyszy matkę.	corpus.S034	actions	NOT_EVALUATED
+A1.1-AC-113-EN-PL	en	pl	The child hears the father.	corpus.S040	actions	NOT_EVALUATED
+A1.1-AC-114-PL-EN	pl	en	Dziecko słyszy ojca.	corpus.S040	actions	NOT_EVALUATED
+A1.1-AC-115-EN-PL	en	pl	The neighbor hears the bird.	corpus.S043	actions	NOT_EVALUATED
+A1.1-AC-116-PL-EN	pl	en	Sąsiad słyszy ptaka.	corpus.S043	actions	NOT_EVALUATED
+A1.1-AC-117-EN-PL	en	pl	The teacher looks at the book.	corpus.S051	actions	NOT_EVALUATED
+A1.1-AC-118-PL-EN	pl	en	Nauczyciel patrzy na książkę.	corpus.S051	actions	NOT_EVALUATED
+A1.1-AC-119-EN-PL	en	pl	The teacher looks at the tree.	corpus.S055	actions	NOT_EVALUATED
+A1.1-AC-120-PL-EN	pl	en	Nauczyciel patrzy na drzewo.	corpus.S055	actions	NOT_EVALUATED
+A1.1-AC-121-EN-PL	en	pl	The mother looks at the dog.	corpus.S063	actions	NOT_EVALUATED
+A1.1-AC-122-PL-EN	pl	en	Matka patrzy na psa.	corpus.S063	actions	NOT_EVALUATED
+A1.1-AC-123-EN-PL	en	pl	The child looks at the car.	corpus.S074	actions	NOT_EVALUATED
+A1.1-AC-124-PL-EN	pl	en	Dziecko patrzy na samochód.	corpus.S074	actions	NOT_EVALUATED
+A1.1-AC-125-EN-PL	en	pl	The teacher got a book.	corpus.S076	actions	NOT_EVALUATED
+A1.1-AC-126-PL-EN	pl	en	Nauczyciel dostał książkę.	corpus.S076	actions	NOT_EVALUATED
+A1.1-AC-127-EN-PL	en	pl	The doctor got a book.	corpus.S081	actions	NOT_EVALUATED
+A1.1-AC-128-PL-EN	pl	en	Lekarz dostał książkę.	corpus.S081	actions	NOT_EVALUATED
+A1.1-AC-129-EN-PL	en	pl	The mother got a book.	corpus.S086	actions	NOT_EVALUATED
+A1.1-AC-130-PL-EN	pl	en	Matka dostała książkę.	corpus.S086	actions	NOT_EVALUATED
+A1.1-AC-131-EN-PL	en	pl	The child got a message.	corpus.S099	actions	NOT_EVALUATED
+A1.1-AC-132-PL-EN	pl	en	Dziecko dostało wiadomość.	corpus.S099	actions	NOT_EVALUATED
+A1.2-PO-201-PL-EN	pl	en	Mam książkę.	m5.possession.have-book	possession	NOT_EVALUATED
+A1.2-PO-202-EN-PL	en	pl	I have a book.	m5.possession.have-book	possession	NOT_EVALUATED
+A1.2-PO-203-PL-EN	pl	en	Nie mam książki.	m5.possession.neg-have-book	possession	NOT_EVALUATED
+A1.2-PO-204-EN-PL	en	pl	I do not have a book.	m5.possession.neg-have-book	possession	NOT_EVALUATED
+A1.2-PO-205-PL-EN	pl	en	Ona nie ma książki.	m5.possession.she-neg-have-book	possession	NOT_EVALUATED
+A1.2-PO-206-EN-PL	en	pl	She does not have a book.	m5.possession.she-neg-have-book	possession	NOT_EVALUATED
+A1.2-PO-207-PL-EN	pl	en	Mamy kota.	m5.possession.we-have-cat	possession	NOT_EVALUATED
+A1.2-PO-208-EN-PL	en	pl	We have a cat.	m5.possession.we-have-cat	possession	NOT_EVALUATED
+A1.2-AC-209-PL-EN	pl	en	Nauczyciele widzą psa.	m5.seeing.teachers-dog	time_agreement	NOT_EVALUATED
+A1.2-AC-210-EN-PL	en	pl	The teachers see the dog.	m5.seeing.teachers-dog	time_agreement	NOT_EVALUATED
+A1.2-NEG-211-PL-EN	pl	en	Nauczyciele nie słyszą psa.	m5.neg.hearing.teachers-dog	negation	NOT_EVALUATED
+A1.2-NEG-212-EN-PL	en	pl	The teachers do not hear the dog.	m5.neg.hearing.teachers-dog	negation	NOT_EVALUATED
+A1.2-TIME-213-PL-EN	pl	en	Nauczyciel czytał wiadomość.	reading.teacher-message.past	time_agreement	NOT_EVALUATED
+A1.2-TIME-214-EN-PL	en	pl	The teacher read the message.	reading.teacher-message.past	time_agreement	NOT_EVALUATED
+A1.2-AMB-215-PL-EN	pl	en	Nauczyciele czytają wiadomość.	reading.teachers-message.present	ambiguity_reference	NOT_EVALUATED
+A1.2-AMB-216-EN-PL	en	pl	The teachers read the message.	reading.teachers-message.present	ambiguity_reference	NOT_EVALUATED
+A1.2-TIME-217-PL-EN	pl	en	Nauczyciel czyta wiadomość.	reading.teacher-message.present	time_agreement	NOT_EVALUATED
+A1.2-TIME-218-EN-PL	en	pl	The teacher reads the message.	reading.teacher-message.present	time_agreement	NOT_EVALUATED
+A1.2-ADJ-219-PL-EN	pl	en	Pies widzi czarnego kota.	m5.black.dog-sees-black-cat	case_adjective_order	NOT_EVALUATED
+A1.2-ADJ-220-EN-PL	en	pl	The dog sees the black cat.	m5.black.dog-sees-black-cat	case_adjective_order	NOT_EVALUATED
+A1.2-ORDER-221-PL-EN	pl	en	Psa widzi nauczyciel.	seeing.teacher-dog	case_adjective_order	NOT_EVALUATED
+A1.2-ORDER-222-EN-PL	en	pl	The teacher sees the dog.	seeing.teacher-dog	case_adjective_order	NOT_EVALUATED
+A1.2-DEF-223-PL-EN	pl	en	Nauczyciel widzi psa.	seeing.teacher-dog	ambiguity_reference	NOT_EVALUATED
+A1.2-DEF-224-EN-PL	en	pl	A teacher sees a dog.	seeing.teacher-dog	ambiguity_reference	NOT_EVALUATED
+A1.2-NEG-225-PL-EN	pl	en	Kot nie widzi psa.	m5.neg.seeing.cat-dog	negation	NOT_EVALUATED
+A1.2-NEG-226-EN-PL	en	pl	The cat does not see the dog.	m5.neg.seeing.cat-dog	negation	NOT_EVALUATED
+A1.2-NEG-227-PL-EN	pl	en	Nauczyciel nie widzi książki.	m5.neg.seeing.teacher-book	negation	NOT_EVALUATED
+A1.2-NEG-228-EN-PL	en	pl	The teacher does not see the book.	m5.neg.seeing.teacher-book	negation	NOT_EVALUATED
+A1.2-AC-229-PL-EN	pl	en	Psy słyszą kota.	m5.hearing.dogs-cat	time_agreement	NOT_EVALUATED
+A1.2-AC-230-EN-PL	en	pl	The dogs hear the cat.	m5.hearing.dogs-cat	time_agreement	NOT_EVALUATED
+A1.2-ADJ-231-PL-EN	pl	en	Nauczyciel widzi czarne koty.	m5.black.teacher-sees-cats	case_adjective_order	NOT_EVALUATED
+A1.2-ADJ-232-EN-PL	en	pl	The teacher sees the black cats.	m5.black.teacher-sees-cats	case_adjective_order	NOT_EVALUATED
+A1.3-CO-301-PL-EN	pl	en	Nauczyciel widzi psa i słyszy kota.	composition.batch.01	composition_boundary	NOT_EVALUATED
+A1.3-CO-302-EN-PL	en	pl	The teacher sees the dog and hears the cat.	composition.batch.01	composition_boundary	NOT_EVALUATED
+A1.3-CO-303-PL-EN	pl	en	Kot widzi psa i słyszy ptaka.	composition.batch.02	composition_boundary	NOT_EVALUATED
+A1.3-CO-304-EN-PL	en	pl	The cat sees the dog and hears the bird.	composition.batch.02	composition_boundary	NOT_EVALUATED
+A1.3-CO-305-PL-EN	pl	en	Nauczyciel widzi kota i pies słyszy ptaka.	composition.batch.03	composition_boundary	NOT_EVALUATED
+A1.3-CO-306-EN-PL	en	pl	The teacher sees the cat and the dog hears the bird.	composition.batch.03	composition_boundary	NOT_EVALUATED
+A1.3-CO-307-PL-EN	pl	en	Czarny kot widzi czarnego psa.	composition.batch.04	composition_boundary	NOT_EVALUATED
+A1.3-CO-308-EN-PL	en	pl	The black cat sees the black dog.	composition.batch.04	composition_boundary	NOT_EVALUATED
+A1.3-CO-309-PL-EN	pl	en	Kot widzi czarnego psa.	composition.batch.05	composition_boundary	NOT_EVALUATED
+A1.3-CO-310-EN-PL	en	pl	The cat sees the black dog.	composition.batch.05	composition_boundary	NOT_EVALUATED
+A1.3-CO-311-PL-EN	pl	en	Czarny pies widzi kota.	composition.batch.06	composition_boundary	NOT_EVALUATED
+A1.3-CO-312-EN-PL	en	pl	The black dog sees the cat.	composition.batch.06	composition_boundary	NOT_EVALUATED
+A1.3-CO-313-PL-EN	pl	en	Czarny ptak widzi psa.	composition.batch.07	composition_boundary	NOT_EVALUATED
+A1.3-CO-314-EN-PL	en	pl	The black bird sees the dog.	composition.batch.07	composition_boundary	NOT_EVALUATED
+A1.3-CO-315-PL-EN	pl	en	Czarny kot widzi kota.	composition.batch.08	composition_boundary	NOT_EVALUATED
+A1.3-CO-316-EN-PL	en	pl	The black cat sees the cat.	composition.batch.08	composition_boundary	NOT_EVALUATED
+A1.3-CO-317-PL-EN	pl	en	Nauczyciela widzi pies.	composition.batch.09	composition_boundary	NOT_EVALUATED
+A1.3-CO-318-EN-PL	en	pl	The dog sees the teacher.	composition.batch.09	composition_boundary	NOT_EVALUATED
+A1.3-CO-319-PL-EN	pl	en	Kot nie widzi czarnego psa.	composition.batch.10	composition_boundary	NOT_EVALUATED
+A1.3-CO-320-EN-PL	en	pl	The cat does not see the black dog.	composition.batch.10	composition_boundary	NOT_EVALUATED
+A1.3-CO-321-PL-EN	pl	en	Czarny kot nie widzi psa.	composition.batch.11	composition_boundary	NOT_EVALUATED
+A1.3-CO-322-EN-PL	en	pl	The black cat does not see the dog.	composition.batch.11	composition_boundary	NOT_EVALUATED
+A1.3-CO-323-PL-EN	pl	en	Nauczyciel widzi psa i patrzy na kota.	composition.batch.12	composition_boundary	NOT_EVALUATED
+A1.3-CO-324-EN-PL	en	pl	The teacher sees the dog and looks at the cat.	composition.batch.12	composition_boundary	NOT_EVALUATED
+A1.4-AC-401-EN-PL	en	pl	The dog eats bread.	a1.4.actions.001	actions	NOT_EVALUATED
+A1.4-AC-402-PL-EN	pl	en	Pies je chleb.	a1.4.actions.001	actions	NOT_EVALUATED
+A1.4-AC-403-EN-PL	en	pl	The mother eats an egg.	a1.4.actions.002	actions	NOT_EVALUATED
+A1.4-AC-404-PL-EN	pl	en	Matka je jajko.	a1.4.actions.002	actions	NOT_EVALUATED
+A1.4-AC-405-EN-PL	en	pl	The teacher eats an apple.	a1.4.actions.003	actions	NOT_EVALUATED
+A1.4-AC-406-PL-EN	pl	en	Nauczyciel je jabłko.	a1.4.actions.003	actions	NOT_EVALUATED
+A1.4-AC-407-EN-PL	en	pl	The father eats soup.	a1.4.actions.004	actions	NOT_EVALUATED
+A1.4-AC-408-PL-EN	pl	en	Ojciec je zupę.	a1.4.actions.004	actions	NOT_EVALUATED
+A1.4-AC-409-EN-PL	en	pl	The dog drinks water.	a1.4.actions.005	actions	NOT_EVALUATED
+A1.4-AC-410-PL-EN	pl	en	Pies pije wodę.	a1.4.actions.005	actions	NOT_EVALUATED
+A1.4-AC-411-EN-PL	en	pl	The cat drinks milk.	a1.4.actions.006	actions	NOT_EVALUATED
+A1.4-AC-412-PL-EN	pl	en	Kot pije mleko.	a1.4.actions.006	actions	NOT_EVALUATED
+A1.4-AC-413-EN-PL	en	pl	The teacher drinks tea.	a1.4.actions.007	actions	NOT_EVALUATED
+A1.4-AC-414-PL-EN	pl	en	Nauczyciel pije herbatę.	a1.4.actions.007	actions	NOT_EVALUATED
+A1.4-AC-415-EN-PL	en	pl	The doctor drinks coffee.	a1.4.actions.008	actions	NOT_EVALUATED
+A1.4-AC-416-PL-EN	pl	en	Lekarz pije kawę.	a1.4.actions.008	actions	NOT_EVALUATED
+A1.4-AC-417-EN-PL	en	pl	The teacher sleeps.	a1.4.actions.009	actions	NOT_EVALUATED
+A1.4-AC-418-PL-EN	pl	en	Nauczyciel śpi.	a1.4.actions.009	actions	NOT_EVALUATED
+A1.4-AC-419-EN-PL	en	pl	The dog sleeps.	a1.4.actions.010	actions	NOT_EVALUATED
+A1.4-AC-420-PL-EN	pl	en	Pies śpi.	a1.4.actions.010	actions	NOT_EVALUATED
+A1.4-AC-421-EN-PL	en	pl	The cat breathes.	a1.4.actions.011	actions	NOT_EVALUATED
+A1.4-AC-422-PL-EN	pl	en	Kot oddycha.	a1.4.actions.011	actions	NOT_EVALUATED
+A1.4-AC-423-EN-PL	en	pl	The mother sneezes.	a1.4.actions.012	actions	NOT_EVALUATED
+A1.4-AC-424-PL-EN	pl	en	Matka kicha.	a1.4.actions.012	actions	NOT_EVALUATED
+A1.4-AC-425-EN-PL	en	pl	The dog runs.	a1.4.actions.013	actions	NOT_EVALUATED
+A1.4-AC-426-PL-EN	pl	en	Pies biegnie.	a1.4.actions.013	actions	NOT_EVALUATED
+A1.4-AC-427-EN-PL	en	pl	The cat runs.	a1.4.actions.014	actions	NOT_EVALUATED
+A1.4-AC-428-PL-EN	pl	en	Kot biegnie.	a1.4.actions.014	actions	NOT_EVALUATED
+A1.4-AC-429-EN-PL	en	pl	The father coughs.	a1.4.actions.015	actions	NOT_EVALUATED
+A1.4-AC-430-PL-EN	pl	en	Ojciec kaszle.	a1.4.actions.015	actions	NOT_EVALUATED
+A1.4-AC-431-EN-PL	en	pl	The doctor wakes up.	a1.4.actions.016	actions	NOT_EVALUATED
+A1.4-AC-432-PL-EN	pl	en	Lekarz budzi się.	a1.4.actions.016	actions	NOT_EVALUATED
+A1.4-AC-433-EN-PL	en	pl	The teacher walks.	a1.4.actions.017	actions	NOT_EVALUATED
+A1.4-AC-434-PL-EN	pl	en	Nauczyciel chodzi.	a1.4.actions.017	actions	NOT_EVALUATED
+A1.4-AC-435-EN-PL	en	pl	The mother walks.	a1.4.actions.018	actions	NOT_EVALUATED
+A1.4-AC-436-PL-EN	pl	en	Matka chodzi.	a1.4.actions.018	actions	NOT_EVALUATED
+A1.4-AC-437-EN-PL	en	pl	The dog falls asleep.	a1.4.actions.019	actions	NOT_EVALUATED
+A1.4-AC-438-PL-EN	pl	en	Pies zasypia.	a1.4.actions.019	actions	NOT_EVALUATED
+A1.4-AC-439-EN-PL	en	pl	The horse walks.	a1.4.actions.020	actions	NOT_EVALUATED
+A1.4-AC-440-PL-EN	pl	en	Koń chodzi.	a1.4.actions.020	actions	NOT_EVALUATED
+A1.4-AC-441-EN-PL	en	pl	The teacher opens the window.	a1.4.actions.021	actions	NOT_EVALUATED
+A1.4-AC-442-PL-EN	pl	en	Nauczyciel otwiera okno.	a1.4.actions.021	actions	NOT_EVALUATED
+A1.4-AC-443-EN-PL	en	pl	The mother opens a window.	a1.4.actions.022	actions	NOT_EVALUATED
+A1.4-AC-444-PL-EN	pl	en	Matka otwiera okno.	a1.4.actions.022	actions	NOT_EVALUATED
+A1.4-AC-445-EN-PL	en	pl	The teacher closes the window.	a1.4.actions.023	actions	NOT_EVALUATED
+A1.4-AC-446-PL-EN	pl	en	Nauczyciel zamyka okno.	a1.4.actions.023	actions	NOT_EVALUATED
+A1.4-AC-447-EN-PL	en	pl	The doctor closes the book.	a1.4.actions.024	actions	NOT_EVALUATED
+A1.4-AC-448-PL-EN	pl	en	Lekarz zamyka książkę.	a1.4.actions.024	actions	NOT_EVALUATED
+A1.4-AC-449-EN-PL	en	pl	The mother opens the book.	a1.4.actions.025	actions	NOT_EVALUATED
+A1.4-AC-450-PL-EN	pl	en	Matka otwiera książkę.	a1.4.actions.025	actions	NOT_EVALUATED
+A1.4-AC-451-EN-PL	en	pl	The father closes the bag.	a1.4.actions.026	actions	NOT_EVALUATED
+A1.4-AC-452-PL-EN	pl	en	Ojciec zamyka torbę.	a1.4.actions.026	actions	NOT_EVALUATED
+A1.4-AC-453-EN-PL	en	pl	The teacher carries the book.	a1.4.actions.027	actions	NOT_EVALUATED
+A1.4-AC-454-PL-EN	pl	en	Nauczyciel niesie książkę.	a1.4.actions.027	actions	NOT_EVALUATED
+A1.4-AC-455-EN-PL	en	pl	The mother carries a bag.	a1.4.actions.028	actions	NOT_EVALUATED
+A1.4-AC-456-PL-EN	pl	en	Matka niesie torbę.	a1.4.actions.028	actions	NOT_EVALUATED
+A1.4-AC-457-EN-PL	en	pl	The doctor holds the key.	a1.4.actions.029	actions	NOT_EVALUATED
+A1.4-AC-458-PL-EN	pl	en	Lekarz trzyma klucz.	a1.4.actions.029	actions	NOT_EVALUATED
+A1.4-AC-459-EN-PL	en	pl	The father holds the book.	a1.4.actions.030	actions	NOT_EVALUATED
+A1.4-AC-460-PL-EN	pl	en	Ojciec trzyma książkę.	a1.4.actions.030	actions	NOT_EVALUATED
+A1.4-AC-461-EN-PL	en	pl	The dog pulls the bag.	a1.4.actions.031	actions	NOT_EVALUATED
+A1.4-AC-462-PL-EN	pl	en	Pies ciągnie torbę.	a1.4.actions.031	actions	NOT_EVALUATED
+A1.4-AC-463-EN-PL	en	pl	The teacher pushes the table.	a1.4.actions.032	actions	NOT_EVALUATED
+A1.4-AC-464-PL-EN	pl	en	Nauczyciel pcha stół.	a1.4.actions.032	actions	NOT_EVALUATED
+A1.4-AC-465-EN-PL	en	pl	The teacher cuts paper.	a1.4.actions.033	actions	NOT_EVALUATED
+A1.4-AC-466-PL-EN	pl	en	Nauczyciel tnie papier.	a1.4.actions.033	actions	NOT_EVALUATED
+A1.4-AC-467-EN-PL	en	pl	The mother folds paper.	a1.4.actions.034	actions	NOT_EVALUATED
+A1.4-AC-468-PL-EN	pl	en	Matka składa papier.	a1.4.actions.034	actions	NOT_EVALUATED
+A1.4-AC-469-EN-PL	en	pl	The dog tears paper.	a1.4.actions.035	actions	NOT_EVALUATED
+A1.4-AC-470-PL-EN	pl	en	Pies rozdziera papier.	a1.4.actions.035	actions	NOT_EVALUATED
+A1.4-AC-471-EN-PL	en	pl	The teacher buys a book.	a1.4.actions.036	actions	NOT_EVALUATED
+A1.4-AC-472-PL-EN	pl	en	Nauczyciel kupuje książkę.	a1.4.actions.036	actions	NOT_EVALUATED
+A1.4-AC-473-EN-PL	en	pl	The doctor buys a car.	a1.4.actions.037	actions	NOT_EVALUATED
+A1.4-AC-474-PL-EN	pl	en	Lekarz kupuje samochód.	a1.4.actions.037	actions	NOT_EVALUATED
+A1.4-AC-475-EN-PL	en	pl	The mother sells the book.	a1.4.actions.038	actions	NOT_EVALUATED
+A1.4-AC-476-PL-EN	pl	en	Matka sprzedaje książkę.	a1.4.actions.038	actions	NOT_EVALUATED
+A1.4-AC-477-EN-PL	en	pl	The father sells the car.	a1.4.actions.039	actions	NOT_EVALUATED
+A1.4-AC-478-PL-EN	pl	en	Ojciec sprzedaje samochód.	a1.4.actions.039	actions	NOT_EVALUATED
+A1.4-AC-479-EN-PL	en	pl	The teacher gives the mother a book.	a1.4.actions.040	actions	NOT_EVALUATED
+A1.4-AC-480-PL-EN	pl	en	Nauczyciel daje matce książkę.	a1.4.actions.040	actions	NOT_EVALUATED
+A1.4-AC-481-EN-PL	en	pl	The mother gives the father a key.	a1.4.actions.041	actions	NOT_EVALUATED
+A1.4-AC-482-PL-EN	pl	en	Matka daje ojcu klucz.	a1.4.actions.041	actions	NOT_EVALUATED
+A1.4-AC-483-EN-PL	en	pl	The doctor gives the teacher a message.	a1.4.actions.042	actions	NOT_EVALUATED
+A1.4-AC-484-PL-EN	pl	en	Lekarz daje nauczycielowi wiadomość.	a1.4.actions.042	actions	NOT_EVALUATED
+A1.4-AC-485-EN-PL	en	pl	The teacher likes the dog.	a1.4.actions.043	actions	NOT_EVALUATED
+A1.4-AC-486-PL-EN	pl	en	Nauczyciel lubi psa.	a1.4.actions.043	actions	NOT_EVALUATED
+A1.4-AC-487-EN-PL	en	pl	The mother likes the cat.	a1.4.actions.044	actions	NOT_EVALUATED
+A1.4-AC-488-PL-EN	pl	en	Matka lubi kota.	a1.4.actions.044	actions	NOT_EVALUATED
+A1.4-AC-489-EN-PL	en	pl	The bird lives.	a1.4.actions.045	actions	NOT_EVALUATED
+A1.4-AC-490-PL-EN	pl	en	Ptak żyje.	a1.4.actions.045	actions	NOT_EVALUATED
+A1.4-AC-491-EN-PL	en	pl	The fish lives.	a1.4.actions.046	actions	NOT_EVALUATED
+A1.4-AC-492-PL-EN	pl	en	Ryba żyje.	a1.4.actions.046	actions	NOT_EVALUATED
+A1.4-AC-493-EN-PL	en	pl	The doctor works.	a1.4.actions.047	actions	NOT_EVALUATED
+A1.4-AC-494-PL-EN	pl	en	Lekarz pracuje.	a1.4.actions.047	actions	NOT_EVALUATED
+A1.5-ID-501-EN-PL	en	pl	This is a dog.	a1.5.identification.001.en	identification	NOT_EVALUATED
+A1.5-ID-502-PL-EN	pl	en	To jest pies.	a1.5.identification.001.pl	identification	NOT_EVALUATED
+A1.5-ID-503-EN-PL	en	pl	This is a bird.	a1.5.identification.002.en	identification	NOT_EVALUATED
+A1.5-ID-504-PL-EN	pl	en	To jest ptak.	a1.5.identification.002.pl	identification	NOT_EVALUATED
+A1.5-ID-505-EN-PL	en	pl	This is a book.	a1.5.identification.003.en	identification	NOT_EVALUATED
+A1.5-ID-506-PL-EN	pl	en	To jest książka.	a1.5.identification.003.pl	identification	NOT_EVALUATED
+A1.5-ID-507-EN-PL	en	pl	This is a car.	a1.5.identification.004.en	identification	NOT_EVALUATED
+A1.5-ID-508-PL-EN	pl	en	To jest samochód.	a1.5.identification.004.pl	identification	NOT_EVALUATED
+A1.5-ID-509-EN-PL	en	pl	This is a table.	a1.5.identification.005.en	identification	NOT_EVALUATED
+A1.5-ID-510-PL-EN	pl	en	To jest stół.	a1.5.identification.005.pl	identification	NOT_EVALUATED
+A1.5-ID-511-EN-PL	en	pl	This is a chair.	a1.5.identification.006.en	identification	NOT_EVALUATED
+A1.5-ID-512-PL-EN	pl	en	To jest krzesło.	a1.5.identification.006.pl	identification	NOT_EVALUATED
+A1.5-ID-513-EN-PL	en	pl	This is a window.	a1.5.identification.007.en	identification	NOT_EVALUATED
+A1.5-ID-514-PL-EN	pl	en	To jest okno.	a1.5.identification.007.pl	identification	NOT_EVALUATED
+A1.5-ID-515-EN-PL	en	pl	This is an apple.	a1.5.identification.008.en	identification	NOT_EVALUATED
+A1.5-ID-516-PL-EN	pl	en	To jest jabłko.	a1.5.identification.008.pl	identification	NOT_EVALUATED
+A1.5-ID-517-EN-PL	en	pl	This is a key.	a1.5.identification.009.en	identification	NOT_EVALUATED
+A1.5-ID-518-PL-EN	pl	en	To jest klucz.	a1.5.identification.009.pl	identification	NOT_EVALUATED
+A1.5-ID-519-EN-PL	en	pl	This is a bag.	a1.5.identification.010.en	identification	NOT_EVALUATED
+A1.5-ID-520-PL-EN	pl	en	To jest torba.	a1.5.identification.010.pl	identification	NOT_EVALUATED
+A1.5-ID-521-EN-PL	en	pl	This is a teacher.	a1.5.identification.011.en	identification	NOT_EVALUATED
+A1.5-ID-522-PL-EN	pl	en	To jest nauczyciel.	a1.5.identification.011.pl	identification	NOT_EVALUATED
+A1.5-ID-523-EN-PL	en	pl	This is a doctor.	a1.5.identification.012.en	identification	NOT_EVALUATED
+A1.5-ID-524-PL-EN	pl	en	To jest lekarz.	a1.5.identification.012.pl	identification	NOT_EVALUATED
+A1.5-ID-525-EN-PL	en	pl	This is a mother.	a1.5.identification.013.en	identification	NOT_EVALUATED
+A1.5-ID-526-PL-EN	pl	en	To jest matka.	a1.5.identification.013.pl	identification	NOT_EVALUATED
+A1.5-ID-527-EN-PL	en	pl	This is a father.	a1.5.identification.014.en	identification	NOT_EVALUATED
+A1.5-ID-528-PL-EN	pl	en	To jest ojciec.	a1.5.identification.014.pl	identification	NOT_EVALUATED
+A1.5-ID-529-EN-PL	en	pl	This is a horse.	a1.5.identification.015.en	identification	NOT_EVALUATED
+A1.5-ID-530-PL-EN	pl	en	To jest koń.	a1.5.identification.015.pl	identification	NOT_EVALUATED
+A1.5-ID-531-EN-PL	en	pl	This is a fish.	a1.5.identification.016.en	identification	NOT_EVALUATED
+A1.5-ID-532-PL-EN	pl	en	To jest ryba.	a1.5.identification.016.pl	identification	NOT_EVALUATED
+A1.5-ID-533-EN-PL	en	pl	That is a cat.	a1.5.identification.017.en	identification	NOT_EVALUATED
+A1.5-ID-534-PL-EN	pl	en	To jest kot.	a1.5.identification.017.pl	identification	NOT_EVALUATED
+A1.5-ID-535-EN-PL	en	pl	That is a dog.	a1.5.identification.018.en	identification	NOT_EVALUATED
+A1.5-ID-536-PL-EN	pl	en	To jest pies.	a1.5.identification.018.pl	identification	NOT_EVALUATED
+A1.5-ID-537-EN-PL	en	pl	That is a book.	a1.5.identification.019.en	identification	NOT_EVALUATED
+A1.5-ID-538-PL-EN	pl	en	To jest książka.	a1.5.identification.019.pl	identification	NOT_EVALUATED
+A1.5-ID-539-EN-PL	en	pl	That is an apple.	a1.5.identification.020.en	identification	NOT_EVALUATED
+A1.5-ID-540-PL-EN	pl	en	To jest jabłko.	a1.5.identification.020.pl	identification	NOT_EVALUATED
+A1.5-ID-541-EN-PL	en	pl	These are cats.	a1.5.identification.021.en	identification	NOT_EVALUATED
+A1.5-ID-542-PL-EN	pl	en	To są koty.	a1.5.identification.021.pl	identification	NOT_EVALUATED
+A1.5-ID-543-EN-PL	en	pl	Those are dogs.	a1.5.identification.022.en	identification	NOT_EVALUATED
+A1.5-ID-544-PL-EN	pl	en	To są psy.	a1.5.identification.022.pl	identification	NOT_EVALUATED
+A1.5-ID-545-EN-PL	en	pl	This dog is black.	a1.5.identification.023.en	identification	NOT_EVALUATED
+A1.5-ID-546-PL-EN	pl	en	Ten pies jest czarny.	a1.5.identification.023.pl	identification	NOT_EVALUATED
+A1.5-ID-547-EN-PL	en	pl	This bird is black.	a1.5.identification.024.en	identification	NOT_EVALUATED
+A1.5-ID-548-PL-EN	pl	en	Ten ptak jest czarny.	a1.5.identification.024.pl	identification	NOT_EVALUATED
+A1.5-ID-549-EN-PL	en	pl	This horse is black.	a1.5.identification.025.en	identification	NOT_EVALUATED
+A1.5-ID-550-PL-EN	pl	en	Ten koń jest czarny.	a1.5.identification.025.pl	identification	NOT_EVALUATED
+A1.5-ID-551-EN-PL	en	pl	This car is black.	a1.5.identification.026.en	identification	NOT_EVALUATED
+A1.5-ID-552-PL-EN	pl	en	Ten samochód jest czarny.	a1.5.identification.026.pl	identification	NOT_EVALUATED
+A1.5-ID-553-EN-PL	en	pl	This book is black.	a1.5.identification.027.en	identification	NOT_EVALUATED
+A1.5-ID-554-PL-EN	pl	en	Ta książka jest czarna.	a1.5.identification.027.pl	identification	NOT_EVALUATED
+A1.5-ID-555-EN-PL	en	pl	This bag is black.	a1.5.identification.028.en	identification	NOT_EVALUATED
+A1.5-ID-556-PL-EN	pl	en	Ta torba jest czarna.	a1.5.identification.028.pl	identification	NOT_EVALUATED
+A1.5-ID-557-EN-PL	en	pl	This window is black.	a1.5.identification.029.en	identification	NOT_EVALUATED
+A1.5-ID-558-PL-EN	pl	en	To okno jest czarne.	a1.5.identification.029.pl	identification	NOT_EVALUATED
+A1.5-ID-559-EN-PL	en	pl	This apple is black.	a1.5.identification.030.en	identification	NOT_EVALUATED
+A1.5-ID-560-PL-EN	pl	en	To jabłko jest czarne.	a1.5.identification.030.pl	identification	NOT_EVALUATED
+A1.5-ID-561-EN-PL	en	pl	These cats are black.	a1.5.identification.031.en	identification	NOT_EVALUATED
+A1.5-ID-562-PL-EN	pl	en	Te koty są czarne.	a1.5.identification.031.pl	identification	NOT_EVALUATED
+A1.5-ID-563-EN-PL	en	pl	These books are black.	a1.5.identification.032.en	identification	NOT_EVALUATED
+A1.5-ID-564-PL-EN	pl	en	Te książki są czarne.	a1.5.identification.032.pl	identification	NOT_EVALUATED
+A1.5-ID-565-EN-PL	en	pl	These are teachers.	a1.5.identification.033.en	identification	NOT_EVALUATED
+A1.5-ID-566-PL-EN	pl	en	To są nauczyciele.	a1.5.identification.033.pl	identification	NOT_EVALUATED
+A1.5-ID-567-EN-PL	en	pl	Those horses are black.	a1.5.identification.034.en	identification	NOT_EVALUATED
+A1.5-ID-568-PL-EN	pl	en	Tamte konie są czarne.	a1.5.identification.034.pl	identification	NOT_EVALUATED
+A1.5-ID-569-EN-PL	en	pl	This book is red.	a1.5.identification.035	identification	NOT_EVALUATED
+A1.5-ID-570-PL-EN	pl	en	Ta książka jest czerwona.	a1.5.identification.035	identification	NOT_EVALUATED
+A1.5-ID-571-EN-PL	en	pl	This car is white.	a1.5.identification.036	identification	NOT_EVALUATED
+A1.5-ID-572-PL-EN	pl	en	Ten samochód jest biały.	a1.5.identification.036	identification	NOT_EVALUATED
+A1.5-ID-573-EN-PL	en	pl	This bag is blue.	a1.5.identification.037	identification	NOT_EVALUATED
+A1.5-ID-574-PL-EN	pl	en	Ta torba jest niebieska.	a1.5.identification.037	identification	NOT_EVALUATED
+A1.5-ID-575-EN-PL	en	pl	This apple is green.	a1.5.identification.038	identification	NOT_EVALUATED
+A1.5-ID-576-PL-EN	pl	en	To jabłko jest zielone.	a1.5.identification.038	identification	NOT_EVALUATED
+A1.6-PO-601-EN-PL	en	pl	You have a cat.	a1.6.possession.001.en	possession	NOT_EVALUATED
+A1.6-PO-602-PL-EN	pl	en	Masz kota.	a1.6.possession.001.pl	possession	NOT_EVALUATED
+A1.6-PO-603-EN-PL	en	pl	You have a book.	a1.6.possession.002.en	possession	NOT_EVALUATED
+A1.6-PO-604-PL-EN	pl	en	Macie książkę.	a1.6.possession.002.pl	possession	NOT_EVALUATED
+A1.6-PO-605-EN-PL	en	pl	He has a dog.	a1.6.possession.003.en	possession	NOT_EVALUATED
+A1.6-PO-606-PL-EN	pl	en	On ma psa.	a1.6.possession.003.pl	possession	NOT_EVALUATED
+A1.6-PO-607-EN-PL	en	pl	She has a cat.	a1.6.possession.004.en	possession	NOT_EVALUATED
+A1.6-PO-608-PL-EN	pl	en	Ona ma kota.	a1.6.possession.004.pl	possession	NOT_EVALUATED
+A1.6-PO-609-EN-PL	en	pl	We have a book.	a1.6.possession.005.en	possession	NOT_EVALUATED
+A1.6-PO-610-PL-EN	pl	en	Mamy książkę.	a1.6.possession.005.pl	possession	NOT_EVALUATED
+A1.6-PO-611-EN-PL	en	pl	The teachers have a cat.	a1.6.possession.006.en	possession	NOT_EVALUATED
+A1.6-PO-612-PL-EN	pl	en	Nauczyciele mają kota.	a1.6.possession.006.pl	possession	NOT_EVALUATED
+A1.6-PO-613-EN-PL	en	pl	The doctors have a book.	a1.6.possession.007.en	possession	NOT_EVALUATED
+A1.6-PO-614-PL-EN	pl	en	Lekarze mają książkę.	a1.6.possession.007.pl	possession	NOT_EVALUATED
+A1.6-PO-615-EN-PL	en	pl	You do not have a cat.	a1.6.possession.008.en	possession	NOT_EVALUATED
+A1.6-PO-616-PL-EN	pl	en	Nie masz kota.	a1.6.possession.008.pl	possession	NOT_EVALUATED
+A1.6-PO-617-EN-PL	en	pl	We do not have a book.	a1.6.possession.009.en	possession	NOT_EVALUATED
+A1.6-PO-618-PL-EN	pl	en	Nie mamy książki.	a1.6.possession.009.pl	possession	NOT_EVALUATED
+A1.6-PO-619-EN-PL	en	pl	The teachers do not have a dog.	a1.6.possession.010.en	possession	NOT_EVALUATED
+A1.6-PO-620-PL-EN	pl	en	Nauczyciele nie mają psa.	a1.6.possession.010.pl	possession	NOT_EVALUATED
+A1.6-PO-621-EN-PL	en	pl	The teacher has a book.	a1.6.possession.011.en	possession	NOT_EVALUATED
+A1.6-PO-622-PL-EN	pl	en	Nauczyciel ma książkę.	a1.6.possession.011.pl	possession	NOT_EVALUATED
+A1.6-PO-623-EN-PL	en	pl	The teachers have a book.	a1.6.possession.012.en	possession	NOT_EVALUATED
+A1.6-PO-624-PL-EN	pl	en	Nauczyciele mają książkę.	a1.6.possession.012.pl	possession	NOT_EVALUATED
+A1.6-PO-625-EN-PL	en	pl	The mother has a key.	a1.6.possession.013.en	possession	NOT_EVALUATED
+A1.6-PO-626-PL-EN	pl	en	Matka ma klucz.	a1.6.possession.013.pl	possession	NOT_EVALUATED
+A1.6-PO-627-EN-PL	en	pl	The doctor has a bag.	a1.6.possession.014.en	possession	NOT_EVALUATED
+A1.6-PO-628-PL-EN	pl	en	Lekarz ma torbę.	a1.6.possession.014.pl	possession	NOT_EVALUATED
+A1.6-PO-629-EN-PL	en	pl	The dog has food.	a1.6.possession.015.en	possession	NOT_EVALUATED
+A1.6-PO-630-PL-EN	pl	en	Pies ma jedzenie.	a1.6.possession.015.pl	possession	NOT_EVALUATED
+A1.6-PO-631-EN-PL	en	pl	The cat has water.	a1.6.possession.016.en	possession	NOT_EVALUATED
+A1.6-PO-632-PL-EN	pl	en	Kot ma wodę.	a1.6.possession.016.pl	possession	NOT_EVALUATED
+A1.6-PO-633-EN-PL	en	pl	The car belongs to the teacher.	a1.6.possession.017.en	possession	NOT_EVALUATED
+A1.6-PO-634-PL-EN	pl	en	Ten samochód należy do nauczyciela.	a1.6.possession.017.pl	possession	NOT_EVALUATED
+A1.6-PO-635-EN-PL	en	pl	The book belongs to the mother.	a1.6.possession.018.en	possession	NOT_EVALUATED
+A1.6-PO-636-PL-EN	pl	en	Ta książka należy do matki.	a1.6.possession.018.pl	possession	NOT_EVALUATED
+A1.6-PO-637-EN-PL	en	pl	The teacher owns a car.	a1.6.possession.019.en	possession	NOT_EVALUATED
+A1.6-PO-638-PL-EN	pl	en	Nauczyciel jest właścicielem samochodu.	a1.6.possession.019.pl	possession	NOT_EVALUATED
+A1.6-PO-639-EN-PL	en	pl	The mother owns a house.	a1.6.possession.020.en	possession	NOT_EVALUATED
+A1.6-PO-640-PL-EN	pl	en	Matka jest właścicielką domu.	a1.6.possession.020.pl	possession	NOT_EVALUATED
+A1.6-PO-641-EN-PL	en	pl	This is my book.	a1.6.possession.021.en	possession	NOT_EVALUATED
+A1.6-PO-642-PL-EN	pl	en	To jest moja książka.	a1.6.possession.021.pl	possession	NOT_EVALUATED
+A1.6-PO-643-EN-PL	en	pl	This is your book.	a1.6.possession.022.en	possession	NOT_EVALUATED
+A1.6-PO-644-PL-EN	pl	en	To jest twoja książka.	a1.6.possession.022.pl	possession	NOT_EVALUATED
+A1.6-PO-645-EN-PL	en	pl	This is his book.	a1.6.possession.023.en	possession	NOT_EVALUATED
+A1.6-PO-646-PL-EN	pl	en	To jest jego książka.	a1.6.possession.023.pl	possession	NOT_EVALUATED
+A1.6-PO-647-EN-PL	en	pl	This is her book.	a1.6.possession.024.en	possession	NOT_EVALUATED
+A1.6-PO-648-PL-EN	pl	en	To jest jej książka.	a1.6.possession.024.pl	possession	NOT_EVALUATED
+A1.6-PO-649-EN-PL	en	pl	This is our book.	a1.6.possession.025.en	possession	NOT_EVALUATED
+A1.6-PO-650-PL-EN	pl	en	To jest nasza książka.	a1.6.possession.025.pl	possession	NOT_EVALUATED
+A1.6-PO-651-EN-PL	en	pl	This is your book.	a1.6.possession.026.en	possession	NOT_EVALUATED
+A1.6-PO-652-PL-EN	pl	en	To jest wasza książka.	a1.6.possession.026.pl	possession	NOT_EVALUATED
+A1.6-PO-653-EN-PL	en	pl	This is the teacher's book.	a1.6.possession.027.en	possession	NOT_EVALUATED
+A1.6-PO-654-PL-EN	pl	en	To jest książka nauczyciela.	a1.6.possession.027.pl	possession	NOT_EVALUATED
+A1.6-PO-655-EN-PL	en	pl	This is the mother's bag.	a1.6.possession.028.en	possession	NOT_EVALUATED
+A1.6-PO-656-PL-EN	pl	en	To jest torba matki.	a1.6.possession.028.pl	possession	NOT_EVALUATED
+A1.6-PO-657-EN-PL	en	pl	This is the teachers' book.	a1.6.possession.029.en	possession	NOT_EVALUATED
+A1.6-PO-658-PL-EN	pl	en	To jest książka nauczycieli.	a1.6.possession.029.pl	possession	NOT_EVALUATED
+A1.6-PO-659-EN-PL	en	pl	The teacher has a book of their own.	a1.6.possession.030.en	possession	NOT_EVALUATED
+A1.6-PO-660-PL-EN	pl	en	Nauczyciel ma swoją książkę.	a1.6.possession.030.pl	possession	NOT_EVALUATED
+A1.6-PO-661-EN-PL	en	pl	The mother has her own bag.	a1.6.possession.031.en	possession	NOT_EVALUATED
+A1.6-PO-662-PL-EN	pl	en	Matka ma swoją torbę.	a1.6.possession.031.pl	possession	NOT_EVALUATED
+A1.6-PO-663-EN-PL	en	pl	This is my brother.	a1.6.possession.032.en	possession	NOT_EVALUATED
+A1.6-PO-664-PL-EN	pl	en	To jest mój brat.	a1.6.possession.032.pl	possession	NOT_EVALUATED
+A1.6-PO-665-EN-PL	en	pl	This is her sister.	a1.6.possession.033.en	possession	NOT_EVALUATED
+A1.6-PO-666-PL-EN	pl	en	To jest jej siostra.	a1.6.possession.033.pl	possession	NOT_EVALUATED
+A1.6-PO-667-EN-PL	en	pl	This is my friend.	a1.6.possession.034.en	possession	NOT_EVALUATED
+A1.6-PO-668-PL-EN	pl	en	To jest mój przyjaciel.	a1.6.possession.034.pl	possession	NOT_EVALUATED
+A1.7-LQ-701-EN-PL	en	pl	The book is on the table.	a1.7.lq.001.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-702-PL-EN	pl	en	Książka jest na stole.	a1.7.lq.001.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-703-EN-PL	en	pl	The cat is under the table.	a1.7.lq.002.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-704-PL-EN	pl	en	Kot jest pod stołem.	a1.7.lq.002.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-705-EN-PL	en	pl	The dog is on the chair.	a1.7.lq.003.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-706-PL-EN	pl	en	Pies jest na krześle.	a1.7.lq.003.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-707-EN-PL	en	pl	The book is in the bag.	a1.7.lq.004.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-708-PL-EN	pl	en	Książka jest w torbie.	a1.7.lq.004.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-709-EN-PL	en	pl	The key is in the box.	a1.7.lq.005.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-710-PL-EN	pl	en	Klucz jest w pudełku.	a1.7.lq.005.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-711-EN-PL	en	pl	The dog is right next to the table.	a1.7.lq.006.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-712-PL-EN	pl	en	Pies jest tuż obok stołu.	a1.7.lq.006.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-713-EN-PL	en	pl	The cat is near the dog.	a1.7.lq.007.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-714-PL-EN	pl	en	Kot jest blisko psa.	a1.7.lq.007.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-715-EN-PL	en	pl	The bird is above the table.	a1.7.lq.008.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-716-PL-EN	pl	en	Ptak jest nad stołem.	a1.7.lq.008.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-717-EN-PL	en	pl	The dog is in front of the house.	a1.7.lq.009.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-718-PL-EN	pl	en	Pies jest przed domem.	a1.7.lq.009.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-719-EN-PL	en	pl	The car is behind the house.	a1.7.lq.010.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-720-PL-EN	pl	en	Samochód jest za domem.	a1.7.lq.010.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-721-EN-PL	en	pl	The key is on the book.	a1.7.lq.011.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-722-PL-EN	pl	en	Klucz jest na książce.	a1.7.lq.011.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-723-EN-PL	en	pl	The apple is next to the bag.	a1.7.lq.012.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-724-PL-EN	pl	en	Jabłko jest obok torby.	a1.7.lq.012.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-725-EN-PL	en	pl	The book is above the bag.	a1.7.lq.013.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-726-PL-EN	pl	en	Książka jest nad torbą.	a1.7.lq.013.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-727-EN-PL	en	pl	The bag is below the book.	a1.7.lq.014.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-728-PL-EN	pl	en	Torba jest poniżej książki.	a1.7.lq.014.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-729-EN-PL	en	pl	The dog is between the cat and the horse.	a1.7.lq.015.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-730-PL-EN	pl	en	Pies jest między kotem a koniem.	a1.7.lq.015.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-731-EN-PL	en	pl	The book is between two bags.	a1.7.lq.016.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-732-PL-EN	pl	en	Książka jest między dwiema torbami.	a1.7.lq.016.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-733-EN-PL	en	pl	The teacher is in front of the doctor.	a1.7.lq.017.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-734-PL-EN	pl	en	Nauczyciel jest przed lekarzem.	a1.7.lq.017.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-735-EN-PL	en	pl	The doctor is behind the teacher.	a1.7.lq.018.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-736-PL-EN	pl	en	Lekarz jest za nauczycielem.	a1.7.lq.018.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-737-EN-PL	en	pl	The books are on the table.	a1.7.lq.019.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-738-PL-EN	pl	en	Książki są na stole.	a1.7.lq.019.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-739-EN-PL	en	pl	The keys are in the bag.	a1.7.lq.020.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-740-PL-EN	pl	en	Klucze są w torbie.	a1.7.lq.020.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-741-EN-PL	en	pl	The dog is under the chairs.	a1.7.lq.021.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-742-PL-EN	pl	en	Pies jest pod krzesłami.	a1.7.lq.021.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-743-EN-PL	en	pl	The cat is in the box.	a1.7.lq.022.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-744-PL-EN	pl	en	Kot jest w pudełku.	a1.7.lq.022.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-745-EN-PL	en	pl	The book is in the house.	a1.7.lq.023.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-746-PL-EN	pl	en	Książka jest w domu.	a1.7.lq.023.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-747-EN-PL	en	pl	The dog is near the house.	a1.7.lq.024.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-748-PL-EN	pl	en	Pies jest blisko domu.	a1.7.lq.024.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-749-EN-PL	en	pl	There is one cat.	a1.7.lq.025.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-750-PL-EN	pl	en	Jest jeden kot.	a1.7.lq.025.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-751-EN-PL	en	pl	There are three cats.	a1.7.lq.026.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-752-PL-EN	pl	en	Są trzy koty.	a1.7.lq.026.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-753-EN-PL	en	pl	There are four cats.	a1.7.lq.027.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-754-PL-EN	pl	en	Są cztery koty.	a1.7.lq.027.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-755-EN-PL	en	pl	There are five cats.	a1.7.lq.028.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-756-PL-EN	pl	en	Jest pięć kotów.	a1.7.lq.028.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-757-EN-PL	en	pl	There are ten cats.	a1.7.lq.029.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-758-PL-EN	pl	en	Jest dziesięć kotów.	a1.7.lq.029.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-759-EN-PL	en	pl	There are two dogs.	a1.7.lq.030.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-760-PL-EN	pl	en	Są dwa psy.	a1.7.lq.030.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-761-EN-PL	en	pl	There are five dogs.	a1.7.lq.031.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-762-PL-EN	pl	en	Jest pięć psów.	a1.7.lq.031.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-763-EN-PL	en	pl	There are two books.	a1.7.lq.032.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-764-PL-EN	pl	en	Są dwie książki.	a1.7.lq.032.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-765-EN-PL	en	pl	There are five books.	a1.7.lq.033.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-766-PL-EN	pl	en	Jest pięć książek.	a1.7.lq.033.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-767-EN-PL	en	pl	There are two cars.	a1.7.lq.034.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-768-PL-EN	pl	en	Są dwa samochody.	a1.7.lq.034.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-769-EN-PL	en	pl	There are five cars.	a1.7.lq.035.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-770-PL-EN	pl	en	Jest pięć samochodów.	a1.7.lq.035.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-771-EN-PL	en	pl	There are two birds.	a1.7.lq.036.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-772-PL-EN	pl	en	Są dwa ptaki.	a1.7.lq.036.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-773-EN-PL	en	pl	There are five birds.	a1.7.lq.037.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-774-PL-EN	pl	en	Jest pięć ptaków.	a1.7.lq.037.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-775-EN-PL	en	pl	There are two teachers.	a1.7.lq.038.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-776-PL-EN	pl	en	Są dwaj nauczyciele.	a1.7.lq.038.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-777-EN-PL	en	pl	There are five teachers.	a1.7.lq.039.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-778-PL-EN	pl	en	Jest pięciu nauczycieli.	a1.7.lq.039.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-779-EN-PL	en	pl	There are two women.	a1.7.lq.040.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-780-PL-EN	pl	en	Są dwie kobiety.	a1.7.lq.040.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-781-EN-PL	en	pl	There are five women.	a1.7.lq.041.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-782-PL-EN	pl	en	Jest pięć kobiet.	a1.7.lq.041.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-783-EN-PL	en	pl	There is one window.	a1.7.lq.042.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-784-PL-EN	pl	en	Jest jedno okno.	a1.7.lq.042.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-785-EN-PL	en	pl	There are five windows.	a1.7.lq.043.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-786-PL-EN	pl	en	Jest pięć okien.	a1.7.lq.043.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-787-EN-PL	en	pl	There are two apples.	a1.7.lq.044.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-788-PL-EN	pl	en	Są dwa jabłka.	a1.7.lq.044.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-789-EN-PL	en	pl	There are five apples.	a1.7.lq.045.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-790-PL-EN	pl	en	Jest pięć jabłek.	a1.7.lq.045.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-791-EN-PL	en	pl	There are two doors.	a1.7.lq.046.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-792-PL-EN	pl	en	Jest dwoje drzwi.	a1.7.lq.046.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-793-EN-PL	en	pl	There are four bags.	a1.7.lq.047.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-794-PL-EN	pl	en	Są cztery torby.	a1.7.lq.047.pl	location_quantity	NOT_EVALUATED
+A1.7-LQ-795-EN-PL	en	pl	There is one book.	a1.7.lq.048.en	location_quantity	NOT_EVALUATED
+A1.7-LQ-796-PL-EN	pl	en	Jest jedna książka.	a1.7.lq.048.pl	location_quantity	NOT_EVALUATED
+A1.8-NEG-801-EN-PL	en	pl	The dog does not sleep.	a1.8.neg.001	negation	NOT_EVALUATED
+A1.8-NEG-802-PL-EN	pl	en	Pies nie śpi.	a1.8.neg.001	negation	NOT_EVALUATED
+A1.8-NEG-803-EN-PL	en	pl	The cat does not eat bread.	a1.8.neg.002	negation	NOT_EVALUATED
+A1.8-NEG-804-PL-EN	pl	en	Kot nie je chleba.	a1.8.neg.002	negation	NOT_EVALUATED
+A1.8-NEG-805-EN-PL	en	pl	The child does not drink milk.	a1.8.neg.003.age	negation	NOT_EVALUATED
+A1.8-NEG-806-PL-EN	pl	en	Dziecko nie pije mleka.	a1.8.neg.003.age	negation	NOT_EVALUATED
+A1.8-NEG-807-EN-PL	en	pl	The doctor does not read the letter.	a1.8.neg.004	negation	NOT_EVALUATED
+A1.8-NEG-808-PL-EN	pl	en	Lekarz nie czyta listu.	a1.8.neg.004	negation	NOT_EVALUATED
+A1.8-NEG-809-EN-PL	en	pl	The teacher does not write a message.	a1.8.neg.005	negation	NOT_EVALUATED
+A1.8-NEG-810-PL-EN	pl	en	Nauczyciel nie pisze wiadomości.	a1.8.neg.005	negation	NOT_EVALUATED
+A1.8-NEG-811-EN-PL	en	pl	The dog does not run.	a1.8.neg.006	negation	NOT_EVALUATED
+A1.8-NEG-812-PL-EN	pl	en	Pies nie biegnie.	a1.8.neg.006	negation	NOT_EVALUATED
+A1.8-NEG-813-EN-PL	en	pl	The cat does not walk.	a1.8.neg.007	negation	NOT_EVALUATED
+A1.8-NEG-814-PL-EN	pl	en	Kot nie chodzi.	a1.8.neg.007	negation	NOT_EVALUATED
+A1.8-NEG-815-EN-PL	en	pl	The bird does not fly.	a1.8.neg.008	negation	NOT_EVALUATED
+A1.8-NEG-816-PL-EN	pl	en	Ptak nie lata.	a1.8.neg.008	negation	NOT_EVALUATED
+A1.8-NEG-817-EN-PL	en	pl	The doctor does not open the door.	a1.8.neg.009	negation	NOT_EVALUATED
+A1.8-NEG-818-PL-EN	pl	en	Lekarz nie otwiera drzwi.	a1.8.neg.009.pl	negation	NOT_EVALUATED
+A1.8-NEG-819-EN-PL	en	pl	The teacher does not close the window.	a1.8.neg.010	negation	NOT_EVALUATED
+A1.8-NEG-820-PL-EN	pl	en	Nauczyciel nie zamyka okna.	a1.8.neg.010	negation	NOT_EVALUATED
+A1.8-NEG-821-EN-PL	en	pl	The dog does not see the cat.	a1.8.neg.011	negation	NOT_EVALUATED
+A1.8-NEG-822-PL-EN	pl	en	Pies nie widzi kota.	a1.8.neg.011	negation	NOT_EVALUATED
+A1.8-NEG-823-EN-PL	en	pl	The cat does not hear the child.	a1.8.neg.012.age	negation	NOT_EVALUATED
+A1.8-NEG-824-PL-EN	pl	en	Kot nie słyszy dziecka.	a1.8.neg.012.age	negation	NOT_EVALUATED
+A1.8-NEG-825-EN-PL	en	pl	The doctors do not eat apples.	a1.8.neg.013	negation	NOT_EVALUATED
+A1.8-NEG-826-PL-EN	pl	en	Lekarze nie jedzą jabłek.	a1.8.neg.013	negation	NOT_EVALUATED
+A1.8-NEG-827-EN-PL	en	pl	The children do not drink water.	a1.8.neg.014.age	negation	NOT_EVALUATED
+A1.8-NEG-828-PL-EN	pl	en	Dzieci nie piją wody.	a1.8.neg.014.age	negation	NOT_EVALUATED
+A1.8-NEG-829-EN-PL	en	pl	The teachers do not read the book.	a1.8.neg.015	negation	NOT_EVALUATED
+A1.8-NEG-830-PL-EN	pl	en	Nauczyciele nie czytają książki.	a1.8.neg.015	negation	NOT_EVALUATED
+A1.8-NEG-831-EN-PL	en	pl	The dogs do not sleep.	a1.8.neg.016	negation	NOT_EVALUATED
+A1.8-NEG-832-PL-EN	pl	en	Psy nie śpią.	a1.8.neg.016	negation	NOT_EVALUATED
+A1.8-NEG-833-EN-PL	en	pl	The cats do not run.	a1.8.neg.017	negation	NOT_EVALUATED
+A1.8-NEG-834-PL-EN	pl	en	Koty nie biegną.	a1.8.neg.017	negation	NOT_EVALUATED
+A1.8-NEG-835-EN-PL	en	pl	The birds do not eat bread.	a1.8.neg.018	negation	NOT_EVALUATED
+A1.8-NEG-836-PL-EN	pl	en	Ptaki nie jedzą chleba.	a1.8.neg.018	negation	NOT_EVALUATED
+A1.8-NEG-837-EN-PL	en	pl	The mother does not hear birds.	a1.8.neg.019	negation	NOT_EVALUATED
+A1.8-NEG-838-PL-EN	pl	en	Matka nie słyszy ptaków.	a1.8.neg.019	negation	NOT_EVALUATED
+A1.8-NEG-839-EN-PL	en	pl	The doctors do not see the car.	a1.8.neg.020	negation	NOT_EVALUATED
+A1.8-NEG-840-PL-EN	pl	en	Lekarze nie widzą samochodu.	a1.8.neg.020	negation	NOT_EVALUATED
+A1.8-NEG-841-EN-PL	en	pl	The dog is not black.	a1.8.neg.021	negation	NOT_EVALUATED
+A1.8-NEG-842-PL-EN	pl	en	Pies nie jest czarny.	a1.8.neg.021	negation	NOT_EVALUATED
+A1.8-NEG-843-EN-PL	en	pl	The cat is not black.	a1.8.neg.022	negation	NOT_EVALUATED
+A1.8-NEG-844-PL-EN	pl	en	Kot nie jest czarny.	a1.8.neg.022	negation	NOT_EVALUATED
+A1.8-NEG-845-EN-PL	en	pl	The book is not black.	a1.8.neg.023	negation	NOT_EVALUATED
+A1.8-NEG-846-PL-EN	pl	en	Książka nie jest czarna.	a1.8.neg.023	negation	NOT_EVALUATED
+A1.8-NEG-847-EN-PL	en	pl	The window is not black.	a1.8.neg.024	negation	NOT_EVALUATED
+A1.8-NEG-848-PL-EN	pl	en	Okno nie jest czarne.	a1.8.neg.024	negation	NOT_EVALUATED
+A1.8-NEG-849-EN-PL	en	pl	The door is not black.	a1.8.neg.025	negation	NOT_EVALUATED
+A1.8-NEG-850-PL-EN	pl	en	Drzwi nie są czarne.	a1.8.neg.025.pl	negation	NOT_EVALUATED
+A1.8-NEG-851-EN-PL	en	pl	The books are not black.	a1.8.neg.026	negation	NOT_EVALUATED
+A1.8-NEG-852-PL-EN	pl	en	Książki nie są czarne.	a1.8.neg.026	negation	NOT_EVALUATED
+A1.8-NEG-853-EN-PL	en	pl	The cats are not black.	a1.8.neg.027	negation	NOT_EVALUATED
+A1.8-NEG-854-PL-EN	pl	en	Koty nie są czarne.	a1.8.neg.027	negation	NOT_EVALUATED
+A1.8-NEG-855-EN-PL	en	pl	The teacher is not sad.	a1.8.neg.028	negation	NOT_EVALUATED
+A1.8-NEG-856-PL-EN	pl	en	Nauczyciel nie jest smutny.	a1.8.neg.028	negation	NOT_EVALUATED
+A1.8-NEG-857-EN-PL	en	pl	The child is not sad.	a1.8.neg.029	negation	NOT_EVALUATED
+A1.8-NEG-858-PL-EN	pl	en	Dziecko nie jest smutne.	a1.8.neg.029	negation	NOT_EVALUATED
+A1.8-NEG-859-EN-PL	en	pl	The mother is not sad.	a1.8.neg.030	negation	NOT_EVALUATED
+A1.8-NEG-860-PL-EN	pl	en	Matka nie jest smutna.	a1.8.neg.030	negation	NOT_EVALUATED
+A1.8-NEG-861-EN-PL	en	pl	The dog did not sleep.	a1.8.neg.031	negation	NOT_EVALUATED
+A1.8-NEG-862-PL-EN	pl	en	Pies nie spał.	a1.8.neg.031	negation	NOT_EVALUATED
+A1.8-NEG-863-EN-PL	en	pl	The cats did not eat bread.	a1.8.neg.032	negation	NOT_EVALUATED
+A1.8-NEG-864-PL-EN	pl	en	Koty nie jadły chleba.	a1.8.neg.032	negation	NOT_EVALUATED
+A1.8-NEG-865-EN-PL	en	pl	The mother did not drink water.	a1.8.neg.033	negation	NOT_EVALUATED
+A1.8-NEG-866-PL-EN	pl	en	Matka nie piła wody.	a1.8.neg.033	negation	NOT_EVALUATED
+A1.8-NEG-867-EN-PL	en	pl	The doctors did not read the letter.	a1.8.neg.034	negation	NOT_EVALUATED
+A1.8-NEG-868-PL-EN	pl	en	Lekarze nie czytali listu.	a1.8.neg.034	negation	NOT_EVALUATED
+A1.8-NEG-869-EN-PL	en	pl	The dog did not see the cat.	a1.8.neg.035	negation	NOT_EVALUATED
+A1.8-NEG-870-PL-EN	pl	en	Pies nie widział kota.	a1.8.neg.035	negation	NOT_EVALUATED
+A1.8-NEG-871-EN-PL	en	pl	The teacher did not hear the phone.	a1.8.neg.036	negation	NOT_EVALUATED
+A1.8-NEG-872-PL-EN	pl	en	Nauczyciel nie słyszał telefonu.	a1.8.neg.036	negation	NOT_EVALUATED
+A1.8-NEG-873-EN-PL	en	pl	The children did not run.	a1.8.neg.037.age	negation	NOT_EVALUATED
+A1.8-NEG-874-PL-EN	pl	en	Dzieci nie biegały.	a1.8.neg.037.age	negation	NOT_EVALUATED
+A1.8-NEG-875-EN-PL	en	pl	The doctor did not close the door.	a1.8.neg.038	negation	NOT_EVALUATED
+A1.8-NEG-876-PL-EN	pl	en	Lekarz nie zamykał drzwi.	a1.8.neg.038.pl	negation	NOT_EVALUATED
+A1.8-NEG-877-EN-PL	en	pl	The book was not black.	a1.8.neg.039	negation	NOT_EVALUATED
+A1.8-NEG-878-PL-EN	pl	en	Książka nie była czarna.	a1.8.neg.039	negation	NOT_EVALUATED
+A1.8-NEG-879-EN-PL	en	pl	The window was not black.	a1.8.neg.040	negation	NOT_EVALUATED
+A1.8-NEG-880-PL-EN	pl	en	Okno nie było czarne.	a1.8.neg.040	negation	NOT_EVALUATED
+A1.8-NEG-881-EN-PL	en	pl	The dog never sleeps in the bed.	a1.8.neg.041	negation	NOT_EVALUATED
+A1.8-NEG-882-PL-EN	pl	en	Pies nigdy nie śpi w łóżku.	a1.8.neg.041	negation	NOT_EVALUATED
+A1.8-NEG-883-EN-PL	en	pl	Cats do not always eat in the morning.	a1.8.neg.042	negation	NOT_EVALUATED
+A1.8-NEG-884-PL-EN	pl	en	Koty nie zawsze jedzą rano.	a1.8.neg.042	negation	NOT_EVALUATED
+A1.8-NEG-885-EN-PL	en	pl	Not every dog sleeps at home.	a1.8.neg.043	negation	NOT_EVALUATED
+A1.8-NEG-886-PL-EN	pl	en	Nie każdy pies śpi w domu.	a1.8.neg.043	negation	NOT_EVALUATED
+A1.8-NEG-887-EN-PL	en	pl	No cat drinks milk.	a1.8.neg.044	negation	NOT_EVALUATED
+A1.8-NEG-888-PL-EN	pl	en	Żaden kot nie pije mleka.	a1.8.neg.044	negation	NOT_EVALUATED
+A1.8-NEG-889-EN-PL	en	pl	It is not only the dog that does not sleep.	a1.8.neg.045	negation	NOT_EVALUATED
+A1.8-NEG-890-PL-EN	pl	en	Nie tylko pies nie śpi.	a1.8.neg.045	negation	NOT_EVALUATED
+A1.9-Q-901-EN-PL	en	pl	Is this a dog?	a1.9.q.001.en	questions	NOT_EVALUATED
+A1.9-Q-902-PL-EN	pl	en	Czy to jest pies?	a1.9.q.001.pl	questions	NOT_EVALUATED
+A1.9-Q-903-EN-PL	en	pl	Is that a window?	a1.9.q.002.en	questions	NOT_EVALUATED
+A1.9-Q-904-PL-EN	pl	en	Czy tamto jest okno?	a1.9.q.002.pl	questions	NOT_EVALUATED
+A1.9-Q-905-EN-PL	en	pl	Are these cats black?	a1.9.q.003.en	questions	NOT_EVALUATED
+A1.9-Q-906-PL-EN	pl	en	Czy te koty są czarne?	a1.9.q.003.pl	questions	NOT_EVALUATED
+A1.9-Q-907-EN-PL	en	pl	Are those books black?	a1.9.q.004.en	questions	NOT_EVALUATED
+A1.9-Q-908-PL-EN	pl	en	Czy tamte książki są czarne?	a1.9.q.004.pl	questions	NOT_EVALUATED
+A1.9-Q-909-EN-PL	en	pl	Does the dog sleep?	a1.9.q.005.en	questions	NOT_EVALUATED
+A1.9-Q-910-PL-EN	pl	en	Czy pies śpi?	a1.9.q.005.pl	questions	NOT_EVALUATED
+A1.9-Q-911-EN-PL	en	pl	Did the cat eat bread?	a1.9.q.006.en	questions	NOT_EVALUATED
+A1.9-Q-912-PL-EN	pl	en	Czy kot jadł chleb?	a1.9.q.006.pl	questions	NOT_EVALUATED
+A1.9-Q-913-EN-PL	en	pl	Does the doctor see the bird?	a1.9.q.007.en	questions	NOT_EVALUATED
+A1.9-Q-914-PL-EN	pl	en	Czy lekarz widzi ptaka?	a1.9.q.007.pl	questions	NOT_EVALUATED
+A1.9-Q-915-EN-PL	en	pl	Does the teacher not hear the phone?	a1.9.q.008.en	questions	NOT_EVALUATED
+A1.9-Q-916-PL-EN	pl	en	Czy nauczyciel nie słyszy telefonu?	a1.9.q.008.pl	questions	NOT_EVALUATED
+A1.9-Q-917-EN-PL	en	pl	Do the children not sleep?	a1.9.q.009.en.age	questions	NOT_EVALUATED
+A1.9-Q-918-PL-EN	pl	en	Czy dzieci nie śpią?	a1.9.q.009.pl.age	questions	NOT_EVALUATED
+A1.9-Q-919-EN-PL	en	pl	Is the book not black?	a1.9.q.010.en	questions	NOT_EVALUATED
+A1.9-Q-920-PL-EN	pl	en	Czy książka nie jest czarna?	a1.9.q.010.pl	questions	NOT_EVALUATED
+A1.9-Q-921-EN-PL	en	pl	Who sees the dog?	a1.9.q.011.en	questions	NOT_EVALUATED
+A1.9-Q-922-PL-EN	pl	en	Kto widzi psa?	a1.9.q.011.pl	questions	NOT_EVALUATED
+A1.9-Q-923-EN-PL	en	pl	Whom does the dog see?	a1.9.q.012.en	questions	NOT_EVALUATED
+A1.9-Q-924-PL-EN	pl	en	Kogo widzi pies?	a1.9.q.012.pl	questions	NOT_EVALUATED
+A1.9-Q-925-EN-PL	en	pl	Who hears the cat?	a1.9.q.013.en	questions	NOT_EVALUATED
+A1.9-Q-926-PL-EN	pl	en	Kto słyszy kota?	a1.9.q.013.pl	questions	NOT_EVALUATED
+A1.9-Q-927-EN-PL	en	pl	Whom does the mother hear?	a1.9.q.014.en	questions	NOT_EVALUATED
+A1.9-Q-928-PL-EN	pl	en	Kogo słyszy matka?	a1.9.q.014.pl	questions	NOT_EVALUATED
+A1.9-Q-929-EN-PL	en	pl	Who eats the apple?	a1.9.q.015.en	questions	NOT_EVALUATED
+A1.9-Q-930-PL-EN	pl	en	Kto je jabłko?	a1.9.q.015.pl	questions	NOT_EVALUATED
+A1.9-Q-931-EN-PL	en	pl	What does the child eat?	a1.9.q.016.en	questions	NOT_EVALUATED
+A1.9-Q-932-PL-EN	pl	en	Co je dziecko?	a1.9.q.016.pl	questions	NOT_EVALUATED
+A1.9-Q-933-EN-PL	en	pl	Who drinks water?	a1.9.q.017.en	questions	NOT_EVALUATED
+A1.9-Q-934-PL-EN	pl	en	Kto pije wodę?	a1.9.q.017.pl	questions	NOT_EVALUATED
+A1.9-Q-935-EN-PL	en	pl	What does the dog drink?	a1.9.q.018.en	questions	NOT_EVALUATED
+A1.9-Q-936-PL-EN	pl	en	Co pije pies?	a1.9.q.018.pl	questions	NOT_EVALUATED
+A1.9-Q-937-EN-PL	en	pl	Who reads the book?	a1.9.q.019.en	questions	NOT_EVALUATED
+A1.9-Q-938-PL-EN	pl	en	Kto czyta książkę?	a1.9.q.019.pl	questions	NOT_EVALUATED
+A1.9-Q-939-EN-PL	en	pl	What does the mother read?	a1.9.q.020.en	questions	NOT_EVALUATED
+A1.9-Q-940-PL-EN	pl	en	Co czyta matka?	a1.9.q.020.pl	questions	NOT_EVALUATED
+A1.9-Q-941-EN-PL	en	pl	Who gives the apple to the child?	a1.9.q.021.en	questions	NOT_EVALUATED
+A1.9-Q-942-PL-EN	pl	en	Kto daje jabłko dziecku?	a1.9.q.021.pl	questions	NOT_EVALUATED
+A1.9-Q-943-EN-PL	en	pl	To whom does the mother give the book?	a1.9.q.022.en	questions	NOT_EVALUATED
+A1.9-Q-944-PL-EN	pl	en	Komu matka daje książkę?	a1.9.q.022.pl	questions	NOT_EVALUATED
+A1.9-Q-945-EN-PL	en	pl	What does the teacher give the child?	a1.9.q.023.en	questions	NOT_EVALUATED
+A1.9-Q-946-PL-EN	pl	en	Co nauczyciel daje dziecku?	a1.9.q.023.pl	questions	NOT_EVALUATED
+A1.9-Q-947-EN-PL	en	pl	Who writes a message?	a1.9.q.024.en	questions	NOT_EVALUATED
+A1.9-Q-948-PL-EN	pl	en	Kto pisze wiadomość?	a1.9.q.024.pl	questions	NOT_EVALUATED
+A1.9-Q-949-EN-PL	en	pl	To whom does the teacher write?	a1.9.q.025.en	questions	NOT_EVALUATED
+A1.9-Q-950-PL-EN	pl	en	Komu nauczyciel pisze?	a1.9.q.025.pl	questions	NOT_EVALUATED
+A1.9-Q-951-EN-PL	en	pl	Where does the dog sleep?	a1.9.q.026.en	questions	NOT_EVALUATED
+A1.9-Q-952-PL-EN	pl	en	Gdzie pies śpi?	a1.9.q.026.pl	questions	NOT_EVALUATED
+A1.9-Q-953-EN-PL	en	pl	Where is the book?	a1.9.q.027.en	questions	NOT_EVALUATED
+A1.9-Q-954-PL-EN	pl	en	Gdzie jest książka?	a1.9.q.027.pl	questions	NOT_EVALUATED
+A1.9-Q-955-EN-PL	en	pl	Where is the car?	a1.9.q.028.en	questions	NOT_EVALUATED
+A1.9-Q-956-PL-EN	pl	en	Gdzie jest samochód?	a1.9.q.028.pl	questions	NOT_EVALUATED
+A1.9-Q-957-EN-PL	en	pl	Where is this doctor from?	a1.9.q.029.en	questions	NOT_EVALUATED
+A1.9-Q-958-PL-EN	pl	en	Skąd pochodzi ten lekarz?	a1.9.q.029.pl	questions	NOT_EVALUATED
+A1.9-Q-959-EN-PL	en	pl	Where is the child walking?	a1.9.q.030.en	questions	NOT_EVALUATED
+A1.9-Q-960-PL-EN	pl	en	Dokąd idzie dziecko?	a1.9.q.030.pl	questions	NOT_EVALUATED
+A1.9-Q-961-EN-PL	en	pl	How many cats does the mother see?	a1.9.q.031.en	questions	NOT_EVALUATED
+A1.9-Q-962-PL-EN	pl	en	Ile kotów widzi matka?	a1.9.q.031.pl	questions	NOT_EVALUATED
+A1.9-Q-963-EN-PL	en	pl	How many apples does the child eat?	a1.9.q.032.en	questions	NOT_EVALUATED
+A1.9-Q-964-PL-EN	pl	en	Ile jabłek je dziecko?	a1.9.q.032.pl	questions	NOT_EVALUATED
+A1.9-Q-965-EN-PL	en	pl	How many books does the teacher read?	a1.9.q.033.en	questions	NOT_EVALUATED
+A1.9-Q-966-PL-EN	pl	en	Ile książek czyta nauczyciel?	a1.9.q.033.pl	questions	NOT_EVALUATED
+A1.9-Q-967-EN-PL	en	pl	How many teachers does the dog see?	a1.9.q.034.en	questions	NOT_EVALUATED
+A1.9-Q-968-PL-EN	pl	en	Ilu nauczycieli widzi pies?	a1.9.q.034.pl	questions	NOT_EVALUATED
+A1.9-Q-969-EN-PL	en	pl	How much water does the mother drink?	a1.9.q.035.en	questions	NOT_EVALUATED
+A1.9-Q-970-PL-EN	pl	en	Ile wody pije matka?	a1.9.q.035.pl	questions	NOT_EVALUATED
+A1.9-Q-971-EN-PL	en	pl	When did the dog eat?	a1.9.q.036.en	questions	NOT_EVALUATED
+A1.9-Q-972-PL-EN	pl	en	Kiedy pies jadł?	a1.9.q.036.pl	questions	NOT_EVALUATED
+A1.9-Q-973-EN-PL	en	pl	When does the teacher read?	a1.9.q.037.en	questions	NOT_EVALUATED
+A1.9-Q-974-PL-EN	pl	en	Kiedy nauczyciel czyta?	a1.9.q.037.pl	questions	NOT_EVALUATED
+A1.9-Q-975-EN-PL	en	pl	Why does the child cry?	a1.9.q.038.en	questions	NOT_EVALUATED
+A1.9-Q-976-PL-EN	pl	en	Dlaczego dziecko płacze?	a1.9.q.038.pl	questions	NOT_EVALUATED
+A1.9-Q-977-EN-PL	en	pl	How does the dog run?	a1.9.q.039.en	questions	NOT_EVALUATED
+A1.9-Q-978-PL-EN	pl	en	Jak pies biegnie?	a1.9.q.039.pl	questions	NOT_EVALUATED
+A1.9-Q-979-EN-PL	en	pl	Does the dog have a book?	a1.9.q.040.en	questions	NOT_EVALUATED
+A1.9-Q-980-PL-EN	pl	en	Czy pies ma książkę?	a1.9.q.040.pl	questions	NOT_EVALUATED
+A1.9-Q-981-EN-PL	en	pl	Does the mother have a cat?	a1.9.q.041.en	questions	NOT_EVALUATED
+A1.9-Q-982-PL-EN	pl	en	Czy matka ma kota?	a1.9.q.041.pl	questions	NOT_EVALUATED
+A1.9-Q-983-EN-PL	en	pl	What does the teacher have?	a1.9.q.042.en	questions	NOT_EVALUATED
+A1.9-Q-984-PL-EN	pl	en	Co ma nauczyciel?	a1.9.q.042.pl	questions	NOT_EVALUATED
+A1.9-Q-985-EN-PL	en	pl	Who has the key?	a1.9.q.043.en	questions	NOT_EVALUATED
+A1.9-Q-986-PL-EN	pl	en	Kto ma klucz?	a1.9.q.043.pl	questions	NOT_EVALUATED
+A1.9-Q-987-EN-PL	en	pl	How many books does the mother have?	a1.9.q.044.en	questions	NOT_EVALUATED
+A1.9-Q-988-PL-EN	pl	en	Ile książek ma matka?	a1.9.q.044.pl	questions	NOT_EVALUATED
+A1.9-Q-989-EN-PL	en	pl	Is this a bird?	a1.9.q.045.en	questions	NOT_EVALUATED
+A1.9-Q-990-PL-EN	pl	en	Czy to jest ptak?	a1.9.q.045.pl	questions	NOT_EVALUATED
+A1.9-Q-991-EN-PL	en	pl	Is that a book?	a1.9.q.046.en	questions	NOT_EVALUATED
+A1.9-Q-992-PL-EN	pl	en	Czy to jest książka?	a1.9.q.046.pl	questions	NOT_EVALUATED
+A1.9-Q-993-EN-PL	en	pl	Are these dogs?	a1.9.q.047.en	questions	NOT_EVALUATED
+A1.9-Q-994-PL-EN	pl	en	Czy to są psy?	a1.9.q.047.pl	questions	NOT_EVALUATED
+A1.9-Q-995-EN-PL	en	pl	Are those dogs black?	a1.9.q.048.en	questions	NOT_EVALUATED
+A1.9-Q-996-PL-EN	pl	en	Czy tamte psy są czarne?	a1.9.q.048.pl	questions	NOT_EVALUATED
+A1.9-Q-997-EN-PL	en	pl	Is this black?	a1.9.q.049.en	questions	NOT_EVALUATED
+A1.9-Q-998-PL-EN	pl	en	Czy to jest czarne?	a1.9.q.049.pl	questions	NOT_EVALUATED
+A1.9-Q-999-EN-PL	en	pl	Is that black?	a1.9.q.050.en	questions	NOT_EVALUATED
+A1.9-Q-1000-PL-EN	pl	en	Czy tamto jest czarne?	a1.9.q.050.pl	questions	NOT_EVALUATED
+A1.9-Q-1001-EN-PL	en	pl	Is this door open?	a1.9.q.051.en	questions	NOT_EVALUATED
+A1.9-Q-1002-PL-EN	pl	en	Czy te drzwi są otwarte?	a1.9.q.051.pl	questions	NOT_EVALUATED
+A1.9-Q-1003-EN-PL	en	pl	Are these windows open?	a1.9.q.052.en	questions	NOT_EVALUATED
+A1.9-Q-1004-PL-EN	pl	en	Czy te okna są otwarte?	a1.9.q.052.pl	questions	NOT_EVALUATED
+A1.9-Q-1005-EN-PL	en	pl	Did the cat sleep in the house?	a1.9.q.053.en	questions	NOT_EVALUATED
+A1.9-Q-1006-PL-EN	pl	en	Czy kot spał w domu?	a1.9.q.053.pl	questions	NOT_EVALUATED
+A1.9-Q-1007-EN-PL	en	pl	Did the teacher not read the book?	a1.9.q.054.en	questions	NOT_EVALUATED
+A1.9-Q-1008-PL-EN	pl	en	Czy nauczyciel nie czytał książki?	a1.9.q.054.pl	questions	NOT_EVALUATED
+A1.9-Q-1009-EN-PL	en	pl	Who does not see the cat?	a1.9.q.055.en	questions	NOT_EVALUATED
+A1.9-Q-1010-PL-EN	pl	en	Kto nie widzi kota?	a1.9.q.055.pl	questions	NOT_EVALUATED
+A1.9-Q-1011-EN-PL	en	pl	Whom does the child not hear?	a1.9.q.056.en	questions	NOT_EVALUATED
+A1.9-Q-1012-PL-EN	pl	en	Kogo nie słyszy dziecko?	a1.9.q.056.pl	questions	NOT_EVALUATED
+A1.9-Q-1013-EN-PL	en	pl	Which book is black?	a1.9.q.057.en	questions	NOT_EVALUATED
+A1.9-Q-1014-PL-EN	pl	en	Która książka jest czarna?	a1.9.q.057.pl	questions	NOT_EVALUATED
+A1.9-Q-1015-EN-PL	en	pl	Do both dogs sleep?	a1.9.q.058.en	questions	NOT_EVALUATED
+A1.9-Q-1016-PL-EN	pl	en	Czy oba psy śpią?	a1.9.q.058.pl	questions	NOT_EVALUATED
+A1.10-TIME-1001-EN-PL	en	pl	I see the dog.	a1.10.time.001.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1002-PL-EN	pl	en	Widzę psa.	a1.10.time.001.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1003-EN-PL	en	pl	You see the cat.	a1.10.time.002.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1004-PL-EN	pl	en	Widzisz kota.	a1.10.time.002.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1005-EN-PL	en	pl	We see the bird.	a1.10.time.003.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1006-PL-EN	pl	en	Widzimy ptaka.	a1.10.time.003.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1007-EN-PL	en	pl	You see the book.	a1.10.time.004.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1008-PL-EN	pl	en	Widzicie książkę.	a1.10.time.004.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1009-EN-PL	en	pl	I hear the dog.	a1.10.time.005.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1010-PL-EN	pl	en	Słyszę psa.	a1.10.time.005.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1011-EN-PL	en	pl	You hear the bird.	a1.10.time.006.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1012-PL-EN	pl	en	Słyszysz ptaka.	a1.10.time.006.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1013-EN-PL	en	pl	We hear the cat.	a1.10.time.007.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1014-PL-EN	pl	en	Słyszymy kota.	a1.10.time.007.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1015-EN-PL	en	pl	You hear the child.	a1.10.time.008.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1016-PL-EN	pl	en	Słyszycie dziecko.	a1.10.time.008.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1017-EN-PL	en	pl	I read the book.	a1.10.time.009.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1018-PL-EN	pl	en	Czytam książkę.	a1.10.time.009.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1019-EN-PL	en	pl	You read the message.	a1.10.time.010.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1020-PL-EN	pl	en	Czytasz wiadomość.	a1.10.time.010.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1021-EN-PL	en	pl	We read the letter.	a1.10.time.011.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1022-PL-EN	pl	en	Czytamy list.	a1.10.time.011.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1023-EN-PL	en	pl	You read the book.	a1.10.time.012.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1024-PL-EN	pl	en	Czytacie książkę.	a1.10.time.012.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1025-EN-PL	en	pl	I drink water.	a1.10.time.013.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1026-PL-EN	pl	en	Piję wodę.	a1.10.time.013.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1027-EN-PL	en	pl	You drink milk.	a1.10.time.014.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1028-PL-EN	pl	en	Pijesz mleko.	a1.10.time.014.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1029-EN-PL	en	pl	We drink coffee.	a1.10.time.015.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1030-PL-EN	pl	en	Pijemy kawę.	a1.10.time.015.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1031-EN-PL	en	pl	You drink tea.	a1.10.time.016.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1032-PL-EN	pl	en	Pijecie herbatę.	a1.10.time.016.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1033-EN-PL	en	pl	The teacher saw the dog.	a1.10.time.017.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1034-PL-EN	pl	en	Nauczyciel widział psa.	a1.10.time.017.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1035-EN-PL	en	pl	The teachers saw the dog.	a1.10.time.018.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1036-PL-EN	pl	en	Nauczyciele widzieli psa.	a1.10.time.018.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1037-EN-PL	en	pl	The doctor heard the bird.	a1.10.time.019.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1038-PL-EN	pl	en	Lekarz słyszał ptaka.	a1.10.time.019.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1039-EN-PL	en	pl	The doctors heard the bird.	a1.10.time.020.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1040-PL-EN	pl	en	Lekarze słyszeli ptaka.	a1.10.time.020.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1041-EN-PL	en	pl	The mother read the letter.	a1.10.time.021.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1042-PL-EN	pl	en	Matka czytała list.	a1.10.time.021.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1043-EN-PL	en	pl	The mothers read the letter.	a1.10.time.022.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1044-PL-EN	pl	en	Matki czytały list.	a1.10.time.022.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1045-EN-PL	en	pl	The father drank water.	a1.10.time.023.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1046-PL-EN	pl	en	Ojciec pił wodę.	a1.10.time.023.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1047-EN-PL	en	pl	The fathers drank water.	a1.10.time.024.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1048-PL-EN	pl	en	Ojcowie pili wodę.	a1.10.time.024.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1049-EN-PL	en	pl	The child ate bread.	a1.10.time.025.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1050-PL-EN	pl	en	Dziecko jadło chleb.	a1.10.time.025.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1051-EN-PL	en	pl	The children ate bread.	a1.10.time.026.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1052-PL-EN	pl	en	Dzieci jadły chleb.	a1.10.time.026.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1053-EN-PL	en	pl	The cat slept.	a1.10.time.027.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1054-PL-EN	pl	en	Kot spał.	a1.10.time.027.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1055-EN-PL	en	pl	The cats slept.	a1.10.time.028.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1056-PL-EN	pl	en	Koty spały.	a1.10.time.028.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1057-EN-PL	en	pl	The dog ran.	a1.10.time.029.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1058-PL-EN	pl	en	Pies biegł.	a1.10.time.029.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1059-EN-PL	en	pl	The dogs ran.	a1.10.time.030.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1060-PL-EN	pl	en	Psy biegły.	a1.10.time.030.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1061-EN-PL	en	pl	The bird flew.	a1.10.time.031.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1062-PL-EN	pl	en	Ptak latał.	a1.10.time.031.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1063-EN-PL	en	pl	The birds flew.	a1.10.time.032.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1064-PL-EN	pl	en	Ptaki latały.	a1.10.time.032.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1065-EN-PL	en	pl	The doctor reads the letter.	a1.10.time.033.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1066-PL-EN	pl	en	Lekarz czyta list.	a1.10.time.033.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1067-EN-PL	en	pl	The doctors read the letter.	a1.10.time.034.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1068-PL-EN	pl	en	Lekarze czytają list.	a1.10.time.034.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1069-EN-PL	en	pl	The child drinks milk.	a1.10.time.035.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1070-PL-EN	pl	en	Dziecko pije mleko.	a1.10.time.035.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1071-EN-PL	en	pl	The children drink milk.	a1.10.time.036.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1072-PL-EN	pl	en	Dzieci piją mleko.	a1.10.time.036.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1073-EN-PL	en	pl	The cat eats bread.	a1.10.time.037.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1074-PL-EN	pl	en	Kot je chleb.	a1.10.time.037.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1075-EN-PL	en	pl	The cats eat bread.	a1.10.time.038.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1076-PL-EN	pl	en	Koty jedzą chleb.	a1.10.time.038.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1077-EN-PL	en	pl	The dog sleeps.	a1.10.time.039.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1078-PL-EN	pl	en	Pies śpi.	a1.10.time.039.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1079-EN-PL	en	pl	The dogs sleep.	a1.10.time.040.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1080-PL-EN	pl	en	Psy śpią.	a1.10.time.040.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1081-EN-PL	en	pl	The book was black.	a1.10.time.041.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1082-PL-EN	pl	en	Książka była czarna.	a1.10.time.041.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1083-EN-PL	en	pl	The books were black.	a1.10.time.042.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1084-PL-EN	pl	en	Książki były czarne.	a1.10.time.042.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1085-EN-PL	en	pl	The window was black.	a1.10.time.043.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1086-PL-EN	pl	en	Okno było czarne.	a1.10.time.043.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1087-EN-PL	en	pl	The windows were black.	a1.10.time.044.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1088-PL-EN	pl	en	Okna były czarne.	a1.10.time.044.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1089-EN-PL	en	pl	The door was black.	a1.10.time.045.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1090-PL-EN	pl	en	Drzwi były czarne.	a1.10.time.045.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1091-EN-PL	en	pl	The dog was black.	a1.10.time.046.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1092-PL-EN	pl	en	Pies był czarny.	a1.10.time.046.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1093-EN-PL	en	pl	The dogs were black.	a1.10.time.047.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1094-PL-EN	pl	en	Psy były czarne.	a1.10.time.047.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1095-EN-PL	en	pl	The cat was black.	a1.10.time.048.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1096-PL-EN	pl	en	Kot był czarny.	a1.10.time.048.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1097-EN-PL	en	pl	The teacher will read the book.	a1.10.time.049.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1098-PL-EN	pl	en	Nauczyciel będzie czytać książkę.	a1.10.time.049.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1099-EN-PL	en	pl	The doctors will hear the dog.	a1.10.time.050.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1100-PL-EN	pl	en	Lekarze będą słyszeć psa.	a1.10.time.050.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1101-EN-PL	en	pl	The child will drink water.	a1.10.time.051.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1102-PL-EN	pl	en	Dziecko będzie pić wodę.	a1.10.time.051.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1103-EN-PL	en	pl	The book will be black.	a1.10.time.052.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1104-PL-EN	pl	en	Książka będzie czarna.	a1.10.time.052.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1105-EN-PL	en	pl	The teacher is reading the book now.	a1.10.time.053.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1106-PL-EN	pl	en	Nauczyciel teraz czyta książkę.	a1.10.time.053.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1107-EN-PL	en	pl	The dog sleeps every day.	a1.10.time.054.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1108-PL-EN	pl	en	Pies codziennie śpi.	a1.10.time.054.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1109-EN-PL	en	pl	The child was drinking water when the teacher was reading.	a1.10.time.055.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1110-PL-EN	pl	en	Dziecko piło wodę, kiedy nauczyciel czytał.	a1.10.time.055.pl	time_agreement	NOT_EVALUATED
+A1.10-TIME-1111-EN-PL	en	pl	The teacher often reads books.	a1.10.time.056.en	time_agreement	NOT_EVALUATED
+A1.10-TIME-1112-PL-EN	pl	en	Nauczyciel często czyta książki.	a1.10.time.056.pl	time_agreement	NOT_EVALUATED
+A1.11-CASE-1101-EN-PL	en	pl	The black cat sees the dog.	a1.11.case.001.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1102-PL-EN	pl	en	Czarny kot widzi psa.	a1.11.case.001.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1103-EN-PL	en	pl	The black book is on the table.	a1.11.case.002.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1104-PL-EN	pl	en	Czarna książka jest na stole.	a1.11.case.002.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1105-EN-PL	en	pl	The teacher sees the black dog.	a1.11.case.003.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1106-PL-EN	pl	en	Nauczyciel widzi czarnego psa.	a1.11.case.003.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1107-EN-PL	en	pl	The doctor sees the black book.	a1.11.case.004.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1108-PL-EN	pl	en	Lekarz widzi czarną książkę.	a1.11.case.004.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1109-EN-PL	en	pl	The child sees the black window.	a1.11.case.005.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1110-PL-EN	pl	en	Dziecko widzi czarne okno.	a1.11.case.005.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1111-EN-PL	en	pl	The dog sees the black door.	a1.11.case.006.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1112-PL-EN	pl	en	Pies widzi czarne drzwi.	a1.11.case.006.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1113-EN-PL	en	pl	The doctor sees the black cats.	a1.11.case.007.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1114-PL-EN	pl	en	Lekarz widzi czarne koty.	a1.11.case.007.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1115-EN-PL	en	pl	The black cats see the dog.	a1.11.case.008.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1116-PL-EN	pl	en	Czarne koty widzą psa.	a1.11.case.008.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1117-EN-PL	en	pl	The teacher sees the black birds.	a1.11.case.009.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1118-PL-EN	pl	en	Nauczyciel widzi czarne ptaki.	a1.11.case.009.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1119-EN-PL	en	pl	The black birds see the dog.	a1.11.case.010.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1120-PL-EN	pl	en	Czarne ptaki widzą psa.	a1.11.case.010.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1121-EN-PL	en	pl	The mother sees the black bag.	a1.11.case.011.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1122-PL-EN	pl	en	Matka widzi czarną torbę.	a1.11.case.011.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1123-EN-PL	en	pl	The father hears the black cat.	a1.11.case.012.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1124-PL-EN	pl	en	Ojciec słyszy czarnego kota.	a1.11.case.012.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1125-EN-PL	en	pl	The black dog hears the cat.	a1.11.case.013.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1126-PL-EN	pl	en	Czarny pies słyszy kota.	a1.11.case.013.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1127-EN-PL	en	pl	The black bag is open.	a1.11.case.014.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1128-PL-EN	pl	en	Czarna torba jest otwarta.	a1.11.case.014.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1129-EN-PL	en	pl	The doctor sees the cat.	a1.11.case.015.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1130-PL-EN	pl	en	Kota widzi lekarz.	a1.11.case.015.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1131-EN-PL	en	pl	The mother hears the dog.	a1.11.case.016.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1132-PL-EN	pl	en	Psa słyszy matka.	a1.11.case.016.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1133-EN-PL	en	pl	The dog sees the teacher.	a1.11.case.017.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1134-PL-EN	pl	en	Nauczyciela widzi pies.	a1.11.case.017.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1135-EN-PL	en	pl	The cat hears the doctor.	a1.11.case.018.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1136-PL-EN	pl	en	Lekarza słyszy kot.	a1.11.case.018.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1137-EN-PL	en	pl	The child sees the mother.	a1.11.case.019.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1138-PL-EN	pl	en	Matkę widzi dziecko.	a1.11.case.019.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1139-EN-PL	en	pl	The teacher hears the father.	a1.11.case.020.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1140-PL-EN	pl	en	Ojca słyszy nauczyciel.	a1.11.case.020.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1141-EN-PL	en	pl	The doctor sees the black cat.	a1.11.case.021.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1142-PL-EN	pl	en	Czarnego kota widzi lekarz.	a1.11.case.021.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1143-EN-PL	en	pl	The mother hears the black dog.	a1.11.case.022.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1144-PL-EN	pl	en	Czarnego psa słyszy matka.	a1.11.case.022.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1145-EN-PL	en	pl	The child sees the black book.	a1.11.case.023.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1146-PL-EN	pl	en	Czarną książkę widzi dziecko.	a1.11.case.023.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1147-EN-PL	en	pl	The dog sees the doctors.	a1.11.case.024.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1148-PL-EN	pl	en	Lekarzy widzi pies.	a1.11.case.024.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1149-EN-PL	en	pl	The cat hears the teachers.	a1.11.case.025.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1150-PL-EN	pl	en	Nauczycieli słyszy kot.	a1.11.case.025.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1151-EN-PL	en	pl	The doctors see the dog.	a1.11.case.026.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1152-PL-EN	pl	en	Psa widzą lekarze.	a1.11.case.026.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1153-EN-PL	en	pl	The children hear the cat.	a1.11.case.027.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1154-PL-EN	pl	en	Kota słyszą dzieci.	a1.11.case.027.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1155-EN-PL	en	pl	The mother helps the child.	a1.11.case.028.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1156-PL-EN	pl	en	Dziecku pomaga matka.	a1.11.case.028.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1157-EN-PL	en	pl	The mother helps a child.	a1.11.case.029.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1158-PL-EN	pl	en	Matka pomaga dziecku.	a1.11.case.029.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1159-EN-PL	en	pl	The child thanks the mother.	a1.11.case.030.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1160-PL-EN	pl	en	Dziecko dziękuje matce.	a1.11.case.030.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1161-EN-PL	en	pl	The teacher gives the child a book.	a1.11.case.031.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1162-PL-EN	pl	en	Nauczyciel daje dziecku książkę.	a1.11.case.031.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1163-EN-PL	en	pl	The teacher gives a book to the child.	a1.11.case.032.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1164-PL-EN	pl	en	Dziecku nauczyciel daje książkę.	a1.11.case.032.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1165-EN-PL	en	pl	The teacher gives the book to a child.	a1.11.case.033.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1166-PL-EN	pl	en	Książkę nauczyciel daje dziecku.	a1.11.case.033.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1167-EN-PL	en	pl	The mother gives the doctor a key.	a1.11.case.034.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1168-PL-EN	pl	en	Matka daje lekarzowi klucz.	a1.11.case.034.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1169-EN-PL	en	pl	The father gives the mother a bag.	a1.11.case.035.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1170-PL-EN	pl	en	Ojciec daje matce torbę.	a1.11.case.035.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1171-EN-PL	en	pl	The children help the teacher.	a1.11.case.036.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1172-PL-EN	pl	en	Dzieci pomagają nauczycielowi.	a1.11.case.036.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1173-EN-PL	en	pl	The doctor uses the key.	a1.11.case.037.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1174-PL-EN	pl	en	Lekarz używa klucza.	a1.11.case.037.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1175-EN-PL	en	pl	The teacher cuts bread with a knife.	a1.11.case.038.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1176-PL-EN	pl	en	Nauczyciel kroi chleb nożem.	a1.11.case.038.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1177-EN-PL	en	pl	The mother writes with a pencil.	a1.11.case.039.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1178-PL-EN	pl	en	Matka pisze ołówkiem.	a1.11.case.039.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1179-EN-PL	en	pl	The teacher talks with the doctor.	a1.11.case.040.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1180-PL-EN	pl	en	Nauczyciel rozmawia z lekarzem.	a1.11.case.040.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1181-EN-PL	en	pl	The child is with the mother.	a1.11.case.041.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1182-PL-EN	pl	en	Dziecko jest z matką.	a1.11.case.041.pl	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1183-EN-PL	en	pl	The dog looks at the cat.	a1.11.case.042.en	case_adjective_order	NOT_EVALUATED
+A1.11-CASE-1184-PL-EN	pl	en	Pies patrzy na kota.	a1.11.case.042.pl	case_adjective_order	NOT_EVALUATED
+A1.12-AMB-1201-EN-PL	en	pl	A teacher sees a bird.	a1.12.amb.001.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1202-PL-EN	pl	en	Nauczyciel widzi ptaka.	a1.12.amb.001.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1203-EN-PL	en	pl	The doctor hears a dog.	a1.12.amb.002.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1204-PL-EN	pl	en	Lekarz słyszy psa.	a1.12.amb.002.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1205-EN-PL	en	pl	A mother reads the book.	a1.12.amb.003.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1206-PL-EN	pl	en	Matka czyta książkę.	a1.12.amb.003.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1207-EN-PL	en	pl	The father sees a car.	a1.12.amb.004.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1208-PL-EN	pl	en	Ojciec widzi samochód.	a1.12.amb.004.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1209-EN-PL	en	pl	The dog drinks water.	a1.12.amb.005.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1210-PL-EN	pl	en	Pies pije wodę.	a1.12.amb.005.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1211-EN-PL	en	pl	A cat eats bread.	a1.12.amb.006.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1212-PL-EN	pl	en	Kot je chleb.	a1.12.amb.006.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1213-EN-PL	en	pl	Teachers see the birds.	a1.12.amb.007.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1214-PL-EN	pl	en	Nauczyciele widzą ptaki.	a1.12.amb.007.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1215-EN-PL	en	pl	The doctors hear cats.	a1.12.amb.008.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1216-PL-EN	pl	en	Lekarze słyszą koty.	a1.12.amb.008.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1217-EN-PL	en	pl	The doctors read the book.	a1.12.amb.009.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1218-PL-EN	pl	en	Lekarze czytają książkę.	a1.12.amb.009.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1219-EN-PL	en	pl	The mothers read the message.	a1.12.amb.010.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1220-PL-EN	pl	en	Matki czytają wiadomość.	a1.12.amb.010.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1221-EN-PL	en	pl	The fathers read the book.	a1.12.amb.011.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1222-PL-EN	pl	en	Ojcowie czytają książkę.	a1.12.amb.011.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1223-EN-PL	en	pl	The children read the message.	a1.12.amb.012.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1224-PL-EN	pl	en	Dzieci czytają wiadomość.	a1.12.amb.012.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1225-EN-PL	en	pl	The teachers read the letter.	a1.12.amb.013.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1226-PL-EN	pl	en	Nauczycielki czytają list.	a1.12.amb.013.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1227-EN-PL	en	pl	We read the message.	a1.12.amb.014.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1228-PL-EN	pl	en	Czytamy wiadomość.	a1.12.amb.014.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1229-EN-PL	en	pl	The child sees the cat.	a1.12.amb.015.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1230-PL-EN	pl	en	Dziecko widzi kota.	a1.12.amb.015.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1231-EN-PL	en	pl	The dog sees the child.	a1.12.amb.016.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1232-PL-EN	pl	en	Pies widzi dziecko.	a1.12.amb.016.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1233-EN-PL	en	pl	The children hear the dog.	a1.12.amb.017.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1234-PL-EN	pl	en	Dzieci słyszą psa.	a1.12.amb.017.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1235-EN-PL	en	pl	The mother sees the child.	a1.12.amb.018.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1236-PL-EN	pl	en	Matka widzi dziecko.	a1.12.amb.018.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1237-EN-PL	en	pl	The teacher gives the child an apple.	a1.12.amb.019.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1238-PL-EN	pl	en	Nauczyciel daje dziecku jabłko.	a1.12.amb.019.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1239-EN-PL	en	pl	The child gives the book to the mother.	a1.12.amb.020.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1240-PL-EN	pl	en	Dziecko daje książkę matce.	a1.12.amb.020.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1241-EN-PL	en	pl	The cats see the dogs.	a1.12.amb.021.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1242-PL-EN	pl	en	Koty widzą psy.	a1.12.amb.021.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1243-EN-PL	en	pl	The dogs see the cats.	a1.12.amb.022.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1244-PL-EN	pl	en	Psy widzą koty.	a1.12.amb.022.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1245-EN-PL	en	pl	The birds see the cats.	a1.12.amb.023.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1246-PL-EN	pl	en	Ptaki widzą koty.	a1.12.amb.023.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1247-EN-PL	en	pl	The cats see the birds.	a1.12.amb.024.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1248-PL-EN	pl	en	Koty widzą ptaki.	a1.12.amb.024.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1249-EN-PL	en	pl	The dogs hear the cats.	a1.12.amb.025.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1250-PL-EN	pl	en	Psy słyszą koty.	a1.12.amb.025.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1251-EN-PL	en	pl	The cats hear the dogs.	a1.12.amb.026.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1252-PL-EN	pl	en	Koty słyszą psy.	a1.12.amb.026.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1253-EN-PL	en	pl	This dog sees that cat.	a1.12.amb.027.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1254-PL-EN	pl	en	Ten pies widzi tamtego kota.	a1.12.amb.027.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1255-EN-PL	en	pl	That dog sees this cat.	a1.12.amb.028.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1256-PL-EN	pl	en	Tamten pies widzi tego kota.	a1.12.amb.028.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1257-EN-PL	en	pl	These dogs see those cats.	a1.12.amb.029.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1258-PL-EN	pl	en	Te psy widzą tamte koty.	a1.12.amb.029.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1259-EN-PL	en	pl	Those dogs see these cats.	a1.12.amb.030.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1260-PL-EN	pl	en	Tamte psy widzą te koty.	a1.12.amb.030.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1261-EN-PL	en	pl	This mother hears that child.	a1.12.amb.031.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1262-PL-EN	pl	en	Ta matka słyszy tamto dziecko.	a1.12.amb.031.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1263-EN-PL	en	pl	That child hears this mother.	a1.12.amb.032.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1264-PL-EN	pl	en	Tamto dziecko słyszy tę matkę.	a1.12.amb.032.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1265-EN-PL	en	pl	Every teacher sees a dog.	a1.12.amb.033.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1266-PL-EN	pl	en	Każdy nauczyciel widzi psa.	a1.12.amb.033.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1267-EN-PL	en	pl	Some teacher sees every dog.	a1.12.amb.034.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1268-PL-EN	pl	en	Jakiś nauczyciel widzi każdego psa.	a1.12.amb.034.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1269-EN-PL	en	pl	The teacher sees two cats.	a1.12.amb.035.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1270-PL-EN	pl	en	Nauczyciel widzi dwa koty.	a1.12.amb.035.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1271-EN-PL	en	pl	The dog sees two teachers.	a1.12.amb.036.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1272-PL-EN	pl	en	Pies widzi dwóch nauczycieli.	a1.12.amb.036.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1273-EN-PL	en	pl	There are no cats.	a1.12.amb.037.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1274-PL-EN	pl	en	Nie ma kotów.	a1.12.amb.037.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1275-EN-PL	en	pl	The teacher sees the mother with the child.	a1.12.amb.038.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1276-PL-EN	pl	en	Nauczyciel widzi matkę z dzieckiem.	a1.12.amb.038.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1277-EN-PL	en	pl	The dog sees the cat on the table.	a1.12.amb.039.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1278-PL-EN	pl	en	Pies widzi kota na stole.	a1.12.amb.039.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1279-EN-PL	en	pl	The mother sees the teacher with a book.	a1.12.amb.040.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1280-PL-EN	pl	en	Matka widzi nauczyciela z książką.	a1.12.amb.040.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1281-EN-PL	en	pl	Two children see the dog.	a1.12.amb.041.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1282-PL-EN	pl	en	Dwoje dzieci widzi psa.	a1.12.amb.041.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1283-EN-PL	en	pl	The teacher sees the teacher.	a1.12.amb.042.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1284-PL-EN	pl	en	Nauczyciel widzi nauczyciela.	a1.12.amb.042.pl	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1285-EN-PL	en	pl	The mother's child sees the dog.	a1.12.amb.043.en	ambiguity_reference	NOT_EVALUATED
+A1.12-AMB-1286-PL-EN	pl	en	Dziecko matki widzi psa.	a1.12.amb.043.pl	ambiguity_reference	NOT_EVALUATED
+A1.13-COMP-1301-EN-PL	en	pl	The mother reads the book and the father drinks water.	a1.13.comp.001.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1302-PL-EN	pl	en	Matka czyta książkę, a ojciec pije wodę.	a1.13.comp.001.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1303-EN-PL	en	pl	The dog sees the cat and the bird hears the doctor.	a1.13.comp.002.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1304-PL-EN	pl	en	Pies widzi kota, a ptak słyszy lekarza.	a1.13.comp.002.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1305-EN-PL	en	pl	The teacher reads the book and hears the bird.	a1.13.comp.003.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1306-PL-EN	pl	en	Nauczyciel czyta książkę i słyszy ptaka.	a1.13.comp.003.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1307-EN-PL	en	pl	The child drinks water and eats bread.	a1.13.comp.004.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1308-PL-EN	pl	en	Dziecko pije wodę i je chleb.	a1.13.comp.004.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1309-EN-PL	en	pl	The dog sleeps and the cat runs.	a1.13.comp.005.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1310-PL-EN	pl	en	Pies śpi, a kot biegnie.	a1.13.comp.005.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1311-EN-PL	en	pl	The teacher read the book and sees the dog.	a1.13.comp.006.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1312-PL-EN	pl	en	Nauczyciel czytał książkę i widzi psa.	a1.13.comp.006.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1313-EN-PL	en	pl	The mother sees the dog and does not hear the cat.	a1.13.comp.007.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1314-PL-EN	pl	en	Matka widzi psa i nie słyszy kota.	a1.13.comp.007.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1315-EN-PL	en	pl	The teacher does not see the cat and the mother hears the bird.	a1.13.comp.008.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1316-PL-EN	pl	en	Nauczyciel nie widzi kota, a matka słyszy ptaka.	a1.13.comp.008.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1317-EN-PL	en	pl	The doctor neither sees the dog nor hears the cat.	a1.13.comp.009.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1318-PL-EN	pl	en	Lekarz ani nie widzi psa, ani nie słyszy kota.	a1.13.comp.009.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1319-EN-PL	en	pl	The teacher sees the black dog and hears the black cat.	a1.13.comp.010.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1320-PL-EN	pl	en	Nauczyciel widzi czarnego psa i słyszy czarnego kota.	a1.13.comp.010.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1321-EN-PL	en	pl	The black dog sees the cat and hears the bird.	a1.13.comp.011.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1322-PL-EN	pl	en	Czarny pies widzi kota i słyszy ptaka.	a1.13.comp.011.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1323-EN-PL	en	pl	The teacher sees the dog and the cat.	a1.13.comp.012.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1324-PL-EN	pl	en	Nauczyciel widzi psa i kota.	a1.13.comp.012.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1325-EN-PL	en	pl	The teacher and the doctor see the dog.	a1.13.comp.013.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1326-PL-EN	pl	en	Nauczyciel i lekarz widzą psa.	a1.13.comp.013.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1327-EN-PL	en	pl	The teacher sees the dog or hears the cat.	a1.13.comp.014.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1328-PL-EN	pl	en	Nauczyciel widzi psa lub słyszy kota.	a1.13.comp.014.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1329-EN-PL	en	pl	If the dog sleeps, the cat runs.	a1.13.comp.015.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1330-PL-EN	pl	en	Jeśli pies śpi, kot biegnie.	a1.13.comp.015.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1331-EN-PL	en	pl	The dog sees the cat because the bird hears the mother.	a1.13.comp.016.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1332-PL-EN	pl	en	Pies widzi kota, ponieważ ptak słyszy matkę.	a1.13.comp.016.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1333-EN-PL	en	pl	The teacher sees the dog and then hears the cat.	a1.13.comp.017.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1334-PL-EN	pl	en	Nauczyciel widzi psa, a potem słyszy kota.	a1.13.comp.017.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1335-EN-PL	en	pl	The dog sleeps while the mother reads the book.	a1.13.comp.018.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1336-PL-EN	pl	en	Pies śpi, podczas gdy matka czyta książkę.	a1.13.comp.018.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1337-EN-PL	en	pl	The dog does not see the black cat.	a1.13.comp.019.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1338-PL-EN	pl	en	Pies nie widzi czarnego kota.	a1.13.comp.019.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1339-EN-PL	en	pl	The black cat does not hear the dog.	a1.13.comp.020.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1340-PL-EN	pl	en	Czarny kot nie słyszy psa.	a1.13.comp.020.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1341-EN-PL	en	pl	Open the door.	a1.13.comp.021.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1342-PL-EN	pl	en	Otwórz drzwi.	a1.13.comp.021.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1343-EN-PL	en	pl	Please close the window.	a1.13.comp.022.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1344-PL-EN	pl	en	Proszę, zamknij okno.	a1.13.comp.022.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1345-EN-PL	en	pl	Do not open the door.	a1.13.comp.023.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1346-PL-EN	pl	en	Nie otwieraj drzwi.	a1.13.comp.023.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1347-EN-PL	en	pl	Open the door and close the window.	a1.13.comp.024.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1348-PL-EN	pl	en	Otwórz drzwi i zamknij okno.	a1.13.comp.024.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1349-EN-PL	en	pl	Give the child a book, please.	a1.13.comp.025.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1350-PL-EN	pl	en	Daj dziecku książkę, proszę.	a1.13.comp.025.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1351-EN-PL	en	pl	Give me the key.	a1.13.comp.026.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1352-PL-EN	pl	en	Podaj mi klucz.	a1.13.comp.026.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1353-EN-PL	en	pl	Sit down.	a1.13.comp.027.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1354-PL-EN	pl	en	Usiądź.	a1.13.comp.027.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1355-EN-PL	en	pl	Read the book and look at the bird.	a1.13.comp.028.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1356-PL-EN	pl	en	Czytaj książkę i patrz na ptaka.	a1.13.comp.028.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1357-EN-PL	en	pl	The dog may sleep.	a1.13.comp.029.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1358-PL-EN	pl	en	Pies może spać.	a1.13.comp.029.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1359-EN-PL	en	pl	The teacher says that the dog sleeps.	a1.13.comp.030.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1360-PL-EN	pl	en	Nauczyciel mówi, że pies śpi.	a1.13.comp.030.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1361-EN-PL	en	pl	The dog sees neither the cat nor the bird.	a1.13.comp.031.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1362-PL-EN	pl	en	Pies nie widzi ani kota, ani ptaka.	a1.13.comp.031.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1363-EN-PL	en	pl	The teacher sees the dog but does not hear the cat.	a1.13.comp.032.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1364-PL-EN	pl	en	Nauczyciel widzi psa, ale nie słyszy kota.	a1.13.comp.032.pl	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1365-EN-PL	en	pl	The mother sees herself.	a1.13.comp.033.en	composition_boundary	NOT_EVALUATED
+A1.13-COMP-1366-PL-EN	pl	en	Matka widzi siebie.	a1.13.comp.033.pl	composition_boundary	NOT_EVALUATED

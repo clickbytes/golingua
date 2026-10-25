@@ -1,0 +1,31 @@
+import json,subprocess,pathlib
+p=pathlib.Path('/tmp/golingua-architecture-audit-20261025'); b=str(p/'golingua')
+(p/'runtime.json').write_text(json.dumps({'schema_version':1,'dataset_store':str(p/'store'),'dataset_id':'golingua-authored'}))
+inv=json.load(open(p/'inventory.json')); by={x['case_id']:x for x in inv}
+ids=['A1-AC-001-EN-PL','A1-AC-002-PL-EN','A1-ID-001-EN-PL','A1-ID-002-PL-EN','A1-NEG-003-EN-PL','A1-NEG-004-PL-EN','A1.1-AC-101-EN-PL','A1.1-AC-102-PL-EN','A1.10-TIME-1001-EN-PL','A1.10-TIME-1002-PL-EN','A1.10-TIME-1033-EN-PL','A1.10-TIME-1034-PL-EN','A1-LQ-001-EN-PL','A1-Q-001-EN-PL','A1.3-CO-323-PL-EN','A1.5-ID-551-EN-PL','A1.5-ID-550-PL-EN']
+obs=json.load(open(p/'observations.json')); integrated={x['case_id']:x['result'] for x in obs if x['stage']=='integration'}
+results=[]
+def run(args,kind,**extra):
+ c=subprocess.run([b]+args,capture_output=True,text=True);v=json.loads(c.stdout) if c.stdout.startswith('{') else c.stdout
+ r={'kind':kind,'argv':args,'exit_code':c.returncode,'stderr':c.stderr,'result':v,**extra};results.append(r);return r
+for id in ids:
+ x=by[id];r=run(['translate','--from',x['from'],'--to',x['to'],'--text',x['input'],'--runtime-config',str(p/'runtime.json'),'--json'],'translate',case_id=id)
+ r['matrix_equal']=r['result']==integrated[id]
+run(['translate','--from','en','--to','pl','--text',by[ids[0]]['input'],'--json'],'no_config')
+run(['capabilities','--json'],'capabilities')
+run(['catalog','--summary','--json'],'catalog')
+run(['runtime','--config',str(p/'runtime.json'),'--json'],'runtime_validation')
+# Expectations transcribed before execution, limited to existing authored forms/corpus.
+cells=[('en','lexeme:en.look.v',{'verb_form':'finite','tense':'past','mood':'indicative','voice':'active'},'looked'),('en','lexeme:en.read.v',{'verb_form':'finite','tense':'past','mood':'indicative','voice':'active'},'read'),('en','lexeme:en.child.n',{'noun_number':'plural'},'children'),('en','lexeme:en.city.n',{'noun_number':'plural'},'cities'),('en','lexeme:en.fish.n',{'noun_number':'plural'},'fish'),('pl','lexeme:pl.widziec.v',{'verb_form':'finite','tense':'present','aspect':'imperfective','mood':'indicative','voice':'active','person':'first','number':'singular'},'widzę'),('pl','lexeme:pl.czytac.v',{'verb_form':'finite','tense':'past','aspect':'imperfective','mood':'indicative','voice':'active','person':'first','number':'singular','gender':'feminine'},'czytałam'),('pl','lexeme:pl.pies.n',{'number':'singular','case':'accusative','gender':'masculine_animal'},'psa'),('pl','lexeme:pl.pies.n',{'number':'singular','case':'genitive','gender':'masculine_animal'},'psa'),('pl','lexeme:pl.kon.n',{'number':'plural','case':'instrumental','gender':'masculine_animal'},'końmi'),('pl','lexeme:pl.czarny.adj',{'degree':'positive','number':'singular','gender':'feminine','case':'nominative'},'czarna')]
+(p/'morph-requirements.json').write_text(json.dumps(cells,ensure_ascii=False,indent=2)+'\n')
+for lang,lex,fs,expected in cells:
+ args=['forms','--language',lang,'--lexeme',lex]
+ for k,v in fs.items():args+=['--feature',k+'='+v]
+ r=run(args+['--json'],'generate',expected=expected,expectation_origin='existing authored morphology/corpus; agent review, owner NOT_EVALUATED')
+ r['matches_expected']=[f['surface'] for f in r['result'].get('forms',[])]==[expected]
+ for form in r['result'].get('forms',[]):
+  a=run(['forms','--language',lang,'--surface',form['surface'],'--json'],'analyze_generated',generated_lexeme=lex,generated_cell=form['cell_id'])
+  a['inverse_contains_generated_cell']=any(x['lexeme_id']==lex and x['cell_id']==form['cell_id'] for x in a['result'].get('readings',[]))
+(p/'cli.json').write_text(json.dumps(results,ensure_ascii=False,indent=2)+'\n')
+for r in results:
+ print(r['kind'],r.get('case_id',''),r['exit_code'],r.get('matrix_equal',''),r.get('matches_expected',''),r.get('inverse_contains_generated_cell',''), str(r['result'])[:80])

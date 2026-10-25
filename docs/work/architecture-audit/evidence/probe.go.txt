@@ -1,0 +1,205 @@
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"github.com/clickbytes/golingua/internal/analyzer"
+	"github.com/clickbytes/golingua/internal/catalog"
+	"github.com/clickbytes/golingua/internal/facts"
+	"github.com/clickbytes/golingua/internal/features"
+	"github.com/clickbytes/golingua/internal/ids"
+	"github.com/clickbytes/golingua/internal/meaning"
+	"github.com/clickbytes/golingua/internal/parser"
+	"github.com/clickbytes/golingua/internal/realizer"
+	"github.com/clickbytes/golingua/internal/reason"
+	"github.com/clickbytes/golingua/internal/runtime"
+	"github.com/clickbytes/golingua/internal/semantic"
+	"github.com/clickbytes/golingua/tests/matrix"
+	"os"
+)
+
+var enc = json.NewEncoder(os.Stdout)
+var label string
+
+func emit(stage string, value any, err error) {
+	e := ""
+	if err != nil {
+		e = err.Error()
+	}
+	if x := enc.Encode(map[string]any{"probe": label, "stage": stage, "value": value, "error": e}); x != nil {
+		panic(x)
+	}
+}
+
+type phraseHook struct{ inner runtime.PhraseEvidenceBuilder }
+
+func (h phraseHook) Build(c context.Context, l analyzer.LexicalLattice) ([]parser.PhraseCandidate, parser.ParseContext, error) {
+	emit("lattice", l, nil)
+	p, pc, e := h.inner.Build(c, l)
+	emit("phrases", p, e)
+	return p, pc, e
+}
+
+type evidenceHook struct {
+	inner runtime.CompositionEvidenceBuilder
+}
+
+func (h evidenceHook) Build(c context.Context, l analyzer.LexicalLattice, p []parser.PhraseCandidate, f parser.Forest) (runtime.CompositionEvidence, error) {
+	emit("forest", f, nil)
+	v, e := h.inner.Build(c, l, p, f)
+	emit("composition_evidence", v, e)
+	return v, e
+}
+
+type executionHook struct {
+	inner runtime.TargetExecutionBuilder
+}
+
+func (h executionHook) Build(c context.Context, s semantic.MeaningCandidate, cs []realizer.TargetCandidate, t realizer.TargetCandidate, p realizer.RealizationPlan) (realizer.ExecuteInput, error) {
+	emit("selected_plan", map[string]any{"sense": t.Sense.ID.String(), "lexeme": t.Lexeme.ID.String(), "plan": p}, nil)
+	v, e := h.inner.Build(c, s, cs, t, p)
+	slots := map[string]any{}
+	for k, s := range v.Slots {
+		slots[k] = map[string]any{"node": s.NodeID, "sense": s.Candidate.Sense.ID.String(), "lexeme": s.Candidate.Lexeme.ID.String(), "features": s.Features, "parts": s.PrincipalParts}
+	}
+	emit("execution_slots", slots, e)
+	return v, e
+}
+
+type observation struct {
+	CaseID    string                 `json:"case_id"`
+	Stage     string                 `json:"stage"`
+	MeaningID string                 `json:"meaning_id"`
+	Meaning   meaning.Meaning        `json:"meaning_input"`
+	Context   meaning.RequestContext `json:"context_input"`
+}
+
+func main() {
+	e, err := matrix.NewRuntime()
+	if err != nil {
+		panic(err)
+	}
+	ctx := context.Background()
+	sources := []struct{ lang, text string }{{"en", "The teacher sees the dog."}, {"pl", "Nauczyciel widzi psa."}, {"en", "The teacher sees the book."}, {"en", "I see the dog."}, {"pl", "Widzę psa."}, {"pl", "Nauczyciel nie widzi książki."}, {"pl", "Psa widzi nauczyciel."}, {"en", "The black cat sees the dog."}, {"en", "The teachers read the message."}, {"en", "The teacher saw the dog."}, {"en", "The child drinks water."}, {"pl", "Nauczyciel nie widzi psa."}, {"en", "Does the teacher see the dog?"}, {"en", "The cat is in the house."}, {"en", "The mother read the letter."}, {"en", "This window is black."}, {"pl", "To jest ryba."}}
+	for _, s := range sources {
+		label = s.lang + ":" + s.text
+		a, _ := e.SourceAnalyzerFor(features.LanguageID(s.lang))
+		p := *(a.(*runtime.SourcePipeline))
+		p.PhraseBuilder = phraseHook{p.PhraseBuilder}
+		p.EvidenceBuilder = evidenceHook{p.EvidenceBuilder}
+		r, err := p.Analyze(ctx, s.text)
+		emit("meaning", r, err)
+	}
+	var obs []observation
+	f, err := os.Open(os.Args[1])
+	if err != nil {
+		panic(err)
+	}
+	if err = json.NewDecoder(f).Decode(&obs); err != nil {
+		panic(err)
+	}
+	f.Close()
+	selectIDs := map[string]string{"A1.10-TIME-1002-PL-EN:realize": "en", "A1.10-TIME-1001-EN-PL:realize": "pl", "A1-AC-001-EN-PL:realize": "pl", "A1-AC-002-PL-EN:realize": "en", "A1.5-ID-551-EN-PL:realize": "pl", "A1.3-CO-323-PL-EN:realize": "en", "A1-Q-001-EN-PL:realize": "pl", "A1.10-TIME-1034-PL-EN:realize": "en", "A1.10-TIME-1033-EN-PL:realize": "pl", "A1.2-NEG-228-EN-PL:realize": "pl"}
+	var baseline meaning.Meaning
+	for _, o := range obs {
+		lang, ok := selectIDs[o.CaseID]
+		if !ok || o.Stage != "independent_realization" {
+			continue
+		}
+		label = o.CaseID
+		r, _ := e.TargetRealizerFor(features.LanguageID(lang))
+		p := *(r.(*runtime.TargetPipeline))
+		p.ExecutionBuilder = executionHook{p.ExecutionBuilder}
+		s := semantic.MeaningCandidate{ID: o.MeaningID, SemanticID: o.MeaningID, Meaning: &o.Meaning, Status: "ok", Evidence: semantic.EvidenceTrace{AlternativeID: o.MeaningID, Outcome: "ok"}}
+		if o.Context.ID != "" {
+			s.Contexts = []semantic.MeaningContext{{Meaning: o.Meaning, Context: o.Context}}
+		}
+		emit("independent_input", s, nil)
+		v, err := p.Realize(ctx, s)
+		emit("surface", v, err)
+		if o.CaseID == "A1-AC-001-EN-PL:realize" {
+			baseline = o.Meaning
+		}
+	}
+	for _, op := range []string{"statement", "bare", "negation", "question", "hypothetical", "quantifier", "double_negation"} {
+		label = "projection:" + op
+		g := baseline
+		g.Nodes = append([]meaning.Node(nil), g.Nodes...)
+		root := g.Roots[0]
+		switch op {
+		case "statement":
+			g.Nodes = append(g.Nodes, meaning.Node{ID: "wrap", Kind: meaning.KindDiscourse, Act: meaning.ActStatement, Content: []meaning.NodeID{root}})
+			g.Roots = []meaning.NodeID{"wrap"}
+		case "bare":
+		case "quantifier":
+			g.Nodes = append(g.Nodes, meaning.Node{ID: "wrap", Kind: meaning.KindQuantifier, Target: root, Quantifier: &meaning.Quantifier{Kind: meaning.QuantifierSome}})
+			g.Roots = []meaning.NodeID{"wrap"}
+		default:
+			g.Nodes = append(g.Nodes, meaning.Node{ID: "wrap", Kind: meaning.KindScope, Target: root, Operator: meaning.Operator(op)})
+			g.Roots = []meaning.NodeID{"wrap"}
+			if op == "double_negation" {
+				g.Nodes[len(g.Nodes)-1].Operator = meaning.OperatorNegation
+				g.Nodes = append(g.Nodes, meaning.Node{ID: "wrap2", Kind: meaning.KindScope, Target: "wrap", Operator: meaning.OperatorNegation})
+				g.Roots = []meaning.NodeID{"wrap2"}
+			}
+		}
+		v, err := meaning.ProjectAsserted(g, meaning.DefaultBudget())
+		emit("projection", v, err)
+	}
+	core, err := catalog.Compile()
+	if err != nil {
+		panic(err)
+	}
+	var inventory []struct {
+		Sem struct {
+			Predicate string `json:"predicate"`
+		} `json:"source_semantics"`
+	}
+	in, er := os.Open(os.Args[2])
+	if er != nil {
+		panic(er)
+	}
+	if er = json.NewDecoder(in).Decode(&inventory); er != nil {
+		panic(er)
+	}
+	in.Close()
+	seen := map[string]bool{}
+	for _, n := range []string{"existence", "temporary_possession", "supports_physical", "woman"} {
+		inventory = append(inventory, struct {
+			Sem struct {
+				Predicate string `json:"predicate"`
+			} `json:"source_semantics"`
+		}{})
+		inventory[len(inventory)-1].Sem.Predicate = n
+	}
+	for _, x := range inventory {
+		n := x.Sem.Predicate
+		if n == "" || seen[n] {
+			continue
+		}
+		seen[n] = true
+		cid, er := ids.NewConceptID(n)
+		if er != nil {
+			continue
+		}
+		c, exists := core.Lookup(cid)
+		label = "core:" + n
+		emit("catalog_concept", map[string]any{"id": cid.String(), "exists": exists, "kind": c.Kind, "roles": c.RoleTypes}, nil)
+	}
+	rc := meaning.RequestContext{ID: "audit", Referents: []meaning.Referent{{ID: "teacher-1", Concept: "concept:teacher"}, {ID: "dog-1", Concept: "concept:dog"}}}
+	for _, pols := range [][]facts.Polarity{nil, {facts.Positive}, {facts.Negative}, {facts.Positive, facts.Negative}} {
+		label = fmt.Sprint("truth:", pols)
+		fs := []facts.Fact{}
+		for i, p := range pols {
+			fs = append(fs, facts.Fact{ID: fmt.Sprintf("f%d", i), Predicate: "relation:seeing", ArgReferentIDs: [2]meaning.ReferentID{"teacher-1", "dog-1"}, Polarity: p, Source: facts.SourceEvidence{Kind: facts.SourceUser, ID: "audit-explicit"}, AssertionScope: facts.ScopeAsserted})
+		}
+		s, err := facts.NewSet(core, rc, fs, facts.DefaultBudget())
+		if err != nil {
+			emit("factset", nil, err)
+			continue
+		}
+		v, err := reason.Evaluate(s, nil, reason.Query{Predicate: "relation:seeing", Args: [2]meaning.ReferentID{"teacher-1", "dog-1"}}, reason.DefaultBudget())
+		emit("truth", v, err)
+	}
+}

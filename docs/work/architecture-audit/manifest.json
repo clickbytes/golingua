@@ -1,0 +1,111 @@
+{
+  "source_sha": "532ec1a9b94f585cf61c66b6ddde72481e5789c7",
+  "source_tree": "unchanged tracked product files",
+  "environment": "Go 1.27.0 linux/amd64; Linux x86_64; Europe/Warsaw 2026-10-25",
+  "matrix_command": "GOLINGUA_MATRIX_SHA=532ec1a9b94f585cf61c66b6ddde72481e5789c7 go test ./tests/... -count=1 -v",
+  "matrix_exit_code": 1,
+  "record_count": 1000,
+  "check_count": 3000,
+  "check_statuses": {
+    "PASS": 297,
+    "GAP_I": 1080,
+    "GAP_ANALYZE": 946,
+    "GAP_REALIZE": 433,
+    "FAIL": 244
+  },
+  "primary_family_counts": {
+    "REF": 297,
+    "D-CORE": 402,
+    "D-EXIST": 156,
+    "A-PLAN": 184,
+    "R-OPERATOR": 116,
+    "M-INDEX": 762,
+    "I-REL": 162,
+    "D-SENSE": 37,
+    "D-POLYSEMY": 24,
+    "D-PARTS": 29,
+    "R-CONTEXT": 20,
+    "M-CELL": 7,
+    "R-PAST-AGREE": 4,
+    "D-NUMBER": 14,
+    "R-DETERMINER": 62,
+    "D-LICENSE": 156,
+    "R-POLICY": 47,
+    "I-TIME": 72,
+    "C-ASSUMPTION": 71,
+    "R-COMPOSE": 68,
+    "A-OVS": 12,
+    "I-SCOPE": 24,
+    "I-COMPOSE": 60,
+    "A-NUMBER": 2,
+    "R-NEG-CASE": 6,
+    "C-AMB": 2,
+    "I-WH": 204
+  },
+  "additional_checks": 205,
+  "refusal_checks": 32,
+  "runtime_realization_not_run": 362,
+  "owner_language_acceptance": "NOT_EVALUATED",
+  "agent_assessment": "audit coverage with explicit diagnosis limits; product failures remain",
+  "files": {
+    "evidence/matrix.log.gz": {
+      "sha256": "b9a88d67b319868a9acf71936fbf28f799866e65d65cd8ad55e5c0ef9ff1f258",
+      "uncompressed_sha256": "d2eb018ff27896084e59e639e86e7fade776da9dc2b1658df99f6b2c032e4716",
+      "uncompressed_bytes": 15819034
+    },
+    "evidence/probes.jsonl.gz": {
+      "sha256": "488079224db919872d2a7a57702831e345d081a9ef905f7c2d4146bcde9d634d",
+      "uncompressed_sha256": "b88cd16f26edb381f94c9a7b9bf1be0df276edca89a804fc7c0721145c2aaf38",
+      "uncompressed_bytes": 402913
+    },
+    "evidence/cli.json.gz": {
+      "sha256": "d95cd9ed1311a9087364dd9f2e3aee03c19437a0a22cf1d035ed8444d9569a9e",
+      "uncompressed_sha256": "d56033036bd01acc360653204c26146ebd53e9c8f1959bf19c76d51b2bfc877b",
+      "uncompressed_bytes": 326447
+    },
+    "evidence/cli-followup.json.gz": {
+      "sha256": "f617cad35348ea05f76befab58fa942194584682d2586ff6048015a177c2671b",
+      "uncompressed_sha256": "0f40a9cb8a8310fa4101363871176031f5ec3f9186e05cdca589e26cb5857f7b",
+      "uncompressed_bytes": 6504
+    },
+    "evidence/questions.json.gz": {
+      "sha256": "a0d7b86293a8262c822ed987b6c3f1466653b6b7d83a0ec64d1eb71d9228f50b",
+      "uncompressed_sha256": "95bdaa99b85686122d548cdcd3fb46c2adb7fc02dff955904de36bdbefe10acd",
+      "uncompressed_bytes": 43021
+    },
+    "README.md": {
+      "sha256": "6e99fef27f781211107e7b7c21c27f82b34561a6a4284ea8a1f6350777a81643"
+    },
+    "causes.md": {
+      "sha256": "2c791b1633d2979cb3e686317c5f8716a803e6f1cdbabb8422d05da3fe6c6732"
+    },
+    "checks.tsv": {
+      "sha256": "3d94f1d941e6f57b0716008b8511846bfff41c43b135934c9300463f83643541"
+    },
+    "evidence/cli-probes.py.txt": {
+      "sha256": "abd19a5dc03a5aa3599edf2c807a5e77dcea85d4ac04561c99273141910e3c25"
+    },
+    "evidence/morph-requirements.json": {
+      "sha256": "43df2f60f68b3d41411c744a5798402a1d44ff8da9e2147bd1c011f10ebc0479"
+    },
+    "evidence/probe.go.txt": {
+      "sha256": "f19cac7050afb922391ba38597c2fb0fa986531861210d85912076ed3dc9647c"
+    },
+    "evidence/question-probes.py.txt": {
+      "sha256": "c9da6258ed200328f56cbc84094cdd393099eded092765fd50a370fb77071739"
+    },
+    "evidence/snapshot.json": {
+      "sha256": "4be1476f88ff4523b6f5cd6cb96bffcfdc1b6663e1815d2e71029e06977a9916"
+    },
+    "gap-details.md": {
+      "sha256": "7fb7a06837b57f50f951ccd3fb811d5735f83b12e8cbac473b2bc4de35570a12"
+    },
+    "records.tsv": {
+      "sha256": "0e24df4302d8b81b4e8fca871cffebf694c32fe1e4d82cc342e8d1efac2b4691"
+    }
+  },
+  "generated_utc": "2026-10-25T14:32:16.203355+00:00",
+  "probe_command": "go run ./cmd/auditprobe observations.json inventory.json (isolated git archive of source_sha)",
+  "probe_exit_code": 0,
+  "review": "bounded read-only Luna Low review: counts, pointers, hashes, morphology and links; coordinator incorporated success-path source-probe limitation"
+}
