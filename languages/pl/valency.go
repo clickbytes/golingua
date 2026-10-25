@@ -55,8 +55,8 @@ var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"pl.byc.class_membership", "pl.byc.class_membership.frame", "pl.identification", "pl.identification.to"},
 	{"pl.byc.class_membership", "pl.byc.class_membership.frame", "pl.identification_negative", "pl.identification_negative.to"},
 	{"pl.czarny.black", "pl.czarny.black.frame", "pl.attribution", "pl.attribution.ten"},
-	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.transitive_negative", "pl.transitive_negative.svo"},
-	{"pl.slyszec.auditory", "pl.slyszec.auditory.transitive", "pl.transitive_negative", "pl.transitive_negative.svo"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive_negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
+	{"pl.slyszec.auditory", "pl.slyszec.auditory.transitive_negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
 	{"pl.patrzec.directed", "pl.patrzec.directed.na", "pl.oblique_negative", "pl.oblique_negative.svo"},
 	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.transitive", "pl.transitive.svo"},
 	{"pl.slyszec.auditory", "pl.slyszec.auditory.transitive", "pl.transitive", "pl.transitive.svo"},
@@ -78,6 +78,10 @@ var polishFrames = []frameDeclaration{
 		{ID: "subject", Role: "experiencer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "object", Role: "stimulus", Required: true, GrammaticalFunction: "object", Case: "accusative"},
 	}},
+	{"pl.widziec.visual.transitive_negative", "pl.widziec.visual", "pl.transitive_negative", []meaning.Role{"experiencer", "stimulus"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "experiencer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "stimulus", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+	}},
 	{"pl.patrzec.directed.na", "pl.patrzec.directed", "pl.oblique", []meaning.Role{"agent", "target"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "oblique", Role: "target", Required: true, GrammaticalFunction: "oblique", Case: "accusative", Adposition: "na"},
@@ -85,6 +89,10 @@ var polishFrames = []frameDeclaration{
 	{"pl.slyszec.auditory.transitive", "pl.slyszec.auditory", "pl.transitive", []meaning.Role{"experiencer", "stimulus"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "experiencer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "object", Role: "stimulus", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+	}},
+	{"pl.slyszec.auditory.transitive_negative", "pl.slyszec.auditory", "pl.transitive_negative", []meaning.Role{"experiencer", "stimulus"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "experiencer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "stimulus", Required: true, GrammaticalFunction: "object", Case: "genitive"},
 	}},
 	{"pl.dostac.receive.transitive", "pl.dostac.receive", "pl.transitive", []meaning.Role{"recipient", "theme"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "recipient", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
@@ -187,19 +195,12 @@ func CompileValency() (*valency.Index, error) {
 				return nil, fmt.Errorf("Polish identification negative frame family: %w", err)
 			}
 			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
-		case "pl.widziec.visual.transitive", "pl.slyszec.auditory.transitive":
-			negativeFamilyID, err := ids.NewConstructionID("pl.transitive_negative")
+		case "pl.widziec.visual.transitive":
+			attributedFamilyID, err := ids.NewConstructionID("pl.attributed_seeing")
 			if err != nil {
-				return nil, fmt.Errorf("Polish negative frame family: %w", err)
+				return nil, fmt.Errorf("Polish attributed seeing frame family: %w", err)
 			}
-			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
-			if item.id == "pl.widziec.visual.transitive" {
-				attributedFamilyID, err := ids.NewConstructionID("pl.attributed_seeing")
-				if err != nil {
-					return nil, fmt.Errorf("Polish attributed seeing frame family: %w", err)
-				}
-				frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, attributedFamilyID)
-			}
+			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, attributedFamilyID)
 		case "pl.patrzec.directed.na":
 			negativeFamilyID, err := ids.NewConstructionID("pl.oblique_negative")
 			if err != nil {
