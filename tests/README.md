@@ -17,7 +17,7 @@ tests/
 
 A1.1 i A1.2 oznaczają przyszłe partie A1 konkretnego języka; wymagają osobno określonego zakresu i nie zastępują tej próbki.
 
-Pliki `*.testdomain.go` zawierają dane. Pliki `*_test.go` wykonują lokalne kontrole standardowym `go test`; te testy językowe nie są częścią CI. Każdy przypadek analizy zachowuje dokładne wejście, wymagania, nierozstrzygnięcia i pochodzenie wejścia. Przypadek realizacji zachowuje `ProposalTexts`, pochodzenie propozycji i akceptację właściciela oddzielnie od zamkniętych `AllowedTexts`, dozwolonych/obowiązkowych założeń i strat. Propozycja nie staje się automatycznie oczekiwanym wynikiem.
+Pliki `*.testdomain.go` zawierają dane. Pliki `*_test.go` wykonują kontrole standardowym `go test`. Osobny, obserwacyjny workflow GitHub Actions uruchamia pełną macierz na push do `main`, publikuje najnowszy raport w [`tests/results/latest.md`](results/latest.md), a surowy log udostępnia jako artefakt. Wynik macierzy nie blokuje technicznego `go-ci`; lokalne polecenia poniżej nadal pozwalają odtworzyć kontrole. Każdy przypadek analizy zachowuje dokładne wejście, wymagania, nierozstrzygnięcia i pochodzenie wejścia. Przypadek realizacji zachowuje `ProposalTexts`, pochodzenie propozycji i akceptację właściciela oddzielnie od zamkniętych `AllowedTexts`, dozwolonych/obowiązkowych założeń i strat. Propozycja nie staje się automatycznie oczekiwanym wynikiem.
 
 Integracja wskazuje ID analizy i realizacji; nie kopiuje ich treści. Inwentarz sprawdza dokładnie 24 ID, wszystkie odwołania, brak osieroconych przypadków oraz kompletność wymaganych pól provenance. Analiza i realizacja PL działają niezależnie od EN i odwrotnie. Wykonanie przekładu uruchamia oba adaptery produkcyjne przez rzeczywisty pipeline.
 
@@ -120,7 +120,7 @@ go test ./tests/translation/... -run Inventory -count=1 -v
 go test ./tests/... -count=1 -v
 ```
 
-Pełna macierz jest celowo niezaliczona, dopóki pozostałe wymagania nie mają zamkniętych wzorców i działających tras. Na końcowym snapshotcie oczekiwany był niezerowy exit wyłącznie z **36 kontrolami `SPEC_PENDING` dotyczącymi 12 rekordów domen LQ, PO i Q**. Pozostałe 12 rekordów obejmuje Seeing, identyfikację i negację. Każdy z 24 oryginalnych rekordów nadal pojawia się w raporcie; `SPEC_PENDING` ani `NOT RUN` nie są pomijane i nie oznaczają PASS. Językowe kontrole pozostają poza CI; techniczne CI repozytorium pozostaje bez zmian.
+Pełna macierz jest celowo niezaliczona, dopóki pozostałe wymagania nie mają zamkniętych wzorców i działających tras. Na końcowym snapshotcie oczekiwany był niezerowy exit wyłącznie z **36 kontrolami `SPEC_PENDING` dotyczącymi 12 rekordów domen LQ, PO i Q**. Pozostałe 12 rekordów obejmuje Seeing, identyfikację i negację. Każdy z 24 oryginalnych rekordów nadal pojawia się w raporcie; `SPEC_PENDING` ani `NOT RUN` nie są pomijane i nie oznaczają PASS. Oddzielny workflow zapisuje obserwację po pushu na `main`, ale nie jest bramką dla technicznego CI.
 
 ## Obserwacje CLI dla czterech oryginalnych zdań
 
