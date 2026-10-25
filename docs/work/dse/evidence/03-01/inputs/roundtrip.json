@@ -1,0 +1,62 @@
+{
+  "expression": {
+    "args": [
+      {
+        "role": "agent",
+        "value": {
+          "id": "alice",
+          "kind": "Ref",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      },
+      {
+        "role": "time",
+        "value": {
+          "id": "t0",
+          "kind": "Ref",
+          "type": {
+            "kind": "Interval"
+          }
+        }
+      }
+    ],
+    "kind": "Atom",
+    "symbol": "r"
+  },
+  "references": [
+    {
+      "id": "alice",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "t0",
+      "type": {
+        "kind": "Interval"
+      }
+    }
+  ],
+  "schema_version": 1,
+  "signatures": [
+    {
+      "id": "r",
+      "ports": [
+        {
+          "role": "agent",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "time",
+          "type": {
+            "kind": "Interval"
+          }
+        }
+      ]
+    }
+  ]
+}

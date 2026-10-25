@@ -14,6 +14,22 @@ go run ./cmd/golingua capabilities --json
 
 `--version` zwraca wersję technicznego podglądu v0. `--help` pokazuje dostępne komendy. `capabilities --json` opisuje gotowość bez wybranego runtime'u, dlatego obecnie zwraca `status: "unsupported"`, puste tablice `languages` i `features` oraz `ready: false`; sama komenda kończy się kodem 0. `forms` i `catalog` mają własne komendy opisane poniżej.
 
+## Typowany IR: `algebra check`
+
+`algebra check` dekoduje jeden version-1 dokument algebry, sprawdza typy i zakres binderów, a następnie zwraca strukturalny wynik oraz `canonical_document`. Może czytać jeden jawny plik albo stdin:
+
+```sh
+go run ./cmd/golingua algebra check --input docs/work/dse/evidence/03-01/inputs/atom.json --json
+go run ./cmd/golingua algebra check --json < docs/work/dse/evidence/03-01/inputs/atom.json
+go run ./cmd/golingua algebra check --input - --json < docs/work/dse/evidence/03-01/inputs/hole.json
+```
+
+Obie flagi można podać w dowolnej kolejności. `--json` jest wymagane. Bez `--input`, albo przy `--input -`, wejściem jest stdin; przy ścieżce pliku komenda czyta wyłącznie ten plik i nie dołącza stdin. Nieznane, brakujące, puste lub powtórzone argumenty dają JSON `status: "invalid"` i exit 2. Błąd otwarcia/odczytu pliku lub zapisu wyniku jest błędem infrastruktury wypisanym na stderr z exit 1.
+
+Sukces zwraca `status`, `checked` (typ, wolne parametry, dziury/wymagania i licznik węzłów) oraz znormalizowany `canonical_document`. `status: "incomplete"` z exit 7 zachowuje typowane `Hole`, wymagania i diagnostykę; nie zamienia dziury w świadek lub fakt. Typowane odmowy mapują się na kody: `invalid` 2, `unsupported` 3, `resource_limit` 4, `unknown` 5, `ambiguous` 6, `incomplete` 7, a `error` 1. Zbyt długa ścieżka diagnostyczna lub wiadomość jest jawnie skracana na granicy UTF-8 do limitów wspólnego statusu (512/2048 bajtów); status i kod pozostają zachowane, a skrócenie ścieżki ma osobną adnotację.
+
+Dokument ma limit 1 MiB; parser ogranicza zagnieżdżenie, a checker stosuje limity węzłów, głębokości, deklaracji, typów i portów. Szczegółowy [kontrakt IR](architecture/semantic-algebra/ir.md), [schemat JSON](../schemas/semantic/expression.schema.json), pliki kontrolne i status evidence są w [DSE-03-01](work/dse/evidence/03-01/README.md). Ta komenda nie redukuje `Apply`, nie wykonuje syntezy, nie ładuje rejestru runtime, nie ewaluje faktów i nie dowodzi prawdziwości propozycji. Poprawny typ oznacza wyłącznie poprawną strukturę według aktywnego checkera.
+
 ## Interfejs terminalowy
 
 Bezargumentowe `golingua` otwiera TUI, gdy stdin i stdout są TTY (poza `TERM=dumb`). Bez TTY pozostaje pomoc bez ANSI. Jawne komendy, `--help`, `--version`, JSON i kody wyjścia zachowują dotychczasowy kontrakt.

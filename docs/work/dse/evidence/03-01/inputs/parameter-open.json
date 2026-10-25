@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "signatures": [
+    {
+      "id": "r",
+      "ports": [
+        {
+          "role": "agent",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "time",
+          "type": {
+            "kind": "Interval"
+          }
+        }
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "alice",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "t0",
+      "type": {
+        "kind": "Interval"
+      }
+    }
+  ],
+  "expression": {
+    "kind": "Param",
+    "id": "p",
+    "type": {
+      "kind": "Entity"
+    }
+  },
+  "parameters": [
+    {
+      "id": "p",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ]
+}
