@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render the latest registered PL/EN matrix checks from `go test -v` output."""
+"""Render declared PL/EN records and all observed checks from `go test -v`."""
 
 from __future__ import annotations
 
@@ -11,18 +11,27 @@ import re
 import sys
 
 
-CASE_RE = re.compile(r"A1-[A-Z]+-\d{3}-(?:EN-PL|PL-EN)")
-REGISTERED_RE = re.compile(r'ID:\s*"(A1-[A-Z]+-\d{3}-(?:EN-PL|PL-EN))"')
+ID_PATTERN = r"[ABC][0-9]+(?:\.[0-9]+)*-[A-Z][A-Z0-9]*-[0-9]+-(?:EN-PL|PL-EN)"
+CASE_RE = re.compile(ID_PATTERN)
+REGISTERED_RE = re.compile(r'ID:\s*"(' + ID_PATTERN + r')"')
+TAGS_RE = re.compile(r'CoverageTags:\s*\[\]string\{([^}]*)\},\s*ID:\s*"(' + ID_PATTERN + r')"')
 RUN_RE = re.compile(r"^=== RUN\s+(\S+)")
 RESULT_RE = re.compile(r"^\s*--- (PASS|FAIL):\s+(\S+)")
+PACKAGE_RE = re.compile(r"^(?:ok|FAIL)\s+(github\.com/\S+)", re.MULTILINE)
 
 
 def registered_cases(path: Path) -> list[str]:
-    text = path.read_text(encoding="utf-8")
-    found = sorted(set(REGISTERED_RE.findall(text)))
+    found = sorted(set(REGISTERED_RE.findall(path.read_text(encoding="utf-8"))))
     if not found:
-        raise ValueError(f"no stable A1 IDs found in {path}")
+        raise ValueError(f"no stable language matrix IDs found in {path}")
     return found
+
+
+def declared_coverage(path: Path) -> dict[str, list[str]]:
+    coverage: dict[str, list[str]] = defaultdict(list)
+    for tags, case_id in TAGS_RE.findall(path.read_text(encoding="utf-8")):
+        coverage[case_id].extend(re.findall(r'"([^"]+)"', tags))
+    return coverage
 
 
 def check_kind(test_name: str) -> str | None:
@@ -50,39 +59,62 @@ def observed_status(go_result: str, lines: list[str]) -> str:
     return "PASS" if go_result == "PASS" else "FAIL"
 
 
-def parse_checks(log_text: str) -> dict[tuple[str, str], list[str]]:
+def parse_checks(log_text: str) -> tuple[dict[tuple[str, str], list[str]], list[tuple[str, str, str]], list[tuple[str, str, int]]]:
     observations: dict[tuple[str, str], list[str]] = defaultdict(list)
-    details: dict[str, list[str]] = defaultdict(list)
-    current_name: str | None = None
-
+    extras: list[tuple[str, str, str]] = []
+    package_summaries: list[tuple[str, str, int]] = []
+    # `go test -v` buffers output by package, then writes its ok/FAIL summary.
+    # Keeping that boundary makes identically named tests in different packages distinct.
+    chunks: list[tuple[str, list[str]]] = []
+    pending: list[str] = []
     for line in log_text.splitlines():
-        run_match = RUN_RE.match(line)
-        if run_match:
-            current_name = run_match.group(1) if CASE_RE.search(run_match.group(1)) else None
-            continue
+        pending.append(line)
+        match = PACKAGE_RE.match(line)
+        if match:
+            chunks.append((match.group(1), pending))
+            pending = []
+    if pending:
+        chunks.append(("(package summary not observed)", pending))
 
-        if current_name is not None:
-            details[current_name].append(line)
-
-        result_match = RESULT_RE.match(line)
-        if not result_match:
-            continue
-        result, test_name = result_match.groups()
-        case_match = CASE_RE.search(test_name)
-        kind = check_kind(test_name)
-        if case_match and kind:
-            # The name also ties the output markers to this exact subtest.
+    for package, lines in chunks:
+        summary_line = next((line for line in reversed(lines) if PACKAGE_RE.match(line)), "")
+        summary = "FAIL" if summary_line.startswith("FAIL") else "PASS" if summary_line.startswith("ok") else "NOT RUN"
+        details: dict[str, list[str]] = defaultdict(list)
+        current_name: str | None = None
+        results: list[tuple[str, str]] = []
+        for line in lines:
+            run_match = RUN_RE.match(line)
+            if run_match:
+                current_name = run_match.group(1)
+                continue
+            if current_name is not None:
+                details[current_name].append(line)
+            result_match = RESULT_RE.match(line)
+            if result_match:
+                result, test_name = result_match.groups()
+                results.append((result, test_name))
+                if current_name == test_name:
+                    current_name = None
+        run_names = {match.group(1) for line in lines if (match := RUN_RE.match(line))}
+        package_summaries.append((package, summary, len(run_names)))
+        for result, test_name in results:
+            if any(name.startswith(test_name + "/") for name in run_names):
+                continue  # Report leaf checks; parent summaries duplicate their children.
+            case_match = CASE_RE.search(test_name)
+            kind = check_kind(test_name)
             body = details[test_name]
-            observations[(case_match.group(0), kind)].append(observed_status(result, body))
-        if current_name == test_name:
-            current_name = None
-
-    return observations
+            state = observed_status(result, body)
+            if case_match and kind:
+                observations[(case_match.group(0), kind)].append(state)
+            elif "/" in test_name or test_name.startswith("Test"):
+                extras.append((package, test_name, state))
+    return observations, extras, package_summaries
 
 
 def render(sha: str, timestamp: str, exit_code: int, case_file: Path, log_file: Path) -> str:
     cases = registered_cases(case_file)
-    observations = parse_checks(log_file.read_text(encoding="utf-8", errors="replace"))
+    coverage = declared_coverage(case_file)
+    observations, extras, package_summaries = parse_checks(log_file.read_text(encoding="utf-8", errors="replace"))
     kinds = ("analysis", "realization", "integration")
     rows: list[tuple[str, list[str]]] = []
     counts: Counter[str] = Counter()
@@ -92,13 +124,13 @@ def render(sha: str, timestamp: str, exit_code: int, case_file: Path, log_file: 
         for kind in kinds:
             seen = observations.get((case_id, kind), [])
             if len(seen) == 1:
-                status = seen[0]
+                state = seen[0]
             elif not seen:
-                status = "NOT RUN"
+                state = "NOT RUN"
             else:
-                status = "FAIL"
-            statuses.append(status)
-            counts[status] += 1
+                state = "FAIL"
+            statuses.append(state)
+            counts[state] += 1
         direction = case_id.rsplit("-", 2)[-2] + " → " + case_id.rsplit("-", 1)[-1]
         rows.append((case_id, [direction, *statuses]))
 
@@ -111,25 +143,35 @@ def render(sha: str, timestamp: str, exit_code: int, case_file: Path, log_file: 
         f"- Generated (UTC): `{timestamp}`",
         "- Command: `go test ./tests/... -count=1 -v`",
         f"- Command exit code: `{exit_code}` ({'PASS' if exit_code == 0 else 'NONZERO'})",
-        f"- Registered records: {len(cases)}; evaluated checks: {len(cases) * len(kinds)}",
+        f"- Registered records: {len(cases)}; record checks: {len(cases) * len(kinds)}",
+        "- Additional observed checks: " + str(len(extras)),
         "",
-        "| Case ID | Direction | Analysis | Realization | Integration |",
-        "|---|---|---|---|---|",
+        "| Case ID | Direction | Analysis | Realization | Integration | Declared coverage tags |",
+        "|---|---|---|---|---|---|",
     ]
     for case_id, values in rows:
-        lines.append(f"| `{case_id}` | {values[0]} | {values[1]} | {values[2]} | {values[3]} |")
+        tags = ", ".join(sorted(set(coverage.get(case_id, [])))) or "(none)"
+        lines.append(f"| `{case_id}` | {values[0]} | {values[1]} | {values[2]} | {values[3]} | {tags} |")
 
-    lines.extend(
-        [
-            "",
-            "## Counts",
-            "",
-            " | ".join(f"{name}: {counts[name]}" for name in ("PASS", "FAIL", "GAP_ANALYZE", "GAP_REALIZE", "GAP_I", "SPEC_PENDING", "INFRA", "NOT RUN")),
-            "",
-            "`SPEC_PENDING` means the check ran but lacks a closed independent contract. `NOT RUN` means no matching check result was observed. A nonzero command exit may also include failures outside these 24 sample records; consult the complete raw log artifact for every run detail.",
-            "",
-        ]
-    )
+    lines.extend(["", "## Additional observed checks", "", "| Package | Check | Status |", "|---|---|---|"])
+    for package, test_name, state in extras:
+        lines.append(f"| `{package}` | `{test_name}` | {state} |")
+
+    lines.extend(["", "## Package summaries", "", "Packages with no observed test run are reported as infrastructure/build failures when Go returned `FAIL`; summaries do not replace per-check outcomes.", "", "| Package | Go summary | Observed test names |", "|---|---|---|"])
+    for package, summary, run_count in package_summaries:
+        state = "INFRA (no tests ran)" if summary == "FAIL" and run_count == 0 else summary
+        lines.append(f"| `{package}` | {state} | {run_count} |")
+
+    tag_counts: Counter[str] = Counter(tag for values in coverage.values() for tag in values)
+    lines.extend(["", "## Declared coverage", "", "Declared tags are metadata attached to records; they do not prove that a construction executed successfully.", ""])
+    lines.append(" | ".join(f"{tag}: {tag_counts[tag]} records" for tag in sorted(tag_counts)) or "No coverage tags declared.")
+    lines.extend([
+        "", "## Counts", "",
+        " | ".join(f"{name}: {counts[name]}" for name in ("PASS", "FAIL", "GAP_ANALYZE", "GAP_REALIZE", "GAP_I", "SPEC_PENDING", "INFRA", "NOT RUN")),
+        "",
+        "`SPEC_PENDING` means the check ran but lacks a closed independent contract. `NOT RUN` means no matching record check result was observed. Additional checks retain their own observed statuses above. Consult the full raw log artifact for every run detail.",
+        "",
+    ])
     return "\n".join(lines)
 
 

@@ -32,7 +32,7 @@ func TestNegationRealization(t *testing.T) {
 	matrix.RunRealization(t, features.LanguageID("pl"), a1pl.NegationRealizationCases)
 	matrix.RunRealization(t, features.LanguageID("pl"), []matrix.RealizationCase{{
 		ID: "I-PL-negative-classification-to", MeaningID: "negation.classification.to",
-		ProposalTexts: []string{"To nie jest kot."}, AllowedTexts: []string{"To nie jest kot."},
+		ProposalTexts: []string{"To nie jest kot."}, AllowedTexts: []string{"To nie jest kot."}, RequiredTexts: []string{"To nie jest kot."},
 		AllowedAssumptionFields: []string{"tense", "person", "number"},
 		ReferenceOrigin:         "authored interlingua fixture", OwnerAcceptance: "NOT_EVALUATED",
 	}})
