@@ -1268,10 +1268,12 @@ var englishAArticleLexemes = map[string]struct{}{
 	"en.house.n": {}, "en.household.n": {}, "en.car.n": {}, "en.bird.n": {}, "en.neighbor.n": {},
 	"en.customer.n": {}, "en.dog.n": {}, "en.teacher.n": {}, "en.doctor.n": {},
 	"en.tree.n": {}, "en.child.n": {}, "en.message.n": {}, "en.letter_document.n": {},
+	"en.window.n": {},
 }
 
 var englishAnArticleLexemes = map[string]struct{}{
-	"en.offspring.n": {},
+	"en.offspring.n":   {},
+	"en.apple_fruit.n": {},
 }
 
 var englishCountNounLexemes = map[string]struct{}{

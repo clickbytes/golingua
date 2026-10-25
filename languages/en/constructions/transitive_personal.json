@@ -213,6 +213,12 @@
         },
         {
           "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "person",
+          "value": "first"
+        },
+        {
+          "kind": "feature_equals",
           "slot_id": "verb",
           "feature": "tense",
           "value": "past"
@@ -263,6 +269,12 @@
           "kind": "feature_equals",
           "slot_id": "subject",
           "feature": "pronoun_person",
+          "value": "second"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "person",
           "value": "second"
         },
         {
@@ -552,6 +564,10 @@
         "version": "2026-10-25-358",
         "license": "internal"
       }
-    }
+    },
+    {"family_id":"construction:en.transitive_personal","markedness":"neutral","priority":0,"id":"construction:en.transitive_personal.svo.first.bare_object","sequence":[{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"."}],"direction_policy":"realize","provenance":{"id":"golingua-en-bare-plural-determiners-359","path":"languages/en/constructions/transitive_personal.json","version":"2026-10-25-359","license":"internal","author":"Codex by owner delegation"},"conditions":[{"kind":"feature_equals","slot_id":"subject","feature":"pronoun_person","value":"first"},{"kind":"feature_equals","slot_id":"verb","feature":"person","value":"first"},{"kind":"feature_equals","slot_id":"verb","feature":"tense","value":"present"},{"kind":"feature_equals","slot_id":"object","feature":"noun_number","value":"plural"}]},
+    {"family_id":"construction:en.transitive_personal","markedness":"neutral","priority":0,"id":"construction:en.transitive_personal.svo.second.bare_object","sequence":[{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"."}],"direction_policy":"realize","provenance":{"id":"golingua-en-bare-plural-determiners-359","path":"languages/en/constructions/transitive_personal.json","version":"2026-10-25-359","license":"internal","author":"Codex by owner delegation"},"conditions":[{"kind":"feature_equals","slot_id":"subject","feature":"pronoun_person","value":"second"},{"kind":"feature_equals","slot_id":"verb","feature":"person","value":"second"},{"kind":"feature_equals","slot_id":"verb","feature":"tense","value":"present"},{"kind":"feature_equals","slot_id":"object","feature":"noun_number","value":"plural"}]},
+    {"family_id":"construction:en.transitive_personal","markedness":"neutral","priority":0,"id":"construction:en.transitive_personal.svo.reading.first.bare_object","sequence":[{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"."}],"direction_policy":"realize","provenance":{"id":"golingua-en-bare-plural-determiners-359","path":"languages/en/constructions/transitive_personal.json","version":"2026-10-25-359","license":"internal","author":"Codex by owner delegation"},"conditions":[{"kind":"feature_equals","slot_id":"subject","feature":"pronoun_person","value":"first"},{"kind":"feature_equals","slot_id":"verb","feature":"tense","value":"past"},{"kind":"feature_equals","slot_id":"object","feature":"noun_number","value":"plural"}]},
+    {"family_id":"construction:en.transitive_personal","markedness":"neutral","priority":0,"id":"construction:en.transitive_personal.svo.reading.second.bare_object","sequence":[{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"."}],"direction_policy":"realize","provenance":{"id":"golingua-en-bare-plural-determiners-359","path":"languages/en/constructions/transitive_personal.json","version":"2026-10-25-359","license":"internal","author":"Codex by owner delegation"},"conditions":[{"kind":"feature_equals","slot_id":"subject","feature":"pronoun_person","value":"second"},{"kind":"feature_equals","slot_id":"verb","feature":"tense","value":"past"},{"kind":"feature_equals","slot_id":"object","feature":"noun_number","value":"plural"}]}
   ]
 }

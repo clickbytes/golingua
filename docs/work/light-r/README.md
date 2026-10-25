@@ -7,8 +7,8 @@ Decyzja właściciela 2026-10-25: wdrożyć sześć szeregowych pionów po [audy
 | Negacja PL i przypadek dopełnienia | [355](https://github.com/clickbytes/golingua/issues/355) | DONE — PR #361, CI PR/main SUCCESS |
 | Liczba i potrzebne formy referentów | [356](https://github.com/clickbytes/golingua/issues/356) | DONE — PR #362, CI PR/main SUCCESS |
 | Przeszłość i uzgodnienie | [357](https://github.com/clickbytes/golingua/issues/357) | DONE — PR #363, CI PR/main SUCCESS |
-| Mówiący i adresat | [358](https://github.com/clickbytes/golingua/issues/358) | ACTIVE |
-| Alternatywy określoności EN | [359](https://github.com/clickbytes/golingua/issues/359) | QUEUED |
+| Mówiący i adresat | [358](https://github.com/clickbytes/golingua/issues/358) | DONE — PR #364, CI PR/main SUCCESS |
+| Alternatywy określoności EN | [359](https://github.com/clickbytes/golingua/issues/359) | ACTIVE |
 | Wiek i potomek child children | [360](https://github.com/clickbytes/golingua/issues/360) | QUEUED |
 
 Zakres nie obejmuje HAVE, przestrzeni, ilości/WH, nowego schematu I ani uczenia. [LIGHT-L #329](https://github.com/clickbytes/golingua/issues/329) oczekuje na zakończenie tego epiku. Przypadki i wymagania pochodzą z istniejącej macierzy; rozszerzenia danych ograniczają się do wybranego pionu.

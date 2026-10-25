@@ -200,7 +200,7 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 			person = "first"
 			number = "plural"
 		}
-		values := []features.FeatureValue{{Feature: "pronoun_case", State: features.StateKnown, Value: "subject"}, {Feature: "pronoun_person", State: features.StateKnown, Value: features.FeatureValueID(person)}}
+		values := []features.FeatureValue{{Feature: "pronoun_case", State: features.StateKnown, Value: "subject"}, {Feature: "pronoun_person", State: features.StateKnown, Value: features.FeatureValueID(person)}, {Feature: "person", State: features.StateKnown, Value: features.FeatureValueID(person)}}
 		if candidate.Lexeme.ID.String() != "lexeme:en.you.pron" {
 			values = append(values, features.FeatureValue{Feature: "number", State: features.StateKnown, Value: features.FeatureValueID(number)}, features.FeatureValue{Feature: "pronoun_number", State: features.StateKnown, Value: features.FeatureValueID(number)})
 		}
@@ -390,14 +390,15 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 			continue
 		}
 		reason := "the source does not encode English definiteness; this candidate selects the definite article"
+		assumptionValue := determiner
 		switch determiner {
 		case "indefinite":
 			reason = "the source does not encode English definiteness; this candidate selects the indefinite article " + article
 		case "bare":
-			reason = "the target noun is explicitly mass and this candidate realizes it without an article"
+			reason = "the selected English target construction realizes the " + string(participant.Role) + " referent with a zero article"
 		}
 		assumptions = append(assumptions, realizer.FieldAssumption{
-			Path: referentPath, Field: "determiner", Value: determiner, Reason: reason,
+			Path: referentPath, Field: "determiner", Value: assumptionValue, Reason: reason,
 		})
 	}
 	return nil, assumptions, losses, nil
@@ -518,7 +519,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 		if expected == "" || (variantID != expected && !strings.HasPrefix(variantID, expected+".")) {
 			return false
 		}
-		determinerVariant, ok := englishDeterminerVariant(variantID)
+		determinerVariant, ok := englishDeterminersForCandidate(candidate)
 		if !ok {
 			return false
 		}
@@ -543,7 +544,26 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 			}
 		}
 		article, articleKnown := commonEnglishIndefiniteArticle(lexical)
-		if (determinerVariant.object == "a" || determinerVariant.object == "an") && (!articleKnown || article != determinerVariant.object) {
+		number, numberKnown := "", false
+		allMass, allPluralOnly := true, true
+		for _, item := range lexical {
+			candidateNumber, _, numberOK := englishTargetNumber(source, ref.ID, item.Lexeme.Properties, item.Lexeme.ParadigmID)
+			if !numberOK || numberKnown && candidateNumber != number {
+				return false
+			}
+			number, numberKnown = candidateNumber, true
+			mass, pluralOnly := englishNumberClass(item.Lexeme.Properties, item.Lexeme.ParadigmID)
+			allMass = allMass && mass
+			allPluralOnly = allPluralOnly && pluralOnly
+		}
+		if !numberKnown || !englishVariantRequiresNPNumber(candidate, "object", number) {
+			return false
+		}
+		if (determinerVariant.object == "a" || determinerVariant.object == "an") &&
+			(allMass || allPluralOnly || number != "singular" || !articleKnown || article != determinerVariant.object) {
+			return false
+		}
+		if determinerVariant.object == "bare" && !allMass && number != "plural" {
 			return false
 		}
 		if values, found := runtime.SourceFeatures(source, role, coreConcept(ref)); found && values["determiner"] != "" && string(values["determiner"]) != englishDeterminerFeature(determinerVariant.object) {
@@ -569,7 +589,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 	if candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || familyID != transitiveFamily && familyID != transitivePastFamily && familyID != obliqueFamily && familyID != attributedFamily && familyID != "construction:en.transitive_personal" && !isNegativeFamily {
 		return true
 	}
-	variant, knownVariant := englishDeterminerVariant(candidate.CompiledVariant.Variant.ID.String())
+	variant, knownVariant := englishDeterminersForCandidate(candidate)
 	if !knownVariant {
 		return true
 	}
@@ -657,19 +677,13 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 		if allPluralOnly {
 			number = "plural"
 		}
+		if !englishVariantRequiresNPNumber(candidate, slot.ID, number) {
+			return false
+		}
 		actualArticle := englishDeterminerForSlot(variant, slot.ID)
 		actualDeterminer := englishDeterminerFeature(actualArticle)
-		if slot.ID == "object" && mass {
-			if determiner == "definite" {
-				if actualDeterminer != "definite" {
-					return false
-				}
-			} else if actualDeterminer != "bare" {
-				return false
-			}
-			continue
-		}
-		if actualDeterminer == "indefinite" && (!hasCommonIndefiniteArticle || actualArticle != indefiniteArticle) {
+		if actualDeterminer == "indefinite" &&
+			(mass || allPluralOnly || number != "singular" || !hasCommonIndefiniteArticle || actualArticle != indefiniteArticle) {
 			return false
 		}
 		if determiner != "" {
@@ -678,8 +692,20 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 			}
 			continue
 		}
+		if slot.ID == "object" && mass {
+			if actualDeterminer != "bare" {
+				return false
+			}
+			continue
+		}
+		if actualDeterminer == "bare" {
+			if number != "plural" {
+				return false
+			}
+			continue
+		}
 		if number == "plural" {
-			if actualDeterminer != "definite" {
+			if actualDeterminer != "definite" && actualDeterminer != "bare" {
 				return false
 			}
 			continue
@@ -848,7 +874,7 @@ func englishDeterminerForRole(candidate realizer.TargetCandidate, role meaning.R
 	if familyID != "construction:en.transitive" && familyID != "construction:en.transitive_past" && familyID != "construction:en.transitive_negative" && familyID != "construction:en.oblique" && familyID != "construction:en.oblique_negative" && familyID != "construction:en.attributed_seeing" && familyID != "construction:en.transitive_personal" {
 		return "", false
 	}
-	variant, exists := englishDeterminerVariant(candidate.CompiledVariant.Variant.ID.String())
+	variant, exists := englishDeterminersForCandidate(candidate)
 	if !exists {
 		return "", false
 	}

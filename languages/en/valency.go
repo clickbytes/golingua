@@ -76,6 +76,11 @@ var englishReadingPastConstructionSource = provenance.SourceRef{
 	Version: "2026-10-23-g10-20", License: "internal", Author: "Codex by owner delegation",
 }
 
+var englishBarePluralConstructionSource = provenance.SourceRef{
+	ID: "golingua-en-bare-plural-determiners-359", URI: "https://github.com/clickbytes/golingua/issues/359",
+	Version: "2026-10-25-359", License: "internal", Author: "Codex by owner delegation",
+}
+
 var englishSeeingPastConstructionSource = provenance.SourceRef{
 	ID: "golingua-g11-r3-past-seeing-357", URI: "https://github.com/clickbytes/golingua/issues/357",
 	Version: "2026-10-25", License: "internal", Author: "Codex by owner delegation",
@@ -91,7 +96,7 @@ type constructionBindingDeclaration struct {
 	sense, frame, family, variant string
 }
 
-var englishConstructionBindingDeclarations = append(append([]constructionBindingDeclaration{
+var englishConstructionBindingDeclarations = append(append(append([]constructionBindingDeclaration{
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_object"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_object_an"},
@@ -179,7 +184,78 @@ var englishConstructionBindingDeclarations = append(append([]constructionBinding
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_subject_an_target_an"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique_negative", "en.oblique_negative.svo"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique_negative", "en.oblique_negative.svo.plural"},
-}, englishNegativeArticleBindingDeclarations()...), englishReadingPastBindingDeclarations()...)
+}, englishNegativeArticleBindingDeclarations()...), englishReadingPastBindingDeclarations()...), englishBarePluralBindingDeclarations()...)
+
+var englishReadingPresentIndefiniteSuffixes = [...]string{
+	".indefinite_object", ".indefinite_subject", ".indefinite_subject_object",
+	".indefinite_object_an", ".indefinite_subject_an",
+	".indefinite_subject_a_object_an", ".indefinite_subject_an_object_a", ".indefinite_subject_an_object_an",
+}
+
+func englishBarePluralBindingDeclarations() []constructionBindingDeclaration {
+	var bindings []constructionBindingDeclaration
+	add := func(sense, frame, family, variant string) {
+		bindings = append(bindings, constructionBindingDeclaration{sense, frame, family, variant})
+	}
+	for _, suffix := range englishReadingPresentIndefiniteSuffixes {
+		add("en.read.text", "en.read.text.transitive", "en.transitive", "en.transitive.svo"+suffix)
+	}
+	for _, route := range []struct{ sense, frame string }{
+		{"en.see.visual", "en.see.visual.transitive"},
+		{"en.hear.auditory", "en.hear.auditory.transitive"},
+		{"en.read.text", "en.read.text.transitive"},
+	} {
+		for _, variant := range []string{
+			"en.transitive.svo.bare_object.subject_the", "en.transitive.svo.bare_object.subject_a", "en.transitive.svo.bare_object.subject_an",
+			"en.transitive.svo.bare_subject.object_the", "en.transitive.svo.bare_subject.object_a", "en.transitive.svo.bare_subject.object_an", "en.transitive.svo.bare_subject.object_bare",
+			"en.transitive.svo.bare_subject.analyze",
+		} {
+			add(route.sense, route.frame, "en.transitive", variant)
+		}
+	}
+	for _, route := range []struct{ sense, frame string }{
+		{"en.see.visual", "en.see.visual.transitive"},
+		{"en.read.text", "en.read.text.transitive"},
+	} {
+		for _, variant := range []string{
+			"en.transitive_past.svo.bare_object.subject_the", "en.transitive_past.svo.bare_object.subject_a", "en.transitive_past.svo.bare_object.subject_an",
+			"en.transitive_past.svo.bare_subject.object_the", "en.transitive_past.svo.bare_subject.object_a", "en.transitive_past.svo.bare_subject.object_an", "en.transitive_past.svo.bare_subject.object_bare",
+			"en.transitive_past.svo.bare_subject.analyze",
+		} {
+			add(route.sense, route.frame, "en.transitive_past", variant)
+		}
+	}
+	for _, route := range []struct{ sense, frame string }{
+		{"en.see.visual", "en.see.visual.transitive"},
+		{"en.hear.auditory", "en.hear.auditory.transitive"},
+		{"en.read.text", "en.read.text.transitive"},
+	} {
+		for _, variant := range []string{
+			"en.transitive_personal.svo.first.bare_object", "en.transitive_personal.svo.second.bare_object",
+		} {
+			add(route.sense, route.frame, "en.transitive_personal", variant)
+		}
+	}
+	for _, variant := range []string{
+		"en.transitive_personal.svo.reading.first.bare_object", "en.transitive_personal.svo.reading.second.bare_object",
+	} {
+		add("en.read.text", "en.read.text.transitive", "en.transitive_personal", variant)
+	}
+	for _, route := range []struct{ sense, frame string }{
+		{"en.see.visual", "en.see.visual.transitive"},
+		{"en.hear.auditory", "en.hear.auditory.transitive"},
+	} {
+		for _, variant := range []string{
+			"en.transitive_negative.svo.plural.bare_subject.analyze",
+			"en.transitive_negative.svo.bare_object.subject_the", "en.transitive_negative.svo.bare_object.subject_a", "en.transitive_negative.svo.bare_object.subject_an",
+			"en.transitive_negative.svo.plural.bare_object.subject_the", "en.transitive_negative.svo.plural.bare_object.subject_bare",
+			"en.transitive_negative.svo.plural.subject_bare.object_the", "en.transitive_negative.svo.plural.subject_bare.object_a", "en.transitive_negative.svo.plural.subject_bare.object_an",
+		} {
+			add(route.sense, route.frame, "en.transitive_negative", variant)
+		}
+	}
+	return bindings
+}
 
 func englishReadingPastBindingDeclarations() []constructionBindingDeclaration {
 	suffixes := []string{
@@ -390,6 +466,16 @@ func CompileValency() (*valency.Index, error) {
 }
 
 func englishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.sense == "en.read.text" && item.family == "en.transitive" {
+		for _, suffix := range englishReadingPresentIndefiniteSuffixes {
+			if item.variant == "en.transitive.svo"+suffix {
+				return englishBarePluralConstructionSource
+			}
+		}
+	}
+	if strings.Contains(item.variant, "bare") {
+		return englishBarePluralConstructionSource
+	}
 	if item.sense == "en.see.visual" && item.family == "en.transitive_past" {
 		return englishSeeingPastConstructionSource
 	}
