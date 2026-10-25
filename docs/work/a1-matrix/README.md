@@ -25,3 +25,7 @@ Briefy i dowody poszczególnych etapów znajdują się w tym katalogu; surowe ob
 ## #344 M8-PO34 — A1.6 possession
 
 Dodano 34 pary / 68 kierunków jako kontrakty deklaratywne. Pełne znaczenia posiadania, przynależności, własności prawnej, pokrewieństwa i przyjaźni pozostają jawnie `GAP_I` tam, gdzie model Meaning nie może reprezentować relacji CORE. Zakres i lista wejść: [brief](344-possession-brief.md), [wybór](344-possession-selection.md), [wyniki](344-possession-results.md). OwnerAcceptance: `NOT_EVALUATED`.
+
+## #344 M8-LQ48 — A1.7 location and quantity
+
+Dodano dokładnie 48 par / 96 kierunków jako deklaratywne kontrakty A1.7. Pełne znaczenia lokalizacji oraz egzystencji z liczebnością pozostają jawne `GAP_I`; graf dwóch kotów jest komponentem samej liczebności. Zakres i lista: [brief](344-location-brief.md), [wybór](344-location-selection.md), [wyniki](344-location-results.md). OwnerAcceptance: `NOT_EVALUATED`.
