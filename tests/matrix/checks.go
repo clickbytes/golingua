@@ -63,7 +63,7 @@ func RunAnalysis(t *testing.T, lang features.LanguageID, cases []AnalysisCase) {
 						t.Fatalf("INFRA: source analyzer for %q is unavailable", lang)
 					}
 					result, analyzeErr := analyzer.Analyze(context.Background(), c.Input)
-					logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "result": result, "error": errorText(analyzeErr)})
+					logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "native_analysis", "adapter_executed": true, "result": result, "error": errorText(analyzeErr)})
 					if analyzeErr != nil && infraError(analyzeErr) {
 						t.Errorf("INFRA: source analysis %q: %v", c.ID, analyzeErr)
 					} else if analyzeErr != nil || result.Outcome == status.OutcomeUnsupported || len(result.Candidates) == 0 {
@@ -95,7 +95,7 @@ func RunAnalysis(t *testing.T, lang features.LanguageID, cases []AnalysisCase) {
 				t.Fatalf("INFRA: source analyzer for %q is unavailable", lang)
 			}
 			result, analyzeErr := analyzer.Analyze(context.Background(), c.Input)
-			logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "result": result, "error": errorText(analyzeErr)})
+			logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "native_analysis", "adapter_executed": true, "result": result, "error": errorText(analyzeErr)})
 			if analyzeErr != nil {
 				if infraError(analyzeErr) {
 					t.Errorf("INFRA: source analysis %q: %v", c.ID, analyzeErr)
@@ -174,7 +174,7 @@ func RunRealization(t *testing.T, lang features.LanguageID, cases []RealizationC
 				}
 				if !ok {
 					if gap := c.SemanticRequirement.RepresentationGap; gap != "" {
-						logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "meaning_id": contract.MeaningID, "independent_realization_executed": false, "reason": gap})
+						logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "independent_realization", "adapter_executed": false, "meaning_id": contract.MeaningID, "independent_realization_executed": false, "reason": gap})
 						continue
 					}
 					t.Errorf("SPEC_PENDING / NOT RUN: no independent Meaning fixture for %q", contract.MeaningID)
@@ -198,7 +198,11 @@ func RunRealization(t *testing.T, lang features.LanguageID, cases []RealizationC
 					candidate.Contexts = []semantic.MeaningContext{{Meaning: want, Context: identification.Context}}
 				}
 				result, realizeErr := realizer.Realize(context.Background(), candidate)
-				logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "meaning_id": contract.MeaningID, "result": result, "error": errorText(realizeErr)})
+				observation := map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "independent_realization", "adapter_executed": true, "meaning_id": contract.MeaningID, "independent_realization_executed": true, "meaning_input": want, "result": result, "error": errorText(realizeErr)}
+				if identification != nil {
+					observation["context_input"] = identification.Context
+				}
+				logObservation(t, observation)
 				if realizeErr != nil {
 					if infraError(realizeErr) {
 						t.Errorf("INFRA: target realization %q: %v", c.ID, realizeErr)
@@ -264,7 +268,7 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 			if gap != "" {
 				runtime := Runtime(t)
 				result, translateErr := runtime.Translate(context.Background(), engine.Request{From: features.LanguageID(c.From), To: features.LanguageID(c.To), Text: analysis.Input})
-				logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "result": result, "error": errorText(translateErr)})
+				logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "integration", "adapter_executed": true, "result": result, "error": errorText(translateErr)})
 				if translateErr != nil && infraError(translateErr) {
 					t.Errorf("INFRA: translation %q: %v", c.ID, translateErr)
 				} else if translateErr != nil || result.Status == status.OutcomeUnsupported || len(result.Candidates) == 0 {
@@ -298,7 +302,7 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 				return false, "", true
 			}
 			probe, probeErr := analyzer.Analyze(context.Background(), analysis.Input)
-			logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "source_gap_probe", "result": probe, "error": errorText(probeErr)})
+			logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "source_gap_probe", "adapter_executed": true, "result": probe, "error": errorText(probeErr)})
 			if probeErr != nil {
 				var typed interface{ Result() status.Result }
 				if !errors.As(probeErr, &typed) || infraError(probeErr) || infraOutcome(typed.Result().Status) || infraDiagnostics(typed.Result().Diagnostics) {
@@ -352,7 +356,7 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 				t.Fatalf("INFRA: source analyzer for %q is unavailable", c.From)
 			}
 			analysisResult, analysisErr := analyzer.Analyze(context.Background(), analysis.Input)
-			logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "context_source_analysis", "result": analysisResult, "error": errorText(analysisErr)})
+			logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "context_source_analysis", "adapter_executed": true, "result": analysisResult, "error": errorText(analysisErr)})
 			if analysisErr != nil {
 				if infraError(analysisErr) {
 					t.Errorf("INFRA: source analysis %q: %v", c.ID, analysisErr)
@@ -408,7 +412,7 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 			}
 		}
 		result, translateErr := runtime.Translate(context.Background(), engine.Request{From: features.LanguageID(c.From), To: features.LanguageID(c.To), Text: analysis.Input})
-		logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "result": result, "error": errorText(translateErr)})
+		logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "integration", "adapter_executed": true, "result": result, "error": errorText(translateErr)})
 		if translateErr != nil {
 			if infraError(translateErr) {
 				t.Errorf("INFRA: translation %q: %v", c.ID, translateErr)
