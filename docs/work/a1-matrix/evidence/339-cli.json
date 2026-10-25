@@ -1,0 +1,1592 @@
+[
+  {
+    "source_sha": "cb5d52f5ad45a5dccd9fd19b11f3405b19e940cd",
+    "command": [
+      "/tmp/golingua-matrix-expansion/golingua",
+      "translate",
+      "--from",
+      "en",
+      "--to",
+      "pl",
+      "--text",
+      "The cat is on the chair.",
+      "--runtime-config",
+      "/tmp/golingua-matrix-expansion/runtime.json",
+      "--json"
+    ],
+    "exit_code": 3,
+    "output": {
+      "status": "unsupported",
+      "from": "en",
+      "to": "pl",
+      "candidates": [
+        {
+          "id": "evidence:226f59bb28747c42c3d8d0bf4c93f02ac9435fbefe1c92ea57b588a4f46ac482",
+          "source_candidate_id": "evidence:226f59bb28747c42c3d8d0bf4c93f02ac9435fbefe1c92ea57b588a4f46ac482",
+          "semantic_id": "evidence:226f59bb28747c42c3d8d0bf4c93f02ac9435fbefe1c92ea57b588a4f46ac482",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:226f59bb28747c42c3d8d0bf4c93f02ac9435fbefe1c92ea57b588a4f46ac482",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 8,
+                    "End": 10
+                  },
+                  "candidate_id": "phrase:1debc517a269292adf296b22e62ea29408de13b005025239a8990dc142a9c41c",
+                  "reading_id": "1e4d4f5d88f23de6a5100dfe483478bbe920b6576eeb13e3bd71303d4191a904",
+                  "sense_id": "sense:en.be.class_membership",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        },
+        {
+          "id": "evidence:b803a982ace8802b6452110604cf15f8dc997e5d60156973615de1cb2fc37f75",
+          "source_candidate_id": "evidence:b803a982ace8802b6452110604cf15f8dc997e5d60156973615de1cb2fc37f75",
+          "semantic_id": "evidence:b803a982ace8802b6452110604cf15f8dc997e5d60156973615de1cb2fc37f75",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:b803a982ace8802b6452110604cf15f8dc997e5d60156973615de1cb2fc37f75",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 4,
+                    "End": 7
+                  },
+                  "candidate_id": "phrase:5615884db720740839e2163a0878f739063ee77b4b1b188271b5b84e76824bd1",
+                  "reading_id": "866ba7831a3c18d5c8a97e5b59291f23e9f6b6412b403ecab923ca6f45ddc2d8",
+                  "sense_id": "sense:en.cat.animal",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        },
+        {
+          "id": "evidence:e1c027f5226927c9a155382818d9d53996bd6f39b5ac7bb7869d6e0ff3c4f2d7",
+          "source_candidate_id": "evidence:e1c027f5226927c9a155382818d9d53996bd6f39b5ac7bb7869d6e0ff3c4f2d7",
+          "semantic_id": "evidence:e1c027f5226927c9a155382818d9d53996bd6f39b5ac7bb7869d6e0ff3c4f2d7",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:e1c027f5226927c9a155382818d9d53996bd6f39b5ac7bb7869d6e0ff3c4f2d7",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 18,
+                    "End": 23
+                  },
+                  "candidate_id": "phrase:ed81be41ade99348ed1fd565332a22d70ca1ad96f45d55e17ff4d54d9a01135a",
+                  "reading_id": "9074eaac5f2ca538955cf61bd2eda89cd481c1f4f87b46b163fdf6c3ac2a5e08",
+                  "sense_id": "sense:en.chair.object",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[11:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    }
+  },
+  {
+    "source_sha": "cb5d52f5ad45a5dccd9fd19b11f3405b19e940cd",
+    "command": [
+      "/tmp/golingua-matrix-expansion/golingua",
+      "translate",
+      "--from",
+      "pl",
+      "--to",
+      "en",
+      "--text",
+      "Kot jest na krześle.",
+      "--runtime-config",
+      "/tmp/golingua-matrix-expansion/runtime.json",
+      "--json"
+    ],
+    "exit_code": 3,
+    "output": {
+      "status": "unsupported",
+      "from": "pl",
+      "to": "en",
+      "candidates": [
+        {
+          "id": "evidence:97fd081b7b0a8d30175eec5ca724858dd552d692d7879f31dbcdc8b9f9f92aae",
+          "source_candidate_id": "evidence:97fd081b7b0a8d30175eec5ca724858dd552d692d7879f31dbcdc8b9f9f92aae",
+          "semantic_id": "evidence:97fd081b7b0a8d30175eec5ca724858dd552d692d7879f31dbcdc8b9f9f92aae",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:97fd081b7b0a8d30175eec5ca724858dd552d692d7879f31dbcdc8b9f9f92aae",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 4,
+                    "End": 8
+                  },
+                  "candidate_id": "phrase:4b276da3c10d8957a58e6035e34d6be5bf463c5bbe6689a5180f35c6dc55a3a4",
+                  "reading_id": "864c38fe3fbf92cef737a043d63ae2fbee506b83bd19462da48497a89d795adb",
+                  "sense_id": "sense:pl.byc.class_membership",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        },
+        {
+          "id": "evidence:c4c02e54ee81be1e1174df6933bfbc4b66b9b7eebf6e58421e5edf8565d31527",
+          "source_candidate_id": "evidence:c4c02e54ee81be1e1174df6933bfbc4b66b9b7eebf6e58421e5edf8565d31527",
+          "semantic_id": "evidence:c4c02e54ee81be1e1174df6933bfbc4b66b9b7eebf6e58421e5edf8565d31527",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:c4c02e54ee81be1e1174df6933bfbc4b66b9b7eebf6e58421e5edf8565d31527",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 0,
+                    "End": 3
+                  },
+                  "candidate_id": "phrase:686f738025ebb9819df11d9e50749fc11d729a33e31effeb080141b41813a93c",
+                  "reading_id": "935d28ba4f80f1d244a8894fc033133094f5b1135e191c9b1ad8e6777a7b9b00",
+                  "sense_id": "sense:pl.kot.animal",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[12:20]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    }
+  },
+  {
+    "source_sha": "cb5d52f5ad45a5dccd9fd19b11f3405b19e940cd",
+    "command": [
+      "/tmp/golingua-matrix-expansion/golingua",
+      "translate",
+      "--from",
+      "en",
+      "--to",
+      "pl",
+      "--text",
+      "There are two cats.",
+      "--runtime-config",
+      "/tmp/golingua-matrix-expansion/runtime.json",
+      "--json"
+    ],
+    "exit_code": 3,
+    "output": {
+      "status": "unsupported",
+      "from": "en",
+      "to": "pl",
+      "candidates": [
+        {
+          "id": "evidence:a2398ceaf042337f86df747fa322b919de41e83e251bfa0b05ab75f604aee9a1",
+          "source_candidate_id": "evidence:a2398ceaf042337f86df747fa322b919de41e83e251bfa0b05ab75f604aee9a1",
+          "semantic_id": "evidence:a2398ceaf042337f86df747fa322b919de41e83e251bfa0b05ab75f604aee9a1",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:a2398ceaf042337f86df747fa322b919de41e83e251bfa0b05ab75f604aee9a1",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 14,
+                    "End": 18
+                  },
+                  "candidate_id": "phrase:32e4eb8d483e53e6c749fbc0efd4e55793c089e949a494a573ace7cab3c08b5a",
+                  "reading_id": "955411ebd16d8a937e7efa3b1b8bc6b1fb2e859c1d4c79f598f7278350ce8f20",
+                  "sense_id": "sense:en.cat.animal",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:5]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[6:9]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[10:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "en",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    }
+  },
+  {
+    "source_sha": "cb5d52f5ad45a5dccd9fd19b11f3405b19e940cd",
+    "command": [
+      "/tmp/golingua-matrix-expansion/golingua",
+      "translate",
+      "--from",
+      "pl",
+      "--to",
+      "en",
+      "--text",
+      "Są dwa koty.",
+      "--runtime-config",
+      "/tmp/golingua-matrix-expansion/runtime.json",
+      "--json"
+    ],
+    "exit_code": 3,
+    "output": {
+      "status": "unsupported",
+      "from": "pl",
+      "to": "en",
+      "candidates": [
+        {
+          "id": "evidence:16a90b5cf63f81ed1afa38bef4990ba106c94d9d907bd9fc7a502fd9e8a35a5e",
+          "source_candidate_id": "evidence:16a90b5cf63f81ed1afa38bef4990ba106c94d9d907bd9fc7a502fd9e8a35a5e",
+          "semantic_id": "evidence:16a90b5cf63f81ed1afa38bef4990ba106c94d9d907bd9fc7a502fd9e8a35a5e",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:16a90b5cf63f81ed1afa38bef4990ba106c94d9d907bd9fc7a502fd9e8a35a5e",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 8,
+                    "End": 12
+                  },
+                  "candidate_id": "phrase:466c07909a87a6b63ca28b6c2894073cc03c962cd8448f4b1443e5091ccb8f0e",
+                  "reading_id": "1458b5c0e7f0055136a38be4f3857b643d2a1922bc8b05c06786d52aab1091de",
+                  "sense_id": "sense:pl.kot.animal",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        },
+        {
+          "id": "evidence:31b976f487d33adb266c01c9e34a7f16c9f49dd6a77aafd2b0a0814ef7a1c9fe",
+          "source_candidate_id": "evidence:31b976f487d33adb266c01c9e34a7f16c9f49dd6a77aafd2b0a0814ef7a1c9fe",
+          "semantic_id": "evidence:31b976f487d33adb266c01c9e34a7f16c9f49dd6a77aafd2b0a0814ef7a1c9fe",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:31b976f487d33adb266c01c9e34a7f16c9f49dd6a77aafd2b0a0814ef7a1c9fe",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 8,
+                    "End": 12
+                  },
+                  "candidate_id": "phrase:24679e370f6a5ea2094f694239e941c1fed8297f6014065d573b4b8fab34dbc4",
+                  "reading_id": "23fb42aec1e487c64df930f49006d173427a43a6821bf18379ede9bf80b97d56",
+                  "sense_id": "sense:pl.kot.animal",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        },
+        {
+          "id": "evidence:b6ff91139efea610fa807d4a8a15f4572f349912169945b1a7538af01d7f2593",
+          "source_candidate_id": "evidence:b6ff91139efea610fa807d4a8a15f4572f349912169945b1a7538af01d7f2593",
+          "semantic_id": "evidence:b6ff91139efea610fa807d4a8a15f4572f349912169945b1a7538af01d7f2593",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:b6ff91139efea610fa807d4a8a15f4572f349912169945b1a7538af01d7f2593",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 8,
+                    "End": 12
+                  },
+                  "candidate_id": "phrase:8522448db95c428b1987a7bc008fdcf3f6b87143e6b338e58bcc9587316e0622",
+                  "reading_id": "f641583c557c31b96fcf50b302230f8fa0ca8eaa86af30b2d1d11301f5477b37",
+                  "sense_id": "sense:pl.kot.animal",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:3]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[4:7]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "pl",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    }
+  },
+  {
+    "source_sha": "cb5d52f5ad45a5dccd9fd19b11f3405b19e940cd",
+    "command": [
+      "/tmp/golingua-matrix-expansion/golingua",
+      "translate",
+      "--from",
+      "en",
+      "--to",
+      "pl",
+      "--text",
+      "I have a cat.",
+      "--runtime-config",
+      "/tmp/golingua-matrix-expansion/runtime.json",
+      "--json"
+    ],
+    "exit_code": 3,
+    "output": {
+      "status": "unsupported",
+      "from": "en",
+      "to": "pl",
+      "candidates": [
+        {
+          "id": "evidence:8aff0b8a060e2cfbffaf2f64919e958e34a77b549a065a0236011f45a12204fd",
+          "source_candidate_id": "evidence:8aff0b8a060e2cfbffaf2f64919e958e34a77b549a065a0236011f45a12204fd",
+          "semantic_id": "evidence:8aff0b8a060e2cfbffaf2f64919e958e34a77b549a065a0236011f45a12204fd",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:8aff0b8a060e2cfbffaf2f64919e958e34a77b549a065a0236011f45a12204fd",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 9,
+                    "End": 12
+                  },
+                  "candidate_id": "phrase:8772ed3e15e0a3c10798351e975a327e79330943c7a29550bb1877420fcdf653",
+                  "reading_id": "866ba7831a3c18d5c8a97e5b59291f23e9f6b6412b403ecab923ca6f45ddc2d8",
+                  "sense_id": "sense:en.cat.animal",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:1]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[2:6]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "en",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    }
+  },
+  {
+    "source_sha": "cb5d52f5ad45a5dccd9fd19b11f3405b19e940cd",
+    "command": [
+      "/tmp/golingua-matrix-expansion/golingua",
+      "translate",
+      "--from",
+      "pl",
+      "--to",
+      "en",
+      "--text",
+      "Mam kota.",
+      "--runtime-config",
+      "/tmp/golingua-matrix-expansion/runtime.json",
+      "--json"
+    ],
+    "exit_code": 3,
+    "output": {
+      "status": "unsupported",
+      "from": "pl",
+      "to": "en",
+      "candidates": [
+        {
+          "id": "evidence:59abb521a206e52c221a37e5192f29dfbff6b7e36226d9de875e7132a2e4f661",
+          "source_candidate_id": "evidence:59abb521a206e52c221a37e5192f29dfbff6b7e36226d9de875e7132a2e4f661",
+          "semantic_id": "evidence:59abb521a206e52c221a37e5192f29dfbff6b7e36226d9de875e7132a2e4f661",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:59abb521a206e52c221a37e5192f29dfbff6b7e36226d9de875e7132a2e4f661",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 4,
+                    "End": 8
+                  },
+                  "candidate_id": "phrase:237acc9851a0459c521d277af7d2578fa5061edd7adef8240ce85221c1a282a4",
+                  "reading_id": "e1a26d5b29775c69c8c3626055f149a727332fe5c5688c8a6d66362694f12c56",
+                  "sense_id": "sense:pl.kot.animal",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        },
+        {
+          "id": "evidence:7b14bcdad31862b6c359ec4867b86e562b0d21175619ffd06483c9e0099bdccd",
+          "source_candidate_id": "evidence:7b14bcdad31862b6c359ec4867b86e562b0d21175619ffd06483c9e0099bdccd",
+          "semantic_id": "evidence:7b14bcdad31862b6c359ec4867b86e562b0d21175619ffd06483c9e0099bdccd",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:7b14bcdad31862b6c359ec4867b86e562b0d21175619ffd06483c9e0099bdccd",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 4,
+                    "End": 8
+                  },
+                  "candidate_id": "phrase:c075f1bf7c6501494432bf1d0f0fcfc095e6fb4b6704e2bd0db9897f0cf60eda",
+                  "reading_id": "a972d1b5e97713f77b57bcdc33ba6d5eeef2133916e2a3090a78fe06599a5704",
+                  "sense_id": "sense:pl.kot.animal",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:3]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "pl",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    }
+  },
+  {
+    "source_sha": "cb5d52f5ad45a5dccd9fd19b11f3405b19e940cd",
+    "command": [
+      "/tmp/golingua-matrix-expansion/golingua",
+      "translate",
+      "--from",
+      "en",
+      "--to",
+      "pl",
+      "--text",
+      "She has a book.",
+      "--runtime-config",
+      "/tmp/golingua-matrix-expansion/runtime.json",
+      "--json"
+    ],
+    "exit_code": 3,
+    "output": {
+      "status": "unsupported",
+      "from": "en",
+      "to": "pl",
+      "candidates": [
+        {
+          "id": "evidence:55ccce320972174c51f93ba0676a9b86ecd661ce701a7731c469f8a52bec70b1",
+          "source_candidate_id": "evidence:55ccce320972174c51f93ba0676a9b86ecd661ce701a7731c469f8a52bec70b1",
+          "semantic_id": "evidence:55ccce320972174c51f93ba0676a9b86ecd661ce701a7731c469f8a52bec70b1",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:55ccce320972174c51f93ba0676a9b86ecd661ce701a7731c469f8a52bec70b1",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 10,
+                    "End": 14
+                  },
+                  "candidate_id": "phrase:a3771b5bf23136fe9f101d6d283e3cffd35de573a13b8938629463ffce2b0ab9",
+                  "reading_id": "cd06fb9de1bfcefa084feff7f3d827c303b9c451d447680f3b49b5e39b0c1154",
+                  "sense_id": "sense:en.book.physical",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                },
+                {
+                  "source_span": {
+                    "Start": 10,
+                    "End": 14
+                  },
+                  "candidate_id": "phrase:a3771b5bf23136fe9f101d6d283e3cffd35de573a13b8938629463ffce2b0ab9",
+                  "reading_id": "cd06fb9de1bfcefa084feff7f3d827c303b9c451d447680f3b49b5e39b0c1154",
+                  "sense_id": "sense:en.book.work",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:3]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[4:7]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "en",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    }
+  },
+  {
+    "source_sha": "cb5d52f5ad45a5dccd9fd19b11f3405b19e940cd",
+    "command": [
+      "/tmp/golingua-matrix-expansion/golingua",
+      "translate",
+      "--from",
+      "pl",
+      "--to",
+      "en",
+      "--text",
+      "Ona ma książkę.",
+      "--runtime-config",
+      "/tmp/golingua-matrix-expansion/runtime.json",
+      "--json"
+    ],
+    "exit_code": 3,
+    "output": {
+      "status": "unsupported",
+      "from": "pl",
+      "to": "en",
+      "candidates": [
+        {
+          "id": "evidence:b8aee6dcde580b4c205fcd1b155fdfd321142508a2546fc6c037725c87e0227d",
+          "source_candidate_id": "evidence:b8aee6dcde580b4c205fcd1b155fdfd321142508a2546fc6c037725c87e0227d",
+          "semantic_id": "evidence:b8aee6dcde580b4c205fcd1b155fdfd321142508a2546fc6c037725c87e0227d",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:b8aee6dcde580b4c205fcd1b155fdfd321142508a2546fc6c037725c87e0227d",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 7,
+                    "End": 17
+                  },
+                  "candidate_id": "phrase:1c14d245baeb668315c81611ebc4df76f260174d34e7f6fd80c2006531b9fae3",
+                  "reading_id": "5f828923d1e48d83861123784c140a18606458531f36f15d61cfaeacd486cdd6",
+                  "sense_id": "sense:pl.ksiazka.physical",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                },
+                {
+                  "source_span": {
+                    "Start": 7,
+                    "End": 17
+                  },
+                  "candidate_id": "phrase:1c14d245baeb668315c81611ebc4df76f260174d34e7f6fd80c2006531b9fae3",
+                  "reading_id": "5f828923d1e48d83861123784c140a18606458531f36f15d61cfaeacd486cdd6",
+                  "sense_id": "sense:pl.ksiazka.work",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:3]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[4:6]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "pl",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    }
+  },
+  {
+    "source_sha": "cb5d52f5ad45a5dccd9fd19b11f3405b19e940cd",
+    "command": [
+      "/tmp/golingua-matrix-expansion/golingua",
+      "translate",
+      "--from",
+      "en",
+      "--to",
+      "pl",
+      "--text",
+      "Is this a cat?",
+      "--runtime-config",
+      "/tmp/golingua-matrix-expansion/runtime.json",
+      "--json"
+    ],
+    "exit_code": 3,
+    "output": {
+      "status": "unsupported",
+      "from": "en",
+      "to": "pl",
+      "candidates": [
+        {
+          "id": "evidence:6e31c025514d53e85cd4c6be2fc559dee2ad1ffeb763bc1c338dd7f534700cec",
+          "source_candidate_id": "evidence:6e31c025514d53e85cd4c6be2fc559dee2ad1ffeb763bc1c338dd7f534700cec",
+          "semantic_id": "evidence:6e31c025514d53e85cd4c6be2fc559dee2ad1ffeb763bc1c338dd7f534700cec",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:6e31c025514d53e85cd4c6be2fc559dee2ad1ffeb763bc1c338dd7f534700cec",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 0,
+                    "End": 2
+                  },
+                  "candidate_id": "phrase:f911927a7c0d86a98749d09232d8f58e98bbea825a11d4f44590c294d26c78c2",
+                  "reading_id": "1e4d4f5d88f23de6a5100dfe483478bbe920b6576eeb13e3bd71303d4191a904",
+                  "sense_id": "sense:en.be.class_membership",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        },
+        {
+          "id": "evidence:8aff0b8a060e2cfbffaf2f64919e958e34a77b549a065a0236011f45a12204fd",
+          "source_candidate_id": "evidence:8aff0b8a060e2cfbffaf2f64919e958e34a77b549a065a0236011f45a12204fd",
+          "semantic_id": "evidence:8aff0b8a060e2cfbffaf2f64919e958e34a77b549a065a0236011f45a12204fd",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:8aff0b8a060e2cfbffaf2f64919e958e34a77b549a065a0236011f45a12204fd",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 10,
+                    "End": 13
+                  },
+                  "candidate_id": "phrase:8772ed3e15e0a3c10798351e975a327e79330943c7a29550bb1877420fcdf653",
+                  "reading_id": "866ba7831a3c18d5c8a97e5b59291f23e9f6b6412b403ecab923ca6f45ddc2d8",
+                  "sense_id": "sense:en.cat.animal",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "en",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    }
+  },
+  {
+    "source_sha": "cb5d52f5ad45a5dccd9fd19b11f3405b19e940cd",
+    "command": [
+      "/tmp/golingua-matrix-expansion/golingua",
+      "translate",
+      "--from",
+      "pl",
+      "--to",
+      "en",
+      "--text",
+      "Czy to jest kot?",
+      "--runtime-config",
+      "/tmp/golingua-matrix-expansion/runtime.json",
+      "--json"
+    ],
+    "exit_code": 3,
+    "output": {
+      "status": "unsupported",
+      "from": "pl",
+      "to": "en",
+      "candidates": [
+        {
+          "id": "evidence:62dcd60bb02e6ae0635fc15edd4651ef8e7e2464703135a16b3c2252717d4019",
+          "source_candidate_id": "evidence:62dcd60bb02e6ae0635fc15edd4651ef8e7e2464703135a16b3c2252717d4019",
+          "semantic_id": "evidence:62dcd60bb02e6ae0635fc15edd4651ef8e7e2464703135a16b3c2252717d4019",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:62dcd60bb02e6ae0635fc15edd4651ef8e7e2464703135a16b3c2252717d4019",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 7,
+                    "End": 11
+                  },
+                  "candidate_id": "phrase:a34d93fbb75eceb1c489e6d45e219cf98defca13eb4a1ecf9748862d58496d9b",
+                  "reading_id": "864c38fe3fbf92cef737a043d63ae2fbee506b83bd19462da48497a89d795adb",
+                  "sense_id": "sense:pl.byc.class_membership",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        },
+        {
+          "id": "evidence:bd9a337f694c82d79e179597652a7549b46bacf8abd25782e906953f81ae9db8",
+          "source_candidate_id": "evidence:bd9a337f694c82d79e179597652a7549b46bacf8abd25782e906953f81ae9db8",
+          "semantic_id": "evidence:bd9a337f694c82d79e179597652a7549b46bacf8abd25782e906953f81ae9db8",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:bd9a337f694c82d79e179597652a7549b46bacf8abd25782e906953f81ae9db8",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 12,
+                    "End": 15
+                  },
+                  "candidate_id": "phrase:42db6bc2c048e87df1c756bd046b24cbf9eb4965b88ccaf01ba757b148e13566",
+                  "reading_id": "935d28ba4f80f1d244a8894fc033133094f5b1135e191c9b1ad8e6777a7b9b00",
+                  "sense_id": "sense:pl.kot.animal",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:3]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "pl",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    }
+  },
+  {
+    "source_sha": "cb5d52f5ad45a5dccd9fd19b11f3405b19e940cd",
+    "command": [
+      "/tmp/golingua-matrix-expansion/golingua",
+      "translate",
+      "--from",
+      "en",
+      "--to",
+      "pl",
+      "--text",
+      "Where is the cat?",
+      "--runtime-config",
+      "/tmp/golingua-matrix-expansion/runtime.json",
+      "--json"
+    ],
+    "exit_code": 3,
+    "output": {
+      "status": "unsupported",
+      "from": "en",
+      "to": "pl",
+      "candidates": [
+        {
+          "id": "evidence:41ab9fa9da0a0fd4c56cd3c5db117ffd72f50dec52cf03e45bcb5ef976de5344",
+          "source_candidate_id": "evidence:41ab9fa9da0a0fd4c56cd3c5db117ffd72f50dec52cf03e45bcb5ef976de5344",
+          "semantic_id": "evidence:41ab9fa9da0a0fd4c56cd3c5db117ffd72f50dec52cf03e45bcb5ef976de5344",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:41ab9fa9da0a0fd4c56cd3c5db117ffd72f50dec52cf03e45bcb5ef976de5344",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 6,
+                    "End": 8
+                  },
+                  "candidate_id": "phrase:ee0acc7f8ec1109758a3ebc5f094642eb653a2cda91a2a2774b00477c0035fd8",
+                  "reading_id": "1e4d4f5d88f23de6a5100dfe483478bbe920b6576eeb13e3bd71303d4191a904",
+                  "sense_id": "sense:en.be.class_membership",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        },
+        {
+          "id": "evidence:8aff0b8a060e2cfbffaf2f64919e958e34a77b549a065a0236011f45a12204fd",
+          "source_candidate_id": "evidence:8aff0b8a060e2cfbffaf2f64919e958e34a77b549a065a0236011f45a12204fd",
+          "semantic_id": "evidence:8aff0b8a060e2cfbffaf2f64919e958e34a77b549a065a0236011f45a12204fd",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:8aff0b8a060e2cfbffaf2f64919e958e34a77b549a065a0236011f45a12204fd",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 13,
+                    "End": 16
+                  },
+                  "candidate_id": "phrase:8772ed3e15e0a3c10798351e975a327e79330943c7a29550bb1877420fcdf653",
+                  "reading_id": "866ba7831a3c18d5c8a97e5b59291f23e9f6b6412b403ecab923ca6f45ddc2d8",
+                  "sense_id": "sense:en.cat.animal",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:5]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "en",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    }
+  },
+  {
+    "source_sha": "cb5d52f5ad45a5dccd9fd19b11f3405b19e940cd",
+    "command": [
+      "/tmp/golingua-matrix-expansion/golingua",
+      "translate",
+      "--from",
+      "pl",
+      "--to",
+      "en",
+      "--text",
+      "Gdzie jest kot?",
+      "--runtime-config",
+      "/tmp/golingua-matrix-expansion/runtime.json",
+      "--json"
+    ],
+    "exit_code": 3,
+    "output": {
+      "status": "unsupported",
+      "from": "pl",
+      "to": "en",
+      "candidates": [
+        {
+          "id": "evidence:37c591c277878a8069f1b9ecb7d412571c256e31eb214eed030bb69cf911febe",
+          "source_candidate_id": "evidence:37c591c277878a8069f1b9ecb7d412571c256e31eb214eed030bb69cf911febe",
+          "semantic_id": "evidence:37c591c277878a8069f1b9ecb7d412571c256e31eb214eed030bb69cf911febe",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:37c591c277878a8069f1b9ecb7d412571c256e31eb214eed030bb69cf911febe",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 11,
+                    "End": 14
+                  },
+                  "candidate_id": "phrase:825e923ba8f553a74ae2795f6a2a35178d00b4e8c2882248c39867f30c9c328c",
+                  "reading_id": "935d28ba4f80f1d244a8894fc033133094f5b1135e191c9b1ad8e6777a7b9b00",
+                  "sense_id": "sense:pl.kot.animal",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        },
+        {
+          "id": "evidence:97fd081b7b0a8d30175eec5ca724858dd552d692d7879f31dbcdc8b9f9f92aae",
+          "source_candidate_id": "evidence:97fd081b7b0a8d30175eec5ca724858dd552d692d7879f31dbcdc8b9f9f92aae",
+          "semantic_id": "evidence:97fd081b7b0a8d30175eec5ca724858dd552d692d7879f31dbcdc8b9f9f92aae",
+          "outcome": "unsupported",
+          "evidence": [
+            {
+              "alternative_id": "evidence:97fd081b7b0a8d30175eec5ca724858dd552d692d7879f31dbcdc8b9f9f92aae",
+              "outcome": "unsupported",
+              "records": [
+                {
+                  "source_span": {
+                    "Start": 6,
+                    "End": 10
+                  },
+                  "candidate_id": "phrase:4b276da3c10d8957a58e6035e34d6be5bf463c5bbe6689a5180f35c6dc55a3a4",
+                  "reading_id": "864c38fe3fbf92cef737a043d63ae2fbee506b83bd19462da48497a89d795adb",
+                  "sense_id": "sense:pl.byc.class_membership",
+                  "outcome": "unsupported",
+                  "reason": "candidate was not used by a retained construction parse",
+                  "provenance": {
+                    "id": "",
+                    "version": "",
+                    "license": ""
+                  }
+                }
+              ],
+              "diagnostics": [
+                {
+                  "code": "UNMATCHED_PARSE_CANDIDATE",
+                  "message": "candidate was not used by a retained construction parse",
+                  "path": "candidate",
+                  "severity": "warning"
+                }
+              ]
+            }
+          ],
+          "diagnostics": [
+            {
+              "code": "UNMATCHED_PARSE_CANDIDATE",
+              "message": "candidate was not used by a retained construction parse",
+              "path": "candidate",
+              "severity": "warning"
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:5]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "pl",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    }
+  }
+]

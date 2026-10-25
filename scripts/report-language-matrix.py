@@ -51,7 +51,9 @@ def observed_status(go_result: str, lines: list[str]) -> str:
         return "INFRA"
     if "SPEC_PENDING" in content or "NOT RUN" in content:
         return "SPEC_PENDING"
-    for category in ("GAP_ANALYZE", "GAP_REALIZE", "GAP_I"):
+    if "GAP_I" in content:
+        return "GAP_I"
+    for category in ("GAP_ANALYZE", "GAP_REALIZE"):
         if category in content:
             return category
     if re.search(r"(?:^|\W)FAIL:", content):
