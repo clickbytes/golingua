@@ -1,6 +1,6 @@
 # Macierz zachowania PL/EN
 
-Macierz zawiera 112 kierunkowych rekordów: 24 pierwotnej próbki A1 oraz po 32 rekordy A1.1/A1.2 z 16 wybranych par. A1.3 dodaje 24 kierunkowe rekordy z 12 zdań o kompozycji. Dziewięć osobnych metamorficznych obserwacji sprawdza zmianę ról, liczby, czasu i polaryzacji w PL/EN oraz szyku SVO→OVS po polsku. Nowe dane A1.2/A1.3 są propozycjami `NOT_EVALUATED`, niezatwierdzonymi językowo. Inwentarz `translation.Cases` pozostaje deklaratywny i może rosnąć o następne partie; liczba rekordów nie jest ograniczeniem walidatora. Każdy kierunek deklaruje `PairID` i `PrimaryGroup`; `translation.LanguageBatches` jest wspólnym rejestrem zbiorów dla lookupu i kontroli inwentarza. Cele grupowe są osobnymi, nieblokującymi metadanymi w `coverage-targets.json`. `RequiredTextGroups` dopuszcza równoważne style: co najmniej jeden tekst z grupy musi wystąpić, a każda alternatywa musi być dozwolona. To ograniczona próbka, nie pełne A1 ani certyfikacja CEFR; [deskryptory Rady Europy](https://rm.coe.int/16809ea0d4) są jedynie kontekstem. Teksty i wymagania zachowują provenance, a akceptacja właściciela jest zapisana osobno jako `NOT_EVALUATED`.
+Macierz zawiera 206 kierunkowych rekordów: 24 pierwotnej próbki A1 oraz po 32 rekordy A1.1/A1.2 z 16 wybranych par. A1.3 dodaje 24 kierunkowe rekordy z 12 zdań o kompozycji. A1.4 dodaje 94 kierunkowe rekordy z 47 autorskich zdań o działaniach, ramach jedno-, dwu- i trzyargumentowych oraz NP count/mass. Dziewięć osobnych metamorficznych obserwacji sprawdza zmianę ról, liczby, czasu i polaryzacji w PL/EN oraz szyku SVO→OVS po polsku. Nowe dane A1.2/A1.3/A1.4 są propozycjami `NOT_EVALUATED`, niezatwierdzonymi językowo. Inwentarz `translation.Cases` pozostaje deklaratywny i może rosnąć o następne partie; liczba rekordów nie jest ograniczeniem walidatora. Każdy kierunek deklaruje `PairID` i `PrimaryGroup`; `translation.LanguageBatches` jest wspólnym rejestrem zbiorów dla lookupu i kontroli inwentarza. Cele grupowe są osobnymi, nieblokującymi metadanymi w `coverage-targets.json`. `RequiredTextGroups` dopuszcza równoważne style: co najmniej jeden tekst z grupy musi wystąpić, a każda alternatywa musi być dozwolona. To ograniczona próbka, nie pełne A1 ani certyfikacja CEFR; [deskryptory Rady Europy](https://rm.coe.int/16809ea0d4) są jedynie kontekstem. Teksty i wymagania zachowują provenance, a akceptacja właściciela jest zapisana osobno jako `NOT_EVALUATED`.
 
 ## Układ i kontrakt
 
@@ -15,13 +15,15 @@ tests/
   languages/en/A1.2/           # wybrane kontrasty A1 po angielsku
   languages/pl/A1.3/           # kompozycja A1 po polsku
   languages/en/A1.3/           # kompozycja A1 po angielsku
+  languages/pl/A1.4/           # autorskie działania po polsku
+  languages/en/A1.4/           # autorskie działania po angielsku
   translation/cases.go         # deklaratywne ID i odwołania do obu stron
   translation/pl-en/           # PL → I → EN
   translation/en-pl/           # EN → I → PL
   matrix/                      # wspólne typy, runtime produkcyjny i kontrole
 ```
 
-A1.1, A1.2 i A1.3 oznaczają partie A1 konkretnego języka; każda wymaga jawnie określonego zakresu. A1.1 obejmuje 16 wskazanych par korpusu, A1.2 — 16 kontrastów, a A1.3 — 12 zdań kompozycyjnych. Są to propozycje bez akceptacji językowej właściciela.
+A1.1, A1.2 i A1.3 oznaczają partie A1 konkretnego języka; każda wymaga jawnie określonego zakresu. A1.1 obejmuje 16 wskazanych par korpusu, A1.2 — 16 kontrastów, a A1.3 — 12 zdań kompozycyjnych; A1.4 — 47 autorskich zdań o działaniach. Są to propozycje bez akceptacji językowej właściciela.
 
 Pliki `*.testdomain.go` zawierają dane. Pliki `*_test.go` wykonują kontrole standardowym `go test`. Osobny, obserwacyjny workflow GitHub Actions uruchamia pełną macierz na push do `main`, publikuje najnowszy raport w [`tests/results/latest.md`](results/latest.md), a surowy log udostępnia jako artefakt. Wynik macierzy nie blokuje technicznego `go-ci`; lokalne polecenia poniżej nadal pozwalają odtworzyć kontrole. Każdy przypadek analizy zachowuje dokładne wejście, wymagania, nierozstrzygnięcia i pochodzenie wejścia. Przypadek realizacji zachowuje `ProposalTexts`, pochodzenie propozycji i akceptację właściciela oddzielnie od `AllowedTexts` (zbiór dopuszczalny) i `RequiredTexts` (zbiór wymagany dla danego kontraktu), dozwolonych/obowiązkowych założeń i strat. `RequiredTexts` musi być podzbiorem `AllowedTexts`; pusta lista `AllowedTexts` pozostawia rekord bez zamkniętego kontraktu. Propozycja nie staje się automatycznie oczekiwanym wynikiem.
 

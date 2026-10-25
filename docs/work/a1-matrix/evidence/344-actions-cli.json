@@ -1,0 +1,4006 @@
+{
+  "format": "Selected output fields; raw stdout /tmp/golingua-matrix-expansion/m8-actions-cli.json. Commands reproduce all fields.",
+  "observations": [
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 1,
+      "phenomenon": "transitive food: mass bread is not one individual",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The dog eats bread.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[8:12]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[13:18]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 1,
+      "phenomenon": "transitive food: mass bread is not one individual",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Pies je chleb.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[5:7]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[8:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 2,
+      "phenomenon": "culinary egg count object; feminine agent",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The mother eats an egg.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:15]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 2,
+      "phenomenon": "culinary egg count object; feminine agent",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Matka je jajko.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[6:8]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[9:14]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 3,
+      "phenomenon": "neuter Polish accusative; English an before apple",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The teacher eats an apple.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[12:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 3,
+      "phenomenon": "neuter Polish accusative; English an before apple",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Nauczyciel je jabłko.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[11:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[14:21]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 4,
+      "phenomenon": "mass soup; feminine accusative ending is not semantic cardinality",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The father eats soup.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:15]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[16:20]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 4,
+      "phenomenon": "mass soup; feminine accusative ending is not semantic cardinality",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Ojciec je zupę.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[7:9]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[10:15]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 5,
+      "phenomenon": "mass liquid and drinking frame",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The dog drinks water.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[8:14]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 5,
+      "phenomenon": "mass liquid and drinking frame",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Pies pije wodę.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[5:9]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 6,
+      "phenomenon": "milk beverage sense; grammatical singular does not assert count one",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The cat drinks milk.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[8:14]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[15:19]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 6,
+      "phenomenon": "milk beverage sense; grammatical singular does not assert count one",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Kot pije mleko.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[4:8]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[9:14]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 7,
+      "phenomenon": "beverage tea rather than plant; mass object",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The teacher drinks tea.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[12:18]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[19:22]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 7,
+      "phenomenon": "beverage tea rather than plant; mass object",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Nauczyciel pije herbatę.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[11:15]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[16:24]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 8,
+      "phenomenon": "beverage coffee; no invented cup or count",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The doctor drinks coffee.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:17]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[18:24]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 8,
+      "phenomenon": "beverage coffee; no invented cup or count",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Lekarz pije kawę.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[7:11]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[12:17]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 9,
+      "phenomenon": "one-role event without fabricated object",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The teacher sleeps.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[12:18]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 9,
+      "phenomenon": "one-role event without fabricated object",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Nauczyciel śpi.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[11:15]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 10,
+      "phenomenon": "animal fills sleeper, not agent/theme transitive slots",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The dog sleeps.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[8:14]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 10,
+      "phenomenon": "animal fills sleeper, not agent/theme transitive slots",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Pies śpi.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[5:9]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 11,
+      "phenomenon": "physiological one-role organism frame",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The cat breathes.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[8:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 11,
+      "phenomenon": "physiological one-role organism frame",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Kot oddycha.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[4:11]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 12,
+      "phenomenon": "nonvolitional event must not acquire an intentional agent role",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The mother sneezes.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:18]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 12,
+      "phenomenon": "nonvolitional event must not acquire an intentional agent role",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Matka kicha.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[6:11]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 13,
+      "phenomenon": "locomotion without inferred destination",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The dog runs.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[8:12]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 13,
+      "phenomenon": "locomotion without inferred destination",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Pies biegnie.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[5:12]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 14,
+      "phenomenon": "runner role transfers across animal lexemes",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The cat runs.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[8:12]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 14,
+      "phenomenon": "runner role transfers across animal lexemes",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Kot biegnie.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[4:11]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 15,
+      "phenomenon": "nonvolitional organism role; father inflection",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The father coughs.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:17]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 15,
+      "phenomenon": "nonvolitional organism role; father inflection",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Ojciec kaszle.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[7:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 16,
+      "phenomenon": "Polish reflexive particle and English particle belong to one event",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The doctor wakes up.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[17:19]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 16,
+      "phenomenon": "Polish reflexive particle and English particle belong to one event",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Lekarz budzi się.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[7:12]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[13:17]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 17,
+      "phenomenon": "walking is distinct from running, no guessed place",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The teacher walks.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "NO_PARSE",
+          "message": "no complete construction matched the supplied evidence",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 17,
+      "phenomenon": "walking is distinct from running, no guessed place",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Nauczyciel chodzi.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[11:17]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 18,
+      "phenomenon": "human feminine nominal walker; event has one participant",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The mother walks.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "NO_PARSE",
+          "message": "no complete construction matched the supplied evidence",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 18,
+      "phenomenon": "human feminine nominal walker; event has one participant",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Matka chodzi.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[6:12]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 19,
+      "phenomenon": "phase change differs from sleeping state; English multiword predicate",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The dog falls asleep.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[8:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[14:20]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 19,
+      "phenomenon": "phase change differs from sleeping state; English multiword predicate",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Pies zasypia.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[5:12]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 20,
+      "phenomenon": "animal walker and Polish consonant alternation lexeme",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The horse walks.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 5,
+      "status": "unknown",
+      "candidates": [],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[4:9]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_SEMANTIC_ALTERNATIVES",
+          "message": "no parser alternatives were available for semantic composition",
+          "path": "forest",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 20,
+      "phenomenon": "animal walker and Polish consonant alternation lexeme",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Koń chodzi.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[5:11]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 21,
+      "phenomenon": "opening frame and neuter accusative window",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The teacher opens the window.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[12:17]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 21,
+      "phenomenon": "opening frame and neuter accusative window",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Nauczyciel otwiera okno.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[11:18]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[19:23]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 22,
+      "phenomenon": "indefinite object vs unknown Polish article; feminine agent",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The mother opens a window.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 22,
+      "phenomenon": "indefinite object vs unknown Polish article; feminine agent",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Matka otwiera okno.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[6:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[14:18]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 23,
+      "phenomenon": "closing reverses opening result; preserve distinct predicate",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The teacher closes the window.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[12:18]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 23,
+      "phenomenon": "closing reverses opening result; preserve distinct predicate",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Nauczyciel zamyka okno.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[11:17]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[18:22]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 24,
+      "phenomenon": "feminine accusative and physical closing object",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The doctor closes the book.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:17]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 24,
+      "phenomenon": "feminine accusative and physical closing object",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Lekarz zamyka książkę.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[7:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 25,
+      "phenomenon": "opening physical book, not reading or acquiring it",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The mother opens the book.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 25,
+      "phenomenon": "opening physical book, not reading or acquiring it",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Matka otwiera książkę.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[6:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 26,
+      "phenomenon": "container object with Polish accusative -e nasal",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The father closes the bag.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:17]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[4].span[22:25]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 26,
+      "phenomenon": "container object with Polish accusative -e nasal",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Ojciec zamyka torbę.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[7:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[14:20]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 27,
+      "phenomenon": "carrier/load roles, not transfer recipient/theme",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The teacher carries the book.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[12:19]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 27,
+      "phenomenon": "carrier/load roles, not transfer recipient/theme",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Nauczyciel niesie książkę.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[11:17]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 28,
+      "phenomenon": "carried load and explicit indefinite English NP",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The mother carries a bag.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:18]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[4].span[21:24]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 28,
+      "phenomenon": "carried load and explicit indefinite English NP",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Matka niesie torbę.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[6:12]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[13:19]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 29,
+      "phenomenon": "physical holding does not assert legal ownership",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The doctor holds the key.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[4].span[21:24]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 29,
+      "phenomenon": "physical holding does not assert legal ownership",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Lekarz trzyma klucz.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[7:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[14:19]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 30,
+      "phenomenon": "holding a book differs from receiving/reading/opening",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The father holds the book.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 30,
+      "phenomenon": "holding a book differs from receiving/reading/opening",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Ojciec trzyma książkę.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[7:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 31,
+      "phenomenon": "animal agent of pulling; theme not target of perception",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The dog pulls the bag.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[8:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[4].span[18:21]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 31,
+      "phenomenon": "animal agent of pulling; theme not target of perception",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Pies ciągnie torbę.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[5:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[14:20]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 32,
+      "phenomenon": "pushing vs pulling, masculine inanimate accusative",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The teacher pushes the table.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "NO_PARSE",
+          "message": "no complete construction matched the supplied evidence",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 32,
+      "phenomenon": "pushing vs pulling, masculine inanimate accusative",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Nauczyciel pcha stół.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[11:15]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 33,
+      "phenomenon": "mass material; cutting rather than generic manipulation",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The teacher cuts paper.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[12:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[17:22]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 33,
+      "phenomenon": "mass material; cutting rather than generic manipulation",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Nauczyciel tnie papier.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[11:15]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[16:22]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 34,
+      "phenomenon": "folding of material; do not misread assembling objects",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The mother folds paper.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[17:22]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 34,
+      "phenomenon": "folding of material; do not misread assembling objects",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Matka składa papier.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[6:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[14:20]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 35,
+      "phenomenon": "tearing material differs from cutting",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The dog tears paper.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[8:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[14:19]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 35,
+      "phenomenon": "tearing material differs from cutting",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Pies rozdziera papier.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[5:14]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[15:21]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 36,
+      "phenomenon": "seller remains unexpressed; never fabricate a participant",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The teacher buys a book.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[12:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 36,
+      "phenomenon": "seller remains unexpressed; never fabricate a participant",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Nauczyciel kupuje książkę.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[11:17]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 37,
+      "phenomenon": "goods are a count artifact; buyer is not recipient of giving",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The doctor buys a car.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:15]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 37,
+      "phenomenon": "goods are a count artifact; buyer is not recipient of giving",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Lekarz kupuje samochód.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[7:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 38,
+      "phenomenon": "seller perspective distinct from buying; buyer unexpressed",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The mother sells the book.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 38,
+      "phenomenon": "seller perspective distinct from buying; buyer unexpressed",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Matka sprzedaje książkę.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[6:15]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 39,
+      "phenomenon": "masculine inanimate goods object; no guessed buyer",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The father sells the car.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 39,
+      "phenomenon": "masculine inanimate goods object; no guessed buyer",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Ojciec sprzedaje samochód.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[7:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 40,
+      "phenomenon": "three roles; dative mother vs accusative book; IO/PP equivalence",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The teacher gives the mother a book.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[12:17]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 40,
+      "phenomenon": "three roles; dative mother vs accusative book; IO/PP equivalence",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Nauczyciel daje matce książkę.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[11:15]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 41,
+      "phenomenon": "three roles; irregular dative ojcu and inanimate theme",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The mother gives the father a key.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[6].span[30:33]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 41,
+      "phenomenon": "three roles; irregular dative ojcu and inanimate theme",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Matka daje ojcu klucz.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[6:10]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[16:21]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 42,
+      "phenomenon": "dative -owi vs feminine inanimate theme; giver not receiver",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The doctor gives the teacher a message.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 42,
+      "phenomenon": "dative -owi vs feminine inanimate theme; giver not receiver",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Lekarz daje nauczycielowi wiadomość.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[7:11]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 43,
+      "phenomenon": "preference experiencer/target not seeing stimulus",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The teacher likes the dog.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[12:17]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 43,
+      "phenomenon": "preference experiencer/target not seeing stimulus",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Nauczyciel lubi psa.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[11:15]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 44,
+      "phenomenon": "preference target animate accusative; feminine experiencer",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The mother likes the cat.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 44,
+      "phenomenon": "preference target animate accusative; feminine experiencer",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Matka lubi kota.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[6:10]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 45,
+      "phenomenon": "biological living is not residence at a place",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The bird lives.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[9:14]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 45,
+      "phenomenon": "biological living is not residence at a place",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Ptak żyje.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[5:10]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 46,
+      "phenomenon": "fish animal sense and singular agreement; not fish as food",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The fish lives.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[9:14]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 46,
+      "phenomenon": "fish animal sense and singular agreement; not fish as food",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Ryba żyje.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[5:10]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 47,
+      "phenomenon": "worker role only; unspecified task must remain unfilled",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "The doctor works.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "2386706e3a9445cf22c86f117b330c22f8c277a5+working-tree",
+      "pair_index": 47,
+      "phenomenon": "worker role only; unspecified task must remain unfilled",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Lekarz pracuje.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[7:14]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    }
+  ]
+}

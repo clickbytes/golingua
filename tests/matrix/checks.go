@@ -287,7 +287,54 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 			t.Fatalf("SPEC_PENDING / NOT RUN: load allowed translation meanings: %v", fixtureErr)
 		}
 		sourceGap := false
+		sourceProbed := false
+		sourceProbeInfra := false
+		probeSourceGap := func() (bool, string, bool) {
+			analyzer, exists := runtime.SourceAnalyzerFor(features.LanguageID(c.From))
+			if !exists || analyzer == nil {
+				t.Errorf("INFRA: source analyzer for %q is unavailable during unsupported translation classification", c.From)
+				return false, "", true
+			}
+			probe, probeErr := analyzer.Analyze(context.Background(), analysis.Input)
+			logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "source_gap_probe", "result": probe, "error": errorText(probeErr)})
+			if probeErr != nil {
+				var typed interface{ Result() status.Result }
+				if !errors.As(probeErr, &typed) || infraError(probeErr) || infraOutcome(typed.Result().Status) || infraDiagnostics(typed.Result().Diagnostics) {
+					t.Errorf("INFRA: source gap probe %q failed: %v", c.ID, probeErr)
+					return false, "", true
+				}
+				return true, fmt.Sprintf("source probe refused the declared valid input: %v", probeErr), false
+			}
+			if infraOutcome(probe.Outcome) || infraDiagnostics(probe.Diagnostics) {
+				t.Errorf("INFRA: source gap probe exhausted resources or runtime is unavailable")
+				return false, "", true
+			}
+			if (probe.Outcome != status.OutcomeOK && probe.Outcome != status.OutcomeAmbiguous && probe.Outcome != status.OutcomeIncomplete) || len(probe.Candidates) == 0 {
+				return true, fmt.Sprintf("source probe returned %s with %d candidates", probe.Outcome, len(probe.Candidates)), false
+			}
+			observed := make(map[string]bool, len(requiredIDs))
+			for _, candidate := range probe.Candidates {
+				if infraOutcome(candidate.Status) || infraDiagnostics(candidate.Evidence.Diagnostics) {
+					t.Errorf("INFRA: source gap probe candidate failed or exhausted resources")
+					return false, "", true
+				}
+				if candidate.Status == status.OutcomeUnsupported || candidate.Status == status.OutcomeUnknown || candidate.Meaning == nil {
+					return true, fmt.Sprintf("source candidate %q has status %s without a supported Meaning", candidate.ID, candidate.Status), false
+				}
+				meaningID, matches, matchErr := MatchAllowedMeaning(allowedIDs, fixtures, *candidate.Meaning)
+				if matchErr != nil || !matches {
+					return true, fmt.Sprintf("source candidate %q does not match an allowed Meaning (matches=%t, error=%v)", candidate.ID, matches, matchErr), false
+				}
+				observed[meaningID] = true
+			}
+			if missing := MissingRequiredMeaningIDs(requiredIDs, observed); len(missing) > 0 {
+				return true, fmt.Sprintf("source probe omitted required Meaning IDs %v", missing), false
+			}
+			return false, "source probe supplied all required licensed meanings", false
+		}
 		if identification != nil {
+			sourceProbed = true
+			observedSourceMeanings := make(map[string]bool, len(requiredIDs))
 			analyzer, exists := runtime.SourceAnalyzerFor(features.LanguageID(c.From))
 			if !exists || analyzer == nil {
 				t.Fatalf("INFRA: source analyzer for %q is unavailable", c.From)
@@ -302,24 +349,34 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 					sourceGap = true
 					t.Errorf("GAP_ANALYZE: source analysis %q failed: %v", c.ID, analysisErr)
 				}
-			} else if analysisResult.Outcome == status.OutcomeUnsupported || len(analysisResult.Candidates) == 0 {
+			} else if (analysisResult.Outcome != status.OutcomeOK && analysisResult.Outcome != status.OutcomeAmbiguous && analysisResult.Outcome != status.OutcomeIncomplete) || len(analysisResult.Candidates) == 0 {
 				sourceGap = true
 				t.Errorf("GAP_ANALYZE: source analysis %q returned %s without candidates", c.ID, analysisResult.Outcome)
 			} else {
 				for _, candidate := range analysisResult.Candidates {
-					if candidate.Status == status.OutcomeUnsupported || candidate.Meaning == nil {
+					if candidate.Status == status.OutcomeUnsupported || candidate.Status == status.OutcomeUnknown || candidate.Meaning == nil {
 						sourceGap = true
 						t.Errorf("GAP_ANALYZE: source candidate %q has status %s and no supported Meaning", candidate.ID, candidate.Status)
 						continue
+					}
+					meaningID, licensed, licenseErr := MatchAllowedMeaning(allowedIDs, fixtures, *candidate.Meaning)
+					if licenseErr != nil || !licensed {
+						sourceGap = true
+					} else {
+						observedSourceMeanings[meaningID] = true
 					}
 					if candidate.Status != status.OutcomeOK {
 						t.Errorf("FAIL: source candidate %q has status %s", candidate.ID, candidate.Status)
 						continue
 					}
 					if matches, matchErr := IdentificationMatches(*identification, candidate); matchErr != nil || !matches {
+						sourceGap = true
 						t.Errorf("FAIL: source candidate %q does not match identification contract (matches=%t, error=%v)", candidate.ID, matches, matchErr)
 					}
 				}
+			}
+			if missing := MissingRequiredMeaningIDs(requiredIDs, observedSourceMeanings); len(missing) > 0 {
+				sourceGap = true
 			}
 		}
 		result, translateErr := runtime.Translate(context.Background(), engine.Request{From: features.LanguageID(c.From), To: features.LanguageID(c.To), Text: analysis.Input})
@@ -333,28 +390,36 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 			return
 		}
 		if result.Status == status.OutcomeUnsupported {
+			reason := ""
+			if !sourceProbed {
+				sourceGap, reason, sourceProbeInfra = probeSourceGap()
+			}
+			if sourceProbeInfra {
+				return
+			}
 			kind := "GAP_REALIZE"
 			if sourceGap {
 				kind = "GAP_ANALYZE"
 			}
-			for _, diagnostic := range result.Diagnostics {
-				if strings.Contains(diagnostic.Code, "SOURCE") || strings.Contains(diagnostic.Code, "ANALYSIS") {
-					kind = "GAP_ANALYZE"
-					break
-				}
-			}
-			t.Errorf("%s: translation returned unsupported: %v", kind, result.Diagnostics)
+			t.Errorf("%s: translation returned unsupported: %v; source probe: %s", kind, result.Diagnostics, reason)
 			for _, meaningID := range MissingRequiredMeaningIDs(requiredIDs, nil) {
 				t.Errorf("FAIL: translation omitted required Meaning %q", meaningID)
 			}
 			return
 		}
 		if len(result.Candidates) == 0 {
+			reason := ""
+			if !sourceProbed {
+				sourceGap, reason, sourceProbeInfra = probeSourceGap()
+			}
+			if sourceProbeInfra {
+				return
+			}
 			kind := "GAP_REALIZE"
 			if sourceGap {
 				kind = "GAP_ANALYZE"
 			}
-			t.Errorf("%s: translation returned no candidates", kind)
+			t.Errorf("%s: translation returned no candidates; source probe: %s", kind, reason)
 			for _, meaningID := range MissingRequiredMeaningIDs(requiredIDs, nil) {
 				t.Errorf("FAIL: translation omitted required Meaning %q", meaningID)
 			}
@@ -658,6 +723,9 @@ func contains(values []string, value string) bool {
 }
 
 func loadFixture(id string) (meaning.Meaning, *interlingua.IdentificationMeaning, bool, error) {
+	if graph, ok, err := interlingua.ActionExpansion(id); err != nil || ok {
+		return graph, nil, ok, err
+	}
 	if graph, ok, err := interlingua.CompositionBatch(id); err != nil || ok {
 		return graph, nil, ok, err
 	}
