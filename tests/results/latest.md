@@ -2,12 +2,12 @@
 
 > Observational report generated on push to `main`. Matrix outcomes do not gate the technical `go-ci` workflow.
 
-- Source SHA: `9b31a81354737f493078b5856fa41c581518bc32`
-- Generated (UTC): `2026-10-25T08:40:10Z`
+- Source SHA: `19851bbed28366f6a68e4e9bcccf306fa0916897`
+- Generated (UTC): `2026-10-25T08:59:41Z`
 - Command: `go test ./tests/... -count=1 -v`
 - Command exit code: `1` (NONZERO)
 - Registered records: 112; record checks: 336
-- Additional observed checks: 165
+- Additional observed checks: 166
 
 | Case ID | Direction | Analysis | Realization | Integration | Declared coverage tags |
 |---|---|---|---|---|---|
@@ -124,6 +124,47 @@
 | `A1.3-CO-323-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.3-CO-324-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | composition, participant_roles, semantic_event, shared_referent, valency |
 
+## Boundary refusal checks
+
+These malformed or unsupported inputs are separate from normal registered translation records and do not contribute to record PASS totals.
+
+- Total: 32; PASS: 32
+
+| Category | Package | Check | Status |
+|---|---|---|---|
+| native analysis refusal | `github.com/clickbytes/golingua/tests/languages/en/A1.1` | `TestRefusalAnalysis/REF-EN-001` | PASS |
+| native analysis refusal | `github.com/clickbytes/golingua/tests/languages/en/A1.1` | `TestRefusalAnalysis/REF-EN-002` | PASS |
+| native analysis refusal | `github.com/clickbytes/golingua/tests/languages/en/A1.1` | `TestRefusalAnalysis/REF-EN-003` | PASS |
+| native analysis refusal | `github.com/clickbytes/golingua/tests/languages/en/A1.1` | `TestRefusalAnalysis/REF-EN-004` | PASS |
+| native analysis refusal | `github.com/clickbytes/golingua/tests/languages/en/A1.1` | `TestRefusalAnalysis/REF-EN-005` | PASS |
+| native analysis refusal | `github.com/clickbytes/golingua/tests/languages/en/A1.1` | `TestRefusalAnalysis/REF-EN-006` | PASS |
+| native analysis refusal | `github.com/clickbytes/golingua/tests/languages/en/A1.1` | `TestRefusalAnalysis/REF-EN-007` | PASS |
+| native analysis refusal | `github.com/clickbytes/golingua/tests/languages/en/A1.1` | `TestRefusalAnalysis/REF-EN-008` | PASS |
+| native analysis refusal | `github.com/clickbytes/golingua/tests/languages/pl/A1.1` | `TestRefusalAnalysis/REF-PL-001` | PASS |
+| native analysis refusal | `github.com/clickbytes/golingua/tests/languages/pl/A1.1` | `TestRefusalAnalysis/REF-PL-002` | PASS |
+| native analysis refusal | `github.com/clickbytes/golingua/tests/languages/pl/A1.1` | `TestRefusalAnalysis/REF-PL-003` | PASS |
+| native analysis refusal | `github.com/clickbytes/golingua/tests/languages/pl/A1.1` | `TestRefusalAnalysis/REF-PL-004` | PASS |
+| native analysis refusal | `github.com/clickbytes/golingua/tests/languages/pl/A1.1` | `TestRefusalAnalysis/REF-PL-005` | PASS |
+| native analysis refusal | `github.com/clickbytes/golingua/tests/languages/pl/A1.1` | `TestRefusalAnalysis/REF-PL-006` | PASS |
+| native analysis refusal | `github.com/clickbytes/golingua/tests/languages/pl/A1.1` | `TestRefusalAnalysis/REF-PL-007` | PASS |
+| native analysis refusal | `github.com/clickbytes/golingua/tests/languages/pl/A1.1` | `TestRefusalAnalysis/REF-PL-008` | PASS |
+| translation refusal | `github.com/clickbytes/golingua/tests/translation` | `TestRefusalTranslation/REF-EN-001` | PASS |
+| translation refusal | `github.com/clickbytes/golingua/tests/translation` | `TestRefusalTranslation/REF-EN-002` | PASS |
+| translation refusal | `github.com/clickbytes/golingua/tests/translation` | `TestRefusalTranslation/REF-EN-003` | PASS |
+| translation refusal | `github.com/clickbytes/golingua/tests/translation` | `TestRefusalTranslation/REF-EN-004` | PASS |
+| translation refusal | `github.com/clickbytes/golingua/tests/translation` | `TestRefusalTranslation/REF-EN-005` | PASS |
+| translation refusal | `github.com/clickbytes/golingua/tests/translation` | `TestRefusalTranslation/REF-EN-006` | PASS |
+| translation refusal | `github.com/clickbytes/golingua/tests/translation` | `TestRefusalTranslation/REF-EN-007` | PASS |
+| translation refusal | `github.com/clickbytes/golingua/tests/translation` | `TestRefusalTranslation/REF-EN-008` | PASS |
+| translation refusal | `github.com/clickbytes/golingua/tests/translation` | `TestRefusalTranslation/REF-PL-001` | PASS |
+| translation refusal | `github.com/clickbytes/golingua/tests/translation` | `TestRefusalTranslation/REF-PL-002` | PASS |
+| translation refusal | `github.com/clickbytes/golingua/tests/translation` | `TestRefusalTranslation/REF-PL-003` | PASS |
+| translation refusal | `github.com/clickbytes/golingua/tests/translation` | `TestRefusalTranslation/REF-PL-004` | PASS |
+| translation refusal | `github.com/clickbytes/golingua/tests/translation` | `TestRefusalTranslation/REF-PL-005` | PASS |
+| translation refusal | `github.com/clickbytes/golingua/tests/translation` | `TestRefusalTranslation/REF-PL-006` | PASS |
+| translation refusal | `github.com/clickbytes/golingua/tests/translation` | `TestRefusalTranslation/REF-PL-007` | PASS |
+| translation refusal | `github.com/clickbytes/golingua/tests/translation` | `TestRefusalTranslation/REF-PL-008` | PASS |
+
 ## Additional observed checks
 
 | Package | Check | Status |
@@ -152,11 +193,11 @@
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_unknown` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_frame_on_referent` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_on_predicate` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_participant_roles_swapped` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_omitted` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/temporal_frames` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/referent_multiplicity` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestNegation` | PASS |
@@ -272,6 +313,7 @@
 | `github.com/clickbytes/golingua/tests/matrix` | `TestRequiredSurfaceContracts` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestInventory` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestInventoryIdentifierSupportsBatches` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestAmbiguityAssumptionsFollowRoles` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestCompositionTranslation/composition.black-cat-sees-dog_EN-to-PL` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestCompositionTranslation/composition.black-cat-sees-dog_PL-to-EN` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestCompositionTranslation/composition.black-dog-sees-cat_EN-to-PL` | PASS |
@@ -302,15 +344,15 @@ Packages with no observed test run are reported as infrastructure/build failures
 |---|---|---|
 | `github.com/clickbytes/golingua/tests/interlingua` | PASS | 42 |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | FAIL | 102 |
-| `github.com/clickbytes/golingua/tests/languages/en/A1.1` | FAIL | 34 |
+| `github.com/clickbytes/golingua/tests/languages/en/A1.1` | FAIL | 43 |
 | `github.com/clickbytes/golingua/tests/languages/en/A1.2` | FAIL | 34 |
 | `github.com/clickbytes/golingua/tests/languages/en/A1.3` | FAIL | 26 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | FAIL | 91 |
-| `github.com/clickbytes/golingua/tests/languages/pl/A1.1` | FAIL | 34 |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1.1` | FAIL | 43 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.2` | FAIL | 34 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.3` | FAIL | 26 |
 | `github.com/clickbytes/golingua/tests/matrix` | PASS | 1 |
-| `github.com/clickbytes/golingua/tests/translation` | FAIL | 26 |
+| `github.com/clickbytes/golingua/tests/translation` | FAIL | 44 |
 | `github.com/clickbytes/golingua/tests/translation/en-pl` | FAIL | 60 |
 | `github.com/clickbytes/golingua/tests/translation/pl-en` | FAIL | 60 |
 | `(package summary not observed)` | NOT RUN | 0 |
