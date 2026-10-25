@@ -1,0 +1,5416 @@
+{
+  "format": "Selected output fields; raw stdout /tmp/golingua-matrix-expansion/m8-identification-cli.json. Commands reproduce all fields.",
+  "observations": [
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 1,
+      "phenomenon": "masculine animate noun, irregular stem pies",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This is a dog.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 7,
+      "status": "incomplete",
+      "candidates": [
+        {
+          "text": "To jest pies.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:dog",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "person",
+              "value": "third",
+              "reason": "Meaning carries no grammatical person; this identification route uses the approved third-person form"
+            }
+          ],
+          "losses": [
+            {
+              "path": [
+                "event",
+                "ref0"
+              ],
+              "field": "deixis",
+              "outcome": "incomplete",
+              "reason": "Polish to/ten preserves demonstrative reference but does not encode the source's explicit proximal distance"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TRANSLATION_NOT_OK",
+          "message": "translation did not establish one complete supported output",
+          "path": "translation",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 1,
+      "phenomenon": "masculine animate noun, irregular stem pies",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest pies.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 6,
+      "status": "ambiguous",
+      "candidates": [
+        {
+          "text": "It is a dog.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:dog",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "it",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "That is a dog.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:dog",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "that",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "This is a dog.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:dog",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "this",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TARGET_ALTERNATIVES_AMBIGUOUS",
+          "message": "multiple licensed target lexical and construction alternatives remain for this predicate",
+          "path": "meaning.event",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 2,
+      "phenomenon": "animal class and masculine noun",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This is a bird.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 7,
+      "status": "incomplete",
+      "candidates": [
+        {
+          "text": "To jest ptak.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:bird",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "person",
+              "value": "third",
+              "reason": "Meaning carries no grammatical person; this identification route uses the approved third-person form"
+            }
+          ],
+          "losses": [
+            {
+              "path": [
+                "event",
+                "ref0"
+              ],
+              "field": "deixis",
+              "outcome": "incomplete",
+              "reason": "Polish to/ten preserves demonstrative reference but does not encode the source's explicit proximal distance"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TRANSLATION_NOT_OK",
+          "message": "translation did not establish one complete supported output",
+          "path": "translation",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 2,
+      "phenomenon": "animal class and masculine noun",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest ptak.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 6,
+      "status": "ambiguous",
+      "candidates": [
+        {
+          "text": "It is a bird.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:bird",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "it",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "That is a bird.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:bird",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "that",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "This is a bird.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:bird",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "this",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TARGET_ALTERNATIVES_AMBIGUOUS",
+          "message": "multiple licensed target lexical and construction alternatives remain for this predicate",
+          "path": "meaning.event",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 3,
+      "phenomenon": "feminine inanimate noun class",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This is a book.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 7,
+      "status": "incomplete",
+      "candidates": [
+        {
+          "text": "To jest książka.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:book",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "person",
+              "value": "third",
+              "reason": "Meaning carries no grammatical person; this identification route uses the approved third-person form"
+            }
+          ],
+          "losses": [
+            {
+              "path": [
+                "event",
+                "ref0"
+              ],
+              "field": "deixis",
+              "outcome": "incomplete",
+              "reason": "Polish to/ten preserves demonstrative reference but does not encode the source's explicit proximal distance"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "PARTIAL_PARSE_EVIDENCE",
+          "message": "role candidate has a competing sense without an approved equivalent CORE binding",
+          "path": "parse",
+          "severity": "warning"
+        },
+        {
+          "code": "UNRESOLVED_ROLE_SENSE",
+          "message": "role candidate has a competing sense without an approved equivalent CORE binding",
+          "path": "roles",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 3,
+      "phenomenon": "feminine inanimate noun class",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest książka.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 6,
+      "status": "ambiguous",
+      "candidates": [
+        {
+          "text": "It is a book.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:book",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "it",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "That is a book.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:book",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "that",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "This is a book.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:book",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "this",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "PARTIAL_PARSE_EVIDENCE",
+          "message": "role candidate has a competing sense without an approved equivalent CORE binding",
+          "path": "parse",
+          "severity": "warning"
+        },
+        {
+          "code": "UNRESOLVED_ROLE_SENSE",
+          "message": "role candidate has a competing sense without an approved equivalent CORE binding",
+          "path": "roles",
+          "severity": "warning"
+        },
+        {
+          "code": "TARGET_ALTERNATIVES_AMBIGUOUS",
+          "message": "multiple licensed target lexical and construction alternatives remain for this predicate",
+          "path": "meaning.event",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 4,
+      "phenomenon": "masculine inanimate class",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This is a car.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 7,
+      "status": "incomplete",
+      "candidates": [
+        {
+          "text": "To jest samochód.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:car",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "person",
+              "value": "third",
+              "reason": "Meaning carries no grammatical person; this identification route uses the approved third-person form"
+            }
+          ],
+          "losses": [
+            {
+              "path": [
+                "event",
+                "ref0"
+              ],
+              "field": "deixis",
+              "outcome": "incomplete",
+              "reason": "Polish to/ten preserves demonstrative reference but does not encode the source's explicit proximal distance"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TRANSLATION_NOT_OK",
+          "message": "translation did not establish one complete supported output",
+          "path": "translation",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 4,
+      "phenomenon": "masculine inanimate class",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest samochód.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 6,
+      "status": "ambiguous",
+      "candidates": [
+        {
+          "text": "It is a car.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:car",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "it",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "That is a car.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:car",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "that",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "This is a car.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:car",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "this",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TARGET_ALTERNATIVES_AMBIGUOUS",
+          "message": "multiple licensed target lexical and construction alternatives remain for this predicate",
+          "path": "meaning.event",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 5,
+      "phenomenon": "masculine class with stem alternation",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This is a table.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 7,
+      "status": "incomplete",
+      "candidates": [
+        {
+          "text": "To jest stół.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:table",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "person",
+              "value": "third",
+              "reason": "Meaning carries no grammatical person; this identification route uses the approved third-person form"
+            }
+          ],
+          "losses": [
+            {
+              "path": [
+                "event",
+                "ref0"
+              ],
+              "field": "deixis",
+              "outcome": "incomplete",
+              "reason": "Polish to/ten preserves demonstrative reference but does not encode the source's explicit proximal distance"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TRANSLATION_NOT_OK",
+          "message": "translation did not establish one complete supported output",
+          "path": "translation",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 5,
+      "phenomenon": "masculine class with stem alternation",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest stół.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 5,
+      "status": "unknown",
+      "candidates": [
+        {
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:table",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "outcome": "unknown"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TARGET_NO_SURFACE_CANDIDATE",
+          "message": "no licensed surface candidate for the supplied Meaning, context and evidence",
+          "path": "target.candidates",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 6,
+      "phenomenon": "neuter class noun ending -o",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This is a chair.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "NO_PARSE",
+          "message": "no complete construction matched the supplied evidence",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 6,
+      "phenomenon": "neuter class noun ending -o",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest krzesło.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[8:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 7,
+      "phenomenon": "neuter artifact, not a place relation",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This is a window.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "NO_PARSE",
+          "message": "no complete construction matched the supplied evidence",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 7,
+      "phenomenon": "neuter artifact, not a place relation",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest okno.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[8:12]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 8,
+      "phenomenon": "neuter fruit and an article",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This is an apple.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "NO_PARSE",
+          "message": "no complete construction matched the supplied evidence",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 8,
+      "phenomenon": "neuter fruit and an article",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest jabłko.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[8:15]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 9,
+      "phenomenon": "physical key rather than abstract solution",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This is a key.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[10:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 9,
+      "phenomenon": "physical key rather than abstract solution",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest klucz.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[8:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 10,
+      "phenomenon": "feminine container classification",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This is a bag.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[10:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 10,
+      "phenomenon": "feminine container classification",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest torba.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[8:13]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 11,
+      "phenomenon": "profession class; not identity or biological sex",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This is a teacher.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 7,
+      "status": "incomplete",
+      "candidates": [
+        {
+          "text": "To jest nauczyciel.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:teacher",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "person",
+              "value": "third",
+              "reason": "Meaning carries no grammatical person; this identification route uses the approved third-person form"
+            }
+          ],
+          "losses": [
+            {
+              "path": [
+                "event",
+                "ref0"
+              ],
+              "field": "deixis",
+              "outcome": "incomplete",
+              "reason": "Polish to/ten preserves demonstrative reference but does not encode the source's explicit proximal distance"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TRANSLATION_NOT_OK",
+          "message": "translation did not establish one complete supported output",
+          "path": "translation",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 11,
+      "phenomenon": "profession class; not identity or biological sex",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest nauczyciel.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 6,
+      "status": "ambiguous",
+      "candidates": [
+        {
+          "text": "It is a teacher.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:teacher",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "it",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "That is a teacher.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:teacher",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "that",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "This is a teacher.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:teacher",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "this",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TARGET_ALTERNATIVES_AMBIGUOUS",
+          "message": "multiple licensed target lexical and construction alternatives remain for this predicate",
+          "path": "meaning.event",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 12,
+      "phenomenon": "profession, no specific person identity",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This is a doctor.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 7,
+      "status": "incomplete",
+      "candidates": [
+        {
+          "text": "To jest lekarz.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:doctor",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "person",
+              "value": "third",
+              "reason": "Meaning carries no grammatical person; this identification route uses the approved third-person form"
+            }
+          ],
+          "losses": [
+            {
+              "path": [
+                "event",
+                "ref0"
+              ],
+              "field": "deixis",
+              "outcome": "incomplete",
+              "reason": "Polish to/ten preserves demonstrative reference but does not encode the source's explicit proximal distance"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "PARTIAL_PARSE_EVIDENCE",
+          "message": "role candidate has a competing sense without an approved equivalent CORE binding",
+          "path": "parse",
+          "severity": "warning"
+        },
+        {
+          "code": "UNRESOLVED_ROLE_SENSE",
+          "message": "role candidate has a competing sense without an approved equivalent CORE binding",
+          "path": "roles",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 12,
+      "phenomenon": "profession, no specific person identity",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest lekarz.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 6,
+      "status": "ambiguous",
+      "candidates": [
+        {
+          "text": "It is a doctor.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:doctor",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "it",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "That is a doctor.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:doctor",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "that",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "This is a doctor.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:doctor",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "this",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TARGET_ALTERNATIVES_AMBIGUOUS",
+          "message": "multiple licensed target lexical and construction alternatives remain for this predicate",
+          "path": "meaning.event",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 13,
+      "phenomenon": "kinship class without guessing whose parent",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This is a mother.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 7,
+      "status": "incomplete",
+      "candidates": [
+        {
+          "text": "To jest matka.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:mother",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "person",
+              "value": "third",
+              "reason": "Meaning carries no grammatical person; this identification route uses the approved third-person form"
+            }
+          ],
+          "losses": [
+            {
+              "path": [
+                "event",
+                "ref0"
+              ],
+              "field": "deixis",
+              "outcome": "incomplete",
+              "reason": "Polish to/ten preserves demonstrative reference but does not encode the source's explicit proximal distance"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TRANSLATION_NOT_OK",
+          "message": "translation did not establish one complete supported output",
+          "path": "translation",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 13,
+      "phenomenon": "kinship class without guessing whose parent",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest matka.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 6,
+      "status": "ambiguous",
+      "candidates": [
+        {
+          "text": "It is a mother.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:mother",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "it",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "That is a mother.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:mother",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "that",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "This is a mother.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:mother",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "this",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TARGET_ALTERNATIVES_AMBIGUOUS",
+          "message": "multiple licensed target lexical and construction alternatives remain for this predicate",
+          "path": "meaning.event",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 14,
+      "phenomenon": "parent class, no child referent invented",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This is a father.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 7,
+      "status": "incomplete",
+      "candidates": [
+        {
+          "text": "To jest ojciec.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:father",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "person",
+              "value": "third",
+              "reason": "Meaning carries no grammatical person; this identification route uses the approved third-person form"
+            }
+          ],
+          "losses": [
+            {
+              "path": [
+                "event",
+                "ref0"
+              ],
+              "field": "deixis",
+              "outcome": "incomplete",
+              "reason": "Polish to/ten preserves demonstrative reference but does not encode the source's explicit proximal distance"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TRANSLATION_NOT_OK",
+          "message": "translation did not establish one complete supported output",
+          "path": "translation",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 14,
+      "phenomenon": "parent class, no child referent invented",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest ojciec.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 6,
+      "status": "ambiguous",
+      "candidates": [
+        {
+          "text": "It is a father.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:father",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "it",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "That is a father.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:father",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "that",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "This is a father.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:father",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "this",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TARGET_ALTERNATIVES_AMBIGUOUS",
+          "message": "multiple licensed target lexical and construction alternatives remain for this predicate",
+          "path": "meaning.event",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 15,
+      "phenomenon": "animal class and Polish consonant alternation",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This is a horse.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[10:15]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 15,
+      "phenomenon": "animal class and Polish consonant alternation",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest koń.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 5,
+      "status": "unknown",
+      "candidates": [
+        {
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:horse",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "outcome": "unknown"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TARGET_NO_SURFACE_CANDIDATE",
+          "message": "no licensed surface candidate for the supplied Meaning, context and evidence",
+          "path": "target.candidates",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 16,
+      "phenomenon": "singular animal, not a food portion",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This is a fish.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 7,
+      "status": "incomplete",
+      "candidates": [
+        {
+          "text": "To jest ryba.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:fish_animal",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "person",
+              "value": "third",
+              "reason": "Meaning carries no grammatical person; this identification route uses the approved third-person form"
+            }
+          ],
+          "losses": [
+            {
+              "path": [
+                "event",
+                "ref0"
+              ],
+              "field": "deixis",
+              "outcome": "incomplete",
+              "reason": "Polish to/ten preserves demonstrative reference but does not encode the source's explicit proximal distance"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TRANSLATION_NOT_OK",
+          "message": "translation did not establish one complete supported output",
+          "path": "translation",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 16,
+      "phenomenon": "singular animal, not a food portion",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest ryba.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 6,
+      "status": "ambiguous",
+      "candidates": [
+        {
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:fish_meat",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "outcome": "unknown"
+        },
+        {
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:fish_animal",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "outcome": "unknown"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "DISAMBIGUATION_INCOMPLETE",
+          "message": "semantic alternatives remain unresolved",
+          "severity": "warning"
+        },
+        {
+          "code": "TARGET_NO_SURFACE_CANDIDATE",
+          "message": "no licensed surface candidate for the supplied Meaning, context and evidence",
+          "path": "target.candidates",
+          "severity": "warning"
+        },
+        {
+          "code": "TARGET_NO_SURFACE_CANDIDATE",
+          "message": "no licensed surface candidate for the supplied Meaning, context and evidence",
+          "path": "target.candidates",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 17,
+      "phenomenon": "explicit English distal reference; Polish to leaves distance unresolved",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "That is a cat.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "en",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 17,
+      "phenomenon": "explicit English distal reference; Polish to leaves distance unresolved",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest kot.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 6,
+      "status": "ambiguous",
+      "candidates": [
+        {
+          "text": "It is a cat.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:cat",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "it",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "That is a cat.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:cat",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "that",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "This is a cat.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:cat",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "this",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TARGET_ALTERNATIVES_AMBIGUOUS",
+          "message": "multiple licensed target lexical and construction alternatives remain for this predicate",
+          "path": "meaning.event",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 18,
+      "phenomenon": "explicit English distal reference; Polish to leaves distance unresolved",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "That is a dog.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "en",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 18,
+      "phenomenon": "explicit English distal reference; Polish to leaves distance unresolved",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest pies.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 6,
+      "status": "ambiguous",
+      "candidates": [
+        {
+          "text": "It is a dog.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:dog",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "it",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "That is a dog.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:dog",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "that",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "This is a dog.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:dog",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "this",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TARGET_ALTERNATIVES_AMBIGUOUS",
+          "message": "multiple licensed target lexical and construction alternatives remain for this predicate",
+          "path": "meaning.event",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 19,
+      "phenomenon": "explicit English distal reference; Polish to leaves distance unresolved",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "That is a book.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "en",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 19,
+      "phenomenon": "explicit English distal reference; Polish to leaves distance unresolved",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest książka.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 6,
+      "status": "ambiguous",
+      "candidates": [
+        {
+          "text": "It is a book.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:book",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "it",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "That is a book.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:book",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "that",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "This is a book.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:book",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:class_membership",
+                "participants": [
+                  {
+                    "role": "member",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "this",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "PARTIAL_PARSE_EVIDENCE",
+          "message": "role candidate has a competing sense without an approved equivalent CORE binding",
+          "path": "parse",
+          "severity": "warning"
+        },
+        {
+          "code": "UNRESOLVED_ROLE_SENSE",
+          "message": "role candidate has a competing sense without an approved equivalent CORE binding",
+          "path": "roles",
+          "severity": "warning"
+        },
+        {
+          "code": "TARGET_ALTERNATIVES_AMBIGUOUS",
+          "message": "multiple licensed target lexical and construction alternatives remain for this predicate",
+          "path": "meaning.event",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 20,
+      "phenomenon": "explicit English distal reference; Polish to leaves distance unresolved",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "That is an apple.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "en",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 20,
+      "phenomenon": "explicit English distal reference; Polish to leaves distance unresolved",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jest jabłko.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[8:15]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 21,
+      "phenomenon": "plural classification with proximal source and unresolved Polish reference",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "These are cats.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:5]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[6:9]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "en",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 21,
+      "phenomenon": "plural classification with proximal source and unresolved Polish reference",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To są koty.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[3:6]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 22,
+      "phenomenon": "plural distal classification, not universal class quantification",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "Those are dogs.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:5]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[6:9]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "en",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 22,
+      "phenomenon": "plural distal classification, not universal class quantification",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To są psy.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[3:6]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 23,
+      "phenomenon": "masculine animate adjective agreement, no biological sex",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This dog is black.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 7,
+      "status": "incomplete",
+      "candidates": [
+        {
+          "text": "Ten pies jest czarny.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:dog",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:black",
+                "participants": [
+                  {
+                    "role": "bearer",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "person",
+              "value": "third",
+              "reason": "Meaning carries no grammatical person; this identification route uses the approved third-person form"
+            }
+          ],
+          "losses": [
+            {
+              "path": [
+                "event",
+                "ref0"
+              ],
+              "field": "deixis",
+              "outcome": "incomplete",
+              "reason": "Polish to/ten preserves demonstrative reference but does not encode the source's explicit proximal distance"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TRANSLATION_NOT_OK",
+          "message": "translation did not establish one complete supported output",
+          "path": "translation",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 23,
+      "phenomenon": "masculine animate adjective agreement, no biological sex",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Ten pies jest czarny.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 6,
+      "status": "ambiguous",
+      "candidates": [
+        {
+          "text": "That dog is black.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:dog",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:black",
+                "participants": [
+                  {
+                    "role": "bearer",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "person",
+              "value": "third",
+              "reason": "Meaning carries no grammatical person; this route uses the approved third-person form"
+            },
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "that",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "This dog is black.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:dog",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:black",
+                "participants": [
+                  {
+                    "role": "bearer",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "person",
+              "value": "third",
+              "reason": "Meaning carries no grammatical person; this route uses the approved third-person form"
+            },
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "this",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TARGET_ALTERNATIVES_AMBIGUOUS",
+          "message": "multiple licensed target lexical and construction alternatives remain for this predicate",
+          "path": "meaning.event",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 24,
+      "phenomenon": "black bearer bird rather than a closed cat list",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This bird is black.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 7,
+      "status": "incomplete",
+      "candidates": [
+        {
+          "text": "Ten ptak jest czarny.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:bird",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:black",
+                "participants": [
+                  {
+                    "role": "bearer",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "person",
+              "value": "third",
+              "reason": "Meaning carries no grammatical person; this identification route uses the approved third-person form"
+            }
+          ],
+          "losses": [
+            {
+              "path": [
+                "event",
+                "ref0"
+              ],
+              "field": "deixis",
+              "outcome": "incomplete",
+              "reason": "Polish to/ten preserves demonstrative reference but does not encode the source's explicit proximal distance"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TRANSLATION_NOT_OK",
+          "message": "translation did not establish one complete supported output",
+          "path": "translation",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 24,
+      "phenomenon": "black bearer bird rather than a closed cat list",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Ten ptak jest czarny.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 6,
+      "status": "ambiguous",
+      "candidates": [
+        {
+          "text": "That bird is black.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:bird",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:black",
+                "participants": [
+                  {
+                    "role": "bearer",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "person",
+              "value": "third",
+              "reason": "Meaning carries no grammatical person; this route uses the approved third-person form"
+            },
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "that",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        },
+        {
+          "text": "This bird is black.",
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:bird",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:black",
+                "participants": [
+                  {
+                    "role": "bearer",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "assumptions": [
+            {
+              "path": [
+                "event"
+              ],
+              "field": "person",
+              "value": "third",
+              "reason": "Meaning carries no grammatical person; this route uses the approved third-person form"
+            },
+            {
+              "path": [
+                "event"
+              ],
+              "field": "reference",
+              "value": "this",
+              "reason": "the source preserves unresolved reference; this candidate selects the named English deictic form"
+            }
+          ],
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "TARGET_ALTERNATIVES_AMBIGUOUS",
+          "message": "multiple licensed target lexical and construction alternatives remain for this predicate",
+          "path": "meaning.event",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 25,
+      "phenomenon": "horse grammatical gender versus sex",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This horse is black.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[5:10]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 25,
+      "phenomenon": "horse grammatical gender versus sex",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Ten koń jest czarny.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 7,
+      "status": "incomplete",
+      "candidates": [
+        {
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:horse",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:black",
+                "participants": [
+                  {
+                    "role": "bearer",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "PRINCIPAL_PARTS_UNAVAILABLE",
+          "message": "selected target lexeme has no attested principal parts",
+          "path": "target.slots.bearer",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 26,
+      "phenomenon": "inanimate masculine bearer",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This car is black.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 5,
+      "status": "unknown",
+      "candidates": [
+        {
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:car",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:black",
+                "participants": [
+                  {
+                    "role": "bearer",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "outcome": "unknown"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "MORPHOLOGY_UNKNOWN",
+          "message": "morphology could not resolve this requested cell",
+          "path": "slots.predicate",
+          "severity": "error"
+        },
+        {
+          "code": "UNKNOWN_PARADIGM_CELL",
+          "message": "no paradigm cell matches the supplied feature bundle",
+          "path": "features",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 26,
+      "phenomenon": "inanimate masculine bearer",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Ten samochód jest czarny.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "NO_PARSE",
+          "message": "no complete construction matched the supplied evidence",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 27,
+      "phenomenon": "feminine demonstrative and predicate adjective",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This book is black.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 7,
+      "status": "incomplete",
+      "candidates": [
+        {
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:book",
+                "multiplicity": "one"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:black",
+                "participants": [
+                  {
+                    "role": "bearer",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "outcome": "unknown"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "PARTIAL_PARSE_EVIDENCE",
+          "message": "role candidate has a competing sense without an approved equivalent CORE binding",
+          "path": "parse",
+          "severity": "warning"
+        },
+        {
+          "code": "UNRESOLVED_ROLE_SENSE",
+          "message": "role candidate has a competing sense without an approved equivalent CORE binding",
+          "path": "roles",
+          "severity": "warning"
+        },
+        {
+          "code": "MORPHOLOGY_UNKNOWN",
+          "message": "morphology could not resolve this requested cell",
+          "path": "slots.predicate",
+          "severity": "error"
+        },
+        {
+          "code": "UNKNOWN_PARADIGM_CELL",
+          "message": "no paradigm cell matches the supplied feature bundle",
+          "path": "features",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 27,
+      "phenomenon": "feminine demonstrative and predicate adjective",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Ta książka jest czarna.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:2]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[18:24]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "pl",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 28,
+      "phenomenon": "container feminine agreement",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This bag is black.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[5:8]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 28,
+      "phenomenon": "container feminine agreement",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Ta torba jest czarna.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:2]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[3:8]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[14:20]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "pl",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 29,
+      "phenomenon": "neuter demonstrative to, not classificatory to jest",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This window is black.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 7,
+      "status": "incomplete",
+      "candidates": [
+        {
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:window"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:black",
+                "participants": [
+                  {
+                    "role": "bearer",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "PRINCIPAL_PARTS_UNAVAILABLE",
+          "message": "selected target lexeme has no attested principal parts",
+          "path": "target.slots.bearer",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 29,
+      "phenomenon": "neuter demonstrative to, not classificatory to jest",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To okno jest czarne.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[3:7]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[13:19]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 30,
+      "phenomenon": "neuter count fruit bearer; no health inference",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This apple is black.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 7,
+      "status": "incomplete",
+      "candidates": [
+        {
+          "meaning": {
+            "schema_version": 1,
+            "roots": [
+              "event"
+            ],
+            "nodes": [
+              {
+                "id": "ref0",
+                "kind": "referent",
+                "concept": "concept:apple_fruit"
+              },
+              {
+                "id": "event",
+                "kind": "state",
+                "concept": "concept:black",
+                "participants": [
+                  {
+                    "role": "bearer",
+                    "target": "ref0"
+                  }
+                ],
+                "temporal_frame": "present"
+              }
+            ]
+          },
+          "outcome": "incomplete"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "PRINCIPAL_PARTS_UNAVAILABLE",
+          "message": "selected target lexeme has no attested principal parts",
+          "path": "target.slots.bearer",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 30,
+      "phenomenon": "neuter count fruit bearer; no health inference",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jabłko jest czarne.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[3:10]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[16:22]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 31,
+      "phenomenon": "nonpersonal plural adjective agreement; unknown distance in Polish te",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "These cats are black.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:5]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[11:14]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "en",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 31,
+      "phenomenon": "nonpersonal plural adjective agreement; unknown distance in Polish te",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Te koty są czarne.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:2]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[8:11]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[12:18]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "pl",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 32,
+      "phenomenon": "feminine noun plural still nonpersonal adjective form",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "These books are black.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:5]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[12:15]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "en",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 32,
+      "phenomenon": "feminine noun plural still nonpersonal adjective form",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Te książki są czarne.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:2]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[13:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[17:23]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "pl",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 33,
+      "phenomenon": "masculine personal plural classification without race/colour ambiguity",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "These are teachers.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:5]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[6:9]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "en",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 33,
+      "phenomenon": "masculine personal plural classification without race/colour ambiguity",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To są nauczyciele.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[3:6]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 34,
+      "phenomenon": "both sources explicitly distal; do not report an invented deixis loss",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "Those horses are black.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:5]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[6:12]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[13:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "en",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 34,
+      "phenomenon": "both sources explicitly distal; do not report an invented deixis loss",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Tamte konie są czarne.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:5]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[2].span[12:15]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[16:22]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "pl",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 35,
+      "phenomenon": "red bearer predicate absent from current CORE",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This book is red.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[13:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 35,
+      "phenomenon": "red bearer predicate absent from current CORE",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Ta książka jest czerwona.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:2]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[18:26]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "pl",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 36,
+      "phenomenon": "white bearer predicate absent; cannot substitute black",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This car is white.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[12:17]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 36,
+      "phenomenon": "white bearer predicate absent; cannot substitute black",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Ten samochód jest biały.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[19:25]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 37,
+      "phenomenon": "blue bearer predicate absent, feminine agreement",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This bag is blue.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[5:8]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[12:16]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 37,
+      "phenomenon": "blue bearer predicate absent, feminine agreement",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "Ta torba jest niebieska.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[0].span[0:2]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[3:8]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[14:23]",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_START_PLAN",
+          "message": "no compiled plan can begin with token zero evidence",
+          "path": "pl",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 38,
+      "phenomenon": "green bearer predicate absent, neuter agreement",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "en",
+        "--to",
+        "pl",
+        "--text",
+        "This apple is green.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        },
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[14:19]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "source_sha": "a9eb60eb688d760975a59576507786288449db32+working-tree",
+      "pair_index": 38,
+      "phenomenon": "green bearer predicate absent, neuter agreement",
+      "command": [
+        "/tmp/golingua-matrix-expansion/golingua",
+        "translate",
+        "--from",
+        "pl",
+        "--to",
+        "en",
+        "--text",
+        "To jabłko jest zielone.",
+        "--runtime-config",
+        "/tmp/golingua-matrix-expansion/runtime.json",
+        "--json"
+      ],
+      "exit_code": 3,
+      "status": "unsupported",
+      "candidates": [
+        {
+          "outcome": "unsupported"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[1].span[3:10]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNKNOWN_SURFACE",
+          "message": "no licensed morphology reading matches this token surface",
+          "path": "tokens[3].span[16:23]",
+          "severity": "warning"
+        },
+        {
+          "code": "UNMATCHED_PARSE_CANDIDATE",
+          "message": "candidate was not used by a retained construction parse",
+          "path": "candidate",
+          "severity": "warning"
+        }
+      ]
+    }
+  ]
+}
