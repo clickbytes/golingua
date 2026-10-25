@@ -56,6 +56,10 @@ var polishLexicalSource = provenance.SourceRef{
 	Version: "2026-10-23-receiving", License: "unknown", Author: "golingua contributors",
 }
 
+var polishApprovedPersonalPronounSenses = map[string]struct{}{
+	"pl.ja.speaker": {}, "pl.my.speaker_group": {}, "pl.ty.addressee": {}, "pl.wy.addressee_group": {},
+}
+
 var polishLexicalReviewBatch1Source = provenance.SourceRef{
 	ID: "golingua-pl-delegated-lexical-review", URI: "https://github.com/clickbytes/golingua/issues/152#issuecomment-6352315888",
 	Version: "2026-10-23-batch-01", License: "unknown", Author: "codex-owner-delegated",
@@ -567,6 +571,10 @@ var polishParadigmByLexeme = map[string]string{
 	"pl.dorosly.adj": "pl_adjective_dorosly_attested",
 	"pl.drzewo.n":    "pl_noun_drzewo_attested",
 	"pl.dostac.v":    "pl_verb_perfective_finite",
+	"pl.ja.pron":     string(polishPersonalParadigmID("pl.ja.pron")),
+	"pl.my.pron":     string(polishPersonalParadigmID("pl.my.pron")),
+	"pl.ty.pron":     string(polishPersonalParadigmID("pl.ty.pron")),
+	"pl.wy.pron":     string(polishPersonalParadigmID("pl.wy.pron")),
 }
 
 // LexicalDocument constructs the Polish lexical data from Go declarations.
@@ -641,6 +649,9 @@ func LexicalDocument() (lexicon.Document, error) {
 	}
 	if err := polishIdentificationSource.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish identification source: %w", err)
+	}
+	if err := polishPersonalSource.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish personal pronoun source: %w", err)
 	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
 	groups := append([][]lexicalEntry{polishEntries}, lexicalGroups()...)
@@ -805,6 +816,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishIdentificationSource
+				}
+				if _, approved := polishApprovedPersonalPronounSenses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishPersonalSource
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}

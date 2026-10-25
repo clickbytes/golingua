@@ -40,6 +40,16 @@ var polishReadingConstructionSource = provenance.SourceRef{
 	Version: "2026-10-23-g10-19", License: "internal", Author: "Codex by owner delegation",
 }
 
+var polishPersonalConstructionSource = provenance.SourceRef{
+	ID: "golingua-pl-personal-construction-358", Path: "languages/pl/constructions/transitive_personal.json",
+	Version: "2026-10-25-358", License: "internal", Author: "Codex by owner delegation",
+}
+
+var polishPersonalExplicitConstructionSource = provenance.SourceRef{
+	ID: "golingua-pl-personal-construction-explicit-358", Path: "languages/pl/constructions/transitive_personal_explicit.json",
+	Version: "2026-10-25-358", License: "internal", Author: "Codex by owner delegation",
+}
+
 type frameDeclaration struct {
 	id, sense, family string
 	roles             []meaning.Role
@@ -186,6 +196,15 @@ func CompileValency() (*valency.Index, error) {
 			Arguments:        append([]valency.ArgumentSlot(nil), item.arguments...),
 			AllowedFamilyIDs: []ids.ConstructionID{familyID}, Provenance: polishValencySource,
 		}
+		if item.id == "pl.widziec.visual.transitive" || item.id == "pl.slyszec.auditory.transitive" || item.id == "pl.czytac.interpret.frame" {
+			for _, family := range []string{"pl.transitive_personal", "pl.transitive_personal_explicit"} {
+				personalFamilyID, err := ids.NewConstructionID(family)
+				if err != nil {
+					return nil, fmt.Errorf("Polish personal construction family: %w", err)
+				}
+				frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, personalFamilyID)
+			}
+		}
 		if item.id == "pl.byc.class_membership.frame" || item.id == "pl.czarny.black.frame" {
 			frame.Provenance = polishIdentificationSource
 		}
@@ -211,8 +230,9 @@ func CompileValency() (*valency.Index, error) {
 		}
 		frames = append(frames, frame)
 	}
-	bindings := make([]valency.ConstructionBinding, 0, len(polishConstructionBindingDeclarations))
-	for _, item := range polishConstructionBindingDeclarations {
+	bindingDeclarations := append(append([]constructionBindingDeclaration(nil), polishConstructionBindingDeclarations...), polishPersonalConstructionBindings()...)
+	bindings := make([]valency.ConstructionBinding, 0, len(bindingDeclarations))
+	for _, item := range bindingDeclarations {
 		senseID, err := ids.NewSenseID(item.sense)
 		if err != nil {
 			return nil, fmt.Errorf("Polish construction binding sense: %w", err)
@@ -235,6 +255,12 @@ func CompileValency() (*valency.Index, error) {
 }
 
 func polishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.family == "pl.transitive_personal" {
+		return polishPersonalConstructionSource
+	}
+	if item.family == "pl.transitive_personal_explicit" {
+		return polishPersonalExplicitConstructionSource
+	}
 	if item.family == "pl.attributed_seeing" {
 		return polishAttributedSeeingSource
 	}

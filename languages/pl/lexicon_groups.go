@@ -45,6 +45,7 @@ func lexicalGroups() [][]lexicalEntry {
 		kinshipVariantEntries,
 		toddlerEntries,
 		coreCategoryEntries,
+		polishPersonalEntries,
 		polishMorphologyOnlyEntries,
 	}
 }

@@ -28,7 +28,7 @@ func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm 
 		makeParadigm("en_determiner_definite", "determiner", "determiner", "definite"),
 		makeParadigm("en_determiner_indefinite", "determiner", "determiner", "indefinite"),
 	}
-	return append(result, identificationParadigms(profile)...)
+	return append(append(result, identificationParadigms(profile)...), englishPersonalPronounParadigms(profile)...)
 }
 
 // inCodeMorphRecords uses a regular seed only where its spelling rule applies.
@@ -107,4 +107,16 @@ func finiteEnglishPrincipalParts(lexeme lexicon.MorphLexeme, base, thirdPersonSi
 		{ID: "past_participle", Form: pastParticiple},
 		{ID: "present_participle", Form: presentParticiple},
 	}}
+}
+
+func englishPersonalPronounParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm {
+	out := make([]morph.Paradigm, 0, 3)
+	for _, item := range []struct{ id, person, number string }{{"en_personal_pronoun_i", "first", "singular"}, {"en_personal_pronoun_we", "first", "plural"}, {"en_personal_pronoun_you", "second", ""}} {
+		vals := []features.FeatureValue{{Feature: "pronoun_case", State: features.StateKnown, Value: "subject"}, {Feature: "pronoun_person", State: features.StateKnown, Value: features.FeatureValueID(item.person)}}
+		if item.number != "" {
+			vals = append(vals, features.FeatureValue{Feature: "pronoun_number", State: features.StateKnown, Value: features.FeatureValueID(item.number)})
+		}
+		out = append(out, morph.Paradigm{SchemaVersion: morph.ParadigmSchemaVersion, ID: morph.ParadigmID(item.id), Language: "en", ProfileVersion: profile.Version(), POS: "pronoun", PrincipalPartRequirements: []morph.PrincipalPartRequirement{{StemID: "base", PartID: "base", Required: true}}, Cells: []morph.ParadigmCell{{ID: "base", Features: vals}}, Rules: []morph.CellRule{{CellID: "base", ProcedureID: "procedure:" + item.id + ".base", Provenance: sentenceMorphSource, Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "base"}}}}})
+	}
+	return out
 }

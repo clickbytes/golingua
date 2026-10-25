@@ -39,6 +39,8 @@ type OperatorID string
 // Capability identifies a bounded family-level operation or plan feature.
 type Capability string
 
+const CapabilityImplicitParticipant Capability = "implicit_participant"
+
 // ConstructionFamily is one immutable language-local structural template.
 // It is independent of any ConceptID or SenseID; sense-specific licensing is
 // held by approved valency.ConstructionBinding records.
@@ -50,6 +52,54 @@ type ConstructionFamily struct {
 	Operators    []OperatorID         `json:"operators,omitempty"`
 	Capabilities []Capability         `json:"capabilities,omitempty"`
 	Provenance   provenance.SourceRef `json:"provenance"`
+}
+
+// ImplicitParticipantFamilySlot returns an eligible optional person-role NP
+// slot only when the family explicitly grants implicit-participant authority.
+func ImplicitParticipantFamilySlot(family ConstructionFamily, slotID string) (SlotSpec, bool) {
+	if family.Validate() != nil {
+		return SlotSpec{}, false
+	}
+	licensed := false
+	for _, capability := range family.Capabilities {
+		if capability == CapabilityImplicitParticipant {
+			licensed = true
+			break
+		}
+	}
+	if !licensed {
+		return SlotSpec{}, false
+	}
+	for index, slot := range family.SlotSpecs {
+		if slot.ID != slotID {
+			continue
+		}
+		if slot.Category != CategoryNP || slot.ArgumentBinding == nil || slot.Optionality != SlotOptional ||
+			slot.Cardinality.Minimum != 0 || slot.Cardinality.Maximum != 1 {
+			return SlotSpec{}, false
+		}
+		copyOf := cloneFamily(family)
+		return copyOf.SlotSpecs[index], true
+	}
+	return SlotSpec{}, false
+}
+
+// ImplicitParticipantSlot reports whether a selected variant omits one
+// eligible zero-minimum, single, role-bound NP under family authority.
+func ImplicitParticipantSlot(family ConstructionFamily, variant Variant, slotID string) (SlotSpec, bool) {
+	if variant.FamilyID != family.ID || variant.Validate(family) != nil {
+		return SlotSpec{}, false
+	}
+	slot, eligible := ImplicitParticipantFamilySlot(family, slotID)
+	if !eligible {
+		return SlotSpec{}, false
+	}
+	for _, token := range variant.Sequence {
+		if token.Kind == TokenSlot && token.SlotID == slotID {
+			return SlotSpec{}, false
+		}
+	}
+	return slot, true
 }
 
 // Validate checks identities, bounds, slot references, and provenance.

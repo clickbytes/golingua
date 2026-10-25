@@ -76,12 +76,13 @@ type SlotRequest struct {
 // ExecuteInput contains one validated plan, its source Meaning, the exact
 // family/frame license, and caller supplied morphology inputs for each slot.
 type ExecuteInput struct {
-	Plan          RealizationPlan
-	SourceMeaning meaning.Meaning
-	Core          *core.ConceptGraph
-	Family        construction.ConstructionFamily
-	Frame         valency.ValencyFrame
-	Slots         map[string]SlotRequest
+	Plan           RealizationPlan
+	SourceMeaning  meaning.Meaning
+	SourceContexts []meaning.RequestContext
+	Core           *core.ConceptGraph
+	Family         construction.ConstructionFamily
+	Frame          valency.ValencyFrame
+	Slots          map[string]SlotRequest
 	// InformationStructure carries explicit caller evidence for variant
 	// information-structure conditions, keyed by semantic role.
 	InformationStructure map[meaning.Role]construction.InformationValue
@@ -250,11 +251,16 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 				return ExecuteResult{}, executeError(status.OutcomeIncomplete, "PREDICATE_SLOT_UNAVAILABLE", "slots."+slot.ID, "the selected event/state predicate requires an explicit lexicalization request")
 			}
 			if slot.ArgumentBinding != nil {
-				_, count := participantByRole(predicate, slot.ArgumentBinding.SemanticRole)
+				participant, count := participantByRole(predicate, slot.ArgumentBinding.SemanticRole)
 				if count > 1 {
 					return ExecuteResult{}, executeError(status.OutcomeAmbiguous, "MEANING_ROLE_AMBIGUOUS", "meaning."+string(plan.NodeID)+".participants", "source Meaning supplies multiple targets for one semantic role")
 				}
 				if count == 1 {
+					if _, licensed := construction.ImplicitParticipantSlot(input.Family, plan.CompiledVariant.Variant, slot.ID); licensed {
+						if _, anchored := ImplicitParticipantAnchor(input.SourceMeaning, input.SourceContexts, participant.Target); anchored {
+							continue
+						}
+					}
 					return ExecuteResult{}, executeError(status.OutcomeIncomplete, "PRESENT_ROLE_SLOT_UNAVAILABLE", "slots."+slot.ID, "a semantic role present in Meaning requires an explicit slot lexicalization request")
 				}
 			}

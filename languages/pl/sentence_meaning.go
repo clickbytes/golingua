@@ -74,10 +74,13 @@ func polishNodeAttributes(supported map[ids.SenseID]bool, index *lexicon.Index, 
 		}
 	}
 	for _, candidate := range candidates {
-		if candidate.Category != construction.CategoryNP || !hasNumberBehavior(index, candidate.LexemeID, "count") {
+		if candidate.Category != construction.CategoryNP || (!hasNumberBehavior(index, candidate.LexemeID, "count") && !isPolishPersonalPronoun(candidate.LexemeID)) {
 			continue
 		}
 		number := knownPolishNounNumber(candidate.Features)
+		if isPolishPersonalPronoun(candidate.LexemeID) {
+			number = string(candidate.Features["number"])
+		}
 		var multiplicity meaning.Multiplicity
 		switch number {
 		case "singular":

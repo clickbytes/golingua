@@ -70,6 +70,13 @@ func NewSentenceTarget(snapshot *pack.Pack, registry *language.Registry) (*runti
 type polishSentencePlanAnnotations struct{}
 
 func (polishSentencePlanAnnotations) Annotations(_ context.Context, source semantic.MeaningCandidate, selected realizer.TargetCandidate) ([]realizer.FeatureConstraint, []realizer.FieldAssumption, []realizer.FieldLoss, error) {
+	if selected.Family.Family.ID.String() == polishPersonalTargetFamily {
+		target, ok := polishPersonalTargetForPredicate(source, selected.NodeID)
+		if !ok || !polishPersonalVariantMatches(source, selected, target) || !polishPredicateEvidenceConsistent(source, selected) {
+			return nil, nil, nil, fmt.Errorf("Polish personal target requires a valid anchored subject and matching licensed variant")
+		}
+		return nil, polishPersonalVariantAssumptions(source, selected), nil, nil
+	}
 	if _, referentID, negated := polishNegatedClassificationState(source, selected.NodeID); negated {
 		predicatePath, predicateFound := runtime.MeaningPath(*source.Meaning, selected.NodeID)
 		referentPath, referentFound := runtime.MeaningPath(*source.Meaning, referentID)
@@ -117,7 +124,6 @@ func (polishSentencePlanAnnotations) Annotations(_ context.Context, source seman
 	if predicate.TemporalFrame == "" {
 		assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning carries no temporal frame; this response uses the approved present-tense route"})
 	}
-	assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning carries no grammatical person; this response uses the approved third-person route"})
 	_, subjectID, hasSubject := polishSubjectTarget(source, selected)
 	if hasSubject {
 		if subject, exists := polishMeaningNode(source, subjectID); exists && subject.Multiplicity == "" {
@@ -145,7 +151,6 @@ func polishIdentificationDefaults(predicatePath, referentPath []meaning.NodeID, 
 	if predicate.TemporalFrame == "" {
 		assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning carries no temporal frame; this " + route + " route uses the approved present form"})
 	}
-	assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning carries no grammatical person; this " + route + " route uses the approved third-person form"})
 	for _, node := range nodes {
 		if node.ID == referentID && node.Multiplicity == "" {
 			assumptions = append(assumptions,
@@ -200,6 +205,22 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 		), nil
 	}
 	if slot.Category == construction.CategoryVP {
+		if predicate.Family.Family.ID.String() == polishPersonalTargetFamily {
+			target, ok := polishPersonalTargetForPredicate(source, predicate.NodeID)
+			if !ok || !polishPersonalVariantMatches(source, predicate, target) ||
+				!polishFrameEvidenceConsistent(source, predicate.NodeID, predicate.TransferBinding.CoreRef) {
+				return nil, fmt.Errorf("Polish personal predicate variant conflicts with participant, temporal, or valency evidence")
+			}
+			values := polishPersonalVariantFeatures(predicate.CompiledVariant.Variant)
+			featureValues := [][2]string{
+				{"verb_form", "finite"}, {"tense", values["tense"]}, {"aspect", "imperfective"},
+				{"person", values["person"]}, {"number", values["number"]}, {"mood", "indicative"}, {"voice", "active"},
+			}
+			if values["tense"] == "past" {
+				featureValues = append(featureValues, [2]string{"gender", values["gender"]})
+			}
+			return knownPolishFeatures(featureValues...), nil
+		}
 		if _, event, route, found := polishNegatedPresent(source); found && event.ID == predicate.NodeID && predicate.Sense.ID.String() == route.sense {
 			number, known := polishPresentNegationNumber(source, predicate, route, candidates)
 			if !known {
@@ -301,6 +322,9 @@ func (polishSentenceOperatorBuilder) Build(ctx context.Context, source semantic.
 	if err := ctx.Err(); err != nil {
 		return nil, false, err
 	}
+	if intent, valid := polishPersonalContext(source); intent && !valid {
+		return nil, false, polishParticipantContextError{}
+	}
 	scope, event, route, found := polishNegatedPresent(source)
 	if !found {
 		return runtime.NoOperatorEvidenceBuilder{}.Build(ctx, source)
@@ -324,6 +348,39 @@ func (polishSentenceOperatorBuilder) Build(ctx context.Context, source semantic.
 type polishSentenceCandidatePolicy struct{}
 
 func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, all []realizer.TargetCandidate) bool {
+	anchorIntent, contextsValid := polishPersonalContext(source)
+	if anchorIntent && !contextsValid {
+		return false
+	}
+	familyID := candidate.Family.Family.ID.String()
+	if familyID == "construction:pl.transitive_personal_explicit" {
+		return false
+	}
+	if familyID == polishPersonalTargetFamily && !anchorIntent {
+		return false
+	}
+	if !anchorIntent && isPolishPersonalPronoun(candidate.Lexeme.ID) {
+		return false
+	}
+	if anchorIntent && candidate.Lexeme.POS == "pronoun" {
+		return false // Polish personal subjects are pro-drop in this target construction.
+	}
+	if anchorIntent && (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState) {
+		target, personalSubject := polishPersonalTargetForPredicate(source, candidate.NodeID)
+		return personalSubject && candidate.Family.Family.ID.String() == polishPersonalTargetFamily &&
+			polishPersonalVariantMatches(source, candidate, target) && polishPredicateEvidenceConsistent(source, candidate)
+	}
+	if anchorIntent && candidate.Kind == meaning.KindReferent {
+		for _, predicate := range source.Meaning.Nodes {
+			if predicate.Kind != meaning.KindEvent && predicate.Kind != meaning.KindState {
+				continue
+			}
+			target, ok := polishPersonalTargetForPredicate(source, predicate.ID)
+			if ok && target.subject.ID == candidate.NodeID {
+				return false // never fall back to a generic person noun for an anchored, omitted subject.
+			}
+		}
+	}
 	if (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState) && !polishPredicateEvidenceConsistent(source, candidate) {
 		return false
 	}

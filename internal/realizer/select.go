@@ -381,10 +381,6 @@ func SelectTargets(input Input) (Result, error) {
 					result.Outcome = mergeOutcome(result.Outcome, status.OutcomeUnsupported)
 					result.Diagnostics = appendDiagnostic(result.Diagnostics, "NO_LICENSED_TARGET", "no approved target transfer was found for this referent", "meaning."+string(node.ID))
 				}
-				if nodeCounts[nodeKey] > 1 {
-					result.Outcome = mergeOutcome(result.Outcome, status.OutcomeAmbiguous)
-					result.Diagnostics = appendDiagnostic(result.Diagnostics, "TARGET_ALTERNATIVES_AMBIGUOUS", "multiple licensed target senses remain for this referent", "meaning."+string(node.ID))
-				}
 				continue
 			}
 			if node.Kind != meaning.KindEvent && node.Kind != meaning.KindState {
@@ -562,6 +558,25 @@ func SelectTargets(input Input) (Result, error) {
 	}
 	// Construction and lexical alternatives are counted after the optional
 	// language-local policy has retained only the applicable licensed routes.
+	referentCandidateCounts := make(map[string]int)
+	for _, candidate := range result.Candidates {
+		if candidate.Kind == meaning.KindReferent {
+			referentCandidateCounts[candidate.SourceCandidateID+"\x00"+string(candidate.NodeID)]++
+		}
+	}
+	referentKeys := make([]string, 0, len(referentCandidateCounts))
+	for key := range referentCandidateCounts {
+		referentKeys = append(referentKeys, key)
+	}
+	sort.Strings(referentKeys)
+	for _, key := range referentKeys {
+		if referentCandidateCounts[key] <= 1 {
+			continue
+		}
+		parts := strings.SplitN(key, "\x00", 2)
+		result.Outcome = mergeOutcome(result.Outcome, status.OutcomeAmbiguous)
+		result.Diagnostics = appendDiagnostic(result.Diagnostics, "TARGET_ALTERNATIVES_AMBIGUOUS", "multiple licensed target senses remain for this referent", "meaning."+parts[1])
+	}
 	eventCandidateCounts := make(map[string]int)
 	for _, candidate := range result.Candidates {
 		if candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState {

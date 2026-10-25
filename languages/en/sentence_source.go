@@ -79,18 +79,26 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 		Core: snapshot.CoreGraph(), Constructions: registry,
 		PhraseBuilder: englishIdentificationPhraseBuilder{inner: englishDeterminerNPBuilder{inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
 			Categories: map[lexicon.PartOfSpeech][]construction.SlotCategory{
-				"noun": {construction.CategoryNP}, "verb": {construction.CategoryVP}, "adjective": {construction.CategoryAP},
+				"noun": {construction.CategoryNP}, "pronoun": {construction.CategoryNP}, "verb": {construction.CategoryVP}, "adjective": {construction.CategoryAP},
 			},
 		}}, lexicon: snapshot.Lexicon()}},
 		EvidenceBuilder: englishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), base: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true},
 			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
 				seeingSense: {
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "singular", "number": "singular"},
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "plural", "number": "plural"},
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "second", "verb_number": "singular", "number": "singular"},
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "second", "verb_number": "plural", "number": "plural"},
 					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
 					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
 					{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"},
 				},
 				hearingSense: {
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "singular", "number": "singular"},
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "plural", "number": "plural"},
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "second", "verb_number": "singular", "number": "singular"},
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "second", "verb_number": "plural", "number": "plural"},
 					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
 					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
 				},
@@ -99,6 +107,10 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
 				},
 				readingSense: {
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "singular", "number": "singular"},
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "plural", "number": "plural"},
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "second", "verb_number": "singular", "number": "singular"},
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "second", "verb_number": "plural", "number": "plural"},
 					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
 					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
 					{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"},
@@ -142,8 +154,12 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 	}
 	if !hasNot {
 		evidence, err := builder.base.Build(ctx, lattice, candidates, forest)
-		if err != nil || !evidence.OperatorCoverageComplete {
+		if err != nil {
 			return evidence, err
+		}
+		evidence = addEnglishPersonalReferences(evidence, candidates, forest)
+		if !evidence.OperatorCoverageComplete {
+			return evidence, nil
 		}
 		return addEnglishIdentificationReferences(evidence, candidates, forest), nil
 	}
@@ -342,6 +358,9 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 			if !supportedEnglishPredicateRoute(candidate) && (!negated || candidate.LexemeID.String() != route.lexeme) {
 				continue
 			}
+			if !englishPersonalAgreementCandidate(candidate, candidates) {
+				continue
+			}
 			filtered = append(filtered, candidate)
 			continue
 		}
@@ -468,8 +487,19 @@ func supportedEnglishPredicateRoute(candidate parser.PhraseCandidate) bool {
 	}
 	switch candidate.Features["tense"] {
 	case "present":
-		return candidate.Features["person"] == "third" &&
-			(candidate.Features["verb_number"] == "singular" || candidate.Features["verb_number"] == "plural")
+		person := string(candidate.Features["person"])
+		if person != "third" && person != "first" && person != "second" {
+			return false
+		}
+		if candidate.Features["verb_number"] != "singular" && candidate.Features["verb_number"] != "plural" {
+			return false
+		}
+		for _, sense := range candidate.SenseIDs {
+			if sense.String() == "sense:en.see.visual" || sense.String() == "sense:en.hear.auditory" || sense.String() == "sense:en.read.text" {
+				return true
+			}
+		}
+		return person == "third"
 	case "past":
 		for _, sense := range candidate.SenseIDs {
 			if sense.String() == "sense:en.get.receive" || sense.String() == "sense:en.read.text" || sense.String() == "sense:en.see.visual" {
@@ -478,4 +508,31 @@ func supportedEnglishPredicateRoute(candidate parser.PhraseCandidate) bool {
 		}
 	}
 	return false
+}
+
+func englishPersonalAgreementCandidate(vp parser.PhraseCandidate, candidates []parser.PhraseCandidate) bool {
+	if vp.Features["tense"] != "present" || (vp.LexemeID.String() != "lexeme:en.see.v" && vp.LexemeID.String() != "lexeme:en.hear.v" && vp.LexemeID.String() != "lexeme:en.read.v") {
+		return true
+	}
+	for _, np := range candidates {
+		if np.Category != construction.CategoryNP || np.TokenEnd != vp.TokenStart {
+			continue
+		}
+		expectedPerson, expectedNumber := "third", ""
+		switch np.LexemeID.String() {
+		case "lexeme:en.i.pron":
+			expectedPerson, expectedNumber = "first", "singular"
+		case "lexeme:en.we.pron":
+			expectedPerson, expectedNumber = "first", "plural"
+		case "lexeme:en.you.pron":
+			// English you takes base/plural agreement without resolving how
+			// many addressees the utterance refers to.
+			expectedPerson, expectedNumber = "second", "plural"
+		}
+		if string(vp.Features["person"]) != expectedPerson {
+			return false
+		}
+		return expectedNumber == "" || string(vp.Features["verb_number"]) == expectedNumber
+	}
+	return true
 }

@@ -1,0 +1,557 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "family": {
+    "id": "construction:en.transitive_personal",
+    "language": "en",
+    "slot_specs": [
+      {
+        "id": "subject",
+        "position": 0,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "verb",
+        "position": 1,
+        "category": "VP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "object",
+        "position": 2,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      }
+    ],
+    "constraints": [],
+    "provenance": {
+      "id": "golingua-en-personal-construction-358",
+      "path": "languages/en/constructions/transitive_personal.json",
+      "version": "2026-10-25-358",
+      "license": "internal"
+    }
+  },
+  "variants": [
+    {
+      "id": "construction:en.transitive_personal.svo.first",
+      "family_id": "construction:en.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "optional": true,
+          "accepted_inputs": [
+            "a",
+            "an"
+          ]
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-en-personal-construction-358",
+        "path": "languages/en/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "pronoun_person",
+          "value": "first"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "person",
+          "value": "first"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
+    },
+    {
+      "id": "construction:en.transitive_personal.svo.second",
+      "family_id": "construction:en.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "optional": true,
+          "accepted_inputs": [
+            "a",
+            "an"
+          ]
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-en-personal-construction-358",
+        "path": "languages/en/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "pronoun_person",
+          "value": "second"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "person",
+          "value": "second"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
+    },
+    {
+      "id": "construction:en.transitive_personal.svo.reading.first",
+      "family_id": "construction:en.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "optional": true,
+          "accepted_inputs": [
+            "a",
+            "an"
+          ]
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-en-personal-construction-358",
+        "path": "languages/en/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "pronoun_person",
+          "value": "first"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "past"
+        }
+      ]
+    },
+    {
+      "id": "construction:en.transitive_personal.svo.reading.second",
+      "family_id": "construction:en.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "optional": true,
+          "accepted_inputs": [
+            "a",
+            "an"
+          ]
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-en-personal-construction-358",
+        "path": "languages/en/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "pronoun_person",
+          "value": "second"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "past"
+        }
+      ]
+    },
+    {
+      "id": "construction:en.transitive_personal.svo.first.indefinite_object",
+      "family_id": "construction:en.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-en-personal-construction-358",
+        "path": "languages/en/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.transitive_personal.svo.first.indefinite_object_an",
+      "family_id": "construction:en.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-en-personal-construction-358",
+        "path": "languages/en/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.transitive_personal.svo.second.indefinite_object",
+      "family_id": "construction:en.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-en-personal-construction-358",
+        "path": "languages/en/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.transitive_personal.svo.second.indefinite_object_an",
+      "family_id": "construction:en.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-en-personal-construction-358",
+        "path": "languages/en/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.transitive_personal.svo.reading.first.indefinite_object",
+      "family_id": "construction:en.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-en-personal-construction-358",
+        "path": "languages/en/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.transitive_personal.svo.reading.first.indefinite_object_an",
+      "family_id": "construction:en.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-en-personal-construction-358",
+        "path": "languages/en/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.transitive_personal.svo.reading.second.indefinite_object",
+      "family_id": "construction:en.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-en-personal-construction-358",
+        "path": "languages/en/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.transitive_personal.svo.reading.second.indefinite_object_an",
+      "family_id": "construction:en.transitive_personal",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-en-personal-construction-358",
+        "path": "languages/en/constructions/transitive_personal.json",
+        "version": "2026-10-25-358",
+        "license": "internal"
+      }
+    }
+  ]
+}

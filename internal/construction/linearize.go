@@ -120,6 +120,9 @@ func ValidateVariantForFrame(variant Variant, family ConstructionFamily, frame v
 			return CompiledVariant{}, unsupported("REQUIRED_FRAME_ROLE_UNBOUND", "family.slot_specs", "required frame role has no family argument slot")
 		}
 		if _, exists := sequenceSlots[slot.ID]; !exists {
+			if _, licensed := ImplicitParticipantSlot(family, variant, slot.ID); licensed {
+				continue
+			}
 			return CompiledVariant{}, unsupported("REQUIRED_FRAME_ROLE_OMITTED", "variant.sequence", "variant omits a slot bound to a required frame role")
 		}
 	}

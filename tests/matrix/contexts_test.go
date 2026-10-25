@@ -63,6 +63,56 @@ func TestContextMatchesRejectsMissingExtraWrongAndResolvedMentions(t *testing.T)
 	}
 }
 
+func TestContextMatchesIgnoresOnlyUnanchoredUnresolvedMentions(t *testing.T) {
+	want, ok, err := interlingua.TimeExpansion("a1.10.time.001.en")
+	if err != nil || !ok {
+		t.Fatalf("load time expansion: ok=%t err=%v", ok, err)
+	}
+	var objectNode meaning.NodeID
+	for _, node := range want.Graph.Nodes {
+		if node.Kind == meaning.KindEvent {
+			for _, participant := range node.Participants {
+				if participant.Role == "stimulus" {
+					objectNode = participant.Target
+				}
+			}
+		}
+	}
+	if objectNode == "" {
+		t.Fatal("fixture has no stimulus referent")
+	}
+	withExtra := func(mutate func(*meaning.Mention)) semantic.MeaningCandidate {
+		context := want.Context
+		context.Mentions = append([]meaning.Mention(nil), want.Context.Mentions...)
+		extra := meaning.Mention{ID: "extra-object-mention", NodeID: objectNode}
+		if mutate != nil {
+			mutate(&extra)
+		}
+		context.Mentions = append(context.Mentions, extra)
+		return contextCandidate(want.Graph, context)
+	}
+	if matches, err := ContextMatches(want, withExtra(nil)); err != nil || !matches {
+		t.Fatalf("valid unanchored unresolved object mention should be ignored: matches=%t err=%v", matches, err)
+	}
+	if matches, err := ContextMatches(want, withExtra(func(m *meaning.Mention) { m.Anchor = roleAnchor("speaker") })); err == nil || matches {
+		t.Fatalf("extra anchored mention should fail: matches=%t err=%v", matches, err)
+	}
+	if matches, err := ContextMatches(want, withExtra(func(m *meaning.Mention) { m.EvidenceID = "evidence-extra" })); err == nil || matches {
+		t.Fatalf("extra evidence-linked mention should fail: matches=%t err=%v", matches, err)
+	}
+	resolved := withExtra(func(m *meaning.Mention) {
+		m.ReferentID = "resolved-extra"
+		m.EvidenceID = "evidence-extra"
+	})
+	resolved.Contexts[0].Context.Referents = []meaning.Referent{{ID: "resolved-extra", Concept: "concept:dog"}}
+	if err := meaning.ValidateReferences(resolved.Contexts[0].Meaning, resolved.Contexts[0].Context, meaning.DefaultBudget()); err != nil {
+		t.Fatalf("resolved control must be a valid graph/context pair: %v", err)
+	}
+	if matches, err := ContextMatches(want, resolved); err == nil || matches {
+		t.Fatalf("extra resolved mention should fail: matches=%t err=%v", matches, err)
+	}
+}
+
 func TestMatchAllowedCandidateUsesMatchingVariantContext(t *testing.T) {
 	graph := contextGraph(t, "event", "left", "right")
 	wrong := contextFixture(graph, "left", "right")

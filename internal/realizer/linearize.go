@@ -224,6 +224,11 @@ func Linearize(plan RealizationPlan, family construction.ConstructionFamily, slo
 			continue
 		}
 		if !inVariant {
+			if activeRole {
+				if _, licensed := construction.ImplicitParticipantSlot(family, compiled.Variant, slot.ID); licensed {
+					continue
+				}
+			}
 			return LinearizedResult{}, linearizeError(status.OutcomeUnsupported, "ACTIVE_SLOT_OMITTED_BY_VARIANT", "variant.sequence."+slot.ID, "licensed variant omits a slot required by the selected Meaning")
 		}
 		if !hasForm {
@@ -305,8 +310,8 @@ func Linearize(plan RealizationPlan, family construction.ConstructionFamily, slo
 		lastWasOpening = class == terminalOpeningPunctuation
 	}
 	for index := range result.Parts {
-		capitalized, changed := capitalizeInitialLetter(result.Parts[index].Text)
-		if changed {
+		capitalized, hasLetter := capitalizeInitialLetter(result.Parts[index].Text)
+		if hasLetter {
 			result.Parts[index].Text = capitalized
 			break
 		}
@@ -337,7 +342,7 @@ func capitalizeInitialLetter(value string) (string, bool) {
 		}
 		upper := unicode.ToUpper(character)
 		if upper == character {
-			return value, false
+			return value, true
 		}
 		_, size := utf8.DecodeRuneInString(value[offset:])
 		return value[:offset] + string(upper) + value[offset+size:], true
