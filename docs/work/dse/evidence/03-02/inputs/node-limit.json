@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "steps": [
+    {
+      "id": "r",
+      "op": "relation",
+      "symbol": "r"
+    }
+  ],
+  "result": "r",
+  "limits": {
+    "max_nodes": 2
+  }
+}

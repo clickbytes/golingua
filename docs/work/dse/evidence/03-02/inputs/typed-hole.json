@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "steps": [
+    {
+      "id": "x",
+      "op": "value",
+      "value": {
+        "kind": "Hole",
+        "id": "H",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    }
+  ],
+  "result": "x"
+}

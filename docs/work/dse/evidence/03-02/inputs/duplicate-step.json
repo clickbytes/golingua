@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "steps": [
+    {
+      "id": "r",
+      "op": "relation",
+      "symbol": "r"
+    },
+    {
+      "id": "r",
+      "op": "relation",
+      "symbol": "r"
+    }
+  ],
+  "result": "r"
+}

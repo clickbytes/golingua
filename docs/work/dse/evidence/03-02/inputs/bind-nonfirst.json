@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "steps": [
+    {
+      "id": "r",
+      "op": "relation",
+      "symbol": "r"
+    },
+    {
+      "id": "v",
+      "op": "value",
+      "value": {
+        "kind": "Param",
+        "id": "rel_r_b",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    },
+    {
+      "id": "x",
+      "op": "bind",
+      "function": "r",
+      "port": "b",
+      "argument": "v"
+    }
+  ],
+  "result": "x",
+  "parameters": [
+    {
+      "id": "rel_r_b",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ]
+}

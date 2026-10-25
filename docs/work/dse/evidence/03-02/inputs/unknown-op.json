@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "steps": [
+    {
+      "id": "x",
+      "op": "invent",
+      "symbol": "r"
+    }
+  ],
+  "result": "x"
+}

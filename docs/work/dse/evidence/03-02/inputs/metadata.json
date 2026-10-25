@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "id": "neutral.composition.381",
+  "version": "1.0.0",
+  "profile": "positive-facts-v1",
+  "provenance": [
+    {
+      "id": "neutral-381",
+      "uri": "https://github.com/clickbytes/golingua/issues/381",
+      "version": "2026-10-25",
+      "license": "internal-neutral-example"
+    }
+  ],
+  "symbols": [
+    {
+      "id": "r",
+      "kind": "primitive",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "neutral-381",
+          "uri": "https://github.com/clickbytes/golingua/issues/381",
+          "version": "2026-10-25",
+          "license": "internal-neutral-example"
+        }
+      ],
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s",
+      "kind": "primitive",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "neutral-381",
+          "uri": "https://github.com/clickbytes/golingua/issues/381",
+          "version": "2026-10-25",
+          "license": "internal-neutral-example"
+        }
+      ],
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "n",
+      "kind": "primitive",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "neutral-381",
+          "uri": "https://github.com/clickbytes/golingua/issues/381",
+          "version": "2026-10-25",
+          "license": "internal-neutral-example"
+        }
+      ],
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "c",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c",
+      "kind": "primitive",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "neutral-381",
+          "uri": "https://github.com/clickbytes/golingua/issues/381",
+          "version": "2026-10-25",
+          "license": "internal-neutral-example"
+        }
+      ],
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "h",
+      "kind": "primitive",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "neutral-381",
+          "uri": "https://github.com/clickbytes/golingua/issues/381",
+          "version": "2026-10-25",
+          "license": "internal-neutral-example"
+        }
+      ],
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "z",
+      "kind": "primitive",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "neutral-381",
+          "uri": "https://github.com/clickbytes/golingua/issues/381",
+          "version": "2026-10-25",
+          "license": "internal-neutral-example"
+        }
+      ],
+      "ports": []
+    }
+  ],
+  "sorts": [],
+  "dependencies": [],
+  "typical_edges": [],
+  "axioms": []
+}

@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "steps": [
+    {
+      "id": "p",
+      "op": "value",
+      "value": {
+        "kind": "Param",
+        "id": "P",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    },
+    {
+      "id": "q",
+      "op": "value",
+      "value": {
+        "kind": "Ref",
+        "id": "P",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    },
+    {
+      "id": "u",
+      "op": "unify",
+      "left": "p",
+      "right": "q"
+    }
+  ],
+  "result": "u",
+  "parameters": [
+    {
+      "id": "P",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ],
+  "references": [
+    {
+      "id": "P",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ]
+}

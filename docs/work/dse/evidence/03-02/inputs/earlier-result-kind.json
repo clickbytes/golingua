@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "steps": [
+    {
+      "id": "p",
+      "op": "value",
+      "value": {
+        "kind": "Param",
+        "id": "P",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    },
+    {
+      "id": "u",
+      "op": "unify",
+      "left": "p",
+      "right": "p"
+    }
+  ],
+  "result": "p",
+  "parameters": [
+    {
+      "id": "P",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ]
+}

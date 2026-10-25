@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "steps": [
+    {
+      "id": "r",
+      "op": "relation",
+      "symbol": "r"
+    },
+    {
+      "id": "c",
+      "op": "relation",
+      "symbol": "c"
+    },
+    {
+      "id": "x",
+      "op": "restrict",
+      "function": "r",
+      "port": "b",
+      "predicate": "c"
+    }
+  ],
+  "result": "x"
+}
