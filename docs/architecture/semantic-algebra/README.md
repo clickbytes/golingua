@@ -2,6 +2,8 @@
 
 This directory holds the design contracts for the proposed Dynamic Semantic Expressions (DSE) work. The RFCs define future behavior; they do not describe capabilities already present in the runtime.
 
+For the issue record and work procedure, see the [DSE work index](../../work/dse/README.md), [issue map](../../work/dse/issue-map.json), and [execution runbook](../../work/dse/execution.md).
+
 ## Contracts
 
 - [Formal contract](formal-contract.md): typed expression forms, identity and scope, generic operators, bounded synthesis, independent verification claims, and the initial positive facts-only evaluation profile.

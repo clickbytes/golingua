@@ -2,6 +2,8 @@
 
 This complements root `AGENTS.md` without changing project architecture. Applies to all Go v0 issues.
 
+For the owner-authorized Dynamic Semantic Expressions plan, use the [DSE issue map](work/dse/issue-map.json), [DSE execution runbook](work/dse/execution.md), and [DSE work index](work/dse/README.md). These links do not create a second execution policy; root `AGENTS.md` and the active leaf remain authoritative.
+
 ## Decision rights and allowed concurrency
 
 | Actor | May decide scope/priority? | May write code? | May write GitHub? | May approve merge? |

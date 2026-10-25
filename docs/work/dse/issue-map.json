@@ -1,0 +1,683 @@
+{
+  "schema_version": 1,
+  "repository": "https://github.com/clickbytes/golingua",
+  "epic": {
+    "issue_number": 367,
+    "code": "DSE",
+    "title": "Algebra i synteza znaczeń w runtime — koncepty wyłącznie jako metadane",
+    "url": "https://github.com/clickbytes/golingua/issues/367",
+    "status": "IN_PROGRESS",
+    "branch_name": null,
+    "actual_base_sha": null,
+    "branch_url": null,
+    "pr_url": null,
+    "merge_sha": null,
+    "evidence_paths": [],
+    "parent_issue": null,
+    "dependencies": []
+  },
+  "chapters": [
+    {
+      "issue_number": 368,
+      "code": "DSE-01",
+      "title": "DSE-01: Formalny kontrakt i protokół pracy",
+      "url": "https://github.com/clickbytes/golingua/issues/368",
+      "parent_issue": 367,
+      "task_issues": [
+        377,
+        378
+      ],
+      "status": "IN_PROGRESS",
+      "branch_name": null,
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": [],
+      "dependencies": []
+    },
+    {
+      "issue_number": 369,
+      "code": "DSE-02",
+      "title": "DSE-02: Metadane, jawne fakty i katalog",
+      "url": "https://github.com/clickbytes/golingua/issues/369",
+      "parent_issue": 367,
+      "task_issues": [
+        380,
+        384,
+        385
+      ],
+      "status": "QUEUED",
+      "branch_name": null,
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": [],
+      "dependencies": []
+    },
+    {
+      "issue_number": 370,
+      "code": "DSE-03",
+      "title": "DSE-03: Typowany IR i uniwersalne operatory",
+      "url": "https://github.com/clickbytes/golingua/issues/370",
+      "parent_issue": 367,
+      "task_issues": [
+        379,
+        381,
+        383
+      ],
+      "status": "QUEUED",
+      "branch_name": null,
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": [],
+      "dependencies": []
+    },
+    {
+      "issue_number": 371,
+      "code": "DSE-04",
+      "title": "DSE-04: Dynamiczna synteza runtime",
+      "url": "https://github.com/clickbytes/golingua/issues/371",
+      "parent_issue": 367,
+      "task_issues": [
+        386,
+        387,
+        388
+      ],
+      "status": "QUEUED",
+      "branch_name": null,
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": [],
+      "dependencies": []
+    },
+    {
+      "issue_number": 372,
+      "code": "DSE-05",
+      "title": "DSE-05: Normalizacja, wykonanie i dowody",
+      "url": "https://github.com/clickbytes/golingua/issues/372",
+      "parent_issue": 367,
+      "task_issues": [
+        382,
+        389,
+        390
+      ],
+      "status": "QUEUED",
+      "branch_name": null,
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": [],
+      "dependencies": []
+    },
+    {
+      "issue_number": 373,
+      "code": "DSE-06",
+      "title": "DSE-06: Zakresy, pytania i kontekst",
+      "url": "https://github.com/clickbytes/golingua/issues/373",
+      "parent_issue": 367,
+      "task_issues": [
+        391,
+        392,
+        393
+      ],
+      "status": "QUEUED",
+      "branch_name": null,
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": [],
+      "dependencies": []
+    },
+    {
+      "issue_number": 374,
+      "code": "DSE-07",
+      "title": "DSE-07: Deklaratywna leksyka i analiza PL/EN",
+      "url": "https://github.com/clickbytes/golingua/issues/374",
+      "parent_issue": 367,
+      "task_issues": [
+        394,
+        395
+      ],
+      "status": "QUEUED",
+      "branch_name": null,
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": [],
+      "dependencies": []
+    },
+    {
+      "issue_number": 375,
+      "code": "DSE-08",
+      "title": "DSE-08: Realizacja i produkcyjna integracja",
+      "url": "https://github.com/clickbytes/golingua/issues/375",
+      "parent_issue": 367,
+      "task_issues": [
+        396,
+        397,
+        398
+      ],
+      "status": "QUEUED",
+      "branch_name": null,
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": [],
+      "dependencies": []
+    },
+    {
+      "issue_number": 376,
+      "code": "DSE-09",
+      "title": "DSE-09: Niezależność od domeny i odbiór",
+      "url": "https://github.com/clickbytes/golingua/issues/376",
+      "parent_issue": 367,
+      "task_issues": [
+        399,
+        400
+      ],
+      "status": "QUEUED",
+      "branch_name": null,
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": [],
+      "dependencies": []
+    }
+  ],
+  "tasks": [
+    {
+      "issue_number": 377,
+      "code": "DSE-01-01",
+      "title": "Ustalić formalny kontrakt algebry, syntezy i kompatybilności",
+      "url": "https://github.com/clickbytes/golingua/issues/377",
+      "parent_issue": 368,
+      "dependencies": [],
+      "branch_name": "dse/01-01-formal-contract",
+      "status": "DONE",
+      "actual_base_sha": "29370224ba8e29d3471ff02db200373f40e130a0",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/01-01-formal-contract",
+      "pr_url": "https://github.com/clickbytes/golingua/pull/401",
+      "merge_sha": "bd6b4d24a8a16f348672a98a4d1a9b09fb4e1dc3",
+      "evidence_paths": [
+        "docs/architecture/semantic-algebra/README.md",
+        "docs/architecture/semantic-algebra/formal-contract.md",
+        "docs/architecture/semantic-algebra/compatibility.md"
+      ]
+    },
+    {
+      "issue_number": 378,
+      "code": "DSE-01-02",
+      "title": "Utrwalić kolejkę, przydziały branchy i samodzielny protokół wykonania",
+      "url": "https://github.com/clickbytes/golingua/issues/378",
+      "parent_issue": 368,
+      "dependencies": [
+        377
+      ],
+      "branch_name": "dse/01-02-execution-runbook",
+      "status": "ACTIVE",
+      "actual_base_sha": "46f40097c238912ede3a64c004782b7e103307fc",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/01-02-execution-runbook",
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": [
+        "docs/work/dse/README.md",
+        "docs/work/dse/execution.md",
+        "docs/work/dse/issue-map.json"
+      ]
+    },
+    {
+      "issue_number": 379,
+      "code": "DSE-03-01",
+      "title": "Typowany AST i kontrola binderów dostępne przez CLI",
+      "url": "https://github.com/clickbytes/golingua/issues/379",
+      "parent_issue": 370,
+      "dependencies": [
+        377,
+        378
+      ],
+      "branch_name": "dse/03-01-typed-ir",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 380,
+      "code": "DSE-02-01",
+      "title": "Ładować symbole, role i ograniczenia z metadanych bez rekompilacji",
+      "url": "https://github.com/clickbytes/golingua/issues/380",
+      "parent_issue": 369,
+      "dependencies": [
+        377,
+        378,
+        379
+      ],
+      "branch_name": "dse/02-01-metadata-registry",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 381,
+      "code": "DSE-03-02",
+      "title": "Budować anonimowe lambdy przez generyczne bind/join/restrict/project",
+      "url": "https://github.com/clickbytes/golingua/issues/381",
+      "parent_issue": 370,
+      "dependencies": [
+        379,
+        380
+      ],
+      "branch_name": "dse/03-02-generic-operators",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 382,
+      "code": "DSE-05-01",
+      "title": "Jądro normalizacji z profilem praw i sprawdzalnym śladem",
+      "url": "https://github.com/clickbytes/golingua/issues/382",
+      "parent_issue": 372,
+      "dependencies": [
+        379,
+        380,
+        381
+      ],
+      "branch_name": "dse/05-01-rewrite-kernel",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 383,
+      "code": "DSE-03-03",
+      "title": "Niemutowalny DAG, bezpieczny cache i odtwarzanie wyrażeń",
+      "url": "https://github.com/clickbytes/golingua/issues/383",
+      "parent_issue": 370,
+      "dependencies": [
+        379,
+        380,
+        381,
+        382
+      ],
+      "branch_name": "dse/03-03-runtime-dag",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 384,
+      "code": "DSE-02-02",
+      "title": "Walidować jawne fakty n-argumentowe i kontekst requestu",
+      "url": "https://github.com/clickbytes/golingua/issues/384",
+      "parent_issue": 369,
+      "dependencies": [
+        379,
+        380
+      ],
+      "branch_name": "dse/02-02-facts-context",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 385,
+      "code": "DSE-02-03",
+      "title": "Sklasyfikować katalog i wyeksportować ograniczony pakiet metadanych",
+      "url": "https://github.com/clickbytes/golingua/issues/385",
+      "parent_issue": 369,
+      "dependencies": [
+        380,
+        381
+      ],
+      "branch_name": "dse/02-03-catalog-triage",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 386,
+      "code": "DSE-04-01",
+      "title": "Formalny GoalSpec i dynamiczna konstrukcja bez gotowego AST w wejściu",
+      "url": "https://github.com/clickbytes/golingua/issues/386",
+      "parent_issue": 371,
+      "dependencies": [
+        380,
+        381,
+        383
+      ],
+      "branch_name": "dse/04-01-goal-construction",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 387,
+      "code": "DSE-04-02",
+      "title": "Ograniczona synteza type-directed z zachowaniem alternatyw i kompletności",
+      "url": "https://github.com/clickbytes/golingua/issues/387",
+      "parent_issue": 371,
+      "dependencies": [
+        386,
+        382,
+        383
+      ],
+      "branch_name": "dse/04-02-bounded-synthesis",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 388,
+      "code": "DSE-04-03",
+      "title": "Niezależnie weryfikować konstrukty, ograniczenia i certyfikaty syntezy",
+      "url": "https://github.com/clickbytes/golingua/issues/388",
+      "parent_issue": 371,
+      "dependencies": [
+        386,
+        387,
+        382
+      ],
+      "branch_name": "dse/04-03-synthesis-verifier",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 389,
+      "code": "DSE-05-02",
+      "title": "Wykonać zsyntetyzowane zapytania na jawnych faktach z dowodem odpowiedzi",
+      "url": "https://github.com/clickbytes/golingua/issues/389",
+      "parent_issue": 372,
+      "dependencies": [
+        384,
+        382,
+        388
+      ],
+      "branch_name": "dse/05-02-query-evaluator",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 390,
+      "code": "DSE-05-03",
+      "title": "Równoważność z dowodem, kontrmodel i niezależne sprawdzanie certyfikatów",
+      "url": "https://github.com/clickbytes/golingua/issues/390",
+      "parent_issue": 372,
+      "dependencies": [
+        382,
+        388,
+        389
+      ],
+      "branch_name": "dse/05-03-equivalence-proofs",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 391,
+      "code": "DSE-06-01",
+      "title": "Reprezentować zakresy negacji i kwantyfikatorów oraz wykonać proste WH",
+      "url": "https://github.com/clickbytes/golingua/issues/391",
+      "parent_issue": 373,
+      "dependencies": [
+        388,
+        389,
+        390
+      ],
+      "branch_name": "dse/06-01-scopes-questions",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 392,
+      "code": "DSE-06-02",
+      "title": "Jawne referenty, presupozycje i kontekst niezależny od parser Evidence",
+      "url": "https://github.com/clickbytes/golingua/issues/392",
+      "parent_issue": 373,
+      "dependencies": [
+        383,
+        384,
+        391
+      ],
+      "branch_name": "dse/06-02-references-context",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 393,
+      "code": "DSE-06-03",
+      "title": "Zachować czas, wielość i modalny zakres w samodzielnym IR",
+      "url": "https://github.com/clickbytes/golingua/issues/393",
+      "parent_issue": 373,
+      "dependencies": [
+        391,
+        392
+      ],
+      "branch_name": "dse/06-03-semantic-attributes",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 394,
+      "code": "DSE-07-01",
+      "title": "Wiązać sensy słów z typowanymi specyfikacjami celów i wyrażeń",
+      "url": "https://github.com/clickbytes/golingua/issues/394",
+      "parent_issue": 374,
+      "dependencies": [
+        385,
+        388,
+        392,
+        393
+      ],
+      "branch_name": "dse/07-01-lexical-goals",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 395,
+      "code": "DSE-07-02",
+      "title": "Komponować analizę PL i EN w cele i anonimowe wyrażenia runtime",
+      "url": "https://github.com/clickbytes/golingua/issues/395",
+      "parent_issue": 374,
+      "dependencies": [
+        394,
+        388,
+        391,
+        392,
+        393
+      ],
+      "branch_name": "dse/07-02-source-composition",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 396,
+      "code": "DSE-08-01",
+      "title": "Realizować anonimowe znaczenie przez dopasowanie wzorców i pełne pokrycie treści",
+      "url": "https://github.com/clickbytes/golingua/issues/396",
+      "parent_issue": 375,
+      "dependencies": [
+        394,
+        390,
+        391,
+        392,
+        393
+      ],
+      "branch_name": "dse/08-01-target-coverage",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 397,
+      "code": "DSE-08-02",
+      "title": "Wpiąć algebrę i syntezę w produkcyjny runtime bez cichych fallbacków",
+      "url": "https://github.com/clickbytes/golingua/issues/397",
+      "parent_issue": 375,
+      "dependencies": [
+        395,
+        396,
+        390,
+        383
+      ],
+      "branch_name": "dse/08-02-runtime-integration",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 398,
+      "code": "DSE-08-03",
+      "title": "Domknąć trzy rzeczywiste wycinki PL↔IR↔EN z niezależnymi znaczeniami",
+      "url": "https://github.com/clickbytes/golingua/issues/398",
+      "parent_issue": 375,
+      "dependencies": [
+        397,
+        391,
+        392,
+        393,
+        385
+      ],
+      "branch_name": "dse/08-03-pl-en-vertical-slices",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 399,
+      "code": "DSE-09-01",
+      "title": "Udowodnić niezależność od domeny: nowy pakiet po buildzie i audyt hardcode",
+      "url": "https://github.com/clickbytes/golingua/issues/399",
+      "parent_issue": 376,
+      "dependencies": [
+        398,
+        388,
+        389,
+        390
+      ],
+      "branch_name": "dse/09-01-data-independence",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    },
+    {
+      "issue_number": 400,
+      "code": "DSE-09-02",
+      "title": "Końcowy odbiór, dokumentacja wykonania i zamknięcie epica na podstawie dowodów",
+      "url": "https://github.com/clickbytes/golingua/issues/400",
+      "parent_issue": 376,
+      "dependencies": [
+        399,
+        377,
+        378,
+        379,
+        380,
+        381,
+        382,
+        383,
+        384,
+        385,
+        386,
+        387,
+        388,
+        389,
+        390,
+        391,
+        392,
+        393,
+        394,
+        395,
+        396,
+        397,
+        398
+      ],
+      "branch_name": "dse/09-02-final-acceptance",
+      "status": "QUEUED",
+      "actual_base_sha": null,
+      "branch_url": null,
+      "pr_url": null,
+      "merge_sha": null,
+      "evidence_paths": []
+    }
+  ]
+}
