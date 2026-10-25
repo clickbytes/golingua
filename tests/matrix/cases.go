@@ -14,6 +14,7 @@ type AnalysisCase struct {
 type RealizationCase struct {
 	ID, MeaningID                                   string
 	ProposalTexts, AllowedTexts, RequiredTexts      []string
+	RequiredTextGroups                              [][]string
 	MeaningVariants                                 []MeaningRealization
 	AllowedAssumptionFields                         []string
 	RequiredAssumptionFields                        []string
@@ -28,12 +29,14 @@ type RealizationCase struct {
 type MeaningRealization struct {
 	MeaningID                   string
 	AllowedTexts, RequiredTexts []string
+	RequiredTextGroups          [][]string
 	RequiredTextAssumptions     []TextAssumptionRequirement
 }
 
 // TranslationCase links one source analysis to a target realization.
 type TranslationCase struct {
 	ID, From, To, AnalysisID, RealizationID string
+	PairID, PrimaryGroup                    string
 	CoverageTags                            []string
 }
 

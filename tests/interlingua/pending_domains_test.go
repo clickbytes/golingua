@@ -16,7 +16,7 @@ func TestPendingDomainRepresentableMeaning(t *testing.T) {
 	if err != nil {
 		t.Fatalf("INFRA: compile CORE: %v", err)
 	}
-	for _, id := range []string{"quantity.exactly-two-cats", "question.classification.this", "question.classification.to"} {
+	for _, id := range []string{"quantity.exactly-two-cats.component", "question.classification.this", "question.classification.to"} {
 		t.Run(id, func(t *testing.T) {
 			graph, fixture, ok, err := interlingua.PendingDomain(id)
 			if err != nil || !ok {
@@ -30,7 +30,8 @@ func TestPendingDomainRepresentableMeaning(t *testing.T) {
 					t.Fatalf("fixture context does not validate: %v", err)
 				}
 			}
-			if id == "quantity.exactly-two-cats" {
+			if id == "quantity.exactly-two-cats.component" {
+				// This validates only the cardinality component, not a complete finite existential sentence.
 				assertExactlyTwoCats(t, graph)
 				return
 			}

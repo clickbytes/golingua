@@ -51,7 +51,7 @@ func RunAnalysis(t *testing.T, lang features.LanguageID, cases []AnalysisCase) {
 			if gap := c.SemanticRequirement.RepresentationGap; gap != "" {
 				defer t.Errorf("GAP_I: %s", gap)
 			}
-			want, identification, ok, err := loadFixture(c.MeaningID)
+			want, _, ok, err := loadFixture(c.MeaningID)
 			if err != nil {
 				t.Fatalf("INFRA: build fixture %q: %v", c.MeaningID, err)
 			}
@@ -63,7 +63,7 @@ func RunAnalysis(t *testing.T, lang features.LanguageID, cases []AnalysisCase) {
 						t.Fatalf("INFRA: source analyzer for %q is unavailable", lang)
 					}
 					result, analyzeErr := analyzer.Analyze(context.Background(), c.Input)
-					logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "result": result, "error": errorText(analyzeErr)})
+					logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "native_analysis", "adapter_executed": true, "result": result, "error": errorText(analyzeErr)})
 					if analyzeErr != nil && infraError(analyzeErr) {
 						t.Errorf("INFRA: source analysis %q: %v", c.ID, analyzeErr)
 					} else if analyzeErr != nil || result.Outcome == status.OutcomeUnsupported || len(result.Candidates) == 0 {
@@ -86,12 +86,16 @@ func RunAnalysis(t *testing.T, lang features.LanguageID, cases []AnalysisCase) {
 			if fixtureErr != nil {
 				t.Fatalf("SPEC_PENDING / NOT RUN: load allowed analysis meanings: %v", fixtureErr)
 			}
+			contexts, contextErr := loadMeaningContexts(allowedIDs)
+			if contextErr != nil {
+				t.Fatalf("INFRA: load allowed analysis contexts: %v", contextErr)
+			}
 			analyzer, exists := runtime.SourceAnalyzerFor(lang)
 			if !exists || analyzer == nil {
 				t.Fatalf("INFRA: source analyzer for %q is unavailable", lang)
 			}
 			result, analyzeErr := analyzer.Analyze(context.Background(), c.Input)
-			logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "result": result, "error": errorText(analyzeErr)})
+			logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "native_analysis", "adapter_executed": true, "result": result, "error": errorText(analyzeErr)})
 			if analyzeErr != nil {
 				if infraError(analyzeErr) {
 					t.Errorf("INFRA: source analysis %q: %v", c.ID, analyzeErr)
@@ -116,20 +120,13 @@ func RunAnalysis(t *testing.T, lang features.LanguageID, cases []AnalysisCase) {
 				if candidate.Status != status.OutcomeOK {
 					t.Errorf("FAIL: candidate %q has status %s", candidate.ID, candidate.Status)
 				}
-				if identification != nil {
-					matches, compareErr := IdentificationMatches(*identification, candidate)
-					if compareErr != nil || !matches {
-						t.Errorf("FAIL: candidate %q does not match identification contract (matches=%t, error=%v)", candidate.ID, matches, compareErr)
-					} else {
-						observedRequired[c.MeaningID] = true
-					}
+				meaningID, matches, compareErr := MatchAllowedCandidate(allowedIDs, fixtures, contexts, candidate)
+				if compareErr != nil || !matches {
+					t.Errorf("FAIL: candidate %q Meaning/context does not match an allowed fixture (matches=%t, error=%v)", candidate.ID, matches, compareErr)
 				} else {
-					meaningID, matches, compareErr := MatchAllowedMeaning(allowedIDs, fixtures, *candidate.Meaning)
-					if compareErr != nil || !matches {
-						t.Errorf("FAIL: candidate %q Meaning does not match an allowed fixture (matches=%t, error=%v)", candidate.ID, matches, compareErr)
-					} else {
-						observedRequired[meaningID] = true
-					}
+					observedRequired[meaningID] = true
+				}
+				if contexts[meaningID] == nil {
 					for _, context := range candidate.Contexts {
 						for _, mention := range context.Context.Mentions {
 							if mention.ReferentID != "" {
@@ -177,7 +174,7 @@ func RunRealization(t *testing.T, lang features.LanguageID, cases []RealizationC
 				}
 				if !ok {
 					if gap := c.SemanticRequirement.RepresentationGap; gap != "" {
-						logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "meaning_id": contract.MeaningID, "independent_realization_executed": false, "reason": gap})
+						logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "independent_realization", "adapter_executed": false, "meaning_id": contract.MeaningID, "independent_realization_executed": false, "reason": gap})
 						continue
 					}
 					t.Errorf("SPEC_PENDING / NOT RUN: no independent Meaning fixture for %q", contract.MeaningID)
@@ -201,7 +198,11 @@ func RunRealization(t *testing.T, lang features.LanguageID, cases []RealizationC
 					candidate.Contexts = []semantic.MeaningContext{{Meaning: want, Context: identification.Context}}
 				}
 				result, realizeErr := realizer.Realize(context.Background(), candidate)
-				logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "meaning_id": contract.MeaningID, "result": result, "error": errorText(realizeErr)})
+				observation := map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "independent_realization", "adapter_executed": true, "meaning_id": contract.MeaningID, "independent_realization_executed": true, "meaning_input": want, "result": result, "error": errorText(realizeErr)}
+				if identification != nil {
+					observation["context_input"] = identification.Context
+				}
+				logObservation(t, observation)
 				if realizeErr != nil {
 					if infraError(realizeErr) {
 						t.Errorf("INFRA: target realization %q: %v", c.ID, realizeErr)
@@ -259,7 +260,7 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 		if gap != "" {
 			defer t.Errorf("GAP_I: %s", gap)
 		}
-		want, identification, ok, err := loadFixture(analysis.MeaningID)
+		want, _, ok, err := loadFixture(analysis.MeaningID)
 		if err != nil {
 			t.Fatalf("INFRA: build fixture %q: %v", analysis.MeaningID, err)
 		}
@@ -267,7 +268,7 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 			if gap != "" {
 				runtime := Runtime(t)
 				result, translateErr := runtime.Translate(context.Background(), engine.Request{From: features.LanguageID(c.From), To: features.LanguageID(c.To), Text: analysis.Input})
-				logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "result": result, "error": errorText(translateErr)})
+				logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "integration", "adapter_executed": true, "result": result, "error": errorText(translateErr)})
 				if translateErr != nil && infraError(translateErr) {
 					t.Errorf("INFRA: translation %q: %v", c.ID, translateErr)
 				} else if translateErr != nil || result.Status == status.OutcomeUnsupported || len(result.Candidates) == 0 {
@@ -286,14 +287,76 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 		if fixtureErr != nil {
 			t.Fatalf("SPEC_PENDING / NOT RUN: load allowed translation meanings: %v", fixtureErr)
 		}
+		contexts, contextErr := loadMeaningContexts(allowedIDs)
+		if contextErr != nil {
+			t.Fatalf("INFRA: load allowed translation contexts: %v", contextErr)
+		}
+		hasContextContract := hasMeaningContexts(contexts)
 		sourceGap := false
-		if identification != nil {
+		sourceProbed := false
+		sourceProbeInfra := false
+		probeSourceGap := func() (bool, string, bool) {
+			analyzer, exists := runtime.SourceAnalyzerFor(features.LanguageID(c.From))
+			if !exists || analyzer == nil {
+				t.Errorf("INFRA: source analyzer for %q is unavailable during unsupported translation classification", c.From)
+				return false, "", true
+			}
+			probe, probeErr := analyzer.Analyze(context.Background(), analysis.Input)
+			logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "source_gap_probe", "adapter_executed": true, "result": probe, "error": errorText(probeErr)})
+			if probeErr != nil {
+				var typed interface{ Result() status.Result }
+				if !errors.As(probeErr, &typed) || infraError(probeErr) || infraOutcome(typed.Result().Status) || infraDiagnostics(typed.Result().Diagnostics) {
+					t.Errorf("INFRA: source gap probe %q failed: %v", c.ID, probeErr)
+					return false, "", true
+				}
+				return true, fmt.Sprintf("source probe refused the declared valid input: %v", probeErr), false
+			}
+			if infraOutcome(probe.Outcome) || infraDiagnostics(probe.Diagnostics) {
+				t.Errorf("INFRA: source gap probe exhausted resources or runtime is unavailable")
+				return false, "", true
+			}
+			if (probe.Outcome != status.OutcomeOK && probe.Outcome != status.OutcomeAmbiguous && probe.Outcome != status.OutcomeIncomplete) || len(probe.Candidates) == 0 {
+				return true, fmt.Sprintf("source probe returned %s with %d candidates", probe.Outcome, len(probe.Candidates)), false
+			}
+			if probe.Outcome == status.OutcomeIncomplete {
+				t.Errorf("FAIL: source gap probe returned incomplete status")
+				return true, "source gap probe returned incomplete status", false
+			}
+			observed := make(map[string]bool, len(requiredIDs))
+			for _, candidate := range probe.Candidates {
+				if infraOutcome(candidate.Status) || infraDiagnostics(candidate.Evidence.Diagnostics) {
+					t.Errorf("INFRA: source gap probe candidate failed or exhausted resources")
+					return false, "", true
+				}
+				if candidate.Status == status.OutcomeUnsupported || candidate.Status == status.OutcomeUnknown || candidate.Meaning == nil {
+					return true, fmt.Sprintf("source candidate %q has status %s without a supported Meaning", candidate.ID, candidate.Status), false
+				}
+				if candidate.Status != status.OutcomeOK {
+					t.Errorf("FAIL: source gap probe candidate %q has status %s", candidate.ID, candidate.Status)
+					return true, fmt.Sprintf("source candidate %q has non-ok status %s", candidate.ID, candidate.Status), false
+				}
+				meaningID, matches, matchErr := MatchAllowedCandidate(allowedIDs, fixtures, contexts, candidate)
+				if matchErr != nil || !matches {
+					return true, fmt.Sprintf("source candidate %q does not match an allowed Meaning (matches=%t, error=%v)", candidate.ID, matches, matchErr), false
+				}
+				observed[meaningID] = true
+			}
+			if missing := MissingRequiredMeaningIDs(requiredIDs, observed); len(missing) > 0 {
+				return true, fmt.Sprintf("source probe omitted required Meaning IDs %v", missing), false
+			}
+			return false, "source probe supplied all required licensed meanings", false
+		}
+		sourceMeaningByCandidateID := make(map[string]string, len(requiredIDs))
+		if hasContextContract {
+			sourceProbed = true
+			observedSourceMeanings := make(map[string]bool, len(requiredIDs))
+			seenSourceCandidateIDs := make(map[string]bool, len(requiredIDs))
 			analyzer, exists := runtime.SourceAnalyzerFor(features.LanguageID(c.From))
 			if !exists || analyzer == nil {
 				t.Fatalf("INFRA: source analyzer for %q is unavailable", c.From)
 			}
 			analysisResult, analysisErr := analyzer.Analyze(context.Background(), analysis.Input)
-			logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "identification_source_analysis", "result": analysisResult, "error": errorText(analysisErr)})
+			logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "context_source_analysis", "adapter_executed": true, "result": analysisResult, "error": errorText(analysisErr)})
 			if analysisErr != nil {
 				if infraError(analysisErr) {
 					t.Errorf("INFRA: source analysis %q: %v", c.ID, analysisErr)
@@ -302,28 +365,54 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 					sourceGap = true
 					t.Errorf("GAP_ANALYZE: source analysis %q failed: %v", c.ID, analysisErr)
 				}
-			} else if analysisResult.Outcome == status.OutcomeUnsupported || len(analysisResult.Candidates) == 0 {
+			} else if (analysisResult.Outcome != status.OutcomeOK && analysisResult.Outcome != status.OutcomeAmbiguous && analysisResult.Outcome != status.OutcomeIncomplete) || len(analysisResult.Candidates) == 0 {
 				sourceGap = true
 				t.Errorf("GAP_ANALYZE: source analysis %q returned %s without candidates", c.ID, analysisResult.Outcome)
 			} else {
+				if analysisResult.Outcome == status.OutcomeIncomplete {
+					sourceGap = true
+					t.Errorf("FAIL: source analysis %q returned incomplete status", c.ID)
+				}
 				for _, candidate := range analysisResult.Candidates {
-					if candidate.Status == status.OutcomeUnsupported || candidate.Meaning == nil {
+					if candidate.ID == "" {
 						sourceGap = true
+						t.Errorf("FAIL: source analysis returned a candidate with an empty ID")
+						continue
+					}
+					if seenSourceCandidateIDs[candidate.ID] {
+						sourceGap = true
+						delete(sourceMeaningByCandidateID, candidate.ID)
+						t.Errorf("FAIL: source candidate ID %q is duplicated and cannot bind a translation", candidate.ID)
+						continue
+					}
+					seenSourceCandidateIDs[candidate.ID] = true
+					if candidate.Status == status.OutcomeUnsupported || candidate.Status == status.OutcomeUnknown || candidate.Meaning == nil {
+						sourceGap = true
+						delete(sourceMeaningByCandidateID, candidate.ID)
 						t.Errorf("GAP_ANALYZE: source candidate %q has status %s and no supported Meaning", candidate.ID, candidate.Status)
 						continue
 					}
 					if candidate.Status != status.OutcomeOK {
+						sourceGap = true
 						t.Errorf("FAIL: source candidate %q has status %s", candidate.ID, candidate.Status)
 						continue
 					}
-					if matches, matchErr := IdentificationMatches(*identification, candidate); matchErr != nil || !matches {
-						t.Errorf("FAIL: source candidate %q does not match identification contract (matches=%t, error=%v)", candidate.ID, matches, matchErr)
+					meaningID, licensed, licenseErr := MatchAllowedCandidate(allowedIDs, fixtures, contexts, candidate)
+					if licenseErr != nil || !licensed {
+						sourceGap = true
+						t.Errorf("FAIL: source candidate %q does not match an allowed graph/context (matches=%t, error=%v)", candidate.ID, licensed, licenseErr)
+					} else {
+						observedSourceMeanings[meaningID] = true
+						sourceMeaningByCandidateID[candidate.ID] = meaningID
 					}
 				}
 			}
+			if missing := MissingRequiredMeaningIDs(requiredIDs, observedSourceMeanings); len(missing) > 0 {
+				sourceGap = true
+			}
 		}
 		result, translateErr := runtime.Translate(context.Background(), engine.Request{From: features.LanguageID(c.From), To: features.LanguageID(c.To), Text: analysis.Input})
-		logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "result": result, "error": errorText(translateErr)})
+		logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "integration", "adapter_executed": true, "result": result, "error": errorText(translateErr)})
 		if translateErr != nil {
 			if infraError(translateErr) {
 				t.Errorf("INFRA: translation %q: %v", c.ID, translateErr)
@@ -333,28 +422,36 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 			return
 		}
 		if result.Status == status.OutcomeUnsupported {
+			reason := ""
+			if !sourceProbed {
+				sourceGap, reason, sourceProbeInfra = probeSourceGap()
+			}
+			if sourceProbeInfra {
+				return
+			}
 			kind := "GAP_REALIZE"
 			if sourceGap {
 				kind = "GAP_ANALYZE"
 			}
-			for _, diagnostic := range result.Diagnostics {
-				if strings.Contains(diagnostic.Code, "SOURCE") || strings.Contains(diagnostic.Code, "ANALYSIS") {
-					kind = "GAP_ANALYZE"
-					break
-				}
-			}
-			t.Errorf("%s: translation returned unsupported: %v", kind, result.Diagnostics)
+			t.Errorf("%s: translation returned unsupported: %v; source probe: %s", kind, result.Diagnostics, reason)
 			for _, meaningID := range MissingRequiredMeaningIDs(requiredIDs, nil) {
 				t.Errorf("FAIL: translation omitted required Meaning %q", meaningID)
 			}
 			return
 		}
 		if len(result.Candidates) == 0 {
+			reason := ""
+			if !sourceProbed {
+				sourceGap, reason, sourceProbeInfra = probeSourceGap()
+			}
+			if sourceProbeInfra {
+				return
+			}
 			kind := "GAP_REALIZE"
 			if sourceGap {
 				kind = "GAP_ANALYZE"
 			}
-			t.Errorf("%s: translation returned no candidates", kind)
+			t.Errorf("%s: translation returned no candidates; source probe: %s", kind, reason)
 			for _, meaningID := range MissingRequiredMeaningIDs(requiredIDs, nil) {
 				t.Errorf("FAIL: translation omitted required Meaning %q", meaningID)
 			}
@@ -367,7 +464,14 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 				t.Errorf("GAP_ANALYZE: translation candidate %q has no Meaning", candidate.ID)
 				continue
 			}
-			meaningID, matches, compareErr := MatchAllowedMeaning(allowedIDs, fixtures, *candidate.Meaning)
+			var meaningID string
+			var matches bool
+			var compareErr error
+			if hasContextContract {
+				meaningID, matches, compareErr = MatchSourceCandidateMeaning(candidate.SourceCandidateID, *candidate.Meaning, sourceMeaningByCandidateID, fixtures)
+			} else {
+				meaningID, matches, compareErr = MatchAllowedMeaning(allowedIDs, fixtures, *candidate.Meaning)
+			}
 			if compareErr != nil || !matches {
 				t.Errorf("FAIL: translation candidate %q Meaning is not allowed (matches=%t, error=%v)", candidate.ID, matches, compareErr)
 				continue
@@ -420,7 +524,7 @@ func realizationMeaningContracts(c RealizationCase) ([]MeaningRealization, error
 	if strings.TrimSpace(c.MeaningID) == "" {
 		return nil, errors.New("primary MeaningID is empty")
 	}
-	contracts := []MeaningRealization{{MeaningID: c.MeaningID, AllowedTexts: c.AllowedTexts, RequiredTexts: c.RequiredTexts, RequiredTextAssumptions: c.RequiredTextAssumptions}}
+	contracts := []MeaningRealization{{MeaningID: c.MeaningID, AllowedTexts: c.AllowedTexts, RequiredTexts: c.RequiredTexts, RequiredTextAssumptions: c.RequiredTextAssumptions, RequiredTextGroups: c.RequiredTextGroups}}
 	seen := map[string]bool{c.MeaningID: true}
 	for _, variant := range c.MeaningVariants {
 		if strings.TrimSpace(variant.MeaningID) == "" || seen[variant.MeaningID] {
@@ -440,6 +544,7 @@ func realizationVariantCase(parent RealizationCase, contract MeaningRealization)
 	variant.MeaningID = contract.MeaningID
 	variant.AllowedTexts = contract.AllowedTexts
 	variant.RequiredTexts = contract.RequiredTexts
+	variant.RequiredTextGroups = contract.RequiredTextGroups
 	if contract.RequiredTextAssumptions != nil {
 		variant.RequiredTextAssumptions = contract.RequiredTextAssumptions
 	}
@@ -462,6 +567,30 @@ func loadMeaningFixtures(ids []string, runtime *engine.Engine) (map[string]meani
 		fixtures[id] = graph
 	}
 	return fixtures, nil
+}
+
+func loadMeaningContexts(ids []string) (map[string]*interlingua.IdentificationMeaning, error) {
+	contexts := make(map[string]*interlingua.IdentificationMeaning, len(ids))
+	for _, id := range ids {
+		_, fixture, ok, err := loadFixture(id)
+		if err != nil {
+			return nil, fmt.Errorf("load context fixture %q: %w", id, err)
+		}
+		if !ok {
+			continue
+		}
+		contexts[id] = fixture
+	}
+	return contexts, nil
+}
+
+func hasMeaningContexts(contexts map[string]*interlingua.IdentificationMeaning) bool {
+	for _, context := range contexts {
+		if context != nil {
+			return true
+		}
+	}
+	return false
 }
 
 // MatchAllowedMeaning returns the unique authored MeaningID matched by a candidate.
@@ -501,6 +630,10 @@ func checkSurfaces(t *testing.T, c RealizationCase, outcome status.OutcomeKind, 
 	t.Helper()
 	if outcome == status.OutcomeUnsupported || outcome == status.OutcomeUnknown {
 		t.Errorf("GAP_REALIZE: target adapter returned status %s", outcome)
+		return
+	}
+	if len(surfaces) == 0 {
+		t.Errorf("FAIL: target adapter returned no surface alternatives")
 		return
 	}
 	if outcome != status.OutcomeOK && outcome != status.OutcomeAmbiguous && outcome != status.OutcomeIncomplete {
@@ -562,6 +695,12 @@ func checkSurfaces(t *testing.T, c RealizationCase, outcome status.OutcomeKind, 
 	}
 	for _, missing := range missingRequiredTexts(c.RequiredTexts, seen) {
 		t.Errorf("FAIL: expected target text %q was not produced", missing)
+	}
+	if invalid := invalidRequiredTextGroups(c.RequiredTextGroups, allowed); len(invalid) > 0 {
+		t.Errorf("SPEC_PENDING: required text groups contain empty or unlicensed alternatives: %v", invalid)
+	}
+	for _, group := range missingRequiredTextGroups(c.RequiredTextGroups, seen) {
+		t.Errorf("FAIL: required text group %d produced none of its alternatives", group)
 	}
 	if len(allowed) == 0 {
 		t.Errorf("SPEC_PENDING / NOT RUN: no allowed target texts for %q", c.ID)
@@ -647,6 +786,12 @@ func contains(values []string, value string) bool {
 }
 
 func loadFixture(id string) (meaning.Meaning, *interlingua.IdentificationMeaning, bool, error) {
+	if graph, ok, err := interlingua.NegationExpansion(id); err != nil || ok {
+		return graph, nil, ok, err
+	}
+	if graph, ok, err := interlingua.ActionExpansion(id); err != nil || ok {
+		return graph, nil, ok, err
+	}
 	if graph, ok, err := interlingua.CompositionBatch(id); err != nil || ok {
 		return graph, nil, ok, err
 	}
@@ -671,9 +816,74 @@ func loadFixture(id string) (meaning.Meaning, *interlingua.IdentificationMeaning
 	if graph, identification, ok, err := interlingua.PendingDomain(id); err != nil || ok {
 		return graph, identification, ok, err
 	}
+	if fixture, ok, err := interlingua.CompositionExpansion(id); err != nil || ok {
+		if len(fixture.Context.Mentions) == 0 {
+			return fixture.Graph, nil, ok, err
+		}
+		return fixture.Graph, &fixture, ok, err
+	}
+	if fixture, ok, err := interlingua.CaseOrderExpansion(id); err != nil || ok {
+		if len(fixture.Context.Mentions) == 0 {
+			return fixture.Graph, nil, ok, err
+		}
+		return fixture.Graph, &fixture, ok, err
+	}
+	if fixture, ok, err := interlingua.AmbiguityExpansion(id); err != nil || ok {
+		if len(fixture.Context.Mentions) == 0 {
+			return fixture.Graph, nil, ok, err
+		}
+		return fixture.Graph, &fixture, ok, err
+	}
+	if fixture, ok, err := interlingua.TimeExpansion(id); err != nil || ok {
+		if len(fixture.Context.Mentions) == 0 {
+			return fixture.Graph, nil, ok, err
+		}
+		return fixture.Graph, &fixture, ok, err
+	}
+	if fixture, ok, err := interlingua.QuestionExpansion(id); err != nil || ok {
+		if len(fixture.Context.Mentions) == 0 {
+			return fixture.Graph, nil, ok, err
+		}
+		return fixture.Graph, &fixture, ok, err
+	}
+	if fixture, ok, err := interlingua.IdentificationExpansion(id); err != nil || ok {
+		return fixture.Graph, &fixture, ok, err
+	}
 	fixture, ok, err := interlingua.Identification(id)
 	if err != nil || !ok {
 		return meaning.Meaning{}, nil, ok, err
 	}
 	return fixture.Graph, &fixture, true, nil
+}
+
+// invalidRequiredTextGroups identifies empty or unlicensed style groups.
+func invalidRequiredTextGroups(groups [][]string, allowed map[string]bool) []int {
+	var invalid []int
+	for i, group := range groups {
+		valid := len(group) > 0
+		for _, text := range group {
+			if text == "" || !allowed[text] {
+				valid = false
+			}
+		}
+		if !valid {
+			invalid = append(invalid, i)
+		}
+	}
+	return invalid
+}
+
+// missingRequiredTextGroups returns required groups without any observed text.
+func missingRequiredTextGroups(groups [][]string, seen map[string]bool) []int {
+	var missing []int
+	for i, group := range groups {
+		produced := false
+		for _, text := range group {
+			produced = produced || seen[text]
+		}
+		if !produced {
+			missing = append(missing, i)
+		}
+	}
+	return missing
 }

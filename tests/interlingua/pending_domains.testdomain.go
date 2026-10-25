@@ -8,11 +8,11 @@ import (
 	"github.com/clickbytes/golingua/internal/meaning"
 )
 
-// PendingDomain returns independently authored meanings whose required
-// predicates, roles and quantification are expressible in the current CORE.
+// PendingDomain returns independently authored representable meanings and components.
+// A supported component does not imply that a complete sentence graph exists.
 func PendingDomain(id string) (meaning.Meaning, *IdentificationMeaning, bool, error) {
 	switch id {
-	case "quantity.exactly-two-cats":
+	case "quantity.exactly-two-cats.component":
 		catID, err := ids.NewConceptID("cat")
 		if err != nil {
 			return meaning.Meaning{}, nil, false, fmt.Errorf("exact-two cat concept: %w", err)

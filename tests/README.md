@@ -1,6 +1,6 @@
 # Macierz zachowania PL/EN
 
-Macierz zawiera 112 kierunkowych rekordów: 24 pierwotnej próbki A1 oraz po 32 rekordy A1.1/A1.2 z 16 wybranych par. A1.3 dodaje 24 kierunkowe rekordy z 12 zdań o kompozycji. Dziewięć osobnych metamorficznych obserwacji sprawdza zmianę ról, liczby, czasu i polaryzacji w PL/EN oraz szyku SVO→OVS po polsku. Nowe dane A1.2/A1.3 są propozycjami `NOT_EVALUATED`, niezatwierdzonymi językowo. Inwentarz `translation.Cases` pozostaje deklaratywny i może rosnąć o następne partie; liczba rekordów nie jest ograniczeniem walidatora. To ograniczona próbka, nie pełne A1 ani certyfikacja CEFR; [deskryptory Rady Europy](https://rm.coe.int/16809ea0d4) są jedynie kontekstem. Teksty i wymagania zachowują provenance, a akceptacja właściciela jest zapisana osobno jako `NOT_EVALUATED`.
+Obecny inwentarz obejmuje **500 par / 1000 kierunków**: próbkę A1 oraz kolejne partie A1.1–A1.13. Zaplanowane liczebności wszystkich dziesięciu grup zostały osiągnięte; to opis zakresu próby, nie obsługi gramatycznej przez silnik. Partie A1.1–A1.13 nie wyznaczają limitu rekordów ani poziomu biegłości i nie stanowią certyfikacji CEFR. Właściciel może rozwijać inwentarz o kolejne jawnie wybrane partie. Każdy kierunek ma `PairID` i `PrimaryGroup`; `translation.LanguageBatches` rejestruje wspólne zbiory, a `coverage-targets.json` zawiera cele planistyczne, nie bramki poprawności. Teksty, wymagania i akceptacja właściciela są rozdzielone; niezatwierdzone kontrakty mają `NOT_EVALUATED`. Aktualny odbiór i status PR opisuje [podsumowanie #344](../docs/work/a1-matrix/344-results.md).
 
 ## Układ i kontrakt
 
@@ -9,21 +9,17 @@ tests/
   interlingua/                 # niezależne, ręcznie zapisane znaczenia I
   languages/pl/A1/             # analiza i realizacja po polsku
   languages/en/A1/             # analiza i realizacja po angielsku
-  languages/pl/A1.1/           # wybrane rekordy korpusu po polsku
-  languages/en/A1.1/           # wybrane rekordy korpusu po angielsku
-  languages/pl/A1.2/           # wybrane kontrasty A1 po polsku
-  languages/en/A1.2/           # wybrane kontrasty A1 po angielsku
-  languages/pl/A1.3/           # kompozycja A1 po polsku
-  languages/en/A1.3/           # kompozycja A1 po angielsku
+  languages/pl/A1.1..A1.13/   # kolejne wybrane partie po polsku
+  languages/en/A1.1..A1.13/   # kolejne wybrane partie po angielsku
   translation/cases.go         # deklaratywne ID i odwołania do obu stron
   translation/pl-en/           # PL → I → EN
   translation/en-pl/           # EN → I → PL
   matrix/                      # wspólne typy, runtime produkcyjny i kontrole
 ```
 
-A1.1, A1.2 i A1.3 oznaczają partie A1 konkretnego języka; każda wymaga jawnie określonego zakresu. A1.1 obejmuje 16 wskazanych par korpusu, A1.2 — 16 kontrastów, a A1.3 — 12 zdań kompozycyjnych. Są to propozycje bez akceptacji językowej właściciela.
+A1.1–A1.13 oznaczają kolejne partie próby PL/EN z jawnie wybranymi zjawiskami. Każda zachowuje własne briefy, listę wejść i obserwacje w [rejestrze etapów](../docs/work/a1-matrix/README.md); pełny wybór został też uruchomiony w staged CLI evidence. Akceptacja językowa właściciela pozostaje odrębna od obserwacji agenta.
 
-Pliki `*.testdomain.go` zawierają dane. Pliki `*_test.go` wykonują kontrole standardowym `go test`. Osobny, obserwacyjny workflow GitHub Actions uruchamia pełną macierz na push do `main`, publikuje najnowszy raport w [`tests/results/latest.md`](results/latest.md), a surowy log udostępnia jako artefakt. Wynik macierzy nie blokuje technicznego `go-ci`; lokalne polecenia poniżej nadal pozwalają odtworzyć kontrole. Każdy przypadek analizy zachowuje dokładne wejście, wymagania, nierozstrzygnięcia i pochodzenie wejścia. Przypadek realizacji zachowuje `ProposalTexts`, pochodzenie propozycji i akceptację właściciela oddzielnie od `AllowedTexts` (zbiór dopuszczalny) i `RequiredTexts` (zbiór wymagany dla danego kontraktu), dozwolonych/obowiązkowych założeń i strat. `RequiredTexts` musi być podzbiorem `AllowedTexts`; pusta lista `AllowedTexts` pozostawia rekord bez zamkniętego kontraktu. Propozycja nie staje się automatycznie oczekiwanym wynikiem.
+Pliki `*.testdomain.go` zawierają dane. Standardowe kontrole Go rozdzielają analizę źródła, niezależną realizację każdego wymaganego Meaning i integrację przez pipeline produkcyjny. Zbiory `AllowedTexts`, `RequiredTexts`, grupy one-of i warianty per Meaning określają osobno dopuszczalne style i wymagane wyniki; propozycja nie staje się automatycznie oczekiwanym wynikiem. Pliki `*_test.go` wykonują te kontrole oraz osobne testy odmów, metamorficzne, wieloznaczności i wsparcia. Nie dolicza się ich do PASS zwykłego tłumaczenia. Obserwacyjny workflow GitHub Actions na push do `main` publikuje [`tests/results/latest.md`](results/latest.md) i surowy log jako artefakt; raport nie blokuje technicznego `go-ci` i zmieni się dopiero po merge na `main`. Każda analiza zachowuje wejście, wymagania, nierozstrzygnięcia i pochodzenie. Realizacja zachowuje `ProposalTexts`, `AllowedTexts`, `RequiredTexts`, dozwolone/obowiązkowe założenia i straty. `RequiredTexts` musi być podzbiorem `AllowedTexts`; pusta lista `AllowedTexts` pozostawia kontrakt otwarty.
 
 Integracja wskazuje ID analizy i realizacji; nie kopiuje ich treści. Inwentarz sprawdza unikalność ID, poprawny kierunek, wszystkie odwołania, brak osieroconych przypadków oraz kompletność wymaganych pól provenance. `CoverageTags` w rekordzie integracji opisują zadeklarowane zjawiska; nie dowodzą wykonania ani poprawności konstrukcji. Raport oddziela je od statusów rzeczywiście zaobserwowanych kontroli i pokazuje kontrole dodatkowe poza rekordami integracji. Analiza i realizacja PL działają niezależnie od EN i odwrotnie. Wykonanie przekładu uruchamia oba adaptery produkcyjne przez rzeczywisty pipeline.
 
@@ -126,7 +122,7 @@ go test ./tests/translation/... -run Inventory -count=1 -v
 go test ./tests/... -count=1 -v
 ```
 
-Pełna macierz jest celowo niezaliczona, dopóki wymagania nie mają działających tras. Aktualizacja A1-M3 zamyka wymagania LQ/PO/Q: niezależne I dla dokładnie dwóch kotów i pytania klasyfikacyjnego, jawne GAP_I dla brakujących relacji. Rzeczywisty odbiór wykazał **24 GAP_I, 6 GAP_ANALYZE i 6 GAP_REALIZE; zero SPEC_PENDING**. Szczegóły i ograniczenia niezależnej realizacji: [odbiór A1-M3](../docs/work/a1-matrix/339-results.md). Pozostałe 12 rekordów obejmuje Seeing, identyfikację i negację. Każdy z 24 oryginalnych rekordów nadal pojawia się w raporcie; `SPEC_PENDING` ani `NOT RUN` nie są pomijane i nie oznaczają PASS. Oddzielny workflow zapisuje obserwację po pushu na `main`, ale nie jest bramką dla technicznego CI.
+**Historia M3:** wynik zapisany dla jego ówczesnego snapshotu wykazał 24 `GAP_I`, 6 `GAP_ANALYZE`, 6 `GAP_REALIZE` i zero `SPEC_PENDING`; zobacz [odbiór M3](../docs/work/a1-matrix/339-results.md). I dla dokładnie dwóch kotów reprezentuje legalny komponent `QuantifierExactly(2)`, ale nie pełne teraźniejsze zdanie egzystencjalne: brak wiązania z rolą istnienia i brak czasu. Obecne pełne wymaganie „There are two cats” pozostaje `GAP_I`; wyjaśnia to [audyt liczebności](../docs/work/a1-matrix/344-quantity-audit.md). Wcześniejszy wynik M2 dla 24 rekordów / 72 kontroli, w tym 36 `SPEC_PENDING`, jest historycznym snapshotem na podanym base SHA w [wynikach M2](../docs/work/a1-matrix/338-results.md), a nie aktualnym licznikiem. Aktualny pełny przebieg #344, wszystkie 1000 kierunków oraz podział statusów opisuje [wynik #344](../docs/work/a1-matrix/344-results.md). `SPEC_PENDING` i `NOT RUN` pozostają widoczne i nie oznaczają PASS.
 
 ## Obserwacje CLI dla czterech oryginalnych zdań
 
@@ -152,7 +148,7 @@ Na końcowym snapshotcie CLI zwróciło poniższe wyniki. Status i exit CLI są 
 | `A1-NEG-003-EN-PL` | `The teacher does not see the dog.` · EN→PL | `Nauczyciel nie widzi psa.` | `ok` / 0 |
 | `A1-NEG-004-PL-EN` | `Nauczyciel nie widzi psa.` · PL→EN | `The teacher does not see the dog.`, `The teacher does not see a dog.`, `A teacher does not see the dog.`, `A teacher does not see a dog.` | `ambiguous` / 6; dobór `determiner` jest jawny dla każdej opcji |
 
-Wszystkie cztery grafy pośrednie mają jeden korzeń zakresu negacji. Dodatkowe kontrole zachowały zamianę ról, liczbę mnogą przy słuchaniu/patrzeniu, niejednoznaczność czytania, a podwójne lub przestawione `not`/`nie` otrzymały `unsupported`. Surowe obserwacje z poleceniami, exit code i SHA: `/tmp/a1-neg-final-cli.json`; testy I, PL, EN, przekładu, kontrole, vet, build i pełnej macierzy: `/tmp/a1-neg-final-{i,pl,en,translation,controls,vet,build,full}.log`. Pełny przebieg zakończył się niezerowo wyłącznie 36 przypadkami `SPEC_PENDING` opisanymi wyżej.
+Wszystkie cztery grafy pośrednie mają jeden korzeń zakresu negacji. Dodatkowe kontrole zachowały zamianę ról, liczbę mnogą przy słuchaniu/patrzeniu, niejednoznaczność czytania, a podwójne lub przestawione `not`/`nie` otrzymały `unsupported`. Surowe obserwacje z poleceniami, exit code i SHA: `/tmp/a1-neg-final-cli.json`; testy I, PL, EN, przekładu, kontrole, vet, build i pełnej macierzy: `/tmp/a1-neg-final-{i,pl,en,translation,controls,vet,build,full}.log`. To historyczny przebieg sprzed finalnej macierzy #344; jego 36 przypadków `SPEC_PENDING` nie jest bieżącym wynikiem. Aktualny przebieg i reprodukcja są w [wynikach #344](../docs/work/a1-matrix/344-results.md).
 
 ## Przygotowanie świeżego snapshotu i CLI
 
@@ -206,6 +202,6 @@ Dla negacji użyto świeżego binarium `/tmp/golingua-a1-neg` z runtime `/tmp/go
 
 ## Status i pochodzenie
 
-Ocena techniczna agenta dla zamkniętej identyfikacji i negacji: PASS. Kontrakty LQ/PO/Q są zamknięte, lecz wymagania nadal nie są spełnione przez silnik; patrz GAP w raporcie. Akceptacja językowa właściciela: `NOT_EVALUATED`.
+Wyniki poniżej dokumentują wcześniejszy zamknięty wycinek identyfikacji i negacji; nie zmieniają aktualnej oceny całej macierzy. Aktualny audyt to epik [#337](https://github.com/clickbytes/golingua/issues/337), child [#344](https://github.com/clickbytes/golingua/issues/344) i draft [PR #351](https://github.com/clickbytes/golingua/pull/351). M2–M7 są scalone z zielonym main CI; M8 jest zaimplementowany, a końcowe CI PR/main i merge oczekują. Akceptacja językowa właściciela pozostaje `NOT_EVALUATED`; [rejestr etapów i wyniki](../docs/work/a1-matrix/README.md) oraz [końcowe podsumowanie M8](../docs/work/a1-matrix/344-results.md) oddzielają status implementacji od obserwacji.
 
-Powiązane zadania: epik [#311](https://github.com/clickbytes/golingua/issues/311), fundament [#312](https://github.com/clickbytes/golingua/issues/312), identyfikacja I [#314](https://github.com/clickbytes/golingua/issues/314), PL [#316](https://github.com/clickbytes/golingua/issues/316), EN [#318](https://github.com/clickbytes/golingua/issues/318), integracja [#320](https://github.com/clickbytes/golingua/issues/320), negacja [#322](https://github.com/clickbytes/golingua/issues/322). Dodatkowe informacje: [architektura](../docs/architecture/README.md), [CLI](../docs/cli.md), [przegląd ręczny](../docs/manual-review.md).
+Powiązane wcześniejsze zadania: epik [#311](https://github.com/clickbytes/golingua/issues/311), fundament [#312](https://github.com/clickbytes/golingua/issues/312), identyfikacja I [#314](https://github.com/clickbytes/golingua/issues/314), PL [#316](https://github.com/clickbytes/golingua/issues/316), EN [#318](https://github.com/clickbytes/golingua/issues/318), integracja [#320](https://github.com/clickbytes/golingua/issues/320), negacja [#322](https://github.com/clickbytes/golingua/issues/322). Dodatkowe informacje: [architektura](../docs/architecture/README.md), [CLI](../docs/cli.md), [przegląd ręczny](../docs/manual-review.md).

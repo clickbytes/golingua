@@ -1,0 +1,654 @@
+{
+  "source_sha": "17d85e8+working-tree",
+  "command": "golingua translate --from LANG --to TARGET --text INPUT --runtime-config runtime.json --json",
+  "owner_acceptance": "NOT_EVALUATED",
+  "records": [
+    {
+      "pair_index": 9,
+      "from": "en",
+      "to": "pl",
+      "input": "The doctor does not open the door.",
+      "exit_code": 3,
+      "result": {
+        "status": "unsupported",
+        "from": "en",
+        "to": "pl",
+        "candidates": [
+          {
+            "id": "evidence:357d331a299e321f231fd2bb199fa89d5d3a9551da65d58f65e23b881ec25a4b",
+            "source_candidate_id": "evidence:357d331a299e321f231fd2bb199fa89d5d3a9551da65d58f65e23b881ec25a4b",
+            "semantic_id": "evidence:357d331a299e321f231fd2bb199fa89d5d3a9551da65d58f65e23b881ec25a4b",
+            "outcome": "unsupported",
+            "evidence": [
+              {
+                "alternative_id": "evidence:357d331a299e321f231fd2bb199fa89d5d3a9551da65d58f65e23b881ec25a4b",
+                "outcome": "unsupported",
+                "records": [
+                  {
+                    "source_span": {
+                      "Start": 4,
+                      "End": 10
+                    },
+                    "candidate_id": "phrase:cf5ab7a67df6ac74223b1e1ae232f5de2829c655f8fe485e94dad11efd37d1e1",
+                    "reading_id": "5a00c4990b956e57e3db61d96dd891e09c1e97bdee9288f0fa10aeee9216fcd2",
+                    "sense_id": "sense:en.doctor.academic",
+                    "outcome": "unsupported",
+                    "reason": "candidate was not used by a retained construction parse",
+                    "provenance": {
+                      "id": "",
+                      "version": "",
+                      "license": ""
+                    }
+                  },
+                  {
+                    "source_span": {
+                      "Start": 4,
+                      "End": 10
+                    },
+                    "candidate_id": "phrase:cf5ab7a67df6ac74223b1e1ae232f5de2829c655f8fe485e94dad11efd37d1e1",
+                    "reading_id": "5a00c4990b956e57e3db61d96dd891e09c1e97bdee9288f0fa10aeee9216fcd2",
+                    "sense_id": "sense:en.doctor.role",
+                    "outcome": "unsupported",
+                    "reason": "candidate was not used by a retained construction parse",
+                    "provenance": {
+                      "id": "",
+                      "version": "",
+                      "license": ""
+                    }
+                  }
+                ],
+                "diagnostics": [
+                  {
+                    "code": "UNMATCHED_PARSE_CANDIDATE",
+                    "message": "candidate was not used by a retained construction parse",
+                    "path": "candidate",
+                    "severity": "warning"
+                  }
+                ]
+              }
+            ],
+            "diagnostics": [
+              {
+                "code": "UNMATCHED_PARSE_CANDIDATE",
+                "message": "candidate was not used by a retained construction parse",
+                "path": "candidate",
+                "severity": "warning"
+              }
+            ]
+          },
+          {
+            "id": "evidence:3858eebdf4dc1c83ff93ef6ef0251cd442e1abf94141dd1284b335aeb67e82d6",
+            "source_candidate_id": "evidence:3858eebdf4dc1c83ff93ef6ef0251cd442e1abf94141dd1284b335aeb67e82d6",
+            "semantic_id": "evidence:3858eebdf4dc1c83ff93ef6ef0251cd442e1abf94141dd1284b335aeb67e82d6",
+            "outcome": "unsupported",
+            "evidence": [
+              {
+                "alternative_id": "evidence:3858eebdf4dc1c83ff93ef6ef0251cd442e1abf94141dd1284b335aeb67e82d6",
+                "outcome": "unsupported",
+                "records": [
+                  {
+                    "source_span": {
+                      "Start": 29,
+                      "End": 33
+                    },
+                    "candidate_id": "phrase:46c9f3e8fe675af030beaa3341c75cb842b3cc028f3ddbc1f6e4ccd91b48dc99",
+                    "reading_id": "07411edc447d00addbffe04e0a182a3d3539fcb7942b7463f4895a4d0ae7d5c0",
+                    "sense_id": "sense:en.door.barrier",
+                    "outcome": "unsupported",
+                    "reason": "candidate was not used by a retained construction parse",
+                    "provenance": {
+                      "id": "",
+                      "version": "",
+                      "license": ""
+                    }
+                  }
+                ],
+                "diagnostics": [
+                  {
+                    "code": "UNMATCHED_PARSE_CANDIDATE",
+                    "message": "candidate was not used by a retained construction parse",
+                    "path": "candidate",
+                    "severity": "warning"
+                  }
+                ]
+              }
+            ],
+            "diagnostics": [
+              {
+                "code": "UNMATCHED_PARSE_CANDIDATE",
+                "message": "candidate was not used by a retained construction parse",
+                "path": "candidate",
+                "severity": "warning"
+              }
+            ]
+          }
+        ],
+        "diagnostics": [
+          {
+            "code": "UNKNOWN_SURFACE",
+            "message": "no licensed morphology reading matches this token surface",
+            "path": "tokens[4].span[20:24]",
+            "severity": "warning"
+          },
+          {
+            "code": "UNMATCHED_PARSE_CANDIDATE",
+            "message": "candidate was not used by a retained construction parse",
+            "path": "candidate",
+            "severity": "warning"
+          }
+        ]
+      }
+    },
+    {
+      "pair_index": 9,
+      "from": "pl",
+      "to": "en",
+      "input": "Lekarz nie otwiera drzwi.",
+      "exit_code": 3,
+      "result": {
+        "status": "unsupported",
+        "from": "pl",
+        "to": "en",
+        "candidates": [
+          {
+            "id": "evidence:30f65e338477948ca3b2defd492af556e0006be4c2baa0283999a1a2ad88fef7",
+            "source_candidate_id": "evidence:30f65e338477948ca3b2defd492af556e0006be4c2baa0283999a1a2ad88fef7",
+            "semantic_id": "evidence:30f65e338477948ca3b2defd492af556e0006be4c2baa0283999a1a2ad88fef7",
+            "outcome": "unsupported",
+            "evidence": [
+              {
+                "alternative_id": "evidence:30f65e338477948ca3b2defd492af556e0006be4c2baa0283999a1a2ad88fef7",
+                "outcome": "unsupported",
+                "records": [
+                  {
+                    "source_span": {
+                      "Start": 0,
+                      "End": 6
+                    },
+                    "candidate_id": "phrase:8888f44a57ddfb4e12d51f3e4dbbc3c121929a2230d936f6c3912dec6b9fe2cb",
+                    "reading_id": "855288e98a7a7cd0b9221add2b9c4ab7ea09e8602ef1500a2344ba5906ad678d",
+                    "sense_id": "sense:pl.lekarz.role",
+                    "outcome": "unsupported",
+                    "reason": "candidate was not used by a retained construction parse",
+                    "provenance": {
+                      "id": "",
+                      "version": "",
+                      "license": ""
+                    }
+                  }
+                ],
+                "diagnostics": [
+                  {
+                    "code": "UNMATCHED_PARSE_CANDIDATE",
+                    "message": "candidate was not used by a retained construction parse",
+                    "path": "candidate",
+                    "severity": "warning"
+                  }
+                ]
+              }
+            ],
+            "diagnostics": [
+              {
+                "code": "UNMATCHED_PARSE_CANDIDATE",
+                "message": "candidate was not used by a retained construction parse",
+                "path": "candidate",
+                "severity": "warning"
+              }
+            ]
+          }
+        ],
+        "diagnostics": [
+          {
+            "code": "UNKNOWN_SURFACE",
+            "message": "no licensed morphology reading matches this token surface",
+            "path": "tokens[2].span[11:18]",
+            "severity": "warning"
+          },
+          {
+            "code": "UNKNOWN_SURFACE",
+            "message": "no licensed morphology reading matches this token surface",
+            "path": "tokens[3].span[19:24]",
+            "severity": "warning"
+          },
+          {
+            "code": "UNMATCHED_PARSE_CANDIDATE",
+            "message": "candidate was not used by a retained construction parse",
+            "path": "candidate",
+            "severity": "warning"
+          }
+        ]
+      }
+    },
+    {
+      "pair_index": 25,
+      "from": "en",
+      "to": "pl",
+      "input": "The door is not black.",
+      "exit_code": 3,
+      "result": {
+        "status": "unsupported",
+        "from": "en",
+        "to": "pl",
+        "candidates": [
+          {
+            "id": "evidence:226f59bb28747c42c3d8d0bf4c93f02ac9435fbefe1c92ea57b588a4f46ac482",
+            "source_candidate_id": "evidence:226f59bb28747c42c3d8d0bf4c93f02ac9435fbefe1c92ea57b588a4f46ac482",
+            "semantic_id": "evidence:226f59bb28747c42c3d8d0bf4c93f02ac9435fbefe1c92ea57b588a4f46ac482",
+            "outcome": "unsupported",
+            "evidence": [
+              {
+                "alternative_id": "evidence:226f59bb28747c42c3d8d0bf4c93f02ac9435fbefe1c92ea57b588a4f46ac482",
+                "outcome": "unsupported",
+                "records": [
+                  {
+                    "source_span": {
+                      "Start": 9,
+                      "End": 11
+                    },
+                    "candidate_id": "phrase:1debc517a269292adf296b22e62ea29408de13b005025239a8990dc142a9c41c",
+                    "reading_id": "1e4d4f5d88f23de6a5100dfe483478bbe920b6576eeb13e3bd71303d4191a904",
+                    "sense_id": "sense:en.be.class_membership",
+                    "outcome": "unsupported",
+                    "reason": "candidate was not used by a retained construction parse",
+                    "provenance": {
+                      "id": "",
+                      "version": "",
+                      "license": ""
+                    }
+                  }
+                ],
+                "diagnostics": [
+                  {
+                    "code": "UNMATCHED_PARSE_CANDIDATE",
+                    "message": "candidate was not used by a retained construction parse",
+                    "path": "candidate",
+                    "severity": "warning"
+                  }
+                ]
+              }
+            ],
+            "diagnostics": [
+              {
+                "code": "UNMATCHED_PARSE_CANDIDATE",
+                "message": "candidate was not used by a retained construction parse",
+                "path": "candidate",
+                "severity": "warning"
+              }
+            ]
+          },
+          {
+            "id": "evidence:51030030c8abaa1d381a6b0717788c1825957ed2d912035aecaff126629f9679",
+            "source_candidate_id": "evidence:51030030c8abaa1d381a6b0717788c1825957ed2d912035aecaff126629f9679",
+            "semantic_id": "evidence:51030030c8abaa1d381a6b0717788c1825957ed2d912035aecaff126629f9679",
+            "outcome": "unsupported",
+            "evidence": [
+              {
+                "alternative_id": "evidence:51030030c8abaa1d381a6b0717788c1825957ed2d912035aecaff126629f9679",
+                "outcome": "unsupported",
+                "records": [
+                  {
+                    "source_span": {
+                      "Start": 4,
+                      "End": 8
+                    },
+                    "candidate_id": "phrase:97fbe6b5436dbbfce533c8f1717ae1fbc0d8da4a400eb1ea70c5150da7ba3e69",
+                    "reading_id": "07411edc447d00addbffe04e0a182a3d3539fcb7942b7463f4895a4d0ae7d5c0",
+                    "sense_id": "sense:en.door.barrier",
+                    "outcome": "unsupported",
+                    "reason": "candidate was not used by a retained construction parse",
+                    "provenance": {
+                      "id": "",
+                      "version": "",
+                      "license": ""
+                    }
+                  }
+                ],
+                "diagnostics": [
+                  {
+                    "code": "UNMATCHED_PARSE_CANDIDATE",
+                    "message": "candidate was not used by a retained construction parse",
+                    "path": "candidate",
+                    "severity": "warning"
+                  }
+                ]
+              }
+            ],
+            "diagnostics": [
+              {
+                "code": "UNMATCHED_PARSE_CANDIDATE",
+                "message": "candidate was not used by a retained construction parse",
+                "path": "candidate",
+                "severity": "warning"
+              }
+            ]
+          },
+          {
+            "id": "evidence:6ee589171d074b9a97279d20b251e6875437a14080521455aaa0a9e9c50d4100",
+            "source_candidate_id": "evidence:6ee589171d074b9a97279d20b251e6875437a14080521455aaa0a9e9c50d4100",
+            "semantic_id": "evidence:6ee589171d074b9a97279d20b251e6875437a14080521455aaa0a9e9c50d4100",
+            "outcome": "unsupported",
+            "evidence": [
+              {
+                "alternative_id": "evidence:6ee589171d074b9a97279d20b251e6875437a14080521455aaa0a9e9c50d4100",
+                "outcome": "unsupported",
+                "records": [
+                  {
+                    "source_span": {
+                      "Start": 16,
+                      "End": 21
+                    },
+                    "candidate_id": "phrase:09e8f9a7f5a4feb1014fe9bec649680ec35236fcf4ed91043a8c87f411b47033",
+                    "reading_id": "52f66691ec9aa24fbe9f4acaf84144fbc054fd29205633ad3f7ed02b02488ccf",
+                    "sense_id": "sense:en.black.color",
+                    "outcome": "unsupported",
+                    "reason": "candidate was not used by a retained construction parse",
+                    "provenance": {
+                      "id": "",
+                      "version": "",
+                      "license": ""
+                    }
+                  }
+                ],
+                "diagnostics": [
+                  {
+                    "code": "UNMATCHED_PARSE_CANDIDATE",
+                    "message": "candidate was not used by a retained construction parse",
+                    "path": "candidate",
+                    "severity": "warning"
+                  }
+                ]
+              }
+            ],
+            "diagnostics": [
+              {
+                "code": "UNMATCHED_PARSE_CANDIDATE",
+                "message": "candidate was not used by a retained construction parse",
+                "path": "candidate",
+                "severity": "warning"
+              }
+            ]
+          }
+        ],
+        "diagnostics": [
+          {
+            "code": "NO_PARSE",
+            "message": "no complete construction matched the supplied evidence",
+            "severity": "warning"
+          },
+          {
+            "code": "UNMATCHED_PARSE_CANDIDATE",
+            "message": "candidate was not used by a retained construction parse",
+            "path": "candidate",
+            "severity": "warning"
+          }
+        ]
+      }
+    },
+    {
+      "pair_index": 25,
+      "from": "pl",
+      "to": "en",
+      "input": "Drzwi nie są czarne.",
+      "exit_code": 5,
+      "result": {
+        "status": "unknown",
+        "from": "pl",
+        "to": "en",
+        "diagnostics": [
+          {
+            "code": "UNKNOWN_SURFACE",
+            "message": "no licensed morphology reading matches this token surface",
+            "path": "tokens[0].span[0:5]",
+            "severity": "warning"
+          },
+          {
+            "code": "UNKNOWN_SURFACE",
+            "message": "no licensed morphology reading matches this token surface",
+            "path": "tokens[2].span[10:13]",
+            "severity": "warning"
+          },
+          {
+            "code": "UNKNOWN_SURFACE",
+            "message": "no licensed morphology reading matches this token surface",
+            "path": "tokens[3].span[14:20]",
+            "severity": "warning"
+          },
+          {
+            "code": "NO_START_PLAN",
+            "message": "no compiled plan can begin with token zero evidence",
+            "path": "pl",
+            "severity": "warning"
+          },
+          {
+            "code": "NO_SEMANTIC_ALTERNATIVES",
+            "message": "no parser alternatives were available for semantic composition",
+            "path": "forest",
+            "severity": "warning"
+          }
+        ]
+      }
+    },
+    {
+      "pair_index": 38,
+      "from": "en",
+      "to": "pl",
+      "input": "The doctor did not close the door.",
+      "exit_code": 3,
+      "result": {
+        "status": "unsupported",
+        "from": "en",
+        "to": "pl",
+        "candidates": [
+          {
+            "id": "evidence:357d331a299e321f231fd2bb199fa89d5d3a9551da65d58f65e23b881ec25a4b",
+            "source_candidate_id": "evidence:357d331a299e321f231fd2bb199fa89d5d3a9551da65d58f65e23b881ec25a4b",
+            "semantic_id": "evidence:357d331a299e321f231fd2bb199fa89d5d3a9551da65d58f65e23b881ec25a4b",
+            "outcome": "unsupported",
+            "evidence": [
+              {
+                "alternative_id": "evidence:357d331a299e321f231fd2bb199fa89d5d3a9551da65d58f65e23b881ec25a4b",
+                "outcome": "unsupported",
+                "records": [
+                  {
+                    "source_span": {
+                      "Start": 4,
+                      "End": 10
+                    },
+                    "candidate_id": "phrase:cf5ab7a67df6ac74223b1e1ae232f5de2829c655f8fe485e94dad11efd37d1e1",
+                    "reading_id": "5a00c4990b956e57e3db61d96dd891e09c1e97bdee9288f0fa10aeee9216fcd2",
+                    "sense_id": "sense:en.doctor.academic",
+                    "outcome": "unsupported",
+                    "reason": "candidate was not used by a retained construction parse",
+                    "provenance": {
+                      "id": "",
+                      "version": "",
+                      "license": ""
+                    }
+                  },
+                  {
+                    "source_span": {
+                      "Start": 4,
+                      "End": 10
+                    },
+                    "candidate_id": "phrase:cf5ab7a67df6ac74223b1e1ae232f5de2829c655f8fe485e94dad11efd37d1e1",
+                    "reading_id": "5a00c4990b956e57e3db61d96dd891e09c1e97bdee9288f0fa10aeee9216fcd2",
+                    "sense_id": "sense:en.doctor.role",
+                    "outcome": "unsupported",
+                    "reason": "candidate was not used by a retained construction parse",
+                    "provenance": {
+                      "id": "",
+                      "version": "",
+                      "license": ""
+                    }
+                  }
+                ],
+                "diagnostics": [
+                  {
+                    "code": "UNMATCHED_PARSE_CANDIDATE",
+                    "message": "candidate was not used by a retained construction parse",
+                    "path": "candidate",
+                    "severity": "warning"
+                  }
+                ]
+              }
+            ],
+            "diagnostics": [
+              {
+                "code": "UNMATCHED_PARSE_CANDIDATE",
+                "message": "candidate was not used by a retained construction parse",
+                "path": "candidate",
+                "severity": "warning"
+              }
+            ]
+          },
+          {
+            "id": "evidence:3858eebdf4dc1c83ff93ef6ef0251cd442e1abf94141dd1284b335aeb67e82d6",
+            "source_candidate_id": "evidence:3858eebdf4dc1c83ff93ef6ef0251cd442e1abf94141dd1284b335aeb67e82d6",
+            "semantic_id": "evidence:3858eebdf4dc1c83ff93ef6ef0251cd442e1abf94141dd1284b335aeb67e82d6",
+            "outcome": "unsupported",
+            "evidence": [
+              {
+                "alternative_id": "evidence:3858eebdf4dc1c83ff93ef6ef0251cd442e1abf94141dd1284b335aeb67e82d6",
+                "outcome": "unsupported",
+                "records": [
+                  {
+                    "source_span": {
+                      "Start": 29,
+                      "End": 33
+                    },
+                    "candidate_id": "phrase:46c9f3e8fe675af030beaa3341c75cb842b3cc028f3ddbc1f6e4ccd91b48dc99",
+                    "reading_id": "07411edc447d00addbffe04e0a182a3d3539fcb7942b7463f4895a4d0ae7d5c0",
+                    "sense_id": "sense:en.door.barrier",
+                    "outcome": "unsupported",
+                    "reason": "candidate was not used by a retained construction parse",
+                    "provenance": {
+                      "id": "",
+                      "version": "",
+                      "license": ""
+                    }
+                  }
+                ],
+                "diagnostics": [
+                  {
+                    "code": "UNMATCHED_PARSE_CANDIDATE",
+                    "message": "candidate was not used by a retained construction parse",
+                    "path": "candidate",
+                    "severity": "warning"
+                  }
+                ]
+              }
+            ],
+            "diagnostics": [
+              {
+                "code": "UNMATCHED_PARSE_CANDIDATE",
+                "message": "candidate was not used by a retained construction parse",
+                "path": "candidate",
+                "severity": "warning"
+              }
+            ]
+          }
+        ],
+        "diagnostics": [
+          {
+            "code": "UNKNOWN_SURFACE",
+            "message": "no licensed morphology reading matches this token surface",
+            "path": "tokens[2].span[11:14]",
+            "severity": "warning"
+          },
+          {
+            "code": "UNKNOWN_SURFACE",
+            "message": "no licensed morphology reading matches this token surface",
+            "path": "tokens[4].span[19:24]",
+            "severity": "warning"
+          },
+          {
+            "code": "UNMATCHED_PARSE_CANDIDATE",
+            "message": "candidate was not used by a retained construction parse",
+            "path": "candidate",
+            "severity": "warning"
+          }
+        ]
+      }
+    },
+    {
+      "pair_index": 38,
+      "from": "pl",
+      "to": "en",
+      "input": "Lekarz nie zamykał drzwi.",
+      "exit_code": 3,
+      "result": {
+        "status": "unsupported",
+        "from": "pl",
+        "to": "en",
+        "candidates": [
+          {
+            "id": "evidence:30f65e338477948ca3b2defd492af556e0006be4c2baa0283999a1a2ad88fef7",
+            "source_candidate_id": "evidence:30f65e338477948ca3b2defd492af556e0006be4c2baa0283999a1a2ad88fef7",
+            "semantic_id": "evidence:30f65e338477948ca3b2defd492af556e0006be4c2baa0283999a1a2ad88fef7",
+            "outcome": "unsupported",
+            "evidence": [
+              {
+                "alternative_id": "evidence:30f65e338477948ca3b2defd492af556e0006be4c2baa0283999a1a2ad88fef7",
+                "outcome": "unsupported",
+                "records": [
+                  {
+                    "source_span": {
+                      "Start": 0,
+                      "End": 6
+                    },
+                    "candidate_id": "phrase:8888f44a57ddfb4e12d51f3e4dbbc3c121929a2230d936f6c3912dec6b9fe2cb",
+                    "reading_id": "855288e98a7a7cd0b9221add2b9c4ab7ea09e8602ef1500a2344ba5906ad678d",
+                    "sense_id": "sense:pl.lekarz.role",
+                    "outcome": "unsupported",
+                    "reason": "candidate was not used by a retained construction parse",
+                    "provenance": {
+                      "id": "",
+                      "version": "",
+                      "license": ""
+                    }
+                  }
+                ],
+                "diagnostics": [
+                  {
+                    "code": "UNMATCHED_PARSE_CANDIDATE",
+                    "message": "candidate was not used by a retained construction parse",
+                    "path": "candidate",
+                    "severity": "warning"
+                  }
+                ]
+              }
+            ],
+            "diagnostics": [
+              {
+                "code": "UNMATCHED_PARSE_CANDIDATE",
+                "message": "candidate was not used by a retained construction parse",
+                "path": "candidate",
+                "severity": "warning"
+              }
+            ]
+          }
+        ],
+        "diagnostics": [
+          {
+            "code": "UNKNOWN_SURFACE",
+            "message": "no licensed morphology reading matches this token surface",
+            "path": "tokens[2].span[11:19]",
+            "severity": "warning"
+          },
+          {
+            "code": "UNKNOWN_SURFACE",
+            "message": "no licensed morphology reading matches this token surface",
+            "path": "tokens[3].span[20:25]",
+            "severity": "warning"
+          },
+          {
+            "code": "UNMATCHED_PARSE_CANDIDATE",
+            "message": "candidate was not used by a retained construction parse",
+            "path": "candidate",
+            "severity": "warning"
+          }
+        ]
+      }
+    }
+  ]
+}

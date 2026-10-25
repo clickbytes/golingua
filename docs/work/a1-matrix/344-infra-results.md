@@ -1,0 +1,7 @@
+# #344 M8 infrastructure results
+
+Implementation scope: 112 existing directional records now have stable `PairID` and `PrimaryGroup`; the inventory validates exactly one record for each direction per pair and consistent group metadata. Lookup and inventory share the declared four-batch registry. Required text groups require at least one produced licensed alternative while preserving `RequiredTexts` as individually required. Empty surface results fail.
+
+Focused checks passed: `go test ./tests/matrix -run 'TestRequiredSurfaceContracts|TestRequiredTextGroups' -count=1` and `go test ./tests/translation -run TestInventory -count=1`. Full matrix ran with `GOLINGUA_MATRIX_SHA=5f0e9226f11492a7848343cf35450a47c20ee351+working-tree`; it reported 112 records, 336 record checks, and 167 additional observed checks, exit code 1. The report is at `/tmp/golingua-m8-report.md` and raw output at `/tmp/golingua-m8-full.log`. It retains existing FAIL/GAP results; no grammar or sentence expectations changed. Existing output expectations and previously observed FAIL/GAP conditions were not changed. The 500-pair and group targets are provisional planning goals, not a completed corpus or a correctness measure. Owner acceptance: `NOT_EVALUATED`.
+
+Coordinator review:56 pair IDs and target group counts verified against authored scope. Required text groups stay local to their Meaning contract rather than implicitly leaking primary text groups into another Meaning variant. Local vet/build/help/version/diff PASS; the change remains test-only.
