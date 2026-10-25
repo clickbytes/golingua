@@ -1,0 +1,96 @@
+{
+  "note": "Single isolated structural byte-budget probe, not a language corpus; large generated files remain in /tmp.",
+  "metadata_bytes": 945278,
+  "metadata_sha256": "66404e3d6dfddef5efa77b89ef53900a2615606fde939056ee30f685572a42da",
+  "request_bytes": 379648,
+  "request_sha256": "cdee5b3c9ecb5cf2b08270c62374c421d2c7f28513b3cb0f97d95b7d4b51c5d2",
+  "generator": {
+    "symbols": 192,
+    "ports_per_symbol": 16,
+    "port_role": "(role_ + decimal j + _ + x*256)[:256]",
+    "request_atoms": 1500,
+    "atom_label": "z*200",
+    "compact_json": true,
+    "zero_symbol_provenance": {
+      "id": "budget-only-382",
+      "uri": "https://github.com/clickbytes/golingua/issues/382",
+      "version": "2026-10-26",
+      "license": "internal-neutral-example"
+    }
+  },
+  "metadata_base": {
+    "schema_version": 1,
+    "id": "budget.canonical.document",
+    "version": "1",
+    "profile": "positive-facts-v1",
+    "provenance": [
+      {
+        "id": "budget-only-382",
+        "uri": "https://github.com/clickbytes/golingua/issues/382",
+        "version": "2026-10-26",
+        "license": "internal-neutral-example"
+      }
+    ],
+    "sorts": [],
+    "dependencies": [],
+    "typical_edges": [],
+    "axioms": []
+  },
+  "zero_symbol": {
+    "id": "zero",
+    "kind": "primitive",
+    "review_status": "approved",
+    "provenance": [
+      {
+        "id": "budget-only-382",
+        "uri": "https://github.com/clickbytes/golingua/issues/382",
+        "version": "2026-10-26",
+        "license": "internal-neutral-example"
+      }
+    ],
+    "ports": []
+  },
+  "symbol_base": {
+    "kind": "primitive",
+    "review_status": "approved",
+    "provenance": [
+      {
+        "id": "budget-only-382",
+        "uri": "https://github.com/clickbytes/golingua/issues/382",
+        "version": "2026-10-26",
+        "license": "internal-neutral-example"
+      }
+    ]
+  },
+  "symbol_id_prefix": "budget",
+  "port_role_pattern": {
+    "prefix": "role_",
+    "index_suffix": "_",
+    "padding": "x",
+    "byte_length": 256
+  },
+  "port_type": {
+    "kind": "Entity"
+  },
+  "atom_template": {
+    "kind": "Atom",
+    "symbol": "zero",
+    "args": [],
+    "label": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
+  },
+  "request_base": {
+    "schema_version": 1,
+    "document": {
+      "schema_version": 1,
+      "expression": {
+        "kind": "And",
+        "operands": []
+      }
+    },
+    "profile": {
+      "id": "budget-empty",
+      "rules": []
+    },
+    "budget": {}
+  }
+}

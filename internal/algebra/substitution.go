@@ -56,6 +56,14 @@ func SubstituteParameter(term *Term, id string, replacement *Term, limits Limits
 // supplied body. The removed binder's declared type is not present in this
 // API; callers must run algebra.Check on the resulting enclosing term.
 func SubstituteBinder(body *Term, binderID string, replacement *Term, limits Limits) (*Term, error) {
+	return SubstituteBinderReserved(body, binderID, replacement, nil, limits)
+}
+
+// SubstituteBinderReserved replaces free Var occurrences for one binder ID
+// while reserving IDs owned by the surrounding term. Those IDs are considered
+// before capture-avoidance freshening or insertion, so generated binder names
+// cannot collide with binders outside body.
+func SubstituteBinderReserved(body *Term, binderID string, replacement *Term, reservedIDs []string, limits Limits) (*Term, error) {
 	limits, err := NormalizeLimits(limits)
 	if err != nil {
 		return nil, err
@@ -65,6 +73,16 @@ func SubstituteBinder(body *Term, binderID string, replacement *Term, limits Lim
 	}
 	if body == nil || replacement == nil {
 		return nil, invalid("MISSING_TERM", "term", "body and replacement are required")
+	}
+	if len(reservedIDs) > limits.MaxNodes {
+		return nil, resourceLimit("reserved_ids", "reserved ID count exceeds the configured node limit")
+	}
+	reserved := make(map[string]struct{}, len(reservedIDs))
+	for i, id := range reservedIDs {
+		if !validText(id, 256) {
+			return nil, invalid("INVALID_RESERVED_ID", fmt.Sprintf("reserved_ids[%d]", i), "reserved ID must be non-empty valid UTF-8 and at most 256 bytes")
+		}
+		reserved[id] = struct{}{}
 	}
 	info, err := inspectTerm(body, limits)
 	if err != nil {
@@ -79,6 +97,9 @@ func SubstituteBinder(body *Term, binderID string, replacement *Term, limits Lim
 	}
 	free := replacementInfo.freeVars
 	avoid := copySet(info.allIDs)
+	for id := range reserved {
+		avoid[id] = struct{}{}
+	}
 	for freeID := range free {
 		avoid[freeID] = struct{}{}
 	}
