@@ -1,6 +1,6 @@
 # Rozszerzenie macierzy A1 według zjawisk
 
-Decyzja właściciela: 2026-10-25, wykonanie audytu macierzy w całości z zachowaniem pracy szeregowej. Epik [#337](https://github.com/clickbytes/golingua/issues/337). Pierwotny base audytu: `9bf866bc620ec1ad4ae994876f57bc47885aac71`; przebieg wyjściowy ujawnił 36 kontroli `SPEC_PENDING` dla 12 kierunków LQ/PO/Q. M2 usunął ograniczenia inwentarza i raportu; po scaleniu PR techniczny CI main był zielony. M3 opiera się na `cb5d52f5ad45a5dccd9fd19b11f3405b19e940cd`.
+Decyzja właściciela: 2026-10-25, audyt PL/EN realizowany szeregowo. Epik [#337](https://github.com/clickbytes/golingua/issues/337). Pierwotny snapshot audytu na base `9bf866bc620ec1ad4ae994876f57bc47885aac71` miał 24 rekordy kierunkowe (12 par) / 72 kontrole, w tym 36 `SPEC_PENDING` dla 12 kierunków LQ/PO/Q; to historyczny wynik sprzed M3, nie aktualny licznik. M2–M7 zostały scalone, a ich main CI było zielone. M8 #344 został zaimplementowany w [PR #351](https://github.com/clickbytes/golingua/pull/351); końcowy zapis CI i scalenia znajduje się w issue #344 i PR. Wartości 141, 206 i 268 pojawiały się w archiwalnych etapowych snapshotach z 2026-10-25; są historyczne i zostały zastąpione przez obecne 500 par. Wcześniejszy raport A1.5 na źródle `a9eb60e+working-tree` wykazał 72 `GAP_I`; jest to wynik tego etapu, nie obecny wynik pełnej macierzy. Również historyczne 24 `GAP_I` M3 i 36 `SPEC_PENDING` M2 odnoszą się tylko do wskazanych dawnych przebiegów. Aktualny stan i pełny run: [wyniki #344](344-results.md).
 
 | Etap | Issue | Zakres | Stan |
 | --- | --- | --- | --- |
@@ -10,11 +10,11 @@ Decyzja właściciela: 2026-10-25, wykonanie audytu macierzy w całości z zacho
 | M5 | [#341](https://github.com/clickbytes/golingua/issues/341) | Kontrasty | DONE; merged, main CI green |
 | M6 | [#342](https://github.com/clickbytes/golingua/issues/342) | Kompozycja i przekształcenia | DONE; merged, main CI green |
 | M7 | [#343](https://github.com/clickbytes/golingua/issues/343) | Odmowy i niejednoznaczność | DONE; merged, main CI green |
-| M8 | [#344](https://github.com/clickbytes/golingua/issues/344) | Zbalansowana macierz, obserwowane pokrycie i raport luk | ACTIVE; jeden PR #351, kolejne małe partie szeregowo |
+| M8 | [#344](https://github.com/clickbytes/golingua/issues/344) | Zbalansowana macierz, obserwacje i raport luk | Implementacja ukończona; draft PR #351, CI PR/main i merge pending |
 
-Obecny inwentarz obejmuje 382 par / 764 kierunki. Po M8-TIME-OTHER grupa `time_agreement` obejmuje 60 par / 120 kierunków; A1.10 zawiera 56 wybranych par w dwóch sekwencyjnych komponentach. Grupy działań, identyfikacji, posiadania, lokalizacji/ilości i negacji osiągnęły zaplanowaną liczebność; nie oznacza to obsługi tych konstrukcji przez silnik. Cel 500 par / 1000 kierunków pozostaje celem rozwojowym. Tagi opisują deklarowane wymagania; katalog słów nie jest pokryciem gramatyki. Nie jest to certyfikacja CEFR.
+Obecny inwentarz ma **500 par / 1000 kierunków** w partiach A1–A1.13. Wszystkie cele grupowe osiągnięto: actions 65, identification 40, possession 40, location_quantity 50, negation 50, questions 60, time_agreement 60, case_adjective_order 45, ambiguity_reference 45 i composition_boundary 45. To cele planistyczne próby, nie kryteria poprawności. Grupy i tagi opisują wymagania; nie dowodzą obsługi konstrukcji ani pokrycia gramatyki. Partie nie wyznaczają limitu rekordów i nie są certyfikacją CEFR. Raport `tests/results/latest.md` zmieni się automatycznie dopiero po pushu do `main`; nie edytuje się go ręcznie.
 
-Ocena agenta wynika z rzeczywistych obserwacji. Akceptacja językowa właściciela: `NOT_EVALUATED`. Braki `GAP`, `FAIL`, `SPEC_PENDING`, `NOT RUN` i `INFRA` pozostają jawne. Poprawna odmowa błędnego wejścia jest odrębną kategorią od poprawnego tłumaczenia. Obserwacyjny workflow macierzy nie zmienia wyniku technicznego `go-ci`.
+Wynik techniczny M8 i obserwacje są oddzielone od akceptacji językowej właściciela, która pozostaje `NOT_EVALUATED`. `GAP`, `FAIL`, `SPEC_PENDING`, `NOT RUN` i `INFRA` pozostają jawne. 32 odmowy, kontrole metamorficzne, wieloznaczności i wsparcia są dodatkowymi kategoriami, osobnymi od PASS zwykłego tłumaczenia. Obserwacyjny workflow nie zmienia technicznego `go-ci`.
 
 ## Delegacja
 
