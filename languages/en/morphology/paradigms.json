@@ -3,7 +3,7 @@
     "schema_version": 1,
     "id": "en_noun_regular",
     "language": "en",
-    "profile_version": "v2026-10-23.1",
+    "profile_version": "v2026-10-25.1",
     "pos": "noun",
     "principal_part_requirements": [
       {"stem_id": "root", "part_id": "base", "required": true}
@@ -21,7 +21,7 @@
     "schema_version": 1,
     "id": "en_noun_sibilant",
     "language": "en",
-    "profile_version": "v2026-10-23.1",
+    "profile_version": "v2026-10-25.1",
     "pos": "noun",
     "principal_part_requirements": [{"stem_id":"root","part_id":"base","required":true}],
     "cells": [
@@ -37,7 +37,7 @@
     "schema_version": 1,
     "id": "en_noun_consonant_y",
     "language": "en",
-    "profile_version": "v2026-10-23.1",
+    "profile_version": "v2026-10-25.1",
     "pos": "noun",
     "principal_part_requirements": [{"stem_id":"root","part_id":"base","required":true}],
     "cells": [
@@ -53,7 +53,7 @@
     "schema_version": 1,
     "id": "en_noun_principal_parts",
     "language": "en",
-    "profile_version": "v2026-10-23.1",
+    "profile_version": "v2026-10-25.1",
     "pos": "noun",
     "principal_part_requirements": [
       {"stem_id":"singular","part_id":"singular","required":true},
@@ -72,7 +72,7 @@
     "schema_version": 1,
     "id": "en_noun_zero_plural",
     "language": "en",
-    "profile_version": "v2026-10-23.1",
+    "profile_version": "v2026-10-25.1",
     "pos": "noun",
     "principal_part_requirements": [{"stem_id":"root","part_id":"base","required":true}],
     "cells": [
@@ -88,7 +88,7 @@
     "schema_version": 1,
     "id": "en_verb_regular",
     "language": "en",
-    "profile_version": "v2026-10-23.1",
+    "profile_version": "v2026-10-25.1",
     "pos": "verb",
     "principal_part_requirements": [
       {"stem_id": "root", "part_id": "base", "required": true}
@@ -112,7 +112,7 @@
     "schema_version": 1,
     "id": "en_verb_principal_parts",
     "language": "en",
-    "profile_version": "v2026-10-23.1",
+    "profile_version": "v2026-10-25.1",
     "pos": "verb",
     "principal_part_requirements": [
       {"stem_id": "base", "part_id": "base", "required": true},
@@ -140,7 +140,7 @@
     "schema_version": 1,
     "id": "en_adjective_regular",
     "language": "en",
-    "profile_version": "v2026-10-23.1",
+    "profile_version": "v2026-10-25.1",
     "pos": "adjective",
     "principal_part_requirements": [
       {"stem_id": "root", "part_id": "base", "required": true}
@@ -160,7 +160,7 @@
     "schema_version": 1,
     "id": "en_verb_finite_regular",
     "language": "en",
-    "profile_version": "v2026-10-23.1",
+    "profile_version": "v2026-10-25.1",
     "pos": "verb",
     "principal_part_requirements": [{"stem_id":"root","part_id":"base","required":true}],
     "cells": [
@@ -192,7 +192,7 @@
     "schema_version": 1,
     "id": "en_verb_finite_sibilant",
     "language": "en",
-    "profile_version": "v2026-10-23.1",
+    "profile_version": "v2026-10-25.1",
     "pos": "verb",
     "principal_part_requirements": [{"stem_id":"root","part_id":"base","required":true}],
     "cells": [
@@ -224,7 +224,7 @@
     "schema_version": 1,
     "id": "en_verb_finite_silent_e",
     "language": "en",
-    "profile_version": "v2026-10-23.1",
+    "profile_version": "v2026-10-25.1",
     "pos": "verb",
     "principal_part_requirements": [{"stem_id":"root","part_id":"base","required":true}],
     "cells": [
@@ -256,7 +256,7 @@
     "schema_version": 1,
     "id": "en_verb_finite_consonant_y",
     "language": "en",
-    "profile_version": "v2026-10-23.1",
+    "profile_version": "v2026-10-25.1",
     "pos": "verb",
     "principal_part_requirements": [{"stem_id":"root","part_id":"base","required":true}],
     "cells": [
@@ -288,7 +288,7 @@
     "schema_version": 1,
     "id": "en_verb_finite_principal_parts",
     "language": "en",
-    "profile_version": "v2026-10-23.1",
+    "profile_version": "v2026-10-25.1",
     "pos": "verb",
     "principal_part_requirements": [{"stem_id":"base","part_id":"base","required":true}, {"stem_id":"third","part_id":"third_person_singular","required":true}, {"stem_id":"past","part_id":"past","required":true}, {"stem_id":"participle","part_id":"past_participle","required":true}, {"stem_id":"present_participle","part_id":"present_participle","required":true}],
     "cells": [

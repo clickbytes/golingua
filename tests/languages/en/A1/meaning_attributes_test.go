@@ -78,12 +78,12 @@ func TestMeaningAttributesAnalysis(t *testing.T) {
 }
 
 func TestMeaningAttributesRealization(t *testing.T) {
-	presentTexts := []string{"The teacher reads the message."}
+	presentTexts := []string{"A teacher reads a message.", "A teacher reads the message.", "The teacher reads a message.", "The teacher reads the message."}
 	matrix.RunRealization(t, features.LanguageID("en"), []matrix.RealizationCase{
 		{ID: "H-I-EN-reading-teacher-present", MeaningID: "reading.teacher-message.present", AllowedTexts: presentTexts, RequiredTexts: presentTexts, AllowedAssumptionFields: []string{"person", "determiner"}, RequiredAssumptionFields: []string{"determiner"}},
 		{ID: "H-I-EN-reading-teacher-past", MeaningID: "reading.teacher-message.past", AllowedTexts: []string{"A teacher read a message.", "A teacher read the message.", "The teacher read a message.", "The teacher read the message."}, RequiredTexts: []string{"A teacher read a message.", "A teacher read the message.", "The teacher read a message.", "The teacher read the message."}, AllowedAssumptionFields: []string{"person", "determiner"}},
-		{ID: "H-I-EN-reading-teachers-present", MeaningID: "reading.teachers-message.present", AllowedTexts: []string{"The teachers read the message."}, RequiredTexts: []string{"The teachers read the message."}, AllowedAssumptionFields: []string{"person", "determiner"}, RequiredAssumptionFields: []string{"determiner"}},
-		{ID: "H-I-EN-reading-teachers-past", MeaningID: "reading.teachers-message.past", AllowedTexts: []string{"The teachers read a message.", "The teachers read the message."}, RequiredTexts: []string{"The teachers read a message.", "The teachers read the message."}, AllowedAssumptionFields: []string{"person", "determiner"}},
+		{ID: "H-I-EN-reading-teachers-present", MeaningID: "reading.teachers-message.present", AllowedTexts: []string{"The teachers read a message.", "The teachers read the message.", "Teachers read a message.", "Teachers read the message."}, RequiredTexts: []string{"Teachers read a message.", "Teachers read the message.", "The teachers read a message.", "The teachers read the message."}, AllowedAssumptionFields: []string{"person", "determiner"}, RequiredAssumptionFields: []string{"determiner"}},
+		{ID: "H-I-EN-reading-teachers-past", MeaningID: "reading.teachers-message.past", AllowedTexts: []string{"The teachers read a message.", "The teachers read the message.", "Teachers read a message.", "Teachers read the message."}, RequiredTexts: []string{"The teachers read a message.", "The teachers read the message.", "Teachers read a message.", "Teachers read the message."}, AllowedAssumptionFields: []string{"person", "determiner"}},
 	})
 }
 
@@ -96,7 +96,7 @@ func TestMeaningAttributesSeeingMultiplicity(t *testing.T) {
 		name  string
 		node  meaning.NodeID
 		texts []string
-	}{{"plural teacher", "t", []string{"The teachers see a dog.", "The teachers see the dog."}}, {"plural dog", "d", []string{"A teacher sees the dogs.", "The teacher sees the dogs."}}} {
+	}{{"plural teacher", "t", []string{"The teachers see a dog.", "The teachers see the dog.", "Teachers see a dog.", "Teachers see the dog."}}, {"plural dog", "d", []string{"A teacher sees dogs.", "A teacher sees the dogs.", "The teacher sees dogs.", "The teacher sees the dogs."}}} {
 		t.Run(tc.name, func(t *testing.T) {
 			g := setMultiplicityEN(t, base, tc.node, meaning.MultiplicityMany)
 			r := realizeEN(t, g, "seeing-"+tc.name)
@@ -112,7 +112,7 @@ func TestMeaningAttributesSeeingMultiplicity(t *testing.T) {
 	}
 	g := setMultiplicityEN(t, negative, "t", meaning.MultiplicityMany)
 	r := realizeEN(t, g, "negative plural teacher")
-	if !sameTextEN(textsEN(r.Alternatives), []string{"The teachers do not see a dog.", "The teachers do not see the dog."}) {
+	if !sameTextEN(textsEN(r.Alternatives), []string{"The teachers do not see a dog.", "The teachers do not see the dog.", "Teachers do not see a dog.", "Teachers do not see the dog."}) {
 		t.Errorf("FAIL: negative plural texts=%v outcome=%s", textsEN(r.Alternatives), r.Outcome)
 	}
 	assertNoTenseNumberEN(t, r.Alternatives)

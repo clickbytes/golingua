@@ -364,14 +364,20 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 			filtered = append(filtered, candidate)
 			continue
 		}
-		if candidate.Category != construction.CategoryNP || candidate.TokenStart == 0 {
-			if candidate.Category == construction.CategoryNP {
-				if number := candidate.Features["noun_number"]; number != "" {
-					candidate.Features["number"] = number
-				}
+		if candidate.Category != construction.CategoryNP {
+			filtered = append(filtered, candidate)
+			continue
+		}
+		lexeme, lexemeFound := builder.lexicon.ByLexemeID(candidate.LexemeID)
+		if lexemeFound && lexeme.POS == "pronoun" {
+			if person := candidate.Features["pronoun_person"]; person != "" {
+				candidate.Features["person"] = person
 			}
 			filtered = append(filtered, candidate)
 			continue
+		}
+		if lexemeFound && lexeme.POS == "noun" {
+			candidate.Features["person"] = "third"
 		}
 		determinerToken := candidate.TokenStart - 1
 		_, hasDeterminer := englishArticleAt(lattice, determinerToken)
@@ -391,10 +397,26 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 			}
 		}
 		if !hasDeterminer {
-			if number := candidate.Features["noun_number"]; number != "" {
-				candidate.Features["number"] = number
+			if hasEnglishThisNPPrefix(lattice, candidate.TokenStart) {
+				if number := knownEnglishNounNumber(candidate.Features); number != "" {
+					candidate.Features["number"] = features.FeatureValueID(number)
+				}
+				filtered = append(filtered, candidate)
+				continue
 			}
-			filtered = append(filtered, candidate)
+			if !lexemeFound || lexeme.POS != "noun" {
+				continue
+			}
+			number := knownEnglishNounNumber(candidate.Features)
+			knownMass := hasNumberBehavior(builder.lexicon, candidate.LexemeID, "mass")
+			knownCount := hasNumberBehavior(builder.lexicon, candidate.LexemeID, "count")
+			if knownMass || knownCount && number == "plural" {
+				candidate.Features["determiner"] = "bare"
+				if number != "" {
+					candidate.Features["number"] = features.FeatureValueID(number)
+				}
+				filtered = append(filtered, candidate)
+			}
 			continue
 		}
 		previous := lattice.Tokens[determinerToken]
@@ -403,7 +425,7 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 			if reading.HasLexeme && (reading.Lexeme.ID.String() == "lexeme:en.the.det" || reading.Lexeme.ID.String() == "lexeme:en.a.det" || reading.Lexeme.ID.String() == "lexeme:en.an.det") {
 				indefinite := reading.Lexeme.ID.String() == "lexeme:en.a.det" || reading.Lexeme.ID.String() == "lexeme:en.an.det"
 				if indefinite {
-					if number := candidate.Features["noun_number"]; number != "" && number != "singular" {
+					if number := knownEnglishNounNumber(candidate.Features); number != "" && number != "singular" {
 						keep = false
 						break
 					}
@@ -443,8 +465,8 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 			}
 		}
 		if keep {
-			if number := candidate.Features["noun_number"]; number != "" {
-				candidate.Features["number"] = number
+			if number := knownEnglishNounNumber(candidate.Features); number != "" {
+				candidate.Features["number"] = features.FeatureValueID(number)
 			}
 			filtered = append(filtered, candidate)
 		}

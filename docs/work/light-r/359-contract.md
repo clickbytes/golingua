@@ -1,0 +1,15 @@
+# R5 określoność i angielski rodzajnik
+
+Issue #359, epik #354. Base 24cb2ffc2dd55367758bef7ed5907bb03c8047a9: R4 merge 1bc2980 + wyłącznie raport latest.md; go-ci main 40214880245 SUCCESS. Owner zakresu i odbioru: koordynator. Akceptacja językowa właściciela NOT_EVALUATED.
+
+Na obecnych seeing/hearing/reading nieoznaczone źródło PL ani niezależny autorski I nie ustala angielskiej określoności. Dla singular count dopuszczamy the oraz poprawne leksykalnie a/an; dla plural count the oraz brak rodzajnika. Każdy nieustalony wybór targetu jest jawnym local FieldAssumption determiner. Nie zgadujemy count. Gdy źródłowe angielskie dowody jawnie wskazują a/an/the albo bare plural, target EN zachowuje ten wybór zamiast dodawać alternatywną określoność. Bare plural nie jest zmianą CORE ani nowym polem I.
+
+Profil EN dostaje lokalną wartość determiner=bare i spójną nową wersję, ze zaktualizowanymi statycznymi paradigm/import profile versions. Znany bare odnosi się wyłącznie do plural count lub istniejącego mass route. Nie dotyczy zaimków ani istniejącego demonstrative this. Bare count singular oraz a/an + plural pozostają odmową. Allomorf a/an pochodzi z jawnej właściwości leksemu, nie z dopasowania do expected.
+
+Konstrukcje i exact bindings muszą licencjonować nowe powierzchnie. Plural warunki korzystają z cech NP number, które realizer rzeczywiście generuje. Liczba wariantów source nie rośnie przez równoważne, nakładające się szlaki: istniejący optional object article obsługuje bare object; nowy bare subject source ma wymaganą liczbę mnogą. Target zachowuje niezależne wybory subject/object, ale odrzuca niezgodne warianty przed morphology execution. Reading przestaje wymuszać the/the; nie tworzymy nowej trasy czasu ani negacji.
+
+Zakres: obecne transitive, transitive_past i personal targety oraz istniejąca negacja seeing/hearing. Obejmuje autorskie A1.8-NEG-838/840 z bare plural, nie dodaje brakującej negacji reading ani eating/sleeping/running. Obecne attributed seeing pozostaje ograniczone do singular; looking i pozostałe domeny nie dostają nowej gramatyki. Nie rozszerzamy schematu I ani publicznych API.
+
+Praca szeregowa: małe zamknięte delegacje, jeden writer. OpenCode dzienny gate bez zmian niespełniony, dopuszczony Luna Low; pomocnicy nie piszą do GitHub. Odbiór obejmuje niezależne I, source determiner evidence, rzeczywiste CLI PL↔EN, odmowy a/an/plural, technical checks i pełną obserwacyjną macierz bez zmiany expected pod output.
+
+Znacznik bare opisuje brak artykułu w powierzchni zarówno w source evidence, jak i target FieldAssumption. Nie wnioskuje z samej formy nieokreśloności ani kwantyfikacji ogólnej; a/an pozostaje wyborem indefinite, the definite. Wcześniejsza nota koordynatora oparta na podzbiorze A1.8 błędnie utożsamiała plural bare z indefinite; po porównaniu A1.12 i znaczenia pola poprawiono tę notę, bez zmiany oczekiwań korpusu. Kontrole wiążą założenia z konkretnymi rolami/ścieżkami, zamiast sprawdzać sam worek wartości. Provenance nie steruje kategorią rodzajnika.

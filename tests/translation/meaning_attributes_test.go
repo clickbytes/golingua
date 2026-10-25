@@ -23,8 +23,8 @@ func TestMeaningAttributesReadingTranslation(t *testing.T) {
 	}{
 		{"English present to Polish", "en", "pl", "The teacher reads the message.", "reading.teacher-message.present", []string{"Nauczyciel czyta wiadomość."}},
 		{"English past to Polish", "en", "pl", "The teacher read the message.", "reading.teacher-message.past", []string{"Nauczyciel czytał wiadomość."}},
-		{"Polish plural present to English", "pl", "en", "Nauczyciele czytają wiadomość.", "reading.teachers-message.present", []string{"The teachers read the message."}},
-		{"Polish plural past to English", "pl", "en", "Nauczyciele czytali wiadomość.", "reading.teachers-message.past", []string{"The teachers read a message.", "The teachers read the message."}},
+		{"Polish plural present to English", "pl", "en", "Nauczyciele czytają wiadomość.", "reading.teachers-message.present", []string{"Teachers read a message.", "Teachers read the message.", "The teachers read a message.", "The teachers read the message."}},
+		{"Polish plural past to English", "pl", "en", "Nauczyciele czytali wiadomość.", "reading.teachers-message.past", []string{"Teachers read a message.", "Teachers read the message.", "The teachers read a message.", "The teachers read the message."}},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {

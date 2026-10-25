@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "language": "en",
-  "version": "v2026-10-23.1",
+  "version": "v2026-10-25.1",
   "dimensions": [
     {"id": "adjective_degree", "allow_absent": true, "allow_unknown": true, "values": ["comparative", "positive", "superlative"]},
-    {"id": "determiner", "allow_absent": true, "allow_unknown": true, "values": ["definite", "indefinite"]},
+    {"id": "determiner", "allow_absent": true, "allow_unknown": true, "values": ["bare", "definite", "indefinite"]},
     {"id": "mood", "allow_absent": true, "allow_unknown": true, "values": ["imperative", "indicative", "subjunctive"]},
     {"id": "number", "allow_absent": true, "allow_unknown": true, "values": ["plural", "singular"]},
     {"id": "noun_number", "allow_absent": true, "allow_unknown": true, "values": ["plural", "singular"]},
