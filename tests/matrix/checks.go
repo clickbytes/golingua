@@ -420,7 +420,7 @@ func realizationMeaningContracts(c RealizationCase) ([]MeaningRealization, error
 	if strings.TrimSpace(c.MeaningID) == "" {
 		return nil, errors.New("primary MeaningID is empty")
 	}
-	contracts := []MeaningRealization{{MeaningID: c.MeaningID, AllowedTexts: c.AllowedTexts, RequiredTexts: c.RequiredTexts, RequiredTextAssumptions: c.RequiredTextAssumptions}}
+	contracts := []MeaningRealization{{MeaningID: c.MeaningID, AllowedTexts: c.AllowedTexts, RequiredTexts: c.RequiredTexts, RequiredTextAssumptions: c.RequiredTextAssumptions, RequiredTextGroups: c.RequiredTextGroups}}
 	seen := map[string]bool{c.MeaningID: true}
 	for _, variant := range c.MeaningVariants {
 		if strings.TrimSpace(variant.MeaningID) == "" || seen[variant.MeaningID] {
@@ -440,6 +440,7 @@ func realizationVariantCase(parent RealizationCase, contract MeaningRealization)
 	variant.MeaningID = contract.MeaningID
 	variant.AllowedTexts = contract.AllowedTexts
 	variant.RequiredTexts = contract.RequiredTexts
+	variant.RequiredTextGroups = contract.RequiredTextGroups
 	if contract.RequiredTextAssumptions != nil {
 		variant.RequiredTextAssumptions = contract.RequiredTextAssumptions
 	}
@@ -503,6 +504,10 @@ func checkSurfaces(t *testing.T, c RealizationCase, outcome status.OutcomeKind, 
 		t.Errorf("GAP_REALIZE: target adapter returned status %s", outcome)
 		return
 	}
+	if len(surfaces) == 0 {
+		t.Errorf("FAIL: target adapter returned no surface alternatives")
+		return
+	}
 	if outcome != status.OutcomeOK && outcome != status.OutcomeAmbiguous && outcome != status.OutcomeIncomplete {
 		t.Errorf("FAIL: target adapter returned status %s", outcome)
 	}
@@ -562,6 +567,12 @@ func checkSurfaces(t *testing.T, c RealizationCase, outcome status.OutcomeKind, 
 	}
 	for _, missing := range missingRequiredTexts(c.RequiredTexts, seen) {
 		t.Errorf("FAIL: expected target text %q was not produced", missing)
+	}
+	if invalid := invalidRequiredTextGroups(c.RequiredTextGroups, allowed); len(invalid) > 0 {
+		t.Errorf("SPEC_PENDING: required text groups contain empty or unlicensed alternatives: %v", invalid)
+	}
+	for _, group := range missingRequiredTextGroups(c.RequiredTextGroups, seen) {
+		t.Errorf("FAIL: required text group %d produced none of its alternatives", group)
 	}
 	if len(allowed) == 0 {
 		t.Errorf("SPEC_PENDING / NOT RUN: no allowed target texts for %q", c.ID)
@@ -676,4 +687,36 @@ func loadFixture(id string) (meaning.Meaning, *interlingua.IdentificationMeaning
 		return meaning.Meaning{}, nil, ok, err
 	}
 	return fixture.Graph, &fixture, true, nil
+}
+
+// invalidRequiredTextGroups identifies empty or unlicensed style groups.
+func invalidRequiredTextGroups(groups [][]string, allowed map[string]bool) []int {
+	var invalid []int
+	for i, group := range groups {
+		valid := len(group) > 0
+		for _, text := range group {
+			if text == "" || !allowed[text] {
+				valid = false
+			}
+		}
+		if !valid {
+			invalid = append(invalid, i)
+		}
+	}
+	return invalid
+}
+
+// missingRequiredTextGroups returns required groups without any observed text.
+func missingRequiredTextGroups(groups [][]string, seen map[string]bool) []int {
+	var missing []int
+	for i, group := range groups {
+		produced := false
+		for _, text := range group {
+			produced = produced || seen[text]
+		}
+		if !produced {
+			missing = append(missing, i)
+		}
+	}
+	return missing
 }

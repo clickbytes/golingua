@@ -32,3 +32,20 @@ func TestRequiredSurfaceContracts(t *testing.T) {
 		t.Fatalf("matching variant assumption should pass: %v", failures)
 	}
 }
+
+func TestRequiredTextGroups(t *testing.T) {
+	groups := [][]string{{"The cat is on the table.", "The table has the cat."}}
+	allowed := map[string]bool{"The cat is on the table.": true, "The table has the cat.": true}
+	if invalid := invalidRequiredTextGroups(groups, allowed); len(invalid) != 0 {
+		t.Fatalf("valid style group rejected: %v", invalid)
+	}
+	if missing := missingRequiredTextGroups(groups, map[string]bool{"The table has the cat.": true}); len(missing) != 0 {
+		t.Fatalf("one licensed style should satisfy group: %v", missing)
+	}
+	if missing := missingRequiredTextGroups(groups, map[string]bool{}); len(missing) != 1 || missing[0] != 0 {
+		t.Fatalf("empty group output should fail: %v", missing)
+	}
+	if invalid := invalidRequiredTextGroups(groups, map[string]bool{"The cat is on the table.": true}); len(invalid) != 1 {
+		t.Fatalf("unlicensed declared alternative should fail: %v", invalid)
+	}
+}

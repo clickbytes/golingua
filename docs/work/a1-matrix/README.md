@@ -10,7 +10,7 @@ Decyzja właściciela: 2026-10-25, wykonanie audytu macierzy w całości z zacho
 | M5 | [#341](https://github.com/clickbytes/golingua/issues/341) | Kontrasty | ACTIVE; implementation in review |
 | M6 | [#342](https://github.com/clickbytes/golingua/issues/342) | Kompozycja i przekształcenia | ACTIVE; implementation in review |
 | M7 | [#343](https://github.com/clickbytes/golingua/issues/343) | Odmowy i niejednoznaczność | ACTIVE; implementation in review |
-| M8 | [#344](https://github.com/clickbytes/golingua/issues/344) | Bilans i raport luk | QUEUED |
+| M8 | [#344](https://github.com/clickbytes/golingua/issues/344) | Infrastruktura inwentarza i grup alternatywnych | ACTIVE; 500 par pozostaje celem, nie bramką |
 
 Pierwsze rozszerzenie obejmuje 50–100 ręcznie dobranych par. Cel 500 par / 1000 kierunków jest celem rozwojowym: dalsze zdania dobieramy z wykazanych luk, bez jednego masowego batcha. Deklarowane tagi nie dowodzą wykonania konstrukcji ani opanowania języka; katalog słów nie jest pokryciem gramatyki. Nie jest to certyfikacja CEFR.
 

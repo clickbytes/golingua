@@ -1,0 +1,17 @@
+{
+  "target_pairs": 500,
+  "owner_acceptance": "NOT_EVALUATED",
+  "targets_are_goals_not_correctness_gates": true,
+  "groups": {
+    "actions": 65,
+    "identification": 40,
+    "possession": 40,
+    "location_quantity": 50,
+    "negation": 50,
+    "questions": 60,
+    "time_agreement": 60,
+    "case_adjective_order": 45,
+    "ambiguity_reference": 45,
+    "composition_boundary": 45
+  }
+}

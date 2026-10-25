@@ -14,6 +14,43 @@ import (
 	"github.com/clickbytes/golingua/tests/matrix"
 )
 
+type LanguageBatch struct {
+	ID                                      string
+	EnglishAnalysis, PolishAnalysis         []matrix.AnalysisCase
+	EnglishRealizations, PolishRealizations []matrix.RealizationCase
+}
+
+// LanguageBatches is the declarative registry used for lookup and inventory.
+var LanguageBatches = []LanguageBatch{
+	{ID: "A1", EnglishAnalysis: a1en.AnalysisCases, PolishAnalysis: a1pl.AnalysisCases, EnglishRealizations: a1en.RealizationCases, PolishRealizations: a1pl.RealizationCases},
+	{ID: "A1.1", EnglishAnalysis: a1en11.CorpusAnalysisCases, PolishAnalysis: a1pl11.CorpusAnalysisCases, EnglishRealizations: a1en11.CorpusRealizationCases, PolishRealizations: a1pl11.CorpusRealizationCases},
+	{ID: "A1.2", EnglishAnalysis: a1en12.ContrastAnalysisCases, PolishAnalysis: a1pl12.ContrastAnalysisCases, EnglishRealizations: a1en12.ContrastRealizationCases, PolishRealizations: a1pl12.ContrastRealizationCases},
+	{ID: "A1.3", EnglishAnalysis: a1en13.CompositionAnalysisCases, PolishAnalysis: a1pl13.CompositionAnalysisCases, EnglishRealizations: a1en13.CompositionRealizationCases, PolishRealizations: a1pl13.CompositionRealizationCases},
+}
+
+func AnalysisCasesFor(language string) []matrix.AnalysisCase {
+	var cases []matrix.AnalysisCase
+	for _, batch := range LanguageBatches {
+		if language == "en" {
+			cases = append(cases, batch.EnglishAnalysis...)
+		} else if language == "pl" {
+			cases = append(cases, batch.PolishAnalysis...)
+		}
+	}
+	return cases
+}
+func RealizationCasesFor(language string) []matrix.RealizationCase {
+	var cases []matrix.RealizationCase
+	for _, batch := range LanguageBatches {
+		if language == "en" {
+			cases = append(cases, batch.EnglishRealizations...)
+		} else if language == "pl" {
+			cases = append(cases, batch.PolishRealizations...)
+		}
+	}
+	return cases
+}
+
 // CasesFor returns the registered integration cases for one exact direction.
 func CasesFor(from, to string) []matrix.TranslationCase {
 	result := make([]matrix.TranslationCase, 0)
@@ -27,18 +64,11 @@ func CasesFor(from, to string) []matrix.TranslationCase {
 
 // Resolve finds the exact source analysis and target realization linked by c.
 func Resolve(c matrix.TranslationCase) (matrix.AnalysisCase, matrix.RealizationCase, error) {
-	var analyses []matrix.AnalysisCase
-	var realizations []matrix.RealizationCase
-	switch {
-	case c.From == "en" && c.To == "pl":
-		analyses = append(append(append(append([]matrix.AnalysisCase{}, a1en.AnalysisCases...), a1en11.CorpusAnalysisCases...), a1en12.ContrastAnalysisCases...), a1en13.CompositionAnalysisCases...)
-		realizations = append(append(append(append([]matrix.RealizationCase{}, a1pl.RealizationCases...), a1pl11.CorpusRealizationCases...), a1pl12.ContrastRealizationCases...), a1pl13.CompositionRealizationCases...)
-	case c.From == "pl" && c.To == "en":
-		analyses = append(append(append(append([]matrix.AnalysisCase{}, a1pl.AnalysisCases...), a1pl11.CorpusAnalysisCases...), a1pl12.ContrastAnalysisCases...), a1pl13.CompositionAnalysisCases...)
-		realizations = append(append(append(append([]matrix.RealizationCase{}, a1en.RealizationCases...), a1en11.CorpusRealizationCases...), a1en12.ContrastRealizationCases...), a1en13.CompositionRealizationCases...)
-	default:
+	if !((c.From == "en" && c.To == "pl") || (c.From == "pl" && c.To == "en")) {
 		return matrix.AnalysisCase{}, matrix.RealizationCase{}, fmt.Errorf("unsupported translation direction %q to %q", c.From, c.To)
 	}
+	analyses := AnalysisCasesFor(c.From)
+	realizations := RealizationCasesFor(c.To)
 	analysis, analysisCount := findAnalysis(analyses, c.AnalysisID)
 	realization, realizationCount := findRealization(realizations, c.RealizationID)
 	if analysisCount != 1 || realizationCount != 1 {
