@@ -2,14 +2,17 @@
 package interlingua
 
 import (
- "fmt"
- "strconv"
- "strings"
- "github.com/clickbytes/golingua/internal/ids"
- "github.com/clickbytes/golingua/internal/meaning"
+	"fmt"
+	"github.com/clickbytes/golingua/internal/ids"
+	"github.com/clickbytes/golingua/internal/meaning"
+	"strconv"
+	"strings"
 )
 
-type caseOrderSpec struct { index int; predicate, roles, temporal, gap string }
+type caseOrderSpec struct {
+	index                           int
+	predicate, roles, temporal, gap string
+}
 
 // Semantic specs omit all bilingual surface text. Role mentions create distinct
 // referent nodes even when their ConceptIDs match; black is a separate untimed
@@ -63,35 +66,126 @@ var caseOrderSpecs = []caseOrderSpec{
 // have no substitute graph: callers receive ok=false for those full meanings.
 // IDs are a1.11.case.NNN.en|pl; child role variants use .offspring.
 func CaseOrderExpansion(id string) (IdentificationMeaning, bool, error) {
- parts:=strings.Split(id,".")
- if len(parts)<5 || len(parts)>6 || parts[0]!="a1" || parts[1]!="11" || parts[2]!="case" || (parts[4]!="en" && parts[4]!="pl") { return IdentificationMeaning{},false,nil }
- n,err:=strconv.Atoi(parts[3]); if err!=nil || n<1 || n>42 { return IdentificationMeaning{},false,nil }
- variant:=""; if len(parts)==6 { if parts[5]!="offspring" { return IdentificationMeaning{},false,nil }; variant=parts[5] }
- var spec caseOrderSpec; for _,s:=range caseOrderSpecs { if s.index==n {spec=s;break} }
- if spec.index==0 || spec.gap!="" { return IdentificationMeaning{},false,nil }
- roles:=strings.Split(spec.roles,","); hasChild:=false
- for _,raw:=range roles { if strings.Contains(raw,"=child:") {hasChild=true} }
- if variant!="" && !hasChild { return IdentificationMeaning{},false,nil }
- predicate,err:=ids.NewConceptID(spec.predicate); if err!=nil {return IdentificationMeaning{},false,fmt.Errorf("case predicate: %w",err)}
- nodes:=make([]meaning.Node,0,len(roles)*2+1); participants:=make([]meaning.Participant,0,len(roles)); blackStates:=make([]meaning.Node,0)
- for i,raw:=range roles {
-  pair:=strings.SplitN(strings.TrimSpace(raw),"=",2); if len(pair)!=2 {return IdentificationMeaning{},false,fmt.Errorf("bad role %q",raw)}
-  d:=strings.Split(pair[1],":"); if len(d)<2 {return IdentificationMeaning{},false,fmt.Errorf("bad role descriptor %q",raw)}
-  concept:=d[0]; count:=d[1]; isBlack:=len(d)>2 && d[2]=="black"
-  if concept=="child" && variant=="offspring" {concept="child_of_person"}
-  cid,e:=ids.NewConceptID(concept); if e!=nil{return IdentificationMeaning{},false,fmt.Errorf("case referent: %w",e)}
-  rid:=meaning.NodeID(fmt.Sprintf("r%d",i+1)); ref,e:=meaning.NewReferent(rid,cid); if e!=nil{return IdentificationMeaning{},false,e}
-  if count=="one" {ref.Multiplicity=meaning.MultiplicityOne} else if count=="many" {ref.Multiplicity=meaning.MultiplicityMany}
-  if spec.index==6 && parts[4]=="pl" && concept=="door" {ref.Multiplicity=""}
-  nodes=append(nodes,ref); participants=append(participants,meaning.Participant{Role:meaning.Role(pair[0]),Target:rid})
-  if isBlack { black,e:=ids.NewConceptID("black"); if e!=nil{return IdentificationMeaning{},false,e}; st,e:=meaning.NewState(meaning.NodeID(fmt.Sprintf("black%d",i+1)),black,[]meaning.Participant{{Role:"bearer",Target:rid}}); if e!=nil{return IdentificationMeaning{},false,e}; blackStates=append(blackStates,st) }
- }
- event,err:=meaning.NewEvent("pred",predicate,participants); if err!=nil{return IdentificationMeaning{},false,err}; event.TemporalFrame=meaning.TemporalFramePresent
- nodes=append([]meaning.Node{event},nodes...); nodes=append(nodes,blackStates...)
- roots:=[]meaning.NodeID{"pred"}; for _,st:=range blackStates {roots=append(roots,st.ID)}
- graph,err:=meaning.Build(roots,nodes,meaning.DefaultBudget()); if err!=nil{return IdentificationMeaning{},false,err}
- return IdentificationMeaning{Graph:graph,Context:meaning.RequestContext{ID:"a1-11-case"}},true,nil
+	parts := strings.Split(id, ".")
+	if len(parts) < 5 || len(parts) > 6 || parts[0] != "a1" || parts[1] != "11" || parts[2] != "case" || (parts[4] != "en" && parts[4] != "pl") {
+		return IdentificationMeaning{}, false, nil
+	}
+	n, err := strconv.Atoi(parts[3])
+	if err != nil || n < 1 || n > 42 {
+		return IdentificationMeaning{}, false, nil
+	}
+	variant := ""
+	if len(parts) == 6 {
+		if parts[5] != "offspring" {
+			return IdentificationMeaning{}, false, nil
+		}
+		variant = parts[5]
+	}
+	var spec caseOrderSpec
+	for _, s := range caseOrderSpecs {
+		if s.index == n {
+			spec = s
+			break
+		}
+	}
+	if spec.index == 0 || spec.gap != "" {
+		return IdentificationMeaning{}, false, nil
+	}
+	roles := strings.Split(spec.roles, ",")
+	hasChild := false
+	for _, raw := range roles {
+		if strings.Contains(raw, "=child:") {
+			hasChild = true
+		}
+	}
+	if variant != "" && !hasChild {
+		return IdentificationMeaning{}, false, nil
+	}
+	predicate, err := ids.NewConceptID(spec.predicate)
+	if err != nil {
+		return IdentificationMeaning{}, false, fmt.Errorf("case predicate: %w", err)
+	}
+	nodes := make([]meaning.Node, 0, len(roles)*2+1)
+	participants := make([]meaning.Participant, 0, len(roles))
+	blackStates := make([]meaning.Node, 0)
+	for i, raw := range roles {
+		pair := strings.SplitN(strings.TrimSpace(raw), "=", 2)
+		if len(pair) != 2 {
+			return IdentificationMeaning{}, false, fmt.Errorf("bad role %q", raw)
+		}
+		d := strings.Split(pair[1], ":")
+		if len(d) < 2 {
+			return IdentificationMeaning{}, false, fmt.Errorf("bad role descriptor %q", raw)
+		}
+		concept := d[0]
+		count := d[1]
+		isBlack := len(d) > 2 && d[2] == "black"
+		if concept == "child" && variant == "offspring" {
+			concept = "child_of_person"
+		}
+		cid, e := ids.NewConceptID(concept)
+		if e != nil {
+			return IdentificationMeaning{}, false, fmt.Errorf("case referent: %w", e)
+		}
+		rid := meaning.NodeID(fmt.Sprintf("r%d", i+1))
+		ref, e := meaning.NewReferent(rid, cid)
+		if e != nil {
+			return IdentificationMeaning{}, false, e
+		}
+		if count == "one" {
+			ref.Multiplicity = meaning.MultiplicityOne
+		} else if count == "many" {
+			ref.Multiplicity = meaning.MultiplicityMany
+		}
+		if spec.index == 6 && parts[4] == "pl" && concept == "door" {
+			ref.Multiplicity = ""
+		}
+		nodes = append(nodes, ref)
+		participants = append(participants, meaning.Participant{Role: meaning.Role(pair[0]), Target: rid})
+		if isBlack {
+			black, e := ids.NewConceptID("black")
+			if e != nil {
+				return IdentificationMeaning{}, false, e
+			}
+			st, e := meaning.NewState(meaning.NodeID(fmt.Sprintf("black%d", i+1)), black, []meaning.Participant{{Role: "bearer", Target: rid}})
+			if e != nil {
+				return IdentificationMeaning{}, false, e
+			}
+			blackStates = append(blackStates, st)
+		}
+	}
+	event, err := meaning.NewEvent("pred", predicate, participants)
+	if err != nil {
+		return IdentificationMeaning{}, false, err
+	}
+	event.TemporalFrame = meaning.TemporalFramePresent
+	nodes = append([]meaning.Node{event}, nodes...)
+	nodes = append(nodes, blackStates...)
+	roots := []meaning.NodeID{"pred"}
+	for _, st := range blackStates {
+		roots = append(roots, st.ID)
+	}
+	graph, err := meaning.Build(roots, nodes, meaning.DefaultBudget())
+	if err != nil {
+		return IdentificationMeaning{}, false, err
+	}
+	return IdentificationMeaning{Graph: graph, Context: meaning.RequestContext{ID: "a1-11-case"}}, true, nil
 }
 
 // CaseOrderExpansionIDs enumerates one ID per licensed interpretation.
-func CaseOrderExpansionIDs() []string { var out []string; for _,s:=range caseOrderSpecs { if s.gap!="" {continue}; for _,lang:=range []string{"en","pl"} {base:=fmt.Sprintf("a1.11.case.%03d.%s",s.index,lang);out=append(out,base);if strings.Contains(s.roles,"child:"){out=append(out,base+".offspring")}} };return out }
+func CaseOrderExpansionIDs() []string {
+	var out []string
+	for _, s := range caseOrderSpecs {
+		if s.gap != "" {
+			continue
+		}
+		for _, lang := range []string{"en", "pl"} {
+			base := fmt.Sprintf("a1.11.case.%03d.%s", s.index, lang)
+			out = append(out, base)
+			if strings.Contains(s.roles, "child:") {
+				out = append(out, base+".offspring")
+			}
+		}
+	}
+	return out
+}

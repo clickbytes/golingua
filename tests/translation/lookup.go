@@ -8,6 +8,7 @@ import (
 	a1en110 "github.com/clickbytes/golingua/tests/languages/en/A1.10"
 	a1en111 "github.com/clickbytes/golingua/tests/languages/en/A1.11"
 	a1en112 "github.com/clickbytes/golingua/tests/languages/en/A1.12"
+	a1en113 "github.com/clickbytes/golingua/tests/languages/en/A1.13"
 	a1en12 "github.com/clickbytes/golingua/tests/languages/en/A1.2"
 	a1en13 "github.com/clickbytes/golingua/tests/languages/en/A1.3"
 	a1en14 "github.com/clickbytes/golingua/tests/languages/en/A1.4"
@@ -21,6 +22,7 @@ import (
 	a1pl110 "github.com/clickbytes/golingua/tests/languages/pl/A1.10"
 	a1pl111 "github.com/clickbytes/golingua/tests/languages/pl/A1.11"
 	a1pl112 "github.com/clickbytes/golingua/tests/languages/pl/A1.12"
+	a1pl113 "github.com/clickbytes/golingua/tests/languages/pl/A1.13"
 	a1pl12 "github.com/clickbytes/golingua/tests/languages/pl/A1.2"
 	a1pl13 "github.com/clickbytes/golingua/tests/languages/pl/A1.3"
 	a1pl14 "github.com/clickbytes/golingua/tests/languages/pl/A1.4"
@@ -53,6 +55,7 @@ var LanguageBatches = []LanguageBatch{
 	{ID: "A1.10-person", EnglishAnalysis: a1en110.TimePersonAnalysisCases, PolishAnalysis: a1pl110.TimePersonAnalysisCases, EnglishRealizations: a1en110.TimePersonRealizationCases, PolishRealizations: a1pl110.TimePersonRealizationCases},
 	{ID: "A1.10-other", EnglishAnalysis: a1en110.TimeOtherAnalysisCases, PolishAnalysis: a1pl110.TimeOtherAnalysisCases, EnglishRealizations: a1en110.TimeOtherRealizationCases, PolishRealizations: a1pl110.TimeOtherRealizationCases},
 	{ID: "A1.12-ambiguity", EnglishAnalysis: a1en112.AmbiguityAnalysisCases, PolishAnalysis: a1pl112.AmbiguityAnalysisCases, EnglishRealizations: a1en112.AmbiguityRealizationCases, PolishRealizations: a1pl112.AmbiguityRealizationCases},
+	{ID: "A1.13-composition", EnglishAnalysis: a1en113.CompositionAnalysisCases, PolishAnalysis: a1pl113.CompositionAnalysisCases, EnglishRealizations: a1en113.CompositionRealizationCases, PolishRealizations: a1pl113.CompositionRealizationCases},
 	{ID: "A1.11-case", EnglishAnalysis: a1en111.CaseOrderAnalysisCases, PolishAnalysis: a1pl111.CaseOrderAnalysisCases, EnglishRealizations: a1en111.CaseOrderRealizationCases, PolishRealizations: a1pl111.CaseOrderRealizationCases},
 }
 

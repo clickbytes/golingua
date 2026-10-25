@@ -59,3 +59,8 @@ Added 42 selected pairs / 84 directions. OVS and dative/accusative-fronted input
 ## #344 M8-AMB43 — A1.12 ambiguity and reference
 
 Added 43 selected pairs / 86 directions. The independent catalogue preserves licensed read frames, child readings, Polish role swaps, deictic anchors, entity counts, and distinct mentions; unsupported scope, attachment, and parent binding remain full I gaps. See [brief](344-ambiguity-brief.md), [selection](344-ambiguity-selection.md), and [results](344-ambiguity-results.md). OwnerAcceptance: `NOT_EVALUATED`.
+
+
+## #344 M8-COMP33 — A1.13 composition boundaries
+
+Added 33 selected pairs / 66 directions. Ordinary event/state compositions preserve authored role sharing, time, negation scope, exact black bearers, and row-33 explicit reflexivity; the five licensed imperatives remain request acts without asserted time. Group structure, connective relations, explicit politeness, posture change, modality, embedded content, and contrast remain full I gaps. See [brief](344-composition-brief.md), [selection](344-composition-selection.md), and [results](344-composition-results.md). OwnerAcceptance: `NOT_EVALUATED`.
