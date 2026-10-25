@@ -1,4 +1,4 @@
-package matrix_test
+package matrix
 
 import (
 	"fmt"
@@ -8,7 +8,6 @@ import (
 	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/semantic"
 	"github.com/clickbytes/golingua/tests/interlingua"
-	"github.com/clickbytes/golingua/tests/matrix"
 )
 
 func TestContextMatchesBindsAnchorsToGraphRoles(t *testing.T) {
@@ -26,7 +25,7 @@ func TestContextMatchesBindsAnchorsToGraphRoles(t *testing.T) {
 		contextMention("m-addressee", "renamed-addressee", "addressee"),
 		contextMention("m-speaker", "renamed-speaker", "speaker"),
 	})}}}
-	if matches, err := matrix.ContextMatches(want, got); err != nil || !matches {
+	if matches, err := ContextMatches(want, got); err != nil || !matches {
 		t.Fatalf("renamed nodes, reordered graph nodes and reordered mentions should match: matches=%t err=%v", matches, err)
 	}
 
@@ -34,7 +33,7 @@ func TestContextMatchesBindsAnchorsToGraphRoles(t *testing.T) {
 		contextMention("m-speaker", "renamed-speaker", "addressee"),
 		contextMention("m-addressee", "renamed-addressee", "speaker"),
 	})}}}
-	if matches, err := matrix.ContextMatches(want, wrongRole); err == nil || matches {
+	if matches, err := ContextMatches(want, wrongRole); err == nil || matches {
 		t.Fatalf("same anchor values attached to wrong participant roles must fail, matches=%t err=%v", matches, err)
 	}
 }
@@ -57,7 +56,7 @@ func TestContextMatchesRejectsMissingExtraWrongAndResolvedMentions(t *testing.T)
 			ctx := contextWithMentions("actual-context", tc.mentions)
 			ctx.Referents = tc.referent
 			candidate := contextCandidate(graph, ctx)
-			if matches, err := matrix.ContextMatches(want, candidate); err == nil || matches {
+			if matches, err := ContextMatches(want, candidate); err == nil || matches {
 				t.Fatalf("invalid context should be rejected, matches=%t err=%v", matches, err)
 			}
 		})
@@ -72,19 +71,19 @@ func TestMatchAllowedCandidateUsesMatchingVariantContext(t *testing.T) {
 	candidate := contextCandidate(graph, contextWithMentions("actual", []meaning.Mention{
 		contextMention("a", "left", "speaker"), contextMention("b", "right", "addressee"),
 	}))
-	id, matches, err := matrix.MatchAllowedCandidate(
+	id, matches, err := MatchAllowedCandidate(
 		[]string{"primary-wrong-context", "secondary-correct-context"},
 		map[string]meaning.Meaning{"primary-wrong-context": graph, "secondary-correct-context": graph},
 		map[string]*interlingua.IdentificationMeaning{"primary-wrong-context": &wrong, "secondary-correct-context": &correct}, candidate)
 	if err != nil || !matches || id != "secondary-correct-context" {
 		t.Fatalf("candidate should match only the variant with its own context: id=%q matches=%t err=%v", id, matches, err)
 	}
-	boundID, matches, err := matrix.MatchSourceCandidateMeaning("source-secondary", graph, map[string]string{"source-secondary": id}, map[string]meaning.Meaning{"primary-wrong-context": graph, "secondary-correct-context": graph})
+	boundID, matches, err := MatchSourceCandidateMeaning("source-secondary", graph, map[string]string{"source-secondary": id}, map[string]meaning.Meaning{"primary-wrong-context": graph, "secondary-correct-context": graph})
 	if err != nil || !matches || boundID != "secondary-correct-context" {
 		t.Fatalf("translation candidate should select source-candidate variant before graph matching: id=%q matches=%t err=%v", boundID, matches, err)
 	}
 	for _, sourceID := range []string{"", "unknown-source"} {
-		if _, matches, err := matrix.MatchSourceCandidateMeaning(sourceID, graph, map[string]string{"source-secondary": id}, map[string]meaning.Meaning{id: graph}); err == nil || matches {
+		if _, matches, err := MatchSourceCandidateMeaning(sourceID, graph, map[string]string{"source-secondary": id}, map[string]meaning.Meaning{id: graph}); err == nil || matches {
 			t.Errorf("empty or unknown source ID %q must not bind: matches=%t err=%v", sourceID, matches, err)
 		}
 	}
@@ -96,7 +95,7 @@ func TestMatchAllowedCandidateUsesMatchingVariantContext(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, matches, err := matrix.MatchSourceCandidateMeaning("source-secondary", wrongGraph, map[string]string{"source-secondary": id}, map[string]meaning.Meaning{id: graph}); err != nil || matches {
+	if _, matches, err := MatchSourceCandidateMeaning("source-secondary", wrongGraph, map[string]string{"source-secondary": id}, map[string]meaning.Meaning{id: graph}); err != nil || matches {
 		t.Errorf("source-ID binding must still reject a different graph: matches=%t err=%v", matches, err)
 	}
 }
@@ -109,14 +108,14 @@ func TestMatchAllowedCandidatePropagatesInvalidExpectedContextAndBudget(t *testi
 	candidate := contextCandidate(graph, contextWithMentions("valid", []meaning.Mention{
 		contextMention("a", "left", "speaker"), contextMention("b", "right", "addressee"),
 	}))
-	if _, matches, err := matrix.MatchAllowedCandidate([]string{"invalid", "valid"}, map[string]meaning.Meaning{"invalid": graph, "valid": graph}, map[string]*interlingua.IdentificationMeaning{"invalid": &invalid, "valid": &valid}, candidate); err == nil || matches {
+	if _, matches, err := MatchAllowedCandidate([]string{"invalid", "valid"}, map[string]meaning.Meaning{"invalid": graph, "valid": graph}, map[string]*interlingua.IdentificationMeaning{"invalid": &invalid, "valid": &valid}, candidate); err == nil || matches {
 		t.Fatalf("invalid expected context must not be hidden by another matching variant, matches=%t err=%v", matches, err)
 	}
 
 	large := contextGraphWithParticipants(t, 32)
 	largeContext := contextFixture(large, "r0", "r1")
 	largeCandidate := contextCandidate(large, largeContext.Context)
-	if _, matches, err := matrix.MatchAllowedCandidate([]string{"large"}, map[string]meaning.Meaning{"large": large}, map[string]*interlingua.IdentificationMeaning{"large": &largeContext}, largeCandidate); err == nil || matches {
+	if _, matches, err := MatchAllowedCandidate([]string{"large"}, map[string]meaning.Meaning{"large": large}, map[string]*interlingua.IdentificationMeaning{"large": &largeContext}, largeCandidate); err == nil || matches {
 		t.Fatalf("comparison-budget error must propagate, matches=%t err=%v", matches, err)
 	}
 }
@@ -206,4 +205,28 @@ func contextMention(id string, node meaning.NodeID, value string) meaning.Mentio
 
 func roleAnchor(value string) *meaning.DeicticAnchor {
 	return &meaning.DeicticAnchor{Kind: "participant", Value: value}
+}
+
+func TestQuestionFixtureLoaderRoutesOnlyAnchoredContexts(t *testing.T) {
+	plainGraph, plainContext, ok, err := loadFixture("a1.9.q.005.en")
+	if err != nil || !ok {
+		t.Fatalf("non-deictic question fixture: ok=%t err=%v", ok, err)
+	}
+	if plainContext != nil {
+		t.Fatalf("non-deictic fixture was routed as a context contract: %+v", plainContext.Context)
+	}
+	if len(plainGraph.Nodes) == 0 {
+		t.Fatal("non-deictic question fixture graph is empty")
+	}
+
+	anchoredGraph, anchoredContext, ok, err := loadFixture("a1.9.q.001.en")
+	if err != nil || !ok {
+		t.Fatalf("deictic question fixture: ok=%t err=%v", ok, err)
+	}
+	if anchoredContext == nil || len(anchoredContext.Context.Mentions) != 1 {
+		t.Fatalf("deictic fixture lost its anchor context: %+v", anchoredContext)
+	}
+	if len(anchoredGraph.Nodes) == 0 {
+		t.Fatal("deictic question fixture graph is empty")
+	}
 }

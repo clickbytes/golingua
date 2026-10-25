@@ -812,6 +812,12 @@ func loadFixture(id string) (meaning.Meaning, *interlingua.IdentificationMeaning
 	if graph, identification, ok, err := interlingua.PendingDomain(id); err != nil || ok {
 		return graph, identification, ok, err
 	}
+	if fixture, ok, err := interlingua.QuestionExpansion(id); err != nil || ok {
+		if len(fixture.Context.Mentions) == 0 {
+			return fixture.Graph, nil, ok, err
+		}
+		return fixture.Graph, &fixture, ok, err
+	}
 	if fixture, ok, err := interlingua.IdentificationExpansion(id); err != nil || ok {
 		return fixture.Graph, &fixture, ok, err
 	}

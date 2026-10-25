@@ -12,7 +12,7 @@ Decyzja właściciela: 2026-10-25, wykonanie audytu macierzy w całości z zacho
 | M7 | [#343](https://github.com/clickbytes/golingua/issues/343) | Odmowy i niejednoznaczność | DONE; merged, main CI green |
 | M8 | [#344](https://github.com/clickbytes/golingua/issues/344) | Zbalansowana macierz, obserwowane pokrycie i raport luk | ACTIVE; jeden PR #351, kolejne małe partie szeregowo |
 
-Obecny inwentarz obejmuje 268 par / 536 kierunków. Grupy działań, identyfikacji, posiadania, lokalizacji/ilości i negacji osiągnęły zaplanowaną liczebność; nie oznacza to obsługi tych konstrukcji przez silnik. Cel 500 par / 1000 kierunków pozostaje celem rozwojowym. Tagi opisują deklarowane wymagania; katalog słów nie jest pokryciem gramatyki. Nie jest to certyfikacja CEFR.
+Obecny inwentarz obejmuje 326 par / 652 kierunków. Grupy działań, identyfikacji, posiadania, lokalizacji/ilości i negacji osiągnęły zaplanowaną liczebność; nie oznacza to obsługi tych konstrukcji przez silnik. Cel 500 par / 1000 kierunków pozostaje celem rozwojowym. Tagi opisują deklarowane wymagania; katalog słów nie jest pokryciem gramatyki. Nie jest to certyfikacja CEFR.
 
 Ocena agenta wynika z rzeczywistych obserwacji. Akceptacja językowa właściciela: `NOT_EVALUATED`. Braki `GAP`, `FAIL`, `SPEC_PENDING`, `NOT RUN` i `INFRA` pozostają jawne. Poprawna odmowa błędnego wejścia jest odrębną kategorią od poprawnego tłumaczenia. Obserwacyjny workflow macierzy nie zmienia wyniku technicznego `go-ci`.
 
@@ -33,3 +33,7 @@ Dodano dokładnie 48 par / 96 kierunków jako deklaratywne kontrakty A1.7. Pełn
 ## #344 reference matching prerequisite
 
 Context matching now supports multiple anchored mentions bound to graph nodes by the same structural bijection, including variant-specific source matching and integration source-candidate linkage. Existing one-referent identification checks remain strict. Details: [brief](344-reference-matching-brief.md) and [results](344-reference-matching-results.md). OwnerAcceptance: `NOT_EVALUATED`.
+
+## #344 M8-Q58 — A1.9 questions
+
+Added 58 authored question pairs / 116 directions. Yes/no fixture graphs cover complete propositions with question act, time and polarity; WH binding, full possession/location, quantity binding, open-state and other unsupported requirements remain explicit gaps without invented graphs. Row 30 explicitly says walking in both languages; the question still lacks its destination-variable binding. The Polish-only plural `drzwi` target retains four English number/deixis candidates. Selection, contract and observed run: [brief](344-questions-brief.md), [selection](344-questions-selection.md), [results](344-questions-results.md). OwnerAcceptance: `NOT_EVALUATED`.

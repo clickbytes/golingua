@@ -166,9 +166,21 @@ func checkCases(t *testing.T, lang string, analyses []matrix.AnalysisCase, reali
 		for _, text := range c.AllowedTexts {
 			allowed[text] = true
 		}
+		allowedAssumptions := make(map[string]bool, len(c.AllowedAssumptionFields))
+		for _, field := range c.AllowedAssumptionFields {
+			allowedAssumptions[field] = true
+		}
+		for _, field := range c.RequiredAssumptionFields {
+			if !allowedAssumptions[field] {
+				t.Errorf("%s realization %q requires unallowed assumption field %q", lang, c.ID, field)
+			}
+		}
 		for _, rule := range c.RequiredTextAssumptions {
 			if !allowed[rule.Text] || rule.Field == "" || rule.Value == "" {
 				t.Errorf("%s realization %q has invalid per-text assumption rule: %+v", lang, c.ID, rule)
+			}
+			if !allowedAssumptions[rule.Field] {
+				t.Errorf("%s realization %q requires per-text assumption field %q outside AllowedAssumptionFields", lang, c.ID, rule.Field)
 			}
 		}
 		if invalid := matrixInvalidRequiredTextGroups(c.RequiredTextGroups, allowed); len(invalid) > 0 {
@@ -190,6 +202,9 @@ func checkCases(t *testing.T, lang string, analyses []matrix.AnalysisCase, reali
 			for _, rule := range variant.RequiredTextAssumptions {
 				if !variantAllowed[rule.Text] || rule.Field == "" || rule.Value == "" {
 					t.Errorf("%s realization %q variant %q has invalid assumption rule: %+v", lang, c.ID, variant.MeaningID, rule)
+				}
+				if !allowedAssumptions[rule.Field] {
+					t.Errorf("%s realization %q variant %q requires per-text assumption field %q outside AllowedAssumptionFields", lang, c.ID, variant.MeaningID, rule.Field)
 				}
 			}
 			variantRequired := make(map[string]bool, len(variant.RequiredTexts))
