@@ -656,6 +656,9 @@ func loadFixture(id string) (meaning.Meaning, *interlingua.IdentificationMeaning
 	if graph, ok, err := interlingua.CorpusEvent(strings.TrimPrefix(id, "corpus.")); err != nil || ok {
 		return graph, nil, ok, err
 	}
+	if graph, ok, err := interlingua.Contrast(id); err != nil || ok {
+		return graph, nil, ok, err
+	}
 	if graph, ok, err := interlingua.Reading(id); err != nil || ok {
 		return graph, nil, ok, err
 	}

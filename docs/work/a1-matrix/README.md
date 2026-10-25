@@ -7,7 +7,7 @@ Decyzja właściciela: 2026-10-25, wykonanie audytu macierzy w całości z zacho
 | M2 | [#338](https://github.com/clickbytes/golingua/issues/338) | Inwentarz, warianty i raport | DONE; merged, main CI green |
 | M3 | [#339](https://github.com/clickbytes/golingua/issues/339) | Kontrakty LQ/PO/Q | DONE; merged, main CI green |
 | M4 | [#340](https://github.com/clickbytes/golingua/issues/340) | Reprezentatywny korpus | ACTIVE; implementation in review |
-| M5 | [#341](https://github.com/clickbytes/golingua/issues/341) | Kontrasty | QUEUED |
+| M5 | [#341](https://github.com/clickbytes/golingua/issues/341) | Kontrasty | ACTIVE; implementation in review |
 | M6 | [#342](https://github.com/clickbytes/golingua/issues/342) | Kompozycja i przekształcenia | QUEUED |
 | M7 | [#343](https://github.com/clickbytes/golingua/issues/343) | Odmowy i niejednoznaczność | QUEUED |
 | M8 | [#344](https://github.com/clickbytes/golingua/issues/344) | Bilans i raport luk | QUEUED |

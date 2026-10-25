@@ -1,6 +1,6 @@
 # Macierz zachowania PL/EN
 
-Macierz zawiera 56 kierunkowych rekordów: 24 rekordy pierwotnej próbki A1 oraz 32 rekordy A1.1 z 16 wybranych par PL/EN (`S003`, `S010`, `S016`, `S023`, `S028`, `S034`, `S040`, `S043`, `S051`, `S055`, `S063`, `S074`, `S076`, `S081`, `S086`, `S099`). Są to rekordy `draft_unreviewed`, niezatwierdzone językowo. Inwentarz `translation.Cases` pozostaje deklaratywny i może rosnąć o następne partie; liczba rekordów nie jest ograniczeniem walidatora. To ograniczona próbka, nie pełne A1 ani certyfikacja CEFR; [deskryptory Rady Europy](https://rm.coe.int/16809ea0d4) są jedynie kontekstem. Teksty i wymagania zachowują oryginalne ID i provenance, a akceptacja właściciela jest zapisana osobno jako `NOT_EVALUATED`.
+Macierz zawiera 88 kierunkowych rekordów: 24 rekordy pierwotnej próbki A1, 32 rekordy A1.1 z wybranych par korpusu oraz 32 rekordy A1.2 z 16 ręcznie dobranych kontrastów: posiadania, liczby, negacji, czasu, homografii, cechy, szyku i określoności. Dane A1.2 są propozycjami `NOT_EVALUATED`, niezatwierdzonymi językowo. Inwentarz `translation.Cases` pozostaje deklaratywny i może rosnąć o następne partie; liczba rekordów nie jest ograniczeniem walidatora. To ograniczona próbka, nie pełne A1 ani certyfikacja CEFR; [deskryptory Rady Europy](https://rm.coe.int/16809ea0d4) są jedynie kontekstem. Teksty i wymagania zachowują provenance, a akceptacja właściciela jest zapisana osobno jako `NOT_EVALUATED`.
 
 ## Układ i kontrakt
 
@@ -11,6 +11,8 @@ tests/
   languages/en/A1/             # analiza i realizacja po angielsku
   languages/pl/A1.1/           # wybrane rekordy korpusu po polsku
   languages/en/A1.1/           # wybrane rekordy korpusu po angielsku
+  languages/pl/A1.2/           # wybrane kontrasty A1 po polsku
+  languages/en/A1.2/           # wybrane kontrasty A1 po angielsku
   translation/cases.go         # deklaratywne ID i odwołania do obu stron
   translation/pl-en/           # PL → I → EN
   translation/en-pl/           # EN → I → PL
