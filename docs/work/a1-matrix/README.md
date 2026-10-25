@@ -6,13 +6,13 @@ Decyzja właściciela: 2026-10-25, wykonanie audytu macierzy w całości z zacho
 | --- | --- | --- | --- |
 | M2 | [#338](https://github.com/clickbytes/golingua/issues/338) | Inwentarz, warianty i raport | DONE; merged, main CI green |
 | M3 | [#339](https://github.com/clickbytes/golingua/issues/339) | Kontrakty LQ/PO/Q | DONE; merged, main CI green |
-| M4 | [#340](https://github.com/clickbytes/golingua/issues/340) | Reprezentatywny korpus | ACTIVE; implementation in review |
-| M5 | [#341](https://github.com/clickbytes/golingua/issues/341) | Kontrasty | ACTIVE; implementation in review |
-| M6 | [#342](https://github.com/clickbytes/golingua/issues/342) | Kompozycja i przekształcenia | ACTIVE; implementation in review |
-| M7 | [#343](https://github.com/clickbytes/golingua/issues/343) | Odmowy i niejednoznaczność | ACTIVE; implementation in review |
-| M8 | [#344](https://github.com/clickbytes/golingua/issues/344) | Infrastruktura inwentarza i zbalansowana macierz | ACTIVE; A1.4 actions47 i A1.5 identification38 zapisane; 500 par pozostaje celem |
+| M4 | [#340](https://github.com/clickbytes/golingua/issues/340) | Reprezentatywny korpus | DONE; merged, main CI green |
+| M5 | [#341](https://github.com/clickbytes/golingua/issues/341) | Kontrasty | DONE; merged, main CI green |
+| M6 | [#342](https://github.com/clickbytes/golingua/issues/342) | Kompozycja i przekształcenia | DONE; merged, main CI green |
+| M7 | [#343](https://github.com/clickbytes/golingua/issues/343) | Odmowy i niejednoznaczność | DONE; merged, main CI green |
+| M8 | [#344](https://github.com/clickbytes/golingua/issues/344) | Zbalansowana macierz, obserwowane pokrycie i raport luk | ACTIVE; jeden PR #351, kolejne małe partie szeregowo |
 
-Obecny inwentarz obejmuje 141 par / 282 kierunki; A1.4 dodaje 47 par działań (grupa `actions`: 65), a A1.5 dodaje 38 par identyfikacji (grupa `identification`: 40). Cel 500 par / 1000 kierunków jest celem rozwojowym: dalsze zdania dobieramy z wykazanych luk, bez jednego masowego batcha. Deklarowane tagi nie dowodzą wykonania konstrukcji ani opanowania języka; katalog słów nie jest pokryciem gramatyki. Nie jest to certyfikacja CEFR.
+Obecny inwentarz obejmuje 268 par / 536 kierunków. Grupy działań, identyfikacji, posiadania, lokalizacji/ilości i negacji osiągnęły zaplanowaną liczebność; nie oznacza to obsługi tych konstrukcji przez silnik. Cel 500 par / 1000 kierunków pozostaje celem rozwojowym. Tagi opisują deklarowane wymagania; katalog słów nie jest pokryciem gramatyki. Nie jest to certyfikacja CEFR.
 
 Ocena agenta wynika z rzeczywistych obserwacji. Akceptacja językowa właściciela: `NOT_EVALUATED`. Braki `GAP`, `FAIL`, `SPEC_PENDING`, `NOT RUN` i `INFRA` pozostają jawne. Poprawna odmowa błędnego wejścia jest odrębną kategorią od poprawnego tłumaczenia. Obserwacyjny workflow macierzy nie zmienia wyniku technicznego `go-ci`.
 

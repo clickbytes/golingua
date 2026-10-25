@@ -11,6 +11,7 @@ import (
 	a1en15 "github.com/clickbytes/golingua/tests/languages/en/A1.5"
 	a1en16 "github.com/clickbytes/golingua/tests/languages/en/A1.6"
 	a1en17 "github.com/clickbytes/golingua/tests/languages/en/A1.7"
+	a1en18 "github.com/clickbytes/golingua/tests/languages/en/A1.8"
 	"github.com/clickbytes/golingua/tests/languages/pl/A1"
 	a1pl11 "github.com/clickbytes/golingua/tests/languages/pl/A1.1"
 	a1pl12 "github.com/clickbytes/golingua/tests/languages/pl/A1.2"
@@ -19,6 +20,7 @@ import (
 	a1pl15 "github.com/clickbytes/golingua/tests/languages/pl/A1.5"
 	a1pl16 "github.com/clickbytes/golingua/tests/languages/pl/A1.6"
 	a1pl17 "github.com/clickbytes/golingua/tests/languages/pl/A1.7"
+	a1pl18 "github.com/clickbytes/golingua/tests/languages/pl/A1.8"
 	"github.com/clickbytes/golingua/tests/matrix"
 )
 
@@ -38,6 +40,7 @@ var LanguageBatches = []LanguageBatch{
 	{ID: "A1.5", EnglishAnalysis: a1en15.IdentificationAnalysisCases, PolishAnalysis: a1pl15.IdentificationAnalysisCases, EnglishRealizations: a1en15.IdentificationRealizationCases, PolishRealizations: a1pl15.IdentificationRealizationCases},
 	{ID: "A1.6", EnglishAnalysis: a1en16.PossessionAnalysisCases, PolishAnalysis: a1pl16.PossessionAnalysisCases, EnglishRealizations: a1en16.PossessionRealizationCases, PolishRealizations: a1pl16.PossessionRealizationCases},
 	{ID: "A1.7", EnglishAnalysis: a1en17.LocationQuantityAnalysisCases, PolishAnalysis: a1pl17.LocationQuantityAnalysisCases, EnglishRealizations: a1en17.LocationQuantityRealizationCases, PolishRealizations: a1pl17.LocationQuantityRealizationCases},
+	{ID: "A1.8", EnglishAnalysis: a1en18.NegationAnalysisCases, PolishAnalysis: a1pl18.NegationAnalysisCases, EnglishRealizations: a1en18.NegationRealizationCases, PolishRealizations: a1pl18.NegationRealizationCases},
 }
 
 func AnalysisCasesFor(language string) []matrix.AnalysisCase {

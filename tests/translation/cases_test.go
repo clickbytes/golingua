@@ -1,6 +1,7 @@
 package translation
 
 import (
+	"reflect"
 	"strings"
 	"testing"
 
@@ -226,4 +227,22 @@ func matrixInvalidRequiredTextGroups(groups [][]string, allowed map[string]bool)
 		}
 	}
 	return invalid
+}
+
+func TestA18NegationLinksHaveMatchingMeaningContracts(t *testing.T) {
+	for _, c := range Cases {
+		if !strings.HasPrefix(c.ID, "A1.8-NEG-") {
+			continue
+		}
+		analysis, realization, err := Resolve(c)
+		if err != nil {
+			t.Fatalf("%s resolve: %v", c.ID, err)
+		}
+		if analysis.MeaningID == "" || analysis.MeaningID != realization.MeaningID {
+			t.Errorf("%s source and target MeaningIDs must be the same nonempty ID; got %q and %q", c.ID, analysis.MeaningID, realization.MeaningID)
+		}
+		if !reflect.DeepEqual(analysis.SemanticRequirement, realization.SemanticRequirement) {
+			t.Errorf("%s source and target semantic requirements differ", c.ID)
+		}
+	}
 }
