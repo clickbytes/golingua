@@ -5,6 +5,7 @@ package matrix
 type AnalysisCase struct {
 	ID, MeaningID, Input                        string
 	MustPreserve                                []string
+	SemanticRequirement                         SemanticRequirement
 	AmbiguityNote, InputOrigin, OwnerAcceptance string
 }
 
@@ -15,6 +16,7 @@ type RealizationCase struct {
 	AllowedAssumptionFields                         []string
 	RequiredAssumptionFields                        []string
 	RequiredTextAssumptions                         []TextAssumptionRequirement
+	SemanticRequirement                             SemanticRequirement
 	AllowedLossFields, RequiredLossFields           []string
 	AmbiguityNote, ReferenceOrigin, OwnerAcceptance string
 }
@@ -29,4 +31,15 @@ type TranslationCase struct {
 // value that licenses that exact form.
 type TextAssumptionRequirement struct {
 	Text, Field, Value string
+}
+
+// SemanticRequirement records explicit meaning that a case requires. A
+// RepresentationGap names the exact requirement the current Meaning model
+// cannot encode; it keeps the case evaluable without inventing a graph.
+type SemanticRequirement struct {
+	RequiredPredicate, RequiredAssertion string
+	RequiredRoles                        []string
+	RequiredPerson, RequiredQuantity     string
+	RequiredReference, RequiredAct       string
+	RepresentationGap                    string
 }

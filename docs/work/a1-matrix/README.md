@@ -1,11 +1,11 @@
 # Rozszerzenie macierzy A1 według zjawisk
 
-Decyzja właściciela: 2026-10-25, wykonanie audytu macierzy w całości z zachowaniem pracy szeregowej. Epik [#337](https://github.com/clickbytes/golingua/issues/337). Base: `9bf866bc620ec1ad4ae994876f57bc47885aac71`; rzeczywisty bazowy przebieg `go test ./tests/... -count=1 -v` ujawnił 36 kontroli `SPEC_PENDING` dla 12 kierunków LQ/PO/Q. Techniczny CI main był zielony.
+Decyzja właściciela: 2026-10-25, wykonanie audytu macierzy w całości z zachowaniem pracy szeregowej. Epik [#337](https://github.com/clickbytes/golingua/issues/337). Pierwotny base audytu: `9bf866bc620ec1ad4ae994876f57bc47885aac71`; przebieg wyjściowy ujawnił 36 kontroli `SPEC_PENDING` dla 12 kierunków LQ/PO/Q. M2 usunął ograniczenia inwentarza i raportu; po scaleniu PR techniczny CI main był zielony. M3 opiera się na `cb5d52f5ad45a5dccd9fd19b11f3405b19e940cd`.
 
 | Etap | Issue | Zakres | Stan |
 | --- | --- | --- | --- |
-| M2 | [#338](https://github.com/clickbytes/golingua/issues/338) | Inwentarz, warianty i raport | ACTIVE |
-| M3 | [#339](https://github.com/clickbytes/golingua/issues/339) | Kontrakty LQ/PO/Q | QUEUED |
+| M2 | [#338](https://github.com/clickbytes/golingua/issues/338) | Inwentarz, warianty i raport | DONE; merged, main CI green |
+| M3 | [#339](https://github.com/clickbytes/golingua/issues/339) | Kontrakty LQ/PO/Q | ACTIVE; agent result DONE, owner acceptance NOT_EVALUATED |
 | M4 | [#340](https://github.com/clickbytes/golingua/issues/340) | Reprezentatywny korpus | QUEUED |
 | M5 | [#341](https://github.com/clickbytes/golingua/issues/341) | Kontrasty | QUEUED |
 | M6 | [#342](https://github.com/clickbytes/golingua/issues/342) | Kompozycja i przekształcenia | QUEUED |

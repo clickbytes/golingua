@@ -120,7 +120,7 @@ go test ./tests/translation/... -run Inventory -count=1 -v
 go test ./tests/... -count=1 -v
 ```
 
-Pełna macierz jest celowo niezaliczona, dopóki pozostałe wymagania nie mają zamkniętych wzorców i działających tras. Na końcowym snapshotcie oczekiwany był niezerowy exit wyłącznie z **36 kontrolami `SPEC_PENDING` dotyczącymi 12 rekordów domen LQ, PO i Q**. Pozostałe 12 rekordów obejmuje Seeing, identyfikację i negację. Każdy z 24 oryginalnych rekordów nadal pojawia się w raporcie; `SPEC_PENDING` ani `NOT RUN` nie są pomijane i nie oznaczają PASS. Oddzielny workflow zapisuje obserwację po pushu na `main`, ale nie jest bramką dla technicznego CI.
+Pełna macierz jest celowo niezaliczona, dopóki wymagania nie mają działających tras. Aktualizacja A1-M3 zamyka wymagania LQ/PO/Q: niezależne I dla dokładnie dwóch kotów i pytania klasyfikacyjnego, jawne GAP_I dla brakujących relacji. Rzeczywisty odbiór wykazał **24 GAP_I, 6 GAP_ANALYZE i 6 GAP_REALIZE; zero SPEC_PENDING**. Szczegóły i ograniczenia niezależnej realizacji: [odbiór A1-M3](../docs/work/a1-matrix/339-results.md). Pozostałe 12 rekordów obejmuje Seeing, identyfikację i negację. Każdy z 24 oryginalnych rekordów nadal pojawia się w raporcie; `SPEC_PENDING` ani `NOT RUN` nie są pomijane i nie oznaczają PASS. Oddzielny workflow zapisuje obserwację po pushu na `main`, ale nie jest bramką dla technicznego CI.
 
 ## Obserwacje CLI dla czterech oryginalnych zdań
 
@@ -194,6 +194,6 @@ Dla negacji użyto świeżego binarium `/tmp/golingua-a1-neg` z runtime `/tmp/go
 
 ## Status i pochodzenie
 
-Ocena techniczna agenta dla zamkniętej identyfikacji i negacji: PASS. Akceptacja językowa właściciela: `NOT_EVALUATED`. Pozostałe domeny A1 pozostają poza ukończonym zakresem.
+Ocena techniczna agenta dla zamkniętej identyfikacji i negacji: PASS. Kontrakty LQ/PO/Q są zamknięte, lecz wymagania nadal nie są spełnione przez silnik; patrz GAP w raporcie. Akceptacja językowa właściciela: `NOT_EVALUATED`.
 
 Powiązane zadania: epik [#311](https://github.com/clickbytes/golingua/issues/311), fundament [#312](https://github.com/clickbytes/golingua/issues/312), identyfikacja I [#314](https://github.com/clickbytes/golingua/issues/314), PL [#316](https://github.com/clickbytes/golingua/issues/316), EN [#318](https://github.com/clickbytes/golingua/issues/318), integracja [#320](https://github.com/clickbytes/golingua/issues/320), negacja [#322](https://github.com/clickbytes/golingua/issues/322). Dodatkowe informacje: [architektura](../docs/architecture/README.md), [CLI](../docs/cli.md), [przegląd ręczny](../docs/manual-review.md).

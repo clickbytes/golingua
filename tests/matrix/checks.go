@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"reflect"
 	"strings"
 	"sync"
 	"testing"
@@ -46,11 +47,29 @@ func RunAnalysis(t *testing.T, lang features.LanguageID, cases []AnalysisCase) {
 		c := testCase
 		t.Run(c.ID, func(t *testing.T) {
 			t.Helper()
+			if gap := c.SemanticRequirement.RepresentationGap; gap != "" {
+				defer t.Errorf("GAP_I: %s", gap)
+			}
 			want, identification, ok, err := loadFixture(c.MeaningID)
 			if err != nil {
 				t.Fatalf("INFRA: build fixture %q: %v", c.MeaningID, err)
 			}
 			if !ok {
+				if gap := c.SemanticRequirement.RepresentationGap; gap != "" {
+					runtime := Runtime(t)
+					analyzer, exists := runtime.SourceAnalyzerFor(lang)
+					if !exists || analyzer == nil {
+						t.Fatalf("INFRA: source analyzer for %q is unavailable", lang)
+					}
+					result, analyzeErr := analyzer.Analyze(context.Background(), c.Input)
+					logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "result": result, "error": errorText(analyzeErr)})
+					if analyzeErr != nil && infraError(analyzeErr) {
+						t.Errorf("INFRA: source analysis %q: %v", c.ID, analyzeErr)
+					} else if analyzeErr != nil || result.Outcome == status.OutcomeUnsupported || len(result.Candidates) == 0 {
+						t.Errorf("GAP_ANALYZE: source adapter did not produce a supported candidate for the explicit representation gap")
+					}
+					return
+				}
 				t.Errorf("SPEC_PENDING / NOT RUN: no independent Meaning fixture for %q", c.MeaningID)
 				return
 			}
@@ -123,11 +142,18 @@ func RunRealization(t *testing.T, lang features.LanguageID, cases []RealizationC
 		c := testCase
 		t.Run(c.ID, func(t *testing.T) {
 			t.Helper()
+			if gap := c.SemanticRequirement.RepresentationGap; gap != "" {
+				defer t.Errorf("GAP_I: %s", gap)
+			}
 			want, identification, ok, err := loadFixture(c.MeaningID)
 			if err != nil {
 				t.Fatalf("INFRA: build fixture %q: %v", c.MeaningID, err)
 			}
 			if !ok {
+				if gap := c.SemanticRequirement.RepresentationGap; gap != "" {
+					logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "independent_realization_executed": false, "reason": gap})
+					return
+				}
 				t.Errorf("SPEC_PENDING / NOT RUN: no independent Meaning fixture for %q", c.MeaningID)
 				return
 			}
@@ -171,11 +197,32 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 		if c.AnalysisID != analysis.ID || c.RealizationID != realization.ID {
 			t.Fatalf("SPEC_PENDING: translation references do not match supplied cases")
 		}
+		if analysis.MeaningID == "" || realization.MeaningID != analysis.MeaningID {
+			t.Fatalf("SPEC_PENDING: translation analysis and realization must share a nonempty MeaningID")
+		}
+		if !reflect.DeepEqual(analysis.SemanticRequirement, realization.SemanticRequirement) {
+			t.Fatalf("SPEC_PENDING: translation analysis and realization semantic requirements differ")
+		}
+		gap := analysis.SemanticRequirement.RepresentationGap
+		if gap != "" {
+			defer t.Errorf("GAP_I: %s", gap)
+		}
 		want, identification, ok, err := loadFixture(analysis.MeaningID)
 		if err != nil {
 			t.Fatalf("INFRA: build fixture %q: %v", analysis.MeaningID, err)
 		}
-		if !ok || realization.MeaningID != analysis.MeaningID {
+		if !ok {
+			if gap != "" {
+				runtime := Runtime(t)
+				result, translateErr := runtime.Translate(context.Background(), engine.Request{From: features.LanguageID(c.From), To: features.LanguageID(c.To), Text: analysis.Input})
+				logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "result": result, "error": errorText(translateErr)})
+				if translateErr != nil && infraError(translateErr) {
+					t.Errorf("INFRA: translation %q: %v", c.ID, translateErr)
+				} else if translateErr != nil || result.Status == status.OutcomeUnsupported || len(result.Candidates) == 0 {
+					t.Errorf("GAP_ANALYZE: translation did not produce a candidate under the explicit representation gap")
+				}
+				return
+			}
 			t.Errorf("SPEC_PENDING / NOT RUN: translation lacks a shared independent Meaning fixture")
 			return
 		}
@@ -426,6 +473,9 @@ func loadFixture(id string) (meaning.Meaning, *interlingua.IdentificationMeaning
 	}
 	if graph, ok, err := interlingua.Reading(id); err != nil || ok {
 		return graph, nil, ok, err
+	}
+	if graph, identification, ok, err := interlingua.PendingDomain(id); err != nil || ok {
+		return graph, identification, ok, err
 	}
 	fixture, ok, err := interlingua.Identification(id)
 	if err != nil || !ok {
