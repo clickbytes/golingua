@@ -67,8 +67,12 @@ func NegationExpansion(id string) (meaning.Meaning, bool, error) {
 	variant := ""
 	for _, s := range negationExpansionSpecs {
 		base := fmt.Sprintf("a1.8.neg.%03d", s.Index)
-		if id == base || id == base+".age" || id == base+".offspring" {
+		pluralOnlyDoorVariant := id == base+".pl" && (s.Index == 9 || s.Index == 25 || s.Index == 38)
+		if id == base || id == base+".age" || id == base+".offspring" || pluralOnlyDoorVariant {
 			spec = s
+			if pluralOnlyDoorVariant {
+				variant = "pl"
+			}
 			if strings.HasSuffix(id, ".age") {
 				variant = "age"
 			}
@@ -110,7 +114,7 @@ func NegationExpansion(id string) (meaning.Meaning, bool, error) {
 		if err != nil {
 			return meaning.Meaning{}, false, err
 		}
-		if mult == "one" {
+		if mult == "one" && !(variant == "pl" && concept == "door") {
 			ref.Multiplicity = meaning.MultiplicityOne
 		}
 		if mult == "many" {

@@ -45,3 +45,7 @@ Dodano wybrane 16 par / 32 kierunki dla PL↔EN. Kontrakty zachowują ramy czasu
 ## #344 M8-TIME-OTHER — pozostałe A1.10
 
 Dodano 40 par / 80 kierunków, domykając wybrane 56 par A1.10. Zwykłe ramy i liczebność używają istniejących I; przyszłość, progresywność, częstotliwość oraz nakładanie się zdarzeń pozostają jawnie `GAP_I`, bez osłabionych grafów. TIME45 zachowuje nierozstrzygniętą liczebność polskiego pluralia tantum. Szczegóły: [brief](344-time-other-brief.md), [selection](344-time-other-selection.md), [wyniki](344-time-other-results.md). OwnerAcceptance: `NOT_EVALUATED`.
+
+## #344 plural-only door correction
+
+Pairs A1.8 negation 9, 25, and 38 now keep Polish `drzwi` count unresolved in source I while English singular sources remain one. This is a contract correction from the architecture rule, not an engine change or owner approval. See [brief](344-door-count-brief.md) and [results](344-door-count-results.md). OwnerAcceptance: `NOT_EVALUATED`.

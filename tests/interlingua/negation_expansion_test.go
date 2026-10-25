@@ -74,6 +74,76 @@ func TestNegationExpansionGapLabelsHaveNoFixture(t *testing.T) {
 	}
 }
 
+func TestNegationExpansionPluralOnlyDoorCountVariants(t *testing.T) {
+	core, err := catalog.Compile()
+	if err != nil {
+		t.Fatalf("INFRA: compile CORE: %v", err)
+	}
+	for _, index := range []int{9, 25, 38} {
+		baseID := fmt.Sprintf("a1.8.neg.%03d", index)
+		polishID := baseID + ".pl"
+		known, ok, err := interlingua.NegationExpansion(baseID)
+		if err != nil || !ok {
+			t.Fatalf("known-count fixture %s: ok=%t error=%v", baseID, ok, err)
+		}
+		unknown, ok, err := interlingua.NegationExpansion(polishID)
+		if err != nil || !ok {
+			t.Fatalf("PL plural-only fixture %s: ok=%t error=%v", polishID, ok, err)
+		}
+		for id, graph := range map[string]meaning.Meaning{baseID: known, polishID: unknown} {
+			if err := meaning.ValidateMeaning(graph, core, meaning.DefaultBudget()); err != nil {
+				t.Errorf("fixture %s does not validate against CORE: %v", id, err)
+			}
+			root := nodeByID(graph, graph.Roots[0])
+			if root.Kind != meaning.KindScope || root.Operator != meaning.OperatorNegation || root.Target != "pred" {
+				t.Errorf("fixture %s changed negation scope: %+v", id, root)
+			}
+		}
+		knownPred, unknownPred := nodeByID(known, "pred"), nodeByID(unknown, "pred")
+		if knownPred.Kind != unknownPred.Kind || knownPred.Concept != unknownPred.Concept || knownPred.TemporalFrame != unknownPred.TemporalFrame || !reflect.DeepEqual(knownPred.Participants, unknownPred.Participants) {
+			t.Errorf("%s PL variant changed predicate, frame, or roles", baseID)
+		}
+		var knownDoor, unknownDoor meaning.Node
+		for _, node := range known.Nodes {
+			if node.Kind == meaning.KindReferent && node.Concept == "concept:door" {
+				knownDoor = node
+			}
+		}
+		for _, node := range unknown.Nodes {
+			if node.Kind == meaning.KindReferent && node.Concept == "concept:door" {
+				unknownDoor = node
+			}
+		}
+		if knownDoor.ID == "" || knownDoor.Multiplicity != meaning.MultiplicityOne {
+			t.Errorf("%s English source must retain door=one: %+v", baseID, knownDoor)
+		}
+		if unknownDoor.ID == "" || unknownDoor.Multiplicity != "" {
+			t.Errorf("%s PL plural-only door must retain unknown count: %+v", polishID, unknownDoor)
+		}
+		if len(known.Nodes) != len(unknown.Nodes) {
+			t.Errorf("%s PL variant changed graph node count", baseID)
+		}
+		for _, knownNode := range known.Nodes {
+			unknownNode := nodeByID(unknown, knownNode.ID)
+			if knownNode.Kind == meaning.KindReferent && knownNode.Concept == "concept:door" {
+				knownNode.Multiplicity, unknownNode.Multiplicity = "", ""
+			}
+			if !reflect.DeepEqual(knownNode, unknownNode) {
+				t.Errorf("%s PL variant changed node %s beyond door multiplicity", baseID, knownNode.ID)
+			}
+		}
+	}
+	for index := 1; index <= 45; index++ {
+		if index == 9 || index == 25 || index == 38 {
+			continue
+		}
+		id := fmt.Sprintf("a1.8.neg.%03d.pl", index)
+		if _, ok, err := interlingua.NegationExpansion(id); err != nil || ok {
+			t.Errorf("non-door PL alias %s must not be accepted: ok=%t error=%v", id, ok, err)
+		}
+	}
+}
+
 func nodeByID(g meaning.Meaning, id meaning.NodeID) meaning.Node {
 	for _, n := range g.Nodes {
 		if n.ID == id {
