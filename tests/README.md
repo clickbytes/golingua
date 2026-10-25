@@ -1,6 +1,6 @@
 # Macierz zachowania PL/EN
 
-Macierz opisuje 24 kierunkowe rekordy z próbki A1: po cztery ID z domen `AC`, `ID`, `LQ`, `NEG`, `PO` i `Q` (`001`–`004`). To ograniczona próbka, nie pełne A1 ani certyfikacja CEFR; [deskryptory Rady Europy](https://rm.coe.int/16809ea0d4) są jedynie kontekstem. Zdania są własną redakcją, nie kopiami z egzaminu. Oryginalne ID, teksty, wymagania i provenance pozostają w danych językowych; akceptacja właściciela jest zapisana osobno jako `NOT_EVALUATED`.
+Macierz zawiera 24 oryginalne rekordy kierunkowe z próbki A1, po cztery ID z domen `AC`, `ID`, `LQ`, `NEG`, `PO` i `Q` (`001`–`004`). Inwentarz `translation.Cases` jest deklaratywny i może rosnąć o kolejne partie, takie jak A1.1/A1.2; liczba rekordów nie jest ograniczeniem walidatora. To ograniczona próbka, nie pełne A1 ani certyfikacja CEFR; [deskryptory Rady Europy](https://rm.coe.int/16809ea0d4) są jedynie kontekstem. Zdania są własną redakcją, nie kopiami z egzaminu. Oryginalne ID, teksty, wymagania i provenance pozostają w danych językowych; akceptacja właściciela jest zapisana osobno jako `NOT_EVALUATED`.
 
 ## Układ i kontrakt
 
@@ -9,7 +9,7 @@ tests/
   interlingua/                 # niezależne, ręcznie zapisane znaczenia I
   languages/pl/A1/             # analiza i realizacja po polsku
   languages/en/A1/             # analiza i realizacja po angielsku
-  translation/cases.go         # 24 stabilne ID i odwołania do obu stron
+  translation/cases.go         # deklaratywne ID i odwołania do obu stron
   translation/pl-en/           # PL → I → EN
   translation/en-pl/           # EN → I → PL
   matrix/                      # wspólne typy, runtime produkcyjny i kontrole
@@ -17,9 +17,9 @@ tests/
 
 A1.1 i A1.2 oznaczają przyszłe partie A1 konkretnego języka; wymagają osobno określonego zakresu i nie zastępują tej próbki.
 
-Pliki `*.testdomain.go` zawierają dane. Pliki `*_test.go` wykonują kontrole standardowym `go test`. Osobny, obserwacyjny workflow GitHub Actions uruchamia pełną macierz na push do `main`, publikuje najnowszy raport w [`tests/results/latest.md`](results/latest.md), a surowy log udostępnia jako artefakt. Wynik macierzy nie blokuje technicznego `go-ci`; lokalne polecenia poniżej nadal pozwalają odtworzyć kontrole. Każdy przypadek analizy zachowuje dokładne wejście, wymagania, nierozstrzygnięcia i pochodzenie wejścia. Przypadek realizacji zachowuje `ProposalTexts`, pochodzenie propozycji i akceptację właściciela oddzielnie od zamkniętych `AllowedTexts`, dozwolonych/obowiązkowych założeń i strat. Propozycja nie staje się automatycznie oczekiwanym wynikiem.
+Pliki `*.testdomain.go` zawierają dane. Pliki `*_test.go` wykonują kontrole standardowym `go test`. Osobny, obserwacyjny workflow GitHub Actions uruchamia pełną macierz na push do `main`, publikuje najnowszy raport w [`tests/results/latest.md`](results/latest.md), a surowy log udostępnia jako artefakt. Wynik macierzy nie blokuje technicznego `go-ci`; lokalne polecenia poniżej nadal pozwalają odtworzyć kontrole. Każdy przypadek analizy zachowuje dokładne wejście, wymagania, nierozstrzygnięcia i pochodzenie wejścia. Przypadek realizacji zachowuje `ProposalTexts`, pochodzenie propozycji i akceptację właściciela oddzielnie od `AllowedTexts` (zbiór dopuszczalny) i `RequiredTexts` (zbiór wymagany dla danego kontraktu), dozwolonych/obowiązkowych założeń i strat. `RequiredTexts` musi być podzbiorem `AllowedTexts`; pusta lista `AllowedTexts` pozostawia rekord bez zamkniętego kontraktu. Propozycja nie staje się automatycznie oczekiwanym wynikiem.
 
-Integracja wskazuje ID analizy i realizacji; nie kopiuje ich treści. Inwentarz sprawdza dokładnie 24 ID, wszystkie odwołania, brak osieroconych przypadków oraz kompletność wymaganych pól provenance. Analiza i realizacja PL działają niezależnie od EN i odwrotnie. Wykonanie przekładu uruchamia oba adaptery produkcyjne przez rzeczywisty pipeline.
+Integracja wskazuje ID analizy i realizacji; nie kopiuje ich treści. Inwentarz sprawdza unikalność ID, poprawny kierunek, wszystkie odwołania, brak osieroconych przypadków oraz kompletność wymaganych pól provenance. `CoverageTags` w rekordzie integracji opisują zadeklarowane zjawiska; nie dowodzą wykonania ani poprawności konstrukcji. Raport oddziela je od statusów rzeczywiście zaobserwowanych kontroli i pokazuje kontrole dodatkowe poza rekordami integracji. Analiza i realizacja PL działają niezależnie od EN i odwrotnie. Wykonanie przekładu uruchamia oba adaptery produkcyjne przez rzeczywisty pipeline.
 
 Wzorce `MeaningGraph` są tworzone niezależnie od parserów. Ograniczone porównanie grafów jest niewrażliwe na lokalne NodeID i kolejność węzłów, ale zachowuje role i bijekcję referentów. Nie scala odrębnych węzłów tylko dlatego, że mają ten sam ConceptID. Wzorce nie dopisują tożsamości osobników ani płci zwierzęcia. Kontekst wskazania przechowuje osobną nierozstrzygniętą Mention bez `ReferentID` i `EvidenceID`.
 
@@ -99,7 +99,7 @@ Present Reading używa istniejącej trasy the/the z jawnymi założeniami okreś
 
 Kontrakt [LIGHT-F3](../docs/work/light-lm/327-contract.md) dodaje cztery niezależne I: `composition.black-cat-sees-dog`, `composition.black-dog-sees-cat`, `composition.black-bird-sees-dog` i `composition.black-cat-sees-cat`. Każde łączy stan `black` z rolą `bearer` wskazującą dokładnie referent podmiotu oraz zdarzenie `seeing` w czasie teraźniejszym. Oba referenty mają `one`; pozostają odrębnymi węzłami także wtedy, gdy oba mają ConceptID kota. Przykładowe uogólnienie referenta psa obejmuje `This is a dog` / `To jest pies.`, `This dog is black.` / `Ten pies jest czarny.` i `This is not a dog.` / `To nie jest pies.`.
 
-Złożona trasa widzenia jest ograniczona do jednego teraźniejszego zdarzenia, jednego nieczasowanego stanu `black`, podmiotu z zatwierdzonym leksemem i obsługiwaną formą oraz dwóch referentów o znanej liczbie pojedynczej. Nie rozstrzyga tożsamości ani płci. PL realizuje zgodę z podmiotem; EN zachowuje jawne warianty określoności. Inne modyfikatory, czasy, liczby, brak wiązania lub formy wymaganej do realizacji wymagają odmowy. Kontrole są lokalne i nie zmieniają 24 rekordów próbki ani CI.
+Złożona trasa widzenia jest ograniczona do jednego teraźniejszego zdarzenia, jednego nieczasowanego stanu `black`, podmiotu z zatwierdzonym leksemem i obsługiwaną formą oraz dwóch referentów o znanej liczbie pojedynczej. Nie rozstrzyga tożsamości ani płci. PL realizuje zgodę z podmiotem; EN zachowuje jawne warianty określoności. Inne modyfikatory, czasy, liczby, brak wiązania lub formy wymaganej do realizacji wymagają odmowy. Kontrole są lokalne i nie zmieniają rekordów próbki ani CI.
 
 ```sh
 go test ./tests/interlingua/... -run Composition -count=1 -v

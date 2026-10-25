@@ -80,10 +80,10 @@ func TestMeaningAttributesAnalysis(t *testing.T) {
 func TestMeaningAttributesRealization(t *testing.T) {
 	presentTexts := []string{"The teacher reads the message."}
 	matrix.RunRealization(t, features.LanguageID("en"), []matrix.RealizationCase{
-		{ID: "H-I-EN-reading-teacher-present", MeaningID: "reading.teacher-message.present", AllowedTexts: presentTexts, AllowedAssumptionFields: []string{"person", "determiner"}, RequiredAssumptionFields: []string{"determiner"}},
-		{ID: "H-I-EN-reading-teacher-past", MeaningID: "reading.teacher-message.past", AllowedTexts: []string{"A teacher read a message.", "A teacher read the message.", "The teacher read a message.", "The teacher read the message."}, AllowedAssumptionFields: []string{"person", "determiner"}},
-		{ID: "H-I-EN-reading-teachers-present", MeaningID: "reading.teachers-message.present", AllowedTexts: []string{"The teachers read the message."}, AllowedAssumptionFields: []string{"person", "determiner"}, RequiredAssumptionFields: []string{"determiner"}},
-		{ID: "H-I-EN-reading-teachers-past", MeaningID: "reading.teachers-message.past", AllowedTexts: []string{"The teachers read a message.", "The teachers read the message."}, AllowedAssumptionFields: []string{"person", "determiner"}},
+		{ID: "H-I-EN-reading-teacher-present", MeaningID: "reading.teacher-message.present", AllowedTexts: presentTexts, RequiredTexts: presentTexts, AllowedAssumptionFields: []string{"person", "determiner"}, RequiredAssumptionFields: []string{"determiner"}},
+		{ID: "H-I-EN-reading-teacher-past", MeaningID: "reading.teacher-message.past", AllowedTexts: []string{"A teacher read a message.", "A teacher read the message.", "The teacher read a message.", "The teacher read the message."}, RequiredTexts: []string{"A teacher read a message.", "A teacher read the message.", "The teacher read a message.", "The teacher read the message."}, AllowedAssumptionFields: []string{"person", "determiner"}},
+		{ID: "H-I-EN-reading-teachers-present", MeaningID: "reading.teachers-message.present", AllowedTexts: []string{"The teachers read the message."}, RequiredTexts: []string{"The teachers read the message."}, AllowedAssumptionFields: []string{"person", "determiner"}, RequiredAssumptionFields: []string{"determiner"}},
+		{ID: "H-I-EN-reading-teachers-past", MeaningID: "reading.teachers-message.past", AllowedTexts: []string{"The teachers read a message.", "The teachers read the message."}, RequiredTexts: []string{"The teachers read a message.", "The teachers read the message."}, AllowedAssumptionFields: []string{"person", "determiner"}},
 	})
 }
 

@@ -30,10 +30,10 @@ func TestMeaningAttributesAnalysis(t *testing.T) {
 
 func TestMeaningAttributesRealization(t *testing.T) {
 	matrix.RunRealization(t, features.LanguageID("pl"), []matrix.RealizationCase{
-		{ID: "H-I-PL-reading-teacher-present", MeaningID: "reading.teacher-message.present", AllowedTexts: []string{"Nauczyciel czyta wiadomość."}, AllowedAssumptionFields: []string{"person"}},
-		{ID: "H-I-PL-reading-teacher-past", MeaningID: "reading.teacher-message.past", AllowedTexts: []string{"Nauczyciel czytał wiadomość."}, AllowedAssumptionFields: []string{"person"}},
-		{ID: "H-I-PL-reading-teachers-present", MeaningID: "reading.teachers-message.present", AllowedTexts: []string{"Nauczyciele czytają wiadomość."}, AllowedAssumptionFields: []string{"person"}},
-		{ID: "H-I-PL-reading-teachers-past", MeaningID: "reading.teachers-message.past", AllowedTexts: []string{"Nauczyciele czytali wiadomość."}, AllowedAssumptionFields: []string{"person"}},
+		{ID: "H-I-PL-reading-teacher-present", MeaningID: "reading.teacher-message.present", AllowedTexts: []string{"Nauczyciel czyta wiadomość."}, RequiredTexts: []string{"Nauczyciel czyta wiadomość."}, AllowedAssumptionFields: []string{"person"}},
+		{ID: "H-I-PL-reading-teacher-past", MeaningID: "reading.teacher-message.past", AllowedTexts: []string{"Nauczyciel czytał wiadomość."}, RequiredTexts: []string{"Nauczyciel czytał wiadomość."}, AllowedAssumptionFields: []string{"person"}},
+		{ID: "H-I-PL-reading-teachers-present", MeaningID: "reading.teachers-message.present", AllowedTexts: []string{"Nauczyciele czytają wiadomość."}, RequiredTexts: []string{"Nauczyciele czytają wiadomość."}, AllowedAssumptionFields: []string{"person"}},
+		{ID: "H-I-PL-reading-teachers-past", MeaningID: "reading.teachers-message.past", AllowedTexts: []string{"Nauczyciele czytali wiadomość."}, RequiredTexts: []string{"Nauczyciele czytali wiadomość."}, AllowedAssumptionFields: []string{"person"}},
 	})
 }
 

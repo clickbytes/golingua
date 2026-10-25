@@ -11,9 +11,10 @@ type AnalysisCase struct {
 // RealizationCase states the available proposal texts for realizing a Meaning.
 type RealizationCase struct {
 	ID, MeaningID                                   string
-	ProposalTexts, AllowedTexts                     []string
+	ProposalTexts, AllowedTexts, RequiredTexts      []string
 	AllowedAssumptionFields                         []string
 	RequiredAssumptionFields                        []string
+	RequiredTextAssumptions                         []TextAssumptionRequirement
 	AllowedLossFields, RequiredLossFields           []string
 	AmbiguityNote, ReferenceOrigin, OwnerAcceptance string
 }
@@ -21,4 +22,11 @@ type RealizationCase struct {
 // TranslationCase links one source analysis to a target realization.
 type TranslationCase struct {
 	ID, From, To, AnalysisID, RealizationID string
+	CoverageTags                            []string
+}
+
+// TextAssumptionRequirement ties a selected surface form to the assumption
+// value that licenses that exact form.
+type TextAssumptionRequirement struct {
+	Text, Field, Value string
 }

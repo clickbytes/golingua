@@ -15,13 +15,13 @@ func TestIdentificationNativeRealization(t *testing.T) {
 	matrix.RunRealization(t, features.LanguageID("pl"), []matrix.RealizationCase{
 		{
 			ID: "I-PL-classification", MeaningID: "identification.classification.to",
-			ProposalTexts: []string{"To jest kot."}, AllowedTexts: []string{"To jest kot."},
+			ProposalTexts: []string{"To jest kot."}, AllowedTexts: []string{"To jest kot."}, RequiredTexts: []string{"To jest kot."},
 			AllowedAssumptionFields: []string{"tense", "person", "number"},
 			ReferenceOrigin:         "authored interlingua fixture", OwnerAcceptance: "NOT_EVALUATED",
 		},
 		{
 			ID: "I-PL-black", MeaningID: "identification.black.ten",
-			ProposalTexts: []string{"Ten kot jest czarny."}, AllowedTexts: []string{"Ten kot jest czarny."},
+			ProposalTexts: []string{"Ten kot jest czarny."}, AllowedTexts: []string{"Ten kot jest czarny."}, RequiredTexts: []string{"Ten kot jest czarny."},
 			AllowedAssumptionFields: []string{"tense", "person", "number"},
 			ReferenceOrigin:         "authored interlingua fixture", OwnerAcceptance: "NOT_EVALUATED",
 		},

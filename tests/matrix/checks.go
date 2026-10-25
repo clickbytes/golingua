@@ -291,6 +291,9 @@ func checkSurfaces(t *testing.T, c RealizationCase, outcome status.OutcomeKind, 
 		if surface.Text != "" {
 			seen[surface.Text] = true
 		}
+		for _, failure := range surfaceRequirementFailures(c, surface) {
+			t.Errorf("FAIL: target candidate %q %s", surface.ID, failure)
+		}
 		assumptionFields := make(map[string]bool, len(surface.Assumptions))
 		for _, assumption := range surface.Assumptions {
 			if !contains(c.AllowedAssumptionFields, assumption.Field) || len(assumption.Path) == 0 || strings.TrimSpace(assumption.Reason) == "" || strings.TrimSpace(assumption.Value) == "" {
@@ -328,14 +331,42 @@ func checkSurfaces(t *testing.T, c RealizationCase, outcome status.OutcomeKind, 
 			}
 		}
 	}
-	for _, expected := range c.AllowedTexts {
-		if !seen[expected] {
-			t.Errorf("FAIL: expected target text %q was not produced", expected)
-		}
+	for _, missing := range missingRequiredTexts(c.RequiredTexts, seen) {
+		t.Errorf("FAIL: expected target text %q was not produced", missing)
 	}
 	if len(allowed) == 0 {
 		t.Errorf("SPEC_PENDING / NOT RUN: no allowed target texts for %q", c.ID)
 	}
+}
+
+func missingRequiredTexts(required []string, seen map[string]bool) []string {
+	var missing []string
+	for _, text := range required {
+		if !seen[text] {
+			missing = append(missing, text)
+		}
+	}
+	return missing
+}
+
+func surfaceRequirementFailures(c RealizationCase, surface engine.SurfaceAlternative) []string {
+	var failures []string
+	for _, requirement := range c.RequiredTextAssumptions {
+		if requirement.Text != surface.Text {
+			continue
+		}
+		matched := false
+		for _, assumption := range surface.Assumptions {
+			if assumption.Field == requirement.Field && assumption.Value == requirement.Value {
+				matched = true
+				break
+			}
+		}
+		if !matched {
+			failures = append(failures, "lacks the required "+requirement.Field+"="+requirement.Value+" assumption for "+requirement.Text)
+		}
+	}
+	return failures
 }
 
 func logObservation(t testing.TB, value any) {
