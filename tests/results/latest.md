@@ -2,12 +2,12 @@
 
 > Observational report generated on push to `main`. Matrix outcomes do not gate the technical `go-ci` workflow.
 
-- Source SHA: `20cc6b8bacbe0e116cae592d849c8fb18a487b37`
-- Generated (UTC): `2026-10-25T08:30:47Z`
+- Source SHA: `9b31a81354737f493078b5856fa41c581518bc32`
+- Generated (UTC): `2026-10-25T08:40:10Z`
 - Command: `go test ./tests/... -count=1 -v`
 - Command exit code: `1` (NONZERO)
-- Registered records: 88; record checks: 264
-- Additional observed checks: 155
+- Registered records: 112; record checks: 336
+- Additional observed checks: 165
 
 | Case ID | Direction | Analysis | Realization | Integration | Declared coverage tags |
 |---|---|---|---|---|---|
@@ -99,11 +99,36 @@
 | `A1.2-TIME-214-EN-PL` | EN → PL | PASS | PASS | PASS | participant_roles, semantic_event, time, valency |
 | `A1.2-TIME-217-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_roles, semantic_event, time, valency |
 | `A1.2-TIME-218-EN-PL` | EN → PL | PASS | PASS | PASS | participant_roles, semantic_event, time, valency |
+| `A1.3-CO-301-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | composition, participant_roles, semantic_event, shared_referent, valency |
+| `A1.3-CO-302-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | composition, participant_roles, semantic_event, shared_referent, valency |
+| `A1.3-CO-303-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | composition, participant_roles, semantic_event, shared_referent, valency |
+| `A1.3-CO-304-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | composition, participant_roles, semantic_event, shared_referent, valency |
+| `A1.3-CO-305-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | composition, distinct_referents, participant_roles, semantic_event, valency |
+| `A1.3-CO-306-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | composition, distinct_referents, participant_roles, semantic_event, valency |
+| `A1.3-CO-307-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | composition, participant_roles, semantic_event, semantic_property_black, valency |
+| `A1.3-CO-308-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | composition, participant_roles, semantic_event, semantic_property_black, valency |
+| `A1.3-CO-309-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | composition, participant_roles, semantic_event, semantic_property_black, valency |
+| `A1.3-CO-310-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | composition, participant_roles, semantic_event, semantic_property_black, valency |
+| `A1.3-CO-311-PL-EN` | PL → EN | PASS | PASS | PASS | composition, participant_roles, semantic_event, semantic_property_black, valency |
+| `A1.3-CO-312-EN-PL` | EN → PL | PASS | PASS | PASS | composition, participant_roles, semantic_event, semantic_property_black, valency |
+| `A1.3-CO-313-PL-EN` | PL → EN | PASS | PASS | PASS | composition, distinct_referents, participant_roles, semantic_event, semantic_property_black, valency |
+| `A1.3-CO-314-EN-PL` | EN → PL | PASS | PASS | PASS | composition, distinct_referents, participant_roles, semantic_event, semantic_property_black, valency |
+| `A1.3-CO-315-PL-EN` | PL → EN | PASS | PASS | PASS | composition, participant_roles, semantic_event, valency, word_order_ovs |
+| `A1.3-CO-316-EN-PL` | EN → PL | PASS | PASS | PASS | composition, participant_roles, semantic_event, valency, word_order_ovs |
+| `A1.3-CO-317-PL-EN` | PL → EN | GAP_ANALYZE | PASS | GAP_REALIZE | clause_negation, composition, participant_roles, semantic_event, semantic_polarity_scope, semantic_property_black |
+| `A1.3-CO-318-EN-PL` | EN → PL | PASS | PASS | PASS | clause_negation, composition, participant_roles, semantic_event, semantic_polarity_scope, semantic_property_black |
+| `A1.3-CO-319-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | clause_negation, composition, participant_roles, semantic_event, semantic_polarity_scope, semantic_property_black |
+| `A1.3-CO-320-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | clause_negation, composition, participant_roles, semantic_event, semantic_polarity_scope, semantic_property_black |
+| `A1.3-CO-321-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | composition, participant_roles, semantic_event, shared_referent, valency |
+| `A1.3-CO-322-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | composition, participant_roles, semantic_event, shared_referent, valency |
+| `A1.3-CO-323-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | composition, participant_roles, semantic_event, shared_referent, valency |
+| `A1.3-CO-324-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | composition, participant_roles, semantic_event, shared_referent, valency |
 
 ## Additional observed checks
 
 | Package | Check | Status |
 |---|---|---|
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestCompositionBatchFixturesValidateAndPreserveReferents` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestCompositionMeaning` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestA12ContrastGraphsValidateRolesCountsAndScope` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestCorpusEventFixturesValidateAndPreserveAuthoredStructure` | PASS |
@@ -115,10 +140,10 @@
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/known_present_frame_is_unsupported_even_with_At` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/many_experiencer_referent_is_unsupported` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/many_stimulus_referent_is_unsupported` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/present_versus_past` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/present_versus_absent_frame` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/one_versus_many` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/one_versus_absent_multiplicity` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/present_versus_past` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_null` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_empty` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_unknown` | PASS |
@@ -127,11 +152,11 @@
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_unknown` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_frame_on_referent` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_on_predicate` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_changed` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_participant_roles_swapped` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_changed` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/temporal_frames` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/referent_multiplicity` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestNegation` | PASS |
@@ -259,6 +284,15 @@
 | `github.com/clickbytes/golingua/tests/translation` | `TestMeaningAttributesReadingTranslation/English_past_to_Polish` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestMeaningAttributesReadingTranslation/Polish_plural_present_to_English` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestMeaningAttributesReadingTranslation/Polish_plural_past_to_English` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestMetamorphicProperties/role_swap_PL` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestMetamorphicProperties/role_swap_EN` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestMetamorphicProperties/number_PL` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestMetamorphicProperties/number_EN` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestMetamorphicProperties/tense_PL` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestMetamorphicProperties/tense_EN` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestMetamorphicProperties/polarity_PL` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestMetamorphicProperties/polarity_EN` | PASS |
+| `github.com/clickbytes/golingua/tests/translation` | `TestMetamorphicProperties/SVO_to_OVS_PL` | GAP_ANALYZE |
 
 ## Package summaries
 
@@ -266,27 +300,29 @@ Packages with no observed test run are reported as infrastructure/build failures
 
 | Package | Go summary | Observed test names |
 |---|---|---|
-| `github.com/clickbytes/golingua/tests/interlingua` | PASS | 41 |
+| `github.com/clickbytes/golingua/tests/interlingua` | PASS | 42 |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | FAIL | 102 |
 | `github.com/clickbytes/golingua/tests/languages/en/A1.1` | FAIL | 34 |
 | `github.com/clickbytes/golingua/tests/languages/en/A1.2` | FAIL | 34 |
+| `github.com/clickbytes/golingua/tests/languages/en/A1.3` | FAIL | 26 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | FAIL | 91 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.1` | FAIL | 34 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.2` | FAIL | 34 |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1.3` | FAIL | 26 |
 | `github.com/clickbytes/golingua/tests/matrix` | PASS | 1 |
-| `github.com/clickbytes/golingua/tests/translation` | PASS | 16 |
-| `github.com/clickbytes/golingua/tests/translation/en-pl` | FAIL | 48 |
-| `github.com/clickbytes/golingua/tests/translation/pl-en` | FAIL | 48 |
+| `github.com/clickbytes/golingua/tests/translation` | FAIL | 26 |
+| `github.com/clickbytes/golingua/tests/translation/en-pl` | FAIL | 60 |
+| `github.com/clickbytes/golingua/tests/translation/pl-en` | FAIL | 60 |
 | `(package summary not observed)` | NOT RUN | 0 |
 
 ## Declared coverage
 
 Declared tags are metadata attached to records; they do not prove that a construction executed successfully.
 
-ac: 4 records | adj: 4 records | amb: 2 records | case: 5 records | clause_negation: 10 records | def: 2 records | determiner_ambiguity: 4 records | exactly_two: 2 records | hearing: 8 records | homographic_past_present: 2 records | locative: 2 records | looking: 8 records | neg: 6 records | number_morphology: 12 records | order: 2 records | participant_roles: 72 records | past: 8 records | po: 8 records | present: 24 records | receiving: 8 records | reference: 10 records | seeing: 8 records | semantic_classification: 2 records | semantic_event: 64 records | semantic_location: 2 records | semantic_polarity_scope: 10 records | semantic_possession: 4 records | semantic_predicate: 4 records | semantic_property_black: 6 records | semantic_quantity: 2 records | semantic_speech_act: 4 records | time: 4 records | valency: 72 records | wh_location: 2 records | word_order_ovs: 2 records | yes_no_question: 2 records
+ac: 4 records | adj: 4 records | amb: 2 records | case: 5 records | clause_negation: 14 records | composition: 24 records | def: 2 records | determiner_ambiguity: 4 records | distinct_referents: 4 records | exactly_two: 2 records | hearing: 8 records | homographic_past_present: 2 records | locative: 2 records | looking: 8 records | neg: 6 records | number_morphology: 12 records | order: 2 records | participant_roles: 96 records | past: 8 records | po: 8 records | present: 24 records | receiving: 8 records | reference: 10 records | seeing: 8 records | semantic_classification: 2 records | semantic_event: 88 records | semantic_location: 2 records | semantic_polarity_scope: 14 records | semantic_possession: 4 records | semantic_predicate: 4 records | semantic_property_black: 18 records | semantic_quantity: 2 records | semantic_speech_act: 4 records | shared_referent: 8 records | time: 4 records | valency: 92 records | wh_location: 2 records | word_order_ovs: 4 records | yes_no_question: 2 records
 
 ## Counts
 
-PASS: 153 | FAIL: 37 | GAP_ANALYZE: 11 | GAP_REALIZE: 15 | GAP_I: 48 | SPEC_PENDING: 0 | INFRA: 0 | NOT RUN: 0
+PASS: 175 | FAIL: 37 | GAP_ANALYZE: 28 | GAP_REALIZE: 48 | GAP_I: 48 | SPEC_PENDING: 0 | INFRA: 0 | NOT RUN: 0
 
 `SPEC_PENDING` means the check ran but lacks a closed independent contract. `NOT RUN` means no matching record check result was observed. Additional checks retain their own observed statuses above. Consult the full raw log artifact for every run detail.
