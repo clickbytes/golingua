@@ -117,6 +117,8 @@ def render(sha: str, timestamp: str, exit_code: int, case_file: Path, log_file: 
     cases = registered_cases(case_file)
     coverage = declared_coverage(case_file)
     observations, extras, package_summaries = parse_checks(log_file.read_text(encoding="utf-8", errors="replace"))
+    boundary_checks = [item for item in extras if item[1].startswith(("TestRefusalAnalysis/", "TestRefusalTranslation/"))]
+    extras = [item for item in extras if item not in boundary_checks]
     kinds = ("analysis", "realization", "integration")
     rows: list[tuple[str, list[str]]] = []
     counts: Counter[str] = Counter()
@@ -154,6 +156,12 @@ def render(sha: str, timestamp: str, exit_code: int, case_file: Path, log_file: 
     for case_id, values in rows:
         tags = ", ".join(sorted(set(coverage.get(case_id, [])))) or "(none)"
         lines.append(f"| `{case_id}` | {values[0]} | {values[1]} | {values[2]} | {values[3]} | {tags} |")
+
+    boundary_counts: Counter[str] = Counter(state for _, _, state in boundary_checks)
+    lines.extend(["", "## Boundary refusal checks", "", "These malformed or unsupported inputs are separate from normal registered translation records and do not contribute to record PASS totals.", "", f"- Total: {len(boundary_checks)}; " + ", ".join(f"{state}: {boundary_counts[state]}" for state in sorted(boundary_counts)), "", "| Category | Package | Check | Status |", "|---|---|---|---|"])
+    for package, test_name, state in boundary_checks:
+        category = "native analysis refusal" if test_name.startswith("TestRefusalAnalysis/") else "translation refusal"
+        lines.append(f"| {category} | `{package}` | `{test_name}` | {state} |")
 
     lines.extend(["", "## Additional observed checks", "", "| Package | Check | Status |", "|---|---|---|"])
     for package, test_name, state in extras:
