@@ -2,12 +2,12 @@
 
 > Observational report generated on push to `main`. Matrix outcomes do not gate the technical `go-ci` workflow.
 
-- Source SHA: `04b64d43e0792942d0623cdf6f0bf51df313c368`
-- Generated (UTC): `2026-10-25T15:29:22Z`
+- Source SHA: `1bc2980d1ff994fb1a538141eed5d2cd7e5fd550`
+- Generated (UTC): `2026-10-25T17:07:25Z`
 - Command: `go test ./tests/... -count=1 -v`
 - Command exit code: `1` (NONZERO)
 - Registered records: 1000; record checks: 3000
-- Additional observed checks: 226
+- Additional observed checks: 247
 
 | Case ID | Direction | Analysis | Realization | Integration | Declared coverage tags |
 |---|---|---|---|---|---|
@@ -35,9 +35,9 @@
 | `A1-Q-002-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | reference, semantic_speech_act, yes_no_question |
 | `A1-Q-003-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | reference, semantic_speech_act, wh_location |
 | `A1-Q-004-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | reference, semantic_speech_act, wh_location |
-| `A1.1-AC-101-EN-PL` | EN → PL | FAIL | PASS | PASS | participant_roles, present, seeing, semantic_event, valency |
+| `A1.1-AC-101-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_roles, present, seeing, semantic_event, valency |
 | `A1.1-AC-102-PL-EN` | PL → EN | FAIL | PASS | PASS | participant_roles, present, seeing, semantic_event, valency |
-| `A1.1-AC-103-EN-PL` | EN → PL | FAIL | PASS | PASS | participant_roles, present, seeing, semantic_event, valency |
+| `A1.1-AC-103-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_roles, present, seeing, semantic_event, valency |
 | `A1.1-AC-104-PL-EN` | PL → EN | PASS | PASS | PASS | participant_roles, present, seeing, semantic_event, valency |
 | `A1.1-AC-105-EN-PL` | EN → PL | PASS | PASS | PASS | participant_roles, present, seeing, semantic_event, valency |
 | `A1.1-AC-106-PL-EN` | PL → EN | PASS | PASS | PASS | participant_roles, present, seeing, semantic_event, valency |
@@ -45,13 +45,13 @@
 | `A1.1-AC-108-PL-EN` | PL → EN | FAIL | PASS | PASS | participant_roles, present, seeing, semantic_event, valency |
 | `A1.1-AC-109-EN-PL` | EN → PL | PASS | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-110-PL-EN` | PL → EN | PASS | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
-| `A1.1-AC-111-EN-PL` | EN → PL | FAIL | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-111-EN-PL` | EN → PL | FAIL | PASS | FAIL | hearing, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-112-PL-EN` | PL → EN | PASS | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-113-EN-PL` | EN → PL | FAIL | PASS | FAIL | hearing, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-114-PL-EN` | PL → EN | PASS | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-115-EN-PL` | EN → PL | PASS | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-116-PL-EN` | PL → EN | PASS | PASS | PASS | hearing, participant_roles, present, semantic_event, valency |
-| `A1.1-AC-117-EN-PL` | EN → PL | FAIL | PASS | PASS | looking, participant_roles, present, semantic_event, valency |
+| `A1.1-AC-117-EN-PL` | EN → PL | FAIL | PASS | FAIL | looking, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-118-PL-EN` | PL → EN | FAIL | PASS | PASS | looking, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-119-EN-PL` | EN → PL | PASS | PASS | PASS | looking, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-120-PL-EN` | PL → EN | PASS | PASS | PASS | looking, participant_roles, present, semantic_event, valency |
@@ -59,38 +59,38 @@
 | `A1.1-AC-122-PL-EN` | PL → EN | PASS | PASS | PASS | looking, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-123-EN-PL` | EN → PL | FAIL | PASS | FAIL | looking, participant_roles, present, semantic_event, valency |
 | `A1.1-AC-124-PL-EN` | PL → EN | PASS | PASS | PASS | looking, participant_roles, present, semantic_event, valency |
-| `A1.1-AC-125-EN-PL` | EN → PL | FAIL | PASS | PASS | participant_roles, past, receiving, semantic_event, valency |
+| `A1.1-AC-125-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_roles, past, receiving, semantic_event, valency |
 | `A1.1-AC-126-PL-EN` | PL → EN | FAIL | PASS | PASS | participant_roles, past, receiving, semantic_event, valency |
-| `A1.1-AC-127-EN-PL` | EN → PL | FAIL | PASS | PASS | participant_roles, past, receiving, semantic_event, valency |
+| `A1.1-AC-127-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_roles, past, receiving, semantic_event, valency |
 | `A1.1-AC-128-PL-EN` | PL → EN | FAIL | PASS | PASS | participant_roles, past, receiving, semantic_event, valency |
-| `A1.1-AC-129-EN-PL` | EN → PL | FAIL | PASS | PASS | participant_roles, past, receiving, semantic_event, valency |
+| `A1.1-AC-129-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_roles, past, receiving, semantic_event, valency |
 | `A1.1-AC-130-PL-EN` | PL → EN | FAIL | PASS | PASS | participant_roles, past, receiving, semantic_event, valency |
 | `A1.1-AC-131-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_roles, past, receiving, semantic_event, valency |
 | `A1.1-AC-132-PL-EN` | PL → EN | PASS | PASS | PASS | participant_roles, past, receiving, semantic_event, valency |
-| `A1.10-TIME-1001-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1002-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1003-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1004-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1005-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1006-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1007-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1008-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1009-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1010-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1011-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1012-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1013-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1014-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1015-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1016-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1017-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1018-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1019-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1020-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1021-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1022-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1023-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1024-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1001-EN-PL` | EN → PL | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1002-PL-EN` | PL → EN | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1003-EN-PL` | EN → PL | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1004-PL-EN` | PL → EN | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1005-EN-PL` | EN → PL | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1006-PL-EN` | PL → EN | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1007-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1008-PL-EN` | PL → EN | FAIL | PASS | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1009-EN-PL` | EN → PL | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1010-PL-EN` | PL → EN | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1011-EN-PL` | EN → PL | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1012-PL-EN` | PL → EN | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1013-EN-PL` | EN → PL | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1014-PL-EN` | PL → EN | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1015-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1016-PL-EN` | PL → EN | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1017-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1018-PL-EN` | PL → EN | FAIL | PASS | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1019-EN-PL` | EN → PL | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1020-PL-EN` | PL → EN | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1021-EN-PL` | EN → PL | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1022-PL-EN` | PL → EN | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1023-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1024-PL-EN` | PL → EN | FAIL | PASS | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1025-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1026-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1027-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
@@ -99,18 +99,18 @@
 | `A1.10-TIME-1030-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1031-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1032-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1033-EN-PL` | EN → PL | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1033-EN-PL` | EN → PL | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1034-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1035-EN-PL` | EN → PL | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1035-EN-PL` | EN → PL | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1036-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1037-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1038-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1039-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1040-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1041-EN-PL` | EN → PL | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1041-EN-PL` | EN → PL | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1042-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1043-EN-PL` | EN → PL | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1044-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1043-EN-PL` | EN → PL | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1044-PL-EN` | PL → EN | PASS | PASS | PASS | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1045-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1046-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1047-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
@@ -131,9 +131,9 @@
 | `A1.10-TIME-1062-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1063-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1064-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1065-EN-PL` | EN → PL | FAIL | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1065-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1066-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1067-EN-PL` | EN → PL | FAIL | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1067-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1068-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1069-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1070-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
@@ -179,8 +179,8 @@
 | `A1.10-TIME-1110-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1111-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1112-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.11-CASE-1101-EN-PL` | EN → PL | PASS | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1102-PL-EN` | PL → EN | PASS | FAIL | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1101-EN-PL` | EN → PL | PASS | PASS | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1102-PL-EN` | PL → EN | PASS | PASS | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1103-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1104-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1105-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
@@ -207,31 +207,31 @@
 | `A1.11-CASE-1126-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1127-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1128-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1129-EN-PL` | EN → PL | FAIL | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1130-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1131-EN-PL` | EN → PL | PASS | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1132-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1133-EN-PL` | EN → PL | PASS | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1134-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1135-EN-PL` | EN → PL | FAIL | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1136-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1137-EN-PL` | EN → PL | FAIL | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1129-EN-PL` | EN → PL | FAIL | PASS | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1130-PL-EN` | PL → EN | GAP_ANALYZE | PASS | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1131-EN-PL` | EN → PL | PASS | PASS | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1132-PL-EN` | PL → EN | GAP_ANALYZE | PASS | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1133-EN-PL` | EN → PL | PASS | PASS | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1134-PL-EN` | PL → EN | GAP_ANALYZE | PASS | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1135-EN-PL` | EN → PL | FAIL | PASS | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1136-PL-EN` | PL → EN | GAP_ANALYZE | PASS | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1137-EN-PL` | EN → PL | FAIL | PASS | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1138-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1139-EN-PL` | EN → PL | PASS | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1140-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1139-EN-PL` | EN → PL | PASS | PASS | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1140-PL-EN` | PL → EN | GAP_ANALYZE | PASS | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1141-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1142-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1143-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1144-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1145-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1146-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1147-EN-PL` | EN → PL | FAIL | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1147-EN-PL` | EN → PL | FAIL | PASS | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1148-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1149-EN-PL` | EN → PL | PASS | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1149-EN-PL` | EN → PL | PASS | PASS | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1150-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1151-EN-PL` | EN → PL | FAIL | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1151-EN-PL` | EN → PL | FAIL | PASS | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1152-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1153-EN-PL` | EN → PL | FAIL | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1153-EN-PL` | EN → PL | FAIL | PASS | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1154-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1155-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1156-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | adjective_attribute, case_order, participant_roles, semantic_predicate |
@@ -261,59 +261,59 @@
 | `A1.11-CASE-1180-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1181-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1182-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1183-EN-PL` | EN → PL | PASS | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1183-EN-PL` | EN → PL | PASS | PASS | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1184-PL-EN` | PL → EN | PASS | FAIL | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.12-AMB-1201-EN-PL` | EN → PL | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1202-PL-EN` | PL → EN | PASS | FAIL | PASS | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1203-EN-PL` | EN → PL | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1204-PL-EN` | PL → EN | PASS | FAIL | PASS | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1205-EN-PL` | EN → PL | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1201-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1202-PL-EN` | PL → EN | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1203-EN-PL` | EN → PL | FAIL | PASS | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1204-PL-EN` | PL → EN | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1205-EN-PL` | EN → PL | FAIL | PASS | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1206-PL-EN` | PL → EN | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1207-EN-PL` | EN → PL | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1208-PL-EN` | PL → EN | PASS | FAIL | PASS | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1207-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1208-PL-EN` | PL → EN | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1209-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1210-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1211-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1212-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1213-EN-PL` | EN → PL | GAP_ANALYZE | FAIL | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1213-EN-PL` | EN → PL | GAP_ANALYZE | PASS | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1214-PL-EN` | PL → EN | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1215-EN-PL` | EN → PL | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1215-EN-PL` | EN → PL | FAIL | PASS | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1216-PL-EN` | PL → EN | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1217-EN-PL` | EN → PL | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1217-EN-PL` | EN → PL | FAIL | PASS | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1218-PL-EN` | PL → EN | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1219-EN-PL` | EN → PL | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1219-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1220-PL-EN` | PL → EN | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1221-EN-PL` | EN → PL | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1221-EN-PL` | EN → PL | FAIL | PASS | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1222-PL-EN` | PL → EN | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1223-EN-PL` | EN → PL | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1223-EN-PL` | EN → PL | FAIL | PASS | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1224-PL-EN` | PL → EN | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1225-EN-PL` | EN → PL | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1225-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1226-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1227-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1228-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1229-EN-PL` | EN → PL | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1227-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1228-PL-EN` | PL → EN | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1229-EN-PL` | EN → PL | FAIL | PASS | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1230-PL-EN` | PL → EN | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1231-EN-PL` | EN → PL | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1232-PL-EN` | PL → EN | PASS | FAIL | PASS | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1233-EN-PL` | EN → PL | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1231-EN-PL` | EN → PL | FAIL | PASS | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1232-PL-EN` | PL → EN | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1233-EN-PL` | EN → PL | FAIL | PASS | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1234-PL-EN` | PL → EN | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1235-EN-PL` | EN → PL | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1236-PL-EN` | PL → EN | PASS | FAIL | PASS | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1235-EN-PL` | EN → PL | FAIL | PASS | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1236-PL-EN` | PL → EN | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1237-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1238-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1239-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1240-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1241-EN-PL` | EN → PL | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1241-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1242-PL-EN` | PL → EN | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1243-EN-PL` | EN → PL | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1243-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1244-PL-EN` | PL → EN | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1245-EN-PL` | EN → PL | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1245-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1246-PL-EN` | PL → EN | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1247-EN-PL` | EN → PL | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1247-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1248-PL-EN` | PL → EN | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1249-EN-PL` | EN → PL | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1249-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1250-PL-EN` | PL → EN | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1251-EN-PL` | EN → PL | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1251-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1252-PL-EN` | PL → EN | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1253-EN-PL` | EN → PL | GAP_ANALYZE | FAIL | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1254-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
@@ -345,8 +345,8 @@
 | `A1.12-AMB-1280-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1281-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1282-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1283-EN-PL` | EN → PL | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1284-PL-EN` | PL → EN | PASS | FAIL | PASS | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1283-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1284-PL-EN` | PL → EN | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1285-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1286-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.13-COMP-1301-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
@@ -432,7 +432,7 @@
 | `A1.2-NEG-225-PL-EN` | PL → EN | PASS | PASS | PASS | clause_negation, neg, participant_roles, semantic_event, semantic_polarity_scope, valency |
 | `A1.2-NEG-226-EN-PL` | EN → PL | PASS | PASS | PASS | clause_negation, neg, participant_roles, semantic_event, semantic_polarity_scope, valency |
 | `A1.2-NEG-227-PL-EN` | PL → EN | FAIL | PASS | PASS | clause_negation, neg, participant_roles, semantic_event, semantic_polarity_scope, valency |
-| `A1.2-NEG-228-EN-PL` | EN → PL | FAIL | PASS | PASS | clause_negation, neg, participant_roles, semantic_event, semantic_polarity_scope, valency |
+| `A1.2-NEG-228-EN-PL` | EN → PL | FAIL | PASS | FAIL | clause_negation, neg, participant_roles, semantic_event, semantic_polarity_scope, valency |
 | `A1.2-ORDER-221-PL-EN` | PL → EN | GAP_ANALYZE | PASS | GAP_ANALYZE | order, participant_roles, semantic_event, valency, word_order_ovs |
 | `A1.2-ORDER-222-EN-PL` | EN → PL | PASS | PASS | PASS | order, participant_roles, semantic_event, valency, word_order_ovs |
 | `A1.2-PO-201-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | participant_roles, po, semantic_event, valency |
@@ -827,7 +827,7 @@
 | `A1.8-NEG-820-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | clause_negation, semantic_polarity_scope |
 | `A1.8-NEG-821-EN-PL` | EN → PL | PASS | PASS | PASS | clause_negation, semantic_polarity_scope |
 | `A1.8-NEG-822-PL-EN` | PL → EN | PASS | PASS | PASS | clause_negation, semantic_polarity_scope |
-| `A1.8-NEG-823-EN-PL` | EN → PL | FAIL | FAIL | FAIL | clause_negation, semantic_polarity_scope |
+| `A1.8-NEG-823-EN-PL` | EN → PL | FAIL | PASS | FAIL | clause_negation, semantic_polarity_scope |
 | `A1.8-NEG-824-PL-EN` | PL → EN | PASS | FAIL | FAIL | clause_negation, semantic_polarity_scope |
 | `A1.8-NEG-825-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | clause_negation, semantic_polarity_scope |
 | `A1.8-NEG-826-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | clause_negation, semantic_polarity_scope |
@@ -843,7 +843,7 @@
 | `A1.8-NEG-836-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | clause_negation, semantic_polarity_scope |
 | `A1.8-NEG-837-EN-PL` | EN → PL | GAP_ANALYZE | PASS | GAP_ANALYZE | clause_negation, semantic_polarity_scope |
 | `A1.8-NEG-838-PL-EN` | PL → EN | PASS | FAIL | FAIL | clause_negation, semantic_polarity_scope |
-| `A1.8-NEG-839-EN-PL` | EN → PL | FAIL | PASS | PASS | clause_negation, semantic_polarity_scope |
+| `A1.8-NEG-839-EN-PL` | EN → PL | FAIL | PASS | FAIL | clause_negation, semantic_polarity_scope |
 | `A1.8-NEG-840-PL-EN` | PL → EN | PASS | FAIL | FAIL | clause_negation, semantic_polarity_scope |
 | `A1.8-NEG-841-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | clause_negation, semantic_polarity_scope |
 | `A1.8-NEG-842-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | clause_negation, semantic_polarity_scope |
@@ -1081,10 +1081,10 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/known_present_frame_is_unsupported_even_with_At` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/many_experiencer_referent_is_unsupported` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/many_stimulus_referent_is_unsupported` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/one_versus_absent_multiplicity` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/present_versus_past` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/present_versus_absent_frame` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/one_versus_many` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/one_versus_absent_multiplicity` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_null` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_empty` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_unknown` | PASS |
@@ -1093,11 +1093,11 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_unknown` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_frame_on_referent` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_on_predicate` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_changed` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_participant_roles_swapped` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_changed` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/temporal_frames` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/referent_multiplicity` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestNegationExpansionFixturesValidateAndRetainScope` | PASS |
@@ -1240,6 +1240,26 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestCountNounReferentsInOrdinaryClauses/Nauczyciel_czyta_listy.` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestMotherReadLetterPastMeaning` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestNeuterAttributionSourceAndTranslation` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPersonalSourcePreservesParticipantAnchors/Widzę_psa.` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPersonalSourcePreservesParticipantAnchors/Widzimy_psa.` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPersonalSourcePreservesParticipantAnchors/Widzisz_psa.` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPersonalSourcePreservesParticipantAnchors/Widzicie_psa.` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPersonalSourcePreservesParticipantAnchors/Ja_widzę_psa.` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPersonalSourcePreservesParticipantAnchors/My_widzimy_psa.` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPersonalSourcePreservesParticipantAnchors/Ty_widzisz_psa.` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPersonalSourcePreservesParticipantAnchors/Wy_widzicie_psa.` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPersonalKnownSpeakerHasOnePolishTarget` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestEnglishYouFixturesKeepCountUnknownAndPolishTargetsRemainIndependent` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPersonalIndependentPastReadingUsesGenderEvidenceAssumptions` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPolishPastPersonalSourceGenderRestrictsItsTarget` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestParticipantAnchorMisalignmentFailsClosedForTargets/en/conflicting-same-actor-anchors` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestParticipantAnchorMisalignmentFailsClosedForTargets/en/stale-first-paired-context` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestParticipantAnchorMisalignmentFailsClosedForTargets/en/participant-anchor-on-object` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestParticipantAnchorMisalignmentFailsClosedForTargets/pl/conflicting-same-actor-anchors` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestParticipantAnchorMisalignmentFailsClosedForTargets/pl/stale-first-paired-context` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestParticipantAnchorMisalignmentFailsClosedForTargets/pl/participant-anchor-on-object` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPolishImplicitRoleEvidenceRejectsDuplicateAndStaleProofs/duplicate` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPolishImplicitRoleEvidenceRejectsDuplicateAndStaleProofs/stale-derivation` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPastSeeingIndependentIToPolish/a1.10.time.017.en` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPastSeeingIndependentIToPolish/a1.10.time.018.en` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPastSeeingPolishSourceAndAgreement/Nauczyciel_widział_psa.` | PASS |
@@ -1254,6 +1274,7 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/matrix` | `TestContextMatchesRejectsMissingExtraWrongAndResolvedMentions/extra` | PASS |
 | `github.com/clickbytes/golingua/tests/matrix` | `TestContextMatchesRejectsMissingExtraWrongAndResolvedMentions/wrong-anchor` | PASS |
 | `github.com/clickbytes/golingua/tests/matrix` | `TestContextMatchesRejectsMissingExtraWrongAndResolvedMentions/resolved-id` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestContextMatchesIgnoresOnlyUnanchoredUnresolvedMentions` | PASS |
 | `github.com/clickbytes/golingua/tests/matrix` | `TestMatchAllowedCandidateUsesMatchingVariantContext` | PASS |
 | `github.com/clickbytes/golingua/tests/matrix` | `TestMatchAllowedCandidatePropagatesInvalidExpectedContextAndBudget` | PASS |
 | `github.com/clickbytes/golingua/tests/matrix` | `TestQuestionFixtureLoaderRoutesOnlyAnchoredContexts` | PASS |
@@ -1305,7 +1326,7 @@ Packages with no observed test run are reported as infrastructure/build failures
 | `github.com/clickbytes/golingua/tests/languages/en/A1.7` | FAIL | 98 |
 | `github.com/clickbytes/golingua/tests/languages/en/A1.8` | FAIL | 92 |
 | `github.com/clickbytes/golingua/tests/languages/en/A1.9` | FAIL | 118 |
-| `github.com/clickbytes/golingua/tests/languages/pl/A1` | FAIL | 117 |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | FAIL | 140 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.1` | FAIL | 43 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.10` | FAIL | 116 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.11` | FAIL | 86 |
@@ -1319,7 +1340,7 @@ Packages with no observed test run are reported as infrastructure/build failures
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.7` | FAIL | 98 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.8` | FAIL | 92 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.9` | FAIL | 118 |
-| `github.com/clickbytes/golingua/tests/matrix` | PASS | 11 |
+| `github.com/clickbytes/golingua/tests/matrix` | PASS | 12 |
 | `github.com/clickbytes/golingua/tests/translation` | FAIL | 46 |
 | `github.com/clickbytes/golingua/tests/translation/en-pl` | FAIL | 504 |
 | `github.com/clickbytes/golingua/tests/translation/pl-en` | FAIL | 504 |
@@ -1357,9 +1378,9 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 | actions | en → pl | analysis | FAIL | 11 |
 | actions | en → pl | analysis | GAP_ANALYZE | 47 |
 | actions | en → pl | analysis | PASS | 7 |
-| actions | en → pl | integration | FAIL | 4 |
+| actions | en → pl | integration | FAIL | 11 |
 | actions | en → pl | integration | GAP_ANALYZE | 47 |
-| actions | en → pl | integration | PASS | 14 |
+| actions | en → pl | integration | PASS | 7 |
 | actions | en → pl | realization | GAP_REALIZE | 47 |
 | actions | en → pl | realization | PASS | 18 |
 | actions | pl → en | analysis | FAIL | 6 |
@@ -1370,51 +1391,50 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 | actions | pl → en | realization | GAP_REALIZE | 47 |
 | actions | pl → en | realization | PASS | 18 |
 | ambiguity_reference | en → pl | analysis | FAIL | 10 |
-| ambiguity_reference | en → pl | analysis | GAP_ANALYZE | 15 |
+| ambiguity_reference | en → pl | analysis | GAP_ANALYZE | 14 |
 | ambiguity_reference | en → pl | analysis | GAP_I | 7 |
-| ambiguity_reference | en → pl | analysis | PASS | 13 |
-| ambiguity_reference | en → pl | integration | FAIL | 21 |
-| ambiguity_reference | en → pl | integration | GAP_ANALYZE | 15 |
+| ambiguity_reference | en → pl | analysis | PASS | 14 |
+| ambiguity_reference | en → pl | integration | FAIL | 10 |
+| ambiguity_reference | en → pl | integration | GAP_ANALYZE | 14 |
 | ambiguity_reference | en → pl | integration | GAP_I | 7 |
-| ambiguity_reference | en → pl | integration | PASS | 2 |
-| ambiguity_reference | en → pl | realization | FAIL | 28 |
+| ambiguity_reference | en → pl | integration | PASS | 14 |
+| ambiguity_reference | en → pl | realization | FAIL | 6 |
 | ambiguity_reference | en → pl | realization | GAP_I | 7 |
-| ambiguity_reference | en → pl | realization | GAP_REALIZE | 8 |
-| ambiguity_reference | en → pl | realization | PASS | 2 |
+| ambiguity_reference | en → pl | realization | GAP_REALIZE | 7 |
+| ambiguity_reference | en → pl | realization | PASS | 25 |
 | ambiguity_reference | pl → en | analysis | FAIL | 9 |
-| ambiguity_reference | pl → en | analysis | GAP_ANALYZE | 15 |
+| ambiguity_reference | pl → en | analysis | GAP_ANALYZE | 14 |
 | ambiguity_reference | pl → en | analysis | GAP_I | 7 |
-| ambiguity_reference | pl → en | analysis | PASS | 14 |
+| ambiguity_reference | pl → en | analysis | PASS | 15 |
 | ambiguity_reference | pl → en | integration | FAIL | 16 |
-| ambiguity_reference | pl → en | integration | GAP_ANALYZE | 15 |
+| ambiguity_reference | pl → en | integration | GAP_ANALYZE | 14 |
 | ambiguity_reference | pl → en | integration | GAP_I | 7 |
-| ambiguity_reference | pl → en | integration | PASS | 7 |
-| ambiguity_reference | pl → en | realization | FAIL | 30 |
+| ambiguity_reference | pl → en | integration | PASS | 8 |
+| ambiguity_reference | pl → en | realization | FAIL | 23 |
 | ambiguity_reference | pl → en | realization | GAP_I | 7 |
 | ambiguity_reference | pl → en | realization | GAP_REALIZE | 7 |
-| ambiguity_reference | pl → en | realization | PASS | 1 |
+| ambiguity_reference | pl → en | realization | PASS | 8 |
 | case_adjective_order | en → pl | analysis | FAIL | 6 |
 | case_adjective_order | en → pl | analysis | GAP_ANALYZE | 25 |
 | case_adjective_order | en → pl | analysis | GAP_I | 7 |
 | case_adjective_order | en → pl | analysis | PASS | 7 |
-| case_adjective_order | en → pl | integration | FAIL | 12 |
+| case_adjective_order | en → pl | integration | FAIL | 6 |
 | case_adjective_order | en → pl | integration | GAP_ANALYZE | 25 |
 | case_adjective_order | en → pl | integration | GAP_I | 7 |
-| case_adjective_order | en → pl | integration | PASS | 1 |
-| case_adjective_order | en → pl | realization | FAIL | 12 |
+| case_adjective_order | en → pl | integration | PASS | 7 |
 | case_adjective_order | en → pl | realization | GAP_I | 7 |
 | case_adjective_order | en → pl | realization | GAP_REALIZE | 25 |
-| case_adjective_order | en → pl | realization | PASS | 1 |
+| case_adjective_order | en → pl | realization | PASS | 13 |
 | case_adjective_order | pl → en | analysis | GAP_ANALYZE | 36 |
 | case_adjective_order | pl → en | analysis | GAP_I | 7 |
 | case_adjective_order | pl → en | analysis | PASS | 2 |
 | case_adjective_order | pl → en | integration | GAP_ANALYZE | 36 |
 | case_adjective_order | pl → en | integration | GAP_I | 7 |
 | case_adjective_order | pl → en | integration | PASS | 2 |
-| case_adjective_order | pl → en | realization | FAIL | 12 |
+| case_adjective_order | pl → en | realization | FAIL | 6 |
 | case_adjective_order | pl → en | realization | GAP_I | 7 |
 | case_adjective_order | pl → en | realization | GAP_REALIZE | 25 |
-| case_adjective_order | pl → en | realization | PASS | 1 |
+| case_adjective_order | pl → en | realization | PASS | 7 |
 | composition_boundary | en → pl | analysis | GAP_ANALYZE | 28 |
 | composition_boundary | en → pl | analysis | GAP_I | 13 |
 | composition_boundary | en → pl | analysis | PASS | 4 |
@@ -1469,14 +1489,13 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 | negation | en → pl | analysis | GAP_ANALYZE | 33 |
 | negation | en → pl | analysis | GAP_I | 9 |
 | negation | en → pl | analysis | PASS | 5 |
-| negation | en → pl | integration | FAIL | 1 |
+| negation | en → pl | integration | FAIL | 3 |
 | negation | en → pl | integration | GAP_ANALYZE | 33 |
 | negation | en → pl | integration | GAP_I | 9 |
-| negation | en → pl | integration | PASS | 7 |
-| negation | en → pl | realization | FAIL | 1 |
+| negation | en → pl | integration | PASS | 5 |
 | negation | en → pl | realization | GAP_I | 9 |
 | negation | en → pl | realization | GAP_REALIZE | 32 |
-| negation | en → pl | realization | PASS | 8 |
+| negation | en → pl | realization | PASS | 9 |
 | negation | pl → en | analysis | FAIL | 2 |
 | negation | pl → en | analysis | GAP_ANALYZE | 31 |
 | negation | pl → en | analysis | GAP_I | 9 |
@@ -1509,38 +1528,38 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 | questions | pl → en | realization | FAIL | 1 |
 | questions | pl → en | realization | GAP_I | 42 |
 | questions | pl → en | realization | GAP_REALIZE | 17 |
-| time_agreement | en → pl | analysis | FAIL | 2 |
-| time_agreement | en → pl | analysis | GAP_ANALYZE | 42 |
+| time_agreement | en → pl | analysis | FAIL | 6 |
+| time_agreement | en → pl | analysis | GAP_ANALYZE | 30 |
 | time_agreement | en → pl | analysis | GAP_I | 8 |
-| time_agreement | en → pl | analysis | PASS | 8 |
+| time_agreement | en → pl | analysis | PASS | 16 |
 | time_agreement | en → pl | integration | FAIL | 6 |
-| time_agreement | en → pl | integration | GAP_ANALYZE | 42 |
+| time_agreement | en → pl | integration | GAP_ANALYZE | 30 |
 | time_agreement | en → pl | integration | GAP_I | 8 |
-| time_agreement | en → pl | integration | PASS | 4 |
-| time_agreement | en → pl | realization | FAIL | 6 |
+| time_agreement | en → pl | integration | PASS | 16 |
 | time_agreement | en → pl | realization | GAP_I | 8 |
-| time_agreement | en → pl | realization | GAP_REALIZE | 42 |
-| time_agreement | en → pl | realization | PASS | 4 |
-| time_agreement | pl → en | analysis | GAP_ANALYZE | 42 |
+| time_agreement | en → pl | realization | GAP_REALIZE | 30 |
+| time_agreement | en → pl | realization | PASS | 22 |
+| time_agreement | pl → en | analysis | FAIL | 3 |
+| time_agreement | pl → en | analysis | GAP_ANALYZE | 30 |
 | time_agreement | pl → en | analysis | GAP_I | 8 |
-| time_agreement | pl → en | analysis | PASS | 10 |
-| time_agreement | pl → en | integration | FAIL | 9 |
-| time_agreement | pl → en | integration | GAP_ANALYZE | 42 |
+| time_agreement | pl → en | analysis | PASS | 19 |
+| time_agreement | pl → en | integration | FAIL | 11 |
+| time_agreement | pl → en | integration | GAP_ANALYZE | 30 |
 | time_agreement | pl → en | integration | GAP_I | 8 |
-| time_agreement | pl → en | integration | PASS | 1 |
-| time_agreement | pl → en | realization | FAIL | 21 |
+| time_agreement | pl → en | integration | PASS | 11 |
+| time_agreement | pl → en | realization | FAIL | 8 |
 | time_agreement | pl → en | realization | GAP_I | 8 |
 | time_agreement | pl → en | realization | GAP_REALIZE | 30 |
-| time_agreement | pl → en | realization | PASS | 1 |
+| time_agreement | pl → en | realization | PASS | 14 |
 
 ## Inventory and pack metadata
 
 - Inventory records parsed: 1000 / 1000 declared directions.
 - Snapshot identity records: 1.
-- Sense catalogue associations parsed: 2023 (not morphology execution coverage).
+- Sense catalogue associations parsed: 2030 (not morphology execution coverage).
 - Declared Meaning ID references: 1094 allowed; 1094 required.
 - Inventory fields preserve declared tags, source semantics, allowed/required Meaning IDs, and owner status separately from runtime observations.
-- Inventory source SHA `04b64d43e0792942d0623cdf6f0bf51df313c368`: 1000 directions.
+- Inventory source SHA `1bc2980d1ff994fb1a538141eed5d2cd7e5fd550`: 1000 directions.
 
 ### Declared source requirements
 
@@ -1613,7 +1632,7 @@ Aggregates below summarize authored source requirements; they are not observed a
 | `writing_message` | 2 |
 
 Declared role mentions: `agent` 16, `asset` 4, `associate` 4, `associated` 22, `author` 4, `back` 8, `bearer` 24, `beneficiary` 6, `choice_restriction` 2, `companion` 2, `content` 2, `destination` 2, `document` 2, `drinker` 16, `eater` 12, `entity` 2, `existence` 50, `experiencer` 160, `figure` 4, `food` 10, `friend_a` 2, `friend_b` 2, `front` 8, `giver` 20, `helper` 6, `higher` 6, `holder` 50, `instrument` 4, `item` 4, `landmark` 32, `landmark_a` 4, `landmark_b` 4, `liquid` 12, `located` 34, `location` 10, `lower` 6, `manner` 2, `material` 38, `member` 2, `object` 56, `occupant` 6, `owner` 4, `partner` 2, `person_variable` 6, `possessor` 18, `quantified_set` 50, `reader` 38, `reason` 2, `recipient` 24, `runner` 4, `sibling_a` 4, `sibling_b` 4, `sleeper` 22, `source` 2, `speaker` 4, `stimulus` 160, `support` 2, `supported` 2, `target` 4, `thanker` 2, `theme` 20, `time` 4, `tool` 2, `user` 2, `walker` 2, `writer` 2.
-- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "6a0a38ad610bc74bd564b8e137200c807443013801bf5bc74ae54d820ba54843", "format_version": 1}`; inventory source SHA: `04b64d43e0792942d0623cdf6f0bf51df313c368`.
+- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "8851581ad495b3666dd13d37321edbaec1cddfef8d85d188456a77d0f2807652", "format_version": 1}`; inventory source SHA: `1bc2980d1ff994fb1a538141eed5d2cd7e5fd550`.
 
 Catalogue sense associations are not proof that a paradigm form or morphology procedure ran. Aggregates below describe declared pack associations only.
 
@@ -1630,6 +1649,9 @@ Catalogue sense associations are not proof that a paradigm form or morphology pr
 | associated | en | noun | en_noun_zero_plural | 3 |
 | associated | en | noun | not-declared | 613 |
 | associated | en | preposition | not-declared | 23 |
+| associated | en | pronoun | en_personal_pronoun_i | 1 |
+| associated | en | pronoun | en_personal_pronoun_we | 1 |
+| associated | en | pronoun | en_personal_pronoun_you | 1 |
 | associated | en | verb | en_identification_be_present_3sg | 1 |
 | associated | en | verb | en_verb_finite_consonant_y | 1 |
 | associated | en | verb | en_verb_finite_principal_parts | 6 |
@@ -1657,6 +1679,10 @@ Catalogue sense associations are not proof that a paradigm form or morphology pr
 | associated | pl | noun | pl_noun_feminine_a_partial | 4 |
 | associated | pl | noun | pl_noun_plural_only_attested | 1 |
 | associated | pl | noun_proper | not-declared | 1 |
+| associated | pl | pronoun | pl_personal_pl.ja.pron | 1 |
+| associated | pl | pronoun | pl_personal_pl.my.pron | 1 |
+| associated | pl | pronoun | pl_personal_pl.ty.pron | 1 |
+| associated | pl | pronoun | pl_personal_pl.wy.pron | 1 |
 | associated | pl | verb | not-declared | 237 |
 | associated | pl | verb | pl_identification_byc_present_3sg | 1 |
 | associated | pl | verb | pl_verb_czytac_finite | 1 |
@@ -1818,31 +1844,33 @@ Observed top-level outcomes by runtime stage; these do not replace check statuse
 |---|---|---:|
 | analysis | unknown | 4 |
 | analysis | unsupported | 12 |
-| context_source_analysis | ambiguous | 1 |
-| context_source_analysis | incomplete | 5 |
-| context_source_analysis | ok | 39 |
-| context_source_analysis | unknown | 10 |
-| context_source_analysis | unsupported | 97 |
+| context_source_analysis | ambiguous | 5 |
+| context_source_analysis | incomplete | 11 |
+| context_source_analysis | ok | 55 |
+| context_source_analysis | unknown | 7 |
+| context_source_analysis | unsupported | 74 |
 | direct_result |  | 1 |
 | direct_result | ambiguous | 18 |
-| direct_result | incomplete | 35 |
-| direct_result | ok | 51 |
+| direct_result | incomplete | 12 |
+| direct_result | ok | 74 |
 | direct_result | unknown | 22 |
 | direct_result | unsupported | 22 |
-| independent_realization |  | 28 |
-| independent_realization | ambiguous | 105 |
-| independent_realization | incomplete | 177 |
+| independent_realization |  | 25 |
+| independent_realization | ambiguous | 123 |
+| independent_realization | incomplete | 57 |
+| independent_realization | ok | 121 |
 | independent_realization | unknown | 48 |
-| independent_realization | unsupported | 388 |
-| integration | ambiguous | 69 |
-| integration | incomplete | 110 |
-| integration | unknown | 29 |
-| integration | unsupported | 792 |
-| native_analysis | ambiguous | 15 |
-| native_analysis | incomplete | 37 |
-| native_analysis | ok | 137 |
-| native_analysis | unknown | 23 |
-| native_analysis | unsupported | 792 |
+| independent_realization | unsupported | 372 |
+| integration | ambiguous | 92 |
+| integration | incomplete | 60 |
+| integration | ok | 53 |
+| integration | unknown | 26 |
+| integration | unsupported | 769 |
+| native_analysis | ambiguous | 19 |
+| native_analysis | incomplete | 43 |
+| native_analysis | ok | 153 |
+| native_analysis | unknown | 20 |
+| native_analysis | unsupported | 769 |
 | source_gap_probe | unknown | 1 |
 | source_gap_probe | unsupported | 347 |
 | translation | invalid | 2 |
@@ -1907,37 +1935,37 @@ These are the authored graphs supplied to the realizer, distinct from source ana
 
 Authored `meaning_input` supplied to independent realization is excluded from observed graphs below. Graph summaries deduplicate identical graphs within a case and stage. Missing temporal frames or multiplicities are counted as unknown.
 
-- Unique observed graph snapshots: 519
+- Unique observed graph snapshots: 615
 
 | Graph property | Value | Count |
 |---|---|---:|
-| node kind | event | 375 |
-| node kind | referent | 894 |
+| node kind | event | 471 |
+| node kind | referent | 1086 |
 | node kind | scope | 42 |
 | node kind | state | 183 |
-| predicate (event) | `concept:hearing` | 66 |
+| predicate (event) | `concept:hearing` | 93 |
 | predicate (event) | `concept:looking` | 22 |
-| predicate (event) | `concept:reading` | 88 |
+| predicate (event) | `concept:reading` | 133 |
 | predicate (event) | `concept:receiving` | 20 |
-| predicate (event) | `concept:seeing` | 179 |
+| predicate (event) | `concept:seeing` | 203 |
 | predicate (state) | `concept:black` | 80 |
 | predicate (state) | `concept:class_membership` | 103 |
 | participant role | agent | 22 |
 | participant role | bearer | 80 |
-| participant role | experiencer | 245 |
-| participant role | material | 88 |
+| participant role | experiencer | 296 |
+| participant role | material | 133 |
 | participant role | member | 103 |
-| participant role | reader | 88 |
+| participant role | reader | 133 |
 | participant role | recipient | 20 |
-| participant role | stimulus | 245 |
+| participant role | stimulus | 296 |
 | participant role | target | 22 |
 | participant role | theme | 20 |
-| temporal_frame | past | 62 |
-| temporal_frame | present | 455 |
-| temporal_frame | unknown | 977 |
-| referent multiplicity | many | 152 |
-| referent multiplicity | one | 736 |
-| referent multiplicity | unknown | 6 |
+| temporal_frame | past | 77 |
+| temporal_frame | present | 536 |
+| temporal_frame | unknown | 1169 |
+| referent multiplicity | many | 194 |
+| referent multiplicity | one | 862 |
+| referent multiplicity | unknown | 30 |
 
 ## Observed trace and feature associations
 
@@ -1964,11 +1992,11 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:en.oblique` | `construction:en.oblique.svo.indefinite_subject_an_target_a` | `en.look.directed.at` | ok | 2 |
 | `construction:en.oblique` | `construction:en.oblique.svo.indefinite_subject_target` | `en.look.directed.at` | ok | 10 |
 | `construction:en.oblique` | `construction:en.oblique.svo.indefinite_target` | `en.look.directed.at` | ok | 10 |
-| `construction:en.transitive` | `construction:en.transitive.svo` | `en.hear.auditory.transitive` | ok | 61 |
-| `construction:en.transitive` | `construction:en.transitive.svo` | `en.see.visual.transitive` | ok | 113 |
-| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object` | `en.hear.auditory.transitive` | ok | 24 |
-| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object` | `en.see.visual.transitive` | ok | 44 |
-| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object_an` | `en.hear.auditory.transitive` | ok | 2 |
+| `construction:en.transitive` | `construction:en.transitive.svo` | `en.hear.auditory.transitive` | ok | 57 |
+| `construction:en.transitive` | `construction:en.transitive.svo` | `en.see.visual.transitive` | ok | 109 |
+| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object` | `en.hear.auditory.transitive` | ok | 20 |
+| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object` | `en.see.visual.transitive` | ok | 40 |
+| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object_an` | `en.hear.auditory.transitive` | ok | 1 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object_an` | `en.see.visual.transitive` | ok | 4 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject` | `en.hear.auditory.transitive` | ok | 16 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject` | `en.see.visual.transitive` | ok | 38 |
@@ -1980,7 +2008,7 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_an_object_a` | `en.see.visual.transitive` | ok | 5 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_object` | `en.hear.auditory.transitive` | ok | 15 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_object` | `en.see.visual.transitive` | ok | 36 |
-| `construction:en.transitive` | `construction:en.transitive.svo.reading` | `en.read.text.transitive` | ok | 58 |
+| `construction:en.transitive` | `construction:en.transitive.svo.reading` | `en.read.text.transitive` | ok | 53 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo` | `en.hear.auditory.transitive` | ok | 6 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo` | `en.see.visual.transitive` | ok | 17 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_object` | `en.hear.auditory.transitive` | ok | 2 |
@@ -1998,15 +2026,30 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:en.transitive_past` | `construction:en.transitive_past.svo` | `en.get.receive.transitive` | ok | 17 |
 | `construction:en.transitive_past` | `construction:en.transitive_past.svo` | `en.see.visual.transitive` | ok | 8 |
 | `construction:en.transitive_past` | `construction:en.transitive_past.svo.indefinite_object` | `en.get.receive.transitive` | ok | 8 |
-| `construction:en.transitive_past` | `construction:en.transitive_past.svo.indefinite_object` | `en.read.text.transitive` | ok | 5 |
+| `construction:en.transitive_past` | `construction:en.transitive_past.svo.indefinite_object` | `en.read.text.transitive` | ok | 9 |
 | `construction:en.transitive_past` | `construction:en.transitive_past.svo.indefinite_subject` | `en.get.receive.transitive` | ok | 8 |
 | `construction:en.transitive_past` | `construction:en.transitive_past.svo.indefinite_subject` | `en.read.text.transitive` | ok | 5 |
 | `construction:en.transitive_past` | `construction:en.transitive_past.svo.indefinite_subject_an` | `en.get.receive.transitive` | ok | 2 |
 | `construction:en.transitive_past` | `construction:en.transitive_past.svo.indefinite_subject_an_object_a` | `en.get.receive.transitive` | ok | 2 |
 | `construction:en.transitive_past` | `construction:en.transitive_past.svo.indefinite_subject_object` | `en.get.receive.transitive` | ok | 8 |
-| `construction:en.transitive_past` | `construction:en.transitive_past.svo.indefinite_subject_object` | `en.read.text.transitive` | ok | 3 |
+| `construction:en.transitive_past` | `construction:en.transitive_past.svo.indefinite_subject_object` | `en.read.text.transitive` | ok | 5 |
 | `construction:en.transitive_past` | `construction:en.transitive_past.svo.reading` | `en.read.text.transitive` | ok | 24 |
 | `construction:en.transitive_past` | `construction:en.transitive_past.svo.reading.realize` | `en.read.text.transitive` | ok | 9 |
+| `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.first` | `en.hear.auditory.transitive` | ok | 10 |
+| `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.first` | `en.read.text.transitive` | ok | 15 |
+| `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.first` | `en.see.visual.transitive` | ok | 10 |
+| `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.first.indefinite_object` | `en.hear.auditory.transitive` | ok | 4 |
+| `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.first.indefinite_object` | `en.read.text.transitive` | ok | 6 |
+| `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.first.indefinite_object` | `en.see.visual.transitive` | ok | 4 |
+| `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.reading.first` | `en.read.text.transitive` | ok | 9 |
+| `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.reading.second` | `en.read.text.transitive` | ok | 6 |
+| `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.second` | `en.hear.auditory.transitive` | ok | 10 |
+| `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.second` | `en.read.text.transitive` | ok | 10 |
+| `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.second` | `en.see.visual.transitive` | ok | 10 |
+| `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.second.indefinite_object` | `en.hear.auditory.transitive` | ok | 4 |
+| `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.second.indefinite_object` | `en.read.text.transitive` | ok | 4 |
+| `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.second.indefinite_object` | `en.see.visual.transitive` | ok | 4 |
+| `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.second.indefinite_object_an` | `en.hear.auditory.transitive` | ok | 2 |
 | `construction:pl.attributed_seeing` | `construction:pl.attributed_seeing.svo` | `pl.widziec.visual.transitive` | ok | 33 |
 | `construction:pl.attribution` | `construction:pl.attribution.ten` | `pl.czarny.black.frame` | ok | 22 |
 | `construction:pl.attribution` | `construction:pl.attribution.to` | `pl.czarny.black.frame` | ok | 10 |
@@ -2019,39 +2062,66 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:pl.transitive` | `construction:pl.transitive.svo` | `pl.widziec.visual.transitive` | ok | 112 |
 | `construction:pl.transitive_negative` | `construction:pl.transitive_negative.svo` | `pl.slyszec.auditory.transitive_negative` | ok | 11 |
 | `construction:pl.transitive_negative` | `construction:pl.transitive_negative.svo` | `pl.widziec.visual.transitive_negative` | ok | 24 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.past.first.plural.masculine_personal` | `pl.czytac.interpret.frame` | ok | 4 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.past.first.plural.non_masculine_personal` | `pl.czytac.interpret.frame` | ok | 4 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.past.first.singular.feminine` | `pl.czytac.interpret.frame` | ok | 2 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.past.first.singular.masculine_personal` | `pl.czytac.interpret.frame` | ok | 2 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.past.second.plural.masculine_personal` | `pl.czytac.interpret.frame` | ok | 4 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.past.second.plural.non_masculine_personal` | `pl.czytac.interpret.frame` | ok | 4 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.past.second.singular.feminine` | `pl.czytac.interpret.frame` | ok | 4 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.past.second.singular.masculine_personal` | `pl.czytac.interpret.frame` | ok | 4 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.present.first.plural` | `pl.czytac.interpret.frame` | ok | 10 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.present.first.plural` | `pl.slyszec.auditory.transitive` | ok | 5 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.present.first.plural` | `pl.widziec.visual.transitive` | ok | 5 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.present.first.singular` | `pl.czytac.interpret.frame` | ok | 5 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.present.first.singular` | `pl.slyszec.auditory.transitive` | ok | 5 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.present.first.singular` | `pl.widziec.visual.transitive` | ok | 5 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.present.second.plural` | `pl.czytac.interpret.frame` | ok | 7 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.present.second.plural` | `pl.slyszec.auditory.transitive` | ok | 7 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.present.second.plural` | `pl.widziec.visual.transitive` | ok | 7 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.present.second.singular` | `pl.czytac.interpret.frame` | ok | 7 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.present.second.singular` | `pl.slyszec.auditory.transitive` | ok | 7 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.present.second.singular` | `pl.widziec.visual.transitive` | ok | 7 |
 
 ### Observed features
 
 | Feature | State | Value | Deduplicated observations |
 |---|---|---|---:|
 | `adjective_degree` | known | positive | 47 |
-| `aspect` | known | imperfective | 207 |
+| `aspect` | known | imperfective | 246 |
 | `aspect` | known | perfective | 9 |
-| `case` | known | accusative | 138 |
+| `case` | known | accusative | 177 |
 | `case` | known | genitive | 19 |
 | `case` | known | nominative | 235 |
 | `degree` | known | positive | 35 |
-| `determiner` | known | definite | 178 |
+| `determiner` | known | definite | 217 |
 | `determiner` | known | indefinite | 62 |
-| `gender` | known | feminine | 66 |
-| `gender` | known | masculine_animal | 124 |
-| `gender` | known | masculine_inanimate | 22 |
+| `gender` | known | feminine | 81 |
+| `gender` | known | masculine_animal | 142 |
+| `gender` | known | masculine_inanimate | 25 |
 | `gender` | known | masculine_personal | 98 |
-| `gender` | known | neuter | 37 |
+| `gender` | known | neuter | 40 |
 | `gender` | known | non_masculine_personal | 2 |
-| `mood` | known | indicative | 440 |
+| `mood` | known | indicative | 518 |
 | `noun_number` | known | plural | 52 |
-| `noun_number` | known | singular | 232 |
-| `number` | known | plural | 102 |
-| `number` | known | singular | 451 |
-| `person` | known | third | 420 |
-| `tense` | known | past | 62 |
-| `tense` | known | present | 395 |
+| `noun_number` | known | singular | 271 |
+| `number` | known | plural | 153 |
+| `number` | known | singular | 529 |
+| `person` | known | first | 42 |
+| `person` | known | second | 36 |
+| `person` | known | third | 478 |
+| `pronoun_case` | known | subject | 39 |
+| `pronoun_number` | known | plural | 12 |
+| `pronoun_number` | known | singular | 9 |
+| `pronoun_person` | known | first | 21 |
+| `pronoun_person` | known | second | 18 |
+| `tense` | known | past | 77 |
+| `tense` | known | present | 473 |
 | `verb_form` | known | base | 15 |
-| `verb_form` | known | finite | 425 |
-| `verb_number` | known | plural | 46 |
-| `verb_number` | known | singular | 158 |
-| `voice` | known | active | 440 |
+| `verb_form` | known | finite | 503 |
+| `verb_number` | known | plural | 76 |
+| `verb_number` | known | singular | 167 |
+| `voice` | known | active | 518 |
 
 ## Representation gap diagnosis
 
@@ -2079,34 +2149,46 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | Meaning representation | `eating` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-929-EN-PL`, `A1.9-Q-930-PL-EN`, `A1.9-Q-931-EN-PL`, `A1.9-Q-932-PL-EN` |
 | Meaning representation | `eating` | The question requires an explicit unknown time variable bound to the event; a past frame alone does not encode a WH-time query. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-971-EN-PL`, `A1.9-Q-972-PL-EN` |
 | Meaning representation | `eating` | The requested count requires a typed quantity variable bound to the food role; omission of that argument does not encode a WH count. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-963-EN-PL`, `A1.9-Q-964-PL-EN` |
-| Meaning representation | `eating` | The sentence requires explicit negative scope over a frequency restriction (never / not always); no frequency operator is represented in Meaning. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.8-NEG-883-EN-PL` |
-| Meaning representation | `eating` | The sentence requires explicit negative scope over a frequency restriction (never / not always); no frequency operator is represented in Meaning. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.8-NEG-884-PL-EN` |
+| Meaning representation | `eating` | The sentence requires explicit negative scope over a frequency restriction (never / not always); no frequency operator is represented in Meaning. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.8-NEG-883-EN-PL`, `A1.8-NEG-884-PL-EN` |
 | Meaning representation | `finite_present_existence_with_exact_quantity` | CORE existence has no participant role to bind the quantified cats, and TemporalFrame is forbidden on a quantifier or referent. The supported exactly-two-cats component alone does not assert finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1-LQ-003-EN-PL`, `A1-LQ-004-PL-EN` |
-| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-1 counted book set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(1)→book(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-795-EN-PL`, `A1.7-LQ-796-PL-EN` |
-| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-1 counted cat set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(1)→cat(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-749-EN-PL`, `A1.7-LQ-750-PL-EN` |
-| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-1 counted window set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(1)→window(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-783-EN-PL`, `A1.7-LQ-784-PL-EN` |
-| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-10 counted cat set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(10)→cat(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-757-EN-PL`, `A1.7-LQ-758-PL-EN` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-1 counted book set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(1)→book(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-795-EN-PL` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-1 counted book set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(1)→book(many) component alone asserts cardinality, not finite present existence. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-796-PL-EN` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-1 counted cat set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(1)→cat(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-749-EN-PL` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-1 counted cat set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(1)→cat(many) component alone asserts cardinality, not finite present existence. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-750-PL-EN` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-1 counted window set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(1)→window(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-783-EN-PL` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-1 counted window set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(1)→window(many) component alone asserts cardinality, not finite present existence. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-784-PL-EN` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-10 counted cat set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(10)→cat(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-757-EN-PL` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-10 counted cat set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(10)→cat(many) component alone asserts cardinality, not finite present existence. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-758-PL-EN` |
 | Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-2 counted apple_fruit set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(2)→apple_fruit(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-787-EN-PL`, `A1.7-LQ-788-PL-EN` |
 | Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-2 counted bird set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(2)→bird(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-771-EN-PL`, `A1.7-LQ-772-PL-EN` |
 | Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-2 counted book set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(2)→book(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-763-EN-PL`, `A1.7-LQ-764-PL-EN` |
 | Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-2 counted car set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(2)→car(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-767-EN-PL`, `A1.7-LQ-768-PL-EN` |
 | Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-2 counted dog set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(2)→dog(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-759-EN-PL`, `A1.7-LQ-760-PL-EN` |
-| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-2 counted door set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(2)→door(many) component alone asserts cardinality, not finite present existence. The collective Polish numeral dwoje takes singular finite agreement; the counted units are doors, not pairs of doors. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-791-EN-PL`, `A1.7-LQ-792-PL-EN` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-2 counted door set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(2)→door(many) component alone asserts cardinality, not finite present existence. The collective Polish numeral dwoje takes singular finite agreement; the counted units are doors, not pairs of doors. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-791-EN-PL` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-2 counted door set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(2)→door(many) component alone asserts cardinality, not finite present existence. The collective Polish numeral dwoje takes singular finite agreement; the counted units are doors, not pairs of doors. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-792-PL-EN` |
 | Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-2 counted teacher set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(2)→teacher(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-775-EN-PL`, `A1.7-LQ-776-PL-EN` |
 | Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-2 counted woman set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(2)→woman(many) component alone asserts cardinality, not finite present existence. desired woman class is not a current CORE ID; do not substitute generic person or infer biology from morphology. Do not substitute person or infer biology from morphology. | NO_SEMANTIC_ALTERNATIVES, NO_START_PLAN, UNKNOWN_SURFACE | `A1.7-LQ-779-EN-PL`, `A1.7-LQ-780-PL-EN` |
 | Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-3 counted cat set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(3)→cat(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-751-EN-PL`, `A1.7-LQ-752-PL-EN` |
 | Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-4 counted bag set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(4)→bag(many) component alone asserts cardinality, not finite present existence. | NO_SEMANTIC_ALTERNATIVES, NO_START_PLAN, UNKNOWN_SURFACE | `A1.7-LQ-793-EN-PL`, `A1.7-LQ-794-PL-EN` |
 | Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-4 counted cat set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(4)→cat(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-753-EN-PL`, `A1.7-LQ-754-PL-EN` |
-| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted apple_fruit set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→apple_fruit(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-789-EN-PL`, `A1.7-LQ-790-PL-EN` |
-| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted bird set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→bird(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-773-EN-PL`, `A1.7-LQ-774-PL-EN` |
-| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted book set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→book(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-765-EN-PL`, `A1.7-LQ-766-PL-EN` |
-| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted car set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→car(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-769-EN-PL`, `A1.7-LQ-770-PL-EN` |
-| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted cat set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→cat(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-755-EN-PL`, `A1.7-LQ-756-PL-EN` |
-| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted dog set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→dog(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-761-EN-PL`, `A1.7-LQ-762-PL-EN` |
-| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted teacher set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→teacher(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-777-EN-PL`, `A1.7-LQ-778-PL-EN` |
-| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted window set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→window(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-785-EN-PL`, `A1.7-LQ-786-PL-EN` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted apple_fruit set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→apple_fruit(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-789-EN-PL` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted apple_fruit set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→apple_fruit(many) component alone asserts cardinality, not finite present existence. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-790-PL-EN` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted bird set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→bird(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-773-EN-PL` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted bird set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→bird(many) component alone asserts cardinality, not finite present existence. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-774-PL-EN` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted book set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→book(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-765-EN-PL` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted book set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→book(many) component alone asserts cardinality, not finite present existence. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-766-PL-EN` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted car set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→car(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-769-EN-PL` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted car set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→car(many) component alone asserts cardinality, not finite present existence. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-770-PL-EN` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted cat set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→cat(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-755-EN-PL` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted cat set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→cat(many) component alone asserts cardinality, not finite present existence. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-756-PL-EN` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted dog set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→dog(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-761-EN-PL` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted dog set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→dog(many) component alone asserts cardinality, not finite present existence. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-762-PL-EN` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted teacher set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→teacher(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-777-EN-PL` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted teacher set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→teacher(many) component alone asserts cardinality, not finite present existence. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-778-PL-EN` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted window set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→window(many) component alone asserts cardinality, not finite present existence. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-785-EN-PL` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted window set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→window(many) component alone asserts cardinality, not finite present existence. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-786-PL-EN` |
 | Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted woman set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→woman(many) component alone asserts cardinality, not finite present existence. desired woman class is not a current CORE ID; do not substitute generic person or infer biology from morphology. Do not substitute person or infer biology from morphology. | NO_SEMANTIC_ALTERNATIVES, NO_START_PLAN, UNKNOWN_SURFACE | `A1.7-LQ-781-EN-PL` |
-| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted woman set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→woman(many) component alone asserts cardinality, not finite present existence. desired woman class is not a current CORE ID; do not substitute generic person or infer biology from morphology. Do not substitute person or infer biology from morphology. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-782-PL-EN` |
+| Meaning representation | `finite_present_existence_with_exact_quantity` | The full sentence needs a present-time existence assertion linked to an exactly-5 counted woman set in an unspecified discourse domain. CORE existence is abstract but has no participant roles to link that assertion to the counted referent; TemporalFrame is forbidden on a quantifier/referent. The valid QuantifierExactly(5)→woman(many) component alone asserts cardinality, not finite present existence. desired woman class is not a current CORE ID; do not substitute generic person or infer biology from morphology. Do not substitute person or infer biology from morphology. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-782-PL-EN` |
 | Meaning representation | `friendship_relationship` | CORE friendship_relationship is KindRelation, not a Meaning State/Event predicate. The neutral Meaning model cannot encode the full relation with roles friend_a, friend_b; no partial graph is supplied. Association or kinship is not legal ownership of the associated person or object. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-667-EN-PL` |
 | Meaning representation | `friendship_relationship` | CORE friendship_relationship is KindRelation, not a Meaning State/Event predicate. The neutral Meaning model cannot encode the full relation with roles friend_a, friend_b; no partial graph is supplied. Association or kinship is not legal ownership of the associated person or object. Polish friend noun morphology does not establish the friend’s personal gender. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-668-PL-EN` |
 | Meaning representation | `front_back_order` | The full sentence requires the present-time spatial relation front_back_order with roles front, back; CORE spatial relation concepts are KindRelation, not Meaning State predicates. A generic located_in relation cannot substitute for this specific relation. Front/back viewpoint remains unresolved; do not invent an observer position. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-717-EN-PL`, `A1.7-LQ-718-PL-EN`, `A1.7-LQ-719-EN-PL`, `A1.7-LQ-720-PL-EN`, `A1.7-LQ-733-EN-PL`, `A1.7-LQ-734-PL-EN`, `A1.7-LQ-735-EN-PL`, `A1.7-LQ-736-PL-EN` |
@@ -2115,14 +2197,16 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | Meaning representation | `green` | CORE has black but no green property predicate; generic color has no bearer role/value, so this sentence has no honest MeaningGraph fixture | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.5-ID-575-EN-PL`, `A1.5-ID-576-PL-EN` |
 | Meaning representation | `have_unspecified` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_SEMANTIC_ALTERNATIVES, NO_START_PLAN, UNKNOWN_SURFACE | `A1.9-Q-985-EN-PL`, `A1.9-Q-986-PL-EN` |
 | Meaning representation | `have_unspecified` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-983-EN-PL`, `A1.9-Q-984-PL-EN`, `A1.9-Q-987-EN-PL`, `A1.9-Q-988-PL-EN` |
-| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-615-EN-PL`, `A1.6-PO-616-PL-EN` |
-| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-617-EN-PL`, `A1.6-PO-618-PL-EN` |
-| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-619-EN-PL`, `A1.6-PO-620-PL-EN` |
-| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-601-EN-PL`, `A1.6-PO-602-PL-EN`, `A1.6-PO-603-EN-PL`, `A1.6-PO-604-PL-EN`, `A1.6-PO-605-EN-PL`, `A1.6-PO-606-PL-EN`, `A1.6-PO-607-EN-PL`, `A1.6-PO-608-PL-EN` |
-| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-621-EN-PL`, `A1.6-PO-622-PL-EN`, `A1.6-PO-625-EN-PL`, `A1.6-PO-626-PL-EN`, `A1.6-PO-627-EN-PL`, `A1.6-PO-628-PL-EN`, `A1.6-PO-629-EN-PL`, `A1.6-PO-630-PL-EN`, `A1.6-PO-631-EN-PL`, `A1.6-PO-632-PL-EN` |
-| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-609-EN-PL`, `A1.6-PO-610-PL-EN` |
-| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-611-EN-PL`, `A1.6-PO-612-PL-EN`, `A1.6-PO-613-EN-PL`, `A1.6-PO-614-PL-EN`, `A1.6-PO-623-EN-PL`, `A1.6-PO-624-PL-EN` |
-| Meaning representation | `have_unspecified` | Generic HAVE does not distinguish temporary possession from legal ownership and implies neither legal title nor duration; CORE temporary_possession is KindRelation, not a Meaning State/Event predicate, and neutral Meaning has no holder/object possession roles. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1-PO-001-EN-PL`, `A1-PO-002-PL-EN`, `A1-PO-003-EN-PL`, `A1-PO-004-PL-EN`, `A1.2-PO-201-PL-EN`, `A1.2-PO-202-EN-PL`, `A1.2-PO-203-PL-EN`, `A1.2-PO-204-EN-PL`, `A1.2-PO-205-PL-EN`, `A1.2-PO-206-EN-PL`, `A1.2-PO-207-PL-EN`, `A1.2-PO-208-EN-PL` |
+| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-616-PL-EN` |
+| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-615-EN-PL` |
+| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-618-PL-EN` |
+| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-617-EN-PL`, `A1.6-PO-619-EN-PL`, `A1.6-PO-620-PL-EN` |
+| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-602-PL-EN`, `A1.6-PO-604-PL-EN`, `A1.6-PO-605-EN-PL`, `A1.6-PO-606-PL-EN`, `A1.6-PO-607-EN-PL`, `A1.6-PO-608-PL-EN` |
+| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-601-EN-PL`, `A1.6-PO-603-EN-PL`, `A1.6-PO-621-EN-PL`, `A1.6-PO-622-PL-EN`, `A1.6-PO-625-EN-PL`, `A1.6-PO-626-PL-EN`, `A1.6-PO-627-EN-PL`, `A1.6-PO-628-PL-EN`, `A1.6-PO-629-EN-PL`, `A1.6-PO-630-PL-EN`, `A1.6-PO-631-EN-PL`, `A1.6-PO-632-PL-EN` |
+| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-610-PL-EN` |
+| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-609-EN-PL`, `A1.6-PO-611-EN-PL`, `A1.6-PO-612-PL-EN`, `A1.6-PO-613-EN-PL`, `A1.6-PO-614-PL-EN`, `A1.6-PO-623-EN-PL`, `A1.6-PO-624-PL-EN` |
+| Meaning representation | `have_unspecified` | Generic HAVE does not distinguish temporary possession from legal ownership and implies neither legal title nor duration; CORE temporary_possession is KindRelation, not a Meaning State/Event predicate, and neutral Meaning has no holder/object possession roles. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1-PO-002-PL-EN`, `A1-PO-003-EN-PL`, `A1-PO-004-PL-EN`, `A1.2-PO-201-PL-EN`, `A1.2-PO-203-PL-EN`, `A1.2-PO-205-PL-EN`, `A1.2-PO-206-EN-PL`, `A1.2-PO-207-PL-EN` |
+| Meaning representation | `have_unspecified` | Generic HAVE does not distinguish temporary possession from legal ownership and implies neither legal title nor duration; CORE temporary_possession is KindRelation, not a Meaning State/Event predicate, and neutral Meaning has no holder/object possession roles. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1-PO-001-EN-PL`, `A1.2-PO-202-EN-PL`, `A1.2-PO-204-EN-PL`, `A1.2-PO-208-EN-PL` |
 | Meaning representation | `have_unspecified` | The full possession proposition is required; available CORE possession predicates encode a specific relation and cannot express unspecified control or possession without that inference. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-979-EN-PL`, `A1.9-Q-980-PL-EN`, `A1.9-Q-981-EN-PL`, `A1.9-Q-982-PL-EN` |
 | Meaning representation | `hearing` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-1011-EN-PL`, `A1.9-Q-1012-PL-EN`, `A1.9-Q-925-EN-PL`, `A1.9-Q-926-PL-EN`, `A1.9-Q-927-EN-PL`, `A1.9-Q-928-PL-EN` |
 | Meaning representation | `hearing` | The source asserts a future event or state, but Meaning.TemporalFrame represents only past or present; the future frame value/operator cannot be represented. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.10-TIME-1099-EN-PL`, `A1.10-TIME-1100-PL-EN` |
@@ -2217,75 +2301,76 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | analysis | `NO_SEMANTIC_ALTERNATIVES` | 4 |
 | analysis | `NO_START_PLAN` | 2 |
 | analysis | `UNKNOWN_SURFACE` | 6 |
-| analysis | `UNMATCHED_PARSE_CANDIDATE` | 53 |
-| context_source_analysis | `DISAMBIGUATION_INCOMPLETE` | 1 |
+| analysis | `UNMATCHED_PARSE_CANDIDATE` | 51 |
+| context_source_analysis | `AMBIGUOUS_PARSE` | 5 |
+| context_source_analysis | `DISAMBIGUATION_INCOMPLETE` | 2 |
 | context_source_analysis | `NO_PARSE` | 5 |
-| context_source_analysis | `NO_SEMANTIC_ALTERNATIVES` | 10 |
-| context_source_analysis | `NO_START_PLAN` | 90 |
-| context_source_analysis | `PARTIAL_PARSE_EVIDENCE` | 10 |
-| context_source_analysis | `UNKNOWN_SURFACE` | 132 |
-| context_source_analysis | `UNMATCHED_PARSE_CANDIDATE` | 337 |
-| context_source_analysis | `UNRESOLVED_ROLE_SENSE` | 10 |
+| context_source_analysis | `NO_SEMANTIC_ALTERNATIVES` | 7 |
+| context_source_analysis | `NO_START_PLAN` | 60 |
+| context_source_analysis | `PARTIAL_PARSE_EVIDENCE` | 24 |
+| context_source_analysis | `UNKNOWN_SURFACE` | 115 |
+| context_source_analysis | `UNMATCHED_PARSE_CANDIDATE` | 254 |
+| context_source_analysis | `UNRESOLVED_ROLE_SENSE` | 24 |
 | direct_result | `AMBIGUOUS_PARSE` | 1 |
-| direct_result | `EXPLICIT_REALIZATION_ASSUMPTION` | 180 |
+| direct_result | `EXPLICIT_REALIZATION_ASSUMPTION` | 134 |
 | direct_result | `MODIFIER_TRANSFER_AMBIGUOUS` | 2 |
 | direct_result | `MODIFIER_TRANSFER_UNRESOLVED` | 2 |
 | direct_result | `NO_PARSE` | 4 |
 | direct_result | `TARGET_ALTERNATIVES_AMBIGUOUS` | 25 |
 | direct_result | `TARGET_LEXICAL_COVERAGE_UNAVAILABLE` | 18 |
 | direct_result | `TARGET_NO_SURFACE_CANDIDATE` | 22 |
-| direct_result | `TRANSLATION_NOT_OK` | 7 |
+| direct_result | `TRANSLATION_NOT_OK` | 1 |
 | direct_result | `UNMATCHED_PARSE_CANDIDATE` | 13 |
-| independent_realization | `DISCOURSE_ACT_UNSUPPORTED` | 48 |
-| independent_realization | `EXPLICIT_REALIZATION_ASSUMPTION` | 1044 |
-| independent_realization | `NO_LICENSED_TARGET` | 264 |
-| independent_realization | `OPERATOR_COVERAGE_UNKNOWN` | 124 |
-| independent_realization | `OPERATOR_MAPPING_UNAVAILABLE` | 122 |
-| independent_realization | `REALIZATION_FIELD_LOSS` | 42 |
-| independent_realization | `TARGET_ALTERNATIVES_AMBIGUOUS` | 163 |
+| independent_realization | `DISCOURSE_ACT_UNSUPPORTED` | 40 |
+| independent_realization | `EXPLICIT_REALIZATION_ASSUMPTION` | 846 |
+| independent_realization | `NO_LICENSED_TARGET` | 246 |
+| independent_realization | `OPERATOR_COVERAGE_UNKNOWN` | 116 |
+| independent_realization | `OPERATOR_MAPPING_UNAVAILABLE` | 120 |
+| independent_realization | `REALIZATION_FIELD_LOSS` | 70 |
+| independent_realization | `TARGET_ALTERNATIVES_AMBIGUOUS` | 184 |
 | independent_realization | `TARGET_LEXICAL_COVERAGE_UNAVAILABLE` | 72 |
 | independent_realization | `TARGET_NO_SURFACE_CANDIDATE` | 48 |
-| independent_realization | `TARGET_OPERATOR_COVERAGE_UNAVAILABLE` | 124 |
-| integration | `AMBIGUOUS_PARSE` | 8 |
-| integration | `DISAMBIGUATION_INCOMPLETE` | 10 |
-| integration | `EXPLICIT_REALIZATION_ASSUMPTION` | 734 |
-| integration | `NO_PARSE` | 73 |
-| integration | `NO_SEMANTIC_ALTERNATIVES` | 23 |
-| integration | `NO_START_PLAN` | 303 |
+| independent_realization | `TARGET_OPERATOR_COVERAGE_UNAVAILABLE` | 116 |
+| integration | `AMBIGUOUS_PARSE` | 13 |
+| integration | `DISAMBIGUATION_INCOMPLETE` | 11 |
+| integration | `EXPLICIT_REALIZATION_ASSUMPTION` | 646 |
+| integration | `NO_PARSE` | 74 |
+| integration | `NO_SEMANTIC_ALTERNATIVES` | 20 |
+| integration | `NO_START_PLAN` | 248 |
 | integration | `OPERATOR_COVERAGE_UNKNOWN` | 3 |
-| integration | `PARTIAL_PARSE_EVIDENCE` | 171 |
+| integration | `PARTIAL_PARSE_EVIDENCE` | 211 |
 | integration | `PRINCIPAL_PARTS_UNAVAILABLE` | 2 |
-| integration | `REALIZATION_FIELD_LOSS` | 36 |
-| integration | `TARGET_ALTERNATIVES_AMBIGUOUS` | 71 |
+| integration | `REALIZATION_FIELD_LOSS` | 64 |
+| integration | `TARGET_ALTERNATIVES_AMBIGUOUS` | 97 |
 | integration | `TARGET_NO_SURFACE_CANDIDATE` | 18 |
-| integration | `TRANSLATION_NOT_OK` | 81 |
-| integration | `UNKNOWN_SURFACE` | 1154 |
-| integration | `UNMATCHED_PARSE_CANDIDATE` | 4960 |
-| integration | `UNRESOLVED_ROLE_SENSE` | 171 |
-| native_analysis | `AMBIGUOUS_PARSE` | 8 |
-| native_analysis | `DISAMBIGUATION_INCOMPLETE` | 10 |
-| native_analysis | `NO_PARSE` | 73 |
-| native_analysis | `NO_SEMANTIC_ALTERNATIVES` | 23 |
-| native_analysis | `NO_START_PLAN` | 303 |
+| integration | `TRANSLATION_NOT_OK` | 31 |
+| integration | `UNKNOWN_SURFACE` | 1128 |
+| integration | `UNMATCHED_PARSE_CANDIDATE` | 4909 |
+| integration | `UNRESOLVED_ROLE_SENSE` | 211 |
+| native_analysis | `AMBIGUOUS_PARSE` | 13 |
+| native_analysis | `DISAMBIGUATION_INCOMPLETE` | 11 |
+| native_analysis | `NO_PARSE` | 74 |
+| native_analysis | `NO_SEMANTIC_ALTERNATIVES` | 20 |
+| native_analysis | `NO_START_PLAN` | 248 |
 | native_analysis | `OPERATOR_COVERAGE_UNKNOWN` | 2 |
-| native_analysis | `PARTIAL_PARSE_EVIDENCE` | 76 |
-| native_analysis | `UNKNOWN_SURFACE` | 1154 |
-| native_analysis | `UNMATCHED_PARSE_CANDIDATE` | 2876 |
-| native_analysis | `UNRESOLVED_ROLE_SENSE` | 76 |
-| source_gap_probe | `NO_PARSE` | 62 |
+| native_analysis | `PARTIAL_PARSE_EVIDENCE` | 90 |
+| native_analysis | `UNKNOWN_SURFACE` | 1128 |
+| native_analysis | `UNMATCHED_PARSE_CANDIDATE` | 2839 |
+| native_analysis | `UNRESOLVED_ROLE_SENSE` | 90 |
+| source_gap_probe | `NO_PARSE` | 63 |
 | source_gap_probe | `NO_SEMANTIC_ALTERNATIVES` | 1 |
-| source_gap_probe | `NO_START_PLAN` | 23 |
+| source_gap_probe | `NO_START_PLAN` | 22 |
 | source_gap_probe | `UNKNOWN_SURFACE` | 382 |
-| source_gap_probe | `UNMATCHED_PARSE_CANDIDATE` | 1340 |
+| source_gap_probe | `UNMATCHED_PARSE_CANDIDATE` | 1367 |
 | translation | `INVALID_TRANSLATION_INPUT` | 2 |
 | translation | `NO_PARSE` | 10 |
 | translation | `NO_SEMANTIC_ALTERNATIVES` | 2 |
 | translation | `NO_START_PLAN` | 2 |
 | translation | `UNKNOWN_SURFACE` | 6 |
-| translation | `UNMATCHED_PARSE_CANDIDATE` | 94 |
+| translation | `UNMATCHED_PARSE_CANDIDATE` | 90 |
 
 ## Counts
 
-PASS: 334 | FAIL: 253 | GAP_ANALYZE: 910 | GAP_REALIZE: 423 | GAP_I: 1080 | SPEC_PENDING: 0 | INFRA: 0 | NOT RUN: 0
+PASS: 465 | FAIL: 187 | GAP_ANALYZE: 858 | GAP_REALIZE: 410 | GAP_I: 1080 | SPEC_PENDING: 0 | INFRA: 0 | NOT RUN: 0
 
 `SPEC_PENDING` means the check ran but lacks a closed independent contract. `NOT RUN` means no matching record check result was observed. Runtime adapter NOT RUN markers are counted separately above. Additional checks retain their own statuses. Consult the full raw log artifact for every individual observation.
