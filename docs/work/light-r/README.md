@@ -5,8 +5,8 @@ Decyzja właściciela 2026-10-25: wdrożyć sześć szeregowych pionów po [audy
 | Pion | Issue | Stan |
 | --- | --- | --- |
 | Negacja PL i przypadek dopełnienia | [355](https://github.com/clickbytes/golingua/issues/355) | DONE — PR #361, CI PR/main SUCCESS |
-| Liczba i potrzebne formy referentów | [356](https://github.com/clickbytes/golingua/issues/356) | ACTIVE |
-| Przeszłość i uzgodnienie | [357](https://github.com/clickbytes/golingua/issues/357) | QUEUED |
+| Liczba i potrzebne formy referentów | [356](https://github.com/clickbytes/golingua/issues/356) | DONE — PR #362, CI PR/main SUCCESS |
+| Przeszłość i uzgodnienie | [357](https://github.com/clickbytes/golingua/issues/357) | ACTIVE |
 | Mówiący i adresat | [358](https://github.com/clickbytes/golingua/issues/358) | QUEUED |
 | Alternatywy określoności EN | [359](https://github.com/clickbytes/golingua/issues/359) | QUEUED |
 | Wiek i potomek child children | [360](https://github.com/clickbytes/golingua/issues/360) | QUEUED |

@@ -88,6 +88,7 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 				seeingSense: {
 					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
 					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
+					{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"},
 				},
 				hearingSense: {
 					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
@@ -471,7 +472,7 @@ func supportedEnglishPredicateRoute(candidate parser.PhraseCandidate) bool {
 			(candidate.Features["verb_number"] == "singular" || candidate.Features["verb_number"] == "plural")
 	case "past":
 		for _, sense := range candidate.SenseIDs {
-			if sense.String() == "sense:en.get.receive" || sense.String() == "sense:en.read.text" {
+			if sense.String() == "sense:en.get.receive" || sense.String() == "sense:en.read.text" || sense.String() == "sense:en.see.visual" {
 				return true
 			}
 		}
