@@ -13,7 +13,7 @@ Decyzja właściciela z 2026-10-24: rozwijać silnik pojęciowo-językowy z proc
 | Ograniczenie kopiowania danych w runtime | [328](https://github.com/clickbytes/golingua/issues/328) | odbiór lokalny PASS; końcowe merge/CI w issue |
 | Jawne uczenie i trwałe użycie nabytej wiedzy | [epik 329](https://github.com/clickbytes/golingua/issues/329) | QUEUED |
 
-Jeden ACTIVE child, jedna gałąź/PR i jeden writer. Kolejny zakres rozpoczyna się po merge, zielonym CI końcowego main i zamknięciu poprzednika. Testy językowe są lokalne; techniczne CI pozostaje bez językowej bramki.
+Jeden ACTIVE child, jedna gałąź/PR i jeden writer. Kolejny zakres rozpoczyna się po merge, zielonym CI końcowego main i zamknięciu poprzednika. Pełna macierz jest wykonywana lokalnie oraz raportowana po pushu na `main` przez osobny, nieblokujący workflow; techniczne `go-ci` pozostaje bez językowej bramki. Najnowszy raport: [`tests/results/latest.md`](../../../tests/results/latest.md), surowy log: artefakt danego uruchomienia Actions.
 
 ## Punkt wyjścia
 

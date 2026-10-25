@@ -1,0 +1,100 @@
+name: language-matrix-report
+
+on:
+  push:
+    branches: [main]
+    # The report commit is a separate push to main; it must not recursively
+    # start another matrix run. Other changes in the same push still run it.
+    paths-ignore:
+      - tests/results/latest.md
+
+permissions:
+  contents: write
+
+concurrency:
+  group: language-matrix-main
+  cancel-in-progress: false
+
+jobs:
+  report:
+    name: Full language matrix (observational report)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: true
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.27.x'
+          cache: false
+
+      - name: Run full matrix and preserve its exit code
+        id: matrix
+        shell: bash
+        run: |
+          export GOLINGUA_MATRIX_SHA="$GITHUB_SHA"
+          set +e
+          go test ./tests/... -count=1 -v > "$RUNNER_TEMP/language-matrix.log" 2>&1
+          matrix_exit_code=$?
+          set -e
+          echo "exit_code=$matrix_exit_code" >> "$GITHUB_OUTPUT"
+          if [ "$matrix_exit_code" -eq 0 ]; then
+            echo "Full matrix command exited 0." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::Full matrix command exited $matrix_exit_code. This workflow records the observation and does not gate technical go-ci."
+            echo "Full matrix command exited $matrix_exit_code; see the report and raw log artifact. This observational result does not gate technical go-ci." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Render the complete sample report
+        id: report
+        shell: bash
+        run: |
+          mkdir -p tests/results
+          python3 -B scripts/report-language-matrix.py \
+            --sha "$GITHUB_SHA" \
+            --timestamp "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" \
+            --exit-code "${{ steps.matrix.outputs.exit_code }}" \
+            --log "$RUNNER_TEMP/language-matrix.log" \
+            > tests/results/latest.md
+          cat tests/results/latest.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload complete raw matrix output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: language-matrix-${{ github.sha }}
+          path: ${{ runner.temp }}/language-matrix.log
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publish the latest report to main
+        if: always() && steps.report.outcome == 'success'
+        shell: bash
+        run: |
+          git fetch --no-tags origin main
+          current_main=$(git rev-parse FETCH_HEAD)
+          if [ "$current_main" != "$GITHUB_SHA" ]; then
+            echo "::warning::Skipping stale report for $GITHUB_SHA; main is now $current_main."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/results/latest.md
+          if git diff --cached --quiet; then
+            echo "The latest report is already committed."
+            exit 0
+          fi
+          git commit -m "docs(matrix): refresh latest language report"
+          if ! git push origin HEAD:main; then
+            git fetch --no-tags origin main
+            current_main=$(git rev-parse FETCH_HEAD)
+            if [ "$current_main" != "$GITHUB_SHA" ]; then
+              echo "::warning::main advanced during report publication; the stale report was not pushed."
+              exit 0
+            fi
+            echo "::error::Report publication failed while main still matches the source SHA."
+            exit 1
+          fi
