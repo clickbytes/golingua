@@ -40,38 +40,8 @@ type checker struct {
 // returns type/scope information only; it neither evaluates propositions nor
 // claims that they are true.
 func Check(document Document) (CheckedExpression, error) {
-	if document.SchemaVersion != SchemaVersion {
-		return CheckedExpression{}, invalid("INVALID_SCHEMA_VERSION", "schema_version", "unsupported algebra document version")
-	}
-	limits, err := NormalizeLimits(document.Limits)
+	checker, _, err := prepareChecker(document, true)
 	if err != nil {
-		return CheckedExpression{}, err
-	}
-	if document.Expression == nil {
-		return CheckedExpression{}, invalid("MISSING_EXPRESSION", "expression", "expression is required")
-	}
-	totalSymbols := len(document.Sorts) + len(document.Signatures) + len(document.Parameters) + len(document.References)
-	if totalSymbols > limits.MaxSymbols {
-		return CheckedExpression{}, resourceLimit("limits.max_symbols", fmt.Sprintf("symbol declarations %d exceed limit %d", totalSymbols, limits.MaxSymbols))
-	}
-	checker := &checker{
-		limits: limits, sorts: make(map[string]struct{}, len(document.Sorts)),
-		signatures: make(map[string]Signature, len(document.Signatures)),
-		parameters: make(map[string]Declaration, len(document.Parameters)),
-		references: make(map[string]Declaration, len(document.References)),
-		scope:      newCheckerScope(), activeTerms: make(map[*Term]bool),
-		freeParams: make(map[string]Declaration), holes: make(map[string]Requirement),
-	}
-	if err := checker.readSorts(document.Sorts); err != nil {
-		return CheckedExpression{}, err
-	}
-	if err := checker.readSignatures(document.Signatures); err != nil {
-		return CheckedExpression{}, err
-	}
-	if err := checker.readDeclarations("parameters", document.Parameters, checker.parameters); err != nil {
-		return CheckedExpression{}, err
-	}
-	if err := checker.readDeclarations("references", document.References, checker.references); err != nil {
 		return CheckedExpression{}, err
 	}
 	resultType, err := checker.visit(document.Expression, "expression", 1)
@@ -82,6 +52,55 @@ func Check(document Document) (CheckedExpression, error) {
 		ids := sortedDeclarationIDs(checker.freeParams)
 		return CheckedExpression{}, invalid("FREE_PARAMETER_IN_CLOSED_TERM", "expression", "closed expression has free parameter(s): "+joinIDs(ids))
 	}
+	return checkedResult(checker, resultType), nil
+}
+
+// CheckDeclarations validates inline sorts, signatures, parameters, and
+// references without fabricating an expression or a hole.
+func CheckDeclarations(document Document) error {
+	_, _, err := prepareChecker(document, false)
+	return err
+}
+
+func prepareChecker(document Document, requireExpression bool) (*checker, Limits, error) {
+	if document.SchemaVersion != SchemaVersion {
+		return nil, Limits{}, invalid("INVALID_SCHEMA_VERSION", "schema_version", "unsupported algebra document version")
+	}
+	limits, err := NormalizeLimits(document.Limits)
+	if err != nil {
+		return nil, Limits{}, err
+	}
+	if requireExpression && document.Expression == nil {
+		return nil, Limits{}, invalid("MISSING_EXPRESSION", "expression", "expression is required")
+	}
+	totalSymbols := len(document.Sorts) + len(document.Signatures) + len(document.Parameters) + len(document.References)
+	if totalSymbols > limits.MaxSymbols {
+		return nil, Limits{}, resourceLimit("limits.max_symbols", fmt.Sprintf("symbol declarations %d exceed limit %d", totalSymbols, limits.MaxSymbols))
+	}
+	checker := &checker{
+		limits: limits, sorts: make(map[string]struct{}, len(document.Sorts)),
+		signatures: make(map[string]Signature, len(document.Signatures)),
+		parameters: make(map[string]Declaration, len(document.Parameters)),
+		references: make(map[string]Declaration, len(document.References)),
+		scope:      newCheckerScope(), activeTerms: make(map[*Term]bool),
+		freeParams: make(map[string]Declaration), holes: make(map[string]Requirement),
+	}
+	if err := checker.readSorts(document.Sorts); err != nil {
+		return nil, Limits{}, err
+	}
+	if err := checker.readSignatures(document.Signatures); err != nil {
+		return nil, Limits{}, err
+	}
+	if err := checker.readDeclarations("parameters", document.Parameters, checker.parameters); err != nil {
+		return nil, Limits{}, err
+	}
+	if err := checker.readDeclarations("references", document.References, checker.references); err != nil {
+		return nil, Limits{}, err
+	}
+	return checker, limits, nil
+}
+
+func checkedResult(checker *checker, resultType Type) CheckedExpression {
 	free := make([]Declaration, 0, len(checker.freeParams))
 	for _, id := range sortedDeclarationIDs(checker.freeParams) {
 		free = append(free, checker.freeParams[id])
@@ -97,7 +116,7 @@ func Check(document Document) (CheckedExpression, error) {
 	return CheckedExpression{
 		Status: resultStatus, Type: resultType, FreeParameters: free,
 		Holes: holes, Requirements: append([]Requirement(nil), holes...), NodeCount: checker.nodeCount,
-	}, nil
+	}
 }
 
 func (c *checker) readSorts(sorts []SortDeclaration) error {

@@ -30,6 +30,24 @@ Sukces zwraca `status`, `checked` (typ, wolne parametry, dziury/wymagania i licz
 
 Dokument ma limit 1 MiB; parser ogranicza zagnieżdżenie, a checker stosuje limity węzłów, głębokości, deklaracji, typów i portów. Szczegółowy [kontrakt IR](architecture/semantic-algebra/ir.md), [schemat JSON](../schemas/semantic/expression.schema.json), pliki kontrolne i status evidence są w [DSE-03-01](work/dse/evidence/03-01/README.md). Ta komenda nie redukuje `Apply`, nie wykonuje syntezy, nie ładuje rejestru runtime, nie ewaluje faktów i nie dowodzi prawdziwości propozycji. Poprawny typ oznacza wyłącznie poprawną strukturę według aktywnego checkera.
 
+### Jawne pakiety metadanych
+
+`algebra metadata inspect` i `algebra metadata validate` przyjmują jeden lub więcej jawnie wskazanych plików pakietu. `algebra check` może wskazać te same pliki, aby uzupełnić deklaracje z wybranego rejestru:
+
+```sh
+go run ./cmd/golingua algebra metadata inspect --metadata data/semantic/examples/metadata/neutral.json --json
+go run ./cmd/golingua algebra metadata validate --metadata data/semantic/examples/metadata/neutral.json --json
+go run ./cmd/golingua algebra check --input data/semantic/examples/metadata/expression.json --metadata data/semantic/examples/metadata/neutral.json --json
+```
+
+Powtórz `--metadata <plik>` dla kolejnych pakietów, w tym wszystkich jawnych zależności. Wczytanie obejmuje maksymalnie 16 plików, każdy do 1 MiB. Nie podawaj `--metadata` w danych pakietu jako ścieżki; CLI otwiera wyłącznie pliki wybrane flagą. Każdy pakiet przechodzi ścisły dekoder, walidację profilu, pochodzenia, deklaracji, relacji zależności, ograniczeń i definicji aliasów, zanim zostanie utworzony niezmienny snapshot. Błąd któregokolwiek pakietu zwraca odmowę bez częściowej listy rejestrów.
+
+`inspect` pokazuje identyfikatory i wersje pakietów, oba fingerprinty, sorty, klasy symboli, status review i provenance. `validate` raportuje wyłącznie walidację struktury profilu `positive-facts-v1`; nie potwierdza spójności teorii, prawdziwości faktów ani akceptacji właściciela. `SourceRef` jest informacją o pochodzeniu, nie potwierdzeniem uprawnień ani semantyki.
+
+Przy `algebra check --metadata ...` wejściowy dokument wyrażenia nie może zawierać własnych `sorts` ani `signatures`. Checker udostępnia wyłącznie zatwierdzone symbole `primitive`. Użycie symbolu `pending`, `opaque_unformalized` lub aliasu zwraca `unsupported`; alias można obejrzeć i walidator sprawdza jego zamkniętą definicję, lecz bieżący profil go nie rozwija podczas sprawdzania wyrażeń. Nieznany identyfikator symbolu pozostaje `invalid`. Wyrażenie jest sprawdzane przez ten sam typowany checker i wynik zawiera kanoniczny dokument z deklaracjami z rejestru oraz ID, wersję i fingerprint zasobów wybranych pakietów.
+
+Fingerprint zasobu obejmuje metadane dokumentu i jawne piny zależności. Formalny `formal_denotation_id` pomija etykiety, opisy, provenance, status review i krawędzie typowości; obejmuje identyfikatory i strukturę formalną, a dla zależności ich ID oraz formalne denotation ID. Fingerprinty zasobów zależności i ich wersje nie trafiają do tej formalnej projekcji. Żadna klasa lub etykieta nie wybiera procedury. Początkowy allowlist aksjomatów jest pusty; `typical_edges` pozostają opisem, a ograniczenia `arity` i `port_type` są wyłącznie strukturalnymi warunkami deklaracji. Szczegóły: [kontrakt metadanych](architecture/semantic-algebra/metadata.md), [schemat pakietu](../schemas/semantic/package.schema.json), [schemat symboli](../schemas/semantic/symbols.schema.json) i [neutralne przykłady](../data/semantic/examples/metadata/neutral.json).
+
 ## Interfejs terminalowy
 
 Bezargumentowe `golingua` otwiera TUI, gdy stdin i stdout są TTY (poza `TERM=dumb`). Bez TTY pozostaje pomoc bez ANSI. Jawne komendy, `--help`, `--version`, JSON i kody wyjścia zachowują dotychczasowy kontrakt.

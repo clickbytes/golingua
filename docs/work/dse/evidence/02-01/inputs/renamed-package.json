@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "id": "renamed.package",
+  "version": "1.0.0",
+  "profile": "positive-facts-v1",
+  "provenance": [
+    {
+      "id": "neutral-example-380",
+      "uri": "https://github.com/clickbytes/golingua/issues/380",
+      "version": "2026-10-25",
+      "license": "internal-neutral-example"
+    }
+  ],
+  "sorts": [
+    {
+      "id": "renamed_sort",
+      "label": "post-build unrelated domain"
+    }
+  ],
+  "dependencies": [],
+  "typical_edges": [],
+  "axioms": [],
+  "symbols": [
+    {
+      "id": "renamed_symbol",
+      "kind": "primitive",
+      "label": "label is not executable",
+      "description": "A fresh uninterpreted relation added after the executable was built",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "neutral-symbol-link-q",
+          "uri": "https://github.com/clickbytes/golingua/issues/380",
+          "version": "2026-10-25",
+          "license": "internal-neutral-example"
+        }
+      ],
+      "ports": [
+        {
+          "role": "renamed_entry",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "renamed_sort"
+          }
+        },
+        {
+          "role": "renamed_exit",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "renamed_sort"
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "kind": "arity",
+          "count": 2
+        },
+        {
+          "kind": "port_type",
+          "role": "renamed_entry",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "renamed_sort"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -19,16 +19,20 @@ const MaxJSONNesting = 256
 // Decode strictly decodes and structurally checks one version-1 expression
 // document. It does not evaluate the expression or infer truth.
 func Decode(data []byte) (Document, error) {
-	if len(data) > MaxDocumentBytes {
-		return Document{}, resourceLimit("document", fmt.Sprintf("JSON document is %d bytes; maximum is %d", len(data), MaxDocumentBytes))
-	}
-	if !utf8.Valid(data) {
-		return Document{}, invalid("INVALID_UTF8", "document", "JSON document is not valid UTF-8")
-	}
-	if err := validateUnicodeEscapes(data); err != nil {
+	document, err := DecodeDocumentJSON(data)
+	if err != nil {
 		return Document{}, err
 	}
-	if err := scanJSON(data); err != nil {
+	if _, err := Check(document); err != nil {
+		return Document{}, err
+	}
+	return document, nil
+}
+
+// DecodeDocumentJSON validates the strict document wire shape and returns the
+// typed document without performing declaration or expression semantics.
+func DecodeDocumentJSON(data []byte) (Document, error) {
+	if err := PreflightJSON(data); err != nil {
 		return Document{}, err
 	}
 	if err := validateDocumentJSON(data); err != nil {
@@ -44,10 +48,68 @@ func Decode(data []byte) (Document, error) {
 	if err := decoder.Decode(&trailing); err != io.EOF {
 		return Document{}, invalid("TRAILING_DOCUMENT", "document", "expected exactly one JSON document")
 	}
-	if _, err := Check(document); err != nil {
-		return Document{}, err
-	}
 	return document, nil
+}
+
+// PreflightJSON applies the wire-level byte, UTF-8, surrogate, nesting,
+// duplicate-key, and single-document guards without interpreting a schema.
+func PreflightJSON(data []byte) error {
+	if len(data) > MaxDocumentBytes {
+		return resourceLimit("document", fmt.Sprintf("JSON document is %d bytes; maximum is %d", len(data), MaxDocumentBytes))
+	}
+	if !utf8.Valid(data) {
+		return invalid("INVALID_UTF8", "document", "JSON document is not valid UTF-8")
+	}
+	if err := validateUnicodeEscapes(data); err != nil {
+		return err
+	}
+	return scanJSON(data)
+}
+
+// DecodeTypeJSON strictly decodes one type value after applying the shared
+// wire guards. It does not resolve nominal sorts; use CheckDeclarations for
+// declaration-context validation.
+func DecodeTypeJSON(data []byte, path string) (Type, error) {
+	if err := PreflightJSON(data); err != nil {
+		return Type{}, err
+	}
+	if err := validateTypeJSON(json.RawMessage(data), path); err != nil {
+		return Type{}, err
+	}
+	var value Type
+	if err := strictTypedUnmarshal(data, &value, path); err != nil {
+		return Type{}, err
+	}
+	return value, nil
+}
+
+// DecodeTermJSON strictly decodes one term value after applying shared wire
+// guards. Declaration, scope, and type checking remain the caller's job.
+func DecodeTermJSON(data []byte, path string) (*Term, error) {
+	if err := PreflightJSON(data); err != nil {
+		return nil, err
+	}
+	if err := validateTermJSON(json.RawMessage(data), path); err != nil {
+		return nil, err
+	}
+	var value Term
+	if err := strictTypedUnmarshal(data, &value, path); err != nil {
+		return nil, err
+	}
+	return &value, nil
+}
+
+func strictTypedUnmarshal(data []byte, target any, path string) error {
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(target); err != nil {
+		return invalid("INVALID_JSON_VALUE", path, err.Error())
+	}
+	var trailing json.RawMessage
+	if err := decoder.Decode(&trailing); err != io.EOF {
+		return invalid("TRAILING_DOCUMENT", path, "expected exactly one JSON value")
+	}
+	return nil
 }
 
 // Encode validates and encodes a document without changing it. Incomplete

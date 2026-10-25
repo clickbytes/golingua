@@ -1,0 +1,172 @@
+{
+  "schema_version": 1,
+  "id": "example.neutral.metadata",
+  "version": "1.0.0",
+  "profile": "positive-facts-v1",
+  "provenance": [
+    {
+      "id": "neutral-example-380",
+      "uri": "https://github.com/clickbytes/golingua/issues/380",
+      "version": "2026-10-25",
+      "license": "internal-neutral-example"
+    }
+  ],
+  "sorts": [
+    {
+      "id": "q_entity",
+      "label": "Neutral entity sort"
+    }
+  ],
+  "symbols": [
+    {
+      "id": "link_q",
+      "kind": "primitive",
+      "label": "ordered binary relation",
+      "description": "Neutral structural example; the label has no execution meaning.",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "neutral-symbol-link-q",
+          "uri": "https://github.com/clickbytes/golingua/issues/380",
+          "version": "2026-10-25",
+          "license": "internal-neutral-example"
+        }
+      ],
+      "ports": [
+        {
+          "role": "left",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "q_entity"
+          }
+        },
+        {
+          "role": "right",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "q_entity"
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "kind": "arity",
+          "count": 2
+        },
+        {
+          "kind": "port_type",
+          "role": "left",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "q_entity"
+          }
+        },
+        {
+          "kind": "port_type",
+          "role": "right",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "q_entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "two_hop_q",
+      "kind": "alias",
+      "label": "two-step relation pattern",
+      "description": "An explicit closed expression, retained as inspectable metadata only.",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "neutral-alias-two-hop",
+          "uri": "https://github.com/clickbytes/golingua/issues/380",
+          "version": "2026-10-25",
+          "license": "internal-neutral-example"
+        }
+      ],
+      "ports": [
+        {
+          "role": "left",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "q_entity"
+          }
+        },
+        {
+          "role": "right",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "q_entity"
+          }
+        }
+      ],
+      "alias": {
+        "interface": [
+          {
+            "port": "left",
+            "binder": "b_start"
+          },
+          {
+            "port": "right",
+            "binder": "b_end"
+          }
+        ],
+        "expression": {
+          "kind": "Lambda",
+          "id": "b_start",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "q_entity"
+          },
+          "body": {
+            "kind": "Lambda",
+            "id": "b_end",
+            "type": {
+              "kind": "Nominal",
+              "sort_id": "q_entity"
+            },
+            "body": {
+              "kind": "Atom",
+              "symbol": "two_hop_q",
+              "args": [
+                {
+                  "role": "left",
+                  "value": {
+                    "kind": "Var",
+                    "id": "b_start"
+                  }
+                },
+                {
+                  "role": "right",
+                  "value": {
+                    "kind": "Var",
+                    "id": "b_end"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "opaque_note_q",
+      "kind": "opaque_unformalized",
+      "label": "descriptive opaque record",
+      "description": "Kept for inspection; it has no executable signature.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "neutral-opaque-note",
+          "uri": "https://github.com/clickbytes/golingua/issues/380",
+          "version": "2026-10-25",
+          "license": "internal-neutral-example"
+        }
+      ]
+    }
+  ],
+  "dependencies": [],
+  "typical_edges": [],
+  "axioms": []
+}

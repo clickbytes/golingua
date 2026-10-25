@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "cycle_a",
+  "version": "1.0.0",
+  "profile": "positive-facts-v1",
+  "provenance": [
+    {
+      "id": "neutral-example-380",
+      "uri": "https://github.com/clickbytes/golingua/issues/380",
+      "version": "2026-10-25",
+      "license": "internal-neutral-example"
+    }
+  ],
+  "sorts": [],
+  "dependencies": [
+    {
+      "id": "cycle_b",
+      "version": "1.0.0",
+      "fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ],
+  "typical_edges": [],
+  "axioms": [],
+  "symbols": []
+}
