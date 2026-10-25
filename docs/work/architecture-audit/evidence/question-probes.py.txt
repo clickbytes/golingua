@@ -1,0 +1,19 @@
+import json,subprocess,pathlib,copy
+p=pathlib.Path('/tmp/golingua-architecture-audit-20261025')
+nodes=[{'id':'e','kind':'event','concept':'concept:seeing','participants':[{'role':'experiencer','target':'t'},{'role':'stimulus','target':'d'}]},{'id':'t','kind':'referent','concept':'concept:teacher'},{'id':'d','kind':'referent','concept':'concept:dog'},{'id':'q','kind':'question','target':'e'},{'id':'root','kind':'discourse','act':'question','content':['q']}]
+ctx={'id':'audit','referents':[{'id':'teacher-1','concept':'concept:teacher'},{'id':'teacher-2','concept':'concept:teacher'},{'id':'dog-1','concept':'concept:dog'}],'mentions':[{'id':'m1','node_id':'t','referent_id':'teacher-1','evidence_id':'ev1'},{'id':'m2','node_id':'d','referent_id':'dog-1','evidence_id':'ev2'}]}
+q={'meaning':{'schema_version':1,'roots':['root'],'nodes':nodes},'context':ctx,'kind':'yes_no','mapping':{'predicate':'relation:seeing','role_to_argument':{'experiencer':0,'stimulus':1}}}
+def fact(i,pol,t='teacher-1'):
+ return {'id':'f'+str(i),'predicate':'relation:seeing','arg_referent_ids':[t,'dog-1'],'polarity':pol,'assertion_scope':'asserted','source':{'kind':'user','id':'audit-explicit'}}
+results=[]
+for label,fs in [('unknown',[]),('true',[fact(0,'positive')]),('false',[fact(0,'negative')]),('conflict',[fact(0,'positive'),fact(1,'negative')]),('wh-many',[fact(0,'positive'),fact(1,'positive','teacher-2')]),('known-time',[fact(0,'positive')])]:
+ x=copy.deepcopy(q)
+ if label=='wh-many':
+  x['kind']='wh';x['gap_role']='experiencer';x['meaning']['nodes'][0]['participants']=x['meaning']['nodes'][0]['participants'][1:];x['meaning']['nodes'].pop(1);x['context']['mentions'].pop(0)
+ if label=='known-time': x['meaning']['nodes'][0]['temporal_frame']='present'
+ request={'schema_version':1,'question':x,'facts':fs}
+ argv=['question','--runtime-config',str(p/'runtime.json'),'--language','pl','--json']
+ c=subprocess.run([str(p/'golingua')]+argv,input=json.dumps(request),capture_output=True,text=True)
+ r={'label':label,'argv':argv,'input':request,'exit_code':c.returncode,'result':json.loads(c.stdout),'stderr':c.stderr};results.append(r)
+ print(label,c.returncode,str(r['result'])[:180])
+(p/'questions.json').write_text(json.dumps(results,ensure_ascii=False,indent=2)+'\n')

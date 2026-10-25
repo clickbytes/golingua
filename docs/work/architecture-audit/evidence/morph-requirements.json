@@ -1,0 +1,118 @@
+[
+  [
+    "en",
+    "lexeme:en.look.v",
+    {
+      "verb_form": "finite",
+      "tense": "past",
+      "mood": "indicative",
+      "voice": "active"
+    },
+    "looked"
+  ],
+  [
+    "en",
+    "lexeme:en.read.v",
+    {
+      "verb_form": "finite",
+      "tense": "past",
+      "mood": "indicative",
+      "voice": "active"
+    },
+    "read"
+  ],
+  [
+    "en",
+    "lexeme:en.child.n",
+    {
+      "noun_number": "plural"
+    },
+    "children"
+  ],
+  [
+    "en",
+    "lexeme:en.city.n",
+    {
+      "noun_number": "plural"
+    },
+    "cities"
+  ],
+  [
+    "en",
+    "lexeme:en.fish.n",
+    {
+      "noun_number": "plural"
+    },
+    "fish"
+  ],
+  [
+    "pl",
+    "lexeme:pl.widziec.v",
+    {
+      "verb_form": "finite",
+      "tense": "present",
+      "aspect": "imperfective",
+      "mood": "indicative",
+      "voice": "active",
+      "person": "first",
+      "number": "singular"
+    },
+    "widzę"
+  ],
+  [
+    "pl",
+    "lexeme:pl.czytac.v",
+    {
+      "verb_form": "finite",
+      "tense": "past",
+      "aspect": "imperfective",
+      "mood": "indicative",
+      "voice": "active",
+      "person": "first",
+      "number": "singular",
+      "gender": "feminine"
+    },
+    "czytałam"
+  ],
+  [
+    "pl",
+    "lexeme:pl.pies.n",
+    {
+      "number": "singular",
+      "case": "accusative",
+      "gender": "masculine_animal"
+    },
+    "psa"
+  ],
+  [
+    "pl",
+    "lexeme:pl.pies.n",
+    {
+      "number": "singular",
+      "case": "genitive",
+      "gender": "masculine_animal"
+    },
+    "psa"
+  ],
+  [
+    "pl",
+    "lexeme:pl.kon.n",
+    {
+      "number": "plural",
+      "case": "instrumental",
+      "gender": "masculine_animal"
+    },
+    "końmi"
+  ],
+  [
+    "pl",
+    "lexeme:pl.czarny.adj",
+    {
+      "degree": "positive",
+      "number": "singular",
+      "gender": "feminine",
+      "case": "nominative"
+    },
+    "czarna"
+  ]
+]
