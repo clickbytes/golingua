@@ -47,6 +47,7 @@ var LanguageBatches = []LanguageBatch{
 	{ID: "A1.8", EnglishAnalysis: a1en18.NegationAnalysisCases, PolishAnalysis: a1pl18.NegationAnalysisCases, EnglishRealizations: a1en18.NegationRealizationCases, PolishRealizations: a1pl18.NegationRealizationCases},
 	{ID: "A1.9", EnglishAnalysis: a1en19.QuestionAnalysisCases, PolishAnalysis: a1pl19.QuestionAnalysisCases, EnglishRealizations: a1en19.QuestionRealizationCases, PolishRealizations: a1pl19.QuestionRealizationCases},
 	{ID: "A1.10-person", EnglishAnalysis: a1en110.TimePersonAnalysisCases, PolishAnalysis: a1pl110.TimePersonAnalysisCases, EnglishRealizations: a1en110.TimePersonRealizationCases, PolishRealizations: a1pl110.TimePersonRealizationCases},
+	{ID: "A1.10-other", EnglishAnalysis: a1en110.TimeOtherAnalysisCases, PolishAnalysis: a1pl110.TimeOtherAnalysisCases, EnglishRealizations: a1en110.TimeOtherRealizationCases, PolishRealizations: a1pl110.TimeOtherRealizationCases},
 }
 
 func AnalysisCasesFor(language string) []matrix.AnalysisCase {

@@ -12,7 +12,7 @@ Decyzja właściciela: 2026-10-25, wykonanie audytu macierzy w całości z zacho
 | M7 | [#343](https://github.com/clickbytes/golingua/issues/343) | Odmowy i niejednoznaczność | DONE; merged, main CI green |
 | M8 | [#344](https://github.com/clickbytes/golingua/issues/344) | Zbalansowana macierz, obserwowane pokrycie i raport luk | ACTIVE; jeden PR #351, kolejne małe partie szeregowo |
 
-Obecny inwentarz obejmuje 342 par / 684 kierunki. Po M8-TIME-PERSON grupa `time_agreement` obejmuje 20 par / 40 kierunków; w tym PR dodano pierwsze 16, a pozostałe 40 przypadków A1.10 pozostaje szeregowo queued. Grupy działań, identyfikacji, posiadania, lokalizacji/ilości i negacji osiągnęły zaplanowaną liczebność; nie oznacza to obsługi tych konstrukcji przez silnik. Cel 500 par / 1000 kierunków pozostaje celem rozwojowym. Tagi opisują deklarowane wymagania; katalog słów nie jest pokryciem gramatyki. Nie jest to certyfikacja CEFR.
+Obecny inwentarz obejmuje 382 par / 764 kierunki. Po M8-TIME-OTHER grupa `time_agreement` obejmuje 60 par / 120 kierunków; A1.10 zawiera 56 wybranych par w dwóch sekwencyjnych komponentach. Grupy działań, identyfikacji, posiadania, lokalizacji/ilości i negacji osiągnęły zaplanowaną liczebność; nie oznacza to obsługi tych konstrukcji przez silnik. Cel 500 par / 1000 kierunków pozostaje celem rozwojowym. Tagi opisują deklarowane wymagania; katalog słów nie jest pokryciem gramatyki. Nie jest to certyfikacja CEFR.
 
 Ocena agenta wynika z rzeczywistych obserwacji. Akceptacja językowa właściciela: `NOT_EVALUATED`. Braki `GAP`, `FAIL`, `SPEC_PENDING`, `NOT RUN` i `INFRA` pozostają jawne. Poprawna odmowa błędnego wejścia jest odrębną kategorią od poprawnego tłumaczenia. Obserwacyjny workflow macierzy nie zmienia wyniku technicznego `go-ci`.
 
@@ -41,3 +41,7 @@ Added 58 authored question pairs / 116 directions. Yes/no fixture graphs cover c
 ## #344 M8-TIME-PERSON — A1.10 osobowe ramy czasu
 
 Dodano wybrane 16 par / 32 kierunki dla PL↔EN. Kontrakty zachowują ramy czasu, liczbę uczestnika, kotwice osób, warianty `read`, dziecko/offspring oraz lokalne założenia fleksyjne. Pozostałe 40 przypadków A1.10 pozostaje queued. Szczegóły: [brief](344-time-person-brief.md), [selection](344-time-person-selection.md), [wyniki](344-time-person-results.md). OwnerAcceptance: `NOT_EVALUATED`.
+
+## #344 M8-TIME-OTHER — pozostałe A1.10
+
+Dodano 40 par / 80 kierunków, domykając wybrane 56 par A1.10. Zwykłe ramy i liczebność używają istniejących I; przyszłość, progresywność, częstotliwość oraz nakładanie się zdarzeń pozostają jawnie `GAP_I`, bez osłabionych grafów. TIME45 zachowuje nierozstrzygniętą liczebność polskiego pluralia tantum. Szczegóły: [brief](344-time-other-brief.md), [selection](344-time-other-selection.md), [wyniki](344-time-other-results.md). OwnerAcceptance: `NOT_EVALUATED`.
