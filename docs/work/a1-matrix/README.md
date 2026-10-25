@@ -29,3 +29,7 @@ Dodano 34 pary / 68 kierunków jako kontrakty deklaratywne. Pełne znaczenia pos
 ## #344 M8-LQ48 — A1.7 location and quantity
 
 Dodano dokładnie 48 par / 96 kierunków jako deklaratywne kontrakty A1.7. Pełne znaczenia lokalizacji oraz egzystencji z liczebnością pozostają jawne `GAP_I`; graf dwóch kotów jest komponentem samej liczebności. Zakres i lista: [brief](344-location-brief.md), [wybór](344-location-selection.md), [wyniki](344-location-results.md). OwnerAcceptance: `NOT_EVALUATED`.
+
+## #344 reference matching prerequisite
+
+Context matching now supports multiple anchored mentions bound to graph nodes by the same structural bijection, including variant-specific source matching and integration source-candidate linkage. Existing one-referent identification checks remain strict. Details: [brief](344-reference-matching-brief.md) and [results](344-reference-matching-results.md). OwnerAcceptance: `NOT_EVALUATED`.

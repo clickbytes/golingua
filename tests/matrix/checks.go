@@ -51,7 +51,7 @@ func RunAnalysis(t *testing.T, lang features.LanguageID, cases []AnalysisCase) {
 			if gap := c.SemanticRequirement.RepresentationGap; gap != "" {
 				defer t.Errorf("GAP_I: %s", gap)
 			}
-			want, identification, ok, err := loadFixture(c.MeaningID)
+			want, _, ok, err := loadFixture(c.MeaningID)
 			if err != nil {
 				t.Fatalf("INFRA: build fixture %q: %v", c.MeaningID, err)
 			}
@@ -86,6 +86,10 @@ func RunAnalysis(t *testing.T, lang features.LanguageID, cases []AnalysisCase) {
 			if fixtureErr != nil {
 				t.Fatalf("SPEC_PENDING / NOT RUN: load allowed analysis meanings: %v", fixtureErr)
 			}
+			contexts, contextErr := loadMeaningContexts(allowedIDs)
+			if contextErr != nil {
+				t.Fatalf("INFRA: load allowed analysis contexts: %v", contextErr)
+			}
 			analyzer, exists := runtime.SourceAnalyzerFor(lang)
 			if !exists || analyzer == nil {
 				t.Fatalf("INFRA: source analyzer for %q is unavailable", lang)
@@ -116,20 +120,13 @@ func RunAnalysis(t *testing.T, lang features.LanguageID, cases []AnalysisCase) {
 				if candidate.Status != status.OutcomeOK {
 					t.Errorf("FAIL: candidate %q has status %s", candidate.ID, candidate.Status)
 				}
-				if identification != nil {
-					matches, compareErr := IdentificationMatches(*identification, candidate)
-					if compareErr != nil || !matches {
-						t.Errorf("FAIL: candidate %q does not match identification contract (matches=%t, error=%v)", candidate.ID, matches, compareErr)
-					} else {
-						observedRequired[c.MeaningID] = true
-					}
+				meaningID, matches, compareErr := MatchAllowedCandidate(allowedIDs, fixtures, contexts, candidate)
+				if compareErr != nil || !matches {
+					t.Errorf("FAIL: candidate %q Meaning/context does not match an allowed fixture (matches=%t, error=%v)", candidate.ID, matches, compareErr)
 				} else {
-					meaningID, matches, compareErr := MatchAllowedMeaning(allowedIDs, fixtures, *candidate.Meaning)
-					if compareErr != nil || !matches {
-						t.Errorf("FAIL: candidate %q Meaning does not match an allowed fixture (matches=%t, error=%v)", candidate.ID, matches, compareErr)
-					} else {
-						observedRequired[meaningID] = true
-					}
+					observedRequired[meaningID] = true
+				}
+				if contexts[meaningID] == nil {
 					for _, context := range candidate.Contexts {
 						for _, mention := range context.Context.Mentions {
 							if mention.ReferentID != "" {
@@ -259,7 +256,7 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 		if gap != "" {
 			defer t.Errorf("GAP_I: %s", gap)
 		}
-		want, identification, ok, err := loadFixture(analysis.MeaningID)
+		want, _, ok, err := loadFixture(analysis.MeaningID)
 		if err != nil {
 			t.Fatalf("INFRA: build fixture %q: %v", analysis.MeaningID, err)
 		}
@@ -286,6 +283,11 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 		if fixtureErr != nil {
 			t.Fatalf("SPEC_PENDING / NOT RUN: load allowed translation meanings: %v", fixtureErr)
 		}
+		contexts, contextErr := loadMeaningContexts(allowedIDs)
+		if contextErr != nil {
+			t.Fatalf("INFRA: load allowed translation contexts: %v", contextErr)
+		}
+		hasContextContract := hasMeaningContexts(contexts)
 		sourceGap := false
 		sourceProbed := false
 		sourceProbeInfra := false
@@ -312,6 +314,10 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 			if (probe.Outcome != status.OutcomeOK && probe.Outcome != status.OutcomeAmbiguous && probe.Outcome != status.OutcomeIncomplete) || len(probe.Candidates) == 0 {
 				return true, fmt.Sprintf("source probe returned %s with %d candidates", probe.Outcome, len(probe.Candidates)), false
 			}
+			if probe.Outcome == status.OutcomeIncomplete {
+				t.Errorf("FAIL: source gap probe returned incomplete status")
+				return true, "source gap probe returned incomplete status", false
+			}
 			observed := make(map[string]bool, len(requiredIDs))
 			for _, candidate := range probe.Candidates {
 				if infraOutcome(candidate.Status) || infraDiagnostics(candidate.Evidence.Diagnostics) {
@@ -321,7 +327,11 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 				if candidate.Status == status.OutcomeUnsupported || candidate.Status == status.OutcomeUnknown || candidate.Meaning == nil {
 					return true, fmt.Sprintf("source candidate %q has status %s without a supported Meaning", candidate.ID, candidate.Status), false
 				}
-				meaningID, matches, matchErr := MatchAllowedMeaning(allowedIDs, fixtures, *candidate.Meaning)
+				if candidate.Status != status.OutcomeOK {
+					t.Errorf("FAIL: source gap probe candidate %q has status %s", candidate.ID, candidate.Status)
+					return true, fmt.Sprintf("source candidate %q has non-ok status %s", candidate.ID, candidate.Status), false
+				}
+				meaningID, matches, matchErr := MatchAllowedCandidate(allowedIDs, fixtures, contexts, candidate)
 				if matchErr != nil || !matches {
 					return true, fmt.Sprintf("source candidate %q does not match an allowed Meaning (matches=%t, error=%v)", candidate.ID, matches, matchErr), false
 				}
@@ -332,15 +342,17 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 			}
 			return false, "source probe supplied all required licensed meanings", false
 		}
-		if identification != nil {
+		sourceMeaningByCandidateID := make(map[string]string, len(requiredIDs))
+		if hasContextContract {
 			sourceProbed = true
 			observedSourceMeanings := make(map[string]bool, len(requiredIDs))
+			seenSourceCandidateIDs := make(map[string]bool, len(requiredIDs))
 			analyzer, exists := runtime.SourceAnalyzerFor(features.LanguageID(c.From))
 			if !exists || analyzer == nil {
 				t.Fatalf("INFRA: source analyzer for %q is unavailable", c.From)
 			}
 			analysisResult, analysisErr := analyzer.Analyze(context.Background(), analysis.Input)
-			logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "identification_source_analysis", "result": analysisResult, "error": errorText(analysisErr)})
+			logObservation(t, map[string]any{"sha": observedSHA(), "case_id": c.ID, "stage": "context_source_analysis", "result": analysisResult, "error": errorText(analysisErr)})
 			if analysisErr != nil {
 				if infraError(analysisErr) {
 					t.Errorf("INFRA: source analysis %q: %v", c.ID, analysisErr)
@@ -353,25 +365,41 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 				sourceGap = true
 				t.Errorf("GAP_ANALYZE: source analysis %q returned %s without candidates", c.ID, analysisResult.Outcome)
 			} else {
+				if analysisResult.Outcome == status.OutcomeIncomplete {
+					sourceGap = true
+					t.Errorf("FAIL: source analysis %q returned incomplete status", c.ID)
+				}
 				for _, candidate := range analysisResult.Candidates {
+					if candidate.ID == "" {
+						sourceGap = true
+						t.Errorf("FAIL: source analysis returned a candidate with an empty ID")
+						continue
+					}
+					if seenSourceCandidateIDs[candidate.ID] {
+						sourceGap = true
+						delete(sourceMeaningByCandidateID, candidate.ID)
+						t.Errorf("FAIL: source candidate ID %q is duplicated and cannot bind a translation", candidate.ID)
+						continue
+					}
+					seenSourceCandidateIDs[candidate.ID] = true
 					if candidate.Status == status.OutcomeUnsupported || candidate.Status == status.OutcomeUnknown || candidate.Meaning == nil {
 						sourceGap = true
+						delete(sourceMeaningByCandidateID, candidate.ID)
 						t.Errorf("GAP_ANALYZE: source candidate %q has status %s and no supported Meaning", candidate.ID, candidate.Status)
 						continue
 					}
-					meaningID, licensed, licenseErr := MatchAllowedMeaning(allowedIDs, fixtures, *candidate.Meaning)
-					if licenseErr != nil || !licensed {
-						sourceGap = true
-					} else {
-						observedSourceMeanings[meaningID] = true
-					}
 					if candidate.Status != status.OutcomeOK {
+						sourceGap = true
 						t.Errorf("FAIL: source candidate %q has status %s", candidate.ID, candidate.Status)
 						continue
 					}
-					if matches, matchErr := IdentificationMatches(*identification, candidate); matchErr != nil || !matches {
+					meaningID, licensed, licenseErr := MatchAllowedCandidate(allowedIDs, fixtures, contexts, candidate)
+					if licenseErr != nil || !licensed {
 						sourceGap = true
-						t.Errorf("FAIL: source candidate %q does not match identification contract (matches=%t, error=%v)", candidate.ID, matches, matchErr)
+						t.Errorf("FAIL: source candidate %q does not match an allowed graph/context (matches=%t, error=%v)", candidate.ID, licensed, licenseErr)
+					} else {
+						observedSourceMeanings[meaningID] = true
+						sourceMeaningByCandidateID[candidate.ID] = meaningID
 					}
 				}
 			}
@@ -432,7 +460,14 @@ func RunTranslation(t *testing.T, c TranslationCase, analysis AnalysisCase, real
 				t.Errorf("GAP_ANALYZE: translation candidate %q has no Meaning", candidate.ID)
 				continue
 			}
-			meaningID, matches, compareErr := MatchAllowedMeaning(allowedIDs, fixtures, *candidate.Meaning)
+			var meaningID string
+			var matches bool
+			var compareErr error
+			if hasContextContract {
+				meaningID, matches, compareErr = MatchSourceCandidateMeaning(candidate.SourceCandidateID, *candidate.Meaning, sourceMeaningByCandidateID, fixtures)
+			} else {
+				meaningID, matches, compareErr = MatchAllowedMeaning(allowedIDs, fixtures, *candidate.Meaning)
+			}
 			if compareErr != nil || !matches {
 				t.Errorf("FAIL: translation candidate %q Meaning is not allowed (matches=%t, error=%v)", candidate.ID, matches, compareErr)
 				continue
@@ -528,6 +563,30 @@ func loadMeaningFixtures(ids []string, runtime *engine.Engine) (map[string]meani
 		fixtures[id] = graph
 	}
 	return fixtures, nil
+}
+
+func loadMeaningContexts(ids []string) (map[string]*interlingua.IdentificationMeaning, error) {
+	contexts := make(map[string]*interlingua.IdentificationMeaning, len(ids))
+	for _, id := range ids {
+		_, fixture, ok, err := loadFixture(id)
+		if err != nil {
+			return nil, fmt.Errorf("load context fixture %q: %w", id, err)
+		}
+		if !ok {
+			continue
+		}
+		contexts[id] = fixture
+	}
+	return contexts, nil
+}
+
+func hasMeaningContexts(contexts map[string]*interlingua.IdentificationMeaning) bool {
+	for _, context := range contexts {
+		if context != nil {
+			return true
+		}
+	}
+	return false
 }
 
 // MatchAllowedMeaning returns the unique authored MeaningID matched by a candidate.
