@@ -21,3 +21,7 @@ Ocena agenta wynika z rzeczywistych obserwacji. Akceptacja językowa właścicie
 Dzisiejszy audyt OpenCode (`/tmp/golingua-opencode-audit-20261025/coordinator-note.md`) wykazał brak potwierdzenia odmów shell/network/subagent i brak workera w diagnostycznej liście agentów. OpenCode nie dostał implementacji. Dopuszczony zastępca: Luna Low, jedno małe zadanie i jeden writer naraz. Koordynator zachowuje projekt kontraktu, review, integrację, rzeczywiste kontrole i GitHub.
 
 Briefy i dowody poszczególnych etapów znajdują się w tym katalogu; surowe obserwacje pełnej macierzy publikuje workflow jako artefakt.
+
+## #344 M8-PO34 — A1.6 possession
+
+Dodano 34 pary / 68 kierunków jako kontrakty deklaratywne. Pełne znaczenia posiadania, przynależności, własności prawnej, pokrewieństwa i przyjaźni pozostają jawnie `GAP_I` tam, gdzie model Meaning nie może reprezentować relacji CORE. Zakres i lista wejść: [brief](344-possession-brief.md), [wybór](344-possession-selection.md), [wyniki](344-possession-results.md). OwnerAcceptance: `NOT_EVALUATED`.

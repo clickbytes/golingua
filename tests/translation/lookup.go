@@ -9,12 +9,14 @@ import (
 	a1en13 "github.com/clickbytes/golingua/tests/languages/en/A1.3"
 	a1en14 "github.com/clickbytes/golingua/tests/languages/en/A1.4"
 	a1en15 "github.com/clickbytes/golingua/tests/languages/en/A1.5"
+	a1en16 "github.com/clickbytes/golingua/tests/languages/en/A1.6"
 	"github.com/clickbytes/golingua/tests/languages/pl/A1"
 	a1pl11 "github.com/clickbytes/golingua/tests/languages/pl/A1.1"
 	a1pl12 "github.com/clickbytes/golingua/tests/languages/pl/A1.2"
 	a1pl13 "github.com/clickbytes/golingua/tests/languages/pl/A1.3"
 	a1pl14 "github.com/clickbytes/golingua/tests/languages/pl/A1.4"
 	a1pl15 "github.com/clickbytes/golingua/tests/languages/pl/A1.5"
+	a1pl16 "github.com/clickbytes/golingua/tests/languages/pl/A1.6"
 	"github.com/clickbytes/golingua/tests/matrix"
 )
 
@@ -32,6 +34,7 @@ var LanguageBatches = []LanguageBatch{
 	{ID: "A1.3", EnglishAnalysis: a1en13.CompositionAnalysisCases, PolishAnalysis: a1pl13.CompositionAnalysisCases, EnglishRealizations: a1en13.CompositionRealizationCases, PolishRealizations: a1pl13.CompositionRealizationCases},
 	{ID: "A1.4", EnglishAnalysis: a1en14.ActionAnalysisCases, PolishAnalysis: a1pl14.ActionAnalysisCases, EnglishRealizations: a1en14.ActionRealizationCases, PolishRealizations: a1pl14.ActionRealizationCases},
 	{ID: "A1.5", EnglishAnalysis: a1en15.IdentificationAnalysisCases, PolishAnalysis: a1pl15.IdentificationAnalysisCases, EnglishRealizations: a1en15.IdentificationRealizationCases, PolishRealizations: a1pl15.IdentificationRealizationCases},
+	{ID: "A1.6", EnglishAnalysis: a1en16.PossessionAnalysisCases, PolishAnalysis: a1pl16.PossessionAnalysisCases, EnglishRealizations: a1en16.PossessionRealizationCases, PolishRealizations: a1pl16.PossessionRealizationCases},
 }
 
 func AnalysisCasesFor(language string) []matrix.AnalysisCase {
