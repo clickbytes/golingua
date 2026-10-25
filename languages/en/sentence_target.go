@@ -410,6 +410,11 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 type englishDeterminerCandidatePolicy struct{}
 
 func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) bool {
+	// The kinship reading of child is licensed for English source analysis, but
+	// offspring remains the canonical English target lexeme for child_of_person.
+	if candidate.Kind == meaning.KindReferent && englishChildKinshipTargetCandidate(candidate) {
+		return false
+	}
 	if has, valid := englishParticipantContextIntent(source); has && !valid {
 		return false
 	}
@@ -539,7 +544,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 		}
 		lexical := []realizer.TargetCandidate{}
 		for _, item := range candidates {
-			if item.NodeID == ref.ID && item.Kind == meaning.KindReferent && item.Lexeme.ID.String() != "" {
+			if item.NodeID == ref.ID && item.Kind == meaning.KindReferent && item.Lexeme.ID.String() != "" && !englishChildKinshipTargetCandidate(item) {
 				lexical = append(lexical, item)
 			}
 		}
@@ -627,7 +632,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 		for _, available := range candidates {
 			if available.SourceCandidateID == candidate.SourceCandidateID && available.NodeID == referent.ID &&
 				available.Kind == meaning.KindReferent && (available.Outcome == status.OutcomeOK || available.Outcome == status.OutcomeIncomplete) &&
-				available.Lexeme.ID.String() != "" {
+				available.Lexeme.ID.String() != "" && !englishChildKinshipTargetCandidate(available) {
 				lexicalCandidates = append(lexicalCandidates, available)
 			}
 		}
@@ -721,6 +726,10 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 		}
 	}
 	return true
+}
+
+func englishChildKinshipTargetCandidate(candidate realizer.TargetCandidate) bool {
+	return candidate.Lexeme.ID.String() == "lexeme:en.child.n" && candidate.Sense.ID.String() == "sense:en.child.kinship"
 }
 
 func englishPastTargetFamilyMatches(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, familyID, presentFamily, pastFamily string) bool {

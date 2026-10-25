@@ -27,7 +27,7 @@ var englishEntries = []lexicalEntry{
 	{"en.an.det", "an", "determiner", []lexicalMeaning{{"en.an.indefinite", "indefinite determiner before a vowel sound", ""}}},
 	{"en.dog.n", "dog", "noun", []lexicalMeaning{{"en.dog.animal", "domestic canine animal", "dog"}}},
 	{"en.cat.n", "cat", "noun", []lexicalMeaning{{"en.cat.animal", "domestic feline animal", "cat"}}},
-	{"en.child.n", "child", "noun", []lexicalMeaning{{"en.child.person", "young person", "child"}}},
+	{"en.child.n", "child", "noun", []lexicalMeaning{{"en.child.person", "young person", "child"}, {"en.child.kinship", "a person in relation to their own parent, at any age", "child_of_person"}}},
 	{"en.teacher.n", "teacher", "noun", []lexicalMeaning{{"en.teacher.role", "person acting as instructor", "teacher"}}},
 	{"en.doctor.n", "doctor", "noun", []lexicalMeaning{{"en.doctor.role", "medical practitioner", "doctor"}, {"en.doctor.academic", "holder of a doctoral degree", ""}}},
 	{"en.house.n", "house", "noun", []lexicalMeaning{{"en.house.building", "residential building", "house"}, {"en.house.institution", "legislative or other institutional body", ""}}},
@@ -157,6 +157,11 @@ var englishOffspringReviewSource = provenance.SourceRef{
 	URI:     "https://github.com/clickbytes/golingua/issues/237#issuecomment-6357615617",
 	Version: "2026-10-23-g10-12", License: "unknown", Author: "Codex by owner delegation",
 }
+var englishChildKinshipReviewSource = provenance.SourceRef{
+	ID:      "golingua-en-delegated-lexical-review",
+	URI:     "https://github.com/clickbytes/golingua/issues/360",
+	Version: "2026-10-25", License: "unknown", Author: "Codex by owner delegation",
+}
 var englishPendingAuditSource = provenance.SourceRef{
 	ID:      "golingua-en-delegated-pending-audit",
 	URI:     "https://github.com/clickbytes/golingua/issues/192#issuecomment-6353300680",
@@ -177,6 +182,7 @@ var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
 	"en.infant.early_child":                        englishPendingAuditSource,
 	"en.person.human":                              englishLexicalReviewBatch1Source,
 	"en.child.person":                              englishLexicalReviewBatch1Source,
+	"en.child.kinship":                             englishChildKinshipReviewSource,
 	"en.offspring.child":                           englishOffspringReviewSource,
 	"en.animal.organism":                           englishLexicalReviewBatch1Source,
 	"en.dog.animal":                                englishLexicalReviewBatch1Source,
