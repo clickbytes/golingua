@@ -2,12 +2,12 @@
 
 > Observational report generated on push to `main`. Matrix outcomes do not gate the technical `go-ci` workflow.
 
-- Source SHA: `39e482d9a59845044916bab0d060aa7936f29d9a`
-- Generated (UTC): `2026-10-25T07:52:46Z`
+- Source SHA: `ad4788a37196e3032fdaf143ab7391edb5214fa0`
+- Generated (UTC): `2026-10-25T08:02:13Z`
 - Command: `go test ./tests/... -count=1 -v`
 - Command exit code: `1` (NONZERO)
 - Registered records: 24; record checks: 72
-- Additional observed checks: 147
+- Additional observed checks: 152
 
 | Case ID | Direction | Analysis | Realization | Integration | Declared coverage tags |
 |---|---|---|---|---|---|
@@ -19,22 +19,22 @@
 | `A1-ID-002-PL-EN` | PL → EN | PASS | PASS | PASS | determiner_ambiguity, reference, semantic_classification |
 | `A1-ID-003-EN-PL` | EN → PL | PASS | PASS | PASS | reference, semantic_property_black |
 | `A1-ID-004-PL-EN` | PL → EN | PASS | PASS | PASS | reference, semantic_property_black |
-| `A1-LQ-001-EN-PL` | EN → PL | SPEC_PENDING | SPEC_PENDING | SPEC_PENDING | locative, semantic_location |
-| `A1-LQ-002-PL-EN` | PL → EN | SPEC_PENDING | SPEC_PENDING | SPEC_PENDING | case, locative, semantic_location |
-| `A1-LQ-003-EN-PL` | EN → PL | SPEC_PENDING | SPEC_PENDING | SPEC_PENDING | exactly_two, number_morphology, semantic_quantity |
-| `A1-LQ-004-PL-EN` | PL → EN | SPEC_PENDING | SPEC_PENDING | SPEC_PENDING | exactly_two, number_morphology, semantic_quantity |
+| `A1-LQ-001-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | locative, semantic_location |
+| `A1-LQ-002-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | case, locative, semantic_location |
+| `A1-LQ-003-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | exactly_two, number_morphology, semantic_quantity |
+| `A1-LQ-004-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_REALIZE | exactly_two, number_morphology, semantic_quantity |
 | `A1-NEG-001-EN-PL` | EN → PL | PASS | PASS | PASS | clause_negation, semantic_polarity_scope |
 | `A1-NEG-002-PL-EN` | PL → EN | PASS | PASS | PASS | clause_negation, semantic_polarity_scope |
 | `A1-NEG-003-EN-PL` | EN → PL | PASS | PASS | PASS | clause_negation, semantic_polarity_scope |
 | `A1-NEG-004-PL-EN` | PL → EN | PASS | PASS | PASS | clause_negation, semantic_polarity_scope |
-| `A1-PO-001-EN-PL` | EN → PL | SPEC_PENDING | SPEC_PENDING | SPEC_PENDING | case, participant_roles, semantic_possession, valency |
-| `A1-PO-002-PL-EN` | PL → EN | SPEC_PENDING | SPEC_PENDING | SPEC_PENDING | case, participant_roles, semantic_possession, valency |
-| `A1-PO-003-EN-PL` | EN → PL | SPEC_PENDING | SPEC_PENDING | SPEC_PENDING | case, participant_roles, semantic_possession, valency |
-| `A1-PO-004-PL-EN` | PL → EN | SPEC_PENDING | SPEC_PENDING | SPEC_PENDING | case, participant_roles, semantic_possession, valency |
-| `A1-Q-001-EN-PL` | EN → PL | SPEC_PENDING | SPEC_PENDING | SPEC_PENDING | reference, semantic_speech_act, yes_no_question |
-| `A1-Q-002-PL-EN` | PL → EN | SPEC_PENDING | SPEC_PENDING | SPEC_PENDING | reference, semantic_speech_act, yes_no_question |
-| `A1-Q-003-EN-PL` | EN → PL | SPEC_PENDING | SPEC_PENDING | SPEC_PENDING | reference, semantic_speech_act, wh_location |
-| `A1-Q-004-PL-EN` | PL → EN | SPEC_PENDING | SPEC_PENDING | SPEC_PENDING | reference, semantic_speech_act, wh_location |
+| `A1-PO-001-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | case, participant_roles, semantic_possession, valency |
+| `A1-PO-002-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | case, participant_roles, semantic_possession, valency |
+| `A1-PO-003-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | case, participant_roles, semantic_possession, valency |
+| `A1-PO-004-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | case, participant_roles, semantic_possession, valency |
+| `A1-Q-001-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | reference, semantic_speech_act, yes_no_question |
+| `A1-Q-002-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | reference, semantic_speech_act, yes_no_question |
+| `A1-Q-003-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | reference, semantic_speech_act, wh_location |
+| `A1-Q-004-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | reference, semantic_speech_act, wh_location |
 
 ## Additional observed checks
 
@@ -68,6 +68,11 @@
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/temporal_frames` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/referent_multiplicity` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestNegation` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestPendingDomainRepresentableMeaning/quantity.exactly-two-cats` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestPendingDomainRepresentableMeaning/question.classification.this` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestPendingDomainRepresentableMeaning/question.classification.to` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestPendingDomainRelationsAreNotMeaningStates/located_in` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestPendingDomainRelationsAreNotMeaningStates/temporary_possession` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestSeeingMeaning` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestCompositionBoundaries/bearer_is_object` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestCompositionBoundaries/bearer_is_second_cat_despite_matching_concept` | PASS |
@@ -194,7 +199,7 @@ Packages with no observed test run are reported as infrastructure/build failures
 
 | Package | Go summary | Observed test names |
 |---|---|---|
-| `github.com/clickbytes/golingua/tests/interlingua` | PASS | 31 |
+| `github.com/clickbytes/golingua/tests/interlingua` | PASS | 38 |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | FAIL | 102 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | FAIL | 91 |
 | `github.com/clickbytes/golingua/tests/matrix` | PASS | 1 |
@@ -211,6 +216,6 @@ case: 5 records | clause_negation: 4 records | determiner_ambiguity: 2 records |
 
 ## Counts
 
-PASS: 36 | FAIL: 0 | GAP_ANALYZE: 0 | GAP_REALIZE: 0 | GAP_I: 0 | SPEC_PENDING: 36 | INFRA: 0 | NOT RUN: 0
+PASS: 36 | FAIL: 0 | GAP_ANALYZE: 6 | GAP_REALIZE: 6 | GAP_I: 24 | SPEC_PENDING: 0 | INFRA: 0 | NOT RUN: 0
 
 `SPEC_PENDING` means the check ran but lacks a closed independent contract. `NOT RUN` means no matching record check result was observed. Additional checks retain their own observed statuses above. Consult the full raw log artifact for every run detail.
