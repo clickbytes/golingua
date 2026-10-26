@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "profile": {
+    "id": "storage-demo",
+    "rules": []
+  },
+  "context_id": "request:artifact383",
+  "context_dependencies": [
+    {
+      "id": "context:demo",
+      "fingerprint": "context-fp:demo1"
+    }
+  ],
+  "provenance": [
+    {
+      "id": "neutral-storage-383",
+      "uri": "https://github.com/clickbytes/golingua/issues/383",
+      "version": "2026-10-26",
+      "license": "internal-neutral-example"
+    }
+  ],
+  "document": {
+    "schema_version": 1,
+    "expression": {
+      "kind": "Lambda",
+      "id": "alias:x",
+      "type": {
+        "kind": "Entity"
+      },
+      "body": {
+        "kind": "Atom",
+        "symbol": "r",
+        "args": [
+          {
+            "role": "a",
+            "value": {
+              "kind": "Var",
+              "id": "alias:x"
+            }
+          },
+          {
+            "role": "b",
+            "value": {
+              "kind": "Ref",
+              "id": "alias:x",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "references": [
+      {
+        "id": "alias:x",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ]
+  }
+}

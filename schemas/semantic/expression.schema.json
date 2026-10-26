@@ -112,6 +112,131 @@
         "max_symbols": {"type": "integer", "minimum": 0, "maximum": 512},
         "max_ports": {"type": "integer", "minimum": 0, "maximum": 16}
       }
+    },
+    "document": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "expression"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "sorts": {"type": "array", "maxItems": 512, "items": {"$ref": "#/$defs/sort"}},
+        "signatures": {"type": "array", "maxItems": 512, "items": {"$ref": "#/$defs/signature"}},
+        "parameters": {"type": "array", "maxItems": 512, "items": {"$ref": "#/$defs/declaration"}},
+        "references": {"type": "array", "maxItems": 512, "items": {"$ref": "#/$defs/declaration"}},
+        "closed": {"type": "boolean"},
+        "expression": {"$ref": "#/$defs/term"},
+        "limits": {"$ref": "#/$defs/limits"}
+      },
+      "$comment": "The existing root schema remains the ordinary expression document. This definition permits the same document shape when nested in an artifact export request."
+    },
+    "rewrite_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "rules"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "rules": {
+          "type": "array", "maxItems": 6, "uniqueItems": true,
+          "items": {"enum": ["alpha_v1", "beta_v1", "alias_v1", "and_flatten_v1", "and_order_v1", "and_deduplicate_v1"]}
+        }
+      }
+    },
+    "registry_pin": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "version", "resource_fingerprint", "formal_denotation_id"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"}, "version": {"$ref": "#/$defs/id"},
+        "resource_fingerprint": {"$ref": "#/$defs/id"}, "formal_denotation_id": {"$ref": "#/$defs/id"}
+      }
+    },
+    "context_dependency": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "fingerprint"],
+      "properties": {"id": {"$ref": "#/$defs/id"}, "fingerprint": {"$ref": "#/$defs/id"}}
+    },
+    "source_ref": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "version", "license"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "path": {"type": "string", "minLength": 1, "maxLength": 2048},
+        "uri": {"type": "string", "minLength": 1, "maxLength": 2048},
+        "version": {"type": "string", "minLength": 1, "maxLength": 128},
+        "license": {"type": "string", "minLength": 1, "maxLength": 256},
+        "author": {"type": "string", "maxLength": 256},
+        "checksum_sha256": {"type": "string", "pattern": "^([0-9a-f]{64})?$"}
+      },
+      "oneOf": [
+        {"required": ["path"], "not": {"required": ["uri"]}},
+        {"required": ["uri"], "not": {"required": ["path"]}}
+      ],
+      "$comment": "Runtime validates normalized relative paths or absolute URIs and exact source metadata bounds; no resource is fetched."
+    },
+    "artifact_node_argument": {
+      "type": "object", "additionalProperties": false,
+      "required": ["role", "value"],
+      "properties": {
+        "role": {"$ref": "#/$defs/id"},
+        "value": {"type": "integer", "minimum": 1, "maximum": 4096}
+      }
+    },
+    "artifact_node": {
+      "oneOf": [
+        {"type": "object", "additionalProperties": false, "required": ["node_id", "kind", "identity"], "properties": {"node_id": {"type": "integer", "minimum": 1, "maximum": 4096}, "kind": {"const": "Var"}, "identity": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}}},
+        {"type": "object", "additionalProperties": false, "required": ["node_id", "kind", "identity", "type"], "properties": {"node_id": {"type": "integer", "minimum": 1, "maximum": 4096}, "kind": {"const": "Param"}, "identity": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}, "type": {"$ref": "#/$defs/type"}}},
+        {"type": "object", "additionalProperties": false, "required": ["node_id", "kind", "identity", "type"], "properties": {"node_id": {"type": "integer", "minimum": 1, "maximum": 4096}, "kind": {"const": "Ref"}, "identity": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}, "type": {"$ref": "#/$defs/type"}}},
+        {"type": "object", "additionalProperties": false, "required": ["node_id", "kind", "identity", "type"], "properties": {"node_id": {"type": "integer", "minimum": 1, "maximum": 4096}, "kind": {"const": "Hole"}, "identity": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}, "type": {"$ref": "#/$defs/type"}}},
+        {"type": "object", "additionalProperties": false, "required": ["node_id", "kind", "symbol", "args"], "properties": {"node_id": {"type": "integer", "minimum": 1, "maximum": 4096}, "kind": {"const": "Atom"}, "label": {"$ref": "#/$defs/label"}, "symbol": {"$ref": "#/$defs/id"}, "args": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/artifact_node_argument"}}}},
+        {"type": "object", "additionalProperties": false, "required": ["node_id", "kind", "operands"], "properties": {"node_id": {"type": "integer", "minimum": 1, "maximum": 4096}, "kind": {"const": "And"}, "label": {"$ref": "#/$defs/label"}, "operands": {"type": "array", "minItems": 1, "maxItems": 4096, "items": {"type": "integer", "minimum": 1, "maximum": 4096}}}},
+        {"type": "object", "additionalProperties": false, "required": ["node_id", "kind", "identity", "type", "body"], "properties": {"node_id": {"type": "integer", "minimum": 1, "maximum": 4096}, "kind": {"const": "Exists"}, "identity": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}, "type": {"$ref": "#/$defs/type"}, "body": {"type": "integer", "minimum": 1, "maximum": 4096}}},
+        {"type": "object", "additionalProperties": false, "required": ["node_id", "kind", "identity", "type", "body"], "properties": {"node_id": {"type": "integer", "minimum": 1, "maximum": 4096}, "kind": {"const": "Lambda"}, "identity": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}, "type": {"$ref": "#/$defs/type"}, "body": {"type": "integer", "minimum": 1, "maximum": 4096}}},
+        {"type": "object", "additionalProperties": false, "required": ["node_id", "kind", "function", "argument"], "properties": {"node_id": {"type": "integer", "minimum": 1, "maximum": 4096}, "kind": {"const": "Apply"}, "label": {"$ref": "#/$defs/label"}, "function": {"type": "integer", "minimum": 1, "maximum": 4096}, "argument": {"type": "integer", "minimum": 1, "maximum": 4096}}}
+      ],
+      "$comment": "DAG edge reachability, dense NodeIDs, cycles, scope, and typing are checked at runtime; JSON Schema validates only the bounded node record shapes."
+    },
+    "artifact_envelope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "schema_version", "normalizer_version", "registry_snapshot_id", "registries", "profile", "context_id", "context_dependencies", "sorts", "signatures", "parameters", "references", "closed", "limits", "root", "nodes", "provenance", "resource_fingerprint", "meaning_fingerprint", "cache_key"],
+      "properties": {
+        "kind": {"const": "typed_expression_dag"}, "schema_version": {"const": 1},
+        "normalizer_version": {"const": "dse-normalizer-v1"}, "registry_snapshot_id": {"$ref": "#/$defs/id"},
+        "registries": {"type": "array", "minItems": 1, "maxItems": 16, "items": {"$ref": "#/$defs/registry_pin"}},
+        "profile": {"$ref": "#/$defs/rewrite_profile"}, "context_id": {"$ref": "#/$defs/id"},
+        "context_dependencies": {"type": "array", "maxItems": 512, "items": {"$ref": "#/$defs/context_dependency"}},
+        "sorts": {"type": "array", "maxItems": 512, "items": {"$ref": "#/$defs/sort"}},
+        "signatures": {"type": "array", "maxItems": 512, "items": {"$ref": "#/$defs/signature"}},
+        "parameters": {"type": "array", "maxItems": 512, "items": {"$ref": "#/$defs/declaration"}},
+        "references": {"type": "array", "maxItems": 512, "items": {"$ref": "#/$defs/declaration"}},
+        "closed": {"type": "boolean"}, "limits": {"$ref": "#/$defs/limits"},
+        "root": {"type": "integer", "minimum": 1, "maximum": 4096},
+        "nodes": {"type": "array", "minItems": 1, "maxItems": 4096, "items": {"$ref": "#/$defs/artifact_node"}},
+        "provenance": {"type": "array", "maxItems": 512, "items": {"$ref": "#/$defs/source_ref"}},
+        "resource_fingerprint": {"$ref": "#/$defs/id"}, "meaning_fingerprint": {"$ref": "#/$defs/id"}, "cache_key": {"$ref": "#/$defs/id"}
+      },
+      "$comment": "Runtime enforces the 8 MiB artifact cap and receipt consistency. A receipt is not proof or metadata authentication."
+    },
+    "artifact_export_request": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "document", "profile", "context_id", "context_dependencies", "provenance"],
+      "properties": {
+        "schema_version": {"const": 1}, "document": {"$ref": "#/$defs/document"},
+        "profile": {"$ref": "#/$defs/rewrite_profile"}, "context_id": {"$ref": "#/$defs/id"},
+        "context_dependencies": {"type": "array", "maxItems": 512, "items": {"$ref": "#/$defs/context_dependency"}},
+        "provenance": {"type": "array", "maxItems": 512, "items": {"$ref": "#/$defs/source_ref"}}
+      },
+      "$comment": "Runtime enforces a 1 MiB request cap and checks inline source declarations against actual selected metadata."
+    },
+    "artifact_replay_request": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "profile", "context_id", "context_dependencies", "provenance", "artifact"],
+      "properties": {
+        "schema_version": {"const": 1}, "profile": {"$ref": "#/$defs/rewrite_profile"},
+        "context_id": {"$ref": "#/$defs/id"},
+        "context_dependencies": {"type": "array", "maxItems": 512, "items": {"$ref": "#/$defs/context_dependency"}},
+        "provenance": {"type": "array", "maxItems": 512, "items": {"$ref": "#/$defs/source_ref"}},
+        "limits": {"$ref": "#/$defs/limits"}, "artifact": {"$ref": "#/$defs/artifact_envelope"}
+      },
+      "$comment": "Profile/context/provenance are independent expected inputs. Runtime enforces a 16 MiB envelope cap; actual selected metadata must be supplied separately."
     }
   }
 }
