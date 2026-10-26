@@ -480,3 +480,61 @@ Nieznana lub niepoprawna komenda zwraca `invalid` i exit code 2. Ogólne błędy
 ## Bieżąca obserwacja funkcji językowych
 
 Po G10-18 uruchomiono wszystkie 100 istniejących wierszy korpusu w obu kierunkach: 200 wywołań CLI. EN→PL nadal ma 60 `ok` i 40 `incomplete`, PL→EN nadal ma 100 `ambiguous`; statusy i zbiory kandydatów tekstowych zgadzają się z [obserwacją G10-14](../data/sentences/observed-2026-10-23-g10-14-full-corpus.tsv). Szczegóły nowych negatywnych alternatyw rodzajnika, prób liczby mnogiej i błędnego allomorfu oraz podsumowanie regresji są w [obserwacji G10-18](../data/sentences/observed-2026-10-23-g10-18-negative-article-alternatives.tsv). Niegramatyczne `A teachers...` i błędne `an dog` pozostały `unsupported`; polskie wejścia zachowały wiele jawnie założonych wariantów EN ze statusem `ambiguous`. G10-17 pozostaje w [osobnej obserwacji](../data/sentences/observed-2026-10-23-g10-17-present-negation.tsv). Przykłady dodatnie nie wybrały rodzin negatywnych; niezgodna liczba i nieobsługiwany czas przeszły pozostały poza nowymi trasami. G10-16 wcześniej dodało ograniczoną negację `seeing` w liczbie pojedynczej; historyczne wyjścia są w [obserwacji G10-16](../data/sentences/observed-2026-10-23-g10-16-negated-seeing.tsv). G10-13 dodało obsługę czasu teraźniejszego 3pl na ograniczonych trasach `seeing`, `hearing` i `looking` oraz twarde uzgodnienie `number`; szczegóły są w [obserwacji G10-13](../data/sentences/observed-2026-10-23-g10-13-plural-agreement.tsv). Pozostałe sensy, konstrukcje, czasy i formy wymagają własnych etapów danych i implementacji. Aktualne obserwacje dla 25 istniejących przykładów `looking` w obu kierunkach zapisano w [`data/sentences/observed-2026-10-23-g05-14-looking.tsv`](../data/sentences/observed-2026-10-23-g05-14-looking.tsv), a dla `receiving` w [`data/sentences/observed-2026-10-23-g05-13-receiving.tsv`](../data/sentences/observed-2026-10-23-g05-13-receiving.tsv). To zapis działania CLI, nie gold ani automatyczna ocena jakości. Właścicielski odbiór językowy pozostaje `NOT RUN`; delegowana ocena agenta jest odrębna. Procedura i statusy są opisane w [manual review](manual-review.md).
+
+### Ewaluacja jawnych faktów: `algebra evaluate`
+
+`algebra evaluate` wykonuje sprawdzone zapytanie na jednym jawnie wybranym,
+typowanym widoku faktów. Wszystkie wejścia są nazwanymi plikami; polecenie nie
+czyta stdin:
+
+```sh
+golingua algebra synthesize --mode construct \
+  --metadata data/semantic/examples/evaluation/metadata.json \
+  --goal data/semantic/examples/evaluation/goal.json --json > /tmp/synthesis.json
+jq -e '.result.fully_validated == true' /tmp/synthesis.json >/dev/null
+jq -c '.result.canonical_document' /tmp/synthesis.json > /tmp/query.json
+jq -c '.result.certificate' /tmp/synthesis.json > /tmp/certificate.json
+golingua algebra verify-goal \
+  --metadata data/semantic/examples/evaluation/metadata.json \
+  --goal data/semantic/examples/evaluation/goal.json \
+  --candidate /tmp/query.json --certificate /tmp/certificate.json --json
+jq -c '[.result.certificate.interface | to_entries[] | {kind:"lambda",index:.key,as:.value.port}]' \
+  /tmp/synthesis.json > /tmp/select.json
+golingua algebra evaluate \
+  --metadata data/semantic/examples/evaluation/metadata.json \
+  --expression /tmp/query.json \
+  --facts data/semantic/examples/evaluation/facts-simple.json \
+  --select /tmp/select.json --context-id eval-neutral \
+  --profile positive-facts-v1 --json
+```
+
+Wymagane są `--metadata`, `--expression`, `--facts`, `--select`, `--context-id`,
+`--profile positive-facts-v1` i `--json`. Nie można podać `-` ani użyć stdin.
+Plik selekcji to ścisła tablica JSON: lambda wybiera binder przez pozycję w
+kolejności po ograniczonej redukcji beta, a parametr przez jego jawne ID.
+`--context-id` musi zgadzać się z wejściem faktów. Powtarzalne
+`--evaluation-limit name=value` obsługuje `max_plan_atoms`, `max_variables`,
+`max_intermediate_rows`, `max_results`, `max_proof_nodes`,
+`max_proofs_per_answer`, `max_proof_depth`, `max_work_units`,
+`max_output_bytes` i `timeout_millis`; nazwy muszą być unikalne, a zero oznacza
+ograniczoną wartość domyślną. `--at` jest opcjonalnym znacznikiem czasu UTC i
+nigdy nie uruchamia zegara bieżącego.
+
+`knowledge: supported` oznacza co najmniej jeden wynik wsparty jawnymi
+pozytywnymi rekordami; bez takiego wsparcia wynik to `unknown`, nigdy `false`.
+Negatywne rekordy i konflikty są osobno widoczne i nie anulują pozytywnego
+wsparcia. `complete: true` oznacza wyczerpanie skończonego skanowania podanych
+referentów i wybranego snapshotu faktów. Nie dowodzi kompletności domeny świata.
+Limit lub anulowanie zwraca wyłącznie zatwierdzony prefiks odpowiedzi i dowodów,
+z `complete: false`. Fakty i formalne metadane mają odrębne identyfikatory
+snapshotu.
+
+DAG dowodowy zachowuje ID i źródła wszystkich pozytywnych faktów dla
+pasującego atomu oraz ID przeciwnego dowodu, jeśli istnieje. Węzły `And`
+zachowują kolejność źródłową; węzeł `Exists` przechowuje dokładne świadectwo
+zakresowe, ale nie udostępnia go jako odpowiedzi; projekcja zawiera tylko jawnie
+wybrane kolumny. Nieużywane bindery są ograniczone do jawnej unii typowanych
+referentów z zapytania i wejścia faktów. To nie jest negacja przez brak,
+rekurencyjny Datalog, globalny solver ani niezależny weryfikator dowodów #390.
+
+Pełne ograniczenia i zapisany przykład znajdują się w [kontrakcie ewaluacji](architecture/semantic-algebra/execution.md) i [neutralnych danych](../data/semantic/examples/evaluation/README.md). Obserwacje branch CLI, ocena agenta i akceptacja właściciela są osobne; akceptacja językowa pozostaje **NOT_EVALUATED**.

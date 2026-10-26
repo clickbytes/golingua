@@ -1,0 +1,185 @@
+{
+  "scope": "independent inspection of emitted concrete witnesses against supplied facts; not completeness/world truth proof",
+  "cases": [
+    {
+      "case": "evaluate-simple",
+      "proof_nodes": 7,
+      "answers": 1,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-changed-target",
+      "proof_nodes": 7,
+      "answers": 1,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-reordered-role-array",
+      "proof_nodes": 7,
+      "answers": 1,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-swapped-role-values",
+      "proof_nodes": 0,
+      "answers": 0,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-branch-conflict",
+      "proof_nodes": 14,
+      "answers": 1,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-empty",
+      "proof_nodes": 0,
+      "answers": 0,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-negative-only-edge",
+      "proof_nodes": 0,
+      "answers": 0,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-timed-no-at",
+      "proof_nodes": 0,
+      "answers": 0,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-timed-start",
+      "proof_nodes": 7,
+      "answers": 1,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-timed-end",
+      "proof_nodes": 7,
+      "answers": 1,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-timed-after",
+      "proof_nodes": 0,
+      "answers": 0,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-query-n3-repeat",
+      "proof_nodes": 4,
+      "answers": 2,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-query-n3-exists",
+      "proof_nodes": 6,
+      "answers": 2,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-query-events",
+      "proof_nodes": 4,
+      "answers": 2,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-query-namespaces",
+      "proof_nodes": 4,
+      "answers": 2,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-query-unused-lambda",
+      "proof_nodes": 15,
+      "answers": 5,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-query-unused-exists",
+      "proof_nodes": 20,
+      "answers": 1,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-query-empty-domain",
+      "proof_nodes": 0,
+      "answers": 0,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-query-zero",
+      "proof_nodes": 2,
+      "answers": 1,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-query-beta",
+      "proof_nodes": 2,
+      "answers": 1,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-query-closed-ground",
+      "proof_nodes": 0,
+      "answers": 0,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-query-disconnected",
+      "proof_nodes": 16,
+      "answers": 4,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-query-params",
+      "proof_nodes": 4,
+      "answers": 2,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-query-no-transitive-rule",
+      "proof_nodes": 0,
+      "answers": 0,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "evaluate-query-no-explosion",
+      "proof_nodes": 0,
+      "answers": 0,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "limit-max_results",
+      "proof_nodes": 2,
+      "answers": 1,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "limit-max_proofs_per_answer",
+      "proof_nodes": 7,
+      "answers": 1,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "limit-max_proof_nodes",
+      "proof_nodes": 0,
+      "answers": 0,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "limit-max_proof_depth",
+      "proof_nodes": 0,
+      "answers": 0,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    },
+    {
+      "case": "limit-max_intermediate_rows",
+      "proof_nodes": 0,
+      "answers": 0,
+      "source_fact_role_type_scope_and_dag_checks": "matched"
+    }
+  ]
+}

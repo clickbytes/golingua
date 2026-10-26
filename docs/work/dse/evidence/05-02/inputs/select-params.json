@@ -1,0 +1,12 @@
+[
+  {
+    "kind": "parameter",
+    "id": "x",
+    "as": "first"
+  },
+  {
+    "kind": "parameter",
+    "id": "y",
+    "as": "third"
+  }
+]

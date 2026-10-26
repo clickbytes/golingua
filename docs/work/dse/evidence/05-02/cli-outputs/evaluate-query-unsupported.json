@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"UNKNOWN_TERM_KIND","message":"term kind is unsupported","path":"expression.kind","severity":"error"}]}

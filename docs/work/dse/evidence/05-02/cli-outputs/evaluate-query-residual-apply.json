@@ -1,0 +1,1 @@
+{"status":"unsupported","diagnostics":[{"code":"UNSUPPORTED_QUERY_CONSTRUCTOR","message":"query body may contain only Atom, And, and Exists after beta lowering","path":"expression.body","severity":"error"}]}

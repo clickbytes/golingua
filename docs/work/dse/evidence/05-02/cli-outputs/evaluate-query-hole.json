@@ -1,0 +1,1 @@
+{"status":"incomplete","diagnostics":[{"code":"QUERY_SOURCE_INCOMPLETE","message":"query source contains an unresolved hole","path":"expression","severity":"error"}]}

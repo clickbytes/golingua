@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "context_id": "eval-neutral",
+  "referents": [
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "C",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "D",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "E",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "ev1",
+      "type": {
+        "kind": "Event"
+      }
+    },
+    {
+      "id": "ev2",
+      "type": {
+        "kind": "Event"
+      }
+    }
+  ],
+  "facts": [
+    {
+      "id": "f-r-ab",
+      "atom": {
+        "symbol": "r",
+        "args": [
+          {
+            "role": "a",
+            "value": {
+              "kind": "Ref",
+              "id": "A"
+            }
+          },
+          {
+            "role": "b",
+            "value": {
+              "kind": "Ref",
+              "id": "B"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {
+        "from": "2020-01-01T00:00:00Z",
+        "to": "2030-01-01T00:00:00Z"
+      },
+      "source": {
+        "kind": "user",
+        "id": "dse389-agent-neutral-input"
+      },
+      "assertion_scope": "asserted"
+    },
+    {
+      "id": "f-r-bc",
+      "atom": {
+        "symbol": "r",
+        "args": [
+          {
+            "role": "a",
+            "value": {
+              "kind": "Ref",
+              "id": "B"
+            }
+          },
+          {
+            "role": "b",
+            "value": {
+              "kind": "Ref",
+              "id": "C"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "dse389-agent-neutral-input"
+      },
+      "assertion_scope": "asserted"
+    },
+    {
+      "id": "f-p-c",
+      "atom": {
+        "symbol": "p",
+        "args": [
+          {
+            "role": "v",
+            "value": {
+              "kind": "Ref",
+              "id": "C"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "dse389-agent-neutral-input"
+      },
+      "assertion_scope": "asserted"
+    },
+    {
+      "id": "f-p-d",
+      "atom": {
+        "symbol": "p",
+        "args": [
+          {
+            "role": "v",
+            "value": {
+              "kind": "Ref",
+              "id": "D"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "dse389-agent-neutral-input"
+      },
+      "assertion_scope": "asserted"
+    }
+  ],
+  "at": "2020-01-01T00:00:00Z"
+}

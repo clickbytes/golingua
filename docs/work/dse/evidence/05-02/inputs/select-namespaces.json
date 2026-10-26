@@ -1,0 +1,12 @@
+[
+  {
+    "kind": "lambda",
+    "index": 0,
+    "as": "bound"
+  },
+  {
+    "kind": "parameter",
+    "id": "same",
+    "as": "free"
+  }
+]

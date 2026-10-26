@@ -87,7 +87,7 @@
         387,
         388
       ],
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "branch_name": null,
       "actual_base_sha": null,
       "branch_url": null,
@@ -467,11 +467,11 @@
         382
       ],
       "branch_name": "dse/04-03-synthesis-verifier",
-      "status": "ACTIVE",
+      "status": "DONE",
       "actual_base_sha": "ec10a2cb178d7ad5587884c730a7762fed506d90",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/04-03-synthesis-verifier",
-      "pr_url": null,
-      "merge_sha": null,
+      "pr_url": "https://github.com/clickbytes/golingua/pull/412",
+      "merge_sha": "e4f299de4beccb49df61ccf66989d19a5080081c",
       "evidence_paths": [
         "docs/work/dse/evidence/04-03/README.md",
         "docs/work/dse/evidence/04-03/observations.jsonl",
@@ -493,12 +493,19 @@
         388
       ],
       "branch_name": "dse/05-02-query-evaluator",
-      "status": "QUEUED",
-      "actual_base_sha": null,
-      "branch_url": null,
+      "status": "ACTIVE",
+      "actual_base_sha": "cf21625b7b85bcf2735c89bb02ffd11fdcf6993f",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/05-02-query-evaluator",
       "pr_url": null,
       "merge_sha": null,
-      "evidence_paths": []
+      "evidence_paths": [
+        "docs/work/dse/evidence/05-02/README.md",
+        "docs/work/dse/evidence/05-02/observations.jsonl",
+        "docs/work/dse/evidence/05-02/environment.json",
+        "docs/work/dse/evidence/05-02/proof-observation.json",
+        "docs/work/dse/evidence/05-02/inputs/",
+        "docs/work/dse/evidence/05-02/cli-outputs/"
+      ]
     },
     {
       "issue_number": 390,

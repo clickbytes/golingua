@@ -1,0 +1,7 @@
+[
+  {
+    "kind": "lambda",
+    "index": 0,
+    "as": "answer"
+  }
+]

@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 	"unicode/utf8"
 
 	"github.com/clickbytes/golingua/internal/algebra"
@@ -16,24 +17,33 @@ import (
 	"github.com/clickbytes/golingua/internal/facts"
 	"github.com/clickbytes/golingua/internal/metamodel"
 	"github.com/clickbytes/golingua/internal/provenance"
+	"github.com/clickbytes/golingua/internal/reason"
 	"github.com/clickbytes/golingua/internal/status"
 	"github.com/clickbytes/golingua/internal/synthesis"
 )
 
 type algebraOptions struct {
-	command        string
-	input          string
-	goal           string
-	candidate      string
-	certificate    string
-	mode           string
-	metadata       []string
-	json           bool
-	noCache        bool
-	searchLimits   synthesis.SearchLimits
-	searchLimitSet map[string]bool
-	verifyLimits   synthesis.GoalVerificationLimits
-	verifyLimitSet map[string]bool
+	command            string
+	input              string
+	goal               string
+	candidate          string
+	certificate        string
+	mode               string
+	metadata           []string
+	expression         string
+	factsInput         string
+	selection          string
+	contextID          string
+	profile            string
+	at                 string
+	evaluationLimits   reason.AlgebraEvaluationLimits
+	evaluationLimitSet map[string]bool
+	json               bool
+	noCache            bool
+	searchLimits       synthesis.SearchLimits
+	searchLimitSet     map[string]bool
+	verifyLimits       synthesis.GoalVerificationLimits
+	verifyLimitSet     map[string]bool
 }
 
 type algebraNormalizeOutput struct {
@@ -162,6 +172,13 @@ type catalogExportOutput struct {
 	Inventory       catalogexport.ExportDocument `json:"inventory"`
 }
 
+type algebraEvaluationOutput struct {
+	Status          status.OutcomeKind             `json:"status"`
+	Result          reason.AlgebraEvaluationResult `json:"result"`
+	Metadata        []metadataReference            `json:"metadata"`
+	ValidationScope string                         `json:"validation_scope"`
+}
+
 type synthesisOutput struct {
 	Status          status.OutcomeKind             `json:"status"`
 	Mode            string                         `json:"mode"`
@@ -209,6 +226,8 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		options.command = "synthesize"
 	} else if args[1] == "verify-goal" {
 		options.command = "verify_goal"
+	} else if args[1] == "evaluate" {
+		options.command = "evaluate"
 	} else if args[1] == "normalize" || args[1] == "verify-rewrite" || args[1] == "export" || args[1] == "inspect" || args[1] == "replay" {
 		options.command = args[1]
 	} else if args[1] == "metadata" {
@@ -230,13 +249,16 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		options.command = "catalog_export"
 		index = 3
 	} else {
-		return options, "expected algebra check, build, synthesize, verify-goal, export, inspect, replay, normalize, verify-rewrite, metadata, facts, or catalog"
+		return options, "expected algebra check, build, synthesize, verify-goal, evaluate, export, inspect, replay, normalize, verify-rewrite, metadata, facts, or catalog"
 	}
 	seenJSON, seenInput := false, false
 	seenNoCache := false
 	seenGoal, seenMode, seenCandidate, seenCertificate := false, false, false, false
 	options.searchLimitSet = make(map[string]bool)
 	options.verifyLimitSet = make(map[string]bool)
+	options.evaluationLimitSet = make(map[string]bool)
+	seenExpression, seenFacts, seenSelection := false, false, false
+	seenContextID, seenProfile, seenAt := false, false, false
 	for i := index; i < len(args); i++ {
 		flag := args[i]
 		switch flag {
@@ -261,6 +283,60 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			options.input = args[i]
 			if options.input == "" {
 				return options, "--input value must not be empty"
+			}
+		case "--expression", "--facts", "--select", "--context-id", "--profile", "--at", "--evaluation-limit":
+			if options.command != "evaluate" {
+				return options, flag + " is only valid for algebra evaluate"
+			}
+			if i+1 >= len(args) || args[i+1] == "--json" || strings.HasPrefix(args[i+1], "--") {
+				return options, "missing value for " + flag
+			}
+			i++
+			value := args[i]
+			switch flag {
+			case "--expression":
+				if seenExpression {
+					return options, "duplicate --expression flag"
+				}
+				seenExpression = true
+				options.expression = value
+			case "--facts":
+				if seenFacts {
+					return options, "duplicate --facts flag"
+				}
+				seenFacts = true
+				options.factsInput = value
+			case "--select":
+				if seenSelection {
+					return options, "duplicate --select flag"
+				}
+				seenSelection = true
+				options.selection = value
+			case "--context-id":
+				if seenContextID {
+					return options, "duplicate --context-id flag"
+				}
+				seenContextID = true
+				options.contextID = value
+			case "--profile":
+				if seenProfile {
+					return options, "duplicate --profile flag"
+				}
+				seenProfile = true
+				options.profile = value
+			case "--at":
+				if seenAt {
+					return options, "duplicate --at flag"
+				}
+				seenAt = true
+				options.at = value
+				if value == "" {
+					return options, "--at value must be a UTC timestamp"
+				}
+			case "--evaluation-limit":
+				if err := setEvaluationLimit(&options, value); err != "" {
+					return options, err
+				}
 			}
 		case "--goal":
 			if options.command != "synthesize" && options.command != "verify_goal" {
@@ -381,6 +457,22 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 	}
 	if options.command == "facts_validate" && len(options.metadata) == 0 {
 		return options, "algebra facts validate requires at least one --metadata file"
+	}
+	if options.command == "evaluate" {
+		if !seenExpression || !seenFacts || !seenSelection || !seenContextID || !seenProfile {
+			return options, "algebra evaluate requires --expression, --facts, --select, --context-id, and --profile"
+		}
+		if len(options.metadata) == 0 {
+			return options, "algebra evaluate requires at least one --metadata file"
+		}
+		for _, path := range []string{options.expression, options.factsInput, options.selection} {
+			if path == "" || path == "-" {
+				return options, "algebra evaluate inputs must be named file paths"
+			}
+		}
+		if options.contextID == "" || options.profile != reason.AlgebraQueryProfile {
+			return options, "algebra evaluate requires a nonempty context ID and profile positive-facts-v1"
+		}
 	}
 	if len(options.metadata) > 16 {
 		return options, "algebra metadata accepts at most 16 files"
@@ -503,6 +595,53 @@ func setVerifyLimit(options *algebraOptions, assignment string) string {
 	return ""
 }
 
+func setEvaluationLimit(options *algebraOptions, assignment string) string {
+	name, value, ok := strings.Cut(assignment, "=")
+	if !ok || name == "" || value == "" {
+		return "--evaluation-limit must be name=value"
+	}
+	if options.evaluationLimitSet[name] {
+		return fmt.Sprintf("duplicate --evaluation-limit %q", name)
+	}
+	for _, digit := range value {
+		if digit < '0' || digit > '9' {
+			return fmt.Sprintf("--evaluation-limit %q must use a nonnegative decimal integer", name)
+		}
+	}
+	parsed, err := strconv.Atoi(value)
+	if err != nil {
+		return fmt.Sprintf("--evaluation-limit %q is outside the supported integer range", name)
+	}
+	var destination *int
+	switch name {
+	case "max_plan_atoms":
+		destination = &options.evaluationLimits.MaxPlanAtoms
+	case "max_variables":
+		destination = &options.evaluationLimits.MaxVariables
+	case "max_intermediate_rows":
+		destination = &options.evaluationLimits.MaxIntermediateRows
+	case "max_results":
+		destination = &options.evaluationLimits.MaxResults
+	case "max_proof_nodes":
+		destination = &options.evaluationLimits.MaxProofNodes
+	case "max_proofs_per_answer":
+		destination = &options.evaluationLimits.MaxProofsPerAnswer
+	case "max_proof_depth":
+		destination = &options.evaluationLimits.MaxProofDepth
+	case "max_work_units":
+		destination = &options.evaluationLimits.MaxWorkUnits
+	case "max_output_bytes":
+		destination = &options.evaluationLimits.MaxOutputBytes
+	case "timeout_millis":
+		destination = &options.evaluationLimits.TimeoutMillis
+	default:
+		return fmt.Sprintf("unknown --evaluation-limit name %q", name)
+	}
+	*destination = parsed
+	options.evaluationLimitSet[name] = true
+	return ""
+}
+
 func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 	options, parseError := parseAlgebraArgs(args)
 	if parseError != "" {
@@ -533,6 +672,13 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 			return writeAlgebraError(stdout, stderr, err)
 		}
 		return runNaryFactsValidate(options, input, stdout, stderr, registries)
+	}
+	if options.command == "evaluate" {
+		registries, err := readMetadataRegistries(options.metadata)
+		if err != nil {
+			return writeAlgebraError(stdout, stderr, err)
+		}
+		return runAlgebraEvaluate(options, stdout, stderr, registries)
 	}
 	if options.command == "synthesize" {
 		registries, err := readMetadataRegistries(options.metadata)
@@ -731,6 +877,138 @@ func runAlgebraSynthesize(options algebraOptions, input io.Reader, stdout, stder
 		return ExitError
 	}
 	return exitCode(outputStatus)
+}
+
+const maxAlgebraEvaluationResponseBytes = 16 << 20
+
+func runAlgebraEvaluate(options algebraOptions, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
+	limits, err := reason.NormalizeAlgebraEvaluationLimits(options.evaluationLimits)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	readNamed := func(path string, maximum int, description string) ([]byte, error) {
+		file, openErr := os.Open(path)
+		if openErr != nil {
+			return nil, &algebraInfrastructureError{message: fmt.Sprintf("could not open %s input %q: %v", description, path, openErr)}
+		}
+		defer file.Close()
+		data, readErr := io.ReadAll(io.LimitReader(file, int64(maximum)+1))
+		if readErr != nil {
+			return nil, &algebraInfrastructureError{message: fmt.Sprintf("could not read %s input %q: %v", description, path, readErr)}
+		}
+		if len(data) > maximum {
+			return nil, &algebra.Error{Status: status.OutcomeResourceLimit, Code: "JSON_BYTE_LIMIT", Path: description, Message: fmt.Sprintf("input exceeds %d byte limit", maximum)}
+		}
+		return data, nil
+	}
+	expressionBytes, err := readNamed(options.expression, algebra.MaxDocumentBytes, "expression")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	source, err := algebra.DecodeDocumentJSON(expressionBytes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	factsBytes, err := readNamed(options.factsInput, facts.MaxNaryInputBytes, "facts")
+	if err != nil {
+		return writeNaryFactsError(stdout, stderr, err)
+	}
+	factInput, err := facts.DecodeNaryInput(factsBytes)
+	if err != nil {
+		return writeNaryFactsError(stdout, stderr, err)
+	}
+	selectionBytes, err := readNamed(options.selection, algebra.MaxDocumentBytes, "selection")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	selection, err := reason.DecodeAlgebraSelections(selectionBytes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	if factInput.ContextID != options.contextID {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeInvalid, Code: "FACT_CONTEXT_MISMATCH", Path: "facts.context_id", Message: "--context-id must match the explicit fact input context"})
+	}
+	selectedAt := factInput.At
+	if options.at != "" {
+		flagTime, timeErr := parseEvaluationInstant(options.at, "--at")
+		if timeErr != nil {
+			return writeAlgebraError(stdout, stderr, timeErr)
+		}
+		if factInput.At != "" {
+			factTime, parseErr := parseEvaluationInstant(factInput.At, "facts.at")
+			if parseErr != nil {
+				return writeNaryFactsError(stdout, stderr, parseErr)
+			}
+			if !flagTime.Equal(factTime) {
+				return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeInvalid, Code: "FACT_INSTANT_MISMATCH", Path: "--at", Message: "--at conflicts with the explicit fact input instant"})
+			}
+		} else {
+			selectedAt = options.at
+			factInput.At = selectedAt
+		}
+	}
+	schema, err := metamodel.FactsSchema(registries)
+	if err != nil {
+		return writeNaryFactsError(stdout, stderr, err)
+	}
+	view, err := facts.BuildNary(schema, factInput)
+	if err != nil {
+		return writeNaryFactsError(stdout, stderr, err)
+	}
+	environment, err := metamodel.NormalizationEnvironment(algebra.Document{
+		SchemaVersion: algebra.SchemaVersion, Parameters: source.Parameters,
+		References: source.References, Limits: limits.TermLimits,
+	}, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	request := reason.AlgebraQueryRequest{
+		SchemaVersion: reason.AlgebraQuerySchemaVersion, Profile: options.profile,
+		ContextID: options.contextID, At: selectedAt, Select: selection,
+	}
+	plan, err := reason.CompileAlgebraQuery(context.Background(), schema, environment, source, request, limits)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	result, err := reason.EvaluateAlgebraQuery(context.Background(), plan, view, limits)
+	if err != nil {
+		return writeNaryFactsOrAlgebraError(stdout, stderr, err)
+	}
+	output := algebraEvaluationOutput{
+		Status: result.Status, Result: result, Metadata: metadataReferences(registries),
+		ValidationScope: "finite positive query evaluation over the supplied typed fact snapshot and explicit known-reference domain; negative evidence is reported separately, absence remains unknown, and no world-completeness claim is made",
+	}
+	encoded, err := json.Marshal(output)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	if len(encoded)+1 > maxAlgebraEvaluationResponseBytes {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeResourceLimit, Code: "EVALUATION_RESPONSE_BYTES", Path: "result", Message: "evaluation response envelope exceeds the 16 MiB output limit"})
+	}
+	if _, err := stdout.Write(append(encoded, '\n')); err != nil {
+		_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not write algebra evaluation result: %v\n", err)
+		return ExitError
+	}
+	return exitCode(result.Status)
+}
+
+func parseEvaluationInstant(value, path string) (time.Time, error) {
+	if !strings.HasSuffix(value, "Z") {
+		return time.Time{}, &algebra.Error{Status: status.OutcomeInvalid, Code: "INVALID_EVALUATION_INSTANT", Path: path, Message: "instant must be RFC3339 UTC with a Z suffix"}
+	}
+	parsed, err := time.Parse(time.RFC3339Nano, value)
+	if err != nil {
+		return time.Time{}, &algebra.Error{Status: status.OutcomeInvalid, Code: "INVALID_EVALUATION_INSTANT", Path: path, Message: "instant must be RFC3339 UTC with a Z suffix"}
+	}
+	return parsed.UTC(), nil
+}
+
+func writeNaryFactsOrAlgebraError(stdout, stderr io.Writer, err error) int {
+	var typed *facts.StatusError
+	if errors.As(err, &typed) {
+		return writeNaryFactsError(stdout, stderr, err)
+	}
+	return writeAlgebraError(stdout, stderr, err)
 }
 
 func goalVerificationAccepted(result synthesis.GoalVerificationResult) bool {
