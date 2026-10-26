@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_ALGEBRA_ARGUMENTS","message":"--verify-limit \"max_work_nodes\" must use a nonnegative decimal integer","path":"algebra","severity":"error"}]}

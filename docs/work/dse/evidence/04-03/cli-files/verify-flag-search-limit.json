@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_ALGEBRA_ARGUMENTS","message":"--search-limit is only valid for algebra synthesize --mode search","path":"algebra","severity":"error"}]}

@@ -143,9 +143,13 @@ Wynik podaje `status`, `mode`, `goal_profile`, `context_id`, `metadata`,
 interfejs, dokument kanoniczny, ślad operatorów i mapowanie ograniczeń na
 odrębne ścieżki atomów końcowego wyrażenia. `constructed_provenance` wiąże
 ograniczenie z krokami konstrukcji; nie jest niezależnym dowodem jego
-prawdziwości. Tylko pełny wynik zawiera `export_request`, z pustym profilem
-przepisywania `dse-construct-artifact-v1`; export nie normalizuje i nie
-potwierdza spełnienia celu. Statusy używają kodów: `ok` 0, `invalid` 2,
+prawdziwości. Konstrukcja dołącza certyfikat producenta ze statusem
+`constructed_unverified` i `goal_verified: false`, a obok osobny wynik
+niezależnej weryfikacji z komponentami kontroli. `fully_validated` jest polem
+wyniku syntezy i ma wartość true tylko wtedy, gdy wymagane kontrole strukturalne
+i certyfikatu zakończyły się powodzeniem; nie jest to ocena prawdy w świecie. Tylko w pełni zweryfikowany wynik zawiera `export_request` z pustym
+profilem przepisywania `dse-construct-artifact-v1`; export nie normalizuje
+wyrażenia ani nie ewaluuje faktów. Statusy używają kodów: `ok` 0, `invalid` 2,
 `unsupported` 3, `resource_limit` 4, `unknown` 5, `ambiguous` 6,
 `incomplete` 7, błąd infrastruktury 1.
 
@@ -183,9 +187,10 @@ dziesiętnymi liczbami całkowitymi; nieznane, błędne i powtórzone klucze są
 odrzucane. Zero wybiera ograniczoną wartość domyślną, a nie limit bez końca.
 
 Wynik zawiera profil celu, `context_id`, metadane, pełne `result`, zakres
-walidacji i wszystkie zachowane kandydatury. Każda kandydatura zachowuje
-wybrane role, symbole, długość ścieżki, referencje, mapowanie ograniczeń i
-własne `export_request`. `complete: true` oznacza wyłącznie wyczerpanie
+walidacji i wszystkie zachowane kandydatury. Każda zachowana kandydatura ma
+osobny wynik niezależnej weryfikacji, zachowuje wybrane role, symbole, długość
+ścieżki, referencje i mapowanie ograniczeń, a własne `export_request` dostaje
+tylko po przejściu wymaganych kontroli. `complete: true` oznacza wyłącznie wyczerpanie
 zadeklarowanej skończonej przestrzeni. Pusta kompletna lista z
 `no_solution_within_profile_bounds` nie oznacza fałszu w świecie. Limit,
 timeout albo nierozstrzygnięty cel dają wynik niekompletny; zachowana
@@ -209,7 +214,8 @@ zserializowane payloady zachowanych kandydatur, nie cały obiekt odpowiedzi;
 całą odpowiedź JSON. Jeśli wymaga to usunięcia końcowych kandydatur, wynik
 zostaje oznaczony `resource_limit`/`incomplete`, z `stop_reason` równym
 `max_response_bytes` i liczbą odrzuconych elementów
-`response_candidates_discarded`. Próba limitu odpowiedzi użyła 500 neutralnych,
+`response_candidates_discarded`. Historyczna próba #387, sprzed zmiany
+rozmiaru payloadów o pola certyfikatu celu, użyła 500 neutralnych,
 zadeklarowanych referencji z ID długości 256 bajtów i wejścia 146 238 bajtów.
 Zamrożone CLI zwróciło exit 4,
 `resource_limit`/`incomplete` oraz 16 380 520 bajtów stdout z końcowym
@@ -233,6 +239,62 @@ znajdują się w [katalogu search](../data/semantic/examples/search/README.md),
 a pełne ograniczenia i statusy w [kontrakcie syntezy](architecture/semantic-algebra/synthesis.md).
 Te formalne przykłady nie są korpusem językowym ani akceptacją semantyczną;
 akceptacja językowa właściciela pozostaje **NOT_EVALUATED**.
+
+#### Niezależna weryfikacja celu
+
+`algebra verify-goal` sprawdza certyfikat konstrukcji niezależnie od
+producenta. Podaj jawnie cel, kanoniczny dokument-kandydata, certyfikat i
+wybrane pakiety metadanych:
+
+```sh
+go run ./cmd/golingua algebra synthesize --mode construct \
+  --metadata data/semantic/examples/verification/metadata.json \
+  --goal data/semantic/examples/verification/goal.json --json > /tmp/synthesis.json
+jq -e '.result.fully_validated == true' /tmp/synthesis.json >/dev/null
+jq -c '.result.canonical_document' /tmp/synthesis.json > /tmp/candidate.json
+jq -c '.result.certificate' /tmp/synthesis.json > /tmp/certificate.json
+go run ./cmd/golingua algebra verify-goal \
+  --goal data/semantic/examples/verification/goal.json \
+  --candidate /tmp/candidate.json --certificate /tmp/certificate.json \
+  --metadata data/semantic/examples/verification/metadata.json --json > /tmp/verification.json
+jq -e '.result.status == "ok" and .result.type_correct and .result.refinement_checked and .result.replay_checked and .result.certificate_valid and .result.goal_satisfied and .result.complete' /tmp/verification.json >/dev/null
+jq -c '.export_request' /tmp/synthesis.json > /tmp/export-request.json
+go run ./cmd/golingua algebra export \
+  --metadata data/semantic/examples/verification/metadata.json \
+  --input /tmp/export-request.json --json > /tmp/export.json
+jq -c --slurpfile exported /tmp/export.json \
+  '{schema_version:.schema_version,profile:.profile,context_id:.context_id,context_dependencies:.context_dependencies,provenance:.provenance,artifact:$exported[0].artifact}' \
+  /tmp/export-request.json > /tmp/replay-request.json
+go run ./cmd/golingua algebra replay \
+  --metadata data/semantic/examples/verification/metadata.json \
+  --input /tmp/replay-request.json --json
+```
+
+Wymagane są trzy nazwane pliki: `--goal`, `--candidate` i `--certificate`;
+ta komenda nie czyta ich ze stdin. Można powtarzać `--metadata` dla jawnie
+wybranych pakietów. Dokument kandydata musi być samodzielnym dokumentem algebry;
+jego deklaracje inline są porównywane z wybranymi metadanymi. Certyfikat nie
+wybiera rejestru i nie uwierzytelnia własnego snapshotu. Powtarzalne
+`--verify-limit name=value` przyjmuje wyłącznie `max_certificate_bytes`,
+`max_replay_steps` i `max_work_nodes`. Limity domyślne i maksymalne wynoszą
+odpowiednio 8 MiB, 64 kroki replay i 262 144 logiczne jednostki pracy. Limit
+certyfikatu jest normalizowany przed odczytem pliku. Nieznane, powtórzone,
+niecałkowite, ujemne lub przekraczające limit wartości są odrzucane.
+
+Wynik oddziela `type_correct`, `refinement_checked`, `replay_checked`,
+`certificate_valid`, `goal_satisfied` i `complete`. Akceptacja wymaga
+powodzenia wszystkich tych kontroli; flaga producenta `goal_verified` nie jest
+zaufana. Pole `origin` także jest etykietą producenta i nie dowodzi, że użyto
+wyszukiwania. Pojedynczy zweryfikowany kandydat nie dowodzi kompletności ani
+unikalności przestrzeni wyszukiwania. `Hole`, nieobsługiwane twierdzenie lub
+limit zasobów nie stają się zweryfikowanym kandydatem.
+
+Weryfikacja dotyczy ograniczonego strukturalnego profilu pozytywnego. Nie
+ewaluuje jawnych faktów, nie ustala prawdy świata ani spójności całej teorii i
+nie jest akceptacją językową właściciela. Przykłady w
+[katalogu weryfikacji](../data/semantic/examples/verification/README.md)
+zawierają neutralny zaakceptowany dokument oraz kandydata z błędną orientacją,
+który jest odrzucany.
 
 ### Przechowywanie sprawdzonych wyrażeń
 

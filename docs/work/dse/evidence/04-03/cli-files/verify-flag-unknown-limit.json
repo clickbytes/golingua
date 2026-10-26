@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_ALGEBRA_ARGUMENTS","message":"unknown --verify-limit name \"bogus\"","path":"algebra","severity":"error"}]}

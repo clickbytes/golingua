@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_ALGEBRA_ARGUMENTS","message":"--candidate requires a named file path","path":"algebra","severity":"error"}]}

@@ -1,0 +1,1 @@
+{"status":"unsupported","diagnostics":[{"code":"UNSUPPORTED_CONSTRAINT_KIND","message":"constraint kind is outside the bounded goal profile","path":"constraints[2].kind","severity":"error"}]}

@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_ALGEBRA_ARGUMENTS","message":"--mode is only valid for algebra synthesize","path":"algebra","severity":"error"}]}

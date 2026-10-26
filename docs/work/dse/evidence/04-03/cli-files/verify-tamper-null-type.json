@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"EXPECTED_OBJECT","message":"expected a non-null JSON object","path":"certificate.operations[0].checked_type","severity":"error"}]}

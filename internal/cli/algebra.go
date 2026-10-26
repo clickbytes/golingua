@@ -24,12 +24,16 @@ type algebraOptions struct {
 	command        string
 	input          string
 	goal           string
+	candidate      string
+	certificate    string
 	mode           string
 	metadata       []string
 	json           bool
 	noCache        bool
 	searchLimits   synthesis.SearchLimits
 	searchLimitSet map[string]bool
+	verifyLimits   synthesis.GoalVerificationLimits
+	verifyLimitSet map[string]bool
 }
 
 type algebraNormalizeOutput struct {
@@ -169,6 +173,13 @@ type synthesisOutput struct {
 	ExportRequest   *algebra.ArtifactExportRequest `json:"export_request,omitempty"`
 }
 
+type goalVerificationOutput struct {
+	Status          status.OutcomeKind               `json:"status"`
+	Result          synthesis.GoalVerificationResult `json:"result"`
+	Metadata        []metadataReference              `json:"metadata"`
+	ValidationScope string                           `json:"validation_scope"`
+}
+
 type synthesisSearchOutput struct {
 	Status                      status.OutcomeKind     `json:"status"`
 	Mode                        string                 `json:"mode"`
@@ -196,6 +207,8 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		options.command = "build"
 	} else if args[1] == "synthesize" {
 		options.command = "synthesize"
+	} else if args[1] == "verify-goal" {
+		options.command = "verify_goal"
 	} else if args[1] == "normalize" || args[1] == "verify-rewrite" || args[1] == "export" || args[1] == "inspect" || args[1] == "replay" {
 		options.command = args[1]
 	} else if args[1] == "metadata" {
@@ -217,12 +230,13 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		options.command = "catalog_export"
 		index = 3
 	} else {
-		return options, "expected algebra check, build, synthesize, export, inspect, replay, normalize, verify-rewrite, metadata, facts, or catalog"
+		return options, "expected algebra check, build, synthesize, verify-goal, export, inspect, replay, normalize, verify-rewrite, metadata, facts, or catalog"
 	}
 	seenJSON, seenInput := false, false
 	seenNoCache := false
-	seenGoal, seenMode := false, false
+	seenGoal, seenMode, seenCandidate, seenCertificate := false, false, false, false
 	options.searchLimitSet = make(map[string]bool)
+	options.verifyLimitSet = make(map[string]bool)
 	for i := index; i < len(args); i++ {
 		flag := args[i]
 		switch flag {
@@ -249,8 +263,8 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 				return options, "--input value must not be empty"
 			}
 		case "--goal":
-			if options.command != "synthesize" {
-				return options, "--goal is only valid for algebra synthesize"
+			if options.command != "synthesize" && options.command != "verify_goal" {
+				return options, "--goal is only valid for algebra synthesize or verify-goal"
 			}
 			if seenGoal {
 				return options, "duplicate --goal flag"
@@ -263,6 +277,38 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			options.goal = args[i]
 			if options.goal == "" {
 				return options, "--goal value must not be empty"
+			}
+		case "--candidate":
+			if options.command != "verify_goal" {
+				return options, "--candidate is only valid for algebra verify-goal"
+			}
+			if seenCandidate {
+				return options, "duplicate --candidate flag"
+			}
+			seenCandidate = true
+			if i+1 >= len(args) || args[i+1] == "--json" || strings.HasPrefix(args[i+1], "--") {
+				return options, "missing value for --candidate"
+			}
+			i++
+			options.candidate = args[i]
+			if options.candidate == "" || options.candidate == "-" {
+				return options, "--candidate requires a named file path"
+			}
+		case "--certificate":
+			if options.command != "verify_goal" {
+				return options, "--certificate is only valid for algebra verify-goal"
+			}
+			if seenCertificate {
+				return options, "duplicate --certificate flag"
+			}
+			seenCertificate = true
+			if i+1 >= len(args) || args[i+1] == "--json" || strings.HasPrefix(args[i+1], "--") {
+				return options, "missing value for --certificate"
+			}
+			i++
+			options.certificate = args[i]
+			if options.certificate == "" || options.certificate == "-" {
+				return options, "--certificate requires a named file path"
 			}
 		case "--mode":
 			if options.command != "synthesize" {
@@ -286,6 +332,17 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			}
 			i++
 			if err := setSearchLimit(&options, args[i]); err != "" {
+				return options, err
+			}
+		case "--verify-limit":
+			if options.command != "verify_goal" {
+				return options, "--verify-limit is only valid for algebra verify-goal"
+			}
+			if i+1 >= len(args) || args[i+1] == "--json" || strings.HasPrefix(args[i+1], "--") {
+				return options, "missing value for --verify-limit"
+			}
+			i++
+			if err := setVerifyLimit(&options, args[i]); err != "" {
 				return options, err
 			}
 		case "--metadata":
@@ -347,6 +404,20 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			return options, "algebra synthesize requires at least one --metadata file"
 		}
 	}
+	if options.command == "verify_goal" {
+		if !seenGoal || !seenCandidate || !seenCertificate {
+			return options, "algebra verify-goal requires --goal, --candidate, and --certificate named files"
+		}
+		if options.goal == "-" {
+			return options, "--goal for verify-goal requires a named file path"
+		}
+		if len(options.metadata) == 0 {
+			return options, "algebra verify-goal requires at least one --metadata file"
+		}
+		if len(options.searchLimitSet) != 0 {
+			return options, "--search-limit is not valid for algebra verify-goal"
+		}
+	}
 	if (options.command == "normalize" || options.command == "verify-rewrite") && len(options.metadata) == 0 {
 		return options, "algebra normalize and verify-rewrite require at least one --metadata file"
 	}
@@ -399,6 +470,39 @@ func setSearchLimit(options *algebraOptions, assignment string) string {
 	return ""
 }
 
+func setVerifyLimit(options *algebraOptions, assignment string) string {
+	name, value, ok := strings.Cut(assignment, "=")
+	if !ok || name == "" || value == "" {
+		return "--verify-limit must be name=value"
+	}
+	if options.verifyLimitSet[name] {
+		return fmt.Sprintf("duplicate --verify-limit %q", name)
+	}
+	for _, digit := range value {
+		if digit < '0' || digit > '9' {
+			return fmt.Sprintf("--verify-limit %q must use a nonnegative decimal integer", name)
+		}
+	}
+	parsed, err := strconv.Atoi(value)
+	if err != nil {
+		return fmt.Sprintf("--verify-limit %q is outside the supported integer range", name)
+	}
+	var destination *int
+	switch name {
+	case "max_certificate_bytes":
+		destination = &options.verifyLimits.MaxCertificateBytes
+	case "max_replay_steps":
+		destination = &options.verifyLimits.MaxReplaySteps
+	case "max_work_nodes":
+		destination = &options.verifyLimits.MaxWorkNodes
+	default:
+		return fmt.Sprintf("unknown --verify-limit name %q", name)
+	}
+	*destination = parsed
+	options.verifyLimitSet[name] = true
+	return ""
+}
+
 func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 	options, parseError := parseAlgebraArgs(args)
 	if parseError != "" {
@@ -436,6 +540,13 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 			return writeAlgebraError(stdout, stderr, err)
 		}
 		return runAlgebraSynthesize(options, input, stdout, stderr, registries)
+	}
+	if options.command == "verify_goal" {
+		registries, err := readMetadataRegistries(options.metadata)
+		if err != nil {
+			return writeAlgebraError(stdout, stderr, err)
+		}
+		return runAlgebraVerifyGoal(options, input, stdout, stderr, registries)
 	}
 	if options.command == "catalog_export" {
 		return runAlgebraCatalogExport(stdout, stderr)
@@ -553,23 +664,61 @@ func runAlgebraSynthesize(options algebraOptions, input io.Reader, stdout, stder
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
 	}
+	goalLimits, err := synthesis.NormalizeGoalLimits(goal.Limits)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	goal.Limits = goalLimits
 	if options.mode == "search" {
 		return runAlgebraSearch(goal, options.searchLimits, stdout, stderr, registries)
 	}
-	context, err := metamodel.DeclarationContext(algebra.Document{SchemaVersion: algebra.SchemaVersion}, registries)
+	primitiveContext, err := metamodel.DeclarationContext(algebra.Document{SchemaVersion: algebra.SchemaVersion, Limits: goalLimits.TermLimits}, registries)
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
 	}
-	result, err := synthesis.Construct(context, goal)
+	result, err := synthesis.Construct(primitiveContext, goal)
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
+	}
+	outputStatus := result.Status
+	if result.Status == status.OutcomeOK && result.Checked != nil && result.CanonicalDocument != nil {
+		rewriteEnvironment, envErr := metamodel.NormalizationEnvironment(algebra.Document{
+			SchemaVersion: algebra.SchemaVersion, References: goal.References, Limits: goalLimits.TermLimits,
+		}, registries)
+		if envErr != nil {
+			return writeAlgebraError(stdout, stderr, envErr)
+		}
+		certificate, _, certErr := synthesis.CreateSynthesisCertificate(
+			primitiveContext, rewriteEnvironment, goal, goal, []synthesis.ChoiceAssignment{},
+			synthesis.CertificateOriginConstruct, result, synthesis.GoalVerificationLimits{TermLimits: goalLimits.TermLimits},
+		)
+		if certErr != nil {
+			return writeAlgebraError(stdout, stderr, certErr)
+		}
+		verification, verifyErr := synthesis.VerifyGoalCertificate(
+			primitiveContext, rewriteEnvironment, goal, *result.CanonicalDocument, certificate,
+			synthesis.GoalVerificationLimits{TermLimits: goalLimits.TermLimits},
+		)
+		if verifyErr != nil {
+			return writeAlgebraError(stdout, stderr, verifyErr)
+		}
+		result.Certificate = &certificate
+		result.Verification = &verification
+		result.FullyValidated = goalVerificationAccepted(verification)
+		if result.FullyValidated {
+			result.Status = status.OutcomeOK
+		} else if verification.Status == status.OutcomeOK {
+			outputStatus = status.OutcomeInvalid
+		} else {
+			outputStatus = verification.Status
+		}
 	}
 	output := synthesisOutput{
-		Status: result.Status, Mode: "construct", GoalProfile: goal.Profile, ContextID: goal.ContextID,
+		Status: outputStatus, Mode: "construct", GoalProfile: goal.Profile, ContextID: goal.ContextID,
 		Metadata: metadataReferences(registries), Result: result,
-		ValidationScope: "finite explicit structural construction provenance; not an independent goal proof, world truth, or language approval",
+		ValidationScope: "finite positive-facts construction with independent goal-constraint, operation-replay, and type verification; not world truth, search uniqueness, or language approval",
 	}
-	if result.Status == status.OutcomeOK && result.Checked != nil && result.CanonicalDocument != nil {
+	if result.FullyValidated && result.Status == status.OutcomeOK && result.Checked != nil && result.CanonicalDocument != nil {
 		output.ExportRequest = &algebra.ArtifactExportRequest{
 			SchemaVersion: algebra.SchemaVersion, Document: *result.CanonicalDocument,
 			Profile:   algebra.RewriteProfile{ID: "dse-construct-artifact-v1", Rules: []algebra.RewriteRule{}},
@@ -581,7 +730,89 @@ func runAlgebraSynthesize(options algebraOptions, input io.Reader, stdout, stder
 		_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not serialize algebra synthesis result: %v\n", err)
 		return ExitError
 	}
-	return exitCode(result.Status)
+	return exitCode(outputStatus)
+}
+
+func goalVerificationAccepted(result synthesis.GoalVerificationResult) bool {
+	return result.Status == status.OutcomeOK && result.Disposition == synthesis.GoalVerificationDispositionChecked &&
+		result.Complete && result.TypeCorrect && result.RefinementChecked && result.ReplayChecked &&
+		result.CertificateValid && result.GoalSatisfied
+}
+
+func runAlgebraVerifyGoal(options algebraOptions, input io.Reader, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
+	verifyLimits, err := synthesis.NormalizeGoalVerificationLimits(options.verifyLimits)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	goalOptions := options
+	goalOptions.input = options.goal
+	goalBytes, err := readAlgebraInput(goalOptions, input, synthesis.MaxGoalInputBytes, "algebra verify-goal goal")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	goal, err := synthesis.DecodeGoal(goalBytes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	goalLimits, err := synthesis.NormalizeGoalLimits(goal.Limits)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	goal.Limits = goalLimits
+
+	candidateOptions := options
+	candidateOptions.input = options.candidate
+	candidateBytes, err := readAlgebraInput(candidateOptions, input, algebra.MaxDocumentBytes, "algebra verify-goal candidate")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	candidate, err := algebra.DecodeDocumentJSON(candidateBytes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	certificateOptions := options
+	certificateOptions.input = options.certificate
+	certificateBytes, err := readAlgebraInput(certificateOptions, input, verifyLimits.MaxCertificateBytes, "algebra verify-goal certificate")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	certificate, err := synthesis.DecodeSynthesisCertificate(certificateBytes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+
+	primitiveContext, err := metamodel.DeclarationContext(algebra.Document{SchemaVersion: algebra.SchemaVersion, Limits: goalLimits.TermLimits}, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	rewriteEnvironment, err := metamodel.NormalizationEnvironment(algebra.Document{
+		SchemaVersion: algebra.SchemaVersion, References: goal.References, Limits: goalLimits.TermLimits,
+	}, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	verification, err := synthesis.VerifyGoalCertificate(primitiveContext, rewriteEnvironment, goal, candidate, certificate, verifyLimits)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	if verification.Status == status.OutcomeOK && !goalVerificationAccepted(verification) {
+		verification.Status = status.OutcomeInvalid
+		verification.Disposition = synthesis.GoalVerificationDispositionRejected
+		verification.CertificateValid = false
+		verification.Diagnostics = append(verification.Diagnostics, algebra.Error{
+			Status: status.OutcomeInvalid, Code: "GOAL_VERIFICATION_INCOMPLETE",
+			Path: "result", Message: "all independent verification flags are required for acceptance",
+		})
+	}
+	output := goalVerificationOutput{
+		Status: verification.Status, Result: verification, Metadata: metadataReferences(registries),
+		ValidationScope: "independent finite positive-facts structural checking and operation replay; not world truth, uniqueness, or language approval",
+	}
+	if err := writeJSON(stdout, output); err != nil {
+		_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not serialize goal verification result: %v\n", err)
+		return ExitError
+	}
+	return exitCode(output.Status)
 }
 
 func runAlgebraSearch(goal synthesis.GoalSpec, requested synthesis.SearchLimits, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
@@ -609,7 +840,7 @@ func runAlgebraSearch(goal synthesis.GoalSpec, requested synthesis.SearchLimits,
 	output := synthesisSearchOutput{
 		Status: result.Status, Mode: "search", GoalProfile: goal.Profile, ContextID: goal.ContextID,
 		Metadata: metadataReferences(registries), Result: result,
-		ValidationScope: "finite declared positive-facts path profile; candidate construction and alpha identity only; not world truth, speaker intent, or language approval",
+		ValidationScope: "finite declared positive-facts path profile; independent goal-constraint and operation-replay verification plus alpha identity; not world truth, speaker intent, uniqueness, or language approval",
 	}
 	return writeSynthesisSearchOutput(stdout, stderr, output)
 }

@@ -1,0 +1,14 @@
+{
+  "command": [
+    "bash",
+    "-e",
+    "/tmp/golingua-dse/388-doc-flow/flow.sh"
+  ],
+  "source_document": "docs/architecture/semantic-algebra/synthesis.md",
+  "temporary_paths_relocated": true,
+  "script_sha256": "5e9653c1f2ae0fb27a0e23ce8c32235dc088f4cf50c25ee70fa836b80ae68b73",
+  "exit_code": 0,
+  "stderr": "",
+  "stdout_sha256": "c296becb36e303e3e1d70504e39b0519ce739ef6ec1e94a643951317d0719e7c",
+  "source_go_hashes_match_frozen_binary": true
+}

@@ -1,0 +1,13 @@
+{
+  "case": "verify-wire-oversize",
+  "input_bytes": 8393674,
+  "input_sha256": "5b6da0c3605cea1389a21f9545929ef8226623c59d746a7c54bb6efbb2b48825",
+  "reproduction_recipe": "python3 -c 'import json; from pathlib import Path; source=Path(\"docs/work/dse/evidence/04-03/cli-files/certificate-valid.json\"); target=Path(\"/tmp/golingua-dse/certificate-oversize.json\"); target.write_bytes((json.dumps(json.loads(source.read_text())) + \" \" * (8 << 20)).encode())'",
+  "command": "/tmp/golingua-dse/bin/golingua-388-final algebra verify-goal --goal /tmp/golingua-dse/388-independent-inputs/goal.json --candidate /tmp/golingua-dse/388-cli-observations/candidate-generated.json --certificate /tmp/golingua-dse/certificate-oversize.json --metadata /tmp/golingua-dse/388-independent-inputs/metadata.json --json",
+  "exit_code": 4,
+  "status": "resource_limit",
+  "diagnostic_code": "JSON_BYTE_LIMIT",
+  "captured_stdout": "cli-files/verify-wire-oversize.json",
+  "captured_stdout_sha256": "d87eed4f8dac5356ff5225af3e5270f42cc919ee9da86c760cc8b55c776327ca",
+  "raw_oversize_input_in_repository": false
+}

@@ -75,10 +75,81 @@ expression or export request. Exit codes follow the algebra status mapping:
 Only a complete construction includes `export_request`. It records the
 canonical document, goal context ID and provenance, empty context dependencies,
 and an explicit empty rewrite profile named `dse-construct-artifact-v1`. This
-profile is separate from the goal's `positive-facts-v1` profile. Export stores
-the checked representation; it does not normalize it or certify goal
-satisfaction. Replay later requires independently selected metadata, context,
-and profile.
+profile is separate from the goal's `positive-facts-v1` profile. Before the
+request is included, the CLI creates a `constructed_unverified` certificate
+and independently checks it against the original goal, candidate document,
+and explicitly selected metadata. The certificate's `goal_verified` remains
+`false`: it is the producer's untrusted claim record, while the separate
+`GoalVerificationResult` reports the component checks. `fully_validated` is a
+field on the synthesis result and is true only when all required checks pass;
+only then does it include an export request. Export stores the checked
+representation; it does not normalize it or evaluate facts. Replay still
+requires independently selected metadata, context, and profile.
+
+## Independent goal verification
+
+Construction checks types and operator plans. The independent verifier then
+rechecks the candidate document, constraint coverage, operator trace, scope,
+and certificate claims without calling the constructor or search engine. Use
+the canonical document from the construction output as the candidate input
+and the accompanying producer certificate as an untrusted claim:
+
+```sh
+go run ./cmd/golingua algebra synthesize --mode construct \
+  --metadata data/semantic/examples/verification/metadata.json \
+  --goal data/semantic/examples/verification/goal.json --json > /tmp/synthesis.json
+jq -e '.result.fully_validated == true' /tmp/synthesis.json >/dev/null
+jq -c '.result.canonical_document' /tmp/synthesis.json > /tmp/candidate.json
+jq -c '.result.certificate' /tmp/synthesis.json > /tmp/certificate.json
+go run ./cmd/golingua algebra verify-goal \
+  --goal data/semantic/examples/verification/goal.json \
+  --candidate /tmp/candidate.json --certificate /tmp/certificate.json \
+  --metadata data/semantic/examples/verification/metadata.json --json > /tmp/verification.json
+jq -e '.result.status == "ok" and .result.type_correct and .result.refinement_checked and .result.replay_checked and .result.certificate_valid and .result.goal_satisfied and .result.complete' /tmp/verification.json >/dev/null
+jq -c '.export_request' /tmp/synthesis.json > /tmp/export-request.json
+go run ./cmd/golingua algebra export \
+  --metadata data/semantic/examples/verification/metadata.json \
+  --input /tmp/export-request.json --json > /tmp/export.json
+jq -c --slurpfile exported /tmp/export.json \
+  '{schema_version:.schema_version,profile:.profile,context_id:.context_id,context_dependencies:.context_dependencies,provenance:.provenance,artifact:$exported[0].artifact}' \
+  /tmp/export-request.json > /tmp/replay-request.json
+go run ./cmd/golingua algebra replay \
+  --metadata data/semantic/examples/verification/metadata.json \
+  --input /tmp/replay-request.json --json
+```
+
+`verify-goal` requires named goal, candidate, and certificate files; it does
+not read these three inputs from stdin. Repeat `--metadata` for explicitly
+selected packages. The candidate is a self-contained algebra document whose
+inline declarations must agree with the selected packages. The certificate
+cannot select packages or establish its own snapshot. Optional repeatable
+`--verify-limit name=value` accepts only `max_certificate_bytes`,
+`max_replay_steps`, and `max_work_nodes`; duplicate, malformed, unknown, or
+over-cap values are refused. Defaults and caps are 8 MiB for the certificate,
+64 replay steps, and 262,144 logical work nodes. The certificate size is
+checked before it is read into the verifier.
+
+The result keeps `type_correct`, `refinement_checked`, `replay_checked`,
+`certificate_valid`, `goal_satisfied`, and `complete` separate. A usable
+verified result requires all of these checks to finish successfully. A
+producer's `goal_verified` field is never trusted. `origin` is likewise a
+producer-supplied label, not proof that finite search ran. One verified
+candidate does not establish search completeness or uniqueness. A `Hole`,
+unsupported claim, or resource stop cannot become a validated candidate.
+Reported assumptions are limited to the selected typed registry snapshot,
+the request's explicit reference boundary, and the positive structural
+profile; they are not domain axioms or claims about named real-world entities.
+Goal certificates do not accept `identity_proof` or `identity_key` fields.
+Search's optional alpha-normalization check is a separate, narrower identity
+step used for deduplication; it is not part of goal verification.
+
+This verification is bounded to the selected positive structural profile. It
+checks that typed terms match the requested finite goal and its explicit
+constraints. It does not evaluate stored facts, establish world truth, prove
+global theory consistency, or imply owner language acceptance. The neutral
+[verification examples](../../../data/semantic/examples/verification/README.md)
+include one accepted candidate and a wrong-orientation candidate that is
+refused.
 
 ## Finite search
 
@@ -125,8 +196,10 @@ with no matching reference produces a complete empty result within this finite
 profile; no new reference or witness is invented.
 
 The result preserves the original goal and reports the declared space,
-candidate choices, per-candidate constructions, trace, rejections, and usage.
-`complete: true` means only that this finite declared space was exhausted.
+candidate choices, per-candidate constructions, independent goal-verification
+results, trace, rejections, and usage. Only fully verified candidates are
+retained with an `export_request`. `complete: true` means only that this finite
+declared space was exhausted.
 `no_solution_within_profile_bounds` with status `ok` means no candidate was
 found in that space, not that a proposition is false in the world. Any
 operational stop or unresolved goal keeps `complete` false and cannot claim
@@ -140,8 +213,9 @@ the full bounded semantic descriptor and normalized term, preserving chosen
 symbols, role orientations, reference IDs, and constraint-fragment mappings.
 No beta reduction, alias expansion, or conjunction equivalence is added to the
 search identity profile. Each candidate has a `draft_goal_unverified`
-certificate with `goal_verified: false`; alpha identity is not an independent
-goal proof, fact check, world-truth claim, or language approval.
+certificate with `goal_verified: false`, plus a separate independently
+verified goal certificate and result. The draft certificate and alpha identity
+are not a goal proof, fact check, world-truth claim, or language approval.
 
 Every candidate includes its own `export_request` with the canonical
 construction document, context, provenance, and the explicit empty
@@ -163,8 +237,9 @@ counts retained serialized candidate payloads only. It excludes the base goal,
 space descriptor, and trace; `usage.candidate_bytes` is the sum of retained
 candidate payload sizes. The CLI separately caps the complete encoded response
 at 16 MiB. If that cap requires dropping a suffix of candidates, it reports a
-resource-limited incomplete result and the number discarded. A frozen CLI
-probe used 500 declared neutral references with 256-byte IDs in a 146,238-byte
+resource-limited incomplete result and the number discarded. A historical
+#387 CLI probe, run before goal-certificate fields changed candidate payload
+sizes, used 500 declared neutral references with 256-byte IDs in a 146,238-byte
 goal. It exited 4 with a 16,380,520-byte response including the newline, under
 the 16,777,216-byte cap. The result retained 36 candidates and discarded one;
 it reported `resource_limit`, `incomplete`, `complete: false`,

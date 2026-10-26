@@ -1,0 +1,10 @@
+[
+  {
+    "port": "x",
+    "binder": "rel_r_b_1_fresh_2"
+  },
+  {
+    "port": "y",
+    "binder": "rel_r_a_1_fresh_1"
+  }
+]

@@ -1,0 +1,170 @@
+{
+  "agent_assessment": "independent bounded structural workflow demonstrated; scoped tampering and resources refused",
+  "owner_language_acceptance": "NOT_EVALUATED",
+  "command_records": 80,
+  "exit_codes": {
+    "0": 28,
+    "2": 41,
+    "4": 8,
+    "3": 2,
+    "7": 1
+  },
+  "produced_candidates": [
+    {
+      "case": "construct-valid",
+      "fully_validated": true,
+      "certificate_valid": true,
+      "goal_satisfied": true,
+      "producer_goal_verified": false,
+      "single_candidate_unique_proof": false,
+      "single_candidate_search_complete_proof": false
+    },
+    {
+      "case": "construct-goal-duplicate-unary",
+      "fully_validated": true,
+      "certificate_valid": true,
+      "goal_satisfied": true,
+      "producer_goal_verified": false,
+      "single_candidate_unique_proof": false,
+      "single_candidate_search_complete_proof": false
+    },
+    {
+      "case": "construct-goal-shared-reference",
+      "fully_validated": true,
+      "certificate_valid": true,
+      "goal_satisfied": true,
+      "producer_goal_verified": false,
+      "single_candidate_unique_proof": false,
+      "single_candidate_search_complete_proof": false
+    },
+    {
+      "case": "construct-goal-reverse-roles",
+      "fully_validated": true,
+      "certificate_valid": true,
+      "goal_satisfied": true,
+      "producer_goal_verified": false,
+      "single_candidate_unique_proof": false,
+      "single_candidate_search_complete_proof": false
+    },
+    {
+      "case": "construct-projected",
+      "fully_validated": true,
+      "certificate_valid": true,
+      "goal_satisfied": true,
+      "producer_goal_verified": false,
+      "single_candidate_unique_proof": false,
+      "single_candidate_search_complete_proof": false
+    },
+    {
+      "case": "construct-both-projected",
+      "fully_validated": true,
+      "certificate_valid": true,
+      "goal_satisfied": true,
+      "producer_goal_verified": false,
+      "single_candidate_unique_proof": false,
+      "single_candidate_search_complete_proof": false
+    },
+    {
+      "case": "construct-shared-one-hop",
+      "fully_validated": true,
+      "certificate_valid": true,
+      "goal_satisfied": true,
+      "producer_goal_verified": false,
+      "single_candidate_unique_proof": false,
+      "single_candidate_search_complete_proof": false
+    },
+    {
+      "case": "search-ambiguous:c1",
+      "fully_validated": true,
+      "certificate_valid": true,
+      "goal_satisfied": true,
+      "producer_goal_verified": false,
+      "single_candidate_unique_proof": false,
+      "single_candidate_search_complete_proof": false
+    },
+    {
+      "case": "search-ambiguous:c2",
+      "fully_validated": true,
+      "certificate_valid": true,
+      "goal_satisfied": true,
+      "producer_goal_verified": false,
+      "single_candidate_unique_proof": false,
+      "single_candidate_search_complete_proof": false
+    },
+    {
+      "case": "search-ambiguous:c3",
+      "fully_validated": true,
+      "certificate_valid": true,
+      "goal_satisfied": true,
+      "producer_goal_verified": false,
+      "single_candidate_unique_proof": false,
+      "single_candidate_search_complete_proof": false
+    },
+    {
+      "case": "search-ambiguous:c4",
+      "fully_validated": true,
+      "certificate_valid": true,
+      "goal_satisfied": true,
+      "producer_goal_verified": false,
+      "single_candidate_unique_proof": false,
+      "single_candidate_search_complete_proof": false
+    },
+    {
+      "case": "search-ambiguous:c5",
+      "fully_validated": true,
+      "certificate_valid": true,
+      "goal_satisfied": true,
+      "producer_goal_verified": false,
+      "single_candidate_unique_proof": false,
+      "single_candidate_search_complete_proof": false
+    },
+    {
+      "case": "search-ambiguous:c6",
+      "fully_validated": true,
+      "certificate_valid": true,
+      "goal_satisfied": true,
+      "producer_goal_verified": false,
+      "single_candidate_unique_proof": false,
+      "single_candidate_search_complete_proof": false
+    },
+    {
+      "case": "search-ambiguous:c7",
+      "fully_validated": true,
+      "certificate_valid": true,
+      "goal_satisfied": true,
+      "producer_goal_verified": false,
+      "single_candidate_unique_proof": false,
+      "single_candidate_search_complete_proof": false
+    },
+    {
+      "case": "search-ambiguous:c8",
+      "fully_validated": true,
+      "certificate_valid": true,
+      "goal_satisfied": true,
+      "producer_goal_verified": false,
+      "single_candidate_unique_proof": false,
+      "single_candidate_search_complete_proof": false
+    },
+    {
+      "case": "search-hole-references:c1",
+      "fully_validated": true,
+      "certificate_valid": true,
+      "goal_satisfied": true,
+      "producer_goal_verified": false,
+      "single_candidate_unique_proof": false,
+      "single_candidate_search_complete_proof": false
+    },
+    {
+      "case": "search-hole-references:c2",
+      "fully_validated": true,
+      "certificate_valid": true,
+      "goal_satisfied": true,
+      "producer_goal_verified": false,
+      "single_candidate_unique_proof": false,
+      "single_candidate_search_complete_proof": false
+    }
+  ],
+  "schema_tool_observation": "388-schema-observation.json",
+  "local_matrix_execution": "NOT RUN for this leaf; main workflow observation will be reported separately",
+  "pre_fix_observations": "preserved outside repo at /tmp/golingua-dse/388-pre-array-correction; shared-reference interface:null was caught and fixed without changing input requirements"
+}
