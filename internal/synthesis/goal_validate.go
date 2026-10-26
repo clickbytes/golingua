@@ -23,6 +23,17 @@ type Unresolved struct {
 // structure and declarations only; it does not construct a term or prove
 // consistency with any world.
 func ValidateGoal(context algebra.Document, goal GoalSpec) ([]Unresolved, error) {
+	return validateGoal(context, goal, false)
+}
+
+// validateSearchGoal checks the goal's formal request shape while leaving
+// candidate-specific fit and operator-budget admission to the bounded search.
+// It does not establish that any candidate exists or that the goal is true.
+func validateSearchGoal(context algebra.Document, goal GoalSpec) ([]Unresolved, error) {
+	return validateGoal(context, goal, true)
+}
+
+func validateGoal(context algebra.Document, goal GoalSpec, forSearch bool) ([]Unresolved, error) {
 	if context.Expression != nil || len(context.Parameters) != 0 || len(context.References) != 0 {
 		return nil, goalInvalid("INVALID_CONTEXT", "context", "context must contain declarations only; request references belong to the goal")
 	}
@@ -51,6 +62,9 @@ func ValidateGoal(context algebra.Document, goal GoalSpec) ([]Unresolved, error)
 	if len(goal.Ports) == 0 || len(goal.Ports) > MaxGoalPorts {
 		return nil, goalBoundError("ports", len(goal.Ports), MaxGoalPorts)
 	}
+	if len(goal.ProjectPorts) > MaxGoalPorts {
+		return nil, goalResource("project_ports", "projected port count exceeds the bounded goal-port limit")
+	}
 	if len(goal.Constraints) > MaxGoalConstraints {
 		return nil, goalBoundError("constraints", len(goal.Constraints), MaxGoalConstraints)
 	}
@@ -71,6 +85,24 @@ func ValidateGoal(context algebra.Document, goal GoalSpec) ([]Unresolved, error)
 			return nil, goalInvalid("DUPLICATE_GOAL_PORT_ID", path+".id", "goal port ID is duplicated")
 		}
 		portIndex[port.ID] = i
+	}
+	projectedPorts := make(map[string]struct{}, len(goal.ProjectPorts))
+	for i, portID := range goal.ProjectPorts {
+		path := fmt.Sprintf("project_ports[%d]", i)
+		if !goalID(portID) {
+			return nil, goalInvalid("INVALID_PROJECT_PORT_ID", path, "projected port ID must be a non-empty bounded identifier")
+		}
+		portNo, exists := portIndex[portID]
+		if !exists {
+			return nil, goalInvalid("UNKNOWN_GOAL_PORT", path, "projected port is not declared by the goal")
+		}
+		if _, exists := projectedPorts[portID]; exists {
+			return nil, goalInvalid("DUPLICATE_PROJECT_PORT", path, "projected port is duplicated")
+		}
+		if goal.Ports[portNo].Binding != nil {
+			return nil, goalInvalid("BOUND_PROJECT_PORT", path, "a Ref or Hole bound port cannot also be projected")
+		}
+		projectedPorts[portID] = struct{}{}
 	}
 
 	// Validate all caller-provided types through the same bounded declaration
@@ -140,7 +172,8 @@ func ValidateGoal(context algebra.Document, goal GoalSpec) ([]Unresolved, error)
 	// ExpectedType describes the declared output interface in port order.
 	openPorts := make([]algebra.Type, 0, len(goal.Ports))
 	for _, port := range goal.Ports {
-		if port.Binding == nil {
+		_, projected := projectedPorts[port.ID]
+		if port.Binding == nil && !projected {
 			openPorts = append(openPorts, port.Type)
 		}
 	}
@@ -250,14 +283,14 @@ func ValidateGoal(context algebra.Document, goal GoalSpec) ([]Unresolved, error)
 				if constraint.FromRole != "" && constraint.FromPort != "" {
 					from, _ := signatureRole(sig, constraint.FromRole)
 					fromPort, _ := portIndex[constraint.FromPort]
-					if !algebra.TypeEqual(goal.Ports[fromPort].Type, sig.Ports[from].Type) {
+					if !forSearch && !algebra.TypeEqual(goal.Ports[fromPort].Type, sig.Ports[from].Type) {
 						return nil, goalInvalid("GOAL_ROLE_TYPE_MISMATCH", path+".from_role", "source goal port type must match its selected relation role")
 					}
 				}
 				if constraint.ToRole != "" && constraint.ToPort != "" {
 					to, _ := signatureRole(sig, constraint.ToRole)
 					toPort, _ := portIndex[constraint.ToPort]
-					if !algebra.TypeEqual(goal.Ports[toPort].Type, sig.Ports[to].Type) {
+					if !forSearch && !algebra.TypeEqual(goal.Ports[toPort].Type, sig.Ports[to].Type) {
 						return nil, goalInvalid("GOAL_ROLE_TYPE_MISMATCH", path+".to_role", "target goal port type must match its selected relation role")
 					}
 				}
@@ -267,7 +300,7 @@ func ValidateGoal(context algebra.Document, goal GoalSpec) ([]Unresolved, error)
 					if constraint.FromRole == constraint.ToRole || from == to {
 						return nil, goalInvalid("CONFLICTING_ROLE_MAPPING", path, "path endpoints must map to distinct relation roles")
 					}
-					if len(constraint.AllowedAtomCounts) == 1 && constraint.AllowedAtomCounts[0] > 1 && !algebra.TypeEqual(sig.Ports[from].Type, sig.Ports[to].Type) {
+					if !forSearch && len(constraint.AllowedAtomCounts) == 1 && constraint.AllowedAtomCounts[0] > 1 && !algebra.TypeEqual(sig.Ports[from].Type, sig.Ports[to].Type) {
 						return nil, goalInvalid("PATH_LINK_TYPE_MISMATCH", path, "repeated path relations require matching types at the joined roles")
 					}
 				}
@@ -296,7 +329,7 @@ func ValidateGoal(context algebra.Document, goal GoalSpec) ([]Unresolved, error)
 					if count > MaxGoalAtoms {
 						return nil, goalResource(countPath, "path length exceeds the profile atom cap")
 					}
-					if count > limits.MaxAtoms {
+					if !forSearch && count > limits.MaxAtoms {
 						return nil, goalResource(countPath, "path length exceeds the requested atom budget")
 					}
 					if _, exists := seenCounts[count]; exists {
@@ -334,7 +367,7 @@ func ValidateGoal(context algebra.Document, goal GoalSpec) ([]Unresolved, error)
 				if !ok {
 					return nil, goalInvalid("UNKNOWN_GOAL_PORT", path+".port", "unary restriction port is not declared")
 				}
-				if constraint.Symbol != "" && !algebra.TypeEqual(goal.Ports[portNo].Type, unarySignature.Ports[0].Type) {
+				if !forSearch && constraint.Symbol != "" && !algebra.TypeEqual(goal.Ports[portNo].Type, unarySignature.Ports[0].Type) {
 					return nil, goalInvalid("GOAL_ROLE_TYPE_MISMATCH", path, "goal port type must match the unary relation port")
 				}
 			}
@@ -350,15 +383,17 @@ func ValidateGoal(context algebra.Document, goal GoalSpec) ([]Unresolved, error)
 	if pathCount == 1 && len(goal.Ports) != 2 {
 		return nil, goalUnsupported("UNSUPPORTED_PATH_INTERFACE", "ports", "a binary path requires exactly two goal ports")
 	}
-	plan := deriveGoalPlan(context.Signatures, refBindingCount, goal.Ports, goal.Constraints)
-	if err := validateGoalOperatorNeeds(operators, plan.requiredOperators); err != nil {
-		return nil, err
-	}
-	if plan.maxSteps > limits.MaxSteps {
-		return nil, goalResource("limits.max_steps", "the requested goal exceeds the bounded operator-step budget")
-	}
-	if _, err := goalAtomUpperBound(pathCounts, unaryCount, limits.MaxAtoms); err != nil {
-		return nil, err
+	plan := deriveGoalPlan(context.Signatures, refBindingCount, goal.Ports, goal.ProjectPorts, goal.Constraints)
+	if !forSearch {
+		if err := validateGoalOperatorNeeds(operators, plan.requiredOperators); err != nil {
+			return nil, err
+		}
+		if plan.maxSteps > limits.MaxSteps {
+			return nil, goalResource("limits.max_steps", "the requested goal exceeds the bounded operator-step budget")
+		}
+		if _, err := goalAtomUpperBound(pathCounts, unaryCount, limits.MaxAtoms); err != nil {
+			return nil, err
+		}
 	}
 	for id := range holes {
 		for i := range goal.Ports {
@@ -374,7 +409,7 @@ func ValidateGoal(context algebra.Document, goal GoalSpec) ([]Unresolved, error)
 
 var allowedGoalOperators = map[string]struct{}{
 	GoalOperatorRelation: {}, GoalOperatorJoin: {}, GoalOperatorRestrict: {},
-	GoalOperatorBind: {}, GoalOperatorPermute: {},
+	GoalOperatorBind: {}, GoalOperatorPermute: {}, GoalOperatorProject: {},
 }
 
 func goalID(value string) bool {
@@ -412,7 +447,7 @@ type goalPlan struct {
 	maxSteps          int
 }
 
-func deriveGoalPlan(signatures []algebra.Signature, refBindings int, ports []GoalPort, constraints []Constraint) goalPlan {
+func deriveGoalPlan(signatures []algebra.Signature, refBindings int, ports []GoalPort, projectPorts []string, constraints []Constraint) goalPlan {
 	needs := make(map[string]struct{})
 	plan := goalPlan{requiredOperators: needs}
 	for _, constraint := range constraints {
@@ -434,7 +469,7 @@ func deriveGoalPlan(signatures []algebra.Signature, refBindings int, ports []Goa
 			if count > 1 {
 				needs[GoalOperatorJoin] = struct{}{}
 			}
-			if len(ports) == 2 && ports[0].Binding == nil && ports[1].Binding == nil {
+			if len(ports) == 2 && len(projectPorts) == 0 && ports[0].Binding == nil && ports[1].Binding == nil {
 				var firstOutput string
 				switch count {
 				case 1:
@@ -466,6 +501,10 @@ func deriveGoalPlan(signatures []algebra.Signature, refBindings int, ports []Goa
 	if refBindings > 0 {
 		needs[GoalOperatorBind] = struct{}{}
 		plan.maxSteps += refBindings
+	}
+	if len(projectPorts) > 0 {
+		needs[GoalOperatorProject] = struct{}{}
+		plan.maxSteps++
 	}
 	return plan
 }

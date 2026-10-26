@@ -118,17 +118,20 @@ go run ./cmd/golingua algebra synthesize --mode construct \
 
 Wymagane są `--mode construct`, `--goal` i `--json`; `--goal -` czyta stdin.
 Można powtarzać `--metadata` dla wybranych pakietów i ich jawnych zależności.
-Komenda odrzuca `--input`, `--no-cache` i inne tryby niż `construct`.
+W tym trybie `--input` i `--no-cache` są odrzucane.
 Dokument celu nie zawiera AST ani inline sortów/sygnatur. Wymaga między innymi
 `context_id` (identyfikatora żądania, nie uwierzytelnienia ani tożsamości
 referentu), typu oczekiwanego, uporządkowanych portów, jawnych referencji,
-operatorów, ograniczeń, provenance i limitów. Dziura `Hole` pozostaje
+operatorów, ograniczeń, provenance i limitów; opcjonalne `project_ports`
+wskazuje otwarte porty do egzystencjalnego zamknięcia. Dziura `Hole` pozostaje
 nierozstrzygnięta i daje `incomplete`; nie jest świadkiem ani argumentem
 operatora.
 
 Profil `positive-facts-v1` obsługuje jeden jawny binarny constraint ścieżki oraz
 jednoargumentowe ograniczenia unary na jej końcach. Obsługiwane operatory to
-`relation`, `join`, `restrict`, `bind` i `permute`. Brak wyboru liczby atomów
+`relation`, `join`, `restrict`, `bind`, `project` i `permute`. Projekcja
+zamyka egzystencjalnie tylko wymienione otwarte porty; nie może pokrywać
+portów związanych przez `Ref` lub `Hole`. Brak wyboru liczby atomów
 pozostaje unresolved, a wiele dozwolonych liczności pozostaje
 underdetermined; komenda nie wybiera pierwszej. Nieznany symbol lub rola,
 niezgodny typ i nieobsługiwany kształt grafu są odmowami, również gdy inne
@@ -153,6 +156,83 @@ checker ogranicza wyrażenia do 4096 węzłów i głębokości 64, typy do głę
 [schemat celu](../schemas/semantic/goals.schema.json) oraz [przykłady](../data/semantic/examples/goals/README.md)
 opisują format. Walidacja strukturalna nie dowodzi prawdy świata; akceptacja
 językowa właściciela pozostaje **NOT_EVALUATED**.
+
+#### Wyszukiwanie w skończonym profilu
+
+Tryb `search` enumeruje jawnie ograniczony zbiór konstrukcji dla tego samego
+profilu celu. Nie wybiera jednej interpretacji ani nie sprawdza faktów świata.
+
+```sh
+go run ./cmd/golingua algebra synthesize --mode search \
+  --metadata data/semantic/examples/search/metadata.json \
+  --goal data/semantic/examples/search/ambiguous.json --json
+
+go run ./cmd/golingua algebra synthesize --mode search \
+  --metadata data/semantic/examples/search/metadata.json \
+  --goal data/semantic/examples/search/ambiguous.json \
+  --search-limit max_candidates=1 --json
+```
+
+Wymagane są `--mode search`, `--metadata`, `--goal` i `--json`; `--goal -`
+czyta stdin. `--input` i `--no-cache` są odrzucane. Można powtarzać
+`--search-limit name=value`, ale tylko w trybie search. Obsługiwane nazwy to
+`max_path_length`, `max_branch_depth`, `max_expansions`, `max_candidates`,
+`max_trace_entries`, `max_work_units`, `max_candidate_bytes` i
+`timeout_millis`. Klucze muszą być unikalne, a wartości nieujemnymi
+dziesiętnymi liczbami całkowitymi; nieznane, błędne i powtórzone klucze są
+odrzucane. Zero wybiera ograniczoną wartość domyślną, a nie limit bez końca.
+
+Wynik zawiera profil celu, `context_id`, metadane, pełne `result`, zakres
+walidacji i wszystkie zachowane kandydatury. Każda kandydatura zachowuje
+wybrane role, symbole, długość ścieżki, referencje, mapowanie ograniczeń i
+własne `export_request`. `complete: true` oznacza wyłącznie wyczerpanie
+zadeklarowanej skończonej przestrzeni. Pusta kompletna lista z
+`no_solution_within_profile_bounds` nie oznacza fałszu w świecie. Limit,
+timeout albo nierozstrzygnięty cel dają wynik niekompletny; zachowana
+kandydatura w prefiksie nie oznacza unikalności. Wynik nie ma rankingu ani
+oceny pewności. Każda kandydatura ma szkicowy certyfikat
+`draft_goal_unverified`; `goal_verified` pozostaje `false`. Weryfikacja
+tożsamości alfa nie jest niezależnym dowodem spełnienia celu.
+
+Po obejrzeniu `choices` wybierz jawnie indeks kandydatury. Dla zapisanego
+wyniku wyszukiwania wyciągnij jej własne żądanie; pełny przepływ pokazuje
+[kontrakt syntezy](architecture/semantic-algebra/synthesis.md).
+
+```sh
+selected_candidate=0
+jq -c --argjson chosen "$selected_candidate" '.result.candidates[$chosen].export_request' /tmp/search.json > /tmp/search-export-request.json
+```
+
+`max_candidate_bytes` ma domyślnie 8 MiB i twardy limit 16 MiB. Liczy dokładne
+zserializowane payloady zachowanych kandydatur, nie cały obiekt odpowiedzi;
+`usage.candidate_bytes` jest ich sumą. CLI stosuje osobny limit 16 MiB na
+całą odpowiedź JSON. Jeśli wymaga to usunięcia końcowych kandydatur, wynik
+zostaje oznaczony `resource_limit`/`incomplete`, z `stop_reason` równym
+`max_response_bytes` i liczbą odrzuconych elementów
+`response_candidates_discarded`. Próba limitu odpowiedzi użyła 500 neutralnych,
+zadeklarowanych referencji z ID długości 256 bajtów i wejścia 146 238 bajtów.
+Zamrożone CLI zwróciło exit 4,
+`resource_limit`/`incomplete` oraz 16 380 520 bajtów stdout z końcowym
+newline, poniżej limitu 16 777 216 bajtów: 36 kandydatur pozostało, jedna
+końcowa kandydatura została odrzucona, `complete: false`,
+`unique_within_declared_space: false` i
+`stop_reason: max_response_bytes`. `usage.candidate_bytes` równało się dokładnej
+sumie 16 226 243 bajtów zachowanych payloadów. Zapis CLI jest poza repozytorium
+w `/tmp/golingua-dse/387-wire-probe-real/output-500-256.json`, SHA-256
+`df4c90cc02c7280a9d81939897f4ab495cfc5e85b33b6f3b0abdfaeca144c845`; skrócony
+rekord polecenia i wyniku znajduje się w
+`/tmp/golingua-dse/387-wire-probe-real/summary.json`. Hash zamrożonego binarium
+przed i po próbie był taki sam
+(`a561d324ee7b5047e82b6142672147a165832be0f2e647ed0d864d9170fe0604`). To
+diagnostyka limitu bajtów, nie korpus językowy, dowód prawdy świata ani odbiór
+właściciela. Limit pracy mierzy logiczne jednostki, nie CPU ani energię;
+timeout jest sprawdzany kooperacyjnie na granicach faz i iteracji.
+
+Wybór eksportu należy wykonać jawnie po obejrzeniu alternatyw. Przykłady
+znajdują się w [katalogu search](../data/semantic/examples/search/README.md),
+a pełne ograniczenia i statusy w [kontrakcie syntezy](architecture/semantic-algebra/synthesis.md).
+Te formalne przykłady nie są korpusem językowym ani akceptacją semantyczną;
+akceptacja językowa właściciela pozostaje **NOT_EVALUATED**.
 
 ### Przechowywanie sprawdzonych wyrażeń
 

@@ -1,11 +1,13 @@
 package cli
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 	"strings"
 	"unicode/utf8"
 
@@ -19,13 +21,15 @@ import (
 )
 
 type algebraOptions struct {
-	command  string
-	input    string
-	goal     string
-	mode     string
-	metadata []string
-	json     bool
-	noCache  bool
+	command        string
+	input          string
+	goal           string
+	mode           string
+	metadata       []string
+	json           bool
+	noCache        bool
+	searchLimits   synthesis.SearchLimits
+	searchLimitSet map[string]bool
 }
 
 type algebraNormalizeOutput struct {
@@ -165,6 +169,17 @@ type synthesisOutput struct {
 	ExportRequest   *algebra.ArtifactExportRequest `json:"export_request,omitempty"`
 }
 
+type synthesisSearchOutput struct {
+	Status                      status.OutcomeKind     `json:"status"`
+	Mode                        string                 `json:"mode"`
+	GoalProfile                 string                 `json:"goal_profile"`
+	ContextID                   string                 `json:"context_id"`
+	Metadata                    []metadataReference    `json:"metadata"`
+	Result                      synthesis.SearchResult `json:"result"`
+	ValidationScope             string                 `json:"validation_scope"`
+	ResponseCandidatesDiscarded int                    `json:"response_candidates_discarded,omitempty"`
+}
+
 type algebraInfrastructureError struct{ message string }
 
 func (failure *algebraInfrastructureError) Error() string { return failure.message }
@@ -207,6 +222,7 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 	seenJSON, seenInput := false, false
 	seenNoCache := false
 	seenGoal, seenMode := false, false
+	options.searchLimitSet = make(map[string]bool)
 	for i := index; i < len(args); i++ {
 		flag := args[i]
 		switch flag {
@@ -261,6 +277,17 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			}
 			i++
 			options.mode = args[i]
+		case "--search-limit":
+			if options.command != "synthesize" {
+				return options, "--search-limit is only valid for algebra synthesize --mode search"
+			}
+			if i+1 >= len(args) || args[i+1] == "--json" || strings.HasPrefix(args[i+1], "--") {
+				return options, "missing value for --search-limit"
+			}
+			i++
+			if err := setSearchLimit(&options, args[i]); err != "" {
+				return options, err
+			}
 		case "--metadata":
 			if options.command == "inspect" {
 				return options, "algebra inspect is structural-only and does not accept --metadata"
@@ -307,8 +334,11 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		}
 	}
 	if options.command == "synthesize" {
-		if !seenMode || options.mode != "construct" {
-			return options, "algebra synthesize requires --mode construct"
+		if !seenMode || (options.mode != "construct" && options.mode != "search") {
+			return options, "algebra synthesize requires --mode construct or search"
+		}
+		if len(options.searchLimitSet) > 0 && options.mode != "search" {
+			return options, "--search-limit is only valid with --mode search"
 		}
 		if !seenGoal {
 			return options, "algebra synthesize requires --goal <file>"
@@ -324,6 +354,49 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		return options, "algebra export and replay require at least one --metadata file"
 	}
 	return options, ""
+}
+
+func setSearchLimit(options *algebraOptions, assignment string) string {
+	name, value, ok := strings.Cut(assignment, "=")
+	if !ok || name == "" || value == "" {
+		return "--search-limit must be name=value"
+	}
+	if options.searchLimitSet[name] {
+		return fmt.Sprintf("duplicate --search-limit %q", name)
+	}
+	for _, digit := range value {
+		if digit < '0' || digit > '9' {
+			return fmt.Sprintf("--search-limit %q must use a nonnegative decimal integer", name)
+		}
+	}
+	parsed, err := strconv.Atoi(value)
+	if err != nil {
+		return fmt.Sprintf("--search-limit %q is outside the supported integer range", name)
+	}
+	var destination *int
+	switch name {
+	case "max_path_length":
+		destination = &options.searchLimits.MaxPathLength
+	case "max_branch_depth":
+		destination = &options.searchLimits.MaxBranchDepth
+	case "max_expansions":
+		destination = &options.searchLimits.MaxExpansions
+	case "max_candidates":
+		destination = &options.searchLimits.MaxCandidates
+	case "max_trace_entries":
+		destination = &options.searchLimits.MaxTraceEntries
+	case "max_work_units":
+		destination = &options.searchLimits.MaxWorkUnits
+	case "max_candidate_bytes":
+		destination = &options.searchLimits.MaxCandidateBytes
+	case "timeout_millis":
+		destination = &options.searchLimits.TimeoutMillis
+	default:
+		return fmt.Sprintf("unknown --search-limit name %q", name)
+	}
+	*destination = parsed
+	options.searchLimitSet[name] = true
+	return ""
 }
 
 func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
@@ -480,6 +553,9 @@ func runAlgebraSynthesize(options algebraOptions, input io.Reader, stdout, stder
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
 	}
+	if options.mode == "search" {
+		return runAlgebraSearch(goal, options.searchLimits, stdout, stderr, registries)
+	}
 	context, err := metamodel.DeclarationContext(algebra.Document{SchemaVersion: algebra.SchemaVersion}, registries)
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
@@ -506,6 +582,94 @@ func runAlgebraSynthesize(options algebraOptions, input io.Reader, stdout, stder
 		return ExitError
 	}
 	return exitCode(result.Status)
+}
+
+func runAlgebraSearch(goal synthesis.GoalSpec, requested synthesis.SearchLimits, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
+	goalLimits, err := synthesis.NormalizeGoalLimits(goal.Limits)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	goal.Limits = goalLimits
+	primitiveContext, err := metamodel.DeclarationContext(algebra.Document{SchemaVersion: algebra.SchemaVersion, Limits: goalLimits.TermLimits}, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	rewriteEnvironment, err := metamodel.NormalizationEnvironment(algebra.Document{
+		SchemaVersion: algebra.SchemaVersion,
+		References:    goal.References,
+		Limits:        goalLimits.TermLimits,
+	}, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	result, err := synthesis.Search(context.Background(), primitiveContext, rewriteEnvironment, goal, requested)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	output := synthesisSearchOutput{
+		Status: result.Status, Mode: "search", GoalProfile: goal.Profile, ContextID: goal.ContextID,
+		Metadata: metadataReferences(registries), Result: result,
+		ValidationScope: "finite declared positive-facts path profile; candidate construction and alpha identity only; not world truth, speaker intent, or language approval",
+	}
+	return writeSynthesisSearchOutput(stdout, stderr, output)
+}
+
+const maxSynthesisSearchResponseBytes = 16 << 20
+
+func writeSynthesisSearchOutput(stdout, stderr io.Writer, output synthesisSearchOutput) int {
+	encode := func() ([]byte, error) { return json.Marshal(output) }
+	encoded, err := encode()
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	for len(encoded)+1 > maxSynthesisSearchResponseBytes && len(output.Result.Candidates) > 0 {
+		last := output.Result.Candidates[len(output.Result.Candidates)-1]
+		candidateBytes, marshalErr := json.Marshal(last)
+		if marshalErr != nil {
+			return writeAlgebraError(stdout, stderr, marshalErr)
+		}
+		output.Result.Candidates = output.Result.Candidates[:len(output.Result.Candidates)-1]
+		output.ResponseCandidatesDiscarded++
+		output.Result.Usage.Candidates = len(output.Result.Candidates)
+		output.Result.Usage.CandidateBytes -= len(candidateBytes)
+		if output.Result.Usage.CandidateBytes < 0 {
+			return writeAlgebraError(stdout, stderr, &algebra.Error{
+				Status: status.OutcomeError, Code: "SEARCH_CANDIDATE_BYTE_ACCOUNTING",
+				Path: "result.usage.candidate_bytes", Message: "candidate byte accounting became inconsistent",
+			})
+		}
+		output.Result.Status = status.OutcomeResourceLimit
+		output.Status = status.OutcomeResourceLimit
+		output.Result.Outcome = synthesis.SearchOutcomeIncomplete
+		output.Result.Complete = false
+		output.Result.UniqueWithinDeclaredSpace = false
+		output.Result.StopReason = synthesis.SearchStopReason("max_response_bytes")
+		output.Result.ExhaustedBounds = appendUniqueSearchBound(output.Result.ExhaustedBounds, output.Result.StopReason)
+		encoded, err = encode()
+		if err != nil {
+			return writeAlgebraError(stdout, stderr, err)
+		}
+	}
+	if len(encoded)+1 > maxSynthesisSearchResponseBytes {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{
+			Status: status.OutcomeResourceLimit, Code: "SEARCH_RESPONSE_BYTES",
+			Path: "result", Message: "search response envelope exceeds the 16 MiB output limit",
+		})
+	}
+	if _, err := stdout.Write(append(encoded, '\n')); err != nil {
+		_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not write algebra search result: %v\n", err)
+		return ExitError
+	}
+	return exitCode(output.Status)
+}
+
+func appendUniqueSearchBound(bounds []synthesis.SearchStopReason, reason synthesis.SearchStopReason) []synthesis.SearchStopReason {
+	for _, existing := range bounds {
+		if existing == reason {
+			return bounds
+		}
+	}
+	return append(bounds, reason)
 }
 
 func runAlgebraCatalogExport(stdout, stderr io.Writer) int {

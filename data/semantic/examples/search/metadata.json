@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "id": "search.neutral",
+  "version": "1",
+  "profile": "positive-facts-v1",
+  "provenance": [
+    {
+      "id": "dse387-neutral",
+      "uri": "https://github.com/clickbytes/golingua/issues/387",
+      "version": "2026-10-26.1",
+      "license": "internal-neutral-example",
+      "author": "Codex by owner delegation"
+    }
+  ],
+  "sorts": [],
+  "symbols": [
+    {
+      "id": "r",
+      "kind": "primitive",
+      "review_status": "approved",
+      "label": "uninterpreted r",
+      "provenance": [
+        {
+          "id": "dse387-neutral",
+          "uri": "https://github.com/clickbytes/golingua/issues/387",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s",
+      "kind": "primitive",
+      "review_status": "approved",
+      "label": "uninterpreted s",
+      "provenance": [
+        {
+          "id": "dse387-neutral",
+          "uri": "https://github.com/clickbytes/golingua/issues/387",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p",
+      "kind": "primitive",
+      "review_status": "approved",
+      "label": "uninterpreted p",
+      "provenance": [
+        {
+          "id": "dse387-neutral",
+          "uri": "https://github.com/clickbytes/golingua/issues/387",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "v",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "q",
+      "kind": "primitive",
+      "review_status": "approved",
+      "label": "uninterpreted q",
+      "provenance": [
+        {
+          "id": "dse387-neutral",
+          "uri": "https://github.com/clickbytes/golingua/issues/387",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "v",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "t",
+      "kind": "primitive",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "dse387-neutral",
+          "uri": "https://github.com/clickbytes/golingua/issues/387",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "source",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "target",
+          "type": {
+            "kind": "Event"
+          }
+        }
+      ]
+    }
+  ],
+  "dependencies": [],
+  "typical_edges": [],
+  "axioms": []
+}

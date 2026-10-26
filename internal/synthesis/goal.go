@@ -30,6 +30,7 @@ const (
 	GoalOperatorRestrict = "restrict"
 	GoalOperatorBind     = "bind"
 	GoalOperatorPermute  = "permute"
+	GoalOperatorProject  = "project"
 )
 
 type ConstraintKind string
@@ -48,8 +49,9 @@ type GoalValue struct {
 	Type *algebra.Type    `json:"type"`
 }
 
-// GoalPort declares one ordered open output port. A nil Binding leaves the
-// port open; a Ref binding closes it with an explicitly declared reference.
+// GoalPort declares one ordered candidate output port. A nil Binding leaves
+// the port open unless GoalSpec.ProjectPorts closes it; a Ref binding closes
+// it with an explicitly declared reference.
 type GoalPort struct {
 	ID      string       `json:"id"`
 	Type    algebra.Type `json:"type"`
@@ -84,12 +86,15 @@ type GoalLimits struct {
 // explicit obligations. It deliberately contains no final AST or named
 // derived-concept selection.
 type GoalSpec struct {
-	SchemaVersion    int                    `json:"schema_version"`
-	Profile          string                 `json:"profile"`
-	ContextID        string                 `json:"context_id"`
-	ExpectedType     algebra.Type           `json:"expected_type"`
-	Ports            []GoalPort             `json:"ports"`
-	References       []algebra.Declaration  `json:"references"`
+	SchemaVersion int                   `json:"schema_version"`
+	Profile       string                `json:"profile"`
+	ContextID     string                `json:"context_id"`
+	ExpectedType  algebra.Type          `json:"expected_type"`
+	Ports         []GoalPort            `json:"ports"`
+	References    []algebra.Declaration `json:"references"`
+	// ProjectPorts is an optional set of ports to existentially close after
+	// constraints and bindings have been applied.
+	ProjectPorts     []string               `json:"project_ports,omitempty"`
 	AllowedOperators []string               `json:"allowed_operators"`
 	Constraints      []Constraint           `json:"constraints"`
 	Provenance       []provenance.SourceRef `json:"provenance"`

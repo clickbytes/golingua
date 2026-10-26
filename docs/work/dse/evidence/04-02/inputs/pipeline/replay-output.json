@@ -1,0 +1,255 @@
+{
+  "status": "ok",
+  "artifact": {
+    "cache_key": "sha256:b34470c7514d835baa1a98c029b797f8b592fd67972662d56c90e3774ee41f26",
+    "closed": false,
+    "context_dependencies": [],
+    "context_id": "search-neutral-context",
+    "kind": "typed_expression_dag",
+    "limits": {
+      "max_nodes": 4096,
+      "max_depth": 64,
+      "max_type_depth": 32,
+      "max_symbols": 512,
+      "max_ports": 16
+    },
+    "meaning_fingerprint": "sha256:868d217360ab43eb7e541fcd92dfb20f8336aa21fc3944b713287898ba4dc18a",
+    "nodes": [
+      {
+        "identity": "rel_r_a_1_fresh_1",
+        "kind": "Var",
+        "node_id": 1
+      },
+      {
+        "identity": "join_0_1",
+        "kind": "Var",
+        "node_id": 2
+      },
+      {
+        "args": [
+          {
+            "role": "a",
+            "value": 1
+          },
+          {
+            "role": "b",
+            "value": 2
+          }
+        ],
+        "kind": "Atom",
+        "node_id": 3,
+        "symbol": "r"
+      },
+      {
+        "identity": "rel_r_b_1_fresh_2",
+        "kind": "Var",
+        "node_id": 4
+      },
+      {
+        "args": [
+          {
+            "role": "a",
+            "value": 2
+          },
+          {
+            "role": "b",
+            "value": 4
+          }
+        ],
+        "kind": "Atom",
+        "node_id": 5,
+        "symbol": "r"
+      },
+      {
+        "kind": "And",
+        "node_id": 6,
+        "operands": [
+          3,
+          5
+        ]
+      },
+      {
+        "body": 6,
+        "identity": "join_0_1",
+        "kind": "Exists",
+        "node_id": 7,
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "args": [
+          {
+            "role": "v",
+            "value": 4
+          }
+        ],
+        "kind": "Atom",
+        "node_id": 8,
+        "symbol": "p"
+      },
+      {
+        "kind": "And",
+        "node_id": 9,
+        "operands": [
+          7,
+          8
+        ]
+      },
+      {
+        "body": 9,
+        "identity": "rel_r_b_1_fresh_2",
+        "kind": "Lambda",
+        "node_id": 10,
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "body": 10,
+        "identity": "rel_r_a_1_fresh_1",
+        "kind": "Lambda",
+        "node_id": 11,
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ],
+    "normalizer_version": "dse-normalizer-v1",
+    "parameters": [],
+    "profile": {
+      "id": "dse-search-artifact-v1",
+      "rules": []
+    },
+    "provenance": [
+      {
+        "id": "dse387-neutral",
+        "uri": "https://github.com/clickbytes/golingua/issues/387",
+        "version": "2026-10-26.1",
+        "license": "internal-neutral-example",
+        "author": "Codex by owner delegation"
+      }
+    ],
+    "references": [],
+    "registries": [
+      {
+        "id": "search.neutral",
+        "version": "1",
+        "resource_fingerprint": "sha256:04c92539837af7fdf649422099ef38d99d28d45cc1606d916bba14e29041f5b0",
+        "formal_denotation_id": "sha256:1cfae3390d3cfdce1e8fa65eef4e9d9a06f881c4d544a9a4e3c49e843bdc7925"
+      }
+    ],
+    "registry_snapshot_id": "rewrite-formal-v1:976116cbe74135d49210c13db3d3d63d50fafc04473019fcd192356abb7ff589",
+    "resource_fingerprint": "sha256:ae968a4c6dc01062d2cfe14649d3d744c176a49409c64641a98086c3b8bff163",
+    "root": 11,
+    "schema_version": 1,
+    "signatures": [
+      {
+        "id": "p",
+        "label": "uninterpreted p",
+        "ports": [
+          {
+            "role": "v",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        ]
+      },
+      {
+        "id": "q",
+        "label": "uninterpreted q",
+        "ports": [
+          {
+            "role": "v",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        ]
+      },
+      {
+        "id": "r",
+        "label": "uninterpreted r",
+        "ports": [
+          {
+            "role": "a",
+            "type": {
+              "kind": "Entity"
+            }
+          },
+          {
+            "role": "b",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        ]
+      },
+      {
+        "id": "s",
+        "label": "uninterpreted s",
+        "ports": [
+          {
+            "role": "a",
+            "type": {
+              "kind": "Entity"
+            }
+          },
+          {
+            "role": "b",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        ]
+      },
+      {
+        "id": "t",
+        "ports": [
+          {
+            "role": "source",
+            "type": {
+              "kind": "Entity"
+            }
+          },
+          {
+            "role": "target",
+            "type": {
+              "kind": "Event"
+            }
+          }
+        ]
+      }
+    ],
+    "sorts": []
+  },
+  "checked": {
+    "status": "ok",
+    "type": {
+      "kind": "Arrow",
+      "from": {
+        "kind": "Entity"
+      },
+      "to": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Entity"
+        },
+        "to": {
+          "kind": "Prop"
+        }
+      }
+    },
+    "node_count": 13
+  },
+  "unique_nodes": 11,
+  "expanded_nodes": 13,
+  "metadata": [
+    {
+      "id": "search.neutral",
+      "version": "1",
+      "resource_fingerprint": "sha256:04c92539837af7fdf649422099ef38d99d28d45cc1606d916bba14e29041f5b0"
+    }
+  ]
+}
