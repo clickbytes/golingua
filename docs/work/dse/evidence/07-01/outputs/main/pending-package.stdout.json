@@ -1,0 +1,1 @@
+{"status":"unsupported","diagnostics":[{"code":"SEMANTIC_TARGET_NOT_AUTHORIZED","message":"only approved equivalent targets with valid provenance may be instantiated","path":"binding","severity":"error"}]}

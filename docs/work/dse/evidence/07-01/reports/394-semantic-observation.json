@@ -1,0 +1,14 @@
+{
+  "direct": "r(A,B)",
+  "indirect": "exists z. r(A,z) AND r(z,B)",
+  "shared_intermediate": true,
+  "inspect_metadata_verified": false,
+  "same_lemma_distinct_senses": true,
+  "renamed_symbol_same_binary": true,
+  "context_multiplicity_preserved": [
+    "one",
+    "many"
+  ],
+  "schema_artifacts_valid": 19,
+  "source_hashes_match": true
+}

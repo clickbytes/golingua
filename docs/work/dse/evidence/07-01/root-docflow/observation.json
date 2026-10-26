@@ -1,0 +1,9 @@
+{
+  "source": "docs/cli.md binding section",
+  "literal_blocks": 3,
+  "literal_flow_sha256": "42c0c1a6e7d456f40b35c3db4217ed2e0817ce6e21706a8cc6e385f2cc14c318",
+  "go_lingua_commands": 8,
+  "all_exit_zero": true,
+  "shell_exit_code": 0,
+  "binary_resolution": "PATH wrapper records exact calls to frozen golingua-394-final; commands unchanged"
+}

@@ -1,0 +1,1 @@
+{"status":"unknown","diagnostics":[{"code":"UNKNOWN_FRAME_ROLE","message":"target role must be declared by the linked frame","path":"bindings[0].target.role_ports[0].role","severity":"error"}]}

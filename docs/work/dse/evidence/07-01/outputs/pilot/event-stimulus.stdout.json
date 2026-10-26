@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"ROLE_REFERENCE_TYPE_MISMATCH","message":"reference type differs from the explicitly mapped role port","path":"role_references[1].reference_id","severity":"error"}]}

@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"GOAL_CONTEXT_ID_MISMATCH","message":"request context ID must exactly match the target goal context ID","path":"goal.context_id","severity":"error"}]}

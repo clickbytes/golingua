@@ -127,7 +127,7 @@
         392,
         393
       ],
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "branch_name": null,
       "actual_base_sha": null,
       "branch_url": null,
@@ -146,7 +146,7 @@
         394,
         395
       ],
-      "status": "QUEUED",
+      "status": "IN_PROGRESS",
       "branch_name": null,
       "actual_base_sha": null,
       "branch_url": null,
@@ -602,11 +602,11 @@
         392
       ],
       "branch_name": "dse/06-03-semantic-attributes",
-      "status": "ACTIVE",
+      "status": "DONE",
       "actual_base_sha": "518de87005ffac10feb04d264dd5ddba867998e9",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/06-03-semantic-attributes",
-      "pr_url": null,
-      "merge_sha": null,
+      "pr_url": "https://github.com/clickbytes/golingua/pull/417",
+      "merge_sha": "62deae8128b3ebaa3e79307912d6e55203158185",
       "evidence_paths": [
         "docs/work/dse/evidence/06-03/README.md",
         "docs/work/dse/evidence/06-03/observations/393-cli-observations.jsonl",
@@ -636,12 +636,20 @@
         393
       ],
       "branch_name": "dse/07-01-lexical-goals",
-      "status": "QUEUED",
-      "actual_base_sha": null,
-      "branch_url": null,
+      "status": "ACTIVE",
+      "actual_base_sha": "71533b8e6c31e1fc090863f904c84d0e40a2ac3e",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/07-01-lexical-goals",
       "pr_url": null,
       "merge_sha": null,
-      "evidence_paths": []
+      "evidence_paths": [
+        "docs/work/dse/evidence/07-01/README.md",
+        "docs/work/dse/evidence/07-01/outputs/main/observations.jsonl",
+        "docs/work/dse/evidence/07-01/outputs/pilot/observations.jsonl",
+        "docs/work/dse/evidence/07-01/reports/394-technical-observation.json",
+        "docs/work/dse/evidence/07-01/reports/394-source-hashes.json",
+        "docs/work/dse/evidence/07-01/reports/394-schema-observation.json",
+        "docs/work/dse/evidence/07-01/root-docflow/observation.json"
+      ]
     },
     {
       "issue_number": 395,

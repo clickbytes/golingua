@@ -2,6 +2,8 @@ package cli
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -16,6 +18,7 @@ import (
 	"github.com/clickbytes/golingua/internal/algebra"
 	"github.com/clickbytes/golingua/internal/catalogexport"
 	"github.com/clickbytes/golingua/internal/facts"
+	"github.com/clickbytes/golingua/internal/language"
 	"github.com/clickbytes/golingua/internal/metamodel"
 	"github.com/clickbytes/golingua/internal/provenance"
 	"github.com/clickbytes/golingua/internal/reason"
@@ -26,6 +29,7 @@ import (
 type algebraOptions struct {
 	command            string
 	input              string
+	languagePackage    string
 	left               string
 	right              string
 	proof              string
@@ -126,6 +130,75 @@ type metadataPackageOutput struct {
 	ApprovedCount       int                    `json:"approved_count"`
 	Provenance          []provenance.SourceRef `json:"provenance,omitempty"`
 	Symbols             []metadataSymbolOutput `json:"symbols,omitempty"`
+}
+
+type semanticBindingInspectOutput struct {
+	Status           status.OutcomeKind           `json:"status"`
+	Package          semanticBindingPackageOutput `json:"language_package"`
+	MetadataVerified bool                         `json:"metadata_verified"`
+	Metadata         []metadataReference          `json:"metadata"`
+	ValidationScope  string                       `json:"validation_scope"`
+}
+
+type semanticBindingPackageOutput struct {
+	ID          string                        `json:"id"`
+	Version     string                        `json:"version"`
+	Language    string                        `json:"language"`
+	Fingerprint string                        `json:"fingerprint"`
+	Provenance  provenance.SourceRef          `json:"provenance"`
+	Frames      []semanticBindingFrameOutput  `json:"frames"`
+	Targets     []semanticBindingTargetOutput `json:"targets"`
+}
+
+type semanticBindingFrameOutput struct {
+	ID               string                          `json:"id"`
+	SenseID          string                          `json:"sense_id"`
+	SemanticRoles    []string                        `json:"semantic_roles"`
+	Arguments        []semanticBindingArgumentOutput `json:"arguments"`
+	AllowedFamilyIDs []string                        `json:"allowed_family_ids"`
+	Provenance       provenance.SourceRef            `json:"provenance"`
+}
+
+type semanticBindingArgumentOutput struct {
+	ID                  string `json:"id"`
+	Role                string `json:"role"`
+	Required            bool   `json:"required"`
+	GrammaticalFunction string `json:"grammatical_function,omitempty"`
+	Case                string `json:"case,omitempty"`
+	Adposition          string `json:"adposition,omitempty"`
+}
+
+type semanticBindingTargetOutput struct {
+	SenseID    string                     `json:"sense_id"`
+	Mapping    string                     `json:"mapping_kind"`
+	Status     string                     `json:"binding_status"`
+	Authorized bool                       `json:"authorized"`
+	Provenance provenance.SourceRef       `json:"provenance"`
+	Target     *semanticBindingTargetData `json:"target,omitempty"`
+}
+
+type semanticBindingTargetData struct {
+	Kind      string                    `json:"kind"`
+	Profile   string                    `json:"profile"`
+	SymbolRef string                    `json:"symbol_ref,omitempty"`
+	Goal      any                       `json:"goal,omitempty"`
+	RolePorts []semanticBindingRolePort `json:"role_ports"`
+}
+
+type semanticBindingRolePort struct {
+	FrameID string `json:"frame_id"`
+	Role    string `json:"role"`
+	PortID  string `json:"port_id"`
+	Type    any    `json:"type"`
+}
+
+type semanticBindingValidationOutput struct {
+	Status           status.OutcomeKind           `json:"status"`
+	Package          semanticBindingPackageOutput `json:"language_package"`
+	Metadata         []metadataReference          `json:"metadata"`
+	MetadataVerified bool                         `json:"metadata_verified"`
+	Targets          []language.TargetValidation  `json:"targets"`
+	ValidationScope  string                       `json:"validation_scope"`
 }
 
 type metadataSymbolOutput struct {
@@ -303,6 +376,12 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		}
 		options.command = "catalog_export"
 		index = 3
+	} else if args[1] == "binding" {
+		if len(args) < 3 || (args[2] != "inspect" && args[2] != "validate" && args[2] != "instantiate") {
+			return options, "expected algebra binding inspect, validate, or instantiate"
+		}
+		options.command = "binding_" + args[2]
+		index = 3
 	} else if args[1] == "context" {
 		if len(args) < 3 || args[2] != "check" {
 			return options, "expected algebra context check"
@@ -310,7 +389,7 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		options.command = "context_check"
 		index = 3
 	} else {
-		return options, "expected algebra check, build, synthesize, verify-goal, evaluate, compare, verify-proof, export, inspect, replay, normalize, verify-rewrite, metadata, facts, or catalog"
+		return options, "expected algebra check, build, synthesize, verify-goal, evaluate, compare, verify-proof, binding, export, inspect, replay, normalize, verify-rewrite, metadata, facts, or catalog"
 	}
 	seenJSON, seenInput := false, false
 	seenNoCache := false
@@ -320,6 +399,7 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 	options.evaluationLimitSet = make(map[string]bool)
 	options.comparisonLimitSet = make(map[string]bool)
 	seenExpression, seenFacts, seenSelection := false, false, false
+	seenLanguagePackage := false
 	seenContextID, seenProfile, seenAt := false, false, false
 	seenLeft, seenRight, seenProof, seenClaim := false, false, false, false
 	for i := index; i < len(args); i++ {
@@ -332,7 +412,7 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			seenJSON = true
 			options.json = true
 		case "--input":
-			if options.command != "check" && options.command != "context_check" && options.command != "build" && options.command != "normalize" && options.command != "verify-rewrite" && options.command != "export" && options.command != "inspect" && options.command != "replay" && options.command != "facts_validate" && options.command != "verify_proof" {
+			if options.command != "check" && options.command != "context_check" && options.command != "build" && options.command != "normalize" && options.command != "verify-rewrite" && options.command != "export" && options.command != "inspect" && options.command != "replay" && options.command != "facts_validate" && options.command != "verify_proof" && options.command != "binding_instantiate" {
 				return options, "--input is not valid for this algebra command"
 			}
 			if seenInput {
@@ -568,6 +648,22 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 				return options, "--metadata value must not be empty"
 			}
 			options.metadata = append(options.metadata, args[i])
+		case "--language-package":
+			if !strings.HasPrefix(options.command, "binding_") {
+				return options, "--language-package is only valid for algebra binding"
+			}
+			if seenLanguagePackage {
+				return options, "duplicate --language-package flag"
+			}
+			seenLanguagePackage = true
+			if i+1 >= len(args) || args[i+1] == "--json" || strings.HasPrefix(args[i+1], "--") {
+				return options, "missing value for --language-package"
+			}
+			i++
+			options.languagePackage = args[i]
+			if options.languagePackage == "" || options.languagePackage == "-" {
+				return options, "--language-package requires an explicit named file path"
+			}
 		case "--no-cache":
 			if options.command != "export" {
 				return options, "--no-cache is only valid for algebra export"
@@ -668,6 +764,26 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 	}
 	if len(options.metadata) > 16 {
 		return options, "algebra metadata accepts at most 16 files"
+	}
+	if strings.HasPrefix(options.command, "binding_") {
+		if !seenLanguagePackage {
+			return options, "algebra binding requires --language-package <file>"
+		}
+		if options.command == "binding_validate" && len(options.metadata) == 0 {
+			return options, "algebra binding validate requires at least one --metadata file"
+		}
+		if options.command == "binding_instantiate" && (len(options.metadata) == 0 || !seenInput) {
+			return options, "algebra binding instantiate requires --metadata and --input <request.json|->"
+		}
+		if options.command != "binding_instantiate" && seenInput {
+			return options, "--input is only valid for algebra binding instantiate"
+		}
+		if options.command != "binding_instantiate" && (len(options.searchLimitSet)+len(options.verifyLimitSet)+len(options.evaluationLimitSet)+len(options.comparisonLimitSet) != 0 || options.goal != "" || options.expression != "" || options.factsInput != "" || options.selection != "" || options.contextID != "" || options.profile != "" || options.at != "" || options.claim != "" || options.left != "" || options.right != "" || options.proof != "" || options.candidate != "" || options.certificate != "" || options.mode != "" || options.noCache) {
+			return options, "algebra binding received flags from another command profile"
+		}
+		if options.command == "binding_instantiate" && (options.goal != "" || options.expression != "" || options.factsInput != "" || options.selection != "" || options.contextID != "" || options.profile != "" || options.at != "" || options.claim != "" || options.left != "" || options.right != "" || options.proof != "" || options.candidate != "" || options.certificate != "" || options.mode != "" || options.noCache || len(options.searchLimitSet)+len(options.verifyLimitSet)+len(options.evaluationLimitSet)+len(options.comparisonLimitSet) != 0) {
+			return options, "algebra binding instantiate received flags from another command profile"
+		}
 	}
 	if options.command == "build" {
 		if len(options.metadata) == 0 {
@@ -873,6 +989,9 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 	if parseError != "" {
 		return writeResult(stdout, stderr, algebraDiagnostic(status.OutcomeInvalid, "INVALID_ALGEBRA_ARGUMENTS", parseError, "algebra"))
 	}
+	if strings.HasPrefix(options.command, "binding_") {
+		return runAlgebraBinding(options, input, stdout, stderr)
+	}
 	if options.command == "capabilities" {
 		output := algebraCapabilitiesOutput{Status: status.OutcomeOK, Scopes: map[string]algebraScopeCapability{
 			"not":           {CanRepresent: true, CanEvaluate: false},
@@ -1071,6 +1190,158 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 		return ExitError
 	}
 	return exitCode(checked.Status)
+}
+
+func runAlgebraBinding(options algebraOptions, input io.Reader, stdout, stderr io.Writer) int {
+	packageBytes, err := readNamedAlgebraFile(options.languagePackage, language.MaxSemanticLanguagePackageBytes, "semantic language package")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	pack, err := language.LoadSemanticPackage(packageBytes, nil)
+	if err != nil {
+		return writeSemanticLanguageError(stdout, stderr, err)
+	}
+	packageOutput := summarizeSemanticBindingPackage(pack, packageBytes)
+	if options.command == "binding_inspect" {
+		metadata := []metadataReference{}
+		if len(options.metadata) != 0 {
+			registries, err := readMetadataRegistries(options.metadata)
+			if err != nil {
+				return writeAlgebraError(stdout, stderr, err)
+			}
+			for _, registry := range registries {
+				metadata = append(metadata, metadataReference{ID: registry.ID(), Version: registry.Version(), ResourceFingerprint: registry.ResourceFingerprint()})
+			}
+		}
+		output := semanticBindingInspectOutput{
+			Status: status.OutcomeOK, Package: packageOutput, MetadataVerified: false, Metadata: metadata,
+			ValidationScope: "structural inspection of the explicitly supplied language package, authored frames, and tagged targets; selected metadata and world truth were not checked",
+		}
+		return writeCappedAlgebraOutput(stdout, stderr, output, status.OutcomeOK)
+	}
+	registries, err := readMetadataRegistries(options.metadata)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	selected, err := metamodel.DeclarationContext(algebra.Document{SchemaVersion: algebra.SchemaVersion}, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	metadata := make([]metadataReference, 0, len(registries))
+	for _, registry := range registries {
+		metadata = append(metadata, metadataReference{ID: registry.ID(), Version: registry.Version(), ResourceFingerprint: registry.ResourceFingerprint()})
+	}
+	if options.command == "binding_validate" {
+		targets, err := pack.ValidateTargets(selected)
+		if err != nil {
+			return writeSemanticLanguageError(stdout, stderr, err)
+		}
+		resultStatus := status.OutcomeOK
+		for _, target := range targets {
+			if len(target.Unresolved) != 0 {
+				resultStatus = status.OutcomeIncomplete
+				break
+			}
+		}
+		output := semanticBindingValidationOutput{
+			Status: resultStatus, Package: packageOutput, Metadata: metadata, MetadataVerified: true,
+			Targets:         targets,
+			ValidationScope: "tagged targets checked against the explicitly selected approved primitive declarations; authorization is reported separately; no world-truth or owner-acceptance claim",
+		}
+		return writeCappedAlgebraOutput(stdout, stderr, output, resultStatus)
+	}
+	requestBytes, err := readAlgebraInput(options, input, language.MaxSemanticBindingRequestBytes, "semantic binding request")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	request, err := language.DecodeSemanticBindingRequest(requestBytes)
+	if err != nil {
+		return writeSemanticLanguageError(stdout, stderr, err)
+	}
+	rewrite, err := metamodel.NormalizationEnvironment(algebra.Document{SchemaVersion: algebra.SchemaVersion}, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	result, err := language.InstantiateSemanticBinding(pack, selected, rewrite, request)
+	if err != nil {
+		return writeSemanticLanguageError(stdout, stderr, err)
+	}
+	output := struct {
+		Status           status.OutcomeKind                   `json:"status"`
+		Result           language.SemanticInstantiationResult `json:"result"`
+		Metadata         []metadataReference                  `json:"metadata"`
+		RegistrySnapshot string                               `json:"registry_snapshot_id"`
+		ValidationScope  string                               `json:"validation_scope"`
+	}{
+		Status: result.Status, Result: result, Metadata: metadata, RegistrySnapshot: rewrite.SnapshotID,
+		ValidationScope: "selected typed-target instantiation and independent goal verification when applicable; no facts, world truth, or language-quality claim",
+	}
+	return writeCappedAlgebraOutput(stdout, stderr, output, result.Status)
+}
+
+func summarizeSemanticBindingPackage(pack *language.SemanticLanguagePackage, packageBytes []byte) semanticBindingPackageOutput {
+	digest := sha256.Sum256(packageBytes)
+	output := semanticBindingPackageOutput{
+		ID: pack.ID(), Version: pack.Version(), Language: string(pack.Language()),
+		Fingerprint: "sha256:" + hex.EncodeToString(digest[:]), Provenance: pack.Provenance(),
+		Frames: []semanticBindingFrameOutput{}, Targets: []semanticBindingTargetOutput{},
+	}
+	for _, frame := range pack.Frames() {
+		row := semanticBindingFrameOutput{
+			ID: string(frame.ID), SenseID: frame.SenseID.String(), SemanticRoles: make([]string, 0, len(frame.SemanticRoles)),
+			Arguments: make([]semanticBindingArgumentOutput, 0, len(frame.Arguments)), AllowedFamilyIDs: make([]string, 0, len(frame.AllowedFamilyIDs)),
+			Provenance: frame.Provenance,
+		}
+		for _, role := range frame.SemanticRoles {
+			row.SemanticRoles = append(row.SemanticRoles, string(role))
+		}
+		for _, argument := range frame.Arguments {
+			row.Arguments = append(row.Arguments, semanticBindingArgumentOutput{
+				ID: argument.ID, Role: string(argument.Role), Required: argument.Required,
+				GrammaticalFunction: argument.GrammaticalFunction, Case: argument.Case, Adposition: argument.Adposition,
+			})
+		}
+		for _, family := range frame.AllowedFamilyIDs {
+			row.AllowedFamilyIDs = append(row.AllowedFamilyIDs, family.String())
+		}
+		output.Frames = append(output.Frames, row)
+	}
+	for _, binding := range pack.LexiconIndex().Document().Bindings {
+		if binding.Target == nil {
+			continue
+		}
+		row := semanticBindingTargetOutput{
+			SenseID: binding.SenseID.String(), Mapping: string(binding.Mapping), Status: string(binding.Status),
+			Authorized: binding.TargetExecutionAuthorized(), Provenance: binding.Provenance,
+		}
+		data := &semanticBindingTargetData{
+			Kind: string(binding.Target.Kind), Profile: binding.Target.Profile,
+			RolePorts: make([]semanticBindingRolePort, 0, len(binding.Target.RolePorts)),
+		}
+		data.SymbolRef = string(binding.Target.SymbolRef)
+		if binding.Target.GoalSpec != nil {
+			data.Goal = binding.Target.GoalSpec
+		}
+		for _, port := range binding.Target.RolePorts {
+			data.RolePorts = append(data.RolePorts, semanticBindingRolePort{FrameID: port.FrameID, Role: port.Role, PortID: port.PortID, Type: port.Type})
+		}
+		row.Target = data
+		output.Targets = append(output.Targets, row)
+	}
+	return output
+}
+
+func writeSemanticLanguageError(stdout, stderr io.Writer, err error) int {
+	var resultError interface{ Result() status.Result }
+	if errors.As(err, &resultError) {
+		result := resultError.Result()
+		if len(result.Diagnostics) != 0 {
+			diagnostic := result.Diagnostics[0]
+			return writeResult(stdout, stderr, algebraDiagnostic(result.Status, diagnostic.Code, diagnostic.Message, diagnostic.Path))
+		}
+		return writeResult(stdout, stderr, result)
+	}
+	return writeAlgebraError(stdout, stderr, err)
 }
 
 func runAlgebraContextCheck(options algebraOptions, input io.Reader, stdout, stderr io.Writer, registries []*metamodel.Registry) int {

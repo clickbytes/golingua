@@ -1,0 +1,12 @@
+{
+  "internal/cli/algebra.go": "3a3343e669148a6a0ba2a03d29c2ed49ad01a05a5ee307093a6306deabf74a5e",
+  "internal/cli/cli.go": "3d8aa251cca5fc636569d6cb1eeeb9ddf76c032a3c18e84f4791931ce4cc41d5",
+  "internal/language/semantic_binding.go": "e0b93437299f7492600ab951f88ad30191d08116a5444a67dcb872367e98c813",
+  "internal/language/semantic_package.go": "40f92bb77890afd8a54a6dd87576dfccae5be330213b27466ac573c7bfbdfcfd",
+  "internal/lexicon/binding.go": "e2b0ab2c8ccf81e4adb8ce2fb9794cbde42fc0bfb0d4b7fb26e579445ecc6fd1",
+  "internal/lexicon/index.go": "dd5cc018c2c0f21d3e4842f570ffe4c67f06485dfbc2244cd97cc521c8e42a76",
+  "internal/lexicon/json.go": "b863a581a0c8a61c06cb9ca67269bd6e665bf357b7b2f55bb41b4ca941c16061",
+  "internal/lexicon/semantic_binding.go": "db8f1c1cf80eee082f96d768b8be55ca3cd805146d7db62601b75122229d5eeb",
+  "internal/lexicon/validate.go": "a29295b09f89d7c4e70c0014627830fadc686bfbc05786bd07ce62ba710d3b65",
+  "schemas/semantic/lexical-binding.schema.json": "400841bc0f6711f1e210d9b91174fd4fec300df5189655982847b9c8fa9d9aae"
+}

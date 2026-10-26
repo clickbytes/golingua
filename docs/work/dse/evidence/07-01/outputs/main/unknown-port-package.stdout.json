@@ -1,0 +1,1 @@
+{"status":"unknown","diagnostics":[{"code":"UNKNOWN_TARGET_PORT","message":"mapped port is absent from the selected primitive","path":"target.role_ports","severity":"error"}]}

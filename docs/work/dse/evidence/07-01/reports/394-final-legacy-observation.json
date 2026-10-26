@@ -1,0 +1,29 @@
+[
+  {
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua-394-final",
+      "catalog",
+      "--summary",
+      "--json"
+    ],
+    "exit_code": 0,
+    "baseline": "/tmp/golingua-dse/394-baseline/catalog-summary.json",
+    "stdout_file": "/tmp/golingua-dse/394-catalog-summary-root-final.json",
+    "byte_identical": true,
+    "stdout_sha256": "6babfeb701d0535362d1f80b50ed1819325587682985296e98f196b4e2bea2b2"
+  },
+  {
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua-394-final",
+      "algebra",
+      "catalog",
+      "export",
+      "--json"
+    ],
+    "exit_code": 0,
+    "baseline": "/tmp/golingua-dse/394-baseline/catalog-export.json",
+    "stdout_file": "/tmp/golingua-dse/394-catalog-export-root-final.json",
+    "byte_identical": true,
+    "stdout_sha256": "54f27ad1ea12943e0ad4d115156edca952e03ab5e840c4af6336944066f818d1"
+  }
+]

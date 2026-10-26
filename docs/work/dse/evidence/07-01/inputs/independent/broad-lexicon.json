@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "lexemes": [
+    {
+      "id": "lexeme:en.link.v",
+      "language": "en",
+      "lemma": "link",
+      "pos": "verb"
+    }
+  ],
+  "senses": [
+    {
+      "id": "sense:en.link.direct",
+      "lexeme_id": "lexeme:en.link.v",
+      "valency_ids": [
+        "en.link.direct.transitive"
+      ]
+    },
+    {
+      "id": "sense:en.link.indirect",
+      "lexeme_id": "lexeme:en.link.v",
+      "valency_ids": [
+        "en.link.indirect.transitive"
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "sense_id": "sense:en.link.direct",
+      "mapping_kind": "broad",
+      "status": "approved",
+      "provenance": {
+        "id": "dse394-neutral",
+        "uri": "https://github.com/clickbytes/golingua/issues/394",
+        "version": "2026-10-26.1",
+        "license": "internal-neutral-example",
+        "author": "Codex by owner delegation"
+      },
+      "target": {
+        "schema_version": 1,
+        "kind": "symbol",
+        "profile": "positive-facts-v1",
+        "symbol_ref": "r",
+        "role_ports": [
+          {
+            "frame_id": "en.link.direct.transitive",
+            "role": "origin",
+            "port_id": "a",
+            "type": {
+              "kind": "Entity"
+            }
+          },
+          {
+            "frame_id": "en.link.direct.transitive",
+            "role": "endpoint",
+            "port_id": "b",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "sense_id": "sense:en.link.indirect",
+      "mapping_kind": "equivalent",
+      "status": "approved",
+      "provenance": {
+        "id": "dse394-neutral",
+        "uri": "https://github.com/clickbytes/golingua/issues/394",
+        "version": "2026-10-26.1",
+        "license": "internal-neutral-example",
+        "author": "Codex by owner delegation"
+      },
+      "target": {
+        "schema_version": 1,
+        "kind": "goal",
+        "profile": "positive-facts-v1",
+        "goal_spec": {
+          "schema_version": 1,
+          "profile": "positive-facts-v1",
+          "context_id": "lexical-neutral",
+          "expected_type": {
+            "kind": "Arrow",
+            "from": {
+              "kind": "Entity"
+            },
+            "to": {
+              "kind": "Arrow",
+              "from": {
+                "kind": "Entity"
+              },
+              "to": {
+                "kind": "Prop"
+              }
+            }
+          },
+          "ports": [
+            {
+              "id": "u",
+              "type": {
+                "kind": "Entity"
+              }
+            },
+            {
+              "id": "v",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          ],
+          "references": [],
+          "allowed_operators": [
+            "relation",
+            "join",
+            "bind",
+            "permute",
+            "project"
+          ],
+          "constraints": [
+            {
+              "id": "two-steps",
+              "kind": "path",
+              "symbol": "r",
+              "from_port": "u",
+              "to_port": "v",
+              "from_role": "a",
+              "to_role": "b",
+              "allowed_atom_counts": [
+                2
+              ]
+            }
+          ],
+          "provenance": [
+            {
+              "id": "dse394-neutral",
+              "uri": "https://github.com/clickbytes/golingua/issues/394",
+              "version": "2026-10-26.1",
+              "license": "internal-neutral-example",
+              "author": "Codex by owner delegation"
+            }
+          ],
+          "limits": {}
+        },
+        "role_ports": [
+          {
+            "frame_id": "en.link.indirect.transitive",
+            "role": "origin",
+            "port_id": "u",
+            "type": {
+              "kind": "Entity"
+            }
+          },
+          {
+            "frame_id": "en.link.indirect.transitive",
+            "role": "endpoint",
+            "port_id": "v",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

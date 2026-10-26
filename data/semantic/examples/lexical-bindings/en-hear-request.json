@@ -1,0 +1,41 @@
+{
+  "sense_id": "sense:en.hear.auditory",
+  "frame_id": "en.hear.auditory.transitive",
+  "context_id": "perception-case-1",
+  "references": [
+    {
+      "id": "E1",
+      "type": {
+        "kind": "Event"
+      }
+    },
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ],
+  "role_references": [
+    {
+      "role": "experiencer",
+      "reference_id": "A"
+    },
+    {
+      "role": "stimulus",
+      "reference_id": "B"
+    }
+  ],
+  "port_references": [
+    {
+      "port_id": "event",
+      "reference_id": "E1"
+    }
+  ]
+}

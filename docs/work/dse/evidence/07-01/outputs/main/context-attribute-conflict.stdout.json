@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"CONFLICTING_REFERENCE_ATTRIBUTE","message":"document and context provide opposing known values","path":"request_context.referents.A.multiplicity","severity":"error"}]}

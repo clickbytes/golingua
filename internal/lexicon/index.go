@@ -67,11 +67,7 @@ func Encode(document Document, ontology *core.ConceptGraph, budget Budget) ([]by
 	sort.Slice(canonical.Lexemes, func(i, j int) bool { return canonical.Lexemes[i].ID.String() < canonical.Lexemes[j].ID.String() })
 	sort.Slice(canonical.Senses, func(i, j int) bool { return canonical.Senses[i].ID.String() < canonical.Senses[j].ID.String() })
 	sort.Slice(canonical.Bindings, func(i, j int) bool {
-		left, right := canonical.Bindings[i], canonical.Bindings[j]
-		if left.SenseID.String() != right.SenseID.String() {
-			return left.SenseID.String() < right.SenseID.String()
-		}
-		return left.CoreRef.String() < right.CoreRef.String()
+		return semanticBindingSortKey(canonical.Bindings[i]) < semanticBindingSortKey(canonical.Bindings[j])
 	})
 	for index := range canonical.Lexemes {
 		sort.Slice(canonical.Lexemes[index].Properties, func(i, j int) bool {
@@ -98,11 +94,7 @@ func Build(document Document, ontology *core.ConceptGraph, budget Budget) (*Inde
 	sort.Slice(document.Lexemes, func(i, j int) bool { return document.Lexemes[i].ID.String() < document.Lexemes[j].ID.String() })
 	sort.Slice(document.Senses, func(i, j int) bool { return document.Senses[i].ID.String() < document.Senses[j].ID.String() })
 	sort.Slice(document.Bindings, func(i, j int) bool {
-		left, right := document.Bindings[i], document.Bindings[j]
-		if left.SenseID.String() != right.SenseID.String() {
-			return left.SenseID.String() < right.SenseID.String()
-		}
-		return left.CoreRef.String() < right.CoreRef.String()
+		return semanticBindingSortKey(document.Bindings[i]) < semanticBindingSortKey(document.Bindings[j])
 	})
 	index := &Index{
 		lexemes: document.Lexemes, senses: document.Senses, bindings: document.Bindings,
@@ -121,7 +113,9 @@ func Build(document Document, ontology *core.ConceptGraph, budget Budget) (*Inde
 	}
 	for position, binding := range index.bindings {
 		index.bindingsBySense[binding.SenseID.String()] = append(index.bindingsBySense[binding.SenseID.String()], position)
-		index.bindingsByCore[binding.CoreRef.String()] = append(index.bindingsByCore[binding.CoreRef.String()], position)
+		if binding.Target == nil {
+			index.bindingsByCore[binding.CoreRef.String()] = append(index.bindingsByCore[binding.CoreRef.String()], position)
+		}
 	}
 	return index, nil
 }
@@ -221,10 +215,37 @@ func (index *Index) TransferBindings(id ids.SenseID) []SemanticBinding {
 	return result
 }
 
+// TargetBindingsForSense returns all explicitly tagged targets for a sense.
+// Results are detached; runtime callers must still validate selected metadata.
+func (index *Index) TargetBindingsForSense(id ids.SenseID) []SemanticBinding {
+	bindings := index.BindingsForSense(id)
+	result := make([]SemanticBinding, 0, len(bindings))
+	for _, binding := range bindings {
+		if binding.Target != nil {
+			result = append(result, binding)
+		}
+	}
+	return result
+}
+
+// ExecutableTargetBindingsForSense applies the separate approval, exact-map,
+// profile, and provenance gate without selecting among multiple targets.
+func (index *Index) ExecutableTargetBindingsForSense(id ids.SenseID) []SemanticBinding {
+	bindings := index.TargetBindingsForSense(id)
+	result := make([]SemanticBinding, 0, len(bindings))
+	for _, binding := range bindings {
+		if binding.TargetExecutionAuthorized() {
+			result = append(result, binding)
+		}
+	}
+	return result
+}
+
 func (index *Index) copyBindings(positions []int) []SemanticBinding {
 	result := make([]SemanticBinding, len(positions))
 	for i, position := range positions {
 		result[i] = index.bindings[position]
+		result[i].Target = cloneSemanticTarget(index.bindings[position].Target)
 	}
 	return result
 }
@@ -238,7 +259,11 @@ func (index *Index) Document() Document {
 }
 
 func cloneDocument(source Document) Document {
-	result := Document{SchemaVersion: source.SchemaVersion, Lexemes: make([]MorphLexeme, len(source.Lexemes)), Senses: make([]LexicalSense, len(source.Senses)), Bindings: append([]SemanticBinding(nil), source.Bindings...)}
+	result := Document{SchemaVersion: source.SchemaVersion, Lexemes: make([]MorphLexeme, len(source.Lexemes)), Senses: make([]LexicalSense, len(source.Senses)), Bindings: make([]SemanticBinding, len(source.Bindings))}
+	for i, binding := range source.Bindings {
+		result.Bindings[i] = binding
+		result.Bindings[i].Target = cloneSemanticTarget(binding.Target)
+	}
 	for i, lexeme := range source.Lexemes {
 		result.Lexemes[i] = cloneLexeme(lexeme)
 	}
@@ -259,4 +284,12 @@ func cloneSense(source LexicalSense) LexicalSense {
 	result.Usage = append([]string(nil), source.Usage...)
 	result.ValencyIDs = append([]ValencyID(nil), source.ValencyIDs...)
 	return result
+}
+
+func semanticBindingSortKey(binding SemanticBinding) string {
+	if binding.Target == nil {
+		return binding.SenseID.String() + "\x00core\x00" + binding.CoreRef.String()
+	}
+	encoded, _ := json.Marshal(canonicalSemanticTarget(binding.Target))
+	return binding.SenseID.String() + "\x00target\x00" + string(encoded)
 }

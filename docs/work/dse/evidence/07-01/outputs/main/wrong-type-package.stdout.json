@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"TARGET_PORT_TYPE_MISMATCH","message":"mapped role type differs from the selected primitive port type","path":"target.role_ports","severity":"error"}]}

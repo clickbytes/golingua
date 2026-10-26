@@ -1,0 +1,342 @@
+{
+  "schema_version": 1,
+  "format": "finite-goal-certificate-v1",
+  "producer_status": "constructed_unverified",
+  "goal_verified": false,
+  "origin": "construct",
+  "goal_fingerprint": "47afa9fc967a6e33a2d2149f88b9ceb1019756dc3880bae755ffbede0411c3d1",
+  "snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456",
+  "context_id": "lexical-neutral",
+  "profile": "positive-facts-v1",
+  "concrete_goal": {
+    "schema_version": 1,
+    "profile": "positive-facts-v1",
+    "context_id": "lexical-neutral",
+    "expected_type": {
+      "kind": "Prop"
+    },
+    "ports": [
+      {
+        "id": "u",
+        "type": {
+          "kind": "Entity"
+        },
+        "binding": {
+          "kind": "Ref",
+          "id": "A",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      },
+      {
+        "id": "v",
+        "type": {
+          "kind": "Entity"
+        },
+        "binding": {
+          "kind": "Ref",
+          "id": "B",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      }
+    ],
+    "references": [
+      {
+        "id": "A",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "id": "B",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ],
+    "allowed_operators": [
+      "relation",
+      "join",
+      "bind",
+      "permute",
+      "project"
+    ],
+    "constraints": [
+      {
+        "id": "two-steps",
+        "kind": "path",
+        "symbol": "r",
+        "from_port": "u",
+        "to_port": "v",
+        "from_role": "a",
+        "to_role": "b",
+        "allowed_atom_counts": [
+          2
+        ]
+      }
+    ],
+    "provenance": [
+      {
+        "id": "dse394-neutral",
+        "uri": "https://github.com/clickbytes/golingua/issues/394",
+        "version": "2026-10-26.1",
+        "license": "internal-neutral-example",
+        "author": "Codex by owner delegation"
+      }
+    ],
+    "limits": {
+      "term_limits": {}
+    }
+  },
+  "choices": [],
+  "candidate_fingerprint": "sha256:a48f0ecf41116ae9c9f5f9a593da088c8ee4c2ab6e4fdd165757191ba47ca6eb",
+  "interface": [],
+  "operations": [
+    {
+      "id": "s1",
+      "rule_id": "algebra.relation.v1",
+      "op": "relation",
+      "inputs": [],
+      "symbol": "r",
+      "mapping": [],
+      "outputs": [],
+      "ports": [
+        "a",
+        "b"
+      ],
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Entity"
+        },
+        "to": {
+          "kind": "Arrow",
+          "from": {
+            "kind": "Entity"
+          },
+          "to": {
+            "kind": "Prop"
+          }
+        }
+      },
+      "interface": [
+        {
+          "port": "a",
+          "binder": "rel_r_a_1"
+        },
+        {
+          "port": "b",
+          "binder": "rel_r_b_1"
+        }
+      ],
+      "substitutions": []
+    },
+    {
+      "id": "s2",
+      "rule_id": "algebra.relation.v1",
+      "op": "relation",
+      "inputs": [],
+      "symbol": "r",
+      "mapping": [],
+      "outputs": [],
+      "ports": [
+        "a",
+        "b"
+      ],
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Entity"
+        },
+        "to": {
+          "kind": "Arrow",
+          "from": {
+            "kind": "Entity"
+          },
+          "to": {
+            "kind": "Prop"
+          }
+        }
+      },
+      "interface": [
+        {
+          "port": "a",
+          "binder": "rel_r_a_1"
+        },
+        {
+          "port": "b",
+          "binder": "rel_r_b_1"
+        }
+      ],
+      "substitutions": []
+    },
+    {
+      "id": "s3",
+      "rule_id": "algebra.join.v1",
+      "op": "join",
+      "inputs": [
+        "s1",
+        "s2"
+      ],
+      "mapping": [
+        {
+          "left_port": "b",
+          "right_port": "a"
+        }
+      ],
+      "outputs": [
+        {
+          "side": "left",
+          "port": "a",
+          "as": "u"
+        },
+        {
+          "side": "right",
+          "port": "b",
+          "as": "v"
+        }
+      ],
+      "ports": [
+        "u",
+        "v"
+      ],
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Entity"
+        },
+        "to": {
+          "kind": "Arrow",
+          "from": {
+            "kind": "Entity"
+          },
+          "to": {
+            "kind": "Prop"
+          }
+        }
+      },
+      "interface": [
+        {
+          "port": "u",
+          "binder": "rel_r_a_1_fresh_1"
+        },
+        {
+          "port": "v",
+          "binder": "rel_r_b_1_fresh_2"
+        }
+      ],
+      "substitutions": []
+    },
+    {
+      "id": "s4",
+      "rule_id": "algebra.bind.v1",
+      "op": "bind",
+      "inputs": [
+        "s3"
+      ],
+      "mapping": [],
+      "outputs": [],
+      "port": "u",
+      "ports": [
+        "v"
+      ],
+      "reference_id": "A",
+      "goal_port_id": "u",
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Entity"
+        },
+        "to": {
+          "kind": "Prop"
+        }
+      },
+      "interface": [
+        {
+          "port": "v",
+          "binder": "rel_r_b_1_fresh_2"
+        }
+      ],
+      "substitutions": [
+        {
+          "binder_id": "rel_r_a_1_fresh_1",
+          "reference_id": "A",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "rule_id": "algebra.bind.v1",
+      "op": "bind",
+      "inputs": [
+        "s4"
+      ],
+      "mapping": [],
+      "outputs": [],
+      "port": "v",
+      "ports": [],
+      "reference_id": "B",
+      "goal_port_id": "v",
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Prop"
+      },
+      "interface": [],
+      "substitutions": [
+        {
+          "binder_id": "rel_r_b_1_fresh_2",
+          "reference_id": "B",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    }
+  ],
+  "scopes": [
+    {
+      "binder_id": "join_0_1",
+      "kind": "Exists",
+      "type": {
+        "kind": "Entity"
+      },
+      "path": "expression"
+    }
+  ],
+  "obligations": [
+    {
+      "constraint_id": "two-steps",
+      "kind": "path",
+      "status": "structural_claim",
+      "step_ids": [],
+      "fragments": [
+        "candidate.expression.body.operands[0]",
+        "candidate.expression.body.operands[1]"
+      ]
+    }
+  ],
+  "assumptions": [
+    {
+      "kind": "typed_registry_snapshot",
+      "value": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456"
+    },
+    {
+      "kind": "request_reference_boundary",
+      "value": "sha256:b7364f53bc82faf85d55162efb7d7f3e2580ae37c1606649a4a95f3f8af68aef"
+    },
+    {
+      "kind": "positive_structural_profile",
+      "value": "positive-facts-v1"
+    }
+  ]
+}

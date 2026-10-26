@@ -1,0 +1,222 @@
+{
+  "tool": "jsonschema4.26.0",
+  "meta_schemas": "valid",
+  "artifacts": [
+    {
+      "file": "package.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_language_package",
+      "errors": []
+    },
+    {
+      "file": "bound-context-package-input.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_language_package",
+      "errors": []
+    },
+    {
+      "file": "renamed-package-input.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_language_package",
+      "errors": []
+    },
+    {
+      "file": "ambiguous-package-input.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_language_package",
+      "errors": []
+    },
+    {
+      "file": "direct-request.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_binding_request",
+      "errors": []
+    },
+    {
+      "file": "indirect-request.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_binding_request",
+      "errors": []
+    },
+    {
+      "file": "indirect-another-context-request.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_binding_request",
+      "errors": []
+    },
+    {
+      "file": "direct-context-request-input.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_binding_request",
+      "errors": []
+    },
+    {
+      "file": "indirect-context-request-input.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_binding_request",
+      "errors": []
+    },
+    {
+      "file": "open-request-input.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_binding_request",
+      "errors": []
+    },
+    {
+      "file": "selection-0-request-input.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_binding_request",
+      "errors": []
+    },
+    {
+      "file": "selection-1-request-input.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_binding_request",
+      "errors": []
+    },
+    {
+      "file": "direct-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "indirect-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "instantiated-goal-input.json",
+      "schema": "goals.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "instantiated-certificate-input.json",
+      "schema": "synthesis-certificate.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "metadata.json",
+      "schema": "package.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "root-binding-0",
+      "schema": "lexical-binding.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "root-binding-1",
+      "schema": "lexical-binding.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "data/semantic/languages/pl/pilot.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_language_package",
+      "errors": []
+    },
+    {
+      "file": "data/semantic/languages/en/pilot.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_language_package",
+      "errors": []
+    },
+    {
+      "file": "data/semantic/examples/lexical-bindings/en-see-request.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_binding_request",
+      "errors": []
+    },
+    {
+      "file": "data/semantic/examples/lexical-bindings/en-link-direct-request.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_binding_request",
+      "errors": []
+    },
+    {
+      "file": "data/semantic/examples/lexical-bindings/pl-see-request.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_binding_request",
+      "errors": []
+    },
+    {
+      "file": "data/semantic/examples/lexical-bindings/pl-hear-request.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_binding_request",
+      "errors": []
+    },
+    {
+      "file": "data/semantic/examples/lexical-bindings/en-link-indirect-request.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_binding_request",
+      "errors": []
+    },
+    {
+      "file": "data/semantic/examples/lexical-bindings/en-hear-request.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_binding_request",
+      "errors": []
+    },
+    {
+      "file": "data/semantic/examples/lexical-bindings/metadata.json",
+      "schema": "package.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/394-pilot-root/en-link-indirect-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/394-pilot-root/en-link-direct-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/394-pilot-root/en-hear-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/394-pilot-root/en-see-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/394-pilot-root/pl-hear-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/394-pilot-root/pl-see-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/394-pilot-root/goal-input.json",
+      "schema": "goals.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/394-pilot-root/certificate-input.json",
+      "schema": "synthesis-certificate.schema.json",
+      "definition": null,
+      "errors": []
+    }
+  ]
+}

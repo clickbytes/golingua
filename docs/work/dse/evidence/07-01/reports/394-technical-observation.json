@@ -1,0 +1,63 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "gofmt",
+        "-l",
+        "internal/cli/algebra.go",
+        "internal/cli/cli.go",
+        "internal/language/semantic_binding.go",
+        "internal/language/semantic_package.go",
+        "internal/lexicon/binding.go",
+        "internal/lexicon/index.go",
+        "internal/lexicon/json.go",
+        "internal/lexicon/semantic_binding.go",
+        "internal/lexicon/validate.go"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "go",
+        "vet",
+        "./..."
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "go",
+        "build",
+        "-o",
+        "/tmp/golingua-dse/bin/golingua-394-final",
+        "./cmd/golingua"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/golingua-dse/bin/golingua-394-final",
+        "--help"
+      ],
+      "exit_code": 0,
+      "stdout": "golingua v0 preview\nUsage: golingua --help | --version | capabilities --json | meaning canonicalize --json < meaning.json | meaning project --json < meaning.json | question --runtime-config <path> [--language pl|en] --json < question.json | translate --from <lang> --to <lang> --text <text> --json [--preview-id <id>] [--runtime-config <path>] | forms --language pl|en (--lexeme <id> --feature name=value... | --surface <form>) --json | catalog --summary|--details --json | snapshot --preview|--apply --store <path> --json\nAlgebra: golingua algebra capabilities --json; algebra check --input <file> [--metadata <package.json> ...] --json (or stdin with --input -); algebra context check --input <document.json> [--metadata <package.json> ...] --json (reports typed context assessment without treating conditions as facts); algebra build --metadata <package.json> [--metadata ...] [--input <construction.json>] --json (stdin if omitted or --input -); algebra synthesize --mode construct --metadata <package.json> [--metadata ...] --goal <goal.json> --json (stdin with --goal -); algebra synthesize --mode search --metadata <package.json> [--metadata ...] --goal <goal.json> [--search-limit name=value ...] --json (stdin with --goal -); algebra verify-goal --goal <goal.json> --candidate <candidate.json> --certificate <certificate.json> --metadata <package.json> [--metadata ...] [--verify-limit name=value ...] --json (all three inputs are named files); algebra catalog export --json (compiled inert catalog inventory); algebra facts validate --metadata <package.json> [--metadata ...] [--input <facts.json>] --json (stdin if omitted or --input -); algebra compare --left <expression.json> --right <expression.json> --profile <profile.json> --context-id <id> --metadata <package.json> [--metadata ...] [--comparison-limit name=value ...] --json (positive selected-profile equivalence; differing normal forms remain undetermined); algebra verify-proof --claim equivalence --left <expression.json> --right <expression.json> --profile <profile.json> --context-id <id> --certificate <certificate.json> --metadata ... --json; --claim rewrite --input <verification.json> --metadata ...; --claim goal --goal <goal.json> --candidate <candidate.json> --certificate <certificate.json> --metadata ...; --claim evaluation --expression <expression.json> --facts <facts.json> [--select <selection.json>] --proof <evaluate-result.json> --context-id <id> --profile positive-facts-v1 --metadata ...; unsupported claims such as entailment and countermodel are refused; algebra evaluate --metadata <package.json> [--metadata ...] --expression <expression.json> --facts <facts.json> [--select <selection.json>] --context-id <id> --profile positive-facts-v1 [--at <UTC>] [--evaluation-limit name=value ...] --json (finite positive support; no negative/world-truth inference); algebra export --metadata <package.json> [--metadata ...] [--input <request.json>] --json [--no-cache] (stdin if omitted or --input -); algebra inspect [--input <artifact.json>] --json (structural only, no metadata verification; stdin if omitted or --input -); algebra replay --metadata <package.json> [--metadata ...] [--input <request.json>] --json (stdin if omitted or --input -); algebra normalize --metadata <package.json> [--metadata ...] [--input <request.json>] --json (stdin if omitted or --input -); algebra verify-rewrite --metadata <package.json> [--metadata ...] [--input <verification.json>] --json (stdin if omitted or --input -); algebra metadata inspect|validate --metadata <package.json> [--metadata <package.json> ...] --json. Export and replay use explicitly selected metadata; replay checks artifact claims against independently supplied metadata and request context. Inspect checks structural integrity only. Normalize applies only the rewrite rules explicitly listed in a finite profile; verify-rewrite checks a submitted certificate against selected metadata. Verify-goal checks producer claims against selected metadata and candidate input; it does not evaluate facts or prove world truth. Synthesize construct results carry independent verification before export; search candidates are independently verified and still do not establish world truth. Candidate retention bytes and the separate 16 MiB whole-response cap are distinct. Build also supports generic not, modal, quantifier and ask steps. Capabilities separates representation from evaluation: Not, Modal and quantifiers are representable but not evaluated; root Ask supports only the positive query body profile. Ask embeds its typed answer variables and forbids --select; other evaluation and evaluation-proof inputs require a named selection file, including [] for closed queries. Metadata files are explicit inputs; validation is structural and does not prove world truth. Relative-time and many-valued reference attributes remain unsupported by evaluation; missing attributes remain unknown.\nquestion executes typed MeaningGraph requests against caller-supplied FactSets; it does not parse natural language. With --language, supported answers use verified PL/EN sentence routes and retain proof evidence.\nCompiled PL/EN sentence adapters cover limited seeing, hearing, looking, and reading (present 3sg/3pl and past 3sg/3pl), bounded present negation for seeing/hearing/looking in 3sg/3pl (EN do/does not; PL nie), and receiving (past 3sg/3pl); Polish plural past requires known subject number and agreement class. Reading supports English simple past read and Polish czyta\u0107 past forms in third-person singular and plural; plural English read remains tense-ambiguous. Identification classifies a compatible known referent (for example, cat or dog) and attributes black to that referent in the tested PL/EN routes. English realization retains this/that/it alternatives for unresolved reference and this/that for demonstrative reference, with explicit reference assumptions; Polish to/ten may carry a declared deixis loss when source proximity is not preserved. A bounded positive composition route supports a present seeing event with a black subject and an object, both singular, including compatible known nouns. Other modifier combinations, tenses, numbers, and unsupported or missing lexical forms are refused. These routes do not resolve entity identity or animal sex. translate requires --runtime-config with an active snapshot.\nAlgebra binding: algebra binding inspect --language-package <package.json> [--metadata <package.json> ...] --json; algebra binding validate --language-package <package.json> --metadata <package.json> [--metadata ...] --json; algebra binding instantiate --language-package <package.json> --metadata <package.json> [--metadata ...] --input <request.json|-> --json. Inspection is structural; validation and instantiation use explicitly selected metadata. These commands do not parse or translate text.\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/golingua-dse/bin/golingua-394-final",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stdout": "0.1.0-alpha.1\n",
+      "stderr": ""
+    }
+  ],
+  "binary_sha256": "dd8e95c102ffcbb339cc036c517ab81fb90df4163d080648565b4297bec6991b"
+}

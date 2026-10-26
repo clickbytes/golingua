@@ -1,0 +1,1 @@
+{"status":"unknown","diagnostics":[{"code":"UNDECLARED_REFERENCE","message":"reference must be declared by this request or goal template","path":"role_references[0].reference_id","severity":"error"}]}
