@@ -67,7 +67,7 @@
         381,
         383
       ],
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "branch_name": null,
       "actual_base_sha": null,
       "branch_url": null,
@@ -344,11 +344,11 @@
         382
       ],
       "branch_name": "dse/03-03-runtime-dag",
-      "status": "ACTIVE",
+      "status": "DONE",
       "actual_base_sha": "9a343db4ff590adaa3aa12f9385d20ebff843c84",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/03-03-runtime-dag",
-      "pr_url": null,
-      "merge_sha": null,
+      "pr_url": "https://github.com/clickbytes/golingua/pull/407",
+      "merge_sha": "67c10bfeb75ea4be85c04eab44366c8890d6e57b",
       "evidence_paths": [
         "docs/architecture/semantic-algebra/runtime-storage.md",
         "docs/work/dse/evidence/03-03/README.md",
@@ -368,12 +368,17 @@
         380
       ],
       "branch_name": "dse/02-02-facts-context",
-      "status": "QUEUED",
-      "actual_base_sha": null,
-      "branch_url": null,
+      "status": "ACTIVE",
+      "actual_base_sha": "a7415414b3c19ac2aa2c1ca1d8fb7fa57186e146",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/02-02-facts-context",
       "pr_url": null,
       "merge_sha": null,
-      "evidence_paths": []
+      "evidence_paths": [
+        "docs/work/dse/evidence/02-02/README.md",
+        "docs/work/dse/evidence/02-02/environment.json",
+        "docs/work/dse/evidence/02-02/observations.jsonl",
+        "docs/work/dse/evidence/02-02/view-api-observation.json"
+      ]
     },
     {
       "issue_number": 385,

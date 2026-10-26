@@ -11,6 +11,7 @@ For the issue record and work procedure, see the [DSE work index](../../work/dse
 - [Finite explicit composition](composition.md): the bounded algebra construction command implemented in #381, its operator limits and neutral examples; it does not implement the broader DSE synthesis and evaluation plans above.
 - [Bounded normalization](normalization.md): the explicitly licensed rewrite command, strict certificate verification, finite budgets, and neutral #382 examples; it does not evaluate facts or synthesize proofs from goals.
 - [Runtime artifact storage](runtime-storage.md): the bounded #383 export, structural inspection, and metadata-bound replay path, with neutral storage requests; artifacts preserve checked syntax and receipts, not facts or proofs.
+- [Request-scoped n-ary facts](facts.md): the #384 bounded explicit-evidence view, strict request format, UTC selection, and neutral positive/conflict examples; it reports evidence and does not infer world truth.
 
 The formal contract's initial executable profile allows structural alpha/beta reduction and positive matching against supplied facts. Its domain-axiom and rule allowlist is empty; absence of a matching fact remains `unknown`. The compatibility contract keeps existing Meaning v1 routes authoritative unless a future route explicitly opts into DSE. Neither contract introduces an API, schema migration, fallback, or language binding.
 
@@ -31,6 +32,6 @@ This is planned work, not evidence that the leaves have started or that their pr
 
 ## Status and evidence
 
-The current work is documentation-only. DSE implementation/runtime status is **NOT RUN**; owner language acceptance is **NOT_EVALUATED**. Formal correctness review, implementation status, agent assessment, and owner acceptance are separate outcomes. A document review does not count as a runtime pass.
+The checked typed IR, metadata registry, explicit construction, normalization and rewrite verification, and artifact export/replay components are implemented. The #384 facts CLI has recorded local branch observations; its PR/main CI status is still pending. Broader planned synthesis, evaluation, and language integration are not yet verified; consult the [issue map](../../work/dse/issue-map.json) for current leaf status. Formal review, implementation status, agent assessment, and owner acceptance are separate outcomes. Owner language acceptance remains **NOT_EVALUATED**.
 
 Future implementation must proceed through the serial issue hierarchy and report observable CLI results and limits for its active leaf. The initial facts-only profile does not authorize language-specific assumptions, domain axioms, or a closed-world inference. See the RFCs for detailed refusal and evidence requirements.

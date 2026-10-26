@@ -48,6 +48,26 @@ Przy `algebra check --metadata ...` wejściowy dokument wyrażenia nie może zaw
 
 Fingerprint zasobu obejmuje metadane dokumentu i jawne piny zależności. Formalny `formal_denotation_id` pomija etykiety, opisy, provenance, status review i krawędzie typowości; obejmuje identyfikatory i strukturę formalną, a dla zależności ich ID oraz formalne denotation ID. Fingerprinty zasobów zależności i ich wersje nie trafiają do tej formalnej projekcji. Żadna klasa lub etykieta nie wybiera procedury. Początkowy allowlist aksjomatów jest pusty; `typical_edges` pozostają opisem, a ograniczenia `arity` i `port_type` są wyłącznie strukturalnymi warunkami deklaracji. Szczegóły: [kontrakt metadanych](architecture/semantic-algebra/metadata.md), [schemat pakietu](../schemas/semantic/package.schema.json), [schemat symboli](../schemas/semantic/symbols.schema.json) i [neutralne przykłady](../data/semantic/examples/metadata/neutral.json).
 
+### Jawne fakty n-arne: `algebra facts validate`
+
+Polecenie sprawdza ograniczony, jawnie przekazany zestaw faktów względem wybranych pakietów metadanych i podsumowuje, które rekordy obowiązują w podanym kontekście czasu:
+
+```sh
+./golingua algebra facts validate --metadata data/semantic/examples/facts/metadata.json --input data/semantic/examples/facts/arities.json --json
+./golingua algebra facts validate --metadata data/semantic/examples/facts/metadata.json --input data/semantic/examples/facts/conflict.json --json
+cat data/semantic/examples/facts/empty.json | ./golingua algebra facts validate --metadata data/semantic/examples/facts/metadata.json --json
+```
+
+Wymagane jest `--json` oraz co najmniej jeden jawny `--metadata`; można powtarzać tę flagę dla wybranych pakietów i wszystkich ich zależności. `--input <plik>` wybiera pojedynczy plik, a brak `--input` lub `--input -` czyta stdin. Dane pakietu nie mogą wskazywać plików do otwarcia. Żądanie zawiera wersję schematu, `context_id`, tablice `referents` i `facts`, opcjonalny pin `snapshot_id`, opcjonalny UTC `at` i limity. Szczegółowy [kontrakt faktów](architecture/semantic-algebra/facts.md), [schemat JSON](../schemas/semantic/facts.schema.json) oraz [neutralne przykłady](../data/semantic/examples/facts/) opisują format.
+
+Każda wartość faktu jest jawnym `Ref` do żądania. `Var`, `Param` i `Hole`, nieznane referenty, symbole niezatwierdzone do operacyjnego użycia oraz assertion scope inny niż `asserted` są odrzucane. Dopuszczone są zatwierdzone prymitywne relacje z wybranych metadanych; aliasy, symbole pending i opaque nie są faktami operacyjnymi. Argumenty są sprawdzane po nazwanych rolach i zwracane w kolejności portów relacji, bez sortowania wartości. Typ referentu nie scala jego tożsamości z innym referentem tego samego sortu.
+
+Źródła dodatnie i ujemne mogą współistnieć dla tego samego atomu. Taki aktywny konflikt jest poprawnymi danymi i nie oznacza wybuchu ani prawdy/fałszu świata. Brak dopasowanego dowodu daje `unknown`, nigdy negację. Bez `at` aktywne są tylko rekordy bez obu granic czasu. Jawny `at` musi być UTC RFC3339Nano; granice przedziału są domknięte, puste końce nieograniczone, a żądanie nie używa zegara bieżącego ani określeń względnych. Fakty pozostają w wyniku także wtedy, gdy są nieaktywne w danym momencie.
+
+Odpowiedź JSON ma `status`, `snapshot_id`, `context_id`, `at`, `referents`, kanonicznie uporządkowane `facts`, `summary`, `metadata`, `absence_means` i `validation_scope`. `summary` podaje liczby `stored_facts`, `active_facts` i `inactive_facts`, atomy z ich stanem dowodowym oraz aktywne konflikty. Poprawny konflikt kończy się `ok` i exit 0; błędne żądanie jest typowaną odmową, zwykle exit 2, a przekroczenie limitu używa `resource_limit` i exit 4. Maksymalny JSON to 1 MiB, zagnieżdżenie 256, do 4096 faktów, 512 referentów i 16 portów.
+
+Ten request-scoped widok jest odrębny od istniejących binarnych `facts.Fact`/`Set` i komendy `question`. Nie importuje faktów z Meaning ani zdań, nie tworzy globalnej pamięci lub bazy i nie rozszerza starego reasonera. Obserwacja CLI, ocena agenta i akceptacja właściciela są osobne; akceptacja językowa pozostaje `NOT_EVALUATED`.
+
 ## Bounded normalization and certificate verification
 
 `algebra normalize` applies the explicitly listed finite rewrite profile to a typed expression using one or more explicitly selected metadata packages. `algebra verify-rewrite` independently checks the submitted certificate against the original request and those packages:

@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "context_id": "facts:request384",
+  "referents": [
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "E1",
+      "type": {
+        "kind": "Event"
+      }
+    },
+    {
+      "id": "E2",
+      "type": {
+        "kind": "Event"
+      }
+    },
+    {
+      "id": "Q1",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "q"
+      }
+    },
+    {
+      "id": "Q2",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "q"
+      }
+    }
+  ],
+  "facts": [
+    {
+      "id": "z1",
+      "atom": {
+        "symbol": "z",
+        "args": []
+      },
+      "polarity": "positive",
+      "assertion_scope": "asserted",
+      "source": {
+        "kind": "document",
+        "id": "source-z1",
+        "reference": {
+          "id": "neutral-facts-384",
+          "uri": "https://github.com/clickbytes/golingua/issues/384",
+          "version": "2026-10-26",
+          "license": "internal-neutral-example"
+        }
+      }
+    }
+  ]
+}
