@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "context_id": "facts:request384",
+  "referents": [
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "E1",
+      "type": {
+        "kind": "Event"
+      }
+    },
+    {
+      "id": "E2",
+      "type": {
+        "kind": "Event"
+      }
+    },
+    {
+      "id": "Q1",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "q"
+      }
+    },
+    {
+      "id": "Q2",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "q"
+      }
+    }
+  ],
+  "facts": []
+}

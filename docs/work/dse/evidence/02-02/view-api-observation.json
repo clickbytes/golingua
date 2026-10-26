@@ -1,0 +1,17 @@
+{
+  "name": "nary-evidence-absence-and-closed-validity-api",
+  "isolation": "/tmp/golingua-384-view-probe-7xt3lxmt",
+  "argv": [
+    "go",
+    "run",
+    "./cmd/viewprobe"
+  ],
+  "env": {
+    "GOPROXY": "off"
+  },
+  "exit_code": 0,
+  "stdout": "empty valid atom: unknown, no positive or negative evidence\nclosed boundary: 2026-10-26T01:00:00Z both 1 1\nclosed boundary: 2026-10-26T02:00:00Z both 1 1\nempty lookup instant with nonempty document At: unknown\noutside interval: unknown\nyear-one explicit closed instant: both\nyear-one interval without At: unknown\nview/source/getter mutation isolation: retained both sources\n",
+  "stderr": "",
+  "probe_sha256": "7300f731b71f03b1606c30e1771577400d08ca7092bbb848da2ee40fec061d6e",
+  "source_state": "copy of frozen active source, no .git or product-extraneous files copied"
+}

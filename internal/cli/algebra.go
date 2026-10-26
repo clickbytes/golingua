@@ -10,6 +10,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/clickbytes/golingua/internal/algebra"
+	"github.com/clickbytes/golingua/internal/facts"
 	"github.com/clickbytes/golingua/internal/metamodel"
 	"github.com/clickbytes/golingua/internal/provenance"
 	"github.com/clickbytes/golingua/internal/status"
@@ -130,6 +131,19 @@ type artifactInspectionOutput struct {
 	Checked             algebra.CheckedExpression   `json:"checked"`
 }
 
+type naryFactsOutput struct {
+	Status          status.OutcomeKind    `json:"status"`
+	SnapshotID      string                `json:"snapshot_id"`
+	ContextID       string                `json:"context_id"`
+	At              string                `json:"at"`
+	Referents       []algebra.Declaration `json:"referents"`
+	Facts           []facts.NaryFact      `json:"facts"`
+	Summary         facts.NarySummary     `json:"summary"`
+	Metadata        []metadataReference   `json:"metadata"`
+	AbsenceMeans    string                `json:"absence_means"`
+	ValidationScope string                `json:"validation_scope"`
+}
+
 type algebraInfrastructureError struct{ message string }
 
 func (failure *algebraInfrastructureError) Error() string { return failure.message }
@@ -152,6 +166,12 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		}
 		options.command = "metadata_" + args[2]
 		index = 3
+	} else if args[1] == "facts" {
+		if len(args) < 3 || args[2] != "validate" {
+			return options, "expected algebra facts validate"
+		}
+		options.command = "facts_validate"
+		index = 3
 	} else {
 		return options, "expected algebra check, build, export, inspect, replay, normalize, verify-rewrite, or metadata"
 	}
@@ -167,7 +187,7 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			seenJSON = true
 			options.json = true
 		case "--input":
-			if options.command != "check" && options.command != "build" && options.command != "normalize" && options.command != "verify-rewrite" && options.command != "export" && options.command != "inspect" && options.command != "replay" {
+			if options.command != "check" && options.command != "build" && options.command != "normalize" && options.command != "verify-rewrite" && options.command != "export" && options.command != "inspect" && options.command != "replay" && options.command != "facts_validate" {
 				return options, "--input is not valid for this algebra command"
 			}
 			if seenInput {
@@ -213,6 +233,9 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 	if strings.HasPrefix(options.command, "metadata_") && len(options.metadata) == 0 {
 		return options, "algebra metadata requires at least one --metadata file"
 	}
+	if options.command == "facts_validate" && len(options.metadata) == 0 {
+		return options, "algebra facts validate requires at least one --metadata file"
+	}
 	if len(options.metadata) > 16 {
 		return options, "algebra metadata accepts at most 16 files"
 	}
@@ -253,6 +276,13 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 			return ExitError
 		}
 		return ExitOK
+	}
+	if options.command == "facts_validate" {
+		registries, err := readMetadataRegistries(options.metadata)
+		if err != nil {
+			return writeAlgebraError(stdout, stderr, err)
+		}
+		return runNaryFactsValidate(options, input, stdout, stderr, registries)
 	}
 	if options.command == "export" {
 		registries, err := readMetadataRegistries(options.metadata)
@@ -378,6 +408,42 @@ func runAlgebraNormalize(options algebraOptions, input io.Reader, stdout, stderr
 		return writeAlgebraError(stdout, stderr, err)
 	}
 	return exitCode(result.Status)
+}
+
+func runNaryFactsValidate(options algebraOptions, input io.Reader, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
+	data, err := readAlgebraInput(options, input, facts.MaxNaryInputBytes, "algebra facts validate")
+	if err != nil {
+		return writeNaryFactsError(stdout, stderr, err)
+	}
+	request, err := facts.DecodeNaryInput(data)
+	if err != nil {
+		return writeNaryFactsError(stdout, stderr, err)
+	}
+	schema, err := metamodel.FactsSchema(registries)
+	if err != nil {
+		return writeNaryFactsError(stdout, stderr, err)
+	}
+	view, err := facts.BuildNary(schema, request)
+	if err != nil {
+		return writeNaryFactsError(stdout, stderr, err)
+	}
+	// The request's explicit query instant is passed through. Empty means only
+	// timeless evidence applies; the CLI never chooses the current time.
+	summary, err := view.SummaryAt(view.At())
+	if err != nil {
+		return writeNaryFactsError(stdout, stderr, err)
+	}
+	output := naryFactsOutput{
+		Status: status.OutcomeOK, SnapshotID: view.SnapshotID(), ContextID: view.ContextID(), At: view.At(),
+		Referents: view.Referents(), Facts: view.Facts(), Summary: summary,
+		Metadata: metadataReferences(registries), AbsenceMeans: "unknown",
+		ValidationScope: "explicit n-ary ground evidence; not world-truth or owner approval",
+	}
+	if err := writeJSON(stdout, output); err != nil {
+		_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not serialize n-ary facts result: %v\n", err)
+		return ExitError
+	}
+	return ExitOK
 }
 
 func runAlgebraVerifyRewrite(options algebraOptions, input io.Reader, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
@@ -700,6 +766,19 @@ func writeAlgebraError(stdout, stderr io.Writer, err error) int {
 	}
 	_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: algebra check failed unexpectedly: %v\n", err)
 	return ExitError
+}
+
+func writeNaryFactsError(stdout, stderr io.Writer, err error) int {
+	var typed *facts.StatusError
+	if errors.As(err, &typed) {
+		result := typed.Result()
+		if len(result.Diagnostics) > 0 {
+			diagnostic := result.Diagnostics[0]
+			return writeResult(stdout, stderr, algebraDiagnostic(result.Status, diagnostic.Code, diagnostic.Message, diagnostic.Path))
+		}
+		return writeResult(stdout, stderr, result)
+	}
+	return writeAlgebraError(stdout, stderr, err)
 }
 
 func algebraDiagnostic(kind status.OutcomeKind, code, message, path string) status.Result {

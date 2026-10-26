@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/clickbytes/golingua/schemas/semantic/facts.schema.json",
+  "title": "GoLingua request-scoped n-ary fact input",
+  "description": "Strict wire shape for explicit ground evidence. Decoding does not activate metadata or establish world truth.",
+  "$comment": "Runtime hard limit: 1048576 UTF-8 bytes and JSON nesting 256. Runtime caps: 4096 facts, 512 referents, 16 arguments per atom. Empty valid_time endpoints are unbounded. Empty at means only timeless evidence applies. Referent ground-sort checks, role matching, source validation, and UTC interval semantics are runtime validation steps.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "context_id", "referents", "facts"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "snapshot_id": {"$ref": "#/$defs/request_id"},
+    "context_id": {"$ref": "#/$defs/request_id"},
+    "referents": {
+      "type": "array",
+      "maxItems": 512,
+      "items": {"$ref": "#/$defs/referent"}
+    },
+    "facts": {
+      "type": "array",
+      "maxItems": 4096,
+      "items": {"$ref": "#/$defs/fact"}
+    },
+    "at": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^(?:|[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z)$",
+      "$comment": "Runtime parses RFC3339Nano and requires UTC Z. Omission or empty string means no query instant; no clock fallback is used."
+    },
+    "limits": {"$ref": "#/$defs/limits"}
+  },
+  "$defs": {
+    "request_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9_.:-]+$",
+      "$comment": "Runtime also enforces a 256 UTF-8 byte bound."
+    },
+    "fact_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.-]+$",
+      "$comment": "Runtime uses the legacy bounded local fact/source ID rule."
+    },
+    "referent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type"],
+      "properties": {
+        "id": {"$ref": "#/$defs/request_id"},
+        "type": {"$ref": "expression.schema.json#/$defs/type"}
+      },
+      "$comment": "Runtime requires a ground base sort Entity, Event, Interval, or a declared Nominal sort. It does not infer identity from concept or label."
+    },
+    "value": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "id"],
+      "properties": {
+        "kind": {"enum": ["Ref", "Var", "Param", "Hole"]},
+        "id": {"$ref": "#/$defs/request_id"}
+      },
+      "$comment": "Only Ref is a ground fact value; Var, Param, and Hole are rejected during semantic validation."
+    },
+    "argument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "value"],
+      "properties": {
+        "role": {"$ref": "#/$defs/request_id"},
+        "value": {"$ref": "#/$defs/value"}
+      }
+    },
+    "atom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["symbol", "args"],
+      "properties": {
+        "symbol": {"$ref": "#/$defs/request_id"},
+        "args": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {"$ref": "#/$defs/argument"}
+        }
+      },
+      "$comment": "Argument role names must be unique and match the selected relation ports exactly. Zero-arity declarations use args: []."
+    },
+    "source_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "license"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "path": {"type": "string", "maxLength": 2048},
+        "uri": {"type": "string", "maxLength": 2048},
+        "version": {"type": "string", "minLength": 1, "maxLength": 128},
+        "license": {"type": "string", "minLength": 1, "maxLength": 256},
+        "author": {"type": "string", "maxLength": 256},
+        "checksum_sha256": {"type": "string", "maxLength": 64}
+      },
+      "$comment": "Runtime requires exactly one valid path or URI and validates any checksum. Optional path/uri/author/checksum values may be empty strings."
+    },
+    "source": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "id"],
+          "properties": {
+            "kind": {"const": "user"},
+            "id": {"$ref": "#/$defs/fact_id"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "id", "reference"],
+          "properties": {
+            "kind": {"const": "document"},
+            "id": {"$ref": "#/$defs/fact_id"},
+            "reference": {"$ref": "#/$defs/source_ref"}
+          },
+          "$comment": "The selected reference is validated at runtime and is attribution metadata only."
+        }
+      ]
+    },
+    "valid_time": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^(?:|[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z)$"
+        },
+        "to": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^(?:|[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z)$"
+        }
+      },
+      "$comment": "Closed interval with inclusive endpoints. Empty/missing endpoint is unbounded; runtime rejects reversed intervals and non-UTC values."
+    },
+    "fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "atom", "polarity", "source", "assertion_scope"],
+      "properties": {
+        "id": {"$ref": "#/$defs/fact_id"},
+        "atom": {"$ref": "#/$defs/atom"},
+        "polarity": {"enum": ["positive", "negative"]},
+        "valid_time": {"$ref": "#/$defs/valid_time"},
+        "source": {"$ref": "#/$defs/source"},
+        "assertion_scope": {"const": "asserted"}
+      },
+      "$comment": "Positive and negative are explicit evidence records. Opposing records may coexist; they are not interpreted as false or explosive logic."
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_facts": {"type": "integer", "minimum": 0, "maximum": 4096},
+        "max_referents": {"type": "integer", "minimum": 0, "maximum": 512}
+      },
+      "$comment": "Zero and omitted values select the respective defaults. Null values are rejected by the strict runtime decoder."
+    }
+  }
+}
