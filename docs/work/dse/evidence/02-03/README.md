@@ -24,6 +24,8 @@ Final pilot data hashes:
 
 - `metadata.json`: `e97ec4bd03d3c19793a0e77519a89e83949b63b6c3ffe8f40b78a4e3dd85f9b9`
 - `mapping.json`: `b776586a9f3bd59eae53744a8ee7f6b1a144de53bf9ab28e56034323891dbb17`
-- `catalog-review.tsv`: `306ad73723163f0dea595591c37d56399e752c89d6786d98027de4baa6ccbbad`
+- `catalog-review.tsv`: `f55facf62db8800ca99861d0964fb136aa123ca0edf62eead1210683142e6919`
 
 The canonical issue-map entry remains active with no PR URL or merge SHA yet. PR review and main CI are pending; no merge receipt or owner acceptance is claimed. The coordinator's technical assessment and independent review remain separate from owner language acceptance.
+
+The final staging check found trailing tabs for the empty last TSV column. The coordinator applied the reviewer-specified column reorder (`lexical_anchors` before nonempty `reason`); all 1002 row dictionaries and IDs were verified unchanged. The final ledger hash above covers that editorial ordering. Source, binary, metadata and literal CLI observations are unchanged.

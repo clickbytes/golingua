@@ -532,7 +532,7 @@
     "data/semantic/pilot/reading-build.json": "8712356367aff9857992b18bd8041d871b3fe8c4c9c179f3a70dd149b5fbe102",
     "data/semantic/pilot/reading-check.json": "be181ce8546312f09e0e7e8b742123619f4a786645e510d89df0105506c01fc3",
     "data/semantic/pilot/two-hop.json": "7b5f9e85f60ce772b32b4135873cbc479bbd5e54b76099098d2a5466482b4e6d",
-    "data/semantic/catalog-review.tsv": "306ad73723163f0dea595591c37d56399e752c89d6786d98027de4baa6ccbbad"
+    "data/semantic/catalog-review.tsv": "f55facf62db8800ca99861d0964fb136aa123ca0edf62eead1210683142e6919"
   },
   "binary_mtime_utc": "2026-10-26T01:47:41.776195+00:00",
   "data_mtime_utc": {
@@ -541,7 +541,7 @@
     "data/semantic/pilot/reading-build.json": "2026-10-26T01:48:07.852346+00:00",
     "data/semantic/pilot/reading-check.json": "2026-10-26T01:48:07.852346+00:00",
     "data/semantic/pilot/two-hop.json": "2026-10-26T01:48:07.852346+00:00",
-    "data/semantic/catalog-review.tsv": "2026-10-26T01:48:20.092417+00:00"
+    "data/semantic/catalog-review.tsv": "2026-10-26T01:56:07.207124+00:00"
   },
   "pilot_manifest_updated_after_binary_build": true
 }
