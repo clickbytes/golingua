@@ -1,0 +1,6 @@
+{"error":"","name":"past","reference":{"id":"ev1","type":{"kind":"Event"},"temporal_frame":"past"}}
+{"error":"","name":"present_state","reference":{"id":"ev1","type":{"kind":"Event"},"temporal_frame":"present"}}
+{"error":"","name":"unknown","reference":{"id":"ev1","type":{"kind":"Event"}}}
+{"error":"","name":"many","reference":{"id":"A","type":{"kind":"Entity"},"multiplicity":"many"}}
+{"error":"","name":"one","reference":{"id":"A","type":{"kind":"Entity"},"multiplicity":"one"}}
+{"error":"event/state attributes require an Event reference","name":"wrong_target","reference":{"id":"","type":{"kind":""}}}

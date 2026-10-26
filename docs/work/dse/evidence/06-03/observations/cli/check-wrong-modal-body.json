@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"EXPECTED_PROP","message":"Modal body must have type Prop","path":"expression.body","severity":"error"}]}

@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "request": {
+    "schema_version": 1,
+    "document": {
+      "schema_version": 1,
+      "references": [
+        {
+          "id": "C",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ],
+      "parameters": [],
+      "expression": {
+        "kind": "Atom",
+        "symbol": "p",
+        "args": [
+          {
+            "role": "v",
+            "value": {
+              "kind": "Ref",
+              "id": "C",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          }
+        ]
+      },
+      "limits": {}
+    },
+    "profile": {
+      "id": "attrs-beta-alpha",
+      "rules": [
+        "alpha_v1",
+        "beta_v1"
+      ]
+    }
+  },
+  "certificate": {
+    "input": {
+      "args": [
+        {
+          "role": "v",
+          "value": {
+            "id": "C",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      ],
+      "kind": "Atom",
+      "symbol": "p"
+    },
+    "normalized": true,
+    "output": {
+      "args": [
+        {
+          "role": "v",
+          "value": {
+            "id": "C",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      ],
+      "kind": "Atom",
+      "symbol": "p"
+    },
+    "profile": {
+      "id": "attrs-beta-alpha",
+      "rules": [
+        "alpha_v1",
+        "beta_v1"
+      ]
+    },
+    "schema_version": 1,
+    "snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456",
+    "steps": []
+  }
+}

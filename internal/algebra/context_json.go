@@ -77,7 +77,7 @@ func decodeContextReferents(raw []byte, path string) ([]ContextReferent, error) 
 	out := make([]ContextReferent, 0, len(items))
 	for i, item := range items {
 		p := fmt.Sprintf("%s[%d]", path, i)
-		f, err := strictObject(item, p, []string{"id", "type", "concept_id"}, []string{"id", "type"})
+		f, err := strictObject(item, p, []string{"id", "type", "concept_id", "temporal_frame", "reference_time_id", "multiplicity"}, []string{"id", "type"})
 		if err != nil {
 			return nil, err
 		}
@@ -88,6 +88,16 @@ func decodeContextReferents(raw []byte, path string) ([]ContextReferent, error) 
 		row.Type, err = DecodeTypeJSON(f["type"], p+".type")
 		if err != nil {
 			return nil, err
+		}
+		if err := validateReferenceAttributesJSON(f, p); err != nil {
+			return nil, err
+		}
+		for key, target := range map[string]*string{"temporal_frame": &row.TemporalFrame, "reference_time_id": &row.ReferenceTimeID, "multiplicity": &row.Multiplicity} {
+			if raw, ok := f[key]; ok {
+				if *target, err = rewriteJSONString(raw, p+"."+key, MaxContextIDBytes, false); err != nil {
+					return nil, err
+				}
+			}
 		}
 		if v, ok := f["concept_id"]; ok {
 			if err := strictTypedUnmarshal(v, &row.ConceptID, p+".concept_id"); err != nil {

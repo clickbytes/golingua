@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"NULL_FIELD","message":"string cannot be null","path":"references[0].multiplicity","severity":"error"}]}

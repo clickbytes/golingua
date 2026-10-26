@@ -726,8 +726,8 @@ func verifyOneAlgebraProofNode(claim AlgebraProofNode, index int, prior map[stri
 			return verifiedAlgebraProofNode{}, planInvalid("REFERENCE_BINDING_MISMATCH", path, "reference declaration and its namespace-aware binding must agree")
 		}
 		actual, known := state.knownRefs[claim.Reference.ID]
-		if !known || !algebra.TypeEqual(claim.Reference.Type, actual.Type) || !algebra.TypeEqual(variable.Type, actual.Type) {
-			return verifiedAlgebraProofNode{}, planInvalid("REFERENCE_TYPE_MISMATCH", path+".reference", "reference premise must use the exact selected declaration and variable type")
+		if !known || !algebra.TypeEqual(claim.Reference.Type, actual.Type) || !algebra.TypeEqual(variable.Type, actual.Type) || claim.Reference.TemporalFrame != actual.TemporalFrame || claim.Reference.ReferenceTimeID != actual.ReferenceTimeID || claim.Reference.Multiplicity != actual.Multiplicity {
+			return verifiedAlgebraProofNode{}, planInvalid("REFERENCE_ATTRIBUTE_MISMATCH", path+".reference", "reference premise must preserve the exact selected declaration, type, and known attributes")
 		}
 		return verifiedAlgebraProofNode{planNodeID: variable.SourcePath, ruleID: claim.RuleID, bindings: []AlgebraBinding{binding}, depth: 1}, nil
 	case AlgebraProofProject:

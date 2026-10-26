@@ -620,7 +620,8 @@ func cloneGoalForSearch(source GoalSpec, budget *searchBudget) (GoalSpec, bool) 
 		if !cloneOK {
 			return GoalSpec{}, false
 		}
-		copyGoal.References[i] = algebra.Declaration{ID: ref.ID, Type: typ}
+		copyGoal.References[i] = ref
+		copyGoal.References[i].Type = typ
 	}
 	copyGoal.ProjectPorts, complete = cloneSearchStrings(source.ProjectPorts, budget)
 	if !complete {

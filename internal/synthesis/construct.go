@@ -296,7 +296,8 @@ func constructionContext(context algebra.Document, references []algebra.Declarat
 	}
 	refs := make([]algebra.Declaration, len(references))
 	for i, ref := range references {
-		refs[i] = algebra.Declaration{ID: ref.ID, Type: cloneGoalType(ref.Type)}
+		refs[i] = ref
+		refs[i].Type = cloneGoalType(ref.Type)
 	}
 	var contextCopy *algebra.RequestContext
 	if requestContext != nil {

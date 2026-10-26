@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"ATTRIBUTE_TYPE_MISMATCH","message":"multiplicity is available only on Entity or Nominal references","path":"references[0].multiplicity","severity":"error"}]}

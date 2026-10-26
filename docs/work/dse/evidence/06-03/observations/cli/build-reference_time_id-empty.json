@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_STRING","message":"string is empty, invalid UTF-8, or exceeds its byte limit","path":"references[0].reference_time_id","severity":"error"}]}

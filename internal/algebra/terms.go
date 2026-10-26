@@ -18,6 +18,7 @@ const (
 	TermNot        TermKind = "Not"
 	TermQuantifier TermKind = "Quantifier"
 	TermAsk        TermKind = "Ask"
+	TermModal      TermKind = "Modal"
 )
 
 // Argument assigns one expression to a signature role. The sequence of Args
@@ -30,20 +31,22 @@ type Argument struct {
 // Term is the typed IR node. Check enforces that only fields belonging to Kind
 // are populated. Label is optional presentation data and never affects meaning.
 type Term struct {
-	Kind       TermKind      `json:"kind"`
-	ID         string        `json:"id,omitempty"`
-	Label      string        `json:"label,omitempty"`
-	Type       *Type         `json:"type,omitempty"`
-	Symbol     string        `json:"symbol,omitempty"`
-	Args       []Argument    `json:"args,omitempty"`
-	Operands   []*Term       `json:"operands,omitempty"`
-	Body       *Term         `json:"body,omitempty"`
-	Function   *Term         `json:"function,omitempty"`
-	Argument   *Term         `json:"argument,omitempty"`
-	Quantifier string        `json:"quantifier,omitempty"`
-	Count      *int          `json:"count,omitempty"`
-	Restrictor *Term         `json:"restrictor,omitempty"`
-	Answers    []Declaration `json:"answers,omitempty"`
+	Kind         TermKind      `json:"kind"`
+	ID           string        `json:"id,omitempty"`
+	Label        string        `json:"label,omitempty"`
+	Type         *Type         `json:"type,omitempty"`
+	Symbol       string        `json:"symbol,omitempty"`
+	Args         []Argument    `json:"args,omitempty"`
+	Operands     []*Term       `json:"operands,omitempty"`
+	Body         *Term         `json:"body,omitempty"`
+	Function     *Term         `json:"function,omitempty"`
+	Argument     *Term         `json:"argument,omitempty"`
+	Quantifier   string        `json:"quantifier,omitempty"`
+	Count        *int          `json:"count,omitempty"`
+	Restrictor   *Term         `json:"restrictor,omitempty"`
+	Answers      []Declaration `json:"answers,omitempty"`
+	Modality     string        `json:"modality,omitempty"`
+	ModalProfile string        `json:"modal_profile,omitempty"`
 }
 
 // Requirement describes an unresolved typed hole. It does not assert a fact

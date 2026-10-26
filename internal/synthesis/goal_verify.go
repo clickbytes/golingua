@@ -95,6 +95,9 @@ func VerifyGoalCertificate(primitiveContext algebra.Document, environment algebr
 	if (candidate.RequestContext == nil) != (original.RequestContext == nil) {
 		return goalVerificationReject(result, certEmitInvalid("CANDIDATE_REQUEST_CONTEXT_MISMATCH", "candidate.request_context", "candidate must preserve the request context carried by the goal")), nil
 	}
+	if !sameDeclarationInventory(certificate.ConcreteGoal.References, candidate.References) {
+		return goalVerificationReject(result, certEmitInvalid("CANDIDATE_REFERENCE_ATTRIBUTES_MISMATCH", "candidate.references", "candidate references and their explicit attributes must match the concrete goal")), nil
+	}
 	if original.RequestContext != nil {
 		candidateContext := primitiveContext
 		candidateContext.References = append([]algebra.Declaration{}, candidate.References...)

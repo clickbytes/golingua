@@ -41,6 +41,7 @@ type checker struct {
 // returns type/scope information only; it neither evaluates propositions nor
 // claims that they are true.
 func Check(document Document) (CheckedExpression, error) {
+	requestContext := document.RequestContext
 	if document.RequestContext != nil {
 		if _, err := CheckRequestContext(*document.RequestContext, document); err != nil {
 			return CheckedExpression{}, err
@@ -49,6 +50,11 @@ func Check(document Document) (CheckedExpression, error) {
 	}
 	checker, _, err := prepareChecker(document, true)
 	if err != nil {
+		return CheckedExpression{}, err
+	}
+	attributeDocument := document
+	attributeDocument.RequestContext = requestContext
+	if err := validateDocumentReferenceAttributes(attributeDocument); err != nil {
 		return CheckedExpression{}, err
 	}
 	resultType, err := checker.visit(document.Expression, "expression", 1)
@@ -65,6 +71,7 @@ func Check(document Document) (CheckedExpression, error) {
 // CheckDeclarations validates inline sorts, signatures, parameters, and
 // references without fabricating an expression or a hole.
 func CheckDeclarations(document Document) error {
+	requestContext := document.RequestContext
 	if document.RequestContext != nil {
 		if _, err := CheckRequestContext(*document.RequestContext, document); err != nil {
 			return err
@@ -72,7 +79,12 @@ func CheckDeclarations(document Document) error {
 		document.RequestContext = nil
 	}
 	_, _, err := prepareChecker(document, false)
-	return err
+	if err != nil {
+		return err
+	}
+	attributeDocument := document
+	attributeDocument.RequestContext = requestContext
+	return validateDocumentReferenceAttributes(attributeDocument)
 }
 
 func prepareChecker(document Document, requireExpression bool) (*checker, Limits, error) {
@@ -189,6 +201,9 @@ func (c *checker) readSignatures(signatures []Signature) error {
 func (c *checker) readDeclarations(name string, declarations []Declaration, into map[string]Declaration) error {
 	for i, declaration := range declarations {
 		path := fmt.Sprintf("%s[%d]", name, i)
+		if name != "references" && (declaration.TemporalFrame != "" || declaration.ReferenceTimeID != "" || declaration.Multiplicity != "") {
+			return invalid("MALFORMED_DECLARATION", path, "only reference declarations may carry semantic attributes")
+		}
 		if !validText(declaration.ID, 256) {
 			return invalid("INVALID_DECLARATION_ID", path+".id", "declaration ID must be non-empty valid UTF-8 and at most 256 bytes")
 		}
@@ -334,6 +349,15 @@ func (c *checker) visit(term *Term, path string, depth int) (Type, error) {
 			return Type{}, invalid("EXPECTED_PROP", path+".body", "Not body must have type Prop")
 		}
 		return Type{Kind: TypeProp}, nil
+	case TermModal:
+		bodyType, err := c.visit(term.Body, path+".body", depth+1)
+		if err != nil {
+			return Type{}, err
+		}
+		if bodyType.Kind != TypeProp {
+			return Type{}, invalid("EXPECTED_PROP", path+".body", "Modal body must have type Prop")
+		}
+		return Type{Kind: TypeProp}, nil
 	case TermQuantifier:
 		return c.visitQuantifier(term, path, depth)
 	case TermAsk:
@@ -465,7 +489,7 @@ func validateTermShape(term *Term, path string) error {
 	if term.Kind != TermAnd && len(term.Operands) != 0 {
 		return bad("operands")
 	}
-	usesBody := term.Kind == TermLambda || term.Kind == TermExists || term.Kind == TermNot || term.Kind == TermQuantifier || term.Kind == TermAsk
+	usesBody := term.Kind == TermLambda || term.Kind == TermExists || term.Kind == TermNot || term.Kind == TermQuantifier || term.Kind == TermAsk || term.Kind == TermModal
 	if !usesBody && term.Body != nil {
 		return bad("body")
 	}
@@ -483,6 +507,9 @@ func validateTermShape(term *Term, path string) error {
 	}
 	if term.Kind != TermAsk && term.Answers != nil {
 		return bad("answers")
+	}
+	if term.Kind != TermModal && (term.Modality != "" || term.ModalProfile != "") {
+		return bad("modality/modal_profile")
 	}
 	usesID := term.Kind == TermVar || term.Kind == TermParam || term.Kind == TermRef || term.Kind == TermHole || term.Kind == TermLambda || term.Kind == TermExists || term.Kind == TermQuantifier
 	if !usesID && term.ID != "" {
@@ -509,6 +536,16 @@ func validateTermShape(term *Term, path string) error {
 	case TermNot:
 		if term.Body == nil {
 			return invalid("MALFORMED_TERM", path+".body", "Not requires a body")
+		}
+	case TermModal:
+		if term.Body == nil {
+			return invalid("MALFORMED_TERM", path+".body", "Modal requires a body")
+		}
+		if term.Modality != "possible" && term.Modality != "necessary" && term.Modality != "likely" {
+			return invalid("INVALID_MODALITY", path+".modality", "modality must be possible, necessary, or likely")
+		}
+		if term.ModalProfile != "" && !validText(term.ModalProfile, 256) {
+			return invalid("INVALID_MODAL_PROFILE", path+".modal_profile", "modal profile must be bounded non-empty text")
 		}
 	case TermQuantifier:
 		if term.ID == "" || term.Type == nil || term.Body == nil || term.Quantifier == "" {

@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"ATTRIBUTE_TYPE_MISMATCH","message":"temporal frame is available only on Event references","path":"references[1].temporal_frame","severity":"error"}]}

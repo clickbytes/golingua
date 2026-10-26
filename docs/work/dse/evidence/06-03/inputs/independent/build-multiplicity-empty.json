@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "references": [
+    {
+      "id": "C",
+      "type": {
+        "kind": "Entity"
+      },
+      "multiplicity": ""
+    }
+  ],
+  "steps": [
+    {
+      "id": "r",
+      "op": "relation",
+      "symbol": "r"
+    }
+  ],
+  "result": "r"
+}

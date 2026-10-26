@@ -11,7 +11,7 @@
     "schema_version": {"const": 1},
     "request_context": {"$ref": "context.schema.json"},
     "parameters": {"type": "array", "maxItems": 512, "items": {"$ref": "expression.schema.json#/$defs/declaration"}},
-    "references": {"type": "array", "maxItems": 512, "items": {"$ref": "expression.schema.json#/$defs/declaration"}},
+    "references": {"type": "array", "maxItems": 512, "items": {"$ref": "expression.schema.json#/$defs/reference_declaration"}},
     "closed": {"type": "boolean"},
     "limits": {"$ref": "expression.schema.json#/$defs/limits"},
     "steps": {"type": "array", "minItems": 1, "maxItems": 64, "items": {"$ref": "#/$defs/step"}},
@@ -49,6 +49,7 @@
         {"$ref": "#/$defs/atom"},
         {"$ref": "#/$defs/and"},
         {"$ref": "#/$defs/not"},
+        {"$ref": "#/$defs/modal"},
         {"$ref": "#/$defs/quantifier"},
         {"$ref": "#/$defs/ask"},
         {"$ref": "#/$defs/join"},
@@ -65,6 +66,7 @@
     "atom": {"type": "object", "additionalProperties": false, "required": ["id", "op", "symbol", "args"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "atom"}, "symbol": {"$ref": "#/$defs/id"}, "args": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/atomArgument"}}}},
     "and": {"type": "object", "additionalProperties": false, "required": ["id", "op", "inputs"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "and"}, "inputs": {"type": "array", "minItems": 1, "maxItems": 4096, "items": {"$ref": "#/$defs/stepRef"}}}},
     "not": {"type": "object", "additionalProperties": false, "required": ["id", "op", "inputs"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "not"}, "inputs": {"type": "array", "minItems": 1, "maxItems": 1, "items": {"$ref": "#/$defs/stepRef"}}}},
+    "modal": {"type": "object", "additionalProperties": false, "required": ["id", "op", "inputs", "modality"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "modal"}, "inputs": {"type": "array", "minItems": 1, "maxItems": 1, "items": {"$ref": "#/$defs/stepRef"}}, "modality": {"enum": ["possible", "necessary", "likely"]}, "modal_profile": {"$ref": "#/$defs/id"}}},
     "quantifier": {"oneOf": [
       {"type": "object", "additionalProperties": false, "required": ["id", "op", "inputs", "quantifier"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "quantifier"}, "inputs": {"type": "array", "minItems": 1, "maxItems": 2, "items": {"$ref": "#/$defs/stepRef"}}, "quantifier": {"enum": ["some", "all"]}}},
       {"type": "object", "additionalProperties": false, "required": ["id", "op", "inputs", "quantifier", "count"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "quantifier"}, "inputs": {"type": "array", "minItems": 1, "maxItems": 2, "items": {"$ref": "#/$defs/stepRef"}}, "quantifier": {"enum": ["exactly", "at_least", "at_most"]}, "count": {"type": "integer", "minimum": 0}}}

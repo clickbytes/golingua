@@ -173,6 +173,8 @@ type artifactInspectionOutput struct {
 	RequiredRegistries  []algebra.RegistryPin       `json:"required_registry_pins"`
 	Profile             algebra.RewriteProfile      `json:"profile"`
 	ContextID           string                      `json:"context_id"`
+	RequestContext      *algebra.RequestContext     `json:"request_context,omitempty"`
+	References          []algebra.Declaration       `json:"references"`
 	ContextDependencies []algebra.ContextDependency `json:"context_dependencies"`
 	Provenance          []provenance.SourceRef      `json:"provenance"`
 	ResourceFingerprint string                      `json:"resource_fingerprint"`
@@ -873,10 +875,13 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 	}
 	if options.command == "capabilities" {
 		output := algebraCapabilitiesOutput{Status: status.OutcomeOK, Scopes: map[string]algebraScopeCapability{
-			"not":        {CanRepresent: true, CanEvaluate: false},
-			"quantifier": {CanRepresent: true, CanEvaluate: false},
-			"ask":        {CanRepresent: true, CanEvaluate: true, Condition: "root Ask with a positive Atom/And/Exists body after beta lowering; answer projection is embedded in Ask"},
-		}, QuestionType: string(algebra.TypeQuestion), Evaluation: algebraScopeCapability{CanRepresent: true, CanEvaluate: true, Condition: "only the bounded positive Ask profile; not arbitrary Question values"}, Scope: "representation and evaluation capability only; no world-truth or quantifier-completeness claim"}
+			"not":           {CanRepresent: true, CanEvaluate: false},
+			"modal":         {CanRepresent: true, CanEvaluate: false, Condition: "opaque possible/necessary/likely wrapper; no modal fact semantics"},
+			"quantifier":    {CanRepresent: true, CanEvaluate: false},
+			"ask":           {CanRepresent: true, CanEvaluate: true, Condition: "root Ask with a positive Atom/And/Exists body after beta lowering; answer projection is embedded in Ask"},
+			"relative_time": {CanRepresent: true, CanEvaluate: false, Condition: "past/present are explicit reference attributes; no mapping to the query instant"},
+			"multiplicity":  {CanRepresent: true, CanEvaluate: false, Condition: "one is accepted only in the atomic reference profile; many has no grouping semantics"},
+		}, QuestionType: string(algebra.TypeQuestion), Evaluation: algebraScopeCapability{CanRepresent: true, CanEvaluate: true, Condition: "only the bounded positive Ask profile; not arbitrary Question values"}, Scope: "representation and evaluation capability only; missing attributes remain unknown; no world-truth or quantifier-completeness claim"}
 		if err := writeJSON(stdout, output); err != nil {
 			_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not serialize algebra capabilities: %v\n", err)
 			return ExitError
@@ -1697,20 +1702,24 @@ func runArtifactInspect(options algebraOptions, input io.Reader, stdout, stderr 
 	}
 	context := algebra.Document{
 		SchemaVersion: algebra.SchemaVersion, Sorts: envelope.Sorts, Signatures: envelope.Signatures,
-		Parameters: envelope.Parameters, References: envelope.References, Closed: envelope.Closed, Limits: envelope.Limits,
+		Parameters: envelope.Parameters, References: envelope.References, RequestContext: envelope.RequestContext, Closed: envelope.Closed, Limits: envelope.Limits,
 	}
 	arena, err := algebra.NewArena(context, envelope.Root, envelope.Nodes)
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
 	}
 	checked := arena.Checked()
+	document, err := arena.Document()
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
 	output := artifactInspectionOutput{
 		Status:            checked.Status,
-		ValidationScope:   "structural artifact integrity against declared content only; selected metadata, approval, identity authority, and external resources are not verified",
+		ValidationScope:   "structural artifact integrity against declared content only; reference attributes and request-context values are displayed as unverified claims; selected metadata, approval, identity authority, and external resources are not verified",
 		MetadataVerified:  false,
 		NormalizerVersion: envelope.NormalizerVersion, RegistrySnapshotID: envelope.RegistrySnapshotID,
 		RequiredRegistries: append([]algebra.RegistryPin{}, envelope.Registries...), Profile: envelope.Profile,
-		ContextID: envelope.ContextID, ContextDependencies: append([]algebra.ContextDependency{}, envelope.ContextDependencies...),
+		ContextID: envelope.ContextID, RequestContext: document.RequestContext, References: append([]algebra.Declaration{}, document.References...), ContextDependencies: append([]algebra.ContextDependency{}, envelope.ContextDependencies...),
 		Provenance:          append([]provenance.SourceRef{}, envelope.Provenance...),
 		ResourceFingerprint: envelope.ResourceFingerprint, MeaningFingerprint: envelope.MeaningFingerprint, CacheKey: envelope.CacheKey,
 		Root: arena.Root(), UniqueNodes: arena.Count(), ExpandedNodes: checked.NodeCount, Checked: checked,

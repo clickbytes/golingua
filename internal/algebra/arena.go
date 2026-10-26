@@ -18,21 +18,23 @@ type NodeArgument struct {
 // ParameterID, ReferenceID, or HoleID according to Kind; NodeID is never a
 // substitute for that semantic identity.
 type Node struct {
-	NodeID     NodeID         `json:"node_id"`
-	Kind       TermKind       `json:"kind"`
-	Identity   string         `json:"identity,omitempty"`
-	Label      string         `json:"label,omitempty"`
-	Type       *Type          `json:"type,omitempty"`
-	Symbol     string         `json:"symbol,omitempty"`
-	Args       []NodeArgument `json:"args,omitempty"`
-	Operands   []NodeID       `json:"operands,omitempty"`
-	Body       NodeID         `json:"body,omitempty"`
-	Function   NodeID         `json:"function,omitempty"`
-	Argument   NodeID         `json:"argument,omitempty"`
-	Quantifier string         `json:"quantifier,omitempty"`
-	Count      *int           `json:"count,omitempty"`
-	Restrictor NodeID         `json:"restrictor,omitempty"`
-	Answers    []Declaration  `json:"answers,omitempty"`
+	NodeID       NodeID         `json:"node_id"`
+	Kind         TermKind       `json:"kind"`
+	Identity     string         `json:"identity,omitempty"`
+	Label        string         `json:"label,omitempty"`
+	Type         *Type          `json:"type,omitempty"`
+	Symbol       string         `json:"symbol,omitempty"`
+	Args         []NodeArgument `json:"args,omitempty"`
+	Operands     []NodeID       `json:"operands,omitempty"`
+	Body         NodeID         `json:"body,omitempty"`
+	Function     NodeID         `json:"function,omitempty"`
+	Argument     NodeID         `json:"argument,omitempty"`
+	Quantifier   string         `json:"quantifier,omitempty"`
+	Count        *int           `json:"count,omitempty"`
+	Restrictor   NodeID         `json:"restrictor,omitempty"`
+	Answers      []Declaration  `json:"answers,omitempty"`
+	Modality     string         `json:"modality,omitempty"`
+	ModalProfile string         `json:"modal_profile,omitempty"`
 }
 
 // Arena is an immutable, checked, artifact-local DAG. Its fields remain
@@ -90,7 +92,7 @@ func NewArena(context Document, root NodeID, nodes []Node) (*Arena, error) {
 				if typeErr != nil {
 					return nil, typeErr
 				}
-				copyNodes[i].Answers[j] = Declaration{ID: answer.ID, Type: typeCopy}
+				copyNodes[i].Answers[j] = Declaration{ID: answer.ID, Type: typeCopy, TemporalFrame: answer.TemporalFrame, ReferenceTimeID: answer.ReferenceTimeID, Multiplicity: answer.Multiplicity}
 			}
 		}
 		if node.Type != nil {
@@ -315,7 +317,7 @@ func validateArenaNodeShape(node Node, path string) error {
 	if node.Kind != TermAnd && len(node.Operands) != 0 {
 		return invalid("MALFORMED_ARENA_NODE", path+".operands", "operands are not allowed for this node kind")
 	}
-	if node.Kind != TermLambda && node.Kind != TermExists && node.Kind != TermNot && node.Kind != TermQuantifier && node.Kind != TermAsk && node.Body != 0 {
+	if node.Kind != TermLambda && node.Kind != TermExists && node.Kind != TermNot && node.Kind != TermQuantifier && node.Kind != TermAsk && node.Kind != TermModal && node.Body != 0 {
 		return invalid("MALFORMED_ARENA_NODE", path+".body", "body edge is not allowed for this node kind")
 	}
 	if node.Kind != TermApply && (node.Function != 0 || node.Argument != 0) {
@@ -335,6 +337,9 @@ func validateArenaNodeShape(node Node, path string) error {
 	}
 	if node.Kind != TermAsk && node.Answers != nil {
 		return invalid("MALFORMED_ARENA_NODE", path+".answers", "answers are not allowed for this node kind")
+	}
+	if node.Kind != TermModal && (node.Modality != "" || node.ModalProfile != "") {
+		return invalid("MALFORMED_ARENA_NODE", path, "modal fields are not allowed for this node kind")
 	}
 	return nil
 }
@@ -363,7 +368,7 @@ func arenaTerm(root NodeID, nodes []Node, limits Limits) (*Term, error) {
 			return cache[id], nil
 		}
 		node := nodes[id-1]
-		term := &Term{Kind: node.Kind, ID: node.Identity, Label: node.Label, Symbol: node.Symbol, Quantifier: node.Quantifier}
+		term := &Term{Kind: node.Kind, ID: node.Identity, Label: node.Label, Symbol: node.Symbol, Quantifier: node.Quantifier, Modality: node.Modality, ModalProfile: node.ModalProfile}
 		if node.Count != nil {
 			count := *node.Count
 			term.Count = &count
@@ -375,7 +380,7 @@ func arenaTerm(root NodeID, nodes []Node, limits Limits) (*Term, error) {
 				if err != nil {
 					return nil, err
 				}
-				term.Answers[i] = Declaration{ID: answer.ID, Type: typeCopy}
+				term.Answers[i] = Declaration{ID: answer.ID, Type: typeCopy, TemporalFrame: answer.TemporalFrame, ReferenceTimeID: answer.ReferenceTimeID, Multiplicity: answer.Multiplicity}
 			}
 		}
 		if node.Type != nil {
@@ -447,7 +452,7 @@ func cloneArenaNodes(nodes []Node, limits Limits) ([]Node, error) {
 				if typeErr != nil {
 					return nil, typeErr
 				}
-				copyNodes[i].Answers[j] = Declaration{ID: answer.ID, Type: typeCopy}
+				copyNodes[i].Answers[j] = Declaration{ID: answer.ID, Type: typeCopy, TemporalFrame: answer.TemporalFrame, ReferenceTimeID: answer.ReferenceTimeID, Multiplicity: answer.Multiplicity}
 			}
 		}
 		if node.Type != nil {
@@ -495,7 +500,7 @@ func cloneArenaContext(context Document, limits Limits) (Document, error) {
 			if err != nil {
 				return nil, err
 			}
-			result[i] = Declaration{ID: declaration.ID, Type: typeCopy}
+			result[i] = Declaration{ID: declaration.ID, Type: typeCopy, TemporalFrame: declaration.TemporalFrame, ReferenceTimeID: declaration.ReferenceTimeID, Multiplicity: declaration.Multiplicity}
 		}
 		return result, nil
 	}
@@ -525,7 +530,7 @@ func cloneCheckedExpression(value CheckedExpression, limits Limits) (CheckedExpr
 			if err != nil {
 				return nil, err
 			}
-			result[i] = Declaration{ID: declaration.ID, Type: typeCopy}
+			result[i] = Declaration{ID: declaration.ID, Type: typeCopy, TemporalFrame: declaration.TemporalFrame, ReferenceTimeID: declaration.ReferenceTimeID, Multiplicity: declaration.Multiplicity}
 		}
 		return result, nil
 	}

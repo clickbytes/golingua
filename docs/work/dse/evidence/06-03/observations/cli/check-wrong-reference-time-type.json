@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_REFERENCE_TIME_TARGET","message":"reference time must name a declared Interval reference","path":"document.references[0].reference_time_id","severity":"error"}]}

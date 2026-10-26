@@ -1,0 +1,226 @@
+{
+  "schema_version": 1,
+  "profile": {
+    "id": "attrs-beta-alpha",
+    "rules": [
+      "alpha_v1",
+      "beta_v1"
+    ]
+  },
+  "context_id": "eval-neutral",
+  "context_dependencies": [],
+  "provenance": [],
+  "artifact": {
+    "cache_key": "sha256:dbbc07e26a98073af808f37a58bbaa95c93636e1e2fdacdbddec898269db2b65",
+    "closed": false,
+    "context_dependencies": [],
+    "context_id": "eval-neutral",
+    "kind": "typed_expression_dag",
+    "limits": {},
+    "meaning_fingerprint": "sha256:5692c73083707caf94f675e956fa6bc95846c30544850240e3ed091530c59346",
+    "nodes": [
+      {
+        "identity": "ev1",
+        "kind": "Ref",
+        "node_id": 1,
+        "type": {
+          "kind": "Event"
+        }
+      },
+      {
+        "identity": "A",
+        "kind": "Ref",
+        "node_id": 2,
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "args": [
+          {
+            "role": "e",
+            "value": 1
+          },
+          {
+            "role": "x",
+            "value": 2
+          }
+        ],
+        "kind": "Atom",
+        "node_id": 3,
+        "symbol": "e2"
+      }
+    ],
+    "normalizer_version": "dse-normalizer-v1",
+    "parameters": [],
+    "profile": {
+      "id": "attrs-beta-alpha",
+      "rules": [
+        "alpha_v1",
+        "beta_v1"
+      ]
+    },
+    "provenance": [],
+    "references": [
+      {
+        "id": "A",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "id": "T",
+        "type": {
+          "kind": "Interval"
+        }
+      },
+      {
+        "id": "ev1",
+        "type": {
+          "kind": "Event"
+        },
+        "temporal_frame": "present",
+        "reference_time_id": "T"
+      }
+    ],
+    "registries": [
+      {
+        "id": "eval.neutral",
+        "version": "1",
+        "resource_fingerprint": "sha256:dbe6dbe5ddec656751652f20da9918fa9061c5a23339c76f0875e1b3b57b3423",
+        "formal_denotation_id": "sha256:ee37ea41fb44f15187766b6e4fcf6679b5da54071ec6ededa176a23dbceddb50"
+      }
+    ],
+    "registry_snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456",
+    "resource_fingerprint": "sha256:1a82a40824320915347570c298bf05edf0668c9e9bd7587dec7cdd503809500b",
+    "root": 3,
+    "schema_version": 1,
+    "signatures": [
+      {
+        "id": "e2",
+        "label": "uninterpreted e2",
+        "ports": [
+          {
+            "role": "e",
+            "type": {
+              "kind": "Event"
+            }
+          },
+          {
+            "role": "x",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        ]
+      },
+      {
+        "id": "n3",
+        "label": "uninterpreted n3",
+        "ports": [
+          {
+            "role": "u",
+            "type": {
+              "kind": "Entity"
+            }
+          },
+          {
+            "role": "v",
+            "type": {
+              "kind": "Entity"
+            }
+          },
+          {
+            "role": "w",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        ]
+      },
+      {
+        "id": "p",
+        "label": "uninterpreted p",
+        "ports": [
+          {
+            "role": "v",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        ]
+      },
+      {
+        "id": "q",
+        "label": "uninterpreted q",
+        "ports": [
+          {
+            "role": "v",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        ]
+      },
+      {
+        "id": "r",
+        "label": "uninterpreted r",
+        "ports": [
+          {
+            "role": "a",
+            "type": {
+              "kind": "Entity"
+            }
+          },
+          {
+            "role": "b",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        ]
+      },
+      {
+        "id": "s",
+        "label": "uninterpreted s",
+        "ports": [
+          {
+            "role": "a",
+            "type": {
+              "kind": "Entity"
+            }
+          },
+          {
+            "role": "b",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        ]
+      },
+      {
+        "id": "t",
+        "ports": [
+          {
+            "role": "source",
+            "type": {
+              "kind": "Entity"
+            }
+          },
+          {
+            "role": "target",
+            "type": {
+              "kind": "Event"
+            }
+          }
+        ]
+      },
+      {
+        "id": "z0",
+        "label": "uninterpreted z0",
+        "ports": []
+      }
+    ],
+    "sorts": []
+  }
+}

@@ -555,20 +555,24 @@ func equivalenceInventorySubset(source, actual Document, path string) error {
 }
 
 func equivalenceDeclarationSubset(source, actual []Declaration, path string) error {
-	selected := make(map[string]Type, len(actual))
+	selected := make(map[string]Declaration, len(actual))
 	for _, declaration := range actual {
-		selected[declaration.ID] = declaration.Type
+		selected[declaration.ID] = declaration
 	}
 	for i, declaration := range source {
-		typ, ok := selected[declaration.ID]
+		selectedDeclaration, ok := selected[declaration.ID]
 		if !ok {
 			return invalid("UNKNOWN_EQUIVALENCE_DECLARATION", fmt.Sprintf("%s[%d].id", path, i), "parameter or reference is not in the selected typed context")
 		}
-		if !TypeEqual(declaration.Type, typ) {
+		if !TypeEqual(declaration.Type, selectedDeclaration.Type) || !sameReferenceAttributes(declaration, selectedDeclaration) {
 			return invalid("EQUIVALENCE_DECLARATION_OVERRIDE", fmt.Sprintf("%s[%d].type", path, i), "source declaration overrides its selected type")
 		}
 	}
 	return nil
+}
+
+func sameReferenceAttributes(left, right Declaration) bool {
+	return left.TemporalFrame == right.TemporalFrame && left.ReferenceTimeID == right.ReferenceTimeID && left.Multiplicity == right.Multiplicity
 }
 
 func equivalenceSideEnvironment(environment RewriteEnvironment, source Document, limits Limits) (RewriteEnvironment, error) {
@@ -746,7 +750,8 @@ func cloneEquivalenceSignatures(signatures []Signature) []Signature {
 func cloneEquivalenceDeclarations(declarations []Declaration) []Declaration {
 	out := make([]Declaration, len(declarations))
 	for i, declaration := range declarations {
-		out[i] = Declaration{ID: declaration.ID, Type: cloneEquivalenceType(declaration.Type)}
+		out[i] = declaration
+		out[i].Type = cloneEquivalenceType(declaration.Type)
 	}
 	return out
 }

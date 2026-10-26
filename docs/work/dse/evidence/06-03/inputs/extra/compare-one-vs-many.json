@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"EQUIVALENCE_DECLARATION_OVERRIDE","message":"source declaration overrides its selected type","path":"left.references[0].type","severity":"error"}]}

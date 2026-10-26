@@ -148,7 +148,29 @@ func DecodeGoal(data []byte) (GoalSpec, error) {
 	if _, err := NormalizeGoalLimits(goal.Limits); err != nil {
 		return GoalSpec{}, err
 	}
+	if err := validateGoalReferenceAttributes(goal); err != nil {
+		return GoalSpec{}, err
+	}
 	return goal, nil
+}
+
+func validateGoalReferenceAttributes(goal GoalSpec) error {
+	document := algebra.Document{SchemaVersion: algebra.SchemaVersion, References: goal.References, RequestContext: goal.RequestContext}
+	for _, reference := range goal.References {
+		if _, err := algebra.EffectiveReferenceAttributes(document, goal.RequestContext, reference.ID); err != nil {
+			return err
+		}
+	}
+	if goal.RequestContext != nil {
+		for _, referent := range goal.RequestContext.Referents {
+			if referent.TemporalFrame != "" || referent.ReferenceTimeID != "" || referent.Multiplicity != "" {
+				if _, err := algebra.EffectiveReferenceAttributes(document, goal.RequestContext, referent.ID); err != nil {
+					return err
+				}
+			}
+		}
+	}
+	return nil
 }
 
 func decodeGoalPort(data []byte, path string) (GoalPort, error) {
@@ -206,7 +228,7 @@ func decodeGoalValueType(data []byte, path string) (*algebra.Type, error) {
 }
 
 func decodeGoalReference(data []byte, path string) (algebra.Declaration, error) {
-	fields, err := goalJSONObject(data, path, []string{"id", "type"}, []string{"id", "type"})
+	fields, err := goalJSONObject(data, path, []string{"id", "type", "temporal_frame", "reference_time_id", "multiplicity"}, []string{"id", "type"})
 	if err != nil {
 		return algebra.Declaration{}, err
 	}
@@ -218,7 +240,25 @@ func decodeGoalReference(data []byte, path string) (algebra.Declaration, error) 
 	if err != nil {
 		return algebra.Declaration{}, err
 	}
-	return algebra.Declaration{ID: id, Type: typ}, nil
+	result := algebra.Declaration{ID: id, Type: typ}
+	for _, attribute := range []struct {
+		name   string
+		target *string
+	}{
+		{"temporal_frame", &result.TemporalFrame},
+		{"reference_time_id", &result.ReferenceTimeID},
+		{"multiplicity", &result.Multiplicity},
+	} {
+		name, target := attribute.name, attribute.target
+		if raw, present := fields[name]; present {
+			value, stringErr := goalJSONString(raw, path+"."+name, algebra.MaxContextIDBytes, false)
+			if stringErr != nil {
+				return algebra.Declaration{}, stringErr
+			}
+			*target = value
+		}
+	}
+	return result, nil
 }
 
 func decodeGoalConstraint(data []byte, path string) (Constraint, error) {

@@ -367,7 +367,7 @@ func RewriteTermEqual(left, right *Term, limits Limits) (bool, error) {
 		if termNodes > limits.MaxNodes {
 			return false, resourceLimit("term", "term equality exceeds configured node bound")
 		}
-		if a.Kind != b.Kind || a.ID != b.ID || a.Symbol != b.Symbol || a.Quantifier != b.Quantifier ||
+		if a.Kind != b.Kind || a.ID != b.ID || a.Symbol != b.Symbol || a.Quantifier != b.Quantifier || a.Modality != b.Modality || a.ModalProfile != b.ModalProfile ||
 			len(a.Args) != len(b.Args) || len(a.Operands) != len(b.Operands) || len(a.Answers) != len(b.Answers) ||
 			(a.Count == nil) != (b.Count == nil) || (a.Count != nil && *a.Count != *b.Count) {
 			return false, nil
@@ -480,7 +480,7 @@ func rewriteChildren(term *Term) []*Term {
 		return out
 	case TermAnd:
 		return term.Operands
-	case TermExists, TermLambda, TermNot:
+	case TermExists, TermLambda, TermNot, TermModal:
 		if term.Body != nil {
 			return []*Term{term.Body}
 		}
@@ -528,7 +528,7 @@ func replaceRewritePath(root *Term, path []int, replacement *Term) (*Term, error
 		}
 		parent.Operands[index] = replacement
 		return root, nil
-	case TermExists, TermLambda, TermNot:
+	case TermExists, TermLambda, TermNot, TermModal:
 		if index == 0 {
 			parent.Body = replacement
 			return root, nil
@@ -882,6 +882,10 @@ func rewriteOrderKey(term *Term, outer map[string]int, limits Limits) (string, e
 				}
 			}
 		case TermNot:
+			return walk(t.Body, depth+1)
+		case TermModal:
+			token(t.Modality)
+			token(t.ModalProfile)
 			return walk(t.Body, depth+1)
 		case TermExists, TermLambda:
 			if err := rewriteTypeKey(&b, t.Type, 1, limits); err != nil {

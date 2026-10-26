@@ -244,7 +244,7 @@ func rewriteDocumentWire(document Document) (map[string]any, error) {
 			if typeErr != nil {
 				return nil, typeErr
 			}
-			copyValues[i] = Declaration{ID: declaration.ID, Type: typeCopy}
+			copyValues[i] = Declaration{ID: declaration.ID, Type: typeCopy, TemporalFrame: declaration.TemporalFrame, ReferenceTimeID: declaration.ReferenceTimeID, Multiplicity: declaration.Multiplicity}
 		}
 		return copyValues, nil
 	}
@@ -900,6 +900,15 @@ func termWire(term *Term) (map[string]any, error) {
 			return nil, err
 		}
 		wire["body"] = body
+	case TermModal:
+		body, err := termWire(term.Body)
+		if err != nil {
+			return nil, err
+		}
+		wire["modality"], wire["body"] = term.Modality, body
+		if term.ModalProfile != "" {
+			wire["modal_profile"] = term.ModalProfile
+		}
 	case TermQuantifier:
 		body, err := termWire(term.Body)
 		if err != nil {
@@ -1151,12 +1160,21 @@ func validateDocumentJSON(data []byte) error {
 			}
 			for i, item := range items {
 				path := fmt.Sprintf("%s[%d]", name, i)
-				fields, err := strictObject(item, path, []string{"id", "type"}, []string{"id", "type"})
+				allowed := []string{"id", "type"}
+				if name == "references" {
+					allowed = []string{"id", "type", "temporal_frame", "reference_time_id", "multiplicity"}
+				}
+				fields, err := strictObject(item, path, allowed, []string{"id", "type"})
 				if err != nil {
 					return err
 				}
 				if err := validateTypeJSON(fields["type"], path+".type"); err != nil {
 					return err
+				}
+				if name == "references" {
+					if err := validateReferenceAttributesJSON(fields, path); err != nil {
+						return err
+					}
 				}
 			}
 		}
@@ -1172,6 +1190,36 @@ func validateDocumentJSON(data []byte) error {
 		}
 	}
 	return validateTermJSON(root["expression"], "expression")
+}
+
+func validateReferenceAttributesJSON(fields map[string]json.RawMessage, path string) error {
+	var typ Type
+	if err := json.Unmarshal(fields["type"], &typ); err != nil {
+		return invalid("MALFORMED_TYPE", path+".type", "reference type is malformed")
+	}
+	for _, field := range []string{"temporal_frame", "reference_time_id", "multiplicity"} {
+		raw, ok := fields[field]
+		if !ok {
+			continue
+		}
+		value, err := rewriteJSONString(raw, path+"."+field, 256, false)
+		if err != nil {
+			return err
+		}
+		attrs := ReferenceAttributes{}
+		switch field {
+		case "temporal_frame":
+			attrs.TemporalFrame = value
+		case "reference_time_id":
+			attrs.ReferenceTimeID = value
+		case "multiplicity":
+			attrs.Multiplicity = value
+		}
+		if err := validateReferenceAttributes("", typ, attrs, path); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func validateTypeJSON(data json.RawMessage, path string) error {
@@ -1238,7 +1286,7 @@ func validateDataTypeJSON(data json.RawMessage, path string) error {
 }
 
 func validateTermJSON(data json.RawMessage, path string) error {
-	base, err := strictObjectNullable(data, path, []string{"kind", "id", "label", "type", "symbol", "args", "operands", "body", "function", "argument", "quantifier", "count", "restrictor", "answers"}, []string{"kind"}, []string{"restrictor"})
+	base, err := strictObjectNullable(data, path, []string{"kind", "id", "label", "type", "symbol", "args", "operands", "body", "function", "argument", "quantifier", "count", "restrictor", "answers", "modality", "modal_profile"}, []string{"kind"}, []string{"restrictor"})
 	if err != nil {
 		return err
 	}
@@ -1262,6 +1310,8 @@ func validateTermJSON(data json.RawMessage, path string) error {
 		allowed, required = []string{"kind", "label", "function", "argument"}, []string{"kind", "function", "argument"}
 	case TermNot:
 		allowed, required = []string{"kind", "label", "body"}, []string{"kind", "body"}
+	case TermModal:
+		allowed, required = []string{"kind", "label", "modality", "modal_profile", "body"}, []string{"kind", "modality", "body"}
 	case TermQuantifier:
 		allowed, required = []string{"kind", "id", "label", "type", "quantifier", "count", "restrictor", "body"}, []string{"kind", "id", "type", "quantifier", "body"}
 	case TermAsk:
@@ -1308,6 +1358,20 @@ func validateTermJSON(data json.RawMessage, path string) error {
 	case TermExists, TermLambda:
 		return validateTermJSON(fields["body"], path+".body")
 	case TermNot:
+		return validateTermJSON(fields["body"], path+".body")
+	case TermModal:
+		modality, err := rewriteJSONString(fields["modality"], path+".modality", 32, false)
+		if err != nil {
+			return err
+		}
+		if modality != "possible" && modality != "necessary" && modality != "likely" {
+			return invalid("INVALID_MODALITY", path+".modality", "modality must be possible, necessary, or likely")
+		}
+		if raw, ok := fields["modal_profile"]; ok {
+			if _, err := rewriteJSONString(raw, path+".modal_profile", 256, false); err != nil {
+				return err
+			}
+		}
 		return validateTermJSON(fields["body"], path+".body")
 	case TermQuantifier:
 		if raw, ok := fields["count"]; ok {
@@ -1752,7 +1816,11 @@ func decodeDeclarations(data []byte, path string) ([]Declaration, error) {
 	result := make([]Declaration, len(items))
 	for i, raw := range items {
 		itemPath := fmt.Sprintf("%s[%d]", path, i)
-		fields, err := strictObject(raw, itemPath, []string{"id", "type"}, []string{"id", "type"})
+		allowed := []string{"id", "type"}
+		if path == "artifact.references" {
+			allowed = []string{"id", "type", "temporal_frame", "reference_time_id", "multiplicity"}
+		}
+		fields, err := strictObject(raw, itemPath, allowed, []string{"id", "type"})
 		if err != nil {
 			return nil, err
 		}
@@ -1761,6 +1829,18 @@ func decodeDeclarations(data []byte, path string) ([]Declaration, error) {
 		}
 		if result[i].Type, err = DecodeTypeJSON(fields["type"], itemPath+".type"); err != nil {
 			return nil, err
+		}
+		if path == "artifact.references" {
+			if err := validateReferenceAttributesJSON(fields, itemPath); err != nil {
+				return nil, err
+			}
+			for key, target := range map[string]*string{"temporal_frame": &result[i].TemporalFrame, "reference_time_id": &result[i].ReferenceTimeID, "multiplicity": &result[i].Multiplicity} {
+				if rawValue, ok := fields[key]; ok {
+					if *target, err = rewriteJSONString(rawValue, itemPath+"."+key, 256, false); err != nil {
+						return nil, err
+					}
+				}
+			}
 		}
 	}
 	return result, nil
@@ -1809,7 +1889,7 @@ func decodeArtifactNodes(data []byte) ([]Node, error) {
 	result := make([]Node, len(items))
 	for i, raw := range items {
 		path := fmt.Sprintf("artifact.nodes[%d]", i)
-		base, err := strictObject(raw, path, []string{"node_id", "kind", "label", "identity", "type", "symbol", "args", "operands", "body", "function", "argument", "quantifier", "count", "restrictor", "answers"}, []string{"node_id", "kind"})
+		base, err := strictObject(raw, path, []string{"node_id", "kind", "label", "identity", "type", "symbol", "args", "operands", "body", "function", "argument", "quantifier", "count", "restrictor", "answers", "modality", "modal_profile"}, []string{"node_id", "kind"})
 		if err != nil {
 			return nil, err
 		}
@@ -1841,6 +1921,8 @@ func decodeArtifactNodes(data []byte) ([]Node, error) {
 			allowed, required = []string{"node_id", "kind", "label", "identity", "type", "body"}, []string{"node_id", "kind", "identity", "type", "body"}
 		case TermNot:
 			allowed, required = []string{"node_id", "kind", "label", "body"}, []string{"node_id", "kind", "body"}
+		case TermModal:
+			allowed, required = []string{"node_id", "kind", "label", "modality", "modal_profile", "body"}, []string{"node_id", "kind", "modality", "body"}
 		case TermQuantifier:
 			allowed, required = []string{"node_id", "kind", "label", "identity", "type", "quantifier", "count", "restrictor", "body"}, []string{"node_id", "kind", "identity", "type", "quantifier", "body"}
 		case TermAsk:
@@ -1907,6 +1989,21 @@ func decodeArtifactNodes(data []byte) ([]Node, error) {
 				}
 			}
 		case TermExists, TermLambda, TermNot:
+			if node.Body, err = decodeNodeID(fields["body"], path+".body"); err != nil {
+				return nil, err
+			}
+		case TermModal:
+			if node.Modality, err = rewriteJSONString(fields["modality"], path+".modality", 32, false); err != nil {
+				return nil, err
+			}
+			if node.Modality != "possible" && node.Modality != "necessary" && node.Modality != "likely" {
+				return nil, invalid("INVALID_MODALITY", path+".modality", "modality must be possible, necessary, or likely")
+			}
+			if raw, ok := fields["modal_profile"]; ok {
+				if node.ModalProfile, err = rewriteJSONString(raw, path+".modal_profile", 256, false); err != nil {
+					return nil, err
+				}
+			}
 			if node.Body, err = decodeNodeID(fields["body"], path+".body"); err != nil {
 				return nil, err
 			}

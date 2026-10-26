@@ -573,11 +573,11 @@
         391
       ],
       "branch_name": "dse/06-02-references-context",
-      "status": "ACTIVE",
+      "status": "DONE",
       "actual_base_sha": "80926ec5bdec30010fba9f5e265993881da9f06a",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/06-02-references-context",
-      "pr_url": null,
-      "merge_sha": null,
+      "pr_url": "https://github.com/clickbytes/golingua/pull/416",
+      "merge_sha": "cb25193f1a39fb5d25eeb73ee8fcb164e117c26e",
       "evidence_paths": [
         "docs/work/dse/evidence/06-02/README.md",
         "docs/work/dse/evidence/06-02/392-cli-observations.jsonl",
@@ -602,12 +602,26 @@
         392
       ],
       "branch_name": "dse/06-03-semantic-attributes",
-      "status": "QUEUED",
-      "actual_base_sha": null,
-      "branch_url": null,
+      "status": "ACTIVE",
+      "actual_base_sha": "518de87005ffac10feb04d264dd5ddba867998e9",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/06-03-semantic-attributes",
       "pr_url": null,
       "merge_sha": null,
-      "evidence_paths": []
+      "evidence_paths": [
+        "docs/work/dse/evidence/06-03/README.md",
+        "docs/work/dse/evidence/06-03/observations/393-cli-observations.jsonl",
+        "docs/work/dse/evidence/06-03/observations/393-extra-cli-observations.jsonl",
+        "docs/work/dse/evidence/06-03/observations/393-context-controls.jsonl",
+        "docs/work/dse/evidence/06-03/observations/393-adapter-observations.jsonl",
+        "docs/work/dse/evidence/06-03/observations/393-technical-observation.json",
+        "docs/work/dse/evidence/06-03/observations/393-semantic-observation.json",
+        "docs/work/dse/evidence/06-03/observations/393-schema-observation.json",
+        "docs/work/dse/evidence/06-03/observations/393-source-hashes.json",
+        "docs/work/dse/evidence/06-03/observations/393-final-legacy-observation.json",
+        "docs/work/dse/evidence/06-03/observations/393-final-legacy-export.json",
+        "docs/work/dse/evidence/06-03/observations/393-baseline392-old-export.json",
+        "docs/work/dse/evidence/06-03/observations-file-manifest.json"
+      ]
     },
     {
       "issue_number": 394,

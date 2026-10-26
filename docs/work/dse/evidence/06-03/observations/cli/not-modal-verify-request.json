@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "request": {
+    "schema_version": 1,
+    "document": {
+      "schema_version": 1,
+      "references": [
+        {
+          "id": "A",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "id": "B",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ],
+      "parameters": [],
+      "expression": {
+        "kind": "Not",
+        "body": {
+          "kind": "Modal",
+          "modality": "possible",
+          "body": {
+            "kind": "Atom",
+            "symbol": "r",
+            "args": [
+              {
+                "role": "a",
+                "value": {
+                  "kind": "Ref",
+                  "id": "A",
+                  "type": {
+                    "kind": "Entity"
+                  }
+                }
+              },
+              {
+                "role": "b",
+                "value": {
+                  "kind": "Ref",
+                  "id": "B",
+                  "type": {
+                    "kind": "Entity"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "limits": {}
+    },
+    "profile": {
+      "id": "attrs-beta-alpha",
+      "rules": [
+        "alpha_v1",
+        "beta_v1"
+      ]
+    }
+  },
+  "certificate": {
+    "input": {
+      "body": {
+        "body": {
+          "args": [
+            {
+              "role": "a",
+              "value": {
+                "id": "A",
+                "kind": "Ref",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            },
+            {
+              "role": "b",
+              "value": {
+                "id": "B",
+                "kind": "Ref",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ],
+          "kind": "Atom",
+          "symbol": "r"
+        },
+        "kind": "Modal",
+        "modality": "possible"
+      },
+      "kind": "Not"
+    },
+    "normalized": true,
+    "output": {
+      "body": {
+        "body": {
+          "args": [
+            {
+              "role": "a",
+              "value": {
+                "id": "A",
+                "kind": "Ref",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            },
+            {
+              "role": "b",
+              "value": {
+                "id": "B",
+                "kind": "Ref",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ],
+          "kind": "Atom",
+          "symbol": "r"
+        },
+        "kind": "Modal",
+        "modality": "possible"
+      },
+      "kind": "Not"
+    },
+    "profile": {
+      "id": "attrs-beta-alpha",
+      "rules": [
+        "alpha_v1",
+        "beta_v1"
+      ]
+    },
+    "schema_version": 1,
+    "snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456",
+    "steps": []
+  }
+}

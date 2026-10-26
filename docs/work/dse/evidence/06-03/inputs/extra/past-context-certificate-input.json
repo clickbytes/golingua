@@ -1,0 +1,250 @@
+{
+  "schema_version": 1,
+  "format": "finite-goal-certificate-v1",
+  "producer_status": "constructed_unverified",
+  "goal_verified": false,
+  "origin": "construct",
+  "goal_fingerprint": "fa8e8025bb104ced195988061e31089501ccafce3e82c6818ea1dc4a4fe4d401",
+  "snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456",
+  "context_id": "eval-neutral",
+  "request_context_fingerprint": "algebra-request-context-v1:sha256:0d45dfde05179bb9e9030a01571ec35392571be37581ba0d513352971e818eb2",
+  "profile": "positive-facts-v1",
+  "concrete_goal": {
+    "schema_version": 1,
+    "profile": "positive-facts-v1",
+    "context_id": "eval-neutral",
+    "request_context": {
+      "conditions": [],
+      "id": "eval-neutral",
+      "mentions": [],
+      "referents": [
+        {
+          "id": "ev1",
+          "reference_time_id": "T",
+          "temporal_frame": "past",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "id": "T",
+          "type": {
+            "kind": "Interval"
+          }
+        }
+      ],
+      "resolution_evidence": [],
+      "schema_version": 1
+    },
+    "expected_type": {
+      "kind": "Arrow",
+      "from": {
+        "kind": "Entity"
+      },
+      "to": {
+        "kind": "Prop"
+      }
+    },
+    "ports": [
+      {
+        "id": "e",
+        "type": {
+          "kind": "Event"
+        },
+        "binding": {
+          "kind": "Ref",
+          "id": "ev1",
+          "type": {
+            "kind": "Event"
+          }
+        }
+      },
+      {
+        "id": "x",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ],
+    "references": [
+      {
+        "id": "ev1",
+        "type": {
+          "kind": "Event"
+        },
+        "temporal_frame": "past",
+        "reference_time_id": "T"
+      },
+      {
+        "id": "T",
+        "type": {
+          "kind": "Interval"
+        }
+      }
+    ],
+    "allowed_operators": [
+      "relation",
+      "bind"
+    ],
+    "constraints": [
+      {
+        "id": "event-path",
+        "kind": "path",
+        "symbol": "e2",
+        "from_port": "e",
+        "to_port": "x",
+        "from_role": "e",
+        "to_role": "x",
+        "allowed_atom_counts": [
+          1
+        ]
+      }
+    ],
+    "provenance": [
+      {
+        "id": "dse386-neutral-goal",
+        "uri": "https://github.com/clickbytes/golingua/issues/386",
+        "version": "2026-10-26.1",
+        "license": "internal-neutral-example",
+        "author": "Codex by owner delegation"
+      }
+    ],
+    "limits": {
+      "max_atoms": 16,
+      "max_steps": 64,
+      "term_limits": {
+        "max_nodes": 4096,
+        "max_depth": 64,
+        "max_type_depth": 32,
+        "max_symbols": 512,
+        "max_ports": 16
+      }
+    }
+  },
+  "choices": [],
+  "candidate_fingerprint": "sha256:d70fc118bae1a130a83e19e5bf83b43fc8faa8eab2d738168b987b498259c7ce",
+  "interface": [
+    {
+      "port": "x",
+      "binder": "rel_e2_x_1"
+    }
+  ],
+  "operations": [
+    {
+      "id": "s1",
+      "rule_id": "algebra.relation.v1",
+      "op": "relation",
+      "inputs": [],
+      "symbol": "e2",
+      "mapping": [],
+      "outputs": [],
+      "ports": [
+        "e",
+        "x"
+      ],
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Event"
+        },
+        "to": {
+          "kind": "Arrow",
+          "from": {
+            "kind": "Entity"
+          },
+          "to": {
+            "kind": "Prop"
+          }
+        }
+      },
+      "interface": [
+        {
+          "port": "e",
+          "binder": "rel_e2_e_1"
+        },
+        {
+          "port": "x",
+          "binder": "rel_e2_x_1"
+        }
+      ],
+      "substitutions": []
+    },
+    {
+      "id": "s2",
+      "rule_id": "algebra.bind.v1",
+      "op": "bind",
+      "inputs": [
+        "s1"
+      ],
+      "mapping": [],
+      "outputs": [],
+      "port": "e",
+      "ports": [
+        "x"
+      ],
+      "reference_id": "ev1",
+      "goal_port_id": "e",
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Entity"
+        },
+        "to": {
+          "kind": "Prop"
+        }
+      },
+      "interface": [
+        {
+          "port": "x",
+          "binder": "rel_e2_x_1"
+        }
+      ],
+      "substitutions": [
+        {
+          "binder_id": "rel_e2_e_1",
+          "reference_id": "ev1",
+          "type": {
+            "kind": "Event"
+          }
+        }
+      ]
+    }
+  ],
+  "scopes": [
+    {
+      "binder_id": "rel_e2_x_1",
+      "kind": "Lambda",
+      "type": {
+        "kind": "Entity"
+      },
+      "path": "expression"
+    }
+  ],
+  "obligations": [
+    {
+      "constraint_id": "event-path",
+      "kind": "path",
+      "status": "structural_claim",
+      "step_ids": [],
+      "fragments": [
+        "candidate.expression.body"
+      ]
+    }
+  ],
+  "assumptions": [
+    {
+      "kind": "typed_registry_snapshot",
+      "value": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456"
+    },
+    {
+      "kind": "request_reference_boundary",
+      "value": "sha256:9471220906f2ebce32721435e5b47084f80000fceb2e1112fbb00bf58ed4f0d3"
+    },
+    {
+      "kind": "positive_structural_profile",
+      "value": "positive-facts-v1"
+    }
+  ]
+}

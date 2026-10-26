@@ -159,8 +159,12 @@ func prepareAlgebraEvaluation(parent context.Context, plan *AlgebraQueryPlan, vi
 		return nil, err
 	}
 	referents := view.Referents()
-	known, err := mergeEvaluationReferences(schema, plan.references, referents, limits)
+	known, err := mergeEvaluationReferences(schema, plan.references, referents, plan.requestContext, limits)
 	if err != nil {
+		cancel()
+		return nil, err
+	}
+	if err := validateUsedKnownReferenceAttributes(plan.nodes, known, plan.requestContext, schema, plan.variables); err != nil {
 		cancel()
 		return nil, err
 	}
@@ -214,6 +218,54 @@ func prepareAlgebraEvaluation(parent context.Context, plan *AlgebraQueryPlan, vi
 	state.result.Knowledge = AlgebraKnowledgeUnknown
 	state.result.Complete = false
 	return state, nil
+}
+
+func validateUsedKnownReferenceAttributes(nodes []AlgebraPlanNode, known map[string]algebra.Declaration, requestContext *algebra.RequestContext, schema algebra.Document, variables []AlgebraPlanVariable) error {
+	used := make(map[string]bool)
+	for _, node := range nodes {
+		for _, argument := range node.Args {
+			if argument.RefID != "" {
+				used[argument.RefID] = true
+			}
+		}
+	}
+	for _, variable := range variables {
+		if variable.UsedInAtom {
+			continue
+		}
+		for id, declaration := range known {
+			if algebra.TypeEqual(variable.Type, declaration.Type) {
+				used[id] = true
+			}
+		}
+	}
+	ids := make([]string, 0, len(used))
+	for id := range used {
+		ids = append(ids, id)
+	}
+	sort.Strings(ids)
+	document := schema
+	document.References = make([]algebra.Declaration, 0, len(ids))
+	for _, id := range ids {
+		declaration, ok := known[id]
+		if !ok {
+			return planInvalid("UNKNOWN_PLAN_REFERENCE", "references."+id, "query reference is absent from the explicit request/fact identity union")
+		}
+		document.References = append(document.References, declaration)
+	}
+	for _, id := range ids {
+		attributes, err := algebra.EffectiveReferenceAttributes(document, requestContext, id)
+		if err != nil {
+			return err
+		}
+		if attributes.TemporalFrame != "" {
+			return planUnsupported("UNSUPPORTED_RELATIVE_TEMPORAL_REFERENCE", "references."+id+".temporal_frame", "the positive-facts query profile has no relative-time mapping to the explicit query instant")
+		}
+		if attributes.Multiplicity == "many" {
+			return planUnsupported("UNSUPPORTED_MANY_REFERENCE", "references."+id+".multiplicity", "the positive-facts query profile does not expand or group a many-valued reference")
+		}
+	}
+	return nil
 }
 
 func (plan *AlgebraQueryPlan) initializedLimitsError() error {
@@ -333,7 +385,7 @@ func validateEvaluationSchema(schema algebra.Document) error {
 	return nil
 }
 
-func mergeEvaluationReferences(schema algebra.Document, sourceRefs, viewRefs []algebra.Declaration, limits AlgebraEvaluationLimits) (map[string]algebra.Declaration, error) {
+func mergeEvaluationReferences(schema algebra.Document, sourceRefs, viewRefs []algebra.Declaration, requestContext *algebra.RequestContext, limits AlgebraEvaluationLimits) (map[string]algebra.Declaration, error) {
 	if len(sourceRefs) > facts.DefaultNaryMaxReferents || len(viewRefs) > facts.DefaultNaryMaxReferents {
 		return nil, planResource("references", "source or fact referent count exceeds the shared ceiling")
 	}
@@ -346,9 +398,24 @@ func mergeEvaluationReferences(schema algebra.Document, sourceRefs, viewRefs []a
 			if !algebra.TypeEqual(prior.Type, declaration.Type) {
 				return planInvalid("REFERENCE_TYPE_CONFLICT", path, "the same explicit reference ID has conflicting types")
 			}
+			for _, field := range []struct {
+				name string
+				old  *string
+				next string
+			}{{"temporal_frame", &prior.TemporalFrame, declaration.TemporalFrame}, {"reference_time_id", &prior.ReferenceTimeID, declaration.ReferenceTimeID}, {"multiplicity", &prior.Multiplicity, declaration.Multiplicity}} {
+				if *field.old != "" && field.next != "" && *field.old != field.next {
+					return planInvalid("REFERENCE_ATTRIBUTE_CONFLICT", path+"."+field.name, "the same explicit reference ID has conflicting known attributes")
+				}
+				if *field.old == "" {
+					*field.old = field.next
+				}
+			}
+			known[declaration.ID] = prior
 			return nil
 		}
-		known[declaration.ID] = algebra.Declaration{ID: declaration.ID, Type: typeCopy(declaration.Type)}
+		copyDeclaration := declaration
+		copyDeclaration.Type = typeCopy(declaration.Type)
+		known[declaration.ID] = copyDeclaration
 		return nil
 	}
 	for i, declaration := range sourceRefs {
@@ -359,6 +426,14 @@ func mergeEvaluationReferences(schema algebra.Document, sourceRefs, viewRefs []a
 	for i, declaration := range viewRefs {
 		if err := insert(declaration, fmt.Sprintf("facts.referents[%d]", i)); err != nil {
 			return nil, err
+		}
+	}
+	if requestContext != nil {
+		for i, referent := range requestContext.Referents {
+			declaration := algebra.Declaration{ID: referent.ID, Type: referent.Type, TemporalFrame: referent.TemporalFrame, ReferenceTimeID: referent.ReferenceTimeID, Multiplicity: referent.Multiplicity}
+			if err := insert(declaration, fmt.Sprintf("request_context.referents[%d]", i)); err != nil {
+				return nil, err
+			}
 		}
 	}
 	if len(known) > facts.DefaultNaryMaxReferents || len(known) > limits.TermLimits.MaxSymbols || len(known)+len(schema.Sorts)+len(schema.Signatures) > limits.TermLimits.MaxSymbols {
@@ -606,7 +681,9 @@ func (state *algebraEvaluationState) evidenceFingerprint() (string, error) {
 	}
 	sort.Strings(ids)
 	for _, id := range ids {
-		refs = append(refs, algebra.Declaration{ID: id, Type: typeCopy(state.knownRefs[id].Type)})
+		declaration := state.knownRefs[id]
+		declaration.Type = typeCopy(declaration.Type)
+		refs = append(refs, declaration)
 	}
 	active := make([]facts.NaryAtomEvidence, 0, len(state.rows))
 	for _, row := range state.rows {
