@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "id": "neutral.goal.package",
+  "version": "1",
+  "profile": "positive-facts-v1",
+  "provenance": [
+    {
+      "id": "dse386-neutral-goal",
+      "uri": "https://github.com/clickbytes/golingua/issues/386",
+      "version": "2026-10-26.1",
+      "license": "internal-neutral-example",
+      "author": "Codex by owner delegation"
+    }
+  ],
+  "sorts": [],
+  "symbols": [
+    {
+      "id": "r",
+      "kind": "primitive",
+      "review_status": "approved",
+      "label": "unrelated prose never a rule",
+      "provenance": [
+        {
+          "id": "dse386-neutral-goal",
+          "uri": "https://github.com/clickbytes/golingua/issues/386",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ],
+      "description": "This sentence is metadata only."
+    },
+    {
+      "id": "p",
+      "kind": "primitive",
+      "review_status": "approved",
+      "label": "unrelated prose never a rule",
+      "provenance": [
+        {
+          "id": "dse386-neutral-goal",
+          "uri": "https://github.com/clickbytes/golingua/issues/386",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "v",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ],
+      "description": "This sentence is metadata only."
+    }
+  ],
+  "dependencies": [],
+  "typical_edges": [],
+  "axioms": []
+}

@@ -1,0 +1,17 @@
+{
+  "name": "goal-validator-independent-inputs-api",
+  "isolation": "/tmp/golingua-386-validate-mhtoxmxr",
+  "argv": [
+    "go",
+    "run",
+    "./cmd/probe",
+    "/tmp/golingua-dse/386-independent-inputs"
+  ],
+  "env": {
+    "GOPROXY": "off"
+  },
+  "exit_code": 0,
+  "stdout": "{\"error\":\"RESOURCE_LIMIT at limits.max_atoms: path occurrences and unary constraints exceed the atom budget\",\"input\":\"atom-limit.json\",\"unresolved\":null}\n{\"error\":\"CONFLICTING_ROLE_MAPPING at constraints[0]: one relation role cannot map to both path endpoints\",\"input\":\"conflicting-role.json\",\"unresolved\":null}\n{\"error\":\"OPERATOR_NOT_ALLOWED at allowed_operators: goal requires an operator that is not allowed: join\",\"input\":\"excluded-join.json\",\"unresolved\":null}\n{\"input\":\"fixed-reference.json\",\"unresolved\":null}\n{\"input\":\"missing-orientation.json\",\"unresolved\":[{\"constraint_id\":\"path01\",\"code\":\"MISSING_TO_ROLE\",\"path\":\"constraints[0].to_role\",\"message\":\"map the target endpoint to a relation role\"}]}\n{\"input\":\"missing-symbol.json\",\"unresolved\":[{\"constraint_id\":\"path01\",\"code\":\"MISSING_SYMBOL\",\"path\":\"constraints[0].symbol\",\"message\":\"select a declared binary relation symbol\"}]}\n{\"input\":\"multiple-counts.json\",\"unresolved\":[{\"constraint_id\":\"path01\",\"code\":\"UNDERDETERMINED_COUNT\",\"path\":\"constraints[0].allowed_atom_counts\",\"message\":\"choose one path length; no choice is selected automatically\"}]}\n{\"input\":\"permuted-open-ports.json\",\"unresolved\":null}\n{\"error\":\"UNKNOWN_RELATION_SYMBOL at constraints[0].symbol: relation symbol is not declared in the selected context\",\"input\":\"renamed-goal.json\",\"unresolved\":null}\n{\"error\":\"RESOURCE_LIMIT at limits.max_steps: the requested goal exceeds the bounded operator-step budget\",\"input\":\"step-limit.json\",\"unresolved\":null}\n{\"input\":\"three-hop-property.json\",\"unresolved\":null}\n{\"input\":\"two-hop-property.json\",\"unresolved\":null}\n{\"input\":\"typed-hole.json\",\"unresolved\":[{\"code\":\"UNRESOLVED_HOLE\",\"path\":\"ports[0].binding\",\"message\":\"a typed hole must be resolved before lowering\",\"hole\":{\"kind\":\"Entity\"}}]}\n{\"error\":\"UNKNOWN_RELATION_ROLE at constraints[0].to_role: role is not declared by the relation\",\"input\":\"unknown-role.json\",\"unresolved\":null}\n{\"error\":\"GOAL_ROLE_TYPE_MISMATCH at constraints[0].to_role: target goal port type must match its selected relation role\",\"input\":\"wrong-endpoint-type.json\",\"unresolved\":null}\n",
+  "stderr": "",
+  "probe_sha256": "ccec41c3732d8ddadede137b00ce35f289eac3b2424e4df7445d9174a831963f"
+}
