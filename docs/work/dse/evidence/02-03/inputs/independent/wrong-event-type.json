@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "references": [
+    {
+      "id": "E1",
+      "type": {
+        "kind": "Event"
+      }
+    },
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ],
+  "expression": {
+    "kind": "Atom",
+    "symbol": "concept:reading",
+    "args": [
+      {
+        "role": "event",
+        "value": {
+          "kind": "Ref",
+          "id": "A",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      },
+      {
+        "role": "reader",
+        "value": {
+          "kind": "Ref",
+          "id": "A",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      },
+      {
+        "role": "material",
+        "value": {
+          "kind": "Ref",
+          "id": "B",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      }
+    ]
+  }
+}

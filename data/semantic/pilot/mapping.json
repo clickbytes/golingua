@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "id": "pilot.reading.event-relation",
+  "version": "2026-10-26.1",
+  "source_concept_id": "concept:reading",
+  "source_core_record": {
+    "kind": "event",
+    "roles": [
+      "reader",
+      "material"
+    ]
+  },
+  "pilot_symbol_id": "concept:reading",
+  "pilot_ports": [
+    {
+      "role": "event",
+      "type": {
+        "kind": "Event"
+      },
+      "decision": "Added identity port for the event reference; this is a versioned mapping choice because the source CORE role list has no event role."
+    },
+    {
+      "role": "reader",
+      "type": {
+        "kind": "Entity"
+      },
+      "source_role": "reader"
+    },
+    {
+      "role": "material",
+      "type": {
+        "kind": "Entity"
+      },
+      "source_role": "material"
+    }
+  ],
+  "lexical_anchors": [
+    {
+      "language": "pl",
+      "sense_id": "sense:pl.czytac.interpret",
+      "frame_id": "frame:pl.czytac.interpret.frame",
+      "construction_id": "construction:pl.transitive.svo",
+      "lexical_review_issue": 152,
+      "construction_review_issue": 251
+    },
+    {
+      "language": "en",
+      "sense_id": "sense:en.read.text",
+      "frame_id": "frame:en.read.text.transitive",
+      "construction_id": "construction:en.transitive.svo.reading",
+      "lexical_review_issue": 61,
+      "construction_review_issue": 253
+    }
+  ],
+  "classification": "primitive_candidate",
+  "review_status": "agent_reviewed",
+  "owner_status": "NOT_EVALUATED",
+  "mapping_status": "explicit_versioned_mapping",
+  "scope": "Structural pilot relation only, over an explicitly supplied reading event, reader, and material reference.",
+  "excluded_claims": [
+    "No equivalence to the source CORE definition beyond the listed role mapping.",
+    "No temporal, tense, aspect, or negation rules.",
+    "No world-truth, typicality, or inference rules.",
+    "No general PL/EN route or language-quality acceptance claim."
+  ],
+  "provenance": [
+    {
+      "id": "dse385-neutral-pilot",
+      "uri": "https://github.com/clickbytes/golingua/issues/385",
+      "version": "2026-10-26.1",
+      "license": "internal-neutral-example",
+      "author": "Codex by owner delegation"
+    },
+    {
+      "id": "golingua-core-authored",
+      "path": "internal/catalog/concepts.go",
+      "version": "2026-10-21-growth-01",
+      "license": "unknown",
+      "author": "golingua contributors"
+    },
+    {
+      "id": "golingua-pl-delegated-lexical-review",
+      "uri": "https://github.com/clickbytes/golingua/issues/152#issuecomment-6352315888",
+      "version": "2026-10-23-batch-01",
+      "license": "unknown",
+      "author": "codex-owner-delegated"
+    },
+    {
+      "id": "golingua-g10-19-reading-route-review",
+      "uri": "https://github.com/clickbytes/golingua/issues/251#issuecomment-6359339236",
+      "version": "2026-10-23-g10-19",
+      "license": "internal",
+      "author": "Codex by owner delegation"
+    },
+    {
+      "id": "golingua-en-delegated-lexical-review",
+      "uri": "https://github.com/clickbytes/golingua/issues/61#issuecomment-6352023863",
+      "version": "2026-10-22-batch-01",
+      "license": "unknown",
+      "author": "Codex by owner delegation"
+    },
+    {
+      "id": "golingua-g10-20-reading-past-route",
+      "uri": "https://github.com/clickbytes/golingua/issues/253#issuecomment-6359693771",
+      "version": "2026-10-23-g10-20",
+      "license": "internal",
+      "author": "Codex by owner delegation"
+    }
+  ]
+}

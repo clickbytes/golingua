@@ -1,0 +1,1 @@
+Reconstructed after the active files were corrected. It restores the pre-correction dse385-* source IDs and values from the initial authoring patch. JSON is semantically reconstructed, not a byte-for-byte snapshot. Use only to reproduce the earlier local CLI invocations; it is not final provenance.

@@ -10,6 +10,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/clickbytes/golingua/internal/algebra"
+	"github.com/clickbytes/golingua/internal/catalogexport"
 	"github.com/clickbytes/golingua/internal/facts"
 	"github.com/clickbytes/golingua/internal/metamodel"
 	"github.com/clickbytes/golingua/internal/provenance"
@@ -144,6 +145,12 @@ type naryFactsOutput struct {
 	ValidationScope string                `json:"validation_scope"`
 }
 
+type catalogExportOutput struct {
+	Status          status.OutcomeKind           `json:"status"`
+	ValidationScope string                       `json:"validation_scope"`
+	Inventory       catalogexport.ExportDocument `json:"inventory"`
+}
+
 type algebraInfrastructureError struct{ message string }
 
 func (failure *algebraInfrastructureError) Error() string { return failure.message }
@@ -172,8 +179,14 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		}
 		options.command = "facts_validate"
 		index = 3
+	} else if args[1] == "catalog" {
+		if len(args) < 3 || args[2] != "export" {
+			return options, "expected algebra catalog export"
+		}
+		options.command = "catalog_export"
+		index = 3
 	} else {
-		return options, "expected algebra check, build, export, inspect, replay, normalize, verify-rewrite, or metadata"
+		return options, "expected algebra check, build, export, inspect, replay, normalize, verify-rewrite, metadata, facts, or catalog"
 	}
 	seenJSON, seenInput := false, false
 	seenNoCache := false
@@ -205,6 +218,9 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		case "--metadata":
 			if options.command == "inspect" {
 				return options, "algebra inspect is structural-only and does not accept --metadata"
+			}
+			if options.command == "catalog_export" {
+				return options, "algebra catalog export reads the compiled catalog and does not accept --metadata"
 			}
 			if i+1 >= len(args) || args[i+1] == "--json" || strings.HasPrefix(args[i+1], "--") {
 				return options, "missing value for --metadata"
@@ -283,6 +299,9 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 			return writeAlgebraError(stdout, stderr, err)
 		}
 		return runNaryFactsValidate(options, input, stdout, stderr, registries)
+	}
+	if options.command == "catalog_export" {
+		return runAlgebraCatalogExport(stdout, stderr)
 	}
 	if options.command == "export" {
 		registries, err := readMetadataRegistries(options.metadata)
@@ -384,6 +403,34 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 		return ExitError
 	}
 	return exitCode(checked.Status)
+}
+
+func runAlgebraCatalogExport(stdout, stderr io.Writer) int {
+	inventory, err := catalogexport.Export()
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	output := catalogExportOutput{
+		Status:          status.OutcomeOK,
+		ValidationScope: "inert catalog inventory; symbols remain opaque and pending; no operational approval, world-truth, or lexical-coverage claim",
+		Inventory:       inventory,
+	}
+	encoded, err := json.Marshal(output)
+	if err != nil {
+		_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not serialize catalog export: %v\n", err)
+		return ExitError
+	}
+	if len(encoded)+1 > 16<<20 {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{
+			Status: status.OutcomeResourceLimit, Code: "CATALOG_EXPORT_BYTES",
+			Path: "inventory", Message: "catalog export envelope exceeds the 16 MiB output limit",
+		})
+	}
+	if _, err := stdout.Write(append(encoded, '\n')); err != nil {
+		_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not write catalog export: %v\n", err)
+		return ExitError
+	}
+	return ExitOK
 }
 
 func runAlgebraNormalize(options algebraOptions, input io.Reader, stdout, stderr io.Writer, registries []*metamodel.Registry) int {

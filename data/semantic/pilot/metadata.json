@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "id": "golingua.dse.pilot",
+  "version": "2026-10-26.1",
+  "profile": "positive-facts-v1",
+  "provenance": [
+    {
+      "id": "dse385-neutral-pilot",
+      "uri": "https://github.com/clickbytes/golingua/issues/385",
+      "version": "2026-10-26.1",
+      "license": "internal-neutral-example",
+      "author": "Codex by owner delegation"
+    },
+    {
+      "id": "golingua-core-authored",
+      "path": "internal/catalog/concepts.go",
+      "version": "2026-10-21-growth-01",
+      "license": "unknown",
+      "author": "golingua contributors"
+    },
+    {
+      "id": "dse385-pilot-mapping",
+      "path": "data/semantic/pilot/mapping.json",
+      "version": "2026-10-26.1",
+      "license": "unknown",
+      "author": "Codex by owner delegation"
+    },
+    {
+      "id": "golingua-pl-delegated-lexical-review",
+      "uri": "https://github.com/clickbytes/golingua/issues/152#issuecomment-6352315888",
+      "version": "2026-10-23-batch-01",
+      "license": "unknown",
+      "author": "codex-owner-delegated"
+    },
+    {
+      "id": "golingua-g10-19-reading-route-review",
+      "uri": "https://github.com/clickbytes/golingua/issues/251#issuecomment-6359339236",
+      "version": "2026-10-23-g10-19",
+      "license": "internal",
+      "author": "Codex by owner delegation"
+    },
+    {
+      "id": "golingua-en-delegated-lexical-review",
+      "uri": "https://github.com/clickbytes/golingua/issues/61#issuecomment-6352023863",
+      "version": "2026-10-22-batch-01",
+      "license": "unknown",
+      "author": "Codex by owner delegation"
+    },
+    {
+      "id": "golingua-g10-20-reading-past-route",
+      "uri": "https://github.com/clickbytes/golingua/issues/253#issuecomment-6359693771",
+      "version": "2026-10-23-g10-20",
+      "license": "internal",
+      "author": "Codex by owner delegation"
+    }
+  ],
+  "sorts": [],
+  "symbols": [
+    {
+      "id": "pilot.r",
+      "kind": "primitive",
+      "label": "neutral ordered relation",
+      "description": "Neutral mathematical relation for exercising explicit composition; it has no CORE concept mapping.",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "dse385-neutral-r",
+          "uri": "https://github.com/clickbytes/golingua/issues/385",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "left",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "right",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "kind": "arity",
+          "count": 2
+        },
+        {
+          "kind": "port_type",
+          "role": "left",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "kind": "port_type",
+          "role": "right",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.mark",
+      "kind": "primitive",
+      "label": "neutral unary marker",
+      "description": "Neutral mathematical unary predicate for exercising typed construction; it has no CORE or lexical grounding.",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "dse385-neutral-mark",
+          "uri": "https://github.com/clickbytes/golingua/issues/385",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "value",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "kind": "arity",
+          "count": 1
+        },
+        {
+          "kind": "port_type",
+          "role": "value",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "concept:reading",
+      "kind": "primitive",
+      "label": "pilot reading event relation",
+      "description": "Versioned pilot relation over an explicit event reference, reader, and material; the event identity port is an authored mapping choice, not a change to CORE.",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "golingua-core-authored",
+          "path": "internal/catalog/concepts.go",
+          "version": "2026-10-21-growth-01",
+          "license": "unknown",
+          "author": "golingua contributors"
+        },
+        {
+          "id": "dse385-pilot-mapping",
+          "path": "data/semantic/pilot/mapping.json",
+          "version": "2026-10-26.1",
+          "license": "unknown",
+          "author": "Codex by owner delegation"
+        },
+        {
+          "id": "golingua-pl-delegated-lexical-review",
+          "uri": "https://github.com/clickbytes/golingua/issues/152#issuecomment-6352315888",
+          "version": "2026-10-23-batch-01",
+          "license": "unknown",
+          "author": "codex-owner-delegated"
+        },
+        {
+          "id": "golingua-g10-19-reading-route-review",
+          "uri": "https://github.com/clickbytes/golingua/issues/251#issuecomment-6359339236",
+          "version": "2026-10-23-g10-19",
+          "license": "internal",
+          "author": "Codex by owner delegation"
+        },
+        {
+          "id": "golingua-en-delegated-lexical-review",
+          "uri": "https://github.com/clickbytes/golingua/issues/61#issuecomment-6352023863",
+          "version": "2026-10-22-batch-01",
+          "license": "unknown",
+          "author": "Codex by owner delegation"
+        },
+        {
+          "id": "golingua-g10-20-reading-past-route",
+          "uri": "https://github.com/clickbytes/golingua/issues/253#issuecomment-6359693771",
+          "version": "2026-10-23-g10-20",
+          "license": "internal",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "reader",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "material",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "kind": "arity",
+          "count": 3
+        },
+        {
+          "kind": "port_type",
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "kind": "port_type",
+          "role": "reader",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "kind": "port_type",
+          "role": "material",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    }
+  ],
+  "dependencies": [],
+  "typical_edges": [],
+  "axioms": []
+}
