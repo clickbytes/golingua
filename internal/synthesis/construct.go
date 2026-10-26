@@ -165,6 +165,38 @@ func Construct(context algebra.Document, goal GoalSpec) (Result, error) {
 		portAliases[goalPort.ID] = ""
 	}
 
+	// Close explicitly projected ports only after all requested restrictions
+	// and reference bindings have been applied.
+	if len(goal.ProjectPorts) > 0 {
+		retainedPorts := make([]string, 0, len(goal.Ports)-len(goal.ProjectPorts))
+		projected := make(map[string]struct{}, len(goal.ProjectPorts))
+		for _, portID := range goal.ProjectPorts {
+			projected[portID] = struct{}{}
+		}
+		for _, goalPort := range goal.Ports {
+			if goalPort.Binding != nil {
+				continue
+			}
+			if _, closePort := projected[goalPort.ID]; closePort {
+				continue
+			}
+			actualPort := portAliases[goalPort.ID]
+			if actualPort == "" {
+				return Result{}, goalInvalid("UNKNOWN_GOAL_PORT", "project_ports", "retained goal port has no constructed interface mapping")
+			}
+			retainedPorts = append(retainedPorts, actualPort)
+		}
+		if err := consume(); err != nil {
+			return Result{}, err
+		}
+		priorID := previousID
+		current, err = algebra.Project(operatorContext, current, retainedPorts)
+		if err != nil {
+			return Result{}, err
+		}
+		previousID = appendTrace("project", "", "function", []string{priorID}, nil, nil, "", retainedPorts, current)
+	}
+
 	// Map open interface names to goal ports, then permute only when both open
 	// ports remain and their actual order differs from the requested order.
 	for i := range current.Interface {
@@ -174,7 +206,7 @@ func Construct(context algebra.Document, goal GoalSpec) (Result, error) {
 			}
 		}
 	}
-	desired := openGoalPortIDs(goal.Ports)
+	desired := openGoalPortIDs(goal.Ports, goal.ProjectPorts)
 	currentPorts := interfacePorts(current.Interface)
 	if len(desired) == 2 && len(currentPorts) == 2 && (currentPorts[0] != desired[0] || currentPorts[1] != desired[1]) {
 		actualOrder := make([]string, 0, 2)
@@ -200,7 +232,7 @@ func Construct(context algebra.Document, goal GoalSpec) (Result, error) {
 
 	// Restrict the exported interface to the declared goal order without
 	// changing the AST or its binder IDs.
-	expectedInterface := openGoalPortIDs(goal.Ports)
+	expectedInterface := openGoalPortIDs(goal.Ports, goal.ProjectPorts)
 	if len(current.Interface) != len(expectedInterface) {
 		return Result{}, goalInvalid("GOAL_INTERFACE_MISMATCH", "ports", "constructed function has a different number of open goal ports")
 	}
@@ -313,10 +345,15 @@ func interfacePorts(bindings []algebra.PortBinding) []string {
 	return ports
 }
 
-func openGoalPortIDs(ports []GoalPort) []string {
+func openGoalPortIDs(ports []GoalPort, projectPorts []string) []string {
+	projected := make(map[string]struct{}, len(projectPorts))
+	for _, portID := range projectPorts {
+		projected[portID] = struct{}{}
+	}
 	ids := make([]string, 0, len(ports))
 	for _, port := range ports {
-		if port.Binding == nil {
+		_, closesPort := projected[port.ID]
+		if port.Binding == nil && !closesPort {
 			ids = append(ids, port.ID)
 		}
 	}

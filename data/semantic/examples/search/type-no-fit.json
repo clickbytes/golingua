@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "profile": "positive-facts-v1",
+  "expected_type": {
+    "kind": "Arrow",
+    "from": {
+      "kind": "Entity"
+    },
+    "to": {
+      "kind": "Arrow",
+      "from": {
+        "kind": "Event"
+      },
+      "to": {
+        "kind": "Prop"
+      }
+    }
+  },
+  "ports": [
+    {
+      "id": "x",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "y",
+      "type": {
+        "kind": "Event"
+      }
+    }
+  ],
+  "references": [],
+  "allowed_operators": [
+    "relation",
+    "join",
+    "restrict",
+    "bind",
+    "permute",
+    "project"
+  ],
+  "constraints": [
+    {
+      "id": "path01",
+      "kind": "path",
+      "from_port": "x",
+      "to_port": "y",
+      "allowed_atom_counts": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "property01",
+      "kind": "unary",
+      "symbol": "p",
+      "port": "y"
+    }
+  ],
+  "provenance": [
+    {
+      "id": "dse387-neutral",
+      "uri": "https://github.com/clickbytes/golingua/issues/387",
+      "version": "2026-10-26.1",
+      "license": "internal-neutral-example",
+      "author": "Codex by owner delegation"
+    }
+  ],
+  "limits": {},
+  "context_id": "search-neutral-context"
+}

@@ -415,11 +415,11 @@
         383
       ],
       "branch_name": "dse/04-01-goal-construction",
-      "status": "ACTIVE",
+      "status": "DONE",
       "actual_base_sha": "acc0ad9d6203fed4951b0c31d57b5a7e0fb5f8eb",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/04-01-goal-construction",
-      "pr_url": null,
-      "merge_sha": null,
+      "pr_url": "https://github.com/clickbytes/golingua/pull/410",
+      "merge_sha": "8233369276830c534e951da3c4346dfb5f1d9643",
       "evidence_paths": [
         "docs/work/dse/evidence/04-01/README.md",
         "docs/work/dse/evidence/04-01/observations.jsonl",
@@ -439,12 +439,21 @@
         383
       ],
       "branch_name": "dse/04-02-bounded-synthesis",
-      "status": "QUEUED",
-      "actual_base_sha": null,
-      "branch_url": null,
+      "status": "ACTIVE",
+      "actual_base_sha": "14df22d0d663bc72ab88c6352f14507798ee5756",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/04-02-bounded-synthesis",
       "pr_url": null,
       "merge_sha": null,
-      "evidence_paths": []
+      "evidence_paths": [
+        "docs/work/dse/evidence/04-02/README.md",
+        "docs/work/dse/evidence/04-02/observations.jsonl",
+        "docs/work/dse/evidence/04-02/environment.json",
+        "docs/work/dse/evidence/04-02/invariants.json",
+        "docs/work/dse/evidence/04-02/inputs/wire-boundary/goal-500-256.json",
+        "docs/work/dse/evidence/04-02/inputs/wire-boundary/summary.json",
+        "docs/work/dse/evidence/04-02/inputs/wire-boundary/binary-hash.txt",
+        "docs/work/dse/evidence/04-02/doc-flow-observation.json"
+      ]
     },
     {
       "issue_number": 388,

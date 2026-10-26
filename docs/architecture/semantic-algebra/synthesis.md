@@ -1,9 +1,10 @@
-# Finite goal construction
+# Finite goal construction and search
 
 `algebra synthesize --mode construct` turns a fully specified goal into a
-checked, typed expression using a small explicit operator set. The goal is a
-request for construction, not an AST, recipe, fact query, or claim that the
-requested relation holds in a world. This page describes the current bounded
+checked, typed expression using a small explicit operator set.
+`algebra synthesize --mode search` enumerates constructions over a finite set
+of declared choices. A goal is a request, not an AST, recipe, fact query, or
+claim that the requested relation holds in a world. Both modes use the bounded
 `positive-facts-v1` profile.
 
 ## Command and inputs
@@ -16,15 +17,16 @@ go run ./cmd/golingua algebra synthesize --mode construct \
 
 Repeat `--metadata <file>` to select explicit packages and their declared
 dependencies. `--goal` is required and names one JSON file; `--goal -` reads
-stdin. `--json` and `--mode construct` are required. This command does not
-accept `--input`, `--no-cache`, or a search mode. Metadata is loaded through the
-validated registry path, and only approved primitive signatures are available
-to construction. No package path is read from the goal itself.
+stdin. `--json` and an explicit mode are required. Both modes reject `--input`
+and `--no-cache`. Metadata is loaded through the validated registry path, and
+only approved primitive signatures are available. No package path is read from
+the goal itself.
 
 The strict version-1 goal document has `schema_version`, `profile`,
 `context_id`, `expected_type`, `ports`, `references`, `allowed_operators`,
-`constraints`, `provenance`, and `limits`. The arrays and `limits` object are
-required; the goal contains no expression or inline sort/signature declarations.
+`constraints`, `provenance`, and `limits`; optional `project_ports` names ports
+to close. The arrays and `limits` object are required; the goal contains no
+expression or inline sort/signature declarations.
 Reference declarations have exactly `id` and `type`. `context_id` is a required,
 bounded request identifier; it does not authenticate a caller or identify an
 entity. Types and declared references are checked against the selected
@@ -32,9 +34,11 @@ metadata. Source references preserve attribution but do not establish owner
 approval.
 
 Each goal port is either open or explicitly bound to a typed `Ref` or `Hole`.
-`expected_type` must be the arrow type of the open ports in their declared order,
-returning `Prop`. Binding a reference removes that port from the output
-interface. A typed hole remains unresolved: construction returns `incomplete`
+`expected_type` must be the arrow type of the open, nonprojected ports in their
+declared order, returning `Prop`. Binding a reference or projecting an open
+port removes that port from the output interface; a Ref/Hole-bound port cannot
+also be projected. Projection existentially closes only the named goal ports.
+A typed hole remains unresolved: construction returns `incomplete`
 before lowering and does not treat the hole as an operator argument or witness.
 
 The initial profile supports one binary path constraint and unary
@@ -50,8 +54,8 @@ operators or infer roles.
 
 ## Construction and output
 
-The allowed public operators are `relation`, `join`, `restrict`, `bind`, and
-`permute`. The constructor calls the shared algebra operators with explicit
+The allowed public operators are `relation`, `join`, `restrict`, `bind`,
+`project`, and `permute`. The constructor calls the shared algebra operators with explicit
 ports and role mappings. It checks the completed expression against the
 selected declarations and the requested type. Construction does not perform
 fact lookup, graph search, general planning, beta/alias expansion, or language
@@ -76,14 +80,107 @@ the checked representation; it does not normalize it or certify goal
 satisfaction. Replay later requires independently selected metadata, context,
 and profile.
 
+## Finite search
+
+Search uses the same goal and metadata inputs, with an explicit search mode:
+
+```sh
+go run ./cmd/golingua algebra synthesize --mode search \
+  --metadata data/semantic/examples/search/metadata.json \
+  --goal data/semantic/examples/search/ambiguous.json --json
+```
+
+Repeatable `--search-limit name=value` flags are accepted only in search mode.
+The exact names, defaults, and hard caps are:
+
+| Limit | Default | Hard cap |
+| --- | ---: | ---: |
+| `max_path_length` | 3 | 16 |
+| `max_branch_depth` | 64 | 64 |
+| `max_expansions` | 128 | 4096 |
+| `max_candidates` | 16 | 128 |
+| `max_trace_entries` | 64 | 256 |
+| `max_work_units` | 1,048,576 | 16,777,216 |
+| `max_candidate_bytes` | 8 MiB | 16 MiB |
+| `timeout_millis` | 2000 | 30000 |
+
+Zero selects the finite default. Negative, over-cap, duplicate, malformed, or
+unknown limits are refused. The search space varies the declared relation and
+role choices, unary target choices, path length, and typed hole bindings to
+matching declared references. Choices are kept in deterministic identifier
+order, including every legal role orientation and reference ID; the search
+does not pick the first match or infer speaker intent from a type. Empty path
+counts enumerate lengths from one through the configured `max_path_length`.
+An explicitly requested length outside that bound stops with a partial
+`resource_limit` result instead of silently dropping that branch. Each search
+axis contributes one branch-depth level.
+
+Candidate construction still uses the goal's `max_atoms` (16 total path and
+unary atoms), `max_steps` (64 operator calls), and shared type and declaration
+limits. Candidate-specific type mismatch and disallowed-operator choices can
+be rejected while the remaining space is searched. Unknown symbols, roles,
+malformed constraints, and invalid goal types remain request errors. A typed
+hole can bind only to an explicitly declared, type-matching reference. A hole
+with no matching reference produces a complete empty result within this finite
+profile; no new reference or witness is invented.
+
+The result preserves the original goal and reports the declared space,
+candidate choices, per-candidate constructions, trace, rejections, and usage.
+`complete: true` means only that this finite declared space was exhausted.
+`no_solution_within_profile_bounds` with status `ok` means no candidate was
+found in that space, not that a proposition is false in the world. Any
+operational stop or unresolved goal keeps `complete` false and cannot claim
+uniqueness, even when a valid prefix candidate is retained. Trace omission is
+reported separately and does not itself make the space incomplete. There is no
+ranking or confidence score.
+
+Candidates are deduplicated only after licensed `alpha_v1` normalization and
+independent verification of that normalization certificate. The key compares
+the full bounded semantic descriptor and normalized term, preserving chosen
+symbols, role orientations, reference IDs, and constraint-fragment mappings.
+No beta reduction, alias expansion, or conjunction equivalence is added to the
+search identity profile. Each candidate has a `draft_goal_unverified`
+certificate with `goal_verified: false`; alpha identity is not an independent
+goal proof, fact check, world-truth claim, or language approval.
+
+Every candidate includes its own `export_request` with the canonical
+construction document, context, provenance, and the explicit empty
+`dse-search-artifact-v1` rewrite profile. The search result does not select a
+single candidate for export. Inspect alternatives first, then deliberately
+extract the chosen candidate's request for the existing export/replay flow.
+Export and replay still require explicit metadata and context; these examples
+do not add a fact store, named derived definitions, or language routes.
+
 ## Limits and boundaries
 
-The initial hard limits are 16 total path and unary atoms, 64 public operator
-calls, 16 goal ports, 16 source references, 32 constraints, and 1 MiB of goal
-JSON. Shared type checking additionally bounds expressions to 4,096 nodes and
+The goal-level hard limits are 16 total path and unary atoms, 64 public
+operator calls, 16 goal ports, 16 source references, 32 constraints, and 1 MiB
+of goal JSON. Shared type checking additionally bounds expressions to 4,096 nodes and
 depth 64, types to depth 32, declarations to 512, and relation ports to 16.
-Limits can be lowered; a resource limit is not evidence that no construction
-exists.
+Goal limits can be lowered; a resource limit is not evidence that no
+construction exists. `max_candidate_bytes` (8 MiB default, 16 MiB hard cap)
+counts retained serialized candidate payloads only. It excludes the base goal,
+space descriptor, and trace; `usage.candidate_bytes` is the sum of retained
+candidate payload sizes. The CLI separately caps the complete encoded response
+at 16 MiB. If that cap requires dropping a suffix of candidates, it reports a
+resource-limited incomplete result and the number discarded. A frozen CLI
+probe used 500 declared neutral references with 256-byte IDs in a 146,238-byte
+goal. It exited 4 with a 16,380,520-byte response including the newline, under
+the 16,777,216-byte cap. The result retained 36 candidates and discarded one;
+it reported `resource_limit`, `incomplete`, `complete: false`,
+`unique_within_declared_space: false`, and `stop_reason: max_response_bytes`.
+`usage.candidate_bytes` was 16,226,243, exactly the serialized size sum of the
+retained candidates. The raw response is outside the repository at
+`/tmp/golingua-dse/387-wire-probe-real/output-500-256.json` (SHA-256
+`df4c90cc02c7280a9d81939897f4ab495cfc5e85b33b6f3b0abdfaeca144c845`); the
+compact command and result record is
+`/tmp/golingua-dse/387-wire-probe-real/summary.json`. The frozen binary hash
+was unchanged before and after
+(`a561d324ee7b5047e82b6142672147a165832be0f2e647ed0d864d9170fe0604`). This is
+a byte-limit diagnostic, not a language corpus result, world-truth evidence,
+or owner approval. Work units are logical accounting, not CPU time or energy.
+Timeout checks are cooperative at bounded phase and iteration checkpoints,
+not a hard real-time guarantee.
 
 The initial profile is not a general graph synthesizer, theorem prover, fact
 evaluator, equivalence checker, or natural-language route. It does not infer
@@ -98,11 +195,13 @@ The [goal examples](../../../data/semantic/examples/goals/README.md) include a
 two-hop path with a unary property, a three-hop path, a one-hop minimal case,
 an explicit reference binding, and typed-hole/underspecified requests. The
 [goal schema](../../../schemas/semantic/goals.schema.json) defines the closed
-wire shape. They are bounded inputs, not a gold-output corpus or an automatic
-quality gate.
+wire shape. The [search examples](../../../data/semantic/examples/search/README.md)
+include unique, ambiguous, underdetermined, typed-hole, and candidate-pruning
+inputs with neutral formal metadata. They are bounded inputs, not a
+gold-output corpus or an automatic quality gate.
 
-For a compact export/replay flow, save the synthesis result and extract the
-canonical document and export request:
+For a compact **construct-mode** export/replay flow, save the synthesis result
+and extract its canonical document and top-level export request:
 
 ```sh
 jq -c '.result.canonical_document' /tmp/synthesis.json > /tmp/expression.json
@@ -115,6 +214,22 @@ jq -c --slurpfile exported /tmp/export.json \
 go run ./cmd/golingua algebra replay --metadata data/semantic/examples/goals/metadata.json --input /tmp/replay-request.json --json
 ```
 
+Search results use a candidate-indexed shape. Inspect the alternatives and
+explicitly choose an index before extraction. This example uses a goal with
+one candidate in its completed declared space:
+
+```sh
+go run ./cmd/golingua algebra synthesize --mode search --metadata data/semantic/examples/search/metadata.json --goal data/semantic/examples/search/unique.json --json > /tmp/search.json
+jq '.result.candidates | to_entries[] | {index:.key,id:.value.id,choices:.value.choices}' /tmp/search.json
+selected_candidate=0
+jq -c --argjson chosen "$selected_candidate" '.result.candidates[$chosen].export_request' /tmp/search.json > /tmp/search-export-request.json
+go run ./cmd/golingua algebra export --metadata data/semantic/examples/search/metadata.json --input /tmp/search-export-request.json --json > /tmp/search-export.json
+jq -c --slurpfile exported /tmp/search-export.json \
+  '{schema_version:1,profile:.profile,context_id:.context_id,context_dependencies:.context_dependencies,provenance:.provenance,artifact:$exported[0].artifact}' \
+  /tmp/search-export-request.json > /tmp/search-replay-request.json
+go run ./cmd/golingua algebra replay --metadata data/semantic/examples/search/metadata.json --input /tmp/search-replay-request.json --json
+```
+
 The canonical document includes hydrated declarations. Structural `algebra
 check` can check that document without metadata. If checking with metadata,
 remove only the inline `sorts` and `signatures` first; metadata-bound checking
@@ -125,5 +240,5 @@ The implementation and observed CLI record belong to the active DSE issue and
 its evidence; prior observations predating the final bounded validation change
 are not evidence for that final source snapshot. Implementation status,
 agent assessment, mathematical review, and owner acceptance are separate
-records. See the [DSE issue map](../../work/dse/issue-map.json) for current
-status.
+records. Owner language acceptance remains **NOT_EVALUATED**. See the
+[DSE issue map](../../work/dse/issue-map.json) for current status.

@@ -19,7 +19,7 @@ func DecodeGoal(data []byte) (GoalSpec, error) {
 	if err := algebra.PreflightJSON(data); err != nil {
 		return GoalSpec{}, err
 	}
-	root, err := goalJSONObject(data, "goal", []string{"schema_version", "profile", "context_id", "expected_type", "ports", "references", "allowed_operators", "constraints", "provenance", "limits"}, []string{"schema_version", "profile", "context_id", "expected_type", "ports", "references", "allowed_operators", "constraints", "provenance", "limits"})
+	root, err := goalJSONObject(data, "goal", []string{"schema_version", "profile", "context_id", "expected_type", "ports", "references", "project_ports", "allowed_operators", "constraints", "provenance", "limits"}, []string{"schema_version", "profile", "context_id", "expected_type", "ports", "references", "allowed_operators", "constraints", "provenance", "limits"})
 	if err != nil {
 		return GoalSpec{}, err
 	}
@@ -74,6 +74,20 @@ func DecodeGoal(data []byte) (GoalSpec, error) {
 			return GoalSpec{}, decodeErr
 		}
 		goal.References = append(goal.References, ref)
+	}
+	if rawProjectPorts, present := root["project_ports"]; present {
+		projectPortValues, arrayErr := goalJSONArray(rawProjectPorts, "project_ports", MaxGoalPorts)
+		if arrayErr != nil {
+			return GoalSpec{}, arrayErr
+		}
+		goal.ProjectPorts = make([]string, 0, len(projectPortValues))
+		for i, raw := range projectPortValues {
+			portID, stringErr := goalJSONString(raw, fmt.Sprintf("project_ports[%d]", i), 256, false)
+			if stringErr != nil {
+				return GoalSpec{}, stringErr
+			}
+			goal.ProjectPorts = append(goal.ProjectPorts, portID)
+		}
 	}
 
 	operatorValues, err := goalJSONArray(root["allowed_operators"], "allowed_operators", len(allowedGoalOperators))

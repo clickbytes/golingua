@@ -1,0 +1,487 @@
+{
+  "schema_version": 1,
+  "request": {
+    "schema_version": 1,
+    "document": {
+      "schema_version": 1,
+      "expression": {
+        "kind": "Lambda",
+        "id": "rel_r_a_1_fresh_1",
+        "type": {
+          "kind": "Entity"
+        },
+        "body": {
+          "kind": "Lambda",
+          "id": "rel_r_b_1_fresh_2",
+          "type": {
+            "kind": "Entity"
+          },
+          "body": {
+            "kind": "And",
+            "operands": [
+              {
+                "kind": "Exists",
+                "id": "join_0_1",
+                "type": {
+                  "kind": "Entity"
+                },
+                "body": {
+                  "kind": "And",
+                  "operands": [
+                    {
+                      "kind": "Atom",
+                      "symbol": "r",
+                      "args": [
+                        {
+                          "role": "a",
+                          "value": {
+                            "kind": "Var",
+                            "id": "rel_r_a_1_fresh_1"
+                          }
+                        },
+                        {
+                          "role": "b",
+                          "value": {
+                            "kind": "Var",
+                            "id": "join_0_1"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "Atom",
+                      "symbol": "r",
+                      "args": [
+                        {
+                          "role": "a",
+                          "value": {
+                            "kind": "Var",
+                            "id": "join_0_1"
+                          }
+                        },
+                        {
+                          "role": "b",
+                          "value": {
+                            "kind": "Var",
+                            "id": "rel_r_b_1_fresh_2"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "Atom",
+                "symbol": "p",
+                "args": [
+                  {
+                    "role": "v",
+                    "value": {
+                      "kind": "Var",
+                      "id": "rel_r_b_1_fresh_2"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "limits": {
+        "max_nodes": 4096,
+        "max_depth": 64,
+        "max_type_depth": 32,
+        "max_symbols": 512,
+        "max_ports": 16
+      }
+    },
+    "profile": {
+      "id": "dse-search-alpha-v1",
+      "rules": [
+        "alpha_v1"
+      ]
+    },
+    "budget": {}
+  },
+  "certificate": {
+    "input": {
+      "body": {
+        "body": {
+          "kind": "And",
+          "operands": [
+            {
+              "body": {
+                "kind": "And",
+                "operands": [
+                  {
+                    "args": [
+                      {
+                        "role": "a",
+                        "value": {
+                          "id": "rel_r_a_1_fresh_1",
+                          "kind": "Var"
+                        }
+                      },
+                      {
+                        "role": "b",
+                        "value": {
+                          "id": "join_0_1",
+                          "kind": "Var"
+                        }
+                      }
+                    ],
+                    "kind": "Atom",
+                    "symbol": "r"
+                  },
+                  {
+                    "args": [
+                      {
+                        "role": "a",
+                        "value": {
+                          "id": "join_0_1",
+                          "kind": "Var"
+                        }
+                      },
+                      {
+                        "role": "b",
+                        "value": {
+                          "id": "rel_r_b_1_fresh_2",
+                          "kind": "Var"
+                        }
+                      }
+                    ],
+                    "kind": "Atom",
+                    "symbol": "r"
+                  }
+                ]
+              },
+              "id": "join_0_1",
+              "kind": "Exists",
+              "type": {
+                "kind": "Entity"
+              }
+            },
+            {
+              "args": [
+                {
+                  "role": "v",
+                  "value": {
+                    "id": "rel_r_b_1_fresh_2",
+                    "kind": "Var"
+                  }
+                }
+              ],
+              "kind": "Atom",
+              "symbol": "p"
+            }
+          ]
+        },
+        "id": "rel_r_b_1_fresh_2",
+        "kind": "Lambda",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      "id": "rel_r_a_1_fresh_1",
+      "kind": "Lambda",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    "normalized": true,
+    "output": {
+      "body": {
+        "body": {
+          "kind": "And",
+          "operands": [
+            {
+              "body": {
+                "kind": "And",
+                "operands": [
+                  {
+                    "args": [
+                      {
+                        "role": "a",
+                        "value": {
+                          "id": "norm_b1",
+                          "kind": "Var"
+                        }
+                      },
+                      {
+                        "role": "b",
+                        "value": {
+                          "id": "norm_b3",
+                          "kind": "Var"
+                        }
+                      }
+                    ],
+                    "kind": "Atom",
+                    "symbol": "r"
+                  },
+                  {
+                    "args": [
+                      {
+                        "role": "a",
+                        "value": {
+                          "id": "norm_b3",
+                          "kind": "Var"
+                        }
+                      },
+                      {
+                        "role": "b",
+                        "value": {
+                          "id": "norm_b2",
+                          "kind": "Var"
+                        }
+                      }
+                    ],
+                    "kind": "Atom",
+                    "symbol": "r"
+                  }
+                ]
+              },
+              "id": "norm_b3",
+              "kind": "Exists",
+              "type": {
+                "kind": "Entity"
+              }
+            },
+            {
+              "args": [
+                {
+                  "role": "v",
+                  "value": {
+                    "id": "norm_b2",
+                    "kind": "Var"
+                  }
+                }
+              ],
+              "kind": "Atom",
+              "symbol": "p"
+            }
+          ]
+        },
+        "id": "norm_b2",
+        "kind": "Lambda",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      "id": "norm_b1",
+      "kind": "Lambda",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    "profile": {
+      "id": "dse-search-alpha-v1",
+      "rules": [
+        "alpha_v1"
+      ]
+    },
+    "schema_version": 1,
+    "snapshot_id": "wrong-snapshot",
+    "steps": [
+      {
+        "after": {
+          "body": {
+            "body": {
+              "kind": "And",
+              "operands": [
+                {
+                  "body": {
+                    "kind": "And",
+                    "operands": [
+                      {
+                        "args": [
+                          {
+                            "role": "a",
+                            "value": {
+                              "id": "norm_b1",
+                              "kind": "Var"
+                            }
+                          },
+                          {
+                            "role": "b",
+                            "value": {
+                              "id": "norm_b3",
+                              "kind": "Var"
+                            }
+                          }
+                        ],
+                        "kind": "Atom",
+                        "symbol": "r"
+                      },
+                      {
+                        "args": [
+                          {
+                            "role": "a",
+                            "value": {
+                              "id": "norm_b3",
+                              "kind": "Var"
+                            }
+                          },
+                          {
+                            "role": "b",
+                            "value": {
+                              "id": "norm_b2",
+                              "kind": "Var"
+                            }
+                          }
+                        ],
+                        "kind": "Atom",
+                        "symbol": "r"
+                      }
+                    ]
+                  },
+                  "id": "norm_b3",
+                  "kind": "Exists",
+                  "type": {
+                    "kind": "Entity"
+                  }
+                },
+                {
+                  "args": [
+                    {
+                      "role": "v",
+                      "value": {
+                        "id": "norm_b2",
+                        "kind": "Var"
+                      }
+                    }
+                  ],
+                  "kind": "Atom",
+                  "symbol": "p"
+                }
+              ]
+            },
+            "id": "norm_b2",
+            "kind": "Lambda",
+            "type": {
+              "kind": "Entity"
+            }
+          },
+          "id": "norm_b1",
+          "kind": "Lambda",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        "after_nodes": 13,
+        "before": {
+          "body": {
+            "body": {
+              "kind": "And",
+              "operands": [
+                {
+                  "body": {
+                    "kind": "And",
+                    "operands": [
+                      {
+                        "args": [
+                          {
+                            "role": "a",
+                            "value": {
+                              "id": "rel_r_a_1_fresh_1",
+                              "kind": "Var"
+                            }
+                          },
+                          {
+                            "role": "b",
+                            "value": {
+                              "id": "join_0_1",
+                              "kind": "Var"
+                            }
+                          }
+                        ],
+                        "kind": "Atom",
+                        "symbol": "r"
+                      },
+                      {
+                        "args": [
+                          {
+                            "role": "a",
+                            "value": {
+                              "id": "join_0_1",
+                              "kind": "Var"
+                            }
+                          },
+                          {
+                            "role": "b",
+                            "value": {
+                              "id": "rel_r_b_1_fresh_2",
+                              "kind": "Var"
+                            }
+                          }
+                        ],
+                        "kind": "Atom",
+                        "symbol": "r"
+                      }
+                    ]
+                  },
+                  "id": "join_0_1",
+                  "kind": "Exists",
+                  "type": {
+                    "kind": "Entity"
+                  }
+                },
+                {
+                  "args": [
+                    {
+                      "role": "v",
+                      "value": {
+                        "id": "rel_r_b_1_fresh_2",
+                        "kind": "Var"
+                      }
+                    }
+                  ],
+                  "kind": "Atom",
+                  "symbol": "p"
+                }
+              ]
+            },
+            "id": "rel_r_b_1_fresh_2",
+            "kind": "Lambda",
+            "type": {
+              "kind": "Entity"
+            }
+          },
+          "id": "rel_r_a_1_fresh_1",
+          "kind": "Lambda",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        "before_nodes": 13,
+        "binder_mapping": [
+          {
+            "before": "rel_r_a_1_fresh_1",
+            "after": "norm_b1",
+            "kind": "renamed"
+          },
+          {
+            "before": "rel_r_b_1_fresh_2",
+            "after": "norm_b2",
+            "kind": "renamed"
+          },
+          {
+            "before": "join_0_1",
+            "after": "norm_b3",
+            "kind": "renamed"
+          }
+        ],
+        "parameter_mapping": {},
+        "path": [],
+        "profile_id": "dse-search-alpha-v1",
+        "rule_id": "alpha_v1",
+        "side_conditions": [
+          "binder IDs use deterministic preorder names",
+          "bound Var occurrences follow their exact binder",
+          "parameter and reference IDs are preserved"
+        ],
+        "snapshot_id": "rewrite-formal-v1:976116cbe74135d49210c13db3d3d63d50fafc04473019fcd192356abb7ff589"
+      }
+    ]
+  }
+}
