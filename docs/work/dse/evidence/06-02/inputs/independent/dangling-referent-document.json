@@ -1,0 +1,299 @@
+{
+  "schema_version": 1,
+  "signatures": [
+    {
+      "id": "r",
+      "label": "uninterpreted r",
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s",
+      "label": "uninterpreted s",
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p",
+      "label": "uninterpreted p",
+      "ports": [
+        {
+          "role": "v",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "q",
+      "label": "uninterpreted q",
+      "ports": [
+        {
+          "role": "v",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "t",
+      "ports": [
+        {
+          "role": "source",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "target",
+          "type": {
+            "kind": "Event"
+          }
+        }
+      ]
+    },
+    {
+      "id": "n3",
+      "label": "uninterpreted n3",
+      "ports": [
+        {
+          "role": "u",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "v",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "w",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "z0",
+      "label": "uninterpreted z0",
+      "ports": []
+    },
+    {
+      "id": "e2",
+      "label": "uninterpreted e2",
+      "ports": [
+        {
+          "role": "e",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "x",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ],
+  "parameters": [],
+  "expression": {
+    "kind": "Atom",
+    "symbol": "r",
+    "args": [
+      {
+        "role": "a",
+        "value": {
+          "kind": "Ref",
+          "id": "A",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      },
+      {
+        "role": "b",
+        "value": {
+          "kind": "Ref",
+          "id": "B",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      }
+    ]
+  },
+  "limits": {},
+  "request_context": {
+    "schema_version": 1,
+    "id": "ctx-reference",
+    "referents": [
+      {
+        "id": "A",
+        "type": {
+          "kind": "Entity"
+        },
+        "concept_id": "concept:category.k"
+      },
+      {
+        "id": "B",
+        "type": {
+          "kind": "Entity"
+        },
+        "concept_id": "concept:category.k"
+      }
+    ],
+    "speaker_referent_id": "A",
+    "addressee_referent_id": "B",
+    "mentions": [
+      {
+        "id": "m1",
+        "context_id": "ctx-reference",
+        "referent_id": "A"
+      },
+      {
+        "id": "m2",
+        "referent_id": "A"
+      }
+    ],
+    "resolution_evidence": [
+      {
+        "id": "e1",
+        "mention_id": "m1",
+        "referent_id": "absent",
+        "source": {
+          "id": "neutral-explicit-evidence",
+          "uri": "urn:golingua:dse:392:neutral-explicit-evidence",
+          "version": "1",
+          "license": "unspecified (agent-authored diagnostic proposal)",
+          "author": "Codex coordinator"
+        }
+      },
+      {
+        "id": "e2",
+        "mention_id": "m2",
+        "referent_id": "A",
+        "source": {
+          "id": "neutral-explicit-evidence",
+          "uri": "urn:golingua:dse:392:neutral-explicit-evidence",
+          "version": "1",
+          "license": "unspecified (agent-authored diagnostic proposal)",
+          "author": "Codex coordinator"
+        }
+      }
+    ],
+    "conditions": [
+      {
+        "id": "assumption1",
+        "kind": "assumption",
+        "code": "existence_not_verified",
+        "target_referent_ids": [
+          "A"
+        ],
+        "expression": {
+          "kind": "Exists",
+          "id": "z",
+          "type": {
+            "kind": "Entity"
+          },
+          "body": {
+            "kind": "Atom",
+            "symbol": "p",
+            "args": [
+              {
+                "role": "v",
+                "value": {
+                  "kind": "Var",
+                  "id": "z"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "presupposition1",
+        "kind": "presupposition",
+        "code": "uniqueness_not_verified",
+        "target_referent_ids": [
+          "A"
+        ],
+        "expression": {
+          "kind": "Quantifier",
+          "quantifier": "exactly",
+          "count": 1,
+          "id": "A",
+          "type": {
+            "kind": "Entity"
+          },
+          "body": {
+            "kind": "Atom",
+            "symbol": "p",
+            "args": [
+              {
+                "role": "v",
+                "value": {
+                  "kind": "Var",
+                  "id": "A"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "loss1",
+        "kind": "loss",
+        "code": "deixis_proximity_unresolved",
+        "target_referent_ids": [
+          "A"
+        ],
+        "detail": "No proximity value is supplied."
+      }
+    ]
+  }
+}

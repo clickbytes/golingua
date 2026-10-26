@@ -1,0 +1,1 @@
+{"status":"resource_limit","diagnostics":[{"code":"RESOURCE_LIMIT","message":"array has 513 items; maximum is 512","path":"context.referents","severity":"error"}]}

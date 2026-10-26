@@ -182,6 +182,10 @@ func createSynthesisCertificate(primitiveContext algebra.Document, environment a
 	if err != nil {
 		return SynthesisCertificate{}, err
 	}
+	requestContextFingerprint, err := goalContextFingerprint(environment.Document, concrete)
+	if err != nil {
+		return SynthesisCertificate{}, err
+	}
 	candidateDigest := sha256.Sum256(append([]byte("dse-candidate-document-v1\x00"), candidateBytes...))
 	if err := budget.charge(len(original.References), "request_reference_boundary"); err != nil {
 		return SynthesisCertificate{}, err
@@ -223,6 +227,7 @@ func createSynthesisCertificate(primitiveContext algebra.Document, environment a
 	certificate.GoalFingerprint = goalFingerprint
 	certificate.SnapshotID = environment.SnapshotID
 	certificate.ContextID = concrete.ContextID
+	certificate.RequestContextFingerprint = requestContextFingerprint
 	certificate.Profile = concrete.Profile
 	certificate.CandidateFingerprint = "sha256:" + hex.EncodeToString(candidateDigest[:])
 	certificate.Assumptions = []CertificateAssumption{
@@ -476,7 +481,7 @@ func cloneCertificateInputs(concrete GoalSpec, choices []ChoiceAssignment, opera
 		return SynthesisCertificate{}, certEmitResource("certificate", "certificate fields exceed the 8 MiB profile limit")
 	}
 	var copy struct {
-		Goal        GoalSpec              `json:"goal"`
+		Goal        json.RawMessage       `json:"goal"`
 		Choices     []ChoiceAssignment    `json:"choices"`
 		Operations  []CertifiedOperation  `json:"operations"`
 		Interface   []algebra.PortBinding `json:"interface"`
@@ -486,8 +491,12 @@ func cloneCertificateInputs(concrete GoalSpec, choices []ChoiceAssignment, opera
 	if err := json.Unmarshal(encoded, &copy); err != nil {
 		return SynthesisCertificate{}, certEmitInvalid("CERTIFICATE_COPY", "certificate", err.Error())
 	}
+	goalCopy, err := DecodeGoal(copy.Goal)
+	if err != nil {
+		return SynthesisCertificate{}, err
+	}
 	return SynthesisCertificate{
-		ConcreteGoal: copy.Goal, Choices: copy.Choices, Operations: copy.Operations,
+		ConcreteGoal: goalCopy, Choices: copy.Choices, Operations: copy.Operations,
 		Interface: copy.Interface, Scopes: copy.Scopes, Obligations: copy.Obligations,
 		Assumptions: []CertificateAssumption{},
 	}, nil

@@ -19,7 +19,7 @@ func DecodeGoal(data []byte) (GoalSpec, error) {
 	if err := algebra.PreflightJSON(data); err != nil {
 		return GoalSpec{}, err
 	}
-	root, err := goalJSONObject(data, "goal", []string{"schema_version", "profile", "context_id", "expected_type", "ports", "references", "project_ports", "allowed_operators", "constraints", "provenance", "limits"}, []string{"schema_version", "profile", "context_id", "expected_type", "ports", "references", "allowed_operators", "constraints", "provenance", "limits"})
+	root, err := goalJSONObject(data, "goal", []string{"schema_version", "profile", "context_id", "request_context", "expected_type", "ports", "references", "project_ports", "allowed_operators", "constraints", "provenance", "limits"}, []string{"schema_version", "profile", "context_id", "expected_type", "ports", "references", "allowed_operators", "constraints", "provenance", "limits"})
 	if err != nil {
 		return GoalSpec{}, err
 	}
@@ -44,6 +44,16 @@ func DecodeGoal(data []byte) (GoalSpec, error) {
 	}
 	if !goalID(goal.ContextID) {
 		return GoalSpec{}, goalInvalid("INVALID_CONTEXT_ID", "context_id", "context ID must be a bounded identifier")
+	}
+	if rawContext, ok := root["request_context"]; ok {
+		if goalNull(rawContext) {
+			return GoalSpec{}, goalInvalid("INVALID_JSON_VALUE", "request_context", "request_context must be omitted or an object, not null")
+		}
+		contextValue, contextErr := algebra.DecodeRequestContextJSON(rawContext)
+		if contextErr != nil {
+			return GoalSpec{}, contextErr
+		}
+		goal.RequestContext = &contextValue
 	}
 	goal.ExpectedType, err = algebra.DecodeTypeJSON(root["expected_type"], "expected_type")
 	if err != nil {

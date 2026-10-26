@@ -31,7 +31,7 @@ func DecodeSynthesisCertificate(data []byte) (SynthesisCertificate, error) {
 		return SynthesisCertificate{}, err
 	}
 	root, err := certObject(data, "certificate", certFields(
-		"schema_version", "format", "producer_status", "goal_verified", "origin", "goal_fingerprint", "snapshot_id", "context_id", "profile", "concrete_goal", "choices", "candidate_fingerprint", "interface", "operations", "scopes", "obligations", "assumptions",
+		"schema_version", "format", "producer_status", "goal_verified", "origin", "goal_fingerprint", "snapshot_id", "context_id", "request_context_fingerprint", "profile", "concrete_goal", "choices", "candidate_fingerprint", "interface", "operations", "scopes", "obligations", "assumptions",
 	), []string{"schema_version", "format", "producer_status", "goal_verified", "origin", "goal_fingerprint", "snapshot_id", "context_id", "profile", "concrete_goal", "choices", "candidate_fingerprint", "interface", "operations", "scopes", "obligations", "assumptions"})
 	if err != nil {
 		return SynthesisCertificate{}, err
@@ -66,6 +66,11 @@ func DecodeSynthesisCertificate(data []byte) (SynthesisCertificate, error) {
 	}
 	if result.ContextID, err = certString(root["context_id"], "certificate.context_id", 256, false); err != nil {
 		return result, err
+	}
+	if raw, ok := root["request_context_fingerprint"]; ok {
+		if result.RequestContextFingerprint, err = certString(raw, "certificate.request_context_fingerprint", 256, false); err != nil {
+			return result, err
+		}
 	}
 	if result.Profile, err = certString(root["profile"], "certificate.profile", 256, false); err != nil {
 		return result, err
@@ -135,6 +140,14 @@ func validateCertificateValue(c SynthesisCertificate) error {
 		if err := certText(value, "certificate."+name, 256, false); err != nil {
 			return err
 		}
+	}
+	if c.RequestContextFingerprint != "" {
+		if err := certText(c.RequestContextFingerprint, "certificate.request_context_fingerprint", 256, false); err != nil {
+			return err
+		}
+	}
+	if (c.ConcreteGoal.RequestContext == nil) != (c.RequestContextFingerprint == "") {
+		return certJSONInvalid("REQUEST_CONTEXT_PIN_INCOMPLETE", "certificate.request_context_fingerprint", "a context-bearing goal requires exactly one context fingerprint pin")
 	}
 	if c.IdentityProof != nil || c.IdentityKey != "" {
 		return certJSONUnsupported("UNSUPPORTED_IDENTITY_PROOF", "certificate.identity_proof", "identity proof fields are not part of the finite-goal certificate format")
@@ -326,6 +339,11 @@ func validateGoalWireValue(g GoalSpec) error {
 			return err
 		}
 	}
+	if g.RequestContext != nil {
+		if _, err := algebra.CloneRequestContext(*g.RequestContext); err != nil {
+			return err
+		}
+	}
 	if err := validateCertType(g.ExpectedType, "certificate.concrete_goal.expected_type", 0, map[*algebra.Type]bool{}); err != nil {
 		return err
 	}
@@ -433,6 +451,11 @@ func normalizeCertificateGoal(g GoalSpec) GoalSpec {
 	g.AllowedOperators = append([]string{}, g.AllowedOperators...)
 	g.Constraints = append([]Constraint{}, g.Constraints...)
 	g.Provenance = append([]provenance.SourceRef{}, g.Provenance...)
+	if g.RequestContext != nil {
+		if contextCopy, err := algebra.CloneRequestContext(*g.RequestContext); err == nil {
+			g.RequestContext = &contextCopy
+		}
+	}
 	return g
 }
 

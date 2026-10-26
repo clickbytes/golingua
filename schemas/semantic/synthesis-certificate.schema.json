@@ -16,6 +16,7 @@
     "goal_fingerprint": {"$ref": "#/$defs/id"},
     "snapshot_id": {"$ref": "#/$defs/id"},
     "context_id": {"$ref": "#/$defs/id"},
+    "request_context_fingerprint": {"type": "string", "minLength": 1, "maxLength": 256, "$comment": "Present when the original goal carries a request context; independently checked against the caller-supplied payload."},
     "profile": {"$ref": "#/$defs/id"},
     "concrete_goal": {"$ref": "goals.schema.json"},
     "choices": {"type": "array", "maxItems": 64, "items": {"$ref": "#/$defs/choice"}},

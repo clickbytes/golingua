@@ -88,25 +88,26 @@ func NormalizeGoalVerificationLimits(requested GoalVerificationLimits) (GoalVeri
 // ProducerStatus and GoalVerified are untrusted claims; neither establishes
 // that the candidate satisfies its goal until a verifier recomputes it.
 type SynthesisCertificate struct {
-	SchemaVersion        int                     `json:"schema_version"`
-	Format               string                  `json:"format"`
-	ProducerStatus       string                  `json:"producer_status"`
-	GoalVerified         bool                    `json:"goal_verified"`
-	Origin               string                  `json:"origin"`
-	GoalFingerprint      string                  `json:"goal_fingerprint"`
-	SnapshotID           string                  `json:"snapshot_id"`
-	ContextID            string                  `json:"context_id"`
-	Profile              string                  `json:"profile"`
-	ConcreteGoal         GoalSpec                `json:"concrete_goal"`
-	Choices              []ChoiceAssignment      `json:"choices"`
-	CandidateFingerprint string                  `json:"candidate_fingerprint"`
-	Interface            []algebra.PortBinding   `json:"interface"`
-	Operations           []CertifiedOperation    `json:"operations"`
-	Scopes               []CertificateScope      `json:"scopes"`
-	Obligations          []GoalObligation        `json:"obligations"`
-	Assumptions          []CertificateAssumption `json:"assumptions"`
-	IdentityProof        *SynthesisIdentityProof `json:"identity_proof,omitempty"`
-	IdentityKey          string                  `json:"identity_key,omitempty"`
+	SchemaVersion             int                     `json:"schema_version"`
+	Format                    string                  `json:"format"`
+	ProducerStatus            string                  `json:"producer_status"`
+	GoalVerified              bool                    `json:"goal_verified"`
+	Origin                    string                  `json:"origin"`
+	GoalFingerprint           string                  `json:"goal_fingerprint"`
+	SnapshotID                string                  `json:"snapshot_id"`
+	ContextID                 string                  `json:"context_id"`
+	RequestContextFingerprint string                  `json:"request_context_fingerprint,omitempty"`
+	Profile                   string                  `json:"profile"`
+	ConcreteGoal              GoalSpec                `json:"concrete_goal"`
+	Choices                   []ChoiceAssignment      `json:"choices"`
+	CandidateFingerprint      string                  `json:"candidate_fingerprint"`
+	Interface                 []algebra.PortBinding   `json:"interface"`
+	Operations                []CertifiedOperation    `json:"operations"`
+	Scopes                    []CertificateScope      `json:"scopes"`
+	Obligations               []GoalObligation        `json:"obligations"`
+	Assumptions               []CertificateAssumption `json:"assumptions"`
+	IdentityProof             *SynthesisIdentityProof `json:"identity_proof,omitempty"`
+	IdentityKey               string                  `json:"identity_key,omitempty"`
 }
 
 // CertifiedOperation records claimed public algebra operator inputs and

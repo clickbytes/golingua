@@ -47,17 +47,18 @@ type searchCandidateIdentity struct {
 }
 
 type searchIdentityDescriptor struct {
-	Version      string                      `json:"version"`
-	SnapshotID   string                      `json:"snapshot_id"`
-	ContextID    string                      `json:"context_id"`
-	ExpectedType algebra.Type                `json:"expected_type"`
-	Ports        []searchIdentityPort        `json:"ports"`
-	References   []algebra.Declaration       `json:"references"`
-	ProjectPorts []string                    `json:"project_ports"`
-	Constraints  []searchIdentityConstraint  `json:"constraints"`
-	Choices      []ChoiceAssignment          `json:"choices"`
-	Fragments    []searchIdentityFragmentMap `json:"fragments"`
-	Expression   *algebra.Term               `json:"expression"`
+	Version                   string                      `json:"version"`
+	SnapshotID                string                      `json:"snapshot_id"`
+	ContextID                 string                      `json:"context_id"`
+	RequestContextFingerprint string                      `json:"request_context_fingerprint,omitempty"`
+	ExpectedType              algebra.Type                `json:"expected_type"`
+	Ports                     []searchIdentityPort        `json:"ports"`
+	References                []algebra.Declaration       `json:"references"`
+	ProjectPorts              []string                    `json:"project_ports"`
+	Constraints               []searchIdentityConstraint  `json:"constraints"`
+	Choices                   []ChoiceAssignment          `json:"choices"`
+	Fragments                 []searchIdentityFragmentMap `json:"fragments"`
+	Expression                *algebra.Term               `json:"expression"`
 }
 
 type searchIdentityPort struct {
@@ -213,7 +214,11 @@ func certifySearchCandidate(environment algebra.RewriteEnvironment, concreteGoal
 	if err != nil {
 		return searchCandidateIdentity{}, false, err
 	}
-	descriptor, err := buildSearchIdentityDescriptor(environment.SnapshotID, concreteGoal, choices, constructed.Obligations, identityExpression, limits)
+	requestContextFingerprint, err := goalContextFingerprint(environment.Document, concreteGoal)
+	if err != nil {
+		return searchCandidateIdentity{}, false, err
+	}
+	descriptor, err := buildSearchIdentityDescriptor(environment.SnapshotID, concreteGoal, choices, constructed.Obligations, identityExpression, limits, requestContextFingerprint)
 	if err != nil {
 		return searchCandidateIdentity{}, false, err
 	}
@@ -389,7 +394,7 @@ func rewriteResultIsWorkLimited(resultStatus status.OutcomeKind, diagnostics []a
 	return false
 }
 
-func buildSearchIdentityDescriptor(snapshotID string, goal GoalSpec, choices []ChoiceAssignment, obligations []GoalObligation, expression *algebra.Term, limits algebra.Limits) (searchIdentityDescriptor, error) {
+func buildSearchIdentityDescriptor(snapshotID string, goal GoalSpec, choices []ChoiceAssignment, obligations []GoalObligation, expression *algebra.Term, limits algebra.Limits, requestContextFingerprint string) (searchIdentityDescriptor, error) {
 	if len(goal.Ports) > MaxGoalPorts || len(goal.References) > algebra.DefaultMaxSymbols || len(goal.Constraints) > MaxGoalConstraints || len(choices) > MaxGoalConstraints+MaxGoalPorts+2 || len(obligations) > MaxGoalConstraints {
 		return searchIdentityDescriptor{}, searchIdentityResource("identity", "goal identity metadata exceeds its bounded profile")
 	}
@@ -401,7 +406,7 @@ func buildSearchIdentityDescriptor(snapshotID string, goal GoalSpec, choices []C
 		}
 	}
 	descriptor := searchIdentityDescriptor{
-		Version: searchIdentityVersion, SnapshotID: snapshotID, ContextID: goal.ContextID,
+		Version: searchIdentityVersion, SnapshotID: snapshotID, ContextID: goal.ContextID, RequestContextFingerprint: requestContextFingerprint,
 		ExpectedType: goal.ExpectedType, Ports: make([]searchIdentityPort, len(goal.Ports)),
 		References:   append([]algebra.Declaration{}, goal.References...),
 		ProjectPorts: append([]string{}, goal.ProjectPorts...),
@@ -968,6 +973,22 @@ func validateSearchEnvironment(primitiveContext algebra.Document, rewriteEnv alg
 	}
 	if err := validateIdentityReferences(rewriteEnv.Document.References, goal.References); err != nil {
 		return err
+	}
+	if (rewriteEnv.Document.RequestContext == nil) != (goal.RequestContext == nil) {
+		return searchIdentityInvalid("SEARCH_REQUEST_CONTEXT_MISMATCH", "environment.document.request_context", "rewrite environment must carry exactly the goal request context")
+	}
+	if goal.RequestContext != nil {
+		environmentContext, contextErr := algebra.RequestContextFingerprint(*rewriteEnv.Document.RequestContext, rewriteEnv.Document)
+		if contextErr != nil {
+			return contextErr
+		}
+		goalContext, contextErr := goalContextFingerprint(primitiveContext, goal)
+		if contextErr != nil {
+			return contextErr
+		}
+		if environmentContext != goalContext {
+			return searchIdentityInvalid("SEARCH_REQUEST_CONTEXT_MISMATCH", "environment.document.request_context", "rewrite environment context payload must match the goal")
+		}
 	}
 	primitiveSorts := make(map[string]struct{}, len(primitiveContext.Sorts))
 	environmentSorts := make(map[string]struct{}, len(rewriteEnv.Document.Sorts))

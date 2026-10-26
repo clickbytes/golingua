@@ -43,13 +43,14 @@ type BuildStep struct {
 // BuildRequest is a finite construction recipe. It contains no final AST,
 // inline signatures, or executable callbacks.
 type BuildRequest struct {
-	SchemaVersion int           `json:"schema_version"`
-	Parameters    []Declaration `json:"parameters,omitempty"`
-	References    []Declaration `json:"references,omitempty"`
-	Closed        bool          `json:"closed,omitempty"`
-	Limits        Limits        `json:"limits,omitempty"`
-	Steps         []BuildStep   `json:"steps"`
-	Result        string        `json:"result"`
+	SchemaVersion  int             `json:"schema_version"`
+	RequestContext *RequestContext `json:"request_context,omitempty"`
+	Parameters     []Declaration   `json:"parameters,omitempty"`
+	References     []Declaration   `json:"references,omitempty"`
+	Closed         bool            `json:"closed,omitempty"`
+	Limits         Limits          `json:"limits,omitempty"`
+	Steps          []BuildStep     `json:"steps"`
+	Result         string          `json:"result"`
 }
 
 type BuildTrace struct {
@@ -106,6 +107,13 @@ func DecodeBuildRequest(data []byte) (BuildRequest, error) {
 	}
 	if request.SchemaVersion != BuildSchemaVersion {
 		return BuildRequest{}, invalid("INVALID_SCHEMA_VERSION", "schema_version", "unsupported build request version")
+	}
+	if raw, ok := root["request_context"]; ok {
+		contextValue, contextErr := DecodeRequestContextJSON(raw)
+		if contextErr != nil {
+			return BuildRequest{}, contextErr
+		}
+		request.RequestContext = &contextValue
 	}
 	var err error
 	if raw, ok := root["parameters"]; ok {
@@ -167,17 +175,25 @@ func Build(context Document, request BuildRequest) (BuildResult, error) {
 	if len(request.Steps) > 64 {
 		return BuildResult{}, resourceLimit("steps", "build has more than 64 steps")
 	}
-	if len(context.Parameters) != 0 || len(context.References) != 0 {
+	if len(context.Parameters) != 0 || len(context.References) != 0 || context.RequestContext != nil {
 		return BuildResult{}, invalid("INVALID_BUILD_CONTEXT", "context", "build context supplies metadata declarations only")
 	}
 	if !validText(request.Result, 256) {
 		return BuildResult{}, invalid("INVALID_RESULT_ID", "result", "result must name a prior step")
 	}
-	rawDocument := Document{SchemaVersion: SchemaVersion, Sorts: context.Sorts, Signatures: context.Signatures, Parameters: request.Parameters, References: request.References, Limits: limits}
+	var requestContext *RequestContext
+	if request.RequestContext != nil {
+		cloned, cloneErr := CloneRequestContext(*request.RequestContext)
+		if cloneErr != nil {
+			return BuildResult{}, cloneErr
+		}
+		requestContext = &cloned
+	}
+	rawDocument := Document{SchemaVersion: SchemaVersion, Sorts: context.Sorts, Signatures: context.Signatures, Parameters: request.Parameters, References: request.References, RequestContext: requestContext, Limits: limits}
 	if err := CheckDeclarations(rawDocument); err != nil {
 		return BuildResult{}, err
 	}
-	document := Document{SchemaVersion: SchemaVersion, Sorts: cloneSorts(context.Sorts), Signatures: cloneSignatures(context.Signatures), Parameters: cloneDeclarations(request.Parameters), References: cloneDeclarations(request.References), Limits: limits}
+	document := Document{SchemaVersion: SchemaVersion, Sorts: cloneSorts(context.Sorts), Signatures: cloneSignatures(context.Signatures), Parameters: cloneDeclarations(request.Parameters), References: cloneDeclarations(request.References), RequestContext: requestContext, Limits: limits}
 	values := make(map[string]buildValue, len(request.Steps))
 	trace := make([]BuildTrace, 0, len(request.Steps))
 	seen := make(map[string]bool, len(request.Steps))
@@ -621,7 +637,7 @@ func executeBuildStep(context Document, step BuildStep, values map[string]buildV
 }
 
 func validateBuildRequestShape(root map[string]json.RawMessage) error {
-	allowed := map[string]bool{"schema_version": true, "parameters": true, "references": true, "closed": true, "limits": true, "steps": true, "result": true}
+	allowed := map[string]bool{"schema_version": true, "request_context": true, "parameters": true, "references": true, "closed": true, "limits": true, "steps": true, "result": true}
 	if err := checkFields(root, allowed, "request"); err != nil {
 		return err
 	}

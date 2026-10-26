@@ -28,6 +28,9 @@ func VerifyEquivalenceCertificate(environment RewriteEnvironment, left, right Do
 	if !validEquivalenceText(contextID, 256) {
 		return result, invalid("INVALID_EQUIVALENCE_CONTEXT", "context_id", "context ID must be non-empty bounded UTF-8")
 	}
+	if err := matchEquivalenceRequestContexts(environment.Document, left, right, contextID); err != nil {
+		return result, err
+	}
 	if err := ValidateRewriteProfile(profile); err != nil {
 		return result, err
 	}

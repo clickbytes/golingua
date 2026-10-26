@@ -42,6 +42,7 @@ type ArtifactReplayRequest struct {
 	SchemaVersion       int                    `json:"schema_version"`
 	Profile             RewriteProfile         `json:"profile"`
 	ContextID           string                 `json:"context_id"`
+	RequestContext      *RequestContext        `json:"request_context,omitempty"`
 	ContextDependencies []ContextDependency    `json:"context_dependencies"`
 	Provenance          []provenance.SourceRef `json:"provenance"`
 	Limits              Limits                 `json:"limits,omitempty"`
@@ -203,6 +204,13 @@ func rewriteDocumentWire(document Document) (map[string]any, error) {
 	}
 	copyDocument := document
 	copyDocument.Limits = document.Limits
+	if document.RequestContext != nil {
+		context, contextErr := CloneRequestContext(*document.RequestContext)
+		if contextErr != nil {
+			return nil, contextErr
+		}
+		copyDocument.RequestContext = &context
+	}
 	copyDocument.Sorts = append([]SortDeclaration{}, document.Sorts...)
 	for i := range copyDocument.Sorts {
 		if !validText(copyDocument.Sorts[i].ID, 256) || !validOptionalText(copyDocument.Sorts[i].Label, 1024) {
@@ -362,6 +370,9 @@ func rewriteCertificateWire(certificate RewriteCertificate) (map[string]any, err
 	if !validText(certificate.SnapshotID, 256) || len(certificate.Steps) > DefaultRewriteMaxSteps {
 		return nil, resourceLimit("certificate", "certificate metadata exceeds structural bounds")
 	}
+	if !validOptionalText(certificate.ContextFingerprint, 256) {
+		return nil, invalid("INVALID_REWRITE_CERTIFICATE", "certificate.context_fingerprint", "context fingerprint exceeds its text bound")
+	}
 	if err := ValidateRewriteProfile(certificate.Profile); err != nil {
 		return nil, err
 	}
@@ -384,6 +395,9 @@ func rewriteCertificateWire(certificate RewriteCertificate) (map[string]any, err
 		"schema_version": certificate.SchemaVersion, "snapshot_id": certificate.SnapshotID,
 		"profile": rewriteProfileWire(certificate.Profile), "input": input, "output": output,
 		"steps": steps, "normalized": certificate.Normalized,
+	}
+	if certificate.ContextFingerprint != "" {
+		wire["context_fingerprint"] = certificate.ContextFingerprint
 	}
 	encoded, err := json.Marshal(wire)
 	if err != nil {
@@ -469,7 +483,7 @@ func DecodeRewriteCertificate(data []byte) (RewriteCertificate, error) {
 	if err := PreflightJSONLimit(data, MaxRewriteCertificateBytes); err != nil {
 		return RewriteCertificate{}, err
 	}
-	fields, err := strictObject(data, "certificate", []string{"schema_version", "snapshot_id", "profile", "input", "output", "steps", "normalized"}, []string{"schema_version", "snapshot_id", "profile", "input", "output", "steps", "normalized"})
+	fields, err := strictObject(data, "certificate", []string{"schema_version", "snapshot_id", "context_fingerprint", "profile", "input", "output", "steps", "normalized"}, []string{"schema_version", "snapshot_id", "profile", "input", "output", "steps", "normalized"})
 	if err != nil {
 		return RewriteCertificate{}, err
 	}
@@ -480,6 +494,13 @@ func DecodeRewriteCertificate(data []byte) (RewriteCertificate, error) {
 	snapshotID, err := rewriteJSONString(fields["snapshot_id"], "certificate.snapshot_id", 256, false)
 	if err != nil {
 		return RewriteCertificate{}, err
+	}
+	contextFingerprint := ""
+	if raw, exists := fields["context_fingerprint"]; exists {
+		contextFingerprint, err = rewriteJSONString(raw, "certificate.context_fingerprint", 256, false)
+		if err != nil {
+			return RewriteCertificate{}, err
+		}
 	}
 	profile, err := decodeRewriteProfile(fields["profile"], "certificate.profile")
 	if err != nil {
@@ -509,7 +530,7 @@ func DecodeRewriteCertificate(data []byte) (RewriteCertificate, error) {
 	if err != nil {
 		return RewriteCertificate{}, err
 	}
-	return RewriteCertificate{SchemaVersion: version, SnapshotID: snapshotID, Profile: profile, Input: input, Output: output, Steps: steps, Normalized: normalized}, nil
+	return RewriteCertificate{SchemaVersion: version, SnapshotID: snapshotID, ContextFingerprint: contextFingerprint, Profile: profile, Input: input, Output: output, Steps: steps, Normalized: normalized}, nil
 }
 
 // DecodeRewriteVerificationRequest decodes a finite envelope. The nested
@@ -786,6 +807,17 @@ func Encode(document Document) ([]byte, error) {
 
 func documentWire(document Document) (map[string]any, error) {
 	wire := map[string]any{"schema_version": document.SchemaVersion}
+	if document.RequestContext != nil {
+		context, err := CloneRequestContext(*document.RequestContext)
+		if err != nil {
+			return nil, err
+		}
+		contextWire, err := requestContextWire(context, false)
+		if err != nil {
+			return nil, err
+		}
+		wire["request_context"] = contextWire
+	}
 	if len(document.Sorts) != 0 {
 		wire["sorts"] = document.Sorts
 	}
@@ -1061,7 +1093,7 @@ func parseHexRune(data []byte, start int) (uint16, bool) {
 }
 
 func validateDocumentJSON(data []byte) error {
-	root, err := strictObject(data, "document", []string{"schema_version", "sorts", "signatures", "parameters", "references", "closed", "expression", "limits"}, []string{"schema_version", "expression"})
+	root, err := strictObject(data, "document", []string{"schema_version", "sorts", "signatures", "parameters", "references", "closed", "expression", "limits", "request_context"}, []string{"schema_version", "expression"})
 	if err != nil {
 		return err
 	}
@@ -1131,6 +1163,11 @@ func validateDocumentJSON(data []byte) error {
 	}
 	if raw, ok := root["limits"]; ok {
 		if _, err := strictObject(raw, "limits", []string{"max_nodes", "max_depth", "max_type_depth", "max_symbols", "max_ports"}, nil); err != nil {
+			return err
+		}
+	}
+	if raw, ok := root["request_context"]; ok {
+		if _, err := DecodeRequestContextJSON(raw); err != nil {
 			return err
 		}
 	}
@@ -1419,8 +1456,9 @@ func DecodeArtifactEnvelope(data []byte) (ArtifactEnvelope, error) {
 	if err := PreflightJSONLimit(data, MaxArtifactEnvelopeBytes); err != nil {
 		return ArtifactEnvelope{}, err
 	}
-	allowed := []string{"kind", "schema_version", "normalizer_version", "registry_snapshot_id", "registries", "profile", "context_id", "context_dependencies", "sorts", "signatures", "parameters", "references", "closed", "limits", "root", "nodes", "provenance", "resource_fingerprint", "meaning_fingerprint", "cache_key"}
-	fields, err := strictObject(data, "artifact", allowed, allowed)
+	allowed := []string{"kind", "schema_version", "normalizer_version", "registry_snapshot_id", "registries", "profile", "context_id", "request_context", "request_context_fingerprint", "context_dependencies", "sorts", "signatures", "parameters", "references", "closed", "limits", "root", "nodes", "provenance", "resource_fingerprint", "meaning_fingerprint", "cache_key"}
+	required := []string{"kind", "schema_version", "normalizer_version", "registry_snapshot_id", "registries", "profile", "context_id", "context_dependencies", "sorts", "signatures", "parameters", "references", "closed", "limits", "root", "nodes", "provenance", "resource_fingerprint", "meaning_fingerprint", "cache_key"}
+	fields, err := strictObject(data, "artifact", allowed, required)
 	if err != nil {
 		return ArtifactEnvelope{}, err
 	}
@@ -1445,6 +1483,25 @@ func DecodeArtifactEnvelope(data []byte) (ArtifactEnvelope, error) {
 	}
 	if envelope.ContextID, err = rewriteJSONString(fields["context_id"], "artifact.context_id", 256, false); err != nil {
 		return ArtifactEnvelope{}, err
+	}
+	contextRaw, hasContext := fields["request_context"]
+	fingerprintRaw, hasFingerprint := fields["request_context_fingerprint"]
+	if hasContext != hasFingerprint {
+		return ArtifactEnvelope{}, invalid("REQUEST_CONTEXT_PIN_INCOMPLETE", "artifact.request_context", "context payload and fingerprint must appear together")
+	}
+	if hasContext {
+		contextValue, contextErr := DecodeRequestContextJSON(contextRaw)
+		if contextErr != nil {
+			return ArtifactEnvelope{}, contextErr
+		}
+		if contextValue.ID != envelope.ContextID {
+			return ArtifactEnvelope{}, invalid("REQUEST_CONTEXT_ID_MISMATCH", "artifact.request_context.id", "context payload ID must match the envelope context ID")
+		}
+		envelope.RequestContext = &contextValue
+		envelope.RequestContextFingerprint, err = rewriteJSONString(fingerprintRaw, "artifact.request_context_fingerprint", 256, false)
+		if err != nil {
+			return ArtifactEnvelope{}, err
+		}
 	}
 	if envelope.ContextDependencies, err = decodeContextDependencies(fields["context_dependencies"], "artifact.context_dependencies"); err != nil {
 		return ArtifactEnvelope{}, err
@@ -1491,6 +1548,9 @@ func DecodeArtifactEnvelope(data []byte) (ArtifactEnvelope, error) {
 	if err := validateReplayHeader(envelope); err != nil {
 		return ArtifactEnvelope{}, err
 	}
+	if err := validateCanonicalArtifactOrder(envelope); err != nil {
+		return ArtifactEnvelope{}, err
+	}
 	return envelope, nil
 }
 
@@ -1500,7 +1560,7 @@ func DecodeArtifactReplayRequest(data []byte) (ArtifactReplayRequest, error) {
 	if err := PreflightJSONLimit(data, MaxArtifactReplayRequestBytes); err != nil {
 		return ArtifactReplayRequest{}, err
 	}
-	fields, err := strictObject(data, "request", []string{"schema_version", "profile", "context_id", "context_dependencies", "provenance", "limits", "artifact"}, []string{"schema_version", "profile", "context_id", "context_dependencies", "provenance", "artifact"})
+	fields, err := strictObject(data, "request", []string{"schema_version", "profile", "context_id", "request_context", "context_dependencies", "provenance", "limits", "artifact"}, []string{"schema_version", "profile", "context_id", "context_dependencies", "provenance", "artifact"})
 	if err != nil {
 		return ArtifactReplayRequest{}, err
 	}
@@ -1515,6 +1575,17 @@ func DecodeArtifactReplayRequest(data []byte) (ArtifactReplayRequest, error) {
 	contextID, err := rewriteJSONString(fields["context_id"], "request.context_id", 256, false)
 	if err != nil {
 		return ArtifactReplayRequest{}, err
+	}
+	var expectedContext *RequestContext
+	if raw, exists := fields["request_context"]; exists {
+		decodedContext, decodeErr := DecodeRequestContextJSON(raw)
+		if decodeErr != nil {
+			return ArtifactReplayRequest{}, decodeErr
+		}
+		expectedContext = &decodedContext
+		if decodedContext.ID != contextID {
+			return ArtifactReplayRequest{}, invalid("REQUEST_CONTEXT_ID_MISMATCH", "request.request_context.id", "expected context payload ID must match the request context ID")
+		}
 	}
 	dependencies, err := decodeContextDependencies(fields["context_dependencies"], "request.context_dependencies")
 	if err != nil {
@@ -1538,7 +1609,7 @@ func DecodeArtifactReplayRequest(data []byte) (ArtifactReplayRequest, error) {
 	if err != nil {
 		return ArtifactReplayRequest{}, err
 	}
-	return ArtifactReplayRequest{SchemaVersion: version, Profile: profile, ContextID: contextID, ContextDependencies: dependencies, Provenance: provenanceRefs, Limits: limits, Artifact: envelope}, nil
+	return ArtifactReplayRequest{SchemaVersion: version, Profile: profile, ContextID: contextID, RequestContext: expectedContext, ContextDependencies: dependencies, Provenance: provenanceRefs, Limits: limits, Artifact: envelope}, nil
 }
 
 func decodeRegistryPins(data []byte, path string) ([]RegistryPin, error) {
@@ -1979,6 +2050,20 @@ func (request ArtifactReplayRequest) MarshalJSON() ([]byte, error) {
 		return nil, err
 	}
 	wire := map[string]any{"schema_version": request.SchemaVersion, "profile": rewriteProfileWire(request.Profile), "context_id": request.ContextID, "context_dependencies": dependencies, "provenance": provenanceValues, "artifact": request.Artifact}
+	if request.RequestContext != nil {
+		if request.RequestContext.ID != request.ContextID {
+			return nil, invalid("REQUEST_CONTEXT_ID_MISMATCH", "request.request_context.id", "expected context payload ID must match the request context ID")
+		}
+		contextCopy, err := CloneRequestContext(*request.RequestContext)
+		if err != nil {
+			return nil, err
+		}
+		contextWire, err := requestContextWire(contextCopy, false)
+		if err != nil {
+			return nil, err
+		}
+		wire["request_context"] = contextWire
+	}
 	if request.Limits != (Limits{}) {
 		if _, err := NormalizeLimits(request.Limits); err != nil {
 			return nil, err
@@ -2074,7 +2159,22 @@ func validateArtifactEnvelopeLocal(envelope ArtifactEnvelope) error {
 	if err := validateReplayDeclarations(envelope); err != nil {
 		return err
 	}
-	context := Document{SchemaVersion: SchemaVersion, Sorts: envelope.Sorts, Signatures: envelope.Signatures, Parameters: envelope.Parameters, References: envelope.References, Closed: envelope.Closed, Limits: limits}
+	if (envelope.RequestContext == nil) != (envelope.RequestContextFingerprint == "") {
+		return invalid("REQUEST_CONTEXT_PIN_INCOMPLETE", "artifact.request_context", "context payload and fingerprint must appear together")
+	}
+	context := Document{SchemaVersion: SchemaVersion, Sorts: envelope.Sorts, Signatures: envelope.Signatures, Parameters: envelope.Parameters, References: envelope.References, Closed: envelope.Closed, Limits: limits, RequestContext: envelope.RequestContext}
+	if envelope.RequestContext != nil {
+		if envelope.RequestContext.ID != envelope.ContextID {
+			return invalid("REQUEST_CONTEXT_ID_MISMATCH", "artifact.request_context.id", "context payload ID must match the envelope context ID")
+		}
+		fingerprint, fpErr := RequestContextFingerprint(*envelope.RequestContext, context)
+		if fpErr != nil {
+			return fpErr
+		}
+		if fingerprint != envelope.RequestContextFingerprint {
+			return invalid("REQUEST_CONTEXT_FINGERPRINT_MISMATCH", "artifact.request_context_fingerprint", "context fingerprint does not match its canonical payload")
+		}
+	}
 	arena, err := NewArena(context, envelope.Root, envelope.Nodes)
 	if err != nil {
 		return err
@@ -2138,6 +2238,42 @@ func validateCanonicalArtifactOrder(envelope ArtifactEnvelope) error {
 	}
 	if err := check(provenanceIDs, "provenance"); err != nil {
 		return err
+	}
+	if envelope.RequestContext != nil {
+		checkIDs := func(ids []string, path string) error { return check(ids, path) }
+		ids := make([]string, len(envelope.RequestContext.Referents))
+		for i, row := range envelope.RequestContext.Referents {
+			ids[i] = row.ID
+		}
+		if err := checkIDs(ids, "request_context.referents"); err != nil {
+			return err
+		}
+		ids = make([]string, len(envelope.RequestContext.Mentions))
+		for i, row := range envelope.RequestContext.Mentions {
+			ids[i] = row.ID
+		}
+		if err := checkIDs(ids, "request_context.mentions"); err != nil {
+			return err
+		}
+		ids = make([]string, len(envelope.RequestContext.ResolutionEvidence))
+		for i, row := range envelope.RequestContext.ResolutionEvidence {
+			ids[i] = row.ID
+		}
+		if err := checkIDs(ids, "request_context.resolution_evidence"); err != nil {
+			return err
+		}
+		ids = make([]string, len(envelope.RequestContext.Conditions))
+		for i, row := range envelope.RequestContext.Conditions {
+			ids[i] = row.ID
+			for j := 1; j < len(row.TargetReferentIDs); j++ {
+				if row.TargetReferentIDs[j-1] >= row.TargetReferentIDs[j] {
+					return invalid("NONCANONICAL_ARTIFACT_ORDER", fmt.Sprintf("request_context.conditions[%d].target_referent_ids[%d]", i, j), "context target IDs must use strict ID order")
+				}
+			}
+		}
+		if err := checkIDs(ids, "request_context.conditions"); err != nil {
+			return err
+		}
 	}
 	sortIDs := make([]string, len(envelope.Sorts))
 	for i, value := range envelope.Sorts {

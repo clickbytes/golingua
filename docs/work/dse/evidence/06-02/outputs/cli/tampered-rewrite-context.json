@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"REWRITE_REQUEST_CONTEXT_MISMATCH","message":"certificate request context differs from the independently selected context","path":"certificate.context_fingerprint","severity":"error"}]}

@@ -46,7 +46,7 @@ func ReplayCertifiedOperations(primitiveContext algebra.Document, concreteGoal G
 	}
 
 	limits := minimumAlgebraLimits(goalLimits.TermLimits, verificationLimits.TermLimits, contextLimits)
-	operatorContext, err := constructionContext(primitiveContext, concreteGoal.References, limits)
+	operatorContext, err := constructionContext(primitiveContext, concreteGoal.References, limits, concreteGoal.RequestContext)
 	if err != nil {
 		return algebra.Function{}, statistics, err
 	}

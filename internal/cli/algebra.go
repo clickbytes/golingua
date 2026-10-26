@@ -54,6 +54,15 @@ type algebraOptions struct {
 	verifyLimitSet     map[string]bool
 }
 
+type algebraContextCheckOutput struct {
+	Status            status.OutcomeKind        `json:"status"`
+	Checked           algebra.CheckedExpression `json:"checked"`
+	CanonicalDocument json.RawMessage           `json:"canonical_document"`
+	Assessment        algebra.ContextAssessment `json:"request_context_assessment"`
+	Metadata          []metadataReference       `json:"metadata,omitempty"`
+	ValidationScope   string                    `json:"validation_scope"`
+}
+
 type algebraScopeCapability struct {
 	CanRepresent bool   `json:"can_represent"`
 	CanEvaluate  bool   `json:"can_evaluate"`
@@ -292,6 +301,12 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		}
 		options.command = "catalog_export"
 		index = 3
+	} else if args[1] == "context" {
+		if len(args) < 3 || args[2] != "check" {
+			return options, "expected algebra context check"
+		}
+		options.command = "context_check"
+		index = 3
 	} else {
 		return options, "expected algebra check, build, synthesize, verify-goal, evaluate, compare, verify-proof, export, inspect, replay, normalize, verify-rewrite, metadata, facts, or catalog"
 	}
@@ -315,7 +330,7 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			seenJSON = true
 			options.json = true
 		case "--input":
-			if options.command != "check" && options.command != "build" && options.command != "normalize" && options.command != "verify-rewrite" && options.command != "export" && options.command != "inspect" && options.command != "replay" && options.command != "facts_validate" && options.command != "verify_proof" {
+			if options.command != "check" && options.command != "context_check" && options.command != "build" && options.command != "normalize" && options.command != "verify-rewrite" && options.command != "export" && options.command != "inspect" && options.command != "replay" && options.command != "facts_validate" && options.command != "verify_proof" {
 				return options, "--input is not valid for this algebra command"
 			}
 			if seenInput {
@@ -657,6 +672,9 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			return options, "algebra build requires at least one --metadata file"
 		}
 	}
+	if options.command == "context_check" && !seenInput {
+		return options, "algebra context check requires --input <document.json>"
+	}
 	if options.command == "synthesize" {
 		if !seenMode || (options.mode != "construct" && options.mode != "search") {
 			return options, "algebra synthesize requires --mode construct or search"
@@ -884,6 +902,17 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 		}
 		return ExitOK
 	}
+	if options.command == "context_check" {
+		var registries []*metamodel.Registry
+		if len(options.metadata) != 0 {
+			var err error
+			registries, err = readMetadataRegistries(options.metadata)
+			if err != nil {
+				return writeAlgebraError(stdout, stderr, err)
+			}
+		}
+		return runAlgebraContextCheck(options, input, stdout, stderr, registries)
+	}
 	if options.command == "compare" {
 		registries, err := readMetadataRegistries(options.metadata)
 		if err != nil {
@@ -1039,6 +1068,47 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 	return exitCode(checked.Status)
 }
 
+func runAlgebraContextCheck(options algebraOptions, input io.Reader, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
+	data, err := readAlgebraInput(options, input, algebra.MaxDocumentBytes, "algebra context check")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	document, err := algebra.DecodeDocumentJSON(data)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	if document.RequestContext == nil {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeInvalid, Code: "MISSING_REQUEST_CONTEXT", Path: "request_context", Message: "algebra context check requires an explicit request_context in the document"})
+	}
+	var checked algebra.CheckedExpression
+	if len(registries) == 0 {
+		checked, err = algebra.Check(document)
+	} else {
+		checked, document, err = metamodel.CheckDocument(document, registries)
+	}
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	assessment, err := algebra.CheckRequestContext(*document.RequestContext, document)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	canonical, err := algebra.Encode(document)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	output := algebraContextCheckOutput{
+		Status: checked.Status, Checked: checked, CanonicalDocument: json.RawMessage(canonical),
+		Assessment: assessment, Metadata: metadataReferences(registries),
+		ValidationScope: "typed document and request-local context structure; mention status derives only from explicit resolution evidence and conditions are preserved without evaluating their truth",
+	}
+	if err := writeJSON(stdout, output); err != nil {
+		_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not serialize algebra context assessment: %v\\n", err)
+		return ExitError
+	}
+	return exitCode(output.Status)
+}
+
 func runAlgebraSynthesize(options algebraOptions, input io.Reader, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
 	goalInput := options
 	goalInput.input = options.goal
@@ -1069,7 +1139,7 @@ func runAlgebraSynthesize(options algebraOptions, input io.Reader, stdout, stder
 	outputStatus := result.Status
 	if result.Status == status.OutcomeOK && result.Checked != nil && result.CanonicalDocument != nil {
 		rewriteEnvironment, envErr := metamodel.NormalizationEnvironment(algebra.Document{
-			SchemaVersion: algebra.SchemaVersion, References: goal.References, Limits: goalLimits.TermLimits,
+			SchemaVersion: algebra.SchemaVersion, References: goal.References, RequestContext: goal.RequestContext, Limits: goalLimits.TermLimits,
 		}, registries)
 		if envErr != nil {
 			return writeAlgebraError(stdout, stderr, envErr)
@@ -1149,6 +1219,9 @@ func runAlgebraEvaluate(options algebraOptions, stdout, stderr io.Writer, regist
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
 	}
+	if source.RequestContext != nil && source.RequestContext.ID != options.contextID {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeInvalid, Code: "QUERY_REQUEST_CONTEXT_ID_MISMATCH", Path: "request_context.id", Message: "source request context must match the explicit query context ID"})
+	}
 	askSource := source.Expression != nil && source.Expression.Kind == algebra.TermAsk
 	if askSource && options.selectionSpecified {
 		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeInvalid, Code: "ASK_SELECTION_FORBIDDEN", Path: "--select", Message: "Ask answer variables are the sole projection authority"})
@@ -1207,7 +1280,7 @@ func runAlgebraEvaluate(options algebraOptions, stdout, stderr io.Writer, regist
 	}
 	environment, err := metamodel.NormalizationEnvironment(algebra.Document{
 		SchemaVersion: algebra.SchemaVersion, Parameters: source.Parameters,
-		References: source.References, Limits: limits.TermLimits,
+		References: source.References, RequestContext: source.RequestContext, Limits: limits.TermLimits,
 	}, registries)
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
@@ -1314,7 +1387,7 @@ func runAlgebraVerifyGoal(options algebraOptions, input io.Reader, stdout, stder
 		return writeAlgebraError(stdout, stderr, err)
 	}
 	rewriteEnvironment, err := metamodel.NormalizationEnvironment(algebra.Document{
-		SchemaVersion: algebra.SchemaVersion, References: goal.References, Limits: goalLimits.TermLimits,
+		SchemaVersion: algebra.SchemaVersion, References: goal.References, RequestContext: goal.RequestContext, Limits: goalLimits.TermLimits,
 	}, registries)
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
@@ -1354,9 +1427,10 @@ func runAlgebraSearch(goal synthesis.GoalSpec, requested synthesis.SearchLimits,
 		return writeAlgebraError(stdout, stderr, err)
 	}
 	rewriteEnvironment, err := metamodel.NormalizationEnvironment(algebra.Document{
-		SchemaVersion: algebra.SchemaVersion,
-		References:    goal.References,
-		Limits:        goalLimits.TermLimits,
+		SchemaVersion:  algebra.SchemaVersion,
+		References:     goal.References,
+		RequestContext: goal.RequestContext,
+		Limits:         goalLimits.TermLimits,
 	}, registries)
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
@@ -1578,7 +1652,7 @@ func runArtifactExport(options algebraOptions, input io.Reader, stdout, stderr i
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
 	}
-	environment, err := metamodel.ArtifactEnvironment(registries, request.Profile, request.ContextID, request.ContextDependencies, request.Provenance)
+	environment, err := metamodel.ArtifactEnvironment(registries, request.Profile, request.ContextID, request.ContextDependencies, request.Provenance, request.Document.RequestContext)
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
 	}
@@ -1657,7 +1731,7 @@ func runArtifactReplay(options algebraOptions, input io.Reader, stdout, stderr i
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
 	}
-	expected, err := metamodel.ArtifactEnvironment(registries, request.Profile, request.ContextID, request.ContextDependencies, request.Provenance)
+	expected, err := metamodel.ArtifactEnvironment(registries, request.Profile, request.ContextID, request.ContextDependencies, request.Provenance, request.RequestContext)
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
 	}
@@ -1894,7 +1968,7 @@ func runAlgebraCompare(options algebraOptions, stdout, stderr io.Writer, registr
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
 	}
-	environment, err := metamodel.NormalizationEnvironment(algebra.Document{SchemaVersion: algebra.SchemaVersion, Parameters: parameters, References: references, Limits: limits.TermLimits}, registries)
+	environment, err := metamodel.NormalizationEnvironment(algebra.Document{SchemaVersion: algebra.SchemaVersion, Parameters: parameters, References: references, RequestContext: left.RequestContext, Limits: limits.TermLimits}, registries)
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
 	}
@@ -2022,7 +2096,7 @@ func runAlgebraVerifyEquivalence(options algebraOptions, stdout, stderr io.Write
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
 	}
-	environment, err := metamodel.NormalizationEnvironment(algebra.Document{SchemaVersion: algebra.SchemaVersion, Parameters: parameters, References: references, Limits: limits.TermLimits}, registries)
+	environment, err := metamodel.NormalizationEnvironment(algebra.Document{SchemaVersion: algebra.SchemaVersion, Parameters: parameters, References: references, RequestContext: left.RequestContext, Limits: limits.TermLimits}, registries)
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
 	}
@@ -2094,7 +2168,7 @@ func runAlgebraVerifyGoalClaim(options algebraOptions, input io.Reader, stdout, 
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
 	}
-	rewriteEnvironment, err := metamodel.NormalizationEnvironment(algebra.Document{SchemaVersion: algebra.SchemaVersion, References: goal.References, Limits: goalLimits.TermLimits}, registries)
+	rewriteEnvironment, err := metamodel.NormalizationEnvironment(algebra.Document{SchemaVersion: algebra.SchemaVersion, References: goal.References, RequestContext: goal.RequestContext, Limits: goalLimits.TermLimits}, registries)
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
 	}
@@ -2142,6 +2216,9 @@ func runAlgebraVerifyEvaluation(options algebraOptions, stdout, stderr io.Writer
 	source, err := algebra.DecodeDocumentJSON(expressionBytes)
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
+	}
+	if source.RequestContext != nil && source.RequestContext.ID != options.contextID {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeInvalid, Code: "QUERY_REQUEST_CONTEXT_ID_MISMATCH", Path: "request_context.id", Message: "source request context must match the explicit query context ID"})
 	}
 	askSource := source.Expression != nil && source.Expression.Kind == algebra.TermAsk
 	if askSource && options.selectionSpecified {
@@ -2194,7 +2271,7 @@ func runAlgebraVerifyEvaluation(options algebraOptions, stdout, stderr io.Writer
 	if err != nil {
 		return writeNaryFactsError(stdout, stderr, err)
 	}
-	environment, err := metamodel.NormalizationEnvironment(algebra.Document{SchemaVersion: algebra.SchemaVersion, Parameters: source.Parameters, References: source.References, Limits: limits.TermLimits}, registries)
+	environment, err := metamodel.NormalizationEnvironment(algebra.Document{SchemaVersion: algebra.SchemaVersion, Parameters: source.Parameters, References: source.References, RequestContext: source.RequestContext, Limits: limits.TermLimits}, registries)
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
 	}

@@ -18,6 +18,9 @@ func ReplayArtifact(expected ArtifactEnvironment, envelope ArtifactEnvelope, req
 	if err := validateReplayHeader(envelope); err != nil {
 		return nil, err
 	}
+	if err := validateCanonicalArtifactOrder(envelope); err != nil {
+		return nil, err
+	}
 	base := artifactEnvelopeBase(selected, selected.document)
 	if err := matchReplayEnvironment(envelope, base); err != nil {
 		return nil, err
@@ -43,6 +46,7 @@ func ReplayArtifact(expected ArtifactEnvironment, envelope ArtifactEnvelope, req
 	context := selected.document
 	context.Parameters = envelope.Parameters
 	context.References = envelope.References
+	context.RequestContext = envelope.RequestContext
 	context.Closed = envelope.Closed
 	context.Limits = effectiveLimits
 	context.Expression = nil
@@ -171,6 +175,22 @@ func matchReplayEnvironment(actual, expected ArtifactEnvelope) error {
 	}
 	if actual.ContextID != expected.ContextID {
 		return invalid("CONTEXT_MISMATCH", "context_id", "artifact context differs from the selected request context")
+	}
+	if actual.RequestContextFingerprint != expected.RequestContextFingerprint || (actual.RequestContext == nil) != (expected.RequestContext == nil) {
+		return invalid("REQUEST_CONTEXT_MISMATCH", "request_context", "artifact request context differs from the independently selected context")
+	}
+	if actual.RequestContext != nil {
+		actualFP, err := requestContextWireBytes(*actual.RequestContext, true)
+		if err != nil {
+			return err
+		}
+		expectedFP, err := requestContextWireBytes(*expected.RequestContext, true)
+		if err != nil {
+			return err
+		}
+		if string(actualFP) != string(expectedFP) {
+			return invalid("REQUEST_CONTEXT_MISMATCH", "request_context", "artifact context payload differs from the independently selected context")
+		}
 	}
 	if !sameContextDependencies(actual.ContextDependencies, expected.ContextDependencies) {
 		return invalid("CONTEXT_DEPENDENCY_MISMATCH", "context_dependencies", "artifact dependencies differ from the selected request context")

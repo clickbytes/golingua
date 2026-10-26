@@ -13,7 +13,10 @@ import (
 // for artifact export or replay. Artifact claims are never inputs to this
 // factory; callers provide actual validated Registry snapshots and request
 // metadata independently.
-func ArtifactEnvironment(registries []*Registry, profile algebra.RewriteProfile, contextID string, dependencies []algebra.ContextDependency, sources []provenance.SourceRef) (algebra.ArtifactEnvironment, error) {
+func ArtifactEnvironment(registries []*Registry, profile algebra.RewriteProfile, contextID string, dependencies []algebra.ContextDependency, sources []provenance.SourceRef, requestContexts ...*algebra.RequestContext) (algebra.ArtifactEnvironment, error) {
+	if len(requestContexts) > 1 {
+		return algebra.ArtifactEnvironment{}, invalid("INVALID_REQUEST_CONTEXT", "request_context", "at most one explicit request context may be supplied")
+	}
 	if len(registries) == 0 {
 		return algebra.ArtifactEnvironment{}, invalid("EMPTY_REGISTRY_SET", "registries", "artifact construction requires explicitly selected registries")
 	}
@@ -71,6 +74,14 @@ func ArtifactEnvironment(registries []*Registry, profile algebra.RewriteProfile,
 	if len(structure) > 16<<20 {
 		return algebra.ArtifactEnvironment{}, resource("RESOURCE_LIMIT", "registries", "complete selected registry structure exceeds 16 MiB")
 	}
+	var requestContext *algebra.RequestContext
+	if len(requestContexts) == 1 && requestContexts[0] != nil {
+		copyContext, cloneErr := algebra.CloneRequestContext(*requestContexts[0])
+		if cloneErr != nil {
+			return algebra.ArtifactEnvironment{}, cloneErr
+		}
+		requestContext = &copyContext
+	}
 	return algebra.ArtifactEnvironment{
 		Document:            selected.Document,
 		RegistrySnapshotID:  selected.SnapshotID,
@@ -78,6 +89,7 @@ func ArtifactEnvironment(registries []*Registry, profile algebra.RewriteProfile,
 		RegistryStructure:   append([]byte(nil), structure...),
 		Profile:             algebra.RewriteProfile{ID: profile.ID, Rules: append([]algebra.RewriteRule{}, profile.Rules...)},
 		ContextID:           contextID,
+		RequestContext:      requestContext,
 		ContextDependencies: dependencyCopy,
 		Provenance:          sourceCopy,
 	}, nil

@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "/tmp/golingua-dse/bin/golingua-392-final",
+    "algebra",
+    "export",
+    "--input",
+    "/tmp/golingua-dse/392-old-nil-export.json",
+    "--metadata",
+    "/tmp/golingua-dse/392-independent-inputs/metadata.json",
+    "--json"
+  ],
+  "exit_code": 0,
+  "stdout_file": "/tmp/golingua-dse/392-final-nil-export.json",
+  "stderr": "",
+  "baseline_source": "frozen #391 binary, 392-baseline391-nil-export.json",
+  "equal_fields": {
+    "resource_fingerprint": true,
+    "meaning_fingerprint": true,
+    "cache_key": true
+  }
+}

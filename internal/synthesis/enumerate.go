@@ -652,6 +652,16 @@ func cloneGoalForSearch(source GoalSpec, budget *searchBudget) (GoalSpec, bool) 
 		}
 		copyGoal.Provenance[i] = item
 	}
+	if source.RequestContext != nil {
+		if !chargeSearchCopy(budget) {
+			return GoalSpec{}, false
+		}
+		contextCopy, err := algebra.CloneRequestContext(*source.RequestContext)
+		if err != nil {
+			return GoalSpec{}, false
+		}
+		copyGoal.RequestContext = &contextCopy
+	}
 	return copyGoal, true
 }
 

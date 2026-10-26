@@ -34,7 +34,7 @@ func validateSearchGoal(context algebra.Document, goal GoalSpec) ([]Unresolved, 
 }
 
 func validateGoal(context algebra.Document, goal GoalSpec, forSearch bool) ([]Unresolved, error) {
-	if context.Expression != nil || len(context.Parameters) != 0 || len(context.References) != 0 {
+	if context.Expression != nil || len(context.Parameters) != 0 || len(context.References) != 0 || context.RequestContext != nil {
 		return nil, goalInvalid("INVALID_CONTEXT", "context", "context must contain declarations only; request references belong to the goal")
 	}
 	if context.SchemaVersion != algebra.SchemaVersion {
@@ -144,6 +144,15 @@ func validateGoal(context algebra.Document, goal GoalSpec, forSearch bool) ([]Un
 	combined.Limits = limits.TermLimits
 	if err := algebra.CheckDeclarations(combined); err != nil {
 		return nil, err
+	}
+	if goal.RequestContext != nil {
+		if goal.RequestContext.ID != goal.ContextID {
+			return nil, goalInvalid("REQUEST_CONTEXT_ID_MISMATCH", "request_context.id", "request context ID must match the goal context ID")
+		}
+		combined.RequestContext = goal.RequestContext
+		if _, err := algebra.CheckRequestContext(*goal.RequestContext, combined); err != nil {
+			return nil, err
+		}
 	}
 
 	sourceIDs := make(map[string]struct{}, len(goal.Provenance))

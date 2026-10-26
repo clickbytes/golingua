@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"MISSING_IDENTITY_EVIDENCE","message":"declared mention target requires explicit corroborating resolution evidence","path":"mentions.m1.referent_id","severity":"error"}]}

@@ -9,6 +9,7 @@
   "required": ["schema_version", "steps", "result"],
   "properties": {
     "schema_version": {"const": 1},
+    "request_context": {"$ref": "context.schema.json"},
     "parameters": {"type": "array", "maxItems": 512, "items": {"$ref": "expression.schema.json#/$defs/declaration"}},
     "references": {"type": "array", "maxItems": 512, "items": {"$ref": "expression.schema.json#/$defs/declaration"}},
     "closed": {"type": "boolean"},

@@ -46,6 +46,7 @@ type ArtifactEnvironment struct {
 	RegistryStructure   []byte
 	Profile             RewriteProfile
 	ContextID           string
+	RequestContext      *RequestContext
 	ContextDependencies []ContextDependency
 	Provenance          []provenance.SourceRef
 }
@@ -53,26 +54,28 @@ type ArtifactEnvironment struct {
 // ArtifactEnvelope is the detached, versioned public representation of one
 // checked expression DAG. Fingerprints are descriptive identities, not proof.
 type ArtifactEnvelope struct {
-	Kind                string                 `json:"kind"`
-	SchemaVersion       int                    `json:"schema_version"`
-	NormalizerVersion   string                 `json:"normalizer_version"`
-	RegistrySnapshotID  string                 `json:"registry_snapshot_id"`
-	Registries          []RegistryPin          `json:"registries"`
-	Profile             RewriteProfile         `json:"profile"`
-	ContextID           string                 `json:"context_id"`
-	ContextDependencies []ContextDependency    `json:"context_dependencies"`
-	Sorts               []SortDeclaration      `json:"sorts"`
-	Signatures          []Signature            `json:"signatures"`
-	Parameters          []Declaration          `json:"parameters"`
-	References          []Declaration          `json:"references"`
-	Closed              bool                   `json:"closed"`
-	Limits              Limits                 `json:"limits"`
-	Root                NodeID                 `json:"root"`
-	Nodes               []Node                 `json:"nodes"`
-	Provenance          []provenance.SourceRef `json:"provenance"`
-	ResourceFingerprint string                 `json:"resource_fingerprint"`
-	MeaningFingerprint  string                 `json:"meaning_fingerprint"`
-	CacheKey            string                 `json:"cache_key"`
+	Kind                      string                 `json:"kind"`
+	SchemaVersion             int                    `json:"schema_version"`
+	NormalizerVersion         string                 `json:"normalizer_version"`
+	RegistrySnapshotID        string                 `json:"registry_snapshot_id"`
+	Registries                []RegistryPin          `json:"registries"`
+	Profile                   RewriteProfile         `json:"profile"`
+	ContextID                 string                 `json:"context_id"`
+	RequestContext            *RequestContext        `json:"request_context,omitempty"`
+	RequestContextFingerprint string                 `json:"request_context_fingerprint,omitempty"`
+	ContextDependencies       []ContextDependency    `json:"context_dependencies"`
+	Sorts                     []SortDeclaration      `json:"sorts"`
+	Signatures                []Signature            `json:"signatures"`
+	Parameters                []Declaration          `json:"parameters"`
+	References                []Declaration          `json:"references"`
+	Closed                    bool                   `json:"closed"`
+	Limits                    Limits                 `json:"limits"`
+	Root                      NodeID                 `json:"root"`
+	Nodes                     []Node                 `json:"nodes"`
+	Provenance                []provenance.SourceRef `json:"provenance"`
+	ResourceFingerprint       string                 `json:"resource_fingerprint"`
+	MeaningFingerprint        string                 `json:"meaning_fingerprint"`
+	CacheKey                  string                 `json:"cache_key"`
 }
 
 // Artifact holds an immutable arena and the complete descriptors required by
@@ -120,12 +123,34 @@ func prepareArtifactSource(environment ArtifactEnvironment, sourceDocument Docum
 	if err := matchInlineArtifactInventory(sourceDocument, selected.document); err != nil {
 		return artifactPreparation{}, err
 	}
+	if (sourceDocument.RequestContext == nil) != (selected.requestContext == nil) {
+		return artifactPreparation{}, invalid("REQUEST_CONTEXT_MISMATCH", "document.request_context", "source and independently selected request context must both be present or absent")
+	}
+	if sourceDocument.RequestContext != nil {
+		if sourceDocument.RequestContext.ID != selected.contextID {
+			return artifactPreparation{}, invalid("REQUEST_CONTEXT_ID_MISMATCH", "document.request_context.id", "source request context ID must match the selected context ID")
+		}
+	}
 
 	document := sourceDocument
 	document.Sorts = append([]SortDeclaration{}, selected.document.Sorts...)
 	document.Signatures, err = cloneArtifactSignatures(selected.document.Signatures)
 	if err != nil {
 		return artifactPreparation{}, err
+	}
+	if sourceDocument.RequestContext != nil {
+		canonical, sourceFP, contextErr := CanonicalRequestContext(*sourceDocument.RequestContext, document)
+		if contextErr != nil {
+			return artifactPreparation{}, contextErr
+		}
+		_, selectedFP, contextErr := CanonicalRequestContext(*selected.requestContext, document)
+		if contextErr != nil {
+			return artifactPreparation{}, contextErr
+		}
+		if sourceFP != selectedFP {
+			return artifactPreparation{}, invalid("REQUEST_CONTEXT_MISMATCH", "document.request_context", "source context differs from the independently selected request context")
+		}
+		document.RequestContext = &canonical
 	}
 	// Validate the source declarations together with the selected inventory
 	// before copying the source expression or constructing the arena.
@@ -150,6 +175,10 @@ func artifactEnvelopeBase(selected validatedArtifactEnvironment, document Docume
 		Sorts: append([]SortDeclaration{}, document.Sorts...), Signatures: cloneArtifactSignaturesTrusted(document.Signatures),
 		Parameters: append([]Declaration{}, document.Parameters...), References: append([]Declaration{}, document.References...),
 		Closed: document.Closed, Limits: document.Limits, Provenance: append([]provenance.SourceRef{}, selected.provenance...),
+	}
+	if selected.requestContext != nil {
+		envelope.RequestContext = selected.requestContext
+		envelope.RequestContextFingerprint = selected.requestContextFingerprint
 	}
 	canonicalizeArtifactEnvelope(&envelope)
 	return envelope
@@ -319,15 +348,17 @@ func (artifact *Artifact) CacheKey() string {
 }
 
 type validatedArtifactEnvironment struct {
-	document            Document
-	limits              Limits
-	registrySnapshotID  string
-	registries          []RegistryPin
-	registryStructure   []byte
-	profile             RewriteProfile
-	contextID           string
-	contextDependencies []ContextDependency
-	provenance          []provenance.SourceRef
+	document                  Document
+	limits                    Limits
+	registrySnapshotID        string
+	registries                []RegistryPin
+	registryStructure         []byte
+	profile                   RewriteProfile
+	contextID                 string
+	requestContext            *RequestContext
+	requestContextFingerprint string
+	contextDependencies       []ContextDependency
+	provenance                []provenance.SourceRef
 }
 
 func validateArtifactEnvironment(environment ArtifactEnvironment) (validatedArtifactEnvironment, Limits, error) {
@@ -339,6 +370,9 @@ func validateArtifactEnvironment(environment ArtifactEnvironment) (validatedArti
 	}
 	if environment.Document.Closed {
 		return validatedArtifactEnvironment{}, Limits{}, invalid("ARTIFACT_ENVIRONMENT_HAS_REQUEST_MODE", "environment.document.closed", "closed mode belongs to the source document")
+	}
+	if environment.Document.RequestContext != nil {
+		return validatedArtifactEnvironment{}, Limits{}, invalid("ARTIFACT_ENVIRONMENT_HAS_REQUEST_CONTEXT", "environment.document.request_context", "request context is supplied separately from declaration metadata")
 	}
 	if err := CheckDeclarations(environment.Document); err != nil {
 		return validatedArtifactEnvironment{}, Limits{}, err
@@ -416,11 +450,25 @@ func validateArtifactEnvironment(environment ArtifactEnvironment) (validatedArti
 	if err != nil {
 		return validatedArtifactEnvironment{}, Limits{}, err
 	}
+	var requestContext *RequestContext
+	requestContextFingerprint := ""
+	if environment.RequestContext != nil {
+		if environment.RequestContext.ID != environment.ContextID {
+			return validatedArtifactEnvironment{}, Limits{}, invalid("REQUEST_CONTEXT_ID_MISMATCH", "environment.request_context.id", "request context ID must match the selected context ID")
+		}
+		canonical, fingerprint, contextErr := CanonicalRequestContext(*environment.RequestContext, copyDocument)
+		if contextErr != nil {
+			return validatedArtifactEnvironment{}, Limits{}, contextErr
+		}
+		requestContext = &canonical
+		requestContextFingerprint = fingerprint
+	}
 	return validatedArtifactEnvironment{
 		document: copyDocument, limits: limits, registrySnapshotID: environment.RegistrySnapshotID,
 		registries: registries, registryStructure: append([]byte(nil), environment.RegistryStructure...),
 		profile: cloneArtifactProfile(environment.Profile), contextID: environment.ContextID,
 		contextDependencies: dependencies, provenance: provenanceRefs,
+		requestContext: requestContext, requestContextFingerprint: requestContextFingerprint,
 	}, limits, nil
 }
 
@@ -520,26 +568,38 @@ func canonicalizeArtifactEnvelope(envelope *ArtifactEnvelope) {
 	sort.Slice(envelope.Parameters, func(i, j int) bool { return envelope.Parameters[i].ID < envelope.Parameters[j].ID })
 	sort.Slice(envelope.References, func(i, j int) bool { return envelope.References[i].ID < envelope.References[j].ID })
 	sort.Slice(envelope.Provenance, func(i, j int) bool { return envelope.Provenance[i].ID < envelope.Provenance[j].ID })
+	if envelope.RequestContext != nil {
+		context := envelope.RequestContext
+		sort.Slice(context.Referents, func(i, j int) bool { return context.Referents[i].ID < context.Referents[j].ID })
+		sort.Slice(context.Mentions, func(i, j int) bool { return context.Mentions[i].ID < context.Mentions[j].ID })
+		sort.Slice(context.ResolutionEvidence, func(i, j int) bool { return context.ResolutionEvidence[i].ID < context.ResolutionEvidence[j].ID })
+		sort.Slice(context.Conditions, func(i, j int) bool { return context.Conditions[i].ID < context.Conditions[j].ID })
+		for i := range context.Conditions {
+			sort.Strings(context.Conditions[i].TargetReferentIDs)
+		}
+	}
 }
 
 type artifactBody struct {
-	Kind                string                 `json:"kind"`
-	SchemaVersion       int                    `json:"schema_version"`
-	NormalizerVersion   string                 `json:"normalizer_version"`
-	RegistrySnapshotID  string                 `json:"registry_snapshot_id"`
-	Registries          []RegistryPin          `json:"registries"`
-	Profile             RewriteProfile         `json:"profile"`
-	ContextID           string                 `json:"context_id"`
-	ContextDependencies []ContextDependency    `json:"context_dependencies"`
-	Sorts               []SortDeclaration      `json:"sorts"`
-	Signatures          []Signature            `json:"signatures"`
-	Parameters          []Declaration          `json:"parameters"`
-	References          []Declaration          `json:"references"`
-	Closed              bool                   `json:"closed"`
-	Limits              Limits                 `json:"limits"`
-	Root                NodeID                 `json:"root"`
-	Nodes               []json.RawMessage      `json:"nodes"`
-	Provenance          []provenance.SourceRef `json:"provenance"`
+	Kind                      string                 `json:"kind"`
+	SchemaVersion             int                    `json:"schema_version"`
+	NormalizerVersion         string                 `json:"normalizer_version"`
+	RegistrySnapshotID        string                 `json:"registry_snapshot_id"`
+	Registries                []RegistryPin          `json:"registries"`
+	Profile                   RewriteProfile         `json:"profile"`
+	ContextID                 string                 `json:"context_id"`
+	RequestContext            json.RawMessage        `json:"request_context,omitempty"`
+	RequestContextFingerprint string                 `json:"request_context_fingerprint,omitempty"`
+	ContextDependencies       []ContextDependency    `json:"context_dependencies"`
+	Sorts                     []SortDeclaration      `json:"sorts"`
+	Signatures                []Signature            `json:"signatures"`
+	Parameters                []Declaration          `json:"parameters"`
+	References                []Declaration          `json:"references"`
+	Closed                    bool                   `json:"closed"`
+	Limits                    Limits                 `json:"limits"`
+	Root                      NodeID                 `json:"root"`
+	Nodes                     []json.RawMessage      `json:"nodes"`
+	Provenance                []provenance.SourceRef `json:"provenance"`
 }
 
 func artifactResourceBytes(envelope ArtifactEnvelope) ([]byte, error) {
@@ -559,12 +619,21 @@ func artifactResourceBytes(envelope ArtifactEnvelope) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	var requestContextWire json.RawMessage
+	if envelope.RequestContext != nil {
+		requestContextWire, err = requestContextRaw(*envelope.RequestContext, false)
+		if err != nil {
+			return nil, err
+		}
+	}
 	body := artifactBody{
 		Kind: envelope.Kind, SchemaVersion: envelope.SchemaVersion, NormalizerVersion: envelope.NormalizerVersion,
 		RegistrySnapshotID: envelope.RegistrySnapshotID, Registries: append([]RegistryPin{}, envelope.Registries...),
 		Profile: cloneArtifactProfile(envelope.Profile), ContextID: envelope.ContextID,
-		ContextDependencies: append([]ContextDependency{}, envelope.ContextDependencies...),
-		Sorts:               append([]SortDeclaration{}, envelope.Sorts...), Signatures: signatures,
+		RequestContext:            requestContextWire,
+		RequestContextFingerprint: envelope.RequestContextFingerprint,
+		ContextDependencies:       append([]ContextDependency{}, envelope.ContextDependencies...),
+		Sorts:                     append([]SortDeclaration{}, envelope.Sorts...), Signatures: signatures,
 		Parameters: append([]Declaration{}, envelope.Parameters...), References: append([]Declaration{}, envelope.References...),
 		Closed: envelope.Closed, Limits: envelope.Limits, Root: envelope.Root,
 		Nodes: nodes, Provenance: append([]provenance.SourceRef{}, envelope.Provenance...),
@@ -651,18 +720,20 @@ func artifactNodeWire(node Node, includeNodeID bool) (map[string]any, error) {
 }
 
 type artifactMeaningBody struct {
-	NormalizerVersion   string              `json:"normalizer_version"`
-	RegistrySnapshotID  string              `json:"registry_snapshot_id"`
-	FormalRegistryPins  []formalRegistryPin `json:"formal_registry_pins"`
-	Profile             RewriteProfile      `json:"profile"`
-	ContextID           string              `json:"context_id"`
-	ContextDependencies []ContextDependency `json:"context_dependencies"`
-	Sorts               []string            `json:"sorts"`
-	Signatures          []formalSignature   `json:"signatures"`
-	Parameters          []Declaration       `json:"parameters"`
-	References          []Declaration       `json:"references"`
-	Closed              bool                `json:"closed"`
-	Expression          map[string]any      `json:"expression"`
+	NormalizerVersion         string              `json:"normalizer_version"`
+	RegistrySnapshotID        string              `json:"registry_snapshot_id"`
+	FormalRegistryPins        []formalRegistryPin `json:"formal_registry_pins"`
+	Profile                   RewriteProfile      `json:"profile"`
+	ContextID                 string              `json:"context_id"`
+	RequestContext            json.RawMessage     `json:"request_context,omitempty"`
+	RequestContextFingerprint string              `json:"request_context_fingerprint,omitempty"`
+	ContextDependencies       []ContextDependency `json:"context_dependencies"`
+	Sorts                     []string            `json:"sorts"`
+	Signatures                []formalSignature   `json:"signatures"`
+	Parameters                []Declaration       `json:"parameters"`
+	References                []Declaration       `json:"references"`
+	Closed                    bool                `json:"closed"`
+	Expression                map[string]any      `json:"expression"`
 }
 
 type formalRegistryPin struct {
@@ -692,11 +763,20 @@ func artifactMeaningBytes(envelope ArtifactEnvelope, expression *Term) ([]byte, 
 	if err != nil {
 		return nil, err
 	}
+	var requestContextWire json.RawMessage
+	if envelope.RequestContext != nil {
+		requestContextWire, err = requestContextRaw(*envelope.RequestContext, true)
+		if err != nil {
+			return nil, err
+		}
+	}
 	body := artifactMeaningBody{
 		NormalizerVersion: NormalizerVersion, RegistrySnapshotID: envelope.RegistrySnapshotID,
 		FormalRegistryPins: formalPins, Profile: cloneArtifactProfile(envelope.Profile),
 		ContextID: envelope.ContextID, ContextDependencies: append([]ContextDependency{}, envelope.ContextDependencies...),
-		Sorts: sorts, Signatures: signatures,
+		RequestContext:            requestContextWire,
+		RequestContextFingerprint: envelope.RequestContextFingerprint,
+		Sorts:                     sorts, Signatures: signatures,
 		Parameters: append([]Declaration{}, envelope.Parameters...), References: append([]Declaration{}, envelope.References...),
 		Closed: envelope.Closed, Expression: expressionWire,
 	}
@@ -842,5 +922,12 @@ func cloneArtifactEnvelope(envelope ArtifactEnvelope) (ArtifactEnvelope, error) 
 		return ArtifactEnvelope{}, err
 	}
 	copyValue.Provenance = append([]provenance.SourceRef{}, envelope.Provenance...)
+	if envelope.RequestContext != nil {
+		contextCopy, err := CloneRequestContext(*envelope.RequestContext)
+		if err != nil {
+			return ArtifactEnvelope{}, err
+		}
+		copyValue.RequestContext = &contextCopy
+	}
 	return copyValue, nil
 }

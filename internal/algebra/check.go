@@ -12,14 +12,15 @@ const SchemaVersion = 1
 // Document is the in-memory schema consumed by the structural checker. JSON
 // decoding and byte-size enforcement are intentionally implemented separately.
 type Document struct {
-	SchemaVersion int               `json:"schema_version"`
-	Sorts         []SortDeclaration `json:"sorts,omitempty"`
-	Signatures    []Signature       `json:"signatures,omitempty"`
-	Parameters    []Declaration     `json:"parameters,omitempty"`
-	References    []Declaration     `json:"references,omitempty"`
-	Closed        bool              `json:"closed,omitempty"`
-	Expression    *Term             `json:"expression"`
-	Limits        Limits            `json:"limits,omitempty"`
+	SchemaVersion  int               `json:"schema_version"`
+	Sorts          []SortDeclaration `json:"sorts,omitempty"`
+	Signatures     []Signature       `json:"signatures,omitempty"`
+	Parameters     []Declaration     `json:"parameters,omitempty"`
+	References     []Declaration     `json:"references,omitempty"`
+	Closed         bool              `json:"closed,omitempty"`
+	Expression     *Term             `json:"expression"`
+	Limits         Limits            `json:"limits,omitempty"`
+	RequestContext *RequestContext   `json:"request_context,omitempty"`
 }
 
 type checker struct {
@@ -40,6 +41,12 @@ type checker struct {
 // returns type/scope information only; it neither evaluates propositions nor
 // claims that they are true.
 func Check(document Document) (CheckedExpression, error) {
+	if document.RequestContext != nil {
+		if _, err := CheckRequestContext(*document.RequestContext, document); err != nil {
+			return CheckedExpression{}, err
+		}
+		document.RequestContext = nil
+	}
 	checker, _, err := prepareChecker(document, true)
 	if err != nil {
 		return CheckedExpression{}, err
@@ -58,6 +65,12 @@ func Check(document Document) (CheckedExpression, error) {
 // CheckDeclarations validates inline sorts, signatures, parameters, and
 // references without fabricating an expression or a hole.
 func CheckDeclarations(document Document) error {
+	if document.RequestContext != nil {
+		if _, err := CheckRequestContext(*document.RequestContext, document); err != nil {
+			return err
+		}
+		document.RequestContext = nil
+	}
 	_, _, err := prepareChecker(document, false)
 	return err
 }

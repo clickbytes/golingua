@@ -1,0 +1,148 @@
+{
+  "resolved": {
+    "canonical_named_records_equal_after_normalize_export_replay": true,
+    "context_fingerprint": "algebra-request-context-v1:sha256:0b93139023875c00fc88f72a2b39c22c3c41463bf6580f8e07bac1e2f5b9a793",
+    "assessment": [
+      {
+        "mention_id": "m1",
+        "status": "resolved",
+        "candidate_referent_ids": [
+          "A"
+        ],
+        "evidence_ids": [
+          "e1"
+        ]
+      },
+      {
+        "mention_id": "m2",
+        "status": "resolved",
+        "candidate_referent_ids": [
+          "A"
+        ],
+        "evidence_ids": [
+          "e2"
+        ]
+      }
+    ]
+  },
+  "unresolved": {
+    "canonical_named_records_equal_after_normalize_export_replay": true,
+    "context_fingerprint": "algebra-request-context-v1:sha256:4b5af54e09848a472663729b5f5bb08663752abfcf9c358b413ca1c0860613ab",
+    "assessment": [
+      {
+        "mention_id": "m1",
+        "status": "resolved",
+        "candidate_referent_ids": [
+          "A"
+        ],
+        "evidence_ids": [
+          "e1"
+        ]
+      },
+      {
+        "mention_id": "m2",
+        "status": "resolved",
+        "candidate_referent_ids": [
+          "A"
+        ],
+        "evidence_ids": [
+          "e2"
+        ]
+      },
+      {
+        "mention_id": "mU",
+        "status": "unresolved",
+        "candidate_referent_ids": [],
+        "evidence_ids": []
+      }
+    ]
+  },
+  "conflicting": {
+    "canonical_named_records_equal_after_normalize_export_replay": true,
+    "context_fingerprint": "algebra-request-context-v1:sha256:451d0657ee91d01278742221ce85c0cfe826b0db99d70fe751b2a7a7e5e680c0",
+    "assessment": [
+      {
+        "mention_id": "m1",
+        "status": "ambiguous",
+        "candidate_referent_ids": [
+          "A",
+          "B"
+        ],
+        "evidence_ids": [
+          "e1",
+          "e3"
+        ]
+      },
+      {
+        "mention_id": "m2",
+        "status": "resolved",
+        "candidate_referent_ids": [
+          "A"
+        ],
+        "evidence_ids": [
+          "e2"
+        ]
+      }
+    ]
+  },
+  "zero-arity": {
+    "canonical_named_records_equal_after_normalize_export_replay": true,
+    "context_fingerprint": "algebra-request-context-v1:sha256:749e02c6723e6dfbcc6ebe4575494c73c6199b7a14ef77054827038ed07309e5",
+    "assessment": [
+      {
+        "mention_id": "m1",
+        "status": "resolved",
+        "candidate_referent_ids": [
+          "A"
+        ],
+        "evidence_ids": [
+          "e1"
+        ]
+      },
+      {
+        "mention_id": "m2",
+        "status": "resolved",
+        "candidate_referent_ids": [
+          "A"
+        ],
+        "evidence_ids": [
+          "e2"
+        ]
+      },
+      {
+        "mention_id": "mU",
+        "status": "unresolved",
+        "candidate_referent_ids": [],
+        "evidence_ids": []
+      }
+    ]
+  },
+  "description": {
+    "open_description": true,
+    "referents": [
+      "A",
+      "B"
+    ],
+    "condition_kinds": [
+      "assumption",
+      "presupposition",
+      "loss",
+      "assumption",
+      "presupposition"
+    ]
+  },
+  "resolved-description": {
+    "open_description": true,
+    "referents": [
+      "A",
+      "B"
+    ],
+    "condition_kinds": [
+      "assumption",
+      "presupposition",
+      "loss"
+    ]
+  },
+  "zero_arity_arguments_preserved": true,
+  "presupposition_not_fact": true
+}

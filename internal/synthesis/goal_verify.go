@@ -85,6 +85,28 @@ func VerifyGoalCertificate(primitiveContext algebra.Document, environment algebr
 	if certificate.SnapshotID != environment.SnapshotID || certificate.ContextID != original.ContextID || certificate.Profile != original.Profile {
 		return goalVerificationReject(result, certEmitInvalid("CERTIFICATE_CONTEXT_MISMATCH", "certificate", "snapshot, context, and profile claims must match the selected environment and request")), nil
 	}
+	goalContextFP, contextErr := goalContextFingerprint(primitiveContext, original)
+	if contextErr != nil {
+		return result, contextErr
+	}
+	if certificate.RequestContextFingerprint != goalContextFP {
+		return goalVerificationReject(result, certEmitInvalid("CERTIFICATE_REQUEST_CONTEXT_MISMATCH", "certificate.request_context_fingerprint", "certificate request-context pin must match the caller-supplied goal context")), nil
+	}
+	if (candidate.RequestContext == nil) != (original.RequestContext == nil) {
+		return goalVerificationReject(result, certEmitInvalid("CANDIDATE_REQUEST_CONTEXT_MISMATCH", "candidate.request_context", "candidate must preserve the request context carried by the goal")), nil
+	}
+	if original.RequestContext != nil {
+		candidateContext := primitiveContext
+		candidateContext.References = append([]algebra.Declaration{}, candidate.References...)
+		candidateContext.RequestContext = candidate.RequestContext
+		candidateFP, fpErr := algebra.RequestContextFingerprint(*candidate.RequestContext, candidateContext)
+		if fpErr != nil {
+			return goalVerificationReject(result, fpErr), nil
+		}
+		if candidateFP != goalContextFP {
+			return goalVerificationReject(result, certEmitInvalid("CANDIDATE_REQUEST_CONTEXT_MISMATCH", "candidate.request_context", "candidate request-context payload must match the caller-supplied goal context")), nil
+		}
+	}
 	goalFingerprint, err := searchGoalFingerprint(original, environment.SnapshotID)
 	if err != nil {
 		return result, err
