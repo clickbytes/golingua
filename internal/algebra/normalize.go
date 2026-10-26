@@ -95,6 +95,12 @@ func Normalize(environment RewriteEnvironment, profile RewriteProfile, input *Te
 	rules := make([]RewriteRule, len(profile.Rules))
 	copy(rules, profile.Rules)
 	certificate := RewriteCertificate{SchemaVersion: 1, SnapshotID: environment.SnapshotID, Profile: RewriteProfile{ID: profile.ID, Rules: rules}, Input: certificateInput, Output: current, Steps: []RewriteStep{}}
+	if environment.Document.RequestContext != nil {
+		certificate.ContextFingerprint, err = RequestContextFingerprint(*environment.Document.RequestContext, environment.Document)
+		if err != nil {
+			return NormalizationResult{}, err
+		}
+	}
 	state := normalizerState{environment: environment, profile: profile, budget: budget, limits: limits, certificate: certificate}
 	envWork, err := rewriteEnvironmentWork(environment, limits)
 	if err != nil {
@@ -384,7 +390,10 @@ func (state *normalizerState) result(statusValue status.OutcomeKind, diagnostic 
 	if err != nil {
 		return NormalizationResult{}, err
 	}
-	doc := cloneRewriteDocument(state.environment.Document, state.limits)
+	doc, err := cloneRewriteDocument(state.environment.Document, state.limits)
+	if err != nil {
+		return NormalizationResult{}, err
+	}
 	doc.Expression = current
 	result := NormalizationResult{Status: statusValue, Normalized: state.certificate.Normalized, CanonicalDocument: doc, Checked: checked, Expression: current, Certificate: state.certificate, Statistics: state.statistics}
 	if diagnostic != nil {
@@ -410,6 +419,16 @@ func VerifyRewriteCertificate(environment RewriteEnvironment, profile RewritePro
 	if certificate.SnapshotID != environment.SnapshotID || certificate.Profile.ID != profile.ID || !sameRulesExact(certificate.Profile.Rules, profile.Rules) {
 		return VerificationResult{}, invalid("REWRITE_CONTEXT_MISMATCH", "certificate", "certificate snapshot and exact rule profile must match verified inputs")
 	}
+	expectedContextFingerprint := ""
+	if environment.Document.RequestContext != nil {
+		expectedContextFingerprint, err = RequestContextFingerprint(*environment.Document.RequestContext, environment.Document)
+		if err != nil {
+			return VerificationResult{}, err
+		}
+	}
+	if certificate.ContextFingerprint != expectedContextFingerprint {
+		return VerificationResult{}, invalid("REWRITE_REQUEST_CONTEXT_MISMATCH", "certificate.context_fingerprint", "certificate request context differs from the independently selected context")
+	}
 	if originalInput == nil {
 		return VerificationResult{}, invalid("MISSING_EXPRESSION", "input", "actual original input is required")
 	}
@@ -429,7 +448,7 @@ func VerifyRewriteCertificate(environment RewriteEnvironment, profile RewritePro
 	if certificate.SchemaVersion != 1 || certificate.Input == nil || certificate.Output == nil {
 		return VerificationResult{}, invalid("INVALID_REWRITE_CERTIFICATE", "certificate", "schema version 1 and full input/output terms are required")
 	}
-	if len(certificate.SnapshotID) > 256 || len(certificate.Profile.ID) > 256 || len(certificate.Profile.Rules) > 6 {
+	if len(certificate.SnapshotID) > 256 || len(certificate.ContextFingerprint) > 256 || len(certificate.Profile.ID) > 256 || len(certificate.Profile.Rules) > 6 {
 		return VerificationResult{}, invalid("INVALID_REWRITE_CERTIFICATE", "certificate", "snapshot, profile, or rule list exceeds its bound")
 	}
 	inputBytes, err := rewriteJSONSize(originalInput)
@@ -490,6 +509,9 @@ func VerifyRewriteCertificate(environment RewriteEnvironment, profile RewritePro
 		return nil
 	}
 	if err := addJSONString(certificate.SnapshotID, "certificate.snapshot_id", 256); err != nil {
+		return VerificationResult{}, err
+	}
+	if err := addJSONString(certificate.ContextFingerprint, "certificate.context_fingerprint", 256); err != nil {
 		return VerificationResult{}, err
 	}
 	if err := addJSONString(certificate.Profile.ID, "certificate.profile.id", 256); err != nil {
@@ -833,7 +855,7 @@ func rewriteMarshalerError(err error) *Error {
 	return nil
 }
 
-func cloneRewriteDocument(source Document, limits Limits) Document {
+func cloneRewriteDocument(source Document, limits Limits) (Document, error) {
 	copy := source
 	copy.Sorts = append([]SortDeclaration(nil), source.Sorts...)
 	copy.Signatures = make([]Signature, len(source.Signatures))
@@ -855,8 +877,15 @@ func cloneRewriteDocument(source Document, limits Limits) Document {
 	}
 	copy.Parameters = cloneDeclarations(source.Parameters)
 	copy.References = cloneDeclarations(source.References)
+	if source.RequestContext != nil {
+		contextCopy, err := CloneRequestContext(*source.RequestContext)
+		if err != nil {
+			return Document{}, err
+		}
+		copy.RequestContext = &contextCopy
+	}
 	copy.Expression = nil
-	return copy
+	return copy, nil
 }
 
 func verificationCharge(statistics *RewriteStatistics, limit, amount int) bool {

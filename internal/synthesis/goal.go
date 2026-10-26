@@ -86,12 +86,13 @@ type GoalLimits struct {
 // explicit obligations. It deliberately contains no final AST or named
 // derived-concept selection.
 type GoalSpec struct {
-	SchemaVersion int                   `json:"schema_version"`
-	Profile       string                `json:"profile"`
-	ContextID     string                `json:"context_id"`
-	ExpectedType  algebra.Type          `json:"expected_type"`
-	Ports         []GoalPort            `json:"ports"`
-	References    []algebra.Declaration `json:"references"`
+	SchemaVersion  int                     `json:"schema_version"`
+	Profile        string                  `json:"profile"`
+	ContextID      string                  `json:"context_id"`
+	RequestContext *algebra.RequestContext `json:"request_context,omitempty"`
+	ExpectedType   algebra.Type            `json:"expected_type"`
+	Ports          []GoalPort              `json:"ports"`
+	References     []algebra.Declaration   `json:"references"`
 	// ProjectPorts is an optional set of ports to existentially close after
 	// constraints and bindings have been applied.
 	ProjectPorts     []string               `json:"project_ports,omitempty"`

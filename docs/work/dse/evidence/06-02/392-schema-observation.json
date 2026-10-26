@@ -1,0 +1,120 @@
+{
+  "tool": "jsonschema4.26.0",
+  "meta_schemas": "valid",
+  "artifacts": [
+    {
+      "file": "/tmp/golingua-dse/392-independent-inputs/resolved-document.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/392-independent-inputs/unresolved-document.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/392-independent-inputs/conflicting-document.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/392-independent-inputs/changed-same-id-document.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/392-independent-inputs/zero-arity-document.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/392-cli-observations/export-resolved.json",
+      "schema": "expression.schema.json",
+      "definition": "artifact_envelope",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/392-cli-observations/normalize-resolved.json",
+      "schema": "proof.schema.json",
+      "definition": "rewrite_certificate",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/392-cli-observations/export-unresolved.json",
+      "schema": "expression.schema.json",
+      "definition": "artifact_envelope",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/392-cli-observations/normalize-unresolved.json",
+      "schema": "proof.schema.json",
+      "definition": "rewrite_certificate",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/392-cli-observations/export-conflicting.json",
+      "schema": "expression.schema.json",
+      "definition": "artifact_envelope",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/392-cli-observations/normalize-conflicting.json",
+      "schema": "proof.schema.json",
+      "definition": "rewrite_certificate",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/392-cli-observations/export-zero-arity.json",
+      "schema": "expression.schema.json",
+      "definition": "artifact_envelope",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/392-cli-observations/normalize-zero-arity.json",
+      "schema": "proof.schema.json",
+      "definition": "rewrite_certificate",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/392-cli-observations/construct-description.json",
+      "schema": "synthesis-certificate.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/392-cli-observations/construct-description.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/392-independent-inputs/description-goal.json",
+      "schema": "goals.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/392-cli-observations/construct-resolved-description.json",
+      "schema": "synthesis-certificate.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/392-cli-observations/construct-resolved-description.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/392-independent-inputs/resolved-description-goal.json",
+      "schema": "goals.schema.json",
+      "definition": null,
+      "errors": []
+    }
+  ]
+}

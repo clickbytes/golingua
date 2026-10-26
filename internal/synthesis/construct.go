@@ -37,7 +37,7 @@ func Construct(context algebra.Document, goal GoalSpec) (Result, error) {
 		return Result{}, goalInvalid("UNKNOWN_RELATION_ROLE", "constraints", "path role is not declared by its relation")
 	}
 
-	operatorContext, err := constructionContext(context, goal.References, limits.TermLimits)
+	operatorContext, err := constructionContext(context, goal.References, limits.TermLimits, goal.RequestContext)
 	if err != nil {
 		return Result{}, err
 	}
@@ -282,7 +282,7 @@ func uniquePath(constraints []Constraint) (Constraint, error) {
 	return path, nil
 }
 
-func constructionContext(context algebra.Document, references []algebra.Declaration, limits algebra.Limits) (algebra.Document, error) {
+func constructionContext(context algebra.Document, references []algebra.Declaration, limits algebra.Limits, requestContext *algebra.RequestContext) (algebra.Document, error) {
 	sorts := make([]algebra.SortDeclaration, len(context.Sorts))
 	copy(sorts, context.Sorts)
 	signatures := make([]algebra.Signature, len(context.Signatures))
@@ -298,7 +298,15 @@ func constructionContext(context algebra.Document, references []algebra.Declarat
 	for i, ref := range references {
 		refs[i] = algebra.Declaration{ID: ref.ID, Type: cloneGoalType(ref.Type)}
 	}
-	document := algebra.Document{SchemaVersion: algebra.SchemaVersion, Sorts: sorts, Signatures: signatures, References: refs, Limits: limits}
+	var contextCopy *algebra.RequestContext
+	if requestContext != nil {
+		cloned, cloneErr := algebra.CloneRequestContext(*requestContext)
+		if cloneErr != nil {
+			return algebra.Document{}, cloneErr
+		}
+		contextCopy = &cloned
+	}
+	document := algebra.Document{SchemaVersion: algebra.SchemaVersion, Sorts: sorts, Signatures: signatures, References: refs, RequestContext: contextCopy, Limits: limits}
 	if err := algebra.CheckDeclarations(document); err != nil {
 		return algebra.Document{}, err
 	}

@@ -209,6 +209,9 @@ func CompareExpressions(environment RewriteEnvironment, left, right Document, pr
 	if !validEquivalenceText(contextID, 256) {
 		return EquivalenceResult{}, invalid("INVALID_EQUIVALENCE_CONTEXT", "context_id", "context ID must be non-empty bounded UTF-8")
 	}
+	if err := matchEquivalenceRequestContexts(environment.Document, left, right, contextID); err != nil {
+		return EquivalenceResult{}, err
+	}
 	if err := ValidateRewriteProfile(profile); err != nil {
 		return EquivalenceResult{}, err
 	}
@@ -370,6 +373,33 @@ func CompareExpressions(environment RewriteEnvironment, left, right Document, pr
 	result.Statistics.CertificateBytes = len(encoded)
 	result.Statistics.WorkUnits = work.used
 	return result, nil
+}
+
+func matchEquivalenceRequestContexts(actualContext, left, right Document, contextID string) error {
+	actual := actualContext.RequestContext
+	if (actual == nil) != (left.RequestContext == nil) || (actual == nil) != (right.RequestContext == nil) {
+		return invalid("EQUIVALENCE_REQUEST_CONTEXT_MISMATCH", "inputs.request_context", "both source documents and the selected environment must carry the same request context")
+	}
+	if actual == nil {
+		return nil
+	}
+	if actual.ID != contextID || left.RequestContext.ID != contextID || right.RequestContext.ID != contextID {
+		return invalid("EQUIVALENCE_REQUEST_CONTEXT_MISMATCH", "context_id", "request context IDs must match the supplied equivalence context ID")
+	}
+	_, expectedFingerprint, err := CanonicalRequestContext(*actual, actualContext)
+	if err != nil {
+		return err
+	}
+	for _, source := range []Document{left, right} {
+		_, fingerprint, fingerprintErr := CanonicalRequestContext(*source.RequestContext, actualContext)
+		if fingerprintErr != nil {
+			return fingerprintErr
+		}
+		if fingerprint != expectedFingerprint {
+			return invalid("EQUIVALENCE_REQUEST_CONTEXT_MISMATCH", "inputs.request_context", "source context payload differs from the independently selected context")
+		}
+	}
+	return nil
 }
 
 func prepareEquivalenceEnvironment(environment RewriteEnvironment, requested Limits) (RewriteEnvironment, Limits, int, error) {

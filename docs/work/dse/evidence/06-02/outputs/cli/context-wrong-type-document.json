@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"CONTEXT_REFERENCE_TYPE_MISMATCH","message":"context referent type must match the document reference declaration","path":"document.references[0].type","severity":"error"}]}

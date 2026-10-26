@@ -637,6 +637,7 @@ func lowerQuery(source algebra.Document, environment algebra.RewriteEnvironment,
 	env.Document.Limits = limits
 	env.Document.Parameters = append([]algebra.Declaration{}, source.Parameters...)
 	env.Document.References = append([]algebra.Declaration{}, source.References...)
+	env.Document.RequestContext = source.RequestContext
 	env.Document.Closed = source.Closed
 	if err := algebra.ValidateRewriteEnvironment(env); err != nil {
 		return nil, algebra.RewriteCertificate{}, 0, err
@@ -710,6 +711,27 @@ func validateAlgebraPlanInputs(schema facts.NarySchema, environment algebra.Rewr
 	}
 	if source.SchemaVersion != algebra.SchemaVersion || source.Expression == nil {
 		return planInvalid("INVALID_QUERY_DOCUMENT", "expression", "a schema-version 1 self-contained expression document is required")
+	}
+	if (source.RequestContext == nil) != (environment.Document.RequestContext == nil) {
+		return planInvalid("QUERY_REQUEST_CONTEXT_MISMATCH", "request_context", "source and selected rewrite environment must carry the same request context")
+	}
+	if source.RequestContext != nil {
+		if source.RequestContext.ID != request.ContextID || environment.Document.RequestContext.ID != request.ContextID {
+			return planInvalid("QUERY_REQUEST_CONTEXT_ID_MISMATCH", "request_context.id", "source request context must match the explicit query context ID")
+		}
+		contextDocument := environment.Document
+		contextDocument.References = append([]algebra.Declaration{}, source.References...)
+		sourceFingerprint, contextErr := algebra.RequestContextFingerprint(*source.RequestContext, contextDocument)
+		if contextErr != nil {
+			return contextErr
+		}
+		environmentFingerprint, contextErr := algebra.RequestContextFingerprint(*environment.Document.RequestContext, environment.Document)
+		if contextErr != nil {
+			return contextErr
+		}
+		if sourceFingerprint != environmentFingerprint {
+			return planInvalid("QUERY_REQUEST_CONTEXT_MISMATCH", "request_context", "source payload must match the selected rewrite environment context")
+		}
 	}
 	if len(source.Sorts)+len(source.Signatures)+len(source.Parameters)+len(source.References) > limits.TermLimits.MaxSymbols {
 		return planResource("document", "query declarations exceed term symbol limits")

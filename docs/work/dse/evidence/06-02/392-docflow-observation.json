@@ -1,0 +1,38 @@
+{
+  "blocks": [
+    {
+      "shell_block": "go run ./cmd/golingua algebra context check \\\n  --input data/semantic/examples/reference/resolved-document.json --json\n\ngo run ./cmd/golingua algebra context check \\\n  --input data/semantic/examples/reference/unresolved-document.json --json\n\ngo run ./cmd/golingua algebra context check \\\n  --input data/semantic/examples/reference/conflicting-document.json --json\n",
+      "cli_calls": 3,
+      "exit_code": 0,
+      "stdout_file": "/tmp/golingua-dse/392-docflow-0.jsonl",
+      "stdout_sha256": "f867c265c6ccbbb5349617e08adf84aaa676bd28bad4e3bad1fe8bbb5897c7ba",
+      "stderr": ""
+    },
+    {
+      "shell_block": "go run ./cmd/golingua algebra build \\\n  --metadata data/semantic/examples/reference/metadata.json \\\n  --input data/semantic/examples/reference/build-request.json --json\n\ngo run ./cmd/golingua algebra normalize \\\n  --metadata data/semantic/examples/reference/metadata.json \\\n  --input data/semantic/examples/reference/normalization-request.json --json\n\ngo run ./cmd/golingua algebra export \\\n  --metadata data/semantic/examples/reference/metadata.json \\\n  --input data/semantic/examples/reference/export-request.json --json\n\ngo run ./cmd/golingua algebra replay \\\n  --metadata data/semantic/examples/reference/metadata.json \\\n  --input data/semantic/examples/reference/replay-request.json --json\n",
+      "cli_calls": 4,
+      "exit_code": 0,
+      "stdout_file": "/tmp/golingua-dse/392-docflow-1.jsonl",
+      "stdout_sha256": "4e590736b80a6f0a0a79630ef277023fc388536548ff3a21ee503d2d4ce1cefe",
+      "stderr": ""
+    },
+    {
+      "shell_block": "reference_tmp=\"$(mktemp -d)\"\ngo run ./cmd/golingua algebra synthesize --mode construct \\\n  --metadata data/semantic/examples/reference/metadata-zero-arity.json \\\n  --goal data/semantic/examples/reference/description-goal.json --json \\\n  > \"$reference_tmp/synthesis.json\"\n\njq -c '.result.canonical_document' \"$reference_tmp/synthesis.json\" \\\n  > \"$reference_tmp/candidate.json\"\njq -c '.result.certificate' \"$reference_tmp/synthesis.json\" \\\n  > \"$reference_tmp/certificate.json\"\n\ngo run ./cmd/golingua algebra verify-goal \\\n  --goal data/semantic/examples/reference/description-goal.json \\\n  --candidate \"$reference_tmp/candidate.json\" \\\n  --certificate \"$reference_tmp/certificate.json\" \\\n  --metadata data/semantic/examples/reference/metadata-zero-arity.json --json\n",
+      "cli_calls": 2,
+      "exit_code": 0,
+      "stdout_file": "/tmp/golingua-dse/392-docflow-2.jsonl",
+      "stdout_sha256": "10d74fe6719762ecfb8ded0a4fa2339b456da6d83963a84fc0289c8166906a0f",
+      "stderr": ""
+    },
+    {
+      "shell_block": "go run ./cmd/golingua algebra evaluate \\\n  --metadata data/semantic/examples/reference/metadata.json \\\n  --expression data/semantic/examples/reference/presupposition-is-not-fact-document.json \\\n  --facts data/semantic/examples/reference/facts.json \\\n  --select data/semantic/examples/reference/empty-selection.json \\\n  --context-id ctx-reference --profile positive-facts-v1 --json\n",
+      "cli_calls": 1,
+      "exit_code": 0,
+      "stdout_file": "/tmp/golingua-dse/392-docflow-3.jsonl",
+      "stdout_sha256": "78d81a177c20dd9cc0fe7870969aa0a9fdcdb654d0ebf66e7cdfbb1dd8607c1d",
+      "stderr": ""
+    }
+  ],
+  "total_cli_calls": 10,
+  "source": "literal docs/cli.md Request-scoped section"
+}

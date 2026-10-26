@@ -111,13 +111,14 @@ type RewriteStep struct {
 // RewriteCertificate records a sequence of licensed transformations. It
 // certifies only the listed rewrites, never truth or unrestricted equivalence.
 type RewriteCertificate struct {
-	SchemaVersion int            `json:"schema_version"`
-	SnapshotID    string         `json:"snapshot_id"`
-	Profile       RewriteProfile `json:"profile"`
-	Input         *Term          `json:"input"`
-	Output        *Term          `json:"output"`
-	Steps         []RewriteStep  `json:"steps"`
-	Normalized    bool           `json:"normalized"`
+	SchemaVersion      int            `json:"schema_version"`
+	SnapshotID         string         `json:"snapshot_id"`
+	ContextFingerprint string         `json:"context_fingerprint,omitempty"`
+	Profile            RewriteProfile `json:"profile"`
+	Input              *Term          `json:"input"`
+	Output             *Term          `json:"output"`
+	Steps              []RewriteStep  `json:"steps"`
+	Normalized         bool           `json:"normalized"`
 }
 
 // ValidateRewriteProfile checks the closed rule vocabulary and bounded ID.

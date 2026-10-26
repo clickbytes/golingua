@@ -548,11 +548,11 @@
         390
       ],
       "branch_name": "dse/06-01-scopes-questions",
-      "status": "ACTIVE",
+      "status": "DONE",
       "actual_base_sha": "803c7a65f72d8bb5cdcbeb1e416807a477645025",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/06-01-scopes-questions",
-      "pr_url": null,
-      "merge_sha": null,
+      "pr_url": "https://github.com/clickbytes/golingua/pull/415",
+      "merge_sha": "bf8c290190ea8829485f24443e5e5c4f722b5bbc",
       "evidence_paths": [
         "docs/work/dse/evidence/06-01/README.md",
         "docs/work/dse/evidence/06-01/cli-observations-67.jsonl",
@@ -573,12 +573,23 @@
         391
       ],
       "branch_name": "dse/06-02-references-context",
-      "status": "QUEUED",
-      "actual_base_sha": null,
-      "branch_url": null,
+      "status": "ACTIVE",
+      "actual_base_sha": "80926ec5bdec30010fba9f5e265993881da9f06a",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/06-02-references-context",
       "pr_url": null,
       "merge_sha": null,
-      "evidence_paths": []
+      "evidence_paths": [
+        "docs/work/dse/evidence/06-02/README.md",
+        "docs/work/dse/evidence/06-02/392-cli-observations.jsonl",
+        "docs/work/dse/evidence/06-02/392-extra-cli-observations.jsonl",
+        "docs/work/dse/evidence/06-02/392-final-controls.jsonl",
+        "docs/work/dse/evidence/06-02/392-final-nil-observation.json",
+        "docs/work/dse/evidence/06-02/392-technical-observation.json",
+        "docs/work/dse/evidence/06-02/392-source-hashes.json",
+        "docs/work/dse/evidence/06-02/392-schema-observation.json",
+        "docs/work/dse/evidence/06-02/392-semantic-observation.json",
+        "docs/work/dse/evidence/06-02/392-docflow-observation.json"
+      ]
     },
     {
       "issue_number": 393,

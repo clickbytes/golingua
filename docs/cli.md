@@ -238,6 +238,110 @@ restrictor oznacza brak restrictora; pusty obiekt `{}` jest nieprawidłowy.
 `unsupported`, również gdy znana jest liczba dopasowanych faktów. Nie dodano
 profilu kompletnej dziedziny ani semantyki prawda/fałsz dla tych operatorów.
 
+### Request-scoped referenty i warunki
+
+Opcjonalne `request_context` w dokumencie przenosi jawne, typowane referenty,
+kotwice mówiącego i adresata, wzmianki, rekordy `resolution_evidence` oraz
+warunki `assumption`, `presupposition` i `loss`. To dane bieżącego żądania;
+nie tworzą pamięci rozmowy ani faktów. Identyfikatory referentów pozostają
+odrębne nawet przy tym samym typie i `concept_id`. Każda zadeklarowana
+tożsamość wzmianki wymaga zgodnego dowodu; brak celu daje `unresolved`, a
+sprzeczne jawne dowody dają `ambiguous` z widocznymi kandydatami.
+
+Sprawdź samodzielny dokument z kontekstem:
+
+```sh
+go run ./cmd/golingua algebra context check \
+  --input data/semantic/examples/reference/resolved-document.json --json
+
+go run ./cmd/golingua algebra context check \
+  --input data/semantic/examples/reference/unresolved-document.json --json
+
+go run ./cmd/golingua algebra context check \
+  --input data/semantic/examples/reference/conflicting-document.json --json
+```
+
+Komenda wymaga `request_context` i zwraca sprawdzenie struktury oraz osobne
+`request_context_assessment`. `status: "ok"` oznacza poprawność typów i
+deklaracji, nie rozstrzygnięcie każdej wzmianki ani prawdziwość warunków.
+Przy wybranym `--metadata` dokument wejściowy nie może zawierać własnych
+`sorts` ani `signatures`; dla dokumentów samodzielnych flagę można pominąć.
+Format opisuje [kontrakt kontekstu](architecture/semantic-algebra/reference.md)
+i [schemat](../schemas/semantic/context.schema.json).
+
+Kontekst zachowuje się przez jawne budowanie, normalizację, syntezę,
+certyfikację, eksport i odtworzenie. Na przykład:
+
+```sh
+go run ./cmd/golingua algebra build \
+  --metadata data/semantic/examples/reference/metadata.json \
+  --input data/semantic/examples/reference/build-request.json --json
+
+go run ./cmd/golingua algebra normalize \
+  --metadata data/semantic/examples/reference/metadata.json \
+  --input data/semantic/examples/reference/normalization-request.json --json
+
+go run ./cmd/golingua algebra export \
+  --metadata data/semantic/examples/reference/metadata.json \
+  --input data/semantic/examples/reference/export-request.json --json
+
+go run ./cmd/golingua algebra replay \
+  --metadata data/semantic/examples/reference/metadata.json \
+  --input data/semantic/examples/reference/replay-request.json --json
+```
+
+Eksport bierze kontekst z dokumentu. Odtworzenie wymaga odrębnego
+`request_context` w żądaniu i odrzuca brak lub inną treść, nawet jeśli ID się
+zgadza. Podobnie porównanie oraz weryfikacja certyfikatu wymagają zgodnego
+payloadu po obu stronach i w środowisku; nil-context zachowuje wcześniejszy
+format i fingerprinty.
+
+Cele mogą jawnie wiązać port z referencją, pozostawiając inny port otwarty:
+
+```sh
+reference_tmp="$(mktemp -d)"
+go run ./cmd/golingua algebra synthesize --mode construct \
+  --metadata data/semantic/examples/reference/metadata-zero-arity.json \
+  --goal data/semantic/examples/reference/description-goal.json --json \
+  > "$reference_tmp/synthesis.json"
+
+jq -c '.result.canonical_document' "$reference_tmp/synthesis.json" \
+  > "$reference_tmp/candidate.json"
+jq -c '.result.certificate' "$reference_tmp/synthesis.json" \
+  > "$reference_tmp/certificate.json"
+
+go run ./cmd/golingua algebra verify-goal \
+  --goal data/semantic/examples/reference/description-goal.json \
+  --candidate "$reference_tmp/candidate.json" \
+  --certificate "$reference_tmp/certificate.json" \
+  --metadata data/semantic/examples/reference/metadata-zero-arity.json --json
+```
+
+The resulting description is `λx.r(x, A)`: it keeps `x` open and uses only
+the goal's explicit binding for `A`. The context also contains `B` with the
+same type and concept classification, but this does not select or merge `B`.
+`metadata-zero-arity.json` adds the declared `t0` primitive required by one
+condition in this goal; the ordinary eight-symbol package omits it. Empty
+`args: []` in that condition survives checking and serialization.
+
+A presupposition is not promoted into a positive fact. This neutral example
+checks the separate fact-evaluation input:
+
+```sh
+go run ./cmd/golingua algebra evaluate \
+  --metadata data/semantic/examples/reference/metadata.json \
+  --expression data/semantic/examples/reference/presupposition-is-not-fact-document.json \
+  --facts data/semantic/examples/reference/facts.json \
+  --select data/semantic/examples/reference/empty-selection.json \
+  --context-id ctx-reference --profile positive-facts-v1 --json
+```
+
+The observed knowledge remains `unknown`; conditions are preserved metadata,
+not evidence rows in the separate fact set. Context and condition size limits
+are finite; exceeding them returns `resource_limit` rather than resolving an
+identity or assuming a condition. See [#392 observations](work/dse/evidence/06-02/README.md)
+for the literal commands, exit codes, output hashes, limits, and owner status.
+
 W zakresie pytań evaluator obsługuje wyłącznie root `Ask` z dodatnim `Atom`/`And`/`Exists`
 po beta-lowering. Wbudowany restrictor zostaje połączony z body. Zamknięte
 pozytywne wyrażenie niebędące `Ask` może użyć jawnej pustej selekcji `[]`; brak

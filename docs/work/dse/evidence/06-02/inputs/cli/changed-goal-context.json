@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "profile": "positive-facts-v1",
+  "expected_type": {
+    "kind": "Arrow",
+    "from": {
+      "kind": "Entity"
+    },
+    "to": {
+      "kind": "Prop"
+    }
+  },
+  "ports": [
+    {
+      "id": "x",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "y",
+      "type": {
+        "kind": "Entity"
+      },
+      "binding": {
+        "kind": "Ref",
+        "id": "A",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    }
+  ],
+  "references": [
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ],
+  "allowed_operators": [
+    "relation",
+    "bind"
+  ],
+  "constraints": [
+    {
+      "id": "path01",
+      "kind": "path",
+      "symbol": "r",
+      "from_port": "x",
+      "to_port": "y",
+      "from_role": "a",
+      "to_role": "b",
+      "allowed_atom_counts": [
+        1
+      ]
+    }
+  ],
+  "provenance": [
+    {
+      "id": "dse392-neutral",
+      "uri": "urn:golingua:dse:392:coordinator-neutral-data",
+      "version": "1",
+      "license": "unspecified (agent-authored diagnostic proposal)",
+      "author": "Codex coordinator"
+    }
+  ],
+  "limits": {},
+  "context_id": "ctx-reference",
+  "request_context": {
+    "schema_version": 1,
+    "id": "ctx-reference",
+    "referents": [
+      {
+        "id": "A",
+        "type": {
+          "kind": "Entity"
+        },
+        "concept_id": "concept:category.k"
+      },
+      {
+        "id": "B",
+        "type": {
+          "kind": "Entity"
+        },
+        "concept_id": "concept:category.k"
+      }
+    ],
+    "speaker_referent_id": "A",
+    "addressee_referent_id": "B",
+    "mentions": [
+      {
+        "id": "m1",
+        "context_id": "ctx-reference",
+        "referent_id": "A"
+      },
+      {
+        "id": "m2",
+        "referent_id": "B"
+      }
+    ],
+    "resolution_evidence": [
+      {
+        "id": "e1",
+        "mention_id": "m1",
+        "referent_id": "A",
+        "source": {
+          "id": "neutral-explicit-evidence",
+          "uri": "urn:golingua:dse:392:neutral-explicit-evidence",
+          "version": "1",
+          "license": "unspecified (agent-authored diagnostic proposal)",
+          "author": "Codex coordinator"
+        }
+      },
+      {
+        "id": "e2",
+        "mention_id": "m2",
+        "referent_id": "B",
+        "source": {
+          "id": "neutral-explicit-evidence",
+          "uri": "urn:golingua:dse:392:neutral-explicit-evidence",
+          "version": "1",
+          "license": "unspecified (agent-authored diagnostic proposal)",
+          "author": "Codex coordinator"
+        }
+      }
+    ],
+    "conditions": [
+      {
+        "id": "assumption1",
+        "kind": "assumption",
+        "code": "existence_not_verified",
+        "target_referent_ids": [
+          "A"
+        ],
+        "expression": {
+          "kind": "Exists",
+          "id": "z",
+          "type": {
+            "kind": "Entity"
+          },
+          "body": {
+            "kind": "Atom",
+            "symbol": "p",
+            "args": [
+              {
+                "role": "v",
+                "value": {
+                  "kind": "Var",
+                  "id": "z"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "presupposition1",
+        "kind": "presupposition",
+        "code": "uniqueness_not_verified",
+        "target_referent_ids": [
+          "A"
+        ],
+        "expression": {
+          "kind": "Quantifier",
+          "quantifier": "exactly",
+          "count": 1,
+          "id": "A",
+          "type": {
+            "kind": "Entity"
+          },
+          "body": {
+            "kind": "Atom",
+            "symbol": "p",
+            "args": [
+              {
+                "role": "v",
+                "value": {
+                  "kind": "Var",
+                  "id": "A"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "loss1",
+        "kind": "loss",
+        "code": "deixis_proximity_unresolved",
+        "target_referent_ids": [
+          "A"
+        ],
+        "detail": "No proximity value is supplied."
+      }
+    ]
+  }
+}

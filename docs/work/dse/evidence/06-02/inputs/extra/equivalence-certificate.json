@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "claim_type": "profile_equivalence_v1",
+  "scope": "selected_rewrite_profile",
+  "snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456",
+  "context_id": "ctx-reference",
+  "profile": {
+    "id": "ctx-alpha-beta",
+    "rules": [
+      "alpha_v1",
+      "beta_v1"
+    ]
+  },
+  "left_fingerprint": "sha256:b1e90ef425a6629a69c7656ce755c4dbdbed26130d6b7fd16fdaac70d0f5e86b",
+  "right_fingerprint": "sha256:b1e90ef425a6629a69c7656ce755c4dbdbed26130d6b7fd16fdaac70d0f5e86b",
+  "left_rewrite": {
+    "context_fingerprint": "algebra-request-context-v1:sha256:0b93139023875c00fc88f72a2b39c22c3c41463bf6580f8e07bac1e2f5b9a793",
+    "input": {
+      "args": [
+        {
+          "role": "a",
+          "value": {
+            "id": "A",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        },
+        {
+          "role": "b",
+          "value": {
+            "id": "B",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      ],
+      "kind": "Atom",
+      "symbol": "r"
+    },
+    "normalized": true,
+    "output": {
+      "args": [
+        {
+          "role": "a",
+          "value": {
+            "id": "A",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        },
+        {
+          "role": "b",
+          "value": {
+            "id": "B",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      ],
+      "kind": "Atom",
+      "symbol": "r"
+    },
+    "profile": {
+      "id": "ctx-alpha-beta",
+      "rules": [
+        "alpha_v1",
+        "beta_v1"
+      ]
+    },
+    "schema_version": 1,
+    "snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456",
+    "steps": []
+  },
+  "right_rewrite": {
+    "context_fingerprint": "algebra-request-context-v1:sha256:0b93139023875c00fc88f72a2b39c22c3c41463bf6580f8e07bac1e2f5b9a793",
+    "input": {
+      "args": [
+        {
+          "role": "a",
+          "value": {
+            "id": "A",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        },
+        {
+          "role": "b",
+          "value": {
+            "id": "B",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      ],
+      "kind": "Atom",
+      "symbol": "r"
+    },
+    "normalized": true,
+    "output": {
+      "args": [
+        {
+          "role": "a",
+          "value": {
+            "id": "A",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        },
+        {
+          "role": "b",
+          "value": {
+            "id": "B",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      ],
+      "kind": "Atom",
+      "symbol": "r"
+    },
+    "profile": {
+      "id": "ctx-alpha-beta",
+      "rules": [
+        "alpha_v1",
+        "beta_v1"
+      ]
+    },
+    "schema_version": 1,
+    "snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456",
+    "steps": []
+  }
+}

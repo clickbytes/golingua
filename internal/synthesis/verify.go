@@ -52,10 +52,55 @@ func ValidateGoalRefinement(primitiveContext algebra.Document, original, concret
 	if err := compareRefinementFields(original, concrete); err != nil {
 		return err
 	}
+	if err := compareGoalRequestContext(primitiveContext, original, concrete); err != nil {
+		return err
+	}
 	if origin == CertificateOriginSearch {
 		if err := validateSearchRefinementChoices(primitiveContext, original, concrete, choices); err != nil {
 			return err
 		}
+	}
+	return nil
+}
+
+func goalContextFingerprint(declarations algebra.Document, goal GoalSpec) (string, error) {
+	if goal.RequestContext == nil {
+		return "", nil
+	}
+	document := declarations
+	document.SchemaVersion = algebra.SchemaVersion
+	document.Expression = nil
+	document.Parameters = nil
+	document.References = append([]algebra.Declaration{}, goal.References...)
+	document.RequestContext = goal.RequestContext
+	return algebra.RequestContextFingerprint(*goal.RequestContext, document)
+}
+
+func compareGoalRequestContext(primitiveContext algebra.Document, original, concrete GoalSpec) error {
+	if (original.RequestContext == nil) != (concrete.RequestContext == nil) {
+		return refinementInvalid("REFINEMENT_REQUEST_CONTEXT_CHANGED", "request_context", "request context presence must be preserved")
+	}
+	if original.RequestContext == nil {
+		return nil
+	}
+	fingerprint := func(goal GoalSpec) (string, error) {
+		document := primitiveContext
+		document.Expression = nil
+		document.Parameters = nil
+		document.References = append([]algebra.Declaration{}, goal.References...)
+		document.RequestContext = goal.RequestContext
+		return algebra.RequestContextFingerprint(*goal.RequestContext, document)
+	}
+	originalFingerprint, err := fingerprint(original)
+	if err != nil {
+		return err
+	}
+	concreteFingerprint, err := fingerprint(concrete)
+	if err != nil {
+		return err
+	}
+	if originalFingerprint != concreteFingerprint {
+		return refinementInvalid("REFINEMENT_REQUEST_CONTEXT_CHANGED", "request_context", "request context payload must be preserved")
 	}
 	return nil
 }

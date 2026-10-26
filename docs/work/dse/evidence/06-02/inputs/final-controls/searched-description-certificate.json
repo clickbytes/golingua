@@ -1,0 +1,423 @@
+{
+  "schema_version": 1,
+  "format": "finite-goal-certificate-v1",
+  "producer_status": "constructed_unverified",
+  "goal_verified": false,
+  "origin": "search",
+  "goal_fingerprint": "d1fb7658bf4b88b147a81c86f1038e118e386624bd3a06953cf8bb4ef6c1272d",
+  "snapshot_id": "rewrite-formal-v1:66093b497469f46e982693b1af648faa2cc8154e7264ad4b33aad13f32231967",
+  "context_id": "ctx-reference",
+  "request_context_fingerprint": "algebra-request-context-v1:sha256:749e02c6723e6dfbcc6ebe4575494c73c6199b7a14ef77054827038ed07309e5",
+  "profile": "positive-facts-v1",
+  "concrete_goal": {
+    "schema_version": 1,
+    "profile": "positive-facts-v1",
+    "context_id": "ctx-reference",
+    "request_context": {
+      "addressee_referent_id": "B",
+      "conditions": [
+        {
+          "code": "existence_not_verified",
+          "expression": {
+            "body": {
+              "args": [
+                {
+                  "role": "v",
+                  "value": {
+                    "id": "z",
+                    "kind": "Var"
+                  }
+                }
+              ],
+              "kind": "Atom",
+              "symbol": "p"
+            },
+            "id": "z",
+            "kind": "Exists",
+            "type": {
+              "kind": "Entity"
+            }
+          },
+          "id": "assumption1",
+          "kind": "assumption",
+          "target_referent_ids": [
+            "A"
+          ]
+        },
+        {
+          "code": "uniqueness_not_verified",
+          "expression": {
+            "body": {
+              "args": [
+                {
+                  "role": "v",
+                  "value": {
+                    "id": "A",
+                    "kind": "Var"
+                  }
+                }
+              ],
+              "kind": "Atom",
+              "symbol": "p"
+            },
+            "count": 1,
+            "id": "A",
+            "kind": "Quantifier",
+            "quantifier": "exactly",
+            "type": {
+              "kind": "Entity"
+            }
+          },
+          "id": "presupposition1",
+          "kind": "presupposition",
+          "target_referent_ids": [
+            "A"
+          ]
+        },
+        {
+          "code": "deixis_proximity_unresolved",
+          "detail": "No proximity value is supplied.",
+          "id": "loss1",
+          "kind": "loss",
+          "target_referent_ids": [
+            "A"
+          ]
+        },
+        {
+          "code": "nullary_proposition_unverified",
+          "expression": {
+            "args": [],
+            "kind": "Atom",
+            "symbol": "t0"
+          },
+          "id": "nullary",
+          "kind": "assumption",
+          "target_referent_ids": []
+        },
+        {
+          "code": "description_uniqueness_unverified",
+          "expression": {
+            "body": {
+              "args": [
+                {
+                  "role": "a",
+                  "value": {
+                    "id": "q",
+                    "kind": "Var"
+                  }
+                },
+                {
+                  "role": "b",
+                  "value": {
+                    "id": "A",
+                    "kind": "Ref",
+                    "type": {
+                      "kind": "Entity"
+                    }
+                  }
+                }
+              ],
+              "kind": "Atom",
+              "symbol": "r"
+            },
+            "count": 1,
+            "id": "q",
+            "kind": "Quantifier",
+            "quantifier": "exactly",
+            "type": {
+              "kind": "Entity"
+            }
+          },
+          "id": "description-unique",
+          "kind": "presupposition",
+          "target_referent_ids": [
+            "A"
+          ]
+        }
+      ],
+      "id": "ctx-reference",
+      "mentions": [
+        {
+          "context_id": "ctx-reference",
+          "id": "m1",
+          "referent_id": "A"
+        },
+        {
+          "id": "m2",
+          "referent_id": "A"
+        },
+        {
+          "id": "mU"
+        }
+      ],
+      "referents": [
+        {
+          "concept_id": "concept:category.k",
+          "id": "A",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "concept_id": "concept:category.k",
+          "id": "B",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ],
+      "resolution_evidence": [
+        {
+          "id": "e1",
+          "mention_id": "m1",
+          "referent_id": "A",
+          "source": {
+            "id": "neutral-explicit-evidence",
+            "uri": "urn:golingua:dse:392:neutral-explicit-evidence",
+            "version": "1",
+            "license": "unspecified (agent-authored diagnostic proposal)",
+            "author": "Codex coordinator"
+          }
+        },
+        {
+          "id": "e2",
+          "mention_id": "m2",
+          "referent_id": "A",
+          "source": {
+            "id": "neutral-explicit-evidence",
+            "uri": "urn:golingua:dse:392:neutral-explicit-evidence",
+            "version": "1",
+            "license": "unspecified (agent-authored diagnostic proposal)",
+            "author": "Codex coordinator"
+          }
+        }
+      ],
+      "schema_version": 1,
+      "speaker_referent_id": "A"
+    },
+    "expected_type": {
+      "kind": "Arrow",
+      "from": {
+        "kind": "Entity"
+      },
+      "to": {
+        "kind": "Prop"
+      }
+    },
+    "ports": [
+      {
+        "id": "x",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "id": "y",
+        "type": {
+          "kind": "Entity"
+        },
+        "binding": {
+          "kind": "Ref",
+          "id": "A",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      }
+    ],
+    "references": [
+      {
+        "id": "A",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "id": "B",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ],
+    "allowed_operators": [
+      "relation",
+      "bind"
+    ],
+    "constraints": [
+      {
+        "id": "path01",
+        "kind": "path",
+        "symbol": "r",
+        "from_port": "x",
+        "to_port": "y",
+        "from_role": "a",
+        "to_role": "b",
+        "allowed_atom_counts": [
+          1
+        ]
+      }
+    ],
+    "provenance": [
+      {
+        "id": "dse392-neutral",
+        "uri": "urn:golingua:dse:392:coordinator-neutral-data",
+        "version": "1",
+        "license": "unspecified (agent-authored diagnostic proposal)",
+        "author": "Codex coordinator"
+      }
+    ],
+    "limits": {
+      "max_atoms": 16,
+      "max_steps": 64,
+      "term_limits": {
+        "max_nodes": 4096,
+        "max_depth": 64,
+        "max_type_depth": 32,
+        "max_symbols": 512,
+        "max_ports": 16
+      }
+    }
+  },
+  "choices": [
+    {
+      "kind": "path_signature",
+      "axis_id": "axis-1",
+      "constraint_id": "path01",
+      "symbol": "r",
+      "from_role": "a",
+      "to_role": "b",
+      "port_id": "x"
+    },
+    {
+      "kind": "path_length",
+      "axis_id": "axis-2",
+      "constraint_id": "path01",
+      "atom_count": 1
+    }
+  ],
+  "candidate_fingerprint": "sha256:9092264ef0f67fee99bfbb6b9abaa38ad642bc56e34c526361c0c5c533644adb",
+  "interface": [
+    {
+      "port": "x",
+      "binder": "rel_r_a_1"
+    }
+  ],
+  "operations": [
+    {
+      "id": "s1",
+      "rule_id": "algebra.relation.v1",
+      "op": "relation",
+      "inputs": [],
+      "symbol": "r",
+      "mapping": [],
+      "outputs": [],
+      "ports": [
+        "a",
+        "b"
+      ],
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Entity"
+        },
+        "to": {
+          "kind": "Arrow",
+          "from": {
+            "kind": "Entity"
+          },
+          "to": {
+            "kind": "Prop"
+          }
+        }
+      },
+      "interface": [
+        {
+          "port": "a",
+          "binder": "rel_r_a_1"
+        },
+        {
+          "port": "b",
+          "binder": "rel_r_b_1"
+        }
+      ],
+      "substitutions": []
+    },
+    {
+      "id": "s2",
+      "rule_id": "algebra.bind.v1",
+      "op": "bind",
+      "inputs": [
+        "s1"
+      ],
+      "mapping": [],
+      "outputs": [],
+      "port": "b",
+      "ports": [
+        "a"
+      ],
+      "reference_id": "A",
+      "goal_port_id": "y",
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Entity"
+        },
+        "to": {
+          "kind": "Prop"
+        }
+      },
+      "interface": [
+        {
+          "port": "a",
+          "binder": "rel_r_a_1"
+        }
+      ],
+      "substitutions": [
+        {
+          "binder_id": "rel_r_b_1",
+          "reference_id": "A",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    }
+  ],
+  "scopes": [
+    {
+      "binder_id": "rel_r_a_1",
+      "kind": "Lambda",
+      "type": {
+        "kind": "Entity"
+      },
+      "path": "expression"
+    }
+  ],
+  "obligations": [
+    {
+      "constraint_id": "path01",
+      "kind": "path",
+      "status": "structural_claim",
+      "step_ids": [],
+      "fragments": [
+        "candidate.expression.body"
+      ]
+    }
+  ],
+  "assumptions": [
+    {
+      "kind": "typed_registry_snapshot",
+      "value": "rewrite-formal-v1:66093b497469f46e982693b1af648faa2cc8154e7264ad4b33aad13f32231967"
+    },
+    {
+      "kind": "request_reference_boundary",
+      "value": "sha256:b7364f53bc82faf85d55162efb7d7f3e2580ae37c1606649a4a95f3f8af68aef"
+    },
+    {
+      "kind": "positive_structural_profile",
+      "value": "positive-facts-v1"
+    }
+  ]
+}

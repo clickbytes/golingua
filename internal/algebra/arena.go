@@ -469,6 +469,13 @@ func cloneArenaContext(context Document, limits Limits) (Document, error) {
 	}
 	copyContext := context
 	copyContext.Expression = nil
+	if context.RequestContext != nil {
+		contextCopy, err := CloneRequestContext(*context.RequestContext)
+		if err != nil {
+			return Document{}, err
+		}
+		copyContext.RequestContext = &contextCopy
+	}
 	copyContext.Sorts = append([]SortDeclaration(nil), context.Sorts...)
 	copyContext.Signatures = make([]Signature, len(context.Signatures))
 	for i, signature := range context.Signatures {
