@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "signatures": [
+    {
+      "id": "e2",
+      "label": "uninterpreted e2",
+      "ports": [
+        {
+          "role": "e",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "x",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "n3",
+      "label": "uninterpreted n3",
+      "ports": [
+        {
+          "role": "u",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "v",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "w",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p",
+      "label": "uninterpreted p",
+      "ports": [
+        {
+          "role": "v",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "q",
+      "label": "uninterpreted q",
+      "ports": [
+        {
+          "role": "v",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "r",
+      "label": "uninterpreted r",
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s",
+      "label": "uninterpreted s",
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "t",
+      "ports": [
+        {
+          "role": "source",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "target",
+          "type": {
+            "kind": "Event"
+          }
+        }
+      ]
+    },
+    {
+      "id": "z0",
+      "label": "uninterpreted z0",
+      "ports": []
+    }
+  ],
+  "references": [
+    {
+      "id": "ev1",
+      "type": {
+        "kind": "Event"
+      },
+      "temporal_frame": "past",
+      "reference_time_id": "T"
+    },
+    {
+      "id": "T",
+      "type": {
+        "kind": "Interval"
+      }
+    }
+  ],
+  "expression": {
+    "kind": "Lambda",
+    "id": "rel_e2_x_1",
+    "type": {
+      "kind": "Entity"
+    },
+    "body": {
+      "kind": "Atom",
+      "symbol": "e2",
+      "args": [
+        {
+          "role": "e",
+          "value": {
+            "kind": "Ref",
+            "id": "ev1",
+            "type": {
+              "kind": "Event"
+            }
+          }
+        },
+        {
+          "role": "x",
+          "value": {
+            "kind": "Var",
+            "id": "rel_e2_x_1"
+          }
+        }
+      ]
+    }
+  },
+  "limits": {
+    "max_nodes": 4096,
+    "max_depth": 64,
+    "max_type_depth": 32,
+    "max_symbols": 512,
+    "max_ports": 16
+  }
+}

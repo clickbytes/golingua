@@ -133,6 +133,14 @@ func validateEvaluationProofWire(root map[string]json.RawMessage) error {
 			if err := requireWireFields(declaration, path+".reference", "id", "type"); err != nil {
 				return err
 			}
+			for field, maximum := range map[string]int{"temporal_frame": 16, "reference_time_id": 256, "multiplicity": 16} {
+				if raw, exists := declaration[field]; exists {
+					var value string
+					if bytes.Equal(bytes.TrimSpace(raw), []byte("null")) || json.Unmarshal(raw, &value) != nil || value == "" || len(value) > maximum || !utf8.ValidString(value) {
+						return planInvalid("INVALID_REFERENCE_ATTRIBUTE", path+".reference."+field, "reference attribute must be bounded non-empty UTF-8 text when present")
+					}
+				}
+			}
 			if _, err := algebra.DecodeTypeJSON(declaration["type"], path+".reference.type"); err != nil {
 				return err
 			}

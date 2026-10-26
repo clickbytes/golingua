@@ -21,23 +21,25 @@ type BuildArgument struct {
 // fields that do not belong to the selected Op; Build validates the same
 // constraints for programmatically created requests.
 type BuildStep struct {
-	ID         string          `json:"id"`
-	Op         string          `json:"op"`
-	Symbol     string          `json:"symbol,omitempty"`
-	Quantifier string          `json:"quantifier,omitempty"`
-	Count      *int            `json:"count,omitempty"`
-	Value      *Term           `json:"value,omitempty"`
-	Args       []BuildArgument `json:"args,omitempty"`
-	Inputs     []string        `json:"inputs,omitempty"`
-	Left       string          `json:"left,omitempty"`
-	Right      string          `json:"right,omitempty"`
-	Mapping    []JoinPair      `json:"mapping,omitempty"`
-	Outputs    []JoinOutput    `json:"outputs,omitempty"`
-	Function   string          `json:"function,omitempty"`
-	Port       string          `json:"port,omitempty"`
-	Argument   string          `json:"argument,omitempty"`
-	Predicate  string          `json:"predicate,omitempty"`
-	Ports      []string        `json:"ports,omitempty"`
+	ID           string          `json:"id"`
+	Op           string          `json:"op"`
+	Symbol       string          `json:"symbol,omitempty"`
+	Quantifier   string          `json:"quantifier,omitempty"`
+	Count        *int            `json:"count,omitempty"`
+	Value        *Term           `json:"value,omitempty"`
+	Args         []BuildArgument `json:"args,omitempty"`
+	Inputs       []string        `json:"inputs,omitempty"`
+	Left         string          `json:"left,omitempty"`
+	Right        string          `json:"right,omitempty"`
+	Mapping      []JoinPair      `json:"mapping,omitempty"`
+	Outputs      []JoinOutput    `json:"outputs,omitempty"`
+	Function     string          `json:"function,omitempty"`
+	Port         string          `json:"port,omitempty"`
+	Argument     string          `json:"argument,omitempty"`
+	Predicate    string          `json:"predicate,omitempty"`
+	Ports        []string        `json:"ports,omitempty"`
+	Modality     string          `json:"modality,omitempty"`
+	ModalProfile string          `json:"modal_profile,omitempty"`
 }
 
 // BuildRequest is a finite construction recipe. It contains no final AST,
@@ -409,6 +411,32 @@ func executeBuildStep(context Document, step BuildStep, values map[string]buildV
 			return buildValue{}, nil, err
 		}
 		return buildValue{expression: fn.Expression, function: &fn, kind: "function"}, []string{step.Inputs[0]}, nil
+	case "modal":
+		value, err := lookup(step.Inputs[0], "inputs[0]")
+		if err != nil {
+			return buildValue{}, nil, err
+		}
+		if value.expression == nil || value.kind == "substitution" {
+			return buildValue{}, nil, invalid("STEP_KIND_MISMATCH", path+".inputs[0]", "modal requires an expression")
+		}
+		if value.function == nil {
+			result := &Term{Kind: TermModal, Modality: step.Modality, ModalProfile: step.ModalProfile, Body: value.expression}
+			return buildValue{expression: result, kind: "expression"}, []string{step.Inputs[0]}, nil
+		}
+		binders, body, err := peelLeading(value.expression, len(value.function.Interface))
+		if err != nil {
+			return buildValue{}, nil, err
+		}
+		wrapped := &Term{Kind: TermModal, Modality: step.Modality, ModalProfile: step.ModalProfile, Body: body}
+		ports := make([]Port, len(binders))
+		for i, binder := range binders {
+			ports[i] = Port{Role: value.function.Interface[i].Port, Type: *cloneTypeValue(*binder.Type)}
+		}
+		fn := Function{Expression: wrapLambdas(value.function.Interface, ports, wrapped), Interface: append([]PortBinding{}, value.function.Interface...)}
+		if err := ValidateFunction(context, fn); err != nil {
+			return buildValue{}, nil, err
+		}
+		return buildValue{expression: fn.Expression, function: &fn, kind: "function"}, []string{step.Inputs[0]}, nil
 	case "quantifier":
 		if len(step.Inputs) < 1 || len(step.Inputs) > 2 {
 			return buildValue{}, nil, invalid("INVALID_QUANTIFIER_INPUTS", path+".inputs", "quantifier requires a predicate and optional restrictor")
@@ -703,7 +731,7 @@ func validateBuildStepShape(object map[string]json.RawMessage, path string) erro
 	}
 	fields := map[string][]string{
 		"relation": {"id", "op", "symbol"}, "value": {"id", "op", "value"}, "atom": {"id", "op", "symbol", "args"}, "and": {"id", "op", "inputs"},
-		"not": {"id", "op", "inputs"}, "quantifier": {"id", "op", "inputs", "quantifier", "count"}, "ask": {"id", "op", "inputs"},
+		"not": {"id", "op", "inputs"}, "quantifier": {"id", "op", "inputs", "quantifier", "count"}, "ask": {"id", "op", "inputs"}, "modal": {"id", "op", "inputs", "modality", "modal_profile"},
 		"join": {"id", "op", "left", "right", "mapping", "outputs"}, "bind": {"id", "op", "function", "port", "argument"}, "apply": {"id", "op", "function", "argument"},
 		"restrict": {"id", "op", "function", "port", "predicate"}, "project": {"id", "op", "function", "ports"}, "permute": {"id", "op", "function", "ports"}, "unify": {"id", "op", "left", "right"},
 	}
@@ -718,7 +746,7 @@ func validateBuildStepShape(object map[string]json.RawMessage, path string) erro
 	if err := checkFields(object, allowedSet, path); err != nil {
 		return err
 	}
-	optional := map[string]bool{"mapping": true, "outputs": true, "count": true}
+	optional := map[string]bool{"mapping": true, "outputs": true, "count": true, "modal_profile": true}
 	for _, key := range allowed {
 		if optional[key] {
 			continue
@@ -733,6 +761,11 @@ func validateBuildStepShape(object map[string]json.RawMessage, path string) erro
 	for _, key := range []string{"mapping", "outputs"} {
 		if raw, ok := object[key]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
 			return invalid("NULL_FIELD", path+"."+key, "null is not a valid field value")
+		}
+	}
+	if raw, ok := object["modal_profile"]; ok {
+		if _, err := rewriteJSONString(raw, path+".modal_profile", 256, false); err != nil {
+			return err
 		}
 	}
 	for _, key := range []string{"args", "inputs", "ports"} {
@@ -787,7 +820,11 @@ func decodeBuildDeclarations(raw json.RawMessage, path string) ([]Declaration, e
 		if err := json.Unmarshal(entry, &object); err != nil || object == nil {
 			return nil, invalid("INVALID_DECLARATION", fmt.Sprintf("%s[%d]", path, i), "declaration must be an object")
 		}
-		if err := checkFields(object, map[string]bool{"id": true, "type": true}, fmt.Sprintf("%s[%d]", path, i)); err != nil {
+		allowedFields := map[string]bool{"id": true, "type": true}
+		if path == "references" {
+			allowedFields["temporal_frame"], allowedFields["reference_time_id"], allowedFields["multiplicity"] = true, true, true
+		}
+		if err := checkFields(object, allowedFields, fmt.Sprintf("%s[%d]", path, i)); err != nil {
 			return nil, err
 		}
 		if _, ok := object["id"]; !ok {
@@ -805,7 +842,17 @@ func decodeBuildDeclarations(raw json.RawMessage, path string) ([]Declaration, e
 		if err != nil {
 			return nil, err
 		}
-		result[i] = Declaration{ID: id, Type: typ}
+		declaration := Declaration{ID: id, Type: typ}
+		for key, target := range map[string]*string{"temporal_frame": &declaration.TemporalFrame, "reference_time_id": &declaration.ReferenceTimeID, "multiplicity": &declaration.Multiplicity} {
+			if rawValue, present := object[key]; present {
+				value, decodeErr := rewriteJSONString(rawValue, fmt.Sprintf("%s[%d].%s", path, i, key), 256, false)
+				if decodeErr != nil {
+					return nil, decodeErr
+				}
+				*target = value
+			}
+		}
+		result[i] = declaration
 	}
 	return result, nil
 }
@@ -836,7 +883,7 @@ func buildStepReferences(s BuildStep) []stepReference {
 			r[i] = stepReference{id, fmt.Sprintf("inputs[%d]", i)}
 		}
 		return r
-	case "not", "quantifier", "ask":
+	case "not", "quantifier", "ask", "modal":
 		r := make([]stepReference, len(s.Inputs))
 		for i, id := range s.Inputs {
 			r[i] = stepReference{id, fmt.Sprintf("inputs[%d]", i)}
@@ -861,7 +908,8 @@ func validateBuildStepFields(step BuildStep, path string) error {
 	allowed := map[string]map[string]bool{
 		"relation": {"symbol": true}, "value": {"value": true}, "atom": {"symbol": true, "args": true}, "and": {"inputs": true},
 		"not": {"inputs": true}, "quantifier": {"inputs": true, "quantifier": true, "count": true}, "ask": {"inputs": true},
-		"join": {"left": true, "right": true, "mapping": true, "outputs": true}, "bind": {"function": true, "port": true, "argument": true},
+		"modal": {"inputs": true, "modality": true, "modal_profile": true},
+		"join":  {"left": true, "right": true, "mapping": true, "outputs": true}, "bind": {"function": true, "port": true, "argument": true},
 		"apply": {"function": true, "argument": true}, "restrict": {"function": true, "port": true, "predicate": true},
 		"project": {"function": true, "ports": true}, "permute": {"function": true, "ports": true}, "unify": {"left": true, "right": true},
 	}
@@ -869,7 +917,7 @@ func validateBuildStepFields(step BuildStep, path string) error {
 	if !known {
 		return &Error{Status: status.OutcomeUnsupported, Code: "UNSUPPORTED_BUILD_OPERATION", Path: path + ".op", Message: "build operation is not supported"}
 	}
-	if step.Symbol != "" && !fields["symbol"] || step.Quantifier != "" && !fields["quantifier"] || step.Count != nil && !fields["count"] || step.Value != nil && !fields["value"] || step.Args != nil && !fields["args"] || step.Inputs != nil && !fields["inputs"] || step.Left != "" && !fields["left"] || step.Right != "" && !fields["right"] || step.Mapping != nil && !fields["mapping"] || step.Outputs != nil && !fields["outputs"] || step.Function != "" && !fields["function"] || step.Port != "" && !fields["port"] || step.Argument != "" && !fields["argument"] || step.Predicate != "" && !fields["predicate"] || step.Ports != nil && !fields["ports"] {
+	if step.Symbol != "" && !fields["symbol"] || step.Quantifier != "" && !fields["quantifier"] || step.Count != nil && !fields["count"] || step.Value != nil && !fields["value"] || step.Args != nil && !fields["args"] || step.Inputs != nil && !fields["inputs"] || step.Left != "" && !fields["left"] || step.Right != "" && !fields["right"] || step.Mapping != nil && !fields["mapping"] || step.Outputs != nil && !fields["outputs"] || step.Function != "" && !fields["function"] || step.Port != "" && !fields["port"] || step.Argument != "" && !fields["argument"] || step.Predicate != "" && !fields["predicate"] || step.Ports != nil && !fields["ports"] || step.Modality != "" && !fields["modality"] || step.ModalProfile != "" && !fields["modal_profile"] {
 		return invalid("IRRELEVANT_FIELD", path, "step carries fields unrelated to its operation")
 	}
 	checkString := func(value, field string) error {
@@ -922,6 +970,18 @@ func validateBuildStepFields(step BuildStep, path string) error {
 	case "ask":
 		if step.Inputs == nil || len(step.Inputs) < 1 || len(step.Inputs) > 2 {
 			return invalid("INVALID_ASK_INPUTS", path+".inputs", "ask requires a proposition and optional restrictor")
+		}
+	case "modal":
+		if step.Inputs == nil || len(step.Inputs) != 1 {
+			return invalid("INVALID_MODAL_INPUTS", path+".inputs", "modal requires exactly one proposition or function input")
+		}
+		switch step.Modality {
+		case "possible", "necessary", "likely":
+		default:
+			return invalid("INVALID_MODALITY", path+".modality", "modality must be possible, necessary, or likely")
+		}
+		if step.ModalProfile != "" && !validText(step.ModalProfile, 256) {
+			return invalid("INVALID_MODAL_PROFILE", path+".modal_profile", "modal profile must be bounded text")
 		}
 	case "join":
 		if err := checkString(step.Left, "left"); err != nil {
@@ -1090,7 +1150,7 @@ func countSubstitutionNodes(value Substitution, limits Limits) (int, error) {
 func cloneDeclarations(values []Declaration) []Declaration {
 	result := make([]Declaration, len(values))
 	for i, value := range values {
-		result[i] = Declaration{ID: value.ID, Type: *cloneTypeValue(value.Type)}
+		result[i] = Declaration{ID: value.ID, Type: *cloneTypeValue(value.Type), TemporalFrame: value.TemporalFrame, ReferenceTimeID: value.ReferenceTimeID, Multiplicity: value.Multiplicity}
 	}
 	return result
 }

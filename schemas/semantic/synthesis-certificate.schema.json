@@ -3,7 +3,7 @@
   "$id": "https://github.com/clickbytes/golingua/schemas/semantic/synthesis-certificate.schema.json",
   "title": "Finite goal construction certificate",
   "description": "Bounded producer claims for later independent structural verification. This certificate does not establish truth or owner acceptance.",
-  "$comment": "Runtime hard limit is 8388608 UTF-8 bytes with strict duplicate-key, UTF-8, Unicode escape, nesting, and single-document preflight. Decoding is not verification. The separate candidate document is required for independent checking.",
+  "$comment": "Runtime hard limit is 8388608 UTF-8 bytes with strict duplicate-key, UTF-8, Unicode escape, nesting, and single-document preflight. Concrete-goal reference attributes are part of the pinned request boundary and must be preserved in the separate candidate document. Decoding is not verification. The separate candidate document is required for independent checking.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "format", "producer_status", "goal_verified", "origin", "goal_fingerprint", "snapshot_id", "context_id", "profile", "concrete_goal", "choices", "candidate_fingerprint", "interface", "operations", "scopes", "obligations", "assumptions"],

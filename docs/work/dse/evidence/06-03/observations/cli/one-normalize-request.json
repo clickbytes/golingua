@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "document": {
+    "schema_version": 1,
+    "references": [
+      {
+        "id": "C",
+        "type": {
+          "kind": "Entity"
+        },
+        "multiplicity": "one"
+      }
+    ],
+    "parameters": [],
+    "expression": {
+      "kind": "Atom",
+      "symbol": "p",
+      "args": [
+        {
+          "role": "v",
+          "value": {
+            "kind": "Ref",
+            "id": "C",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      ]
+    },
+    "limits": {}
+  },
+  "profile": {
+    "id": "attrs-beta-alpha",
+    "rules": [
+      "alpha_v1",
+      "beta_v1"
+    ]
+  }
+}

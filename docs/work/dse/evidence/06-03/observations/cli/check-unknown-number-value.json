@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_MULTIPLICITY","message":"multiplicity must be one or many","path":"references[0].multiplicity","severity":"error"}]}

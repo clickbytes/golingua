@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "document": {
+    "schema_version": 1,
+    "references": [
+      {
+        "id": "ev1",
+        "type": {
+          "kind": "Event"
+        },
+        "temporal_frame": "past",
+        "reference_time_id": "T"
+      },
+      {
+        "id": "A",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "id": "T",
+        "type": {
+          "kind": "Interval"
+        }
+      }
+    ],
+    "parameters": [],
+    "expression": {
+      "kind": "Atom",
+      "symbol": "e2",
+      "args": [
+        {
+          "role": "e",
+          "value": {
+            "kind": "Ref",
+            "id": "ev1",
+            "type": {
+              "kind": "Event"
+            }
+          }
+        },
+        {
+          "role": "x",
+          "value": {
+            "kind": "Ref",
+            "id": "A",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      ]
+    },
+    "limits": {}
+  },
+  "profile": {
+    "id": "attrs-beta-alpha",
+    "rules": [
+      "alpha_v1",
+      "beta_v1"
+    ]
+  }
+}

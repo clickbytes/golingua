@@ -482,7 +482,11 @@ func cloneIdentityTerm(term *algebra.Term, limits algebra.Limits) (*algebra.Term
 		if count > limits.MaxNodes {
 			return nil, searchIdentityResource("expression", "canonical expression exceeds the node bound")
 		}
-		result := &algebra.Term{Kind: source.Kind, ID: source.ID, Symbol: source.Symbol}
+		result := &algebra.Term{Kind: source.Kind, ID: source.ID, Symbol: source.Symbol, Quantifier: source.Quantifier, Modality: source.Modality, ModalProfile: source.ModalProfile}
+		if source.Count != nil {
+			countCopy := *source.Count
+			result.Count = &countCopy
+		}
 		if source.Type != nil {
 			typ, err := cloneIdentityType(*source.Type, limits)
 			if err != nil {
@@ -522,6 +526,21 @@ func cloneIdentityTerm(term *algebra.Term, limits algebra.Limits) (*algebra.Term
 		result.Argument, err = clone(source.Argument, depth+1)
 		if err != nil {
 			return nil, err
+		}
+		result.Restrictor, err = clone(source.Restrictor, depth+1)
+		if err != nil {
+			return nil, err
+		}
+		if source.Answers != nil {
+			result.Answers = make([]algebra.Declaration, len(source.Answers))
+			for i, answer := range source.Answers {
+				result.Answers[i] = answer
+				typ, cloneErr := cloneIdentityType(answer.Type, limits)
+				if cloneErr != nil {
+					return nil, cloneErr
+				}
+				result.Answers[i].Type = typ
+			}
 		}
 		return result, nil
 	}
@@ -574,7 +593,7 @@ func validateIdentityReferences(environmentRefs, goalRefs []algebra.Declaration)
 	sort.Slice(left, func(i, j int) bool { return left[i].ID < left[j].ID })
 	sort.Slice(right, func(i, j int) bool { return right[i].ID < right[j].ID })
 	for i := range left {
-		if left[i].ID != right[i].ID || !algebra.TypeEqual(left[i].Type, right[i].Type) {
+		if left[i].ID != right[i].ID || !algebra.TypeEqual(left[i].Type, right[i].Type) || left[i].TemporalFrame != right[i].TemporalFrame || left[i].ReferenceTimeID != right[i].ReferenceTimeID || left[i].Multiplicity != right[i].Multiplicity {
 			return searchIdentityInvalid("SEARCH_REFERENCE_CONTEXT_MISMATCH", fmt.Sprintf("environment.document.references[%d]", i), "rewrite environment references must exactly match the concrete goal")
 		}
 	}

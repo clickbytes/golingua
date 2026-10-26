@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "references": [
+    {
+      "id": "ev1",
+      "type": {
+        "kind": "Event"
+      },
+      "temporal_frame": null
+    },
+    {
+      "id": "T",
+      "type": {
+        "kind": "Interval"
+      }
+    }
+  ],
+  "steps": [
+    {
+      "id": "r",
+      "op": "relation",
+      "symbol": "r"
+    }
+  ],
+  "result": "r"
+}

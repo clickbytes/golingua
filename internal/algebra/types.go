@@ -53,8 +53,11 @@ type Signature struct {
 
 // Declaration assigns a type to a free parameter or explicit reference.
 type Declaration struct {
-	ID   string `json:"id"`
-	Type Type   `json:"type"`
+	ID              string `json:"id"`
+	Type            Type   `json:"type"`
+	TemporalFrame   string `json:"temporal_frame,omitempty"`
+	ReferenceTimeID string `json:"reference_time_id,omitempty"`
+	Multiplicity    string `json:"multiplicity,omitempty"`
 }
 
 // Limits bound structural checking. A zero field selects its conservative

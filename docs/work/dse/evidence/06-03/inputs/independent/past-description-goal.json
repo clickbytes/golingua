@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "profile": "positive-facts-v1",
+  "expected_type": {
+    "kind": "Arrow",
+    "from": {
+      "kind": "Entity"
+    },
+    "to": {
+      "kind": "Prop"
+    }
+  },
+  "ports": [
+    {
+      "id": "e",
+      "type": {
+        "kind": "Event"
+      },
+      "binding": {
+        "kind": "Ref",
+        "id": "ev1",
+        "type": {
+          "kind": "Event"
+        }
+      }
+    },
+    {
+      "id": "x",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ],
+  "references": [
+    {
+      "id": "ev1",
+      "type": {
+        "kind": "Event"
+      },
+      "temporal_frame": "past",
+      "reference_time_id": "T"
+    },
+    {
+      "id": "T",
+      "type": {
+        "kind": "Interval"
+      }
+    }
+  ],
+  "allowed_operators": [
+    "relation",
+    "bind"
+  ],
+  "constraints": [
+    {
+      "id": "event-path",
+      "kind": "path",
+      "symbol": "e2",
+      "from_port": "e",
+      "to_port": "x",
+      "from_role": "e",
+      "to_role": "x",
+      "allowed_atom_counts": [
+        1
+      ]
+    }
+  ],
+  "provenance": [
+    {
+      "id": "dse386-neutral-goal",
+      "uri": "https://github.com/clickbytes/golingua/issues/386",
+      "version": "2026-10-26.1",
+      "license": "internal-neutral-example",
+      "author": "Codex by owner delegation"
+    }
+  ],
+  "limits": {},
+  "context_id": "eval-neutral"
+}

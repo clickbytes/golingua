@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -96,6 +97,7 @@ type AlgebraQueryPlan struct {
 	lowering          algebra.RewriteCertificate
 	answers           []AlgebraAnswerPort
 	references        []algebra.Declaration
+	requestContext    *algebra.RequestContext
 	variables         []AlgebraPlanVariable
 	nodes             []AlgebraPlanNode
 	root              string
@@ -298,6 +300,16 @@ func CompileAlgebraQuery(parent context.Context, schema facts.NarySchema, enviro
 		root: root, limits: limits, usage: state.usage, deadline: deadline,
 		ctx: ctx, cancel: cancel,
 	}
+	if source.RequestContext != nil {
+		contextCopy, copyErr := algebra.CloneRequestContext(*source.RequestContext)
+		if copyErr != nil {
+			return fail(copyErr)
+		}
+		plan.requestContext = &contextCopy
+	}
+	if err := validateUsedReferenceAttributes(plan.nodes, plan.references, plan.requestContext, schema.Document, plan.variables); err != nil {
+		return fail(err)
+	}
 	if askSource {
 		plan.loweringProfile = positiveAskQueryProfile
 	}
@@ -434,6 +446,8 @@ func (compiler *planCompiler) compileTree(term *algebra.Term, path string, depth
 		return "", planUnsupported("UNSUPPORTED_QUERY_CONSTRUCTOR", path, "query body may contain only Atom, And, and Exists after beta lowering")
 	case algebra.TermNot:
 		return "", planUnsupported("NOT_QUERY_UNSUPPORTED", path, "Not is representable but is outside the positive query execution profile")
+	case algebra.TermModal:
+		return "", planUnsupported("MODAL_QUERY_UNSUPPORTED", path, "Modal is representable but the positive query profile has no modal fact semantics")
 	case algebra.TermQuantifier:
 		return "", planUnsupported("QUANTIFIER_QUERY_UNSUPPORTED", path, "quantifier evaluation requires a separately declared complete domain profile")
 	case algebra.TermAsk:
@@ -810,14 +824,14 @@ func compareDeclarations(source, selected []algebra.Declaration, path string) er
 	if len(source) != len(selected) {
 		return planInvalid("QUERY_DECLARATION_MISMATCH", path, "source declarations must exactly match the selected normalization environment")
 	}
-	byID := make(map[string]algebra.Type, len(selected))
+	byID := make(map[string]algebra.Declaration, len(selected))
 	for _, declaration := range selected {
-		byID[declaration.ID] = declaration.Type
+		byID[declaration.ID] = declaration
 	}
 	for i, declaration := range source {
-		typ, ok := byID[declaration.ID]
-		if !ok || !algebra.TypeEqual(typ, declaration.Type) {
-			return planInvalid("QUERY_DECLARATION_MISMATCH", fmt.Sprintf("%s[%d]", path, i), "source ID and type must match the selected normalization environment")
+		actual, ok := byID[declaration.ID]
+		if !ok || !algebra.TypeEqual(actual.Type, declaration.Type) || actual.TemporalFrame != declaration.TemporalFrame || actual.ReferenceTimeID != declaration.ReferenceTimeID || actual.Multiplicity != declaration.Multiplicity {
+			return planInvalid("QUERY_DECLARATION_MISMATCH", fmt.Sprintf("%s[%d]", path, i), "source ID, type, and explicit reference attributes must match the selected normalization environment")
 		}
 	}
 	return nil
@@ -938,9 +952,58 @@ func cloneAnswerPorts(in []AlgebraAnswerPort) []AlgebraAnswerPort {
 func clonePlanDeclarations(in []algebra.Declaration) []algebra.Declaration {
 	out := make([]algebra.Declaration, len(in))
 	for i, declaration := range in {
-		out[i] = algebra.Declaration{ID: declaration.ID, Type: typeCopy(declaration.Type)}
+		out[i] = declaration
+		out[i].Type = typeCopy(declaration.Type)
 	}
 	return out
+}
+
+func validateUsedReferenceAttributes(nodes []AlgebraPlanNode, references []algebra.Declaration, requestContext *algebra.RequestContext, schema algebra.Document, variables []AlgebraPlanVariable) error {
+	document := schema
+	document.References = clonePlanDeclarations(references)
+	used := make(map[string]bool)
+	for _, node := range nodes {
+		for _, arg := range node.Args {
+			if arg.RefID != "" {
+				used[arg.RefID] = true
+			}
+		}
+	}
+	for _, variable := range variables {
+		if variable.UsedInAtom {
+			continue
+		}
+		for _, declaration := range references {
+			if algebra.TypeEqual(variable.Type, declaration.Type) {
+				used[declaration.ID] = true
+			}
+		}
+		if requestContext != nil {
+			for _, referent := range requestContext.Referents {
+				if algebra.TypeEqual(variable.Type, referent.Type) {
+					used[referent.ID] = true
+				}
+			}
+		}
+	}
+	ids := make([]string, 0, len(used))
+	for id := range used {
+		ids = append(ids, id)
+	}
+	sort.Strings(ids)
+	for _, id := range ids {
+		attrs, err := algebra.EffectiveReferenceAttributes(document, requestContext, id)
+		if err != nil {
+			return err
+		}
+		if attrs.TemporalFrame != "" {
+			return planUnsupported("UNSUPPORTED_RELATIVE_TEMPORAL_REFERENCE", "references."+id+".temporal_frame", "the positive-facts query profile has no relative-time mapping to the explicit query instant")
+		}
+		if attrs.Multiplicity == "many" {
+			return planUnsupported("UNSUPPORTED_MANY_REFERENCE", "references."+id+".multiplicity", "the positive-facts query profile does not expand or group a many-valued reference")
+		}
+	}
+	return nil
 }
 func clonePlanVariables(in []AlgebraPlanVariable) []AlgebraPlanVariable {
 	out := make([]AlgebraPlanVariable, len(in))

@@ -1,0 +1,1 @@
+{"status":"unsupported","diagnostics":[{"code":"MODAL_QUERY_UNSUPPORTED","message":"Modal is representable but the positive query profile has no modal fact semantics","path":"expression.body","severity":"error"}]}

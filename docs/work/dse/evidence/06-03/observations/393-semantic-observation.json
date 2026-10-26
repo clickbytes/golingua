@@ -1,0 +1,81 @@
+{
+  "past": {
+    "reference_attributes_preserved": true,
+    "artifact_equal_after_replay": true,
+    "inspect_metadata_verified": false
+  },
+  "present": {
+    "reference_attributes_preserved": true,
+    "artifact_equal_after_replay": true,
+    "inspect_metadata_verified": false
+  },
+  "one": {
+    "reference_attributes_preserved": true,
+    "artifact_equal_after_replay": true,
+    "inspect_metadata_verified": false
+  },
+  "many": {
+    "reference_attributes_preserved": true,
+    "artifact_equal_after_replay": true,
+    "inspect_metadata_verified": false
+  },
+  "unknown-time": {
+    "reference_attributes_preserved": true,
+    "artifact_equal_after_replay": true,
+    "inspect_metadata_verified": false
+  },
+  "unknown-number": {
+    "reference_attributes_preserved": true,
+    "artifact_equal_after_replay": true,
+    "inspect_metadata_verified": false
+  },
+  "not-modal": {
+    "reference_attributes_preserved": true,
+    "artifact_equal_after_replay": true,
+    "inspect_metadata_verified": false
+  },
+  "modal-not": {
+    "reference_attributes_preserved": true,
+    "artifact_equal_after_replay": true,
+    "inspect_metadata_verified": false
+  },
+  "modal-profile": {
+    "reference_attributes_preserved": true,
+    "artifact_equal_after_replay": true,
+    "inspect_metadata_verified": false
+  },
+  "context-only-reference-interval": {
+    "reference_attributes_preserved": true,
+    "artifact_equal_after_replay": true,
+    "inspect_metadata_verified": false
+  },
+  "evaluate-one": {
+    "knowledge": "supported"
+  },
+  "evaluate-unknown-time": {
+    "knowledge": "supported"
+  },
+  "evaluate-unknown-number": {
+    "knowledge": "supported"
+  },
+  "evaluate-past": {
+    "status": "unsupported"
+  },
+  "evaluate-present": {
+    "status": "unsupported"
+  },
+  "evaluate-many": {
+    "status": "unsupported"
+  },
+  "evaluate-modal": {
+    "status": "unsupported"
+  },
+  "evaluate-context-only-many": {
+    "status": "unsupported"
+  },
+  "evaluate-context-only-past": {
+    "status": "unsupported"
+  },
+  "modal_scopes_verdict": "undetermined",
+  "missing_attributes_stayed_missing": true
+}

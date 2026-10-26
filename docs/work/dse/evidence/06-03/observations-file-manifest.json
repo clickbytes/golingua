@@ -1,0 +1,1763 @@
+{
+  "schema_version": 1,
+  "files": [
+    {
+      "source": "authored evidence index for issue #393",
+      "path": "README.md",
+      "bytes": 3197,
+      "sha256": "252e34f8e073c1933d88684cf12783a0392e49f735c6aa67b2150d88f5d7030e"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/bad-past-context-certificate-input.json",
+      "path": "inputs/extra/bad-past-context-certificate-input.json",
+      "bytes": 5289,
+      "sha256": "283d4929822953db6d37d3f1c1128ec92d4355b3a189d3ea7428b597f224f33c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/compare-one-vs-many.json",
+      "path": "inputs/extra/compare-one-vs-many.json",
+      "bytes": 192,
+      "sha256": "0fd9ff694c13dd4123e942e343e474b6a06e7b489364804c6d393ef53cd54d9f"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/construct-many.json",
+      "path": "inputs/extra/construct-many.json",
+      "bytes": 8879,
+      "sha256": "38f49e5f3ed074d22d59bf68757be9f15ad189e3af5aed0b77afb61a75cf3161"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/construct-one.json",
+      "path": "inputs/extra/construct-one.json",
+      "bytes": 8876,
+      "sha256": "e95234e3aa9052d237aa9a26a3247b0b03ceafb1baec0981f954c2aba35372cd"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/construct-past-context.json",
+      "path": "inputs/extra/construct-past-context.json",
+      "bytes": 10001,
+      "sha256": "ae17bc8c4744618b557f38f576320517c67b02f47108d914e9f12904a4724917"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/construct-past.json",
+      "path": "inputs/extra/construct-past.json",
+      "bytes": 9117,
+      "sha256": "47b1c1f93dbc02d389bcb44a2beae73b501972b8c4d3243d04710468d49a035a"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/many-candidate-input.json",
+      "path": "inputs/extra/many-candidate-input.json",
+      "bytes": 2881,
+      "sha256": "975c59fb7ba196dd78e1308e98343ee84ab5d4d27483a24db4bf0fa19a1d660e"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/many-certificate-input.json",
+      "path": "inputs/extra/many-certificate-input.json",
+      "bytes": 4558,
+      "sha256": "772049401fbcbe2bc4171ae8145fe22cf3d70c0dc5320df9c069abbd8d53924c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/many-tampered-candidate-input.json",
+      "path": "inputs/extra/many-tampered-candidate-input.json",
+      "bytes": 2880,
+      "sha256": "e59e11cb28c5839eb6c390e41a421feecaf5341fb7dd86d03892bfb2e4c61179"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/one-candidate-input.json",
+      "path": "inputs/extra/one-candidate-input.json",
+      "bytes": 2880,
+      "sha256": "e59e11cb28c5839eb6c390e41a421feecaf5341fb7dd86d03892bfb2e4c61179"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/one-certificate-input.json",
+      "path": "inputs/extra/one-certificate-input.json",
+      "bytes": 4557,
+      "sha256": "bac29311387b59a2c60bca66ee270e66e7fd100434af90c9f003ca347cb1f71c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/one-tampered-candidate-input.json",
+      "path": "inputs/extra/one-tampered-candidate-input.json",
+      "bytes": 2881,
+      "sha256": "975c59fb7ba196dd78e1308e98343ee84ab5d4d27483a24db4bf0fa19a1d660e"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/past-candidate-input.json",
+      "path": "inputs/extra/past-candidate-input.json",
+      "bytes": 3001,
+      "sha256": "8a1f9b62bd8506b518452f5b614646fded510c859c607f9f831590067b610dc1"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/past-certificate-input.json",
+      "path": "inputs/extra/past-certificate-input.json",
+      "bytes": 4706,
+      "sha256": "7c4bb4da0ff7b3004950f2945e1362743df6126525dd56646778de42fa59a8fe"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/past-context-candidate-input.json",
+      "path": "inputs/extra/past-context-candidate-input.json",
+      "bytes": 3430,
+      "sha256": "eafb495c3e7b18e9d60884ea11e61bda568cc47114ad7700dacc133cd055c43d"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/past-context-certificate-input.json",
+      "path": "inputs/extra/past-context-certificate-input.json",
+      "bytes": 5316,
+      "sha256": "9e265932e378e2a8dec203ef7d16ec76b7fc5bb80d03089de51c3f5c1541fffd"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/past-context-goal-input.json",
+      "path": "inputs/extra/past-context-goal-input.json",
+      "bytes": 1776,
+      "sha256": "498b34f9d3ed095e987482630ab084de2c83cbc9ad3bb3065cb79932075380e0"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/past-tampered-candidate-input.json",
+      "path": "inputs/extra/past-tampered-candidate-input.json",
+      "bytes": 3004,
+      "sha256": "a40f9e4e80da1850ecf13430c6b2bd80bd880e7c67b18a0af0202af746db2a1e"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/profile-input.json",
+      "path": "inputs/extra/profile-input.json",
+      "bytes": 81,
+      "sha256": "2c0968fff33ebc6f126c0dbbe1cfd860f999351f6f768eb63fba3d2b802e7816"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/reject-past-context-pin.json",
+      "path": "inputs/extra/reject-past-context-pin.json",
+      "bytes": 1067,
+      "sha256": "8f1abd6cdc6f1ad0c5368fe56f9ef386b6b0b53dfcc9dae83e7ef190ca34f688"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/reject-tampered-many.json",
+      "path": "inputs/extra/reject-tampered-many.json",
+      "bytes": 1055,
+      "sha256": "bd2b71c251b71018390d043f57b1b0b4039d71461c0f5bb77d0ddd1403d97ebb"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/reject-tampered-one.json",
+      "path": "inputs/extra/reject-tampered-one.json",
+      "bytes": 1055,
+      "sha256": "bd2b71c251b71018390d043f57b1b0b4039d71461c0f5bb77d0ddd1403d97ebb"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/reject-tampered-past.json",
+      "path": "inputs/extra/reject-tampered-past.json",
+      "bytes": 1055,
+      "sha256": "bd2b71c251b71018390d043f57b1b0b4039d71461c0f5bb77d0ddd1403d97ebb"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/renamed-metadata-input.json",
+      "path": "inputs/extra/renamed-metadata-input.json",
+      "bytes": 5970,
+      "sha256": "766d2d11ab64309da79b452886d4a243e8c72b19099760a38013936236a92dda"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/renamed-past-document-input.json",
+      "path": "inputs/extra/renamed-past-document-input.json",
+      "bytes": 3186,
+      "sha256": "f8e1e879f098a478d5b2fb8977be7a5785a9a1af6c1de1894985661c4ca88b79"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/renamed-symbol-check.json",
+      "path": "inputs/extra/renamed-symbol-check.json",
+      "bytes": 1498,
+      "sha256": "d67da3a2d630521001d00505a21bcc5625c7879390ef0feee78be02980730185"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/renamed-symbol-evaluate.json",
+      "path": "inputs/extra/renamed-symbol-evaluate.json",
+      "bytes": 254,
+      "sha256": "87e3a024331f8c6a61eca47bdca2f918ea507a59deaa7a675d409896e1180ba4"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/verify-many.json",
+      "path": "inputs/extra/verify-many.json",
+      "bytes": 1777,
+      "sha256": "5e72503dc0399b9545f254546eda7227e8c9c558fab75ef1c6e91dda91836d67"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/verify-one.json",
+      "path": "inputs/extra/verify-one.json",
+      "bytes": 1777,
+      "sha256": "8060f0299d0cb213e64a552b5b0f14c914215d409815e25fb66442d1540c0e3a"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/verify-past-context.json",
+      "path": "inputs/extra/verify-past-context.json",
+      "bytes": 1782,
+      "sha256": "8229770583a3ba5b0defbab67d5d6755f926b7d8dc8ac77b5af99a6c1ec648de"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/verify-past.json",
+      "path": "inputs/extra/verify-past.json",
+      "bytes": 1782,
+      "sha256": "a339d8e43018a1e721cebc691f2ba4230dac20e522b7d1028884ac399f6d8036"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/build-modal_profile-empty.json",
+      "path": "inputs/independent/build-modal_profile-empty.json",
+      "bytes": 381,
+      "sha256": "83ac95ab364f27a2c65e23c9d989358daf2c33cab06a71e4dffed7dbf3f3fc19"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/build-modal_profile-null.json",
+      "path": "inputs/independent/build-modal_profile-null.json",
+      "bytes": 383,
+      "sha256": "2678d1c8791ea8e2582db3758b1793952e760f84235cd2a13143761e4cfee10e"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/build-multiplicity-empty.json",
+      "path": "inputs/independent/build-multiplicity-empty.json",
+      "bytes": 261,
+      "sha256": "b2da93510cd0f31cb6d60c50908edc18e97e98fe41889395a4cf636fb38604d8"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/build-multiplicity-null.json",
+      "path": "inputs/independent/build-multiplicity-null.json",
+      "bytes": 263,
+      "sha256": "c32cbfea48e18865bee24c620b30ccd33bbca5882aa0881197b5acbb718e1214"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/build-reference_time_id-empty.json",
+      "path": "inputs/independent/build-reference_time_id-empty.json",
+      "bytes": 348,
+      "sha256": "57692d0a01aa91cf553116efbb80caa2e76ba11b2e4b6945bd48f802b5b8ae02"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/build-reference_time_id-null.json",
+      "path": "inputs/independent/build-reference_time_id-null.json",
+      "bytes": 350,
+      "sha256": "4f30b605c47fb602bbfbd2134bbc1253656a7d0e050f69748447b9bcbd431f06"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/build-temporal_frame-empty.json",
+      "path": "inputs/independent/build-temporal_frame-empty.json",
+      "bytes": 345,
+      "sha256": "fd711ee358ee4ef6ba82ba7c65711bd2c27a79036e531a6e1ef742d917d0e021"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/build-temporal_frame-null.json",
+      "path": "inputs/independent/build-temporal_frame-null.json",
+      "bytes": 347,
+      "sha256": "9b05bd68e81322700ea9ba3a9253daf6470e44e3c50109dc15ccafbbb6b9f75f"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/conflicting-frame.json",
+      "path": "inputs/independent/conflicting-frame.json",
+      "bytes": 3375,
+      "sha256": "2c9f50b3aaef0743ce6a401ed4e739e78f252c2f2047910cebf5fe5ea81fbb0c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/conflicting-multiplicity.json",
+      "path": "inputs/independent/conflicting-multiplicity.json",
+      "bytes": 2811,
+      "sha256": "9dc31267b4b984cb2df5f094a59c6e16de429a83223550dc3cb4ce70cfcfcedb"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/context-only-many.json",
+      "path": "inputs/independent/context-only-many.json",
+      "bytes": 2782,
+      "sha256": "d53873cbaccef9fb0802ac1fab2a284238ccc214d491d614c949e24c9bb05760"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/context-only-past.json",
+      "path": "inputs/independent/context-only-past.json",
+      "bytes": 3340,
+      "sha256": "e0d936383956b8006275a2badb4402562bc38a899922f1c94509df7457111bc2"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/context-only-reference-interval.json",
+      "path": "inputs/independent/context-only-reference-interval.json",
+      "bytes": 3323,
+      "sha256": "31480976b28bef76d237acfa8751abaa2d2b30e0ff41f5f9af28bc6ba16fd076"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/dangling-reference-interval.json",
+      "path": "inputs/independent/dangling-reference-interval.json",
+      "bytes": 3230,
+      "sha256": "36baaac6bca2610d3a039f6a59a548fe72e6f6010d8a996abe7669625ef4e8de"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/empty-time.json",
+      "path": "inputs/independent/empty-time.json",
+      "bytes": 2880,
+      "sha256": "7a8de5f37540c010b1106376722066843544a21856e4644bf073d7b1bf2f914e"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/facts-with-event.json",
+      "path": "inputs/independent/facts-with-event.json",
+      "bytes": 3243,
+      "sha256": "b7a8f63680fc70488f7e6c0e7f027aca2fb813aa7650865e54ed5bfdd2cbb84f"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/facts.json",
+      "path": "inputs/independent/facts.json",
+      "bytes": 2665,
+      "sha256": "bf3c328b641fed4af1b8c39d0d49a5b1cd92580939a5a39ed148da8937e59a17"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/many-build.json",
+      "path": "inputs/independent/many-build.json",
+      "bytes": 265,
+      "sha256": "913c061facfc9d1fcef1a736554bb8a3a9ca4b1e08d8bff81d587632c2448384"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/many-description-goal.json",
+      "path": "inputs/independent/many-description-goal.json",
+      "bytes": 1226,
+      "sha256": "fd5d942b0e57a3d646dc32cc1b7c0564170e7d0224afe0efa560a661e573a4bd"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/many-on-event.json",
+      "path": "inputs/independent/many-on-event.json",
+      "bytes": 2914,
+      "sha256": "d00b7870c5ac67305fdca3555c967d73ef7d6263292d8b2c6b3e83fe692d9500"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/many.json",
+      "path": "inputs/independent/many.json",
+      "bytes": 2513,
+      "sha256": "8cf82e612c4500a9ad98a1767c3bcfb6bc7e2b7ca46296890bd27a1f07140d18"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/metadata.json",
+      "path": "inputs/independent/metadata.json",
+      "bytes": 5301,
+      "sha256": "91334b7b45cfd921a4fb7a269c3be2f913a519f8f60b192a4a2542d27635eaac"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/modal-build.json",
+      "path": "inputs/independent/modal-build.json",
+      "bytes": 354,
+      "sha256": "7fe663843d79d711620e95357fa70a49bbe1d42d03dffc0aa1194d3ad43d6191"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/modal-not.json",
+      "path": "inputs/independent/modal-not.json",
+      "bytes": 2946,
+      "sha256": "79656ba46a040b627e84812e5bbdbd217da8030b54aca13d8421b5301762f64e"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/modal-profile.json",
+      "path": "inputs/independent/modal-profile.json",
+      "bytes": 2885,
+      "sha256": "0e7af3e2a678e4e4cf6fef50fc74aff919eede945e628ec81d2070e8cc1b1313"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/modal.json",
+      "path": "inputs/independent/modal.json",
+      "bytes": 2853,
+      "sha256": "ecc74c56134f0b0a7fa34adb4300e8598cf27982eba08a8d408a813f2e9386dc"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/not-modal.json",
+      "path": "inputs/independent/not-modal.json",
+      "bytes": 2948,
+      "sha256": "42bc20de3864de06337c96ed99584ea1461efb14e06e8b6cc92c94cdd5798cef"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/null-modal-profile.json",
+      "path": "inputs/independent/null-modal-profile.json",
+      "bytes": 2880,
+      "sha256": "ad41ea2b935ed245c1c446e9d06bb4a39f6d0a8a9350add36dd6f26f858492db"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/null-number.json",
+      "path": "inputs/independent/null-number.json",
+      "bytes": 2511,
+      "sha256": "69a75fffbbab9189542c801185f94956fdd32f3d43c4414ae6211674f8513aaa"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/null-time.json",
+      "path": "inputs/independent/null-time.json",
+      "bytes": 2882,
+      "sha256": "d22f051fcc1e7b5aa757be82de03cf51851707e833c1254c82a5fb4b0b73330c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/one-description-goal.json",
+      "path": "inputs/independent/one-description-goal.json",
+      "bytes": 1225,
+      "sha256": "116f7b5e2044e5d124b844139e0b5e6e7a3c60bd66c00fa5061f62059d063bd6"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/one.json",
+      "path": "inputs/independent/one.json",
+      "bytes": 2512,
+      "sha256": "e1535db942c7920a8cb6211c39e8ae8c3ff40f67664d0aa825223b5efae55f2f"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/past-description-goal.json",
+      "path": "inputs/independent/past-description-goal.json",
+      "bytes": 1347,
+      "sha256": "dc96489d5ab247c5b6ecb536c5ec41e1437808b7c4bb867e944f3281a43a083c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/past.json",
+      "path": "inputs/independent/past.json",
+      "bytes": 2884,
+      "sha256": "ca7f0b5642edd4f7cb6cbfefe784581448174553f475488786f3aeef050b0eef"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/present.json",
+      "path": "inputs/independent/present.json",
+      "bytes": 2887,
+      "sha256": "d059b4a87107ca55134049e82b0309e703621109705a994580aab7a7eee654a2"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/profile.json",
+      "path": "inputs/independent/profile.json",
+      "bytes": 81,
+      "sha256": "2c0968fff33ebc6f126c0dbbe1cfd860f999351f6f768eb63fba3d2b802e7816"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/select-empty.json",
+      "path": "inputs/independent/select-empty.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/unknown-modal-kind.json",
+      "path": "inputs/independent/unknown-modal-kind.json",
+      "bytes": 2852,
+      "sha256": "f29e6ab718dfda7925025342297a999b31a8a6571b2c1f120011e408807bf1d6"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/unknown-number-value.json",
+      "path": "inputs/independent/unknown-number-value.json",
+      "bytes": 2512,
+      "sha256": "05a01899d308046232b1a3e39f9f7dd0bd02da1c0a548379ff72b932f2a0213d"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/unknown-number.json",
+      "path": "inputs/independent/unknown-number.json",
+      "bytes": 2483,
+      "sha256": "c2e8bd1cedf2e9eb6526e1a536749819a1bf92753e69bfb01f47ff12b81f0642"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/unknown-time-value.json",
+      "path": "inputs/independent/unknown-time-value.json",
+      "bytes": 2886,
+      "sha256": "de79e83f53666193f9f98d1c2cef0fea35fefa2cc7f7a7b95c2d3dfc57938acd"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/unknown-time.json",
+      "path": "inputs/independent/unknown-time.json",
+      "bytes": 2820,
+      "sha256": "ca631de0422ebb2243c9607e1b8aff02190521815e7400564d7431e42bb8b4ef"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/wrong-context-interval-type.json",
+      "path": "inputs/independent/wrong-context-interval-type.json",
+      "bytes": 3321,
+      "sha256": "0244218c1abcad60feb726590d7ef182f6945b197d87b7dec4543a5222aca6cc"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/wrong-modal-body.json",
+      "path": "inputs/independent/wrong-modal-body.json",
+      "bytes": 2486,
+      "sha256": "afc245df584c572f18e191e6488945b6bd13647cf8519cd068ef5a711351e2e7"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/wrong-reference-time-type.json",
+      "path": "inputs/independent/wrong-reference-time-type.json",
+      "bytes": 2884,
+      "sha256": "b6cf4c49ea022bd7810011217258da14a48bd4ee9e4f555bedb2a9348edcf4f9"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-independent-inputs/wrong-time-target.json",
+      "path": "inputs/independent/wrong-time-target.json",
+      "bytes": 2916,
+      "sha256": "6d34da9323e4d818c3d7f2878c9fad7c13437c9250489f0bea24197dd4e9be6b"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-adapter-observations.jsonl",
+      "path": "observations/393-adapter-observations.jsonl",
+      "bytes": 608,
+      "sha256": "5a8eb87e9575da666ac75fc09fd76e1be25bd3d48238a37a145b6e68807655e3"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-baseline392-old-export.json",
+      "path": "observations/393-baseline392-old-export.json",
+      "bytes": 2381,
+      "sha256": "3f0216329edb3cc03de7eef7a4151c7789f76f15d941d4299f3f52670cb16dc6"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations.jsonl",
+      "path": "observations/393-cli-observations.jsonl",
+      "bytes": 45894,
+      "sha256": "bcde8cf547bd2d0c7658f508689beb605be8e87fb9cd08fa6f62e31ff8ab3c94"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-context-controls.jsonl",
+      "path": "observations/393-context-controls.jsonl",
+      "bytes": 1758,
+      "sha256": "5b4814d1582882da3c01593595a302713524d87ee7b6febc31ded4eb48d8b4cd"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli-observations.jsonl",
+      "path": "observations/393-extra-cli-observations.jsonl",
+      "bytes": 6818,
+      "sha256": "e8e330d09b8bd0c2c460a5673cd1c6efd5cf7481831364e85e5737dd4531df4e"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-final-legacy-export.json",
+      "path": "observations/393-final-legacy-export.json",
+      "bytes": 2381,
+      "sha256": "3f0216329edb3cc03de7eef7a4151c7789f76f15d941d4299f3f52670cb16dc6"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-final-legacy-observation.json",
+      "path": "observations/393-final-legacy-observation.json",
+      "bytes": 516,
+      "sha256": "7dd29b8ec5940589f32062ad5d5e85a173e61dbe49dac9ba31e7599062202fc9"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-schema-observation.json",
+      "path": "observations/393-schema-observation.json",
+      "bytes": 7834,
+      "sha256": "a86953f544e3b3a18a168d29dac4b84ad43b775c6e157cfb020cdaae908ddf6b"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-semantic-observation.json",
+      "path": "observations/393-semantic-observation.json",
+      "bytes": 2102,
+      "sha256": "847a9f91868c156bf5b159d504a2b5c64dfc9de71c8066276349e47e81108e91"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-source-hashes.json",
+      "path": "observations/393-source-hashes.json",
+      "bytes": 3879,
+      "sha256": "69b5909ce243c96a0f8099043e866593cdfe40dc276f12af12e671ee5f905022"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-technical-observation.json",
+      "path": "observations/393-technical-observation.json",
+      "bytes": 8623,
+      "sha256": "c239c34b8b81aff02422b45b153909e2333932b0a008d7356fea4a18ecddf6c9"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/build-modal_profile-empty.json",
+      "path": "observations/cli/build-modal_profile-empty.json",
+      "bytes": 184,
+      "sha256": "82b26c81d29691b35c14523329ba6998207090f970348da857f36bde371ab8f6"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/build-modal_profile-null.json",
+      "path": "observations/cli/build-modal_profile-null.json",
+      "bytes": 144,
+      "sha256": "e5998642f51ce613440a5fd9194c1c99adfd486de77edec95024bb7880ed7862"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/build-multiplicity-empty.json",
+      "path": "observations/cli/build-multiplicity-empty.json",
+      "bytes": 188,
+      "sha256": "c57a24ff4e63a86eaec87ccf9173738b25f46ec58559608a677fc729ec42e942"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/build-multiplicity-null.json",
+      "path": "observations/cli/build-multiplicity-null.json",
+      "bytes": 148,
+      "sha256": "5835a6be88867cf90e3fbd3e6c39cdb8479574e94490dada3292be59f8662d32"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/build-reference_time_id-empty.json",
+      "path": "observations/cli/build-reference_time_id-empty.json",
+      "bytes": 193,
+      "sha256": "189c41ed8f64bafa83bffeb750e332c6c08408f3e81f96cc150b927cf690c7b6"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/build-reference_time_id-null.json",
+      "path": "observations/cli/build-reference_time_id-null.json",
+      "bytes": 153,
+      "sha256": "3ef2d2fa46790f0d0976f9082467fd94f0b7b2bf0899b3efa2a7850be7aababc"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/build-temporal_frame-empty.json",
+      "path": "observations/cli/build-temporal_frame-empty.json",
+      "bytes": 190,
+      "sha256": "e62e6901fb5b1ee5674d562af535a691bd19e4209bf6011702c884de95ac86ae"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/build-temporal_frame-null.json",
+      "path": "observations/cli/build-temporal_frame-null.json",
+      "bytes": 150,
+      "sha256": "7762f1340e958d89fb12192185eee1d5ecb798fb74fc2986db3cc325d4cdad4f"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/capabilities.json",
+      "path": "observations/cli/capabilities.json",
+      "bytes": 1060,
+      "sha256": "c19495a1cd2fc158c6fbcb90e1f57c403802c74144a268dee5d581b85498fbc7"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-conflicting-frame.json",
+      "path": "observations/cli/check-conflicting-frame.json",
+      "bytes": 216,
+      "sha256": "2a16a77fc51744cce836441602c0c8b99302eece02eaca4f6f2d79729e29639c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-conflicting-multiplicity.json",
+      "path": "observations/cli/check-conflicting-multiplicity.json",
+      "bytes": 212,
+      "sha256": "c63a40dd3ccbc164cdbe8251f4399c142f8bf0d2957bfd9a3ef67260d55b2100"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-context-only-many.json",
+      "path": "observations/cli/check-context-only-many.json",
+      "bytes": 1354,
+      "sha256": "1332448bda9c910be2ece0dc7a46ea670b734e51e123c77a38708fb747267434"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-context-only-past.json",
+      "path": "observations/cli/check-context-only-past.json",
+      "bytes": 1602,
+      "sha256": "819a8487d39b04b5ade1e4e51a12c6aee8bde4accd4061c0d41cc0d6bd302e8e"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-context-only-reference-interval.json",
+      "path": "observations/cli/check-context-only-reference-interval.json",
+      "bytes": 1612,
+      "sha256": "f099585316c7ba068c70f79bd16f355c6df8649a1933939be066c23007e1e92c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-dangling-reference-interval.json",
+      "path": "observations/cli/check-dangling-reference-interval.json",
+      "bytes": 206,
+      "sha256": "2759200c0ab66d3558ac22c603912c79c0224f45b353214709834c45cb744d1b"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-empty-time.json",
+      "path": "observations/cli/check-empty-time.json",
+      "bytes": 190,
+      "sha256": "e62e6901fb5b1ee5674d562af535a691bd19e4209bf6011702c884de95ac86ae"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-many-on-event.json",
+      "path": "observations/cli/check-many-on-event.json",
+      "bytes": 202,
+      "sha256": "d2a7b4d460aa5081b7269d04b999ae395b51206b0a9400953b6cd7762864ef38"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-many.json",
+      "path": "observations/cli/check-many.json",
+      "bytes": 1190,
+      "sha256": "f199df3f8035f741ce40a4e4635bdaab8bf14045f5869cc2f632bb687fe6c036"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-modal-not.json",
+      "path": "observations/cli/check-modal-not.json",
+      "bytes": 1342,
+      "sha256": "e62440a4238ae65441963a09705b8baa56aad3c66e3cac6f1ac4748a2710798b"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-modal-profile.json",
+      "path": "observations/cli/check-modal-profile.json",
+      "bytes": 1346,
+      "sha256": "3e5463c019ea6b25edb2e587d0e8f571709b13f7eb8868395b88e1ae5273f62d"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-modal.json",
+      "path": "observations/cli/check-modal.json",
+      "bytes": 1320,
+      "sha256": "89c5045837b1ee3f0f9d0afb33c249ff1a3174f18b8d299b85d810b2d38704f7"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-not-modal.json",
+      "path": "observations/cli/check-not-modal.json",
+      "bytes": 1342,
+      "sha256": "8f3619d77db721cea8bd6d3a7f20c4e9a62ca2b42863c99429f330b9e74e0c16"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-null-modal-profile.json",
+      "path": "observations/cli/check-null-modal-profile.json",
+      "bytes": 145,
+      "sha256": "f8ddbd20f6cd42fb15817365e877610ee80e65fbddc3a3c16544c06883f2d5b6"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-null-number.json",
+      "path": "observations/cli/check-null-number.json",
+      "bytes": 147,
+      "sha256": "13c1a1b5af420f4cbfc9194e8bf6ce2cd497a3e3fb0bfeab0dcde87d86a049e7"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-null-time.json",
+      "path": "observations/cli/check-null-time.json",
+      "bytes": 149,
+      "sha256": "dcf74f25a91d2087e56f381fdf925208d141a0e6d9088ec53266baa8e5d785c8"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-one.json",
+      "path": "observations/cli/check-one.json",
+      "bytes": 1189,
+      "sha256": "6e2a3905147a1585749fc46684cfa2c18cbbe1ea86588070faa7fa02154fe17c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-past.json",
+      "path": "observations/cli/check-past.json",
+      "bytes": 1363,
+      "sha256": "a0d5b2e047a3e649ac8f53702b1624a8040403681005b6d3ed86068aee07022c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-present.json",
+      "path": "observations/cli/check-present.json",
+      "bytes": 1366,
+      "sha256": "20483a500b4fdcbc8333a873115ef67c12ee72c1ef555b3a6a742101b456c2e2"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-unknown-modal-kind.json",
+      "path": "observations/cli/check-unknown-modal-kind.json",
+      "bytes": 173,
+      "sha256": "7664b0f455b758b8b7980bdba257734df99872800dfb0e730a79bf1b5e703996"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-unknown-number-value.json",
+      "path": "observations/cli/check-unknown-number-value.json",
+      "bytes": 169,
+      "sha256": "55f8d8f1d075acdf9b6bb6eb6564324045751d291bc3b80ec56e1c32feea2639"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-unknown-number.json",
+      "path": "observations/cli/check-unknown-number.json",
+      "bytes": 1168,
+      "sha256": "89affd7b4ade04c7e620b0eee1a75c1bec3c830cb3536e4ce7820decb6b9af6b"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-unknown-time-value.json",
+      "path": "observations/cli/check-unknown-time-value.json",
+      "bytes": 179,
+      "sha256": "26e0f5da722b447f49eae518ba33e3ff2c8efa1db51c9998b09e991f59b651e1"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-unknown-time.json",
+      "path": "observations/cli/check-unknown-time.json",
+      "bytes": 1315,
+      "sha256": "8d20d93744da54c7f40abc112f9359d4c725d5d27dcd8e51c14aeb88d53eeced"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-wrong-context-interval-type.json",
+      "path": "observations/cli/check-wrong-context-interval-type.json",
+      "bytes": 206,
+      "sha256": "2759200c0ab66d3558ac22c603912c79c0224f45b353214709834c45cb744d1b"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-wrong-modal-body.json",
+      "path": "observations/cli/check-wrong-modal-body.json",
+      "bytes": 149,
+      "sha256": "1412cf2a05bf9f5c6ba76bffcdfd553819605635b92ae3f349f97e8fc09317bf"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-wrong-reference-time-type.json",
+      "path": "observations/cli/check-wrong-reference-time-type.json",
+      "bytes": 214,
+      "sha256": "97e81cf267c57b68b78b559d1627a1e519dd6094bbf9bf423e8bee314d552a8c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/check-wrong-time-target.json",
+      "path": "observations/cli/check-wrong-time-target.json",
+      "bytes": 194,
+      "sha256": "b51f6582157c07e547350d0e507ee95984db8dcb40e02882dcc1e9fa4a6ce865"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/compare-modal-scopes.json",
+      "path": "observations/cli/compare-modal-scopes.json",
+      "bytes": 2200,
+      "sha256": "2f775c600775cfaa45a875104fb35587d9a6838d476da0ccbd6f8e603c7dd33a"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/compare-profile.json",
+      "path": "observations/cli/compare-profile.json",
+      "bytes": 79,
+      "sha256": "5941f6e7d542dbb47da39726c212595a66360b8d5150c0768655eb46f2b847f3"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/context-only-reference-interval-artifact-input.json",
+      "path": "observations/cli/context-only-reference-interval-artifact-input.json",
+      "bytes": 4537,
+      "sha256": "45e336e4b4917c19bf823b143ea36fa321eef99b6ba307a0e25559f4b461e438"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/context-only-reference-interval-export-request.json",
+      "path": "observations/cli/context-only-reference-interval-export-request.json",
+      "bytes": 3953,
+      "sha256": "d0ce127b041c406e000adf9535e99f4945ab32a9498028676ef6e87b0cfc73fd"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/context-only-reference-interval-normalize-request.json",
+      "path": "observations/cli/context-only-reference-interval-normalize-request.json",
+      "bytes": 1554,
+      "sha256": "441c0a9c2e09ab8ab597056dda92681ee3b4534023c9a1abb1624ff087e769e9"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/context-only-reference-interval-replay-request.json",
+      "path": "observations/cli/context-only-reference-interval-replay-request.json",
+      "bytes": 5757,
+      "sha256": "7172af224e34fe7f87f5b836086f96ac975423b3551a78035727ade7aa497e92"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/context-only-reference-interval-verify-request.json",
+      "path": "observations/cli/context-only-reference-interval-verify-request.json",
+      "bytes": 3163,
+      "sha256": "ceef29466d5d0a5e9e4b62e3577691db4e25f1abfda3ac38d02031024ff680ac"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/evaluate-context-only-many.json",
+      "path": "observations/cli/evaluate-context-only-many.json",
+      "bytes": 227,
+      "sha256": "ed8115964eb4b0583a133106889919ff579cdc14cc2e48517cf78c53e77a5ad7"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/evaluate-context-only-past.json",
+      "path": "observations/cli/evaluate-context-only-past.json",
+      "bytes": 254,
+      "sha256": "87e3a024331f8c6a61eca47bdca2f918ea507a59deaa7a675d409896e1180ba4"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/evaluate-many.json",
+      "path": "observations/cli/evaluate-many.json",
+      "bytes": 227,
+      "sha256": "ed8115964eb4b0583a133106889919ff579cdc14cc2e48517cf78c53e77a5ad7"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/evaluate-modal.json",
+      "path": "observations/cli/evaluate-modal.json",
+      "bytes": 214,
+      "sha256": "22ec70efa62d8eaa3bd48a744696a7346bd361df6c34e6715a031a03c8cea1f3"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/evaluate-one.json",
+      "path": "observations/cli/evaluate-one.json",
+      "bytes": 4423,
+      "sha256": "e098cfb6359bddb481697a926d7f89bde08a89b1b4bdc6bd3db1ff53cabbec26"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/evaluate-past.json",
+      "path": "observations/cli/evaluate-past.json",
+      "bytes": 254,
+      "sha256": "87e3a024331f8c6a61eca47bdca2f918ea507a59deaa7a675d409896e1180ba4"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/evaluate-present.json",
+      "path": "observations/cli/evaluate-present.json",
+      "bytes": 254,
+      "sha256": "87e3a024331f8c6a61eca47bdca2f918ea507a59deaa7a675d409896e1180ba4"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/evaluate-unknown-number.json",
+      "path": "observations/cli/evaluate-unknown-number.json",
+      "bytes": 4402,
+      "sha256": "4211392ffc257bdbf4be64f9b912f685585f3db6cbac4c5ac44380ea357262f4"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/evaluate-unknown-time.json",
+      "path": "observations/cli/evaluate-unknown-time.json",
+      "bytes": 4784,
+      "sha256": "81a1c91d76c6c5190cbef017e996edaa5fd7a776c2f8eac78f89cbd2b95a2f7e"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/export-context-only-reference-interval.json",
+      "path": "observations/cli/export-context-only-reference-interval.json",
+      "bytes": 2910,
+      "sha256": "f3a78a97d82a163fb49bdc6b58a90fb5d1d083920cdbcf4b60272a5d154d1a8d"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/export-many.json",
+      "path": "observations/cli/export-many.json",
+      "bytes": 2337,
+      "sha256": "dc6e0a8f80aa736ed1cc8ae10646f913285168fa8f30cd12fe81ca60eb141534"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/export-modal-not.json",
+      "path": "observations/cli/export-modal-not.json",
+      "bytes": 2537,
+      "sha256": "86091f198df19b5909b62c706cf41daf3ad8698b92f2fff205070cf69abf490c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/export-modal-profile.json",
+      "path": "observations/cli/export-modal-profile.json",
+      "bytes": 2527,
+      "sha256": "33fee9f44f26972c9138f740ed3a13544650aece7304f17d34b026d3967e453b"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/export-not-modal.json",
+      "path": "observations/cli/export-not-modal.json",
+      "bytes": 2537,
+      "sha256": "665d86745fac742b4e44d65b51a19ffd521932047e5b3f962f6ce6f202aceb89"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/export-one.json",
+      "path": "observations/cli/export-one.json",
+      "bytes": 2336,
+      "sha256": "03a4fa2bb286253a2902d35bf7b162abbece009714d96c4b22dd3637c72366c9"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/export-past.json",
+      "path": "observations/cli/export-past.json",
+      "bytes": 2530,
+      "sha256": "2b12a65012ebe78bc6b2489bfb4326b034b3a32368ffc0154a4e59472e4dbbed"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/export-present.json",
+      "path": "observations/cli/export-present.json",
+      "bytes": 2533,
+      "sha256": "7363e6ce6160b4677ea381e014f13f4ebbc2e5b9e722500e5696f8cd32e43abb"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/export-unknown-number.json",
+      "path": "observations/cli/export-unknown-number.json",
+      "bytes": 2315,
+      "sha256": "0d3a8af95981dce764162b4e72ac027c8ae629a31867475a64631f380f5c7a3d"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/export-unknown-time.json",
+      "path": "observations/cli/export-unknown-time.json",
+      "bytes": 2482,
+      "sha256": "731864106f6f657e39bc1d7226c45ac485327adb5c6831b486d7a4b2375be380"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/inspect-context-only-reference-interval.json",
+      "path": "observations/cli/inspect-context-only-reference-interval.json",
+      "bytes": 1651,
+      "sha256": "b6ac9cc9acc04d3f0ce48ca5078b499c9b1c0a1220ab6793f2ade4b3abb1545a"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/inspect-many.json",
+      "path": "observations/cli/inspect-many.json",
+      "bytes": 1301,
+      "sha256": "2cf5631a89ffe44d65c0137c702c1c86a603be389d3fce16383000d2704442a1"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/inspect-modal-not.json",
+      "path": "observations/cli/inspect-modal-not.json",
+      "bytes": 1315,
+      "sha256": "b6fa6b9fe9f9963070cfd8c554e49f559da6393be80ee3202d95b3f5cd0af230"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/inspect-modal-profile.json",
+      "path": "observations/cli/inspect-modal-profile.json",
+      "bytes": 1315,
+      "sha256": "8b705625dfd545d3d1679de4cbe61d0f0c20a0428234f72450d78938ef7a4306"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/inspect-not-modal.json",
+      "path": "observations/cli/inspect-not-modal.json",
+      "bytes": 1315,
+      "sha256": "c28360d64146215c1dc9062959fc337c29ddc4267fb3e2e7c6aaa84143541417"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/inspect-one.json",
+      "path": "observations/cli/inspect-one.json",
+      "bytes": 1300,
+      "sha256": "0d103b94ff79058b200685fadf7d3271a5ec51c23354543230e6bb9ad8d240e6"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/inspect-past.json",
+      "path": "observations/cli/inspect-past.json",
+      "bytes": 1402,
+      "sha256": "c74c066006491e5b33ad8cc81af87de155de7fd8f3274abde68cfb13bc344918"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/inspect-present.json",
+      "path": "observations/cli/inspect-present.json",
+      "bytes": 1405,
+      "sha256": "49d426df781b0a8bb4c9bac3d7100bac9a6ea1da657a90892245514c5ee7738e"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/inspect-unknown-number.json",
+      "path": "observations/cli/inspect-unknown-number.json",
+      "bytes": 1279,
+      "sha256": "799b8621a3e7badb9305cec93671c7fa85b858f13a03254841c0b661db1e62b6"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/inspect-unknown-time.json",
+      "path": "observations/cli/inspect-unknown-time.json",
+      "bytes": 1354,
+      "sha256": "1429df22d905da0e92c73498e6f223c9bc29d6a4f5c0100ea5a149d79a00ba84"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/many-artifact-input.json",
+      "path": "observations/cli/many-artifact-input.json",
+      "bytes": 3575,
+      "sha256": "bb0a6b8806302ccd55780ffd41ac7040306c93dad1563ed033fef0c918bd75a0"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/many-build.json",
+      "path": "observations/cli/many-build.json",
+      "bytes": 2697,
+      "sha256": "b3bfb7cb8fb1f397a3a0c12658de44d75070ff62fd76aeb2897a8ea52152576a"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/many-export-request.json",
+      "path": "observations/cli/many-export-request.json",
+      "bytes": 3051,
+      "sha256": "9786c13d1636b481d52d7bd1829bee1394a34e081e1e00f5e1bb1a253be483c0"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/many-normalize-request.json",
+      "path": "observations/cli/many-normalize-request.json",
+      "bytes": 652,
+      "sha256": "dad53cc9f146b989418fd36fbd8f86d957bdbd455215df0b75d5794b62bd9bd6"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/many-replay-request.json",
+      "path": "observations/cli/many-replay-request.json",
+      "bytes": 4177,
+      "sha256": "622cdb4baf156abddf30182d04b786f872687d635221303ec026be6b1d51942b"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/many-verify-request.json",
+      "path": "observations/cli/many-verify-request.json",
+      "bytes": 1648,
+      "sha256": "0fdedea30606673026c9d31b863ef0c4bd8c4f32354d181d4f52b21a1b619d99"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/modal-build.json",
+      "path": "observations/cli/modal-build.json",
+      "bytes": 3389,
+      "sha256": "9ab0b31448c5bc8f69dd58fb992e7ce2949d629799e64be98451067ef896b81c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/modal-not-artifact-input.json",
+      "path": "observations/cli/modal-not-artifact-input.json",
+      "bytes": 3987,
+      "sha256": "956941fce27acafc0a1cbda33e945fcd1455a4a877e3d69e4a96b663aff26c51"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/modal-not-export-request.json",
+      "path": "observations/cli/modal-not-export-request.json",
+      "bytes": 3528,
+      "sha256": "828941d751105ccdfaa8035eae1069bc85920457aee96760e1db8c8394e5b38e"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/modal-not-normalize-request.json",
+      "path": "observations/cli/modal-not-normalize-request.json",
+      "bytes": 1129,
+      "sha256": "ef178379fdfc39e5a04aca3b198b5ef9855a7e8770070368a19e9f8b9b610107"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/modal-not-replay-request.json",
+      "path": "observations/cli/modal-not-replay-request.json",
+      "bytes": 4645,
+      "sha256": "bc6d6eba8e2a5a02385aa166553f7060979125b3adb57909bd64446026f5092f"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/modal-not-verify-request.json",
+      "path": "observations/cli/modal-not-verify-request.json",
+      "bytes": 3005,
+      "sha256": "f35cb1a6e61cf69a5d98d718f87e067fef631ca43b02babfc214f18e1aa1006c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/modal-profile-artifact-input.json",
+      "path": "observations/cli/modal-profile-artifact-input.json",
+      "bytes": 3951,
+      "sha256": "05638e4a4c19f1e3860701c767dd3b67a36b142b89aa5610e3dbc1707a6bd792"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/modal-profile-export-request.json",
+      "path": "observations/cli/modal-profile-export-request.json",
+      "bytes": 3463,
+      "sha256": "ba34902ca95c5c8e6064b6da32e15ed6de6d3c430efc10aa9e6229eb118ecf75"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/modal-profile-normalize-request.json",
+      "path": "observations/cli/modal-profile-normalize-request.json",
+      "bytes": 1064,
+      "sha256": "cc829a2fd0cd30038dd7492706ae7c5413a77dd0f506a2a15bbedc3455fb0f96"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/modal-profile-replay-request.json",
+      "path": "observations/cli/modal-profile-replay-request.json",
+      "bytes": 4601,
+      "sha256": "9fe1b5a52e70833b1d6b6aee46f4b6472f9e837f3855f61470410fc9087d8faa"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/modal-profile-verify-request.json",
+      "path": "observations/cli/modal-profile-verify-request.json",
+      "bytes": 2806,
+      "sha256": "4713923792050f6df11e0568f2326c1ceff0a56dd866b5d802ab641233d20abe"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/normalize-context-only-reference-interval.json",
+      "path": "observations/cli/normalize-context-only-reference-interval.json",
+      "bytes": 2820,
+      "sha256": "0cd37fd6f5da672c0f7b5d7c45e8d18cfa3b8633ce1767d73ea0142d7f3a739e"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/normalize-many.json",
+      "path": "observations/cli/normalize-many.json",
+      "bytes": 2059,
+      "sha256": "c7e1e0cfba5b371026edc8f901e406b8520d2ab1698cfb396b5cd2843c010fec"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/normalize-modal-not.json",
+      "path": "observations/cli/normalize-modal-not.json",
+      "bytes": 2625,
+      "sha256": "0a2c5717a557186574f80dc2eab3631ebce38da1da586d1ba4d5ee502bbc9331"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/normalize-modal-profile.json",
+      "path": "observations/cli/normalize-modal-profile.json",
+      "bytes": 2641,
+      "sha256": "5c8d33a7498ae46344fc32a9bbefd95b3ec307d888b2a3a3fda116cf93536679"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/normalize-not-modal.json",
+      "path": "observations/cli/normalize-not-modal.json",
+      "bytes": 2625,
+      "sha256": "5fb87116141f5996c5d2e958ce668c9dbbc62ee93bad87f8d99c1f86f77d6b92"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/normalize-one.json",
+      "path": "observations/cli/normalize-one.json",
+      "bytes": 2058,
+      "sha256": "24fa287d449565ce03b2bb76b15145ffe2cc21001f07ba6723fc4acb8b569979"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/normalize-past.json",
+      "path": "observations/cli/normalize-past.json",
+      "bytes": 2448,
+      "sha256": "a6e23d7471927b13dc8b873597776a130d347f291a326c4274a1ce7db7bb1031"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/normalize-present.json",
+      "path": "observations/cli/normalize-present.json",
+      "bytes": 2451,
+      "sha256": "c3403c3caf806bfce2078872d0aac91fd6c0e5ee2ba54db89cb946efc3c322ec"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/normalize-unknown-number.json",
+      "path": "observations/cli/normalize-unknown-number.json",
+      "bytes": 2037,
+      "sha256": "0063979ba9f452c85de23ff0766fdba1100445abd75d5c0d62cd1fca1c711a91"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/normalize-unknown-time.json",
+      "path": "observations/cli/normalize-unknown-time.json",
+      "bytes": 2400,
+      "sha256": "2bb9c32251ba1fb43b11c96869812315d4a46e4736b08d0ea46b820d3e4158e3"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/not-modal-artifact-input.json",
+      "path": "observations/cli/not-modal-artifact-input.json",
+      "bytes": 3987,
+      "sha256": "4ff49831ef75bf7b84f322dfa992fe81292a0131555a355d1fb3e0826f946cb6"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/not-modal-export-request.json",
+      "path": "observations/cli/not-modal-export-request.json",
+      "bytes": 3530,
+      "sha256": "353b119710114e5894c9ee16313db585ac31aa944bf40d1a3b12bc7a74b0dd97"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/not-modal-normalize-request.json",
+      "path": "observations/cli/not-modal-normalize-request.json",
+      "bytes": 1131,
+      "sha256": "31e66f4d11d3650dd1c237a6140c54020de25d097c3c3868a4dad2fcebe093d9"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/not-modal-replay-request.json",
+      "path": "observations/cli/not-modal-replay-request.json",
+      "bytes": 4645,
+      "sha256": "3a5f5d3fd7532c68aeab303bcbd76eadd04a2c7e04ad832f844d949311523077"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/not-modal-verify-request.json",
+      "path": "observations/cli/not-modal-verify-request.json",
+      "bytes": 3011,
+      "sha256": "c51b4543fd70d41e09cc6b670848297c308f1b176c91aaa356c84e2185eed3d6"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/one-artifact-input.json",
+      "path": "observations/cli/one-artifact-input.json",
+      "bytes": 3574,
+      "sha256": "61370b584a41124df9a3b9ba2c812c7e2b456b4d881815015aa770a64e77dff1"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/one-export-request.json",
+      "path": "observations/cli/one-export-request.json",
+      "bytes": 3050,
+      "sha256": "f543cd41142f9aa5dc305c5a4475488df389ec5ec587933a7e87c011f436fea0"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/one-normalize-request.json",
+      "path": "observations/cli/one-normalize-request.json",
+      "bytes": 651,
+      "sha256": "d32ad5e57051c79dba5fd5f7c14526435b121c8612bfe476abf3cd3757680928"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/one-replay-request.json",
+      "path": "observations/cli/one-replay-request.json",
+      "bytes": 4176,
+      "sha256": "e94198eb97fa7d6d6d69a3cd9358a0c07a2f72e6e8299e6cb8daa740d04c0331"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/one-verify-request.json",
+      "path": "observations/cli/one-verify-request.json",
+      "bytes": 1647,
+      "sha256": "e41009d59e277ca808ef1656827b4b2d820d6e5cafeb369191ebbfab2894a76b"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/past-artifact-input.json",
+      "path": "observations/cli/past-artifact-input.json",
+      "bytes": 3963,
+      "sha256": "fe583b063c70c90e9acf721b43f4151a2bd5cce002bc1286b68e984e6b73b185"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/past-export-request.json",
+      "path": "observations/cli/past-export-request.json",
+      "bytes": 3468,
+      "sha256": "388282b366efe1952dd6bd9aefd5a0c5665aede832ea01da2b71d870b97f9970"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/past-normalize-request.json",
+      "path": "observations/cli/past-normalize-request.json",
+      "bytes": 1069,
+      "sha256": "f31c40e15abdf5ebaf641269dad9c425ac7562b590aca4bc59a9cc1fb7bc691a"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/past-replay-request.json",
+      "path": "observations/cli/past-replay-request.json",
+      "bytes": 4615,
+      "sha256": "838284c848fbe1e16cd3594a5fea2513c9f47354944ae515eea2301fd18373c3"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/past-verify-request.json",
+      "path": "observations/cli/past-verify-request.json",
+      "bytes": 2503,
+      "sha256": "76719bdf57736503470e8f7aa9cb329b0416a58eb59ef668eb9a48bd46151ab9"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/present-artifact-input.json",
+      "path": "observations/cli/present-artifact-input.json",
+      "bytes": 3966,
+      "sha256": "d7617faa8c6b1e93499aa86999725bfe10a0a96e989dd10fdb5777e3da6008d6"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/present-export-request.json",
+      "path": "observations/cli/present-export-request.json",
+      "bytes": 3471,
+      "sha256": "85754983d31bbda6b0dec450d6bab065619ce6689a4dc3faba51c1cb1df7e69e"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/present-normalize-request.json",
+      "path": "observations/cli/present-normalize-request.json",
+      "bytes": 1072,
+      "sha256": "28c490a7295150d6f014b825b1e34ac591888e07b93e64611689d064fafdaadf"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/present-replay-request.json",
+      "path": "observations/cli/present-replay-request.json",
+      "bytes": 4618,
+      "sha256": "c8781360d7276d24e83d8e73016e4b597d884a314b9d55834bcbd7804421083e"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/present-verify-request.json",
+      "path": "observations/cli/present-verify-request.json",
+      "bytes": 2506,
+      "sha256": "38dd631e1be40a3078c6f151ef05cf299645da248c131244df6687b9a89cfbea"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/replay-context-only-reference-interval.json",
+      "path": "observations/cli/replay-context-only-reference-interval.json",
+      "bytes": 2867,
+      "sha256": "1b1217cd062cbf24dea0ccfaf96b8a86b7aae3e4ba20ed5f5c11d5cd10de7e0f"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/replay-many.json",
+      "path": "observations/cli/replay-many.json",
+      "bytes": 2294,
+      "sha256": "e658c3d99696c82e59451a76a645c09814f4363ab971045cfd92f00a56e6a496"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/replay-modal-not.json",
+      "path": "observations/cli/replay-modal-not.json",
+      "bytes": 2494,
+      "sha256": "d84386ee661351e10d592a286b1c7a2d968be7f5a19c3d8f1857463a178aa572"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/replay-modal-profile.json",
+      "path": "observations/cli/replay-modal-profile.json",
+      "bytes": 2484,
+      "sha256": "e5feca0afb07ea2c4abc7e9b0cb10886fae226c976a9d6ba9977fb7cab356d55"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/replay-not-modal.json",
+      "path": "observations/cli/replay-not-modal.json",
+      "bytes": 2494,
+      "sha256": "a07d29a216c385e1e31d839ffe35d5830ea3c587dd7a83fac626633a2a6c50f1"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/replay-one.json",
+      "path": "observations/cli/replay-one.json",
+      "bytes": 2293,
+      "sha256": "a8caf20a007717bc940bbad13ca34ab693e5157ae2cc4bea6c8bae931f01527d"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/replay-past.json",
+      "path": "observations/cli/replay-past.json",
+      "bytes": 2487,
+      "sha256": "9eb4a4ad69642651bf6a07b88b9ac4fb5844b9d79b176342e4e90e287ca818d0"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/replay-present.json",
+      "path": "observations/cli/replay-present.json",
+      "bytes": 2490,
+      "sha256": "eac1dbdca3d17c34ff6631ebdfd903613283be0c427fcae2ba53b8c495005650"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/replay-unknown-number.json",
+      "path": "observations/cli/replay-unknown-number.json",
+      "bytes": 2272,
+      "sha256": "678bdf99857712250f88b3023cca3c039fd7710e78b9bffc7fc0a17da5957ad6"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/replay-unknown-time.json",
+      "path": "observations/cli/replay-unknown-time.json",
+      "bytes": 2439,
+      "sha256": "2f6795c43fc077d416a3e064a10c2a834594a953f18da91aee22e6044d615b16"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/unknown-number-artifact-input.json",
+      "path": "observations/cli/unknown-number-artifact-input.json",
+      "bytes": 3545,
+      "sha256": "f7d57e901f7b59b767a2bd210bc67a9383f178d4b69915059a751eafee337740"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/unknown-number-export-request.json",
+      "path": "observations/cli/unknown-number-export-request.json",
+      "bytes": 3019,
+      "sha256": "a9088263d602ce8ac6395dc4fb1ea5ab122d8af4c07b048b1af2ad9f0dd54c77"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/unknown-number-normalize-request.json",
+      "path": "observations/cli/unknown-number-normalize-request.json",
+      "bytes": 620,
+      "sha256": "ddd1e6f4f3fcbdbfad42fcf596accb892700438ff4d988be3026808fffb1960f"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/unknown-number-replay-request.json",
+      "path": "observations/cli/unknown-number-replay-request.json",
+      "bytes": 4145,
+      "sha256": "b204dee8feb4646dd6d20b80e42f809785f3aa774ff589b2aafc2649ea314f0d"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/unknown-number-verify-request.json",
+      "path": "observations/cli/unknown-number-verify-request.json",
+      "bytes": 1614,
+      "sha256": "e1800a4f781e36e1522411672fb5b67fc808ecef5351243d691bd58f901c0a1c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/unknown-time-artifact-input.json",
+      "path": "observations/cli/unknown-time-artifact-input.json",
+      "bytes": 3899,
+      "sha256": "f90a66d5ee2cf7e7348fff247acaee2bf3e5aceec1648792b6b9b23dcc8b2f2b"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/unknown-time-export-request.json",
+      "path": "observations/cli/unknown-time-export-request.json",
+      "bytes": 3400,
+      "sha256": "da016246f1f8ec932e31ccdba1e23a6cfc7903acc73dd4ece70985e8d6a1b6a6"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/unknown-time-normalize-request.json",
+      "path": "observations/cli/unknown-time-normalize-request.json",
+      "bytes": 1001,
+      "sha256": "b9c5013b73e4e31d7c741cd8c9e1772df4972c104c9327cbb28776689be69446"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/unknown-time-replay-request.json",
+      "path": "observations/cli/unknown-time-replay-request.json",
+      "bytes": 4547,
+      "sha256": "5e1e00fa7bd48f9f4dc9e0ea7b02b6ee8655988e87f8cd1055114dd9f8f65e14"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/unknown-time-verify-request.json",
+      "path": "observations/cli/unknown-time-verify-request.json",
+      "bytes": 2431,
+      "sha256": "5adb5a7ac5a639651bfb05a2d3070df8f497e4af807342c44b9787d089a79992"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/verify-context-only-reference-interval.json",
+      "path": "observations/cli/verify-context-only-reference-interval.json",
+      "bytes": 544,
+      "sha256": "404eff0416a4af4e7c7bdd8c22fb81b47e2f2a696acc783565260ddf93681074"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/verify-many.json",
+      "path": "observations/cli/verify-many.json",
+      "bytes": 544,
+      "sha256": "d0cac15eddfa33bef09030af1932ac6608f73a5223edd7920410fc41acc8d3a8"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/verify-modal-not.json",
+      "path": "observations/cli/verify-modal-not.json",
+      "bytes": 544,
+      "sha256": "ae238ca96240d80a031c4452cf9fb58a7d8e1f12a923d5c3fbe9037fa055e86c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/verify-modal-profile.json",
+      "path": "observations/cli/verify-modal-profile.json",
+      "bytes": 544,
+      "sha256": "dde6bafea06503fdb1607534c0bd24c39486d7cc05d331dd519636d2e75f6e76"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/verify-not-modal.json",
+      "path": "observations/cli/verify-not-modal.json",
+      "bytes": 544,
+      "sha256": "ae238ca96240d80a031c4452cf9fb58a7d8e1f12a923d5c3fbe9037fa055e86c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/verify-one.json",
+      "path": "observations/cli/verify-one.json",
+      "bytes": 544,
+      "sha256": "d0cac15eddfa33bef09030af1932ac6608f73a5223edd7920410fc41acc8d3a8"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/verify-past.json",
+      "path": "observations/cli/verify-past.json",
+      "bytes": 544,
+      "sha256": "e109319b21b4a6486cba90a94b27bdd0e2237b4586ed5737f56a11bb96049afe"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/verify-present.json",
+      "path": "observations/cli/verify-present.json",
+      "bytes": 544,
+      "sha256": "e109319b21b4a6486cba90a94b27bdd0e2237b4586ed5737f56a11bb96049afe"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/verify-unknown-number.json",
+      "path": "observations/cli/verify-unknown-number.json",
+      "bytes": 544,
+      "sha256": "d0cac15eddfa33bef09030af1932ac6608f73a5223edd7920410fc41acc8d3a8"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-cli-observations/verify-unknown-time.json",
+      "path": "observations/cli/verify-unknown-time.json",
+      "bytes": 544,
+      "sha256": "e109319b21b4a6486cba90a94b27bdd0e2237b4586ed5737f56a11bb96049afe"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/build-modal.json",
+      "bytes": 3389,
+      "sha256": "9ab0b31448c5bc8f69dd58fb992e7ce2949d629799e64be98451067ef896b81c"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/build-modal.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/check-past.json",
+      "bytes": 1363,
+      "sha256": "a0d5b2e047a3e649ac8f53702b1624a8040403681005b6d3ed86068aee07022c"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/check-past.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/compare-modal-scopes.json",
+      "bytes": 2200,
+      "sha256": "2f775c600775cfaa45a875104fb35587d9a6838d476da0ccbd6f8e603c7dd33a"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/compare-modal-scopes.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/docflow-commands.jsonl",
+      "bytes": 7427,
+      "sha256": "5f2cf0c3c2c8f11ae5b3a24a1b569eb880cc4c8725c438b7c73ddb7dc679cf79"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/evaluate-many.json",
+      "bytes": 227,
+      "sha256": "ed8115964eb4b0583a133106889919ff579cdc14cc2e48517cf78c53e77a5ad7"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/evaluate-many.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/evaluate-one.json",
+      "bytes": 4423,
+      "sha256": "e098cfb6359bddb481697a926d7f89bde08a89b1b4bdc6bd3db1ff53cabbec26"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/evaluate-one.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/evaluate-past.json",
+      "bytes": 254,
+      "sha256": "87e3a024331f8c6a61eca47bdca2f918ea507a59deaa7a675d409896e1180ba4"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/evaluate-past.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/export-past.json",
+      "bytes": 2530,
+      "sha256": "2b12a65012ebe78bc6b2489bfb4326b034b3a32368ffc0154a4e59472e4dbbed"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/export-past.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/inspect-context-only-reference-interval.json",
+      "bytes": 1651,
+      "sha256": "b6ac9cc9acc04d3f0ce48ca5078b499c9b1c0a1220ab6793f2ade4b3abb1545a"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/inspect-context-only-reference-interval.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/inspect-past.json",
+      "bytes": 1402,
+      "sha256": "c74c066006491e5b33ad8cc81af87de155de7fd8f3274abde68cfb13bc344918"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/inspect-past.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/replay-context-only-reference-interval.json",
+      "bytes": 2867,
+      "sha256": "1b1217cd062cbf24dea0ccfaf96b8a86b7aae3e4ba20ed5f5c11d5cd10de7e0f"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/replay-context-only-reference-interval.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/replay-past.json",
+      "bytes": 2487,
+      "sha256": "9eb4a4ad69642651bf6a07b88b9ac4fb5844b9d79b176342e4e90e287ca818d0"
+    },
+    {
+      "source": "locally rerun with /tmp/golingua-dse/bin/golingua-393-final; argv recorded in observations/docflow/docflow-commands.jsonl",
+      "path": "observations/docflow/replay-past.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/bad-past-context-certificate-input.json",
+      "path": "observations/extra-cli/bad-past-context-certificate-input.json",
+      "bytes": 5289,
+      "sha256": "283d4929822953db6d37d3f1c1128ec92d4355b3a189d3ea7428b597f224f33c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/compare-one-vs-many.json",
+      "path": "observations/extra-cli/compare-one-vs-many.json",
+      "bytes": 192,
+      "sha256": "0fd9ff694c13dd4123e942e343e474b6a06e7b489364804c6d393ef53cd54d9f"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/construct-many.json",
+      "path": "observations/extra-cli/construct-many.json",
+      "bytes": 8879,
+      "sha256": "38f49e5f3ed074d22d59bf68757be9f15ad189e3af5aed0b77afb61a75cf3161"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/construct-one.json",
+      "path": "observations/extra-cli/construct-one.json",
+      "bytes": 8876,
+      "sha256": "e95234e3aa9052d237aa9a26a3247b0b03ceafb1baec0981f954c2aba35372cd"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/construct-past-context.json",
+      "path": "observations/extra-cli/construct-past-context.json",
+      "bytes": 10001,
+      "sha256": "ae17bc8c4744618b557f38f576320517c67b02f47108d914e9f12904a4724917"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/construct-past.json",
+      "path": "observations/extra-cli/construct-past.json",
+      "bytes": 9117,
+      "sha256": "47b1c1f93dbc02d389bcb44a2beae73b501972b8c4d3243d04710468d49a035a"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/many-candidate-input.json",
+      "path": "observations/extra-cli/many-candidate-input.json",
+      "bytes": 2881,
+      "sha256": "975c59fb7ba196dd78e1308e98343ee84ab5d4d27483a24db4bf0fa19a1d660e"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/many-certificate-input.json",
+      "path": "observations/extra-cli/many-certificate-input.json",
+      "bytes": 4558,
+      "sha256": "772049401fbcbe2bc4171ae8145fe22cf3d70c0dc5320df9c069abbd8d53924c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/many-tampered-candidate-input.json",
+      "path": "observations/extra-cli/many-tampered-candidate-input.json",
+      "bytes": 2880,
+      "sha256": "e59e11cb28c5839eb6c390e41a421feecaf5341fb7dd86d03892bfb2e4c61179"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/one-candidate-input.json",
+      "path": "observations/extra-cli/one-candidate-input.json",
+      "bytes": 2880,
+      "sha256": "e59e11cb28c5839eb6c390e41a421feecaf5341fb7dd86d03892bfb2e4c61179"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/one-certificate-input.json",
+      "path": "observations/extra-cli/one-certificate-input.json",
+      "bytes": 4557,
+      "sha256": "bac29311387b59a2c60bca66ee270e66e7fd100434af90c9f003ca347cb1f71c"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/one-tampered-candidate-input.json",
+      "path": "observations/extra-cli/one-tampered-candidate-input.json",
+      "bytes": 2881,
+      "sha256": "975c59fb7ba196dd78e1308e98343ee84ab5d4d27483a24db4bf0fa19a1d660e"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/past-candidate-input.json",
+      "path": "observations/extra-cli/past-candidate-input.json",
+      "bytes": 3001,
+      "sha256": "8a1f9b62bd8506b518452f5b614646fded510c859c607f9f831590067b610dc1"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/past-certificate-input.json",
+      "path": "observations/extra-cli/past-certificate-input.json",
+      "bytes": 4706,
+      "sha256": "7c4bb4da0ff7b3004950f2945e1362743df6126525dd56646778de42fa59a8fe"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/past-context-candidate-input.json",
+      "path": "observations/extra-cli/past-context-candidate-input.json",
+      "bytes": 3430,
+      "sha256": "eafb495c3e7b18e9d60884ea11e61bda568cc47114ad7700dacc133cd055c43d"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/past-context-certificate-input.json",
+      "path": "observations/extra-cli/past-context-certificate-input.json",
+      "bytes": 5316,
+      "sha256": "9e265932e378e2a8dec203ef7d16ec76b7fc5bb80d03089de51c3f5c1541fffd"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/past-context-goal-input.json",
+      "path": "observations/extra-cli/past-context-goal-input.json",
+      "bytes": 1776,
+      "sha256": "498b34f9d3ed095e987482630ab084de2c83cbc9ad3bb3065cb79932075380e0"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/past-tampered-candidate-input.json",
+      "path": "observations/extra-cli/past-tampered-candidate-input.json",
+      "bytes": 3004,
+      "sha256": "a40f9e4e80da1850ecf13430c6b2bd80bd880e7c67b18a0af0202af746db2a1e"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/profile-input.json",
+      "path": "observations/extra-cli/profile-input.json",
+      "bytes": 81,
+      "sha256": "2c0968fff33ebc6f126c0dbbe1cfd860f999351f6f768eb63fba3d2b802e7816"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/reject-past-context-pin.json",
+      "path": "observations/extra-cli/reject-past-context-pin.json",
+      "bytes": 1067,
+      "sha256": "8f1abd6cdc6f1ad0c5368fe56f9ef386b6b0b53dfcc9dae83e7ef190ca34f688"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/reject-tampered-many.json",
+      "path": "observations/extra-cli/reject-tampered-many.json",
+      "bytes": 1055,
+      "sha256": "bd2b71c251b71018390d043f57b1b0b4039d71461c0f5bb77d0ddd1403d97ebb"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/reject-tampered-one.json",
+      "path": "observations/extra-cli/reject-tampered-one.json",
+      "bytes": 1055,
+      "sha256": "bd2b71c251b71018390d043f57b1b0b4039d71461c0f5bb77d0ddd1403d97ebb"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/reject-tampered-past.json",
+      "path": "observations/extra-cli/reject-tampered-past.json",
+      "bytes": 1055,
+      "sha256": "bd2b71c251b71018390d043f57b1b0b4039d71461c0f5bb77d0ddd1403d97ebb"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/renamed-metadata-input.json",
+      "path": "observations/extra-cli/renamed-metadata-input.json",
+      "bytes": 5970,
+      "sha256": "766d2d11ab64309da79b452886d4a243e8c72b19099760a38013936236a92dda"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/renamed-past-document-input.json",
+      "path": "observations/extra-cli/renamed-past-document-input.json",
+      "bytes": 3186,
+      "sha256": "f8e1e879f098a478d5b2fb8977be7a5785a9a1af6c1de1894985661c4ca88b79"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/renamed-symbol-check.json",
+      "path": "observations/extra-cli/renamed-symbol-check.json",
+      "bytes": 1498,
+      "sha256": "d67da3a2d630521001d00505a21bcc5625c7879390ef0feee78be02980730185"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/renamed-symbol-evaluate.json",
+      "path": "observations/extra-cli/renamed-symbol-evaluate.json",
+      "bytes": 254,
+      "sha256": "87e3a024331f8c6a61eca47bdca2f918ea507a59deaa7a675d409896e1180ba4"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/verify-many.json",
+      "path": "observations/extra-cli/verify-many.json",
+      "bytes": 1777,
+      "sha256": "5e72503dc0399b9545f254546eda7227e8c9c558fab75ef1c6e91dda91836d67"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/verify-one.json",
+      "path": "observations/extra-cli/verify-one.json",
+      "bytes": 1777,
+      "sha256": "8060f0299d0cb213e64a552b5b0f14c914215d409815e25fb66442d1540c0e3a"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/verify-past-context.json",
+      "path": "observations/extra-cli/verify-past-context.json",
+      "bytes": 1782,
+      "sha256": "8229770583a3ba5b0defbab67d5d6755f926b7d8dc8ac77b5af99a6c1ec648de"
+    },
+    {
+      "source": "/tmp/golingua-dse/393-extra-cli/verify-past.json",
+      "path": "observations/extra-cli/verify-past.json",
+      "bytes": 1782,
+      "sha256": "a339d8e43018a1e721cebc691f2ba4230dac20e522b7d1028884ac399f6d8036"
+    }
+  ]
+}

@@ -698,6 +698,11 @@ func artifactNodeWire(node Node, includeNodeID bool) (map[string]any, error) {
 		wire["identity"], wire["type"], wire["body"] = node.Identity, node.Type, node.Body
 	case TermNot:
 		wire["body"] = node.Body
+	case TermModal:
+		wire["modality"], wire["body"] = node.Modality, node.Body
+		if node.ModalProfile != "" {
+			wire["modal_profile"] = node.ModalProfile
+		}
 	case TermQuantifier:
 		wire["identity"], wire["type"], wire["quantifier"], wire["body"] = node.Identity, node.Type, node.Quantifier, node.Body
 		if node.Count != nil {
@@ -837,6 +842,15 @@ func artifactMeaningTerm(term *Term, depth int, active map[*Term]bool) (map[stri
 			return nil, err
 		}
 		wire["body"] = body
+	case TermModal:
+		body, err := artifactMeaningTerm(term.Body, depth+1, active)
+		if err != nil {
+			return nil, err
+		}
+		wire["modality"], wire["body"] = term.Modality, body
+		if term.ModalProfile != "" {
+			wire["modal_profile"] = term.ModalProfile
+		}
 	case TermQuantifier:
 		body, err := artifactMeaningTerm(term.Body, depth+1, active)
 		if err != nil {
@@ -907,7 +921,7 @@ func cloneArtifactEnvelope(envelope ArtifactEnvelope) (ArtifactEnvelope, error) 
 		if err != nil {
 			return ArtifactEnvelope{}, err
 		}
-		copyValue.Parameters[i] = Declaration{ID: declaration.ID, Type: typeCopy}
+		copyValue.Parameters[i] = Declaration{ID: declaration.ID, Type: typeCopy, TemporalFrame: declaration.TemporalFrame, ReferenceTimeID: declaration.ReferenceTimeID, Multiplicity: declaration.Multiplicity}
 	}
 	copyValue.References = make([]Declaration, len(envelope.References))
 	for i, declaration := range envelope.References {
@@ -915,7 +929,7 @@ func cloneArtifactEnvelope(envelope ArtifactEnvelope) (ArtifactEnvelope, error) 
 		if err != nil {
 			return ArtifactEnvelope{}, err
 		}
-		copyValue.References[i] = Declaration{ID: declaration.ID, Type: typeCopy}
+		copyValue.References[i] = Declaration{ID: declaration.ID, Type: typeCopy, TemporalFrame: declaration.TemporalFrame, ReferenceTimeID: declaration.ReferenceTimeID, Multiplicity: declaration.Multiplicity}
 	}
 	copyValue.Nodes, err = cloneArenaNodes(envelope.Nodes, DefaultLimits())
 	if err != nil {

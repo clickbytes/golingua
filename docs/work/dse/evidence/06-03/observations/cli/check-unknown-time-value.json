@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_TEMPORAL_FRAME","message":"temporal frame must be past or present","path":"references[0].temporal_frame","severity":"error"}]}

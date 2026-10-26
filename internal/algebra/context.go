@@ -41,9 +41,12 @@ type RequestContext struct {
 // ContextReferent identifies one typed request-local referent. ConceptID is
 // optional classification metadata; equal concepts never merge referents.
 type ContextReferent struct {
-	ID        string `json:"id"`
-	Type      Type   `json:"type"`
-	ConceptID string `json:"concept_id,omitempty"`
+	ID              string `json:"id"`
+	Type            Type   `json:"type"`
+	ConceptID       string `json:"concept_id,omitempty"`
+	TemporalFrame   string `json:"temporal_frame,omitempty"`
+	ReferenceTimeID string `json:"reference_time_id,omitempty"`
+	Multiplicity    string `json:"multiplicity,omitempty"`
 }
 
 // ContextMention is a mention inside this context. ReferentID is a declared
@@ -131,7 +134,7 @@ func CloneRequestContext(context RequestContext) (RequestContext, error) {
 		if err != nil {
 			return RequestContext{}, err
 		}
-		copyContext.Referents[i] = ContextReferent{ID: referent.ID, Type: *typ, ConceptID: referent.ConceptID}
+		copyContext.Referents[i] = ContextReferent{ID: referent.ID, Type: *typ, ConceptID: referent.ConceptID, TemporalFrame: referent.TemporalFrame, ReferenceTimeID: referent.ReferenceTimeID, Multiplicity: referent.Multiplicity}
 	}
 	copy(copyContext.Mentions, context.Mentions)
 	termNodes := 0
@@ -191,38 +194,26 @@ func CheckRequestContext(context RequestContext, actualDoc Document) (ContextAss
 	if err != nil {
 		return ContextAssessment{}, err
 	}
+	contextDocForAttrs := actualDoc
+	contextDocForAttrs.RequestContext = &copyContext
+	if err := validateDocumentReferenceAttributes(contextDocForAttrs); err != nil {
+		return ContextAssessment{}, err
+	}
 	docExpression := actualDoc.Expression
 	actualDoc.Expression = nil
 	actualDoc.RequestContext = nil
-	if err := CheckDeclarations(actualDoc); err != nil {
-		return ContextAssessment{}, err
-	}
 	work := len(copyContext.Referents) + len(copyContext.Mentions) + len(copyContext.ResolutionEvidence) + len(copyContext.Conditions)
-	if docExpression != nil {
-		docWithExpression := actualDoc
-		docWithExpression.Expression = docExpression
-		checked, checkErr := Check(docWithExpression)
-		if checkErr != nil {
-			return ContextAssessment{}, checkErr
-		}
-		work += checked.NodeCount
-		if work > MaxContextWork {
-			return ContextAssessment{}, resourceLimit("context", "request-context work exceeds the finite checker bound")
-		}
-	}
 	referents := make(map[string]ContextReferent, len(copyContext.Referents))
 	for _, referent := range copyContext.Referents {
 		referents[referent.ID] = referent
 	}
-	for _, anchor := range []struct{ field, id string }{
-		{"speaker_referent_id", copyContext.SpeakerReferentID},
-		{"addressee_referent_id", copyContext.AddresseeReferentID},
-	} {
-		field, id := anchor.field, anchor.id
-		if id != "" {
-			if _, ok := referents[id]; !ok {
-				return ContextAssessment{}, invalid("UNKNOWN_CONTEXT_ANCHOR", field, "anchor must name a referent in this request context")
-			}
+	for i, referent := range context.Referents {
+		if referent.ReferenceTimeID == "" {
+			continue
+		}
+		target, ok := referents[referent.ReferenceTimeID]
+		if !ok || target.Type.Kind != TypeInterval {
+			return ContextAssessment{}, invalid("INVALID_REFERENCE_TIME_TARGET", fmt.Sprintf("referents[%d].reference_time_id", i), "reference time must name a declared Interval referent in this context")
 		}
 	}
 	for i, declaration := range actualDoc.References {
@@ -230,7 +221,7 @@ func CheckRequestContext(context RequestContext, actualDoc Document) (ContextAss
 		if !ok {
 			return ContextAssessment{}, invalid("CONTEXT_REFERENCE_MISSING", fmt.Sprintf("document.references[%d]", i), "every document reference must exist as a typed context referent")
 		}
-		if ok && !TypeEqual(declaration.Type, referent.Type) {
+		if !TypeEqual(declaration.Type, referent.Type) {
 			return ContextAssessment{}, invalid("CONTEXT_REFERENCE_TYPE_MISMATCH", fmt.Sprintf("document.references[%d].type", i), "context referent type must match the document reference declaration")
 		}
 	}
@@ -247,11 +238,36 @@ func CheckRequestContext(context RequestContext, actualDoc Document) (ContextAss
 			}
 			continue
 		}
-		contextDoc.References = append(contextDoc.References, Declaration{ID: referent.ID, Type: referent.Type})
+		contextDoc.References = append(contextDoc.References, Declaration{ID: referent.ID, Type: referent.Type, TemporalFrame: referent.TemporalFrame, ReferenceTimeID: referent.ReferenceTimeID, Multiplicity: referent.Multiplicity})
 		knownReferences[referent.ID] = referent.Type
 	}
+	actualDoc = contextDoc
+	for _, anchor := range []struct{ field, id string }{
+		{"speaker_referent_id", copyContext.SpeakerReferentID},
+		{"addressee_referent_id", copyContext.AddresseeReferentID},
+	} {
+		field, id := anchor.field, anchor.id
+		if id != "" {
+			if _, ok := referents[id]; !ok {
+				return ContextAssessment{}, invalid("UNKNOWN_CONTEXT_ANCHOR", field, "anchor must name a referent in this request context")
+			}
+		}
+	}
+	contextDoc = actualDoc
 	if err := CheckDeclarations(contextDoc); err != nil {
 		return ContextAssessment{}, err
+	}
+	if docExpression != nil {
+		docWithExpression := contextDoc
+		docWithExpression.Expression = docExpression
+		checked, checkErr := Check(docWithExpression)
+		if checkErr != nil {
+			return ContextAssessment{}, checkErr
+		}
+		work += checked.NodeCount
+		if work > MaxContextWork {
+			return ContextAssessment{}, resourceLimit("context", "request-context work exceeds the finite checker bound")
+		}
 	}
 	for i, condition := range copyContext.Conditions {
 		for _, target := range condition.TargetReferentIDs {
@@ -357,7 +373,7 @@ func collectContextExpressionReferences(root *Term) (map[string]struct{}, error)
 			for i := len(term.Operands) - 1; i >= 0; i-- {
 				push(term.Operands[i])
 			}
-		case TermExists, TermLambda, TermNot:
+		case TermExists, TermLambda, TermNot, TermModal:
 			push(term.Body)
 		case TermQuantifier, TermAsk:
 			push(term.Body)
@@ -497,6 +513,9 @@ func validateContextShape(context RequestContext) error {
 		}
 		if !validContextDataType(referent.Type) {
 			return invalid("INVALID_REFERENT_TYPE", path+".type", "referent type must be Entity, Event, Interval, or a declared Nominal sort")
+		}
+		if err := validateReferenceAttributes(referent.ID, referent.Type, contextReferentAttributes(referent), path); err != nil {
+			return err
 		}
 		if referent.Type.Kind == TypeNominal && !validText(referent.Type.SortID, 256) {
 			return invalid("INVALID_REFERENT_TYPE", path+".type.sort_id", "nominal referent sort ID is malformed")
@@ -677,6 +696,15 @@ func requestContextWire(context RequestContext, canonical bool) (map[string]any,
 		item := map[string]any{"id": referent.ID, "type": referent.Type}
 		if referent.ConceptID != "" {
 			item["concept_id"] = referent.ConceptID
+		}
+		if referent.TemporalFrame != "" {
+			item["temporal_frame"] = referent.TemporalFrame
+		}
+		if referent.ReferenceTimeID != "" {
+			item["reference_time_id"] = referent.ReferenceTimeID
+		}
+		if referent.Multiplicity != "" {
+			item["multiplicity"] = referent.Multiplicity
 		}
 		referentWires = append(referentWires, item)
 	}

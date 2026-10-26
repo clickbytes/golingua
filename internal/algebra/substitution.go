@@ -594,6 +594,15 @@ func standaloneTermType(term *Term, limits Limits) (Type, error) {
 				return Type{}, invalid("EXPECTED_PROP", path+".body", "Not body must have type Prop")
 			}
 			return Type{Kind: TypeProp}, nil
+		case TermModal:
+			body, err := infer(value.Body, path+".body", depth+1)
+			if err != nil {
+				return Type{}, err
+			}
+			if body.Kind != TypeProp {
+				return Type{}, invalid("EXPECTED_PROP", path+".body", "Modal body must have type Prop")
+			}
+			return Type{Kind: TypeProp}, nil
 		case TermQuantifier:
 			if value.Type == nil || !isDataType(*value.Type) {
 				return Type{}, invalid("INVALID_QUANTIFIER_BINDER_TYPE", path+".type", "quantifier binder must have a data sort type")

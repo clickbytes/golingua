@@ -84,8 +84,14 @@ func (c *checker) visitAsk(term *Term, path string, depth int) (Type, error) {
 	bound := make([]string, 0, len(term.Answers))
 	for i, answer := range term.Answers {
 		answerPath := fmt.Sprintf("%s.answers[%d]", path, i)
+		if answer.TemporalFrame != "" || answer.ReferenceTimeID != "" || answer.Multiplicity != "" {
+			return Type{}, invalid("MALFORMED_ANSWER", answerPath, "Ask answer declarations cannot carry reference attributes")
+		}
 		if !validText(answer.ID, 256) {
 			return Type{}, invalid("INVALID_ANSWER_ID", answerPath+".id", "answer ID must be non-empty valid UTF-8 and at most 256 bytes")
+		}
+		if answer.TemporalFrame != "" || answer.ReferenceTimeID != "" || answer.Multiplicity != "" {
+			return Type{}, invalid("MALFORMED_ANSWER", answerPath, "Ask answer declarations cannot carry reference attributes")
 		}
 		if err := c.validateType(&answer.Type, answerPath+".type", 1, make(map[*Type]bool)); err != nil {
 			for _, id := range bound {

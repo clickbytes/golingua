@@ -1,0 +1,1 @@
+{"status":"unsupported","diagnostics":[{"code":"UNSUPPORTED_RELATIVE_TEMPORAL_REFERENCE","message":"the positive-facts query profile has no relative-time mapping to the explicit query instant","path":"references.ev1.temporal_frame","severity":"error"}]}

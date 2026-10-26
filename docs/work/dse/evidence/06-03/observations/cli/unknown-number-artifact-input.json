@@ -1,0 +1,187 @@
+{
+  "cache_key": "sha256:a3eae15f6a52abcb49d8844d5022417192249ab52310bf75ff334df14c2bde30",
+  "closed": false,
+  "context_dependencies": [],
+  "context_id": "eval-neutral",
+  "kind": "typed_expression_dag",
+  "limits": {},
+  "meaning_fingerprint": "sha256:87f8cd37340bda3365a75deadae4817b5e591be6dae58b5c5ed9ca6fd5521a19",
+  "nodes": [
+    {
+      "identity": "C",
+      "kind": "Ref",
+      "node_id": 1,
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "args": [
+        {
+          "role": "v",
+          "value": 1
+        }
+      ],
+      "kind": "Atom",
+      "node_id": 2,
+      "symbol": "p"
+    }
+  ],
+  "normalizer_version": "dse-normalizer-v1",
+  "parameters": [],
+  "profile": {
+    "id": "attrs-beta-alpha",
+    "rules": [
+      "alpha_v1",
+      "beta_v1"
+    ]
+  },
+  "provenance": [],
+  "references": [
+    {
+      "id": "C",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ],
+  "registries": [
+    {
+      "id": "eval.neutral",
+      "version": "1",
+      "resource_fingerprint": "sha256:dbe6dbe5ddec656751652f20da9918fa9061c5a23339c76f0875e1b3b57b3423",
+      "formal_denotation_id": "sha256:ee37ea41fb44f15187766b6e4fcf6679b5da54071ec6ededa176a23dbceddb50"
+    }
+  ],
+  "registry_snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456",
+  "resource_fingerprint": "sha256:4191ea79ab666dc51cdf203235c7c7cb9f79d625798a60ff61eeafc14ef0203e",
+  "root": 2,
+  "schema_version": 1,
+  "signatures": [
+    {
+      "id": "e2",
+      "label": "uninterpreted e2",
+      "ports": [
+        {
+          "role": "e",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "x",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "n3",
+      "label": "uninterpreted n3",
+      "ports": [
+        {
+          "role": "u",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "v",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "w",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p",
+      "label": "uninterpreted p",
+      "ports": [
+        {
+          "role": "v",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "q",
+      "label": "uninterpreted q",
+      "ports": [
+        {
+          "role": "v",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "r",
+      "label": "uninterpreted r",
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s",
+      "label": "uninterpreted s",
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "t",
+      "ports": [
+        {
+          "role": "source",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "target",
+          "type": {
+            "kind": "Event"
+          }
+        }
+      ]
+    },
+    {
+      "id": "z0",
+      "label": "uninterpreted z0",
+      "ports": []
+    }
+  ],
+  "sorts": []
+}

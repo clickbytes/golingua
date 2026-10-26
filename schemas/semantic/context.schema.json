@@ -3,7 +3,7 @@
   "$id": "https://github.com/clickbytes/golingua/schemas/semantic/context.schema.json",
   "title": "GoLingua request-local reference and condition context",
   "description": "Explicit, request-local referents, mention links, inert evidence, and semantic conditions. This document is not a persistent memory or fact store.",
-  "$comment": "Runtime enforces a 1048576-byte JSON limit, nesting at most 256, IDs at most 256 UTF-8 bytes, 512 referents, 512 mentions, 1024 evidence rows, 128 conditions, 4096 aggregate condition-expression nodes, and 262144 checker work units. Nominal referent sorts must exist in the actual checked declaration document. SourceRef.Validate enforces exactly one usable path or URI. Evidence provenance integrity does not prove world truth. Resolution status is derived only from explicit evidence rows.",
+  "$comment": "Runtime enforces a 1048576-byte JSON limit, nesting at most 256, IDs at most 256 UTF-8 bytes, 512 referents, 512 mentions, 1024 evidence rows, 128 conditions, 4096 aggregate condition-expression nodes, and 262144 checker work units. Nominal referent sorts must exist in the actual checked declaration document. temporal_frame and reference_time_id are Event-only; multiplicity is Entity/Nominal-only; a reference_time_id must name an Interval in the same available reference context. Empty Go values are omitted and never inferred. SourceRef.Validate enforces exactly one usable path or URI. Evidence provenance integrity does not prove world truth. Resolution status is derived only from explicit evidence rows.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "id", "referents", "mentions", "resolution_evidence", "conditions"],
@@ -34,7 +34,10 @@
       "properties": {
         "id": {"$ref": "#/\u0024defs/id"},
         "type": {"$ref": "#/\u0024defs/data_type"},
-        "concept_id": {"type": "string", "minLength": 1, "maxLength": 256, "$comment": "Optional classification metadata only; equal concept IDs never merge referents."}
+        "concept_id": {"type": "string", "minLength": 1, "maxLength": 256, "$comment": "Optional classification metadata only; equal concept IDs never merge referents."},
+        "temporal_frame": {"enum": ["past", "present"]},
+        "reference_time_id": {"$ref": "#/$defs/id"},
+        "multiplicity": {"enum": ["one", "many"]}
       }
     },
     "mention": {

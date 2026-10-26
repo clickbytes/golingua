@@ -780,6 +780,52 @@ Limit lub anulowanie zwraca wyłącznie zatwierdzony prefiks odpowiedzi i dowod�
 z `complete: false`. Fakty i formalne metadane mają odrębne identyfikatory
 snapshotu.
 
+### Atrybuty referencji i Modal
+
+Wpis referencji może nieść `temporal_frame` (`past` lub `present`) i
+`reference_time_id` typu Interval tylko dla Event, a `multiplicity` (`one` lub
+`many`) tylko dla Entity/Nominal. Atrybuty są opcjonalne: nieobecne pole
+pozostaje nieznane. Deklaracje z dokumentu i jego jawnego kontekstu są łączone;
+sprzeczne wartości, nieznany cel lub cel złego typu są odrzucane. Atrybuty nie
+przechodzą na Param ani bindery Ask/lambda. `inspect` pokazuje zapisane pola,
+ale `metadata_verified` pozostaje `false`; do ich weryfikacji względem
+metadanych służą jawny export i replay.
+
+Neutralne przykłady znajdują się w
+[`data/semantic/examples/attributes/`](../data/semantic/examples/attributes/README.md).
+Wywołania kontroli i ewaluacji korzystają z neutralnego pakietu oraz jawnych danych:
+
+```sh
+golingua algebra check --input data/semantic/examples/attributes/past.json --json
+golingua algebra build --metadata data/semantic/examples/attributes/metadata.json --input data/semantic/examples/attributes/modal-build.json --json
+golingua algebra evaluate --metadata data/semantic/examples/attributes/metadata.json --expression data/semantic/examples/attributes/one.json --facts data/semantic/examples/attributes/facts-with-event.json --select data/semantic/examples/attributes/select-empty.json --context-id eval-neutral --profile positive-facts-v1 --json
+golingua algebra evaluate --metadata data/semantic/examples/attributes/metadata.json --expression data/semantic/examples/attributes/past.json --facts data/semantic/examples/attributes/facts-with-event.json --select data/semantic/examples/attributes/select-empty.json --context-id eval-neutral --profile positive-facts-v1 --json
+golingua algebra compare --left data/semantic/examples/attributes/not-modal.json --right data/semantic/examples/attributes/modal-not.json --profile data/semantic/examples/attributes/compare-profile.json --context-id eval-neutral --metadata data/semantic/examples/attributes/metadata.json --json
+```
+
+Eksport zachowuje atrybuty jawnych referencji. `inspect` samodzielnie pokazuje
+strukturę, a `replay` wymaga wybranego pakietu metadanych:
+
+```sh
+golingua algebra export --metadata data/semantic/examples/attributes/metadata.json --input data/semantic/examples/attributes/past-export-request.json --json
+golingua algebra inspect --input data/semantic/examples/attributes/past-artifact-input.json --json
+golingua algebra replay --metadata data/semantic/examples/attributes/metadata.json --input data/semantic/examples/attributes/past-replay-request.json --json
+```
+
+Te trzy polecenia zwróciły kod 0; inspekcja zwróciła
+`metadata_verified: false`.
+
+W obserwacji #393 `check`, `build`, ewaluacja referencji `one` i
+`compare` kończyły się kodem 0; ewaluacja `past` zwracała `unsupported`
+(kod 3), ponieważ profil ewaluacji nie obsługuje względnego czasu. Porównanie
+zakresów modalnych zwracało `undetermined`, bez wnioskowania o równoważności.
+`many` i Modal można reprezentować, typować, budować i zachowywać w artefakcie,
+lecz ewaluator obecnie zwraca dla nich `unsupported`, a nie `false`. Puste,
+`null`, sprzeczne lub źle typowane atrybuty są odrzucane. Szczegóły kontraktu
+opisuje [atrybuty referencji i Modal](architecture/semantic-algebra/attributes.md);
+pełne wejścia i wyjścia CLI są w [evidence #393](work/dse/evidence/06-03/README.md).
+Odbiór językowy właściciela pozostaje `NOT_EVALUATED`.
+
 DAG dowodowy zachowuje ID i źródła wszystkich pozytywnych faktów dla
 pasującego atomu oraz ID przeciwnego dowodu, jeśli istnieje. Węzły `And`
 zachowują kolejność źródłową; węzeł `Exists` przechowuje dokładne świadectwo

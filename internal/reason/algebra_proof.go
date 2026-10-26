@@ -354,7 +354,9 @@ func (builder *algebraProofBuild) addKnownReference(state *algebraEvaluationStat
 	}
 	proofNode := newAlgebraProofNode()
 	proofNode.RuleID, proofNode.PlanNodeID = AlgebraProofReference, variable.SourcePath
-	proofNode.Reference = &algebra.Declaration{ID: declaration.ID, Type: copyReasonType(declaration.Type)}
+	copyDeclaration := declaration
+	copyDeclaration.Type = copyReasonType(declaration.Type)
+	proofNode.Reference = &copyDeclaration
 	proofNode.Bindings = []AlgebraBinding{{Variable: key, Value: value}}
 	proofNode.Depth = 1
 	proofID, err := builder.add(state, proofNode)

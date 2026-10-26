@@ -431,6 +431,8 @@ func certificateScopes(root *algebra.Term, limits algebra.Limits) ([]Certificate
 			}
 		case algebra.TermExists, algebra.TermLambda:
 			return walk(term.Body, path+".body", parent, depth+1)
+		case algebra.TermModal:
+			return walk(term.Body, path+".body", parent, depth+1)
 		case algebra.TermApply:
 			if err := walk(term.Function, path+".function", parent, depth+1); err != nil {
 				return err

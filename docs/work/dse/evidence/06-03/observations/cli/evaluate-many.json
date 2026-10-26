@@ -1,0 +1,1 @@
+{"status":"unsupported","diagnostics":[{"code":"UNSUPPORTED_MANY_REFERENCE","message":"the positive-facts query profile does not expand or group a many-valued reference","path":"references.C.multiplicity","severity":"error"}]}

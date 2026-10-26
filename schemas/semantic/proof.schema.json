@@ -3,7 +3,7 @@
   "$id": "https://github.com/clickbytes/golingua/schemas/semantic/proof.schema.json",
   "title": "GoLingua bounded algebra rewrite request and certificate",
   "description": "Strict wire shapes for finite normalization requests and independently checked rewrite certificates. Shape validity does not establish proof validity.",
-  "$comment": "Runtime byte ceilings: normalization request 1 MiB, each term 1 MiB, certificate 8 MiB, verification envelope 16 MiB; all use the shared duplicate-key, UTF-8, surrogate and nesting guards. These byte and aggregate limits are not fully expressible in JSON Schema. Metadata is supplied separately by explicit CLI --metadata paths; no environment or alias definitions are accepted on this wire.",
+  "$comment": "Runtime byte ceilings: normalization request 1 MiB, each term 1 MiB, certificate 8 MiB, verification envelope 16 MiB; all use the shared duplicate-key, UTF-8, surrogate and nesting guards. Reference attributes are preserved in document declarations. Licensed structural rewrites may traverse the body of a Modal term, but no modal law or truth evaluation is implied. These byte and aggregate limits are not fully expressible in JSON Schema. Metadata is supplied separately by explicit CLI --metadata paths; no environment or alias definitions are accepted on this wire.",
   "oneOf": [
     {"$ref": "#/$defs/normalization_request"},
     {"$ref": "#/$defs/rewrite_certificate"},
@@ -264,7 +264,7 @@
           "$ref": "#/$defs/algebra_binding"
         },
         "reference": {
-          "$ref": "expression.schema.json#/$defs/declaration"
+          "$ref": "expression.schema.json#/$defs/reference_declaration"
         },
         "opposing_negative_fact_ids": {
           "type": "array",

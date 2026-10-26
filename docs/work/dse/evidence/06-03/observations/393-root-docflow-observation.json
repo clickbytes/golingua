@@ -1,0 +1,328 @@
+[
+  {
+    "literal_command": "golingua algebra check --input data/semantic/examples/attributes/past.json --json",
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua-393-final",
+      "algebra",
+      "check",
+      "--input",
+      "data/semantic/examples/attributes/past.json",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stdout_file": "root-docflow/01.json",
+    "stdout_sha256": "a0d5b2e047a3e649ac8f53702b1624a8040403681005b6d3ed86068aee07022c",
+    "stderr": ""
+  },
+  {
+    "literal_command": "golingua algebra build --metadata data/semantic/examples/attributes/metadata.json --input data/semantic/examples/attributes/modal-build.json --json",
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua-393-final",
+      "algebra",
+      "build",
+      "--metadata",
+      "data/semantic/examples/attributes/metadata.json",
+      "--input",
+      "data/semantic/examples/attributes/modal-build.json",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stdout_file": "root-docflow/02.json",
+    "stdout_sha256": "9ab0b31448c5bc8f69dd58fb992e7ce2949d629799e64be98451067ef896b81c",
+    "stderr": ""
+  },
+  {
+    "literal_command": "golingua algebra evaluate --metadata data/semantic/examples/attributes/metadata.json --expression data/semantic/examples/attributes/one.json --facts data/semantic/examples/attributes/facts-with-event.json --select data/semantic/examples/attributes/select-empty.json --context-id eval-neutral --profile positive-facts-v1 --json",
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua-393-final",
+      "algebra",
+      "evaluate",
+      "--metadata",
+      "data/semantic/examples/attributes/metadata.json",
+      "--expression",
+      "data/semantic/examples/attributes/one.json",
+      "--facts",
+      "data/semantic/examples/attributes/facts-with-event.json",
+      "--select",
+      "data/semantic/examples/attributes/select-empty.json",
+      "--context-id",
+      "eval-neutral",
+      "--profile",
+      "positive-facts-v1",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stdout_file": "root-docflow/03.json",
+    "stdout_sha256": "e098cfb6359bddb481697a926d7f89bde08a89b1b4bdc6bd3db1ff53cabbec26",
+    "stderr": ""
+  },
+  {
+    "literal_command": "golingua algebra evaluate --metadata data/semantic/examples/attributes/metadata.json --expression data/semantic/examples/attributes/past.json --facts data/semantic/examples/attributes/facts-with-event.json --select data/semantic/examples/attributes/select-empty.json --context-id eval-neutral --profile positive-facts-v1 --json",
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua-393-final",
+      "algebra",
+      "evaluate",
+      "--metadata",
+      "data/semantic/examples/attributes/metadata.json",
+      "--expression",
+      "data/semantic/examples/attributes/past.json",
+      "--facts",
+      "data/semantic/examples/attributes/facts-with-event.json",
+      "--select",
+      "data/semantic/examples/attributes/select-empty.json",
+      "--context-id",
+      "eval-neutral",
+      "--profile",
+      "positive-facts-v1",
+      "--json"
+    ],
+    "exit_code": 3,
+    "stdout_file": "root-docflow/04.json",
+    "stdout_sha256": "87e3a024331f8c6a61eca47bdca2f918ea507a59deaa7a675d409896e1180ba4",
+    "stderr": ""
+  },
+  {
+    "literal_command": "golingua algebra compare --left data/semantic/examples/attributes/not-modal.json --right data/semantic/examples/attributes/modal-not.json --profile data/semantic/examples/attributes/compare-profile.json --context-id eval-neutral --metadata data/semantic/examples/attributes/metadata.json --json",
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua-393-final",
+      "algebra",
+      "compare",
+      "--left",
+      "data/semantic/examples/attributes/not-modal.json",
+      "--right",
+      "data/semantic/examples/attributes/modal-not.json",
+      "--profile",
+      "data/semantic/examples/attributes/compare-profile.json",
+      "--context-id",
+      "eval-neutral",
+      "--metadata",
+      "data/semantic/examples/attributes/metadata.json",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stdout_file": "root-docflow/05.json",
+    "stdout_sha256": "2f775c600775cfaa45a875104fb35587d9a6838d476da0ccbd6f8e603c7dd33a",
+    "stderr": ""
+  },
+  {
+    "literal_command": "golingua algebra export --metadata data/semantic/examples/attributes/metadata.json --input data/semantic/examples/attributes/past-export-request.json --json",
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua-393-final",
+      "algebra",
+      "export",
+      "--metadata",
+      "data/semantic/examples/attributes/metadata.json",
+      "--input",
+      "data/semantic/examples/attributes/past-export-request.json",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stdout_file": "root-docflow/06.json",
+    "stdout_sha256": "2b12a65012ebe78bc6b2489bfb4326b034b3a32368ffc0154a4e59472e4dbbed",
+    "stderr": ""
+  },
+  {
+    "literal_command": "golingua algebra inspect --input data/semantic/examples/attributes/past-artifact-input.json --json",
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua-393-final",
+      "algebra",
+      "inspect",
+      "--input",
+      "data/semantic/examples/attributes/past-artifact-input.json",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stdout_file": "root-docflow/07.json",
+    "stdout_sha256": "c74c066006491e5b33ad8cc81af87de155de7fd8f3274abde68cfb13bc344918",
+    "stderr": ""
+  },
+  {
+    "literal_command": "golingua algebra replay --metadata data/semantic/examples/attributes/metadata.json --input data/semantic/examples/attributes/past-replay-request.json --json",
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua-393-final",
+      "algebra",
+      "replay",
+      "--metadata",
+      "data/semantic/examples/attributes/metadata.json",
+      "--input",
+      "data/semantic/examples/attributes/past-replay-request.json",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stdout_file": "root-docflow/08.json",
+    "stdout_sha256": "9eb4a4ad69642651bf6a07b88b9ac4fb5844b9d79b176342e4e90e287ca818d0",
+    "stderr": ""
+  },
+  {
+    "source": "data/semantic/examples/attributes/README.md",
+    "literal_command": "golingua algebra check --input data/semantic/examples/attributes/past.json --json",
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua-393-final",
+      "algebra",
+      "check",
+      "--input",
+      "data/semantic/examples/attributes/past.json",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stdout_file": "root-docflow/09.json",
+    "stdout_sha256": "a0d5b2e047a3e649ac8f53702b1624a8040403681005b6d3ed86068aee07022c",
+    "stderr": ""
+  },
+  {
+    "source": "data/semantic/examples/attributes/README.md",
+    "literal_command": "golingua algebra build --metadata data/semantic/examples/attributes/metadata.json --input data/semantic/examples/attributes/modal-build.json --json",
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua-393-final",
+      "algebra",
+      "build",
+      "--metadata",
+      "data/semantic/examples/attributes/metadata.json",
+      "--input",
+      "data/semantic/examples/attributes/modal-build.json",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stdout_file": "root-docflow/10.json",
+    "stdout_sha256": "9ab0b31448c5bc8f69dd58fb992e7ce2949d629799e64be98451067ef896b81c",
+    "stderr": ""
+  },
+  {
+    "source": "data/semantic/examples/attributes/README.md",
+    "literal_command": "golingua algebra evaluate --metadata data/semantic/examples/attributes/metadata.json --expression data/semantic/examples/attributes/one.json --facts data/semantic/examples/attributes/facts-with-event.json --select data/semantic/examples/attributes/select-empty.json --context-id eval-neutral --profile positive-facts-v1 --json",
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua-393-final",
+      "algebra",
+      "evaluate",
+      "--metadata",
+      "data/semantic/examples/attributes/metadata.json",
+      "--expression",
+      "data/semantic/examples/attributes/one.json",
+      "--facts",
+      "data/semantic/examples/attributes/facts-with-event.json",
+      "--select",
+      "data/semantic/examples/attributes/select-empty.json",
+      "--context-id",
+      "eval-neutral",
+      "--profile",
+      "positive-facts-v1",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stdout_file": "root-docflow/11.json",
+    "stdout_sha256": "e098cfb6359bddb481697a926d7f89bde08a89b1b4bdc6bd3db1ff53cabbec26",
+    "stderr": ""
+  },
+  {
+    "source": "data/semantic/examples/attributes/README.md",
+    "literal_command": "golingua algebra evaluate --metadata data/semantic/examples/attributes/metadata.json --expression data/semantic/examples/attributes/past.json --facts data/semantic/examples/attributes/facts-with-event.json --select data/semantic/examples/attributes/select-empty.json --context-id eval-neutral --profile positive-facts-v1 --json",
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua-393-final",
+      "algebra",
+      "evaluate",
+      "--metadata",
+      "data/semantic/examples/attributes/metadata.json",
+      "--expression",
+      "data/semantic/examples/attributes/past.json",
+      "--facts",
+      "data/semantic/examples/attributes/facts-with-event.json",
+      "--select",
+      "data/semantic/examples/attributes/select-empty.json",
+      "--context-id",
+      "eval-neutral",
+      "--profile",
+      "positive-facts-v1",
+      "--json"
+    ],
+    "exit_code": 3,
+    "stdout_file": "root-docflow/12.json",
+    "stdout_sha256": "87e3a024331f8c6a61eca47bdca2f918ea507a59deaa7a675d409896e1180ba4",
+    "stderr": ""
+  },
+  {
+    "source": "data/semantic/examples/attributes/README.md",
+    "literal_command": "golingua algebra export --metadata data/semantic/examples/attributes/metadata.json --input data/semantic/examples/attributes/past-export-request.json --json",
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua-393-final",
+      "algebra",
+      "export",
+      "--metadata",
+      "data/semantic/examples/attributes/metadata.json",
+      "--input",
+      "data/semantic/examples/attributes/past-export-request.json",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stdout_file": "root-docflow/13.json",
+    "stdout_sha256": "2b12a65012ebe78bc6b2489bfb4326b034b3a32368ffc0154a4e59472e4dbbed",
+    "stderr": ""
+  },
+  {
+    "source": "data/semantic/examples/attributes/README.md",
+    "literal_command": "golingua algebra inspect --input data/semantic/examples/attributes/past-artifact-input.json --json",
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua-393-final",
+      "algebra",
+      "inspect",
+      "--input",
+      "data/semantic/examples/attributes/past-artifact-input.json",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stdout_file": "root-docflow/14.json",
+    "stdout_sha256": "c74c066006491e5b33ad8cc81af87de155de7fd8f3274abde68cfb13bc344918",
+    "stderr": ""
+  },
+  {
+    "source": "data/semantic/examples/attributes/README.md",
+    "literal_command": "golingua algebra replay --metadata data/semantic/examples/attributes/metadata.json --input data/semantic/examples/attributes/past-replay-request.json --json",
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua-393-final",
+      "algebra",
+      "replay",
+      "--metadata",
+      "data/semantic/examples/attributes/metadata.json",
+      "--input",
+      "data/semantic/examples/attributes/past-replay-request.json",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stdout_file": "root-docflow/15.json",
+    "stdout_sha256": "9eb4a4ad69642651bf6a07b88b9ac4fb5844b9d79b176342e4e90e287ca818d0",
+    "stderr": ""
+  },
+  {
+    "source": "data/semantic/examples/attributes/README.md",
+    "literal_command": "golingua algebra inspect --input data/semantic/examples/attributes/context-only-reference-interval-artifact-input.json --json",
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua-393-final",
+      "algebra",
+      "inspect",
+      "--input",
+      "data/semantic/examples/attributes/context-only-reference-interval-artifact-input.json",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stdout_file": "root-docflow/16.json",
+    "stdout_sha256": "b6ac9cc9acc04d3f0ce48ca5078b499c9b1c0a1220ab6793f2ade4b3abb1545a",
+    "stderr": ""
+  },
+  {
+    "source": "data/semantic/examples/attributes/README.md",
+    "literal_command": "golingua algebra replay --metadata data/semantic/examples/attributes/metadata.json --input data/semantic/examples/attributes/context-only-reference-interval-replay-request.json --json",
+    "argv": [
+      "/tmp/golingua-dse/bin/golingua-393-final",
+      "algebra",
+      "replay",
+      "--metadata",
+      "data/semantic/examples/attributes/metadata.json",
+      "--input",
+      "data/semantic/examples/attributes/context-only-reference-interval-replay-request.json",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stdout_file": "root-docflow/17.json",
+    "stdout_sha256": "1b1217cd062cbf24dea0ccfaf96b8a86b7aae3e4ba20ed5f5c11d5cd10de7e0f",
+    "stderr": ""
+  }
+]

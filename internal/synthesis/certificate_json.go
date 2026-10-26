@@ -376,6 +376,9 @@ func validateGoalWireValue(g GoalSpec) error {
 			return err
 		}
 	}
+	if err := validateGoalReferenceAttributes(g); err != nil {
+		return err
+	}
 	for i, s := range g.AllowedOperators {
 		if err := certText(s, fmt.Sprintf("certificate.concrete_goal.allowed_operators[%d]", i), 256, false); err != nil {
 			return err

@@ -234,13 +234,14 @@ func sameDeclarationInventory(left, right []algebra.Declaration) bool {
 	if len(left) != len(right) {
 		return false
 	}
-	byID := make(map[string]algebra.Type, len(left))
+	byID := make(map[string]algebra.Declaration, len(left))
 	for _, declaration := range left {
-		byID[declaration.ID] = declaration.Type
+		byID[declaration.ID] = declaration
 	}
 	for _, declaration := range right {
-		typ, exists := byID[declaration.ID]
-		if !exists || !algebra.TypeEqual(typ, declaration.Type) {
+		prior, exists := byID[declaration.ID]
+		if !exists || !algebra.TypeEqual(prior.Type, declaration.Type) ||
+			prior.TemporalFrame != declaration.TemporalFrame || prior.ReferenceTimeID != declaration.ReferenceTimeID || prior.Multiplicity != declaration.Multiplicity {
 			return false
 		}
 	}
