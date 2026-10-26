@@ -2,8 +2,8 @@
 
 > Observational report generated on push to `main`. Matrix outcomes do not gate the technical `go-ci` workflow.
 
-- Source SHA: `62deae8128b3ebaa3e79307912d6e55203158185`
-- Generated (UTC): `2026-10-26T15:47:27Z`
+- Source SHA: `65e4d94913a97e0067a81b635eaed40058f9307c`
+- Generated (UTC): `2026-10-26T16:52:05Z`
 - Command: `go test ./tests/... -count=1 -v`
 - Command exit code: `1` (NONZERO)
 - Registered records: 1000; record checks: 3000
@@ -1093,11 +1093,11 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_unknown` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_frame_on_referent` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_on_predicate` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_participant_roles_swapped` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_omitted` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_participant_roles_swapped` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/temporal_frames` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/referent_multiplicity` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestNegationExpansionFixturesValidateAndRetainScope` | PASS |
@@ -1590,7 +1590,7 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 - Sense catalogue associations parsed: 2031 (not morphology execution coverage).
 - Declared Meaning ID references: 1094 allowed; 1094 required.
 - Inventory fields preserve declared tags, source semantics, allowed/required Meaning IDs, and owner status separately from runtime observations.
-- Inventory source SHA `62deae8128b3ebaa3e79307912d6e55203158185`: 1000 directions.
+- Inventory source SHA `65e4d94913a97e0067a81b635eaed40058f9307c`: 1000 directions.
 
 ### Declared source requirements
 
@@ -1663,7 +1663,7 @@ Aggregates below summarize authored source requirements; they are not observed a
 | `writing_message` | 2 |
 
 Declared role mentions: `agent` 16, `asset` 4, `associate` 4, `associated` 22, `author` 4, `back` 8, `bearer` 24, `beneficiary` 6, `choice_restriction` 2, `companion` 2, `content` 2, `destination` 2, `document` 2, `drinker` 16, `eater` 12, `entity` 2, `existence` 50, `experiencer` 160, `figure` 4, `food` 10, `friend_a` 2, `friend_b` 2, `front` 8, `giver` 20, `helper` 6, `higher` 6, `holder` 50, `instrument` 4, `item` 4, `landmark` 32, `landmark_a` 4, `landmark_b` 4, `liquid` 12, `located` 34, `location` 10, `lower` 6, `manner` 2, `material` 38, `member` 2, `object` 56, `occupant` 6, `owner` 4, `partner` 2, `person_variable` 6, `possessor` 18, `quantified_set` 50, `reader` 38, `reason` 2, `recipient` 24, `runner` 4, `sibling_a` 4, `sibling_b` 4, `sleeper` 22, `source` 2, `speaker` 4, `stimulus` 160, `support` 2, `supported` 2, `target` 4, `thanker` 2, `theme` 20, `time` 4, `tool` 2, `user` 2, `walker` 2, `writer` 2.
-- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "e62fdf8903c59fd27690aa46e58b00d199a10a0e1108869e3aa8d47a8f7196f0", "format_version": 1}`; inventory source SHA: `62deae8128b3ebaa3e79307912d6e55203158185`.
+- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "e62fdf8903c59fd27690aa46e58b00d199a10a0e1108869e3aa8d47a8f7196f0", "format_version": 1}`; inventory source SHA: `65e4d94913a97e0067a81b635eaed40058f9307c`.
 
 Catalogue sense associations are not proof that a paradigm form or morphology procedure ran. Aggregates below describe declared pack associations only.
 
