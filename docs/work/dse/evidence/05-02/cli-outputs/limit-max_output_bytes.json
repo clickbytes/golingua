@@ -1,0 +1,1 @@
+{"status":"resource_limit","diagnostics":[{"code":"RESOURCE_LIMIT","message":"active evidence fingerprint exceeds the bounded payload size","path":"facts.fingerprint","severity":"error"}]}

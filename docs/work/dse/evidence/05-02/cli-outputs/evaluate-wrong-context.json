@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"FACT_CONTEXT_MISMATCH","message":"--context-id must match the explicit fact input context","path":"facts.context_id","severity":"error"}]}

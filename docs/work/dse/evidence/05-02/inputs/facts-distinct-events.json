@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "context_id": "eval-neutral",
+  "referents": [
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "C",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "D",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "E",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "ev1",
+      "type": {
+        "kind": "Event"
+      }
+    },
+    {
+      "id": "ev2",
+      "type": {
+        "kind": "Event"
+      }
+    }
+  ],
+  "facts": [
+    {
+      "id": "f-ev1",
+      "atom": {
+        "symbol": "e2",
+        "args": [
+          {
+            "role": "e",
+            "value": {
+              "kind": "Ref",
+              "id": "ev1"
+            }
+          },
+          {
+            "role": "x",
+            "value": {
+              "kind": "Ref",
+              "id": "A"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "dse389-agent-neutral-input"
+      },
+      "assertion_scope": "asserted"
+    },
+    {
+      "id": "f-ev2",
+      "atom": {
+        "symbol": "e2",
+        "args": [
+          {
+            "role": "e",
+            "value": {
+              "kind": "Ref",
+              "id": "ev2"
+            }
+          },
+          {
+            "role": "x",
+            "value": {
+              "kind": "Ref",
+              "id": "A"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "dse389-agent-neutral-input"
+      },
+      "assertion_scope": "asserted"
+    }
+  ]
+}

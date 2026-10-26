@@ -1,0 +1,18 @@
+{
+  "source_document": "docs/cli.md",
+  "command": [
+    "bash",
+    "-e",
+    "/tmp/golingua-dse/389-doc-flow/flow.sh"
+  ],
+  "temporary_paths_relocated": true,
+  "golingua_resolved_to_frozen_binary": "/tmp/golingua-dse/bin/golingua-389-final",
+  "exit_code": 0,
+  "stderr": "",
+  "script_sha256": "f52e7fdf25503b64db1e3081f4225bc2881a95c38a2fd57c8937cad40955d998",
+  "stdout_sha256": "577b3f738dfefa3e3277de1a2334956c1d9d7377f9eadf3dab192e0c9cd245ec",
+  "output_statuses": [
+    "ok",
+    "ok"
+  ]
+}

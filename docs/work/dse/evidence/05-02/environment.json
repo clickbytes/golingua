@@ -1,0 +1,59 @@
+{
+  "recorded_at_utc": "2026-10-26T09:41:42.929496+00:00",
+  "base_sha": "cf21625b7b85bcf2735c89bb02ffd11fdcf6993f",
+  "branch": "dse/05-02-query-evaluator",
+  "binary": "/tmp/golingua-dse/bin/golingua-389-final",
+  "binary_sha256": "22e48da11cf8291f67c87d691a48d739c4f43ddb3964a8a2d53bdfe00bdf069e",
+  "source_hashes": {
+    "internal/reason/algebra_evaluate.go": "1f42fd97acbe9c8944d8525a245598644abcbf48b916f61e0774f1805566e347",
+    "internal/reason/algebra_proof.go": "e2df876f8acd75df19644e59b048d8c5db44d10809a84d6fee57e032cfc384e0",
+    "internal/reason/algebra_json.go": "fe1a21844fb51aded3ab6ee96487306e0692a6c32a284d8f6a0fbeabad7fdbe2",
+    "internal/reason/algebra_types.go": "1344c972082e8403b02b463c8de2cdbc83b0530ad72c61171ccd995a938c8655",
+    "internal/reason/algebra_plan.go": "7272db09bb3736a7a217659c0d69902c6a1e969c2dabbb10436a7c9f85a9f07d",
+    "internal/cli/algebra.go": "3aff1ed00c902fe6ac0aef358e8c507a047e4b8e72b27efb230cfb0462dcdea9",
+    "internal/cli/cli.go": "e260c2810bde7208cecebf5d5e81473309e1fa13961025d6f4bb0f7670895a51"
+  },
+  "technical_commands_observed": [
+    {
+      "command": "gofmt -l changed Go files",
+      "exit_code": 0,
+      "listed_files": []
+    },
+    {
+      "command": "go vet ./...",
+      "exit_code": 0
+    },
+    {
+      "command": "go build ./cmd/golingua",
+      "exit_code": 0
+    },
+    {
+      "command": "go build -o /tmp/golingua-dse/bin/golingua-389-final ./cmd/golingua",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    },
+    {
+      "command": "/tmp/golingua-dse/bin/golingua-389-final --help",
+      "exit_code": 0
+    },
+    {
+      "command": "/tmp/golingua-dse/bin/golingua-389-final --version",
+      "exit_code": 0,
+      "stdout": "0.1.0-alpha.1\n"
+    }
+  ],
+  "cli_observations": 38,
+  "exit_counts": {
+    "0": 27,
+    "2": 2,
+    "3": 1,
+    "7": 1,
+    "4": 7
+  },
+  "owner_language_acceptance": "NOT_EVALUATED",
+  "agent_assessment": "finite supplied-fact positive witness workflow demonstrated; no world truth/completeness of world domain",
+  "independent_proof_inspection": "389-proof-observation.json"
+}
