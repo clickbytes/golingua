@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "claim_type": "profile_equivalence_v1",
+  "scope": "selected_rewrite_profile",
+  "snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456",
+  "context_id": "proof-neutral",
+  "profile": {
+    "id": "proof-neutral-beta",
+    "rules": [
+      "beta_v1"
+    ]
+  },
+  "left_fingerprint": "sha256:de8d404bc4f3a7443a315789197154d367a64d52f8384c80cc2dabecbc68c0a8",
+  "right_fingerprint": "sha256:b06fdee738544b83830807a355d7b6e9e03e18f4aff9943bc00e33685bdfc5da",
+  "left_rewrite": {
+    "input": {
+      "argument": {
+        "id": "A",
+        "kind": "Ref",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      "function": {
+        "body": {
+          "args": [
+            {
+              "role": "v",
+              "value": {
+                "id": "x",
+                "kind": "Var"
+              }
+            }
+          ],
+          "kind": "Atom",
+          "symbol": "p"
+        },
+        "id": "x",
+        "kind": "Lambda",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      "kind": "Apply"
+    },
+    "normalized": true,
+    "output": {
+      "args": [
+        {
+          "role": "v",
+          "value": {
+            "id": "A",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      ],
+      "kind": "Atom",
+      "symbol": "p"
+    },
+    "profile": {
+      "id": "proof-neutral-beta",
+      "rules": [
+        "beta_v1"
+      ]
+    },
+    "schema_version": 1,
+    "snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456",
+    "steps": [
+      {
+        "after": {
+          "args": [
+            {
+              "role": "v",
+              "value": {
+                "id": "A",
+                "kind": "Ref",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ],
+          "kind": "Atom",
+          "symbol": "p"
+        },
+        "after_nodes": 2,
+        "before": {
+          "argument": {
+            "id": "A",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          },
+          "function": {
+            "body": {
+              "args": [
+                {
+                  "role": "v",
+                  "value": {
+                    "id": "x",
+                    "kind": "Var"
+                  }
+                }
+              ],
+              "kind": "Atom",
+              "symbol": "p"
+            },
+            "id": "x",
+            "kind": "Lambda",
+            "type": {
+              "kind": "Entity"
+            }
+          },
+          "kind": "Apply"
+        },
+        "before_nodes": 5,
+        "binder_mapping": [
+          {
+            "before": "x",
+            "after": "",
+            "kind": "removed"
+          }
+        ],
+        "parameter_mapping": {},
+        "path": [],
+        "profile_id": "proof-neutral-beta",
+        "rule_id": "beta_v1",
+        "side_conditions": [
+          "redex function is a Lambda",
+          "substitution is capture avoiding in the enclosing root scope",
+          "free parameter and reference dependencies are preserved"
+        ],
+        "snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456"
+      }
+    ]
+  },
+  "right_rewrite": {
+    "input": {
+      "args": [
+        {
+          "role": "v",
+          "value": {
+            "id": "A",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      ],
+      "kind": "Atom",
+      "symbol": "p"
+    },
+    "normalized": true,
+    "output": {
+      "args": [
+        {
+          "role": "v",
+          "value": {
+            "id": "A",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      ],
+      "kind": "Atom",
+      "symbol": "p"
+    },
+    "profile": {
+      "id": "proof-neutral-beta",
+      "rules": [
+        "beta_v1"
+      ]
+    },
+    "schema_version": 1,
+    "snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456",
+    "steps": []
+  }
+}

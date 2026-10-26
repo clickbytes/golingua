@@ -1,0 +1,27 @@
+{
+  "tool": "jsonschema",
+  "version": "4.26.0",
+  "meta_schema": "valid",
+  "certificates": [
+    {
+      "file": "/tmp/golingua-dse/390-cli-observations/certificate-and.json",
+      "definition": "equivalence_certificate",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/390-cli-observations/certificate-beta.json",
+      "definition": "equivalence_certificate",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/390-cli-observations/certificate-alpha.json",
+      "definition": "equivalence_certificate",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/390-independent-inputs/evaluation-proof.json",
+      "definition": "algebra_evaluation_result",
+      "errors": []
+    }
+  ]
+}

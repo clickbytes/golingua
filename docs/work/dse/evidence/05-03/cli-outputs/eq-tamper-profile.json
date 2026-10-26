@@ -1,0 +1,243 @@
+{
+  "schema_version": 1,
+  "claim_type": "profile_equivalence_v1",
+  "scope": "selected_rewrite_profile",
+  "snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456",
+  "context_id": "proof-neutral",
+  "profile": {
+    "id": "wrong",
+    "rules": [
+      "alpha_v1"
+    ]
+  },
+  "left_fingerprint": "sha256:3f0292e0c07822f3951d7d1bac37c798d6850ee09c71d63ed55d6b01cd5fa7aa",
+  "right_fingerprint": "sha256:eee8c9949801cac3dc53ea4d5cf7d683d28ee55c75103506d70413d7ecc1bac2",
+  "left_rewrite": {
+    "input": {
+      "body": {
+        "args": [
+          {
+            "role": "v",
+            "value": {
+              "id": "x",
+              "kind": "Var"
+            }
+          }
+        ],
+        "kind": "Atom",
+        "symbol": "p"
+      },
+      "id": "x",
+      "kind": "Lambda",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    "normalized": true,
+    "output": {
+      "body": {
+        "args": [
+          {
+            "role": "v",
+            "value": {
+              "id": "norm_b1",
+              "kind": "Var"
+            }
+          }
+        ],
+        "kind": "Atom",
+        "symbol": "p"
+      },
+      "id": "norm_b1",
+      "kind": "Lambda",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    "profile": {
+      "id": "proof-neutral-alpha",
+      "rules": [
+        "alpha_v1"
+      ]
+    },
+    "schema_version": 1,
+    "snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456",
+    "steps": [
+      {
+        "after": {
+          "body": {
+            "args": [
+              {
+                "role": "v",
+                "value": {
+                  "id": "norm_b1",
+                  "kind": "Var"
+                }
+              }
+            ],
+            "kind": "Atom",
+            "symbol": "p"
+          },
+          "id": "norm_b1",
+          "kind": "Lambda",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        "after_nodes": 3,
+        "before": {
+          "body": {
+            "args": [
+              {
+                "role": "v",
+                "value": {
+                  "id": "x",
+                  "kind": "Var"
+                }
+              }
+            ],
+            "kind": "Atom",
+            "symbol": "p"
+          },
+          "id": "x",
+          "kind": "Lambda",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        "before_nodes": 3,
+        "binder_mapping": [
+          {
+            "before": "x",
+            "after": "norm_b1",
+            "kind": "renamed"
+          }
+        ],
+        "parameter_mapping": {},
+        "path": [],
+        "profile_id": "proof-neutral-alpha",
+        "rule_id": "alpha_v1",
+        "side_conditions": [
+          "binder IDs use deterministic preorder names",
+          "bound Var occurrences follow their exact binder",
+          "parameter and reference IDs are preserved"
+        ],
+        "snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456"
+      }
+    ]
+  },
+  "right_rewrite": {
+    "input": {
+      "body": {
+        "args": [
+          {
+            "role": "v",
+            "value": {
+              "id": "y",
+              "kind": "Var"
+            }
+          }
+        ],
+        "kind": "Atom",
+        "symbol": "p"
+      },
+      "id": "y",
+      "kind": "Lambda",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    "normalized": true,
+    "output": {
+      "body": {
+        "args": [
+          {
+            "role": "v",
+            "value": {
+              "id": "norm_b1",
+              "kind": "Var"
+            }
+          }
+        ],
+        "kind": "Atom",
+        "symbol": "p"
+      },
+      "id": "norm_b1",
+      "kind": "Lambda",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    "profile": {
+      "id": "proof-neutral-alpha",
+      "rules": [
+        "alpha_v1"
+      ]
+    },
+    "schema_version": 1,
+    "snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456",
+    "steps": [
+      {
+        "after": {
+          "body": {
+            "args": [
+              {
+                "role": "v",
+                "value": {
+                  "id": "norm_b1",
+                  "kind": "Var"
+                }
+              }
+            ],
+            "kind": "Atom",
+            "symbol": "p"
+          },
+          "id": "norm_b1",
+          "kind": "Lambda",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        "after_nodes": 3,
+        "before": {
+          "body": {
+            "args": [
+              {
+                "role": "v",
+                "value": {
+                  "id": "y",
+                  "kind": "Var"
+                }
+              }
+            ],
+            "kind": "Atom",
+            "symbol": "p"
+          },
+          "id": "y",
+          "kind": "Lambda",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        "before_nodes": 3,
+        "binder_mapping": [
+          {
+            "before": "y",
+            "after": "norm_b1",
+            "kind": "renamed"
+          }
+        ],
+        "parameter_mapping": {},
+        "path": [],
+        "profile_id": "proof-neutral-alpha",
+        "rule_id": "alpha_v1",
+        "side_conditions": [
+          "binder IDs use deterministic preorder names",
+          "bound Var occurrences follow their exact binder",
+          "parameter and reference IDs are preserved"
+        ],
+        "snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456"
+      }
+    ]
+  }
+}

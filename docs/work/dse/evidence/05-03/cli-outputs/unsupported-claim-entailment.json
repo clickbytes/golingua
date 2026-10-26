@@ -1,0 +1,1 @@
+{"status":"unsupported","claim_type":"entailment","result":{"diagnostics":[{"status":"unsupported","code":"UNSUPPORTED_PROOF_CLAIM","path":"claim","message":"only equivalence, rewrite, goal, and evaluation proof claims are supported"}],"verdict":"undetermined"},"metadata":[],"validation_scope":"unsupported claim type; no equivalence or other proof interpretation was attempted"}

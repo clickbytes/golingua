@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"EQUIVALENCE_INPUT_FINGERPRINT_MISMATCH","message":"certificate source fingerprints do not match the actual canonical input documents","path":"certificate","severity":"error"}]}

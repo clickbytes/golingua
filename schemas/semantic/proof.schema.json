@@ -88,6 +88,578 @@
         "request": {"$ref": "#/$defs/normalization_request"},
         "certificate": {"$ref": "#/$defs/rewrite_certificate"}
       }
+    },
+    "equivalence_certificate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "claim_type",
+        "scope",
+        "snapshot_id",
+        "context_id",
+        "profile",
+        "left_fingerprint",
+        "right_fingerprint",
+        "left_rewrite",
+        "right_rewrite"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "claim_type": {
+          "const": "profile_equivalence_v1"
+        },
+        "scope": {
+          "const": "selected_rewrite_profile"
+        },
+        "snapshot_id": {
+          "$ref": "#/$defs/id"
+        },
+        "context_id": {
+          "$ref": "#/$defs/id"
+        },
+        "profile": {
+          "$ref": "#/$defs/profile"
+        },
+        "left_fingerprint": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "right_fingerprint": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "left_rewrite": {
+          "$ref": "#/$defs/rewrite_certificate"
+        },
+        "right_rewrite": {
+          "$ref": "#/$defs/rewrite_certificate"
+        }
+      },
+      "$comment": "Positive equivalence claim only. The checker independently replays both source certificates against the selected inputs. Unequal normal forms are undetermined; no countermodel or entailment is represented."
+    },
+    "algebra_variable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "id"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "lambda",
+            "parameter",
+            "exists"
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "algebra_answer_port": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "as",
+        "variable",
+        "type"
+      ],
+      "properties": {
+        "as": {
+          "$ref": "#/$defs/id"
+        },
+        "variable": {
+          "$ref": "#/$defs/algebra_variable"
+        },
+        "type": {
+          "$ref": "expression.schema.json#/$defs/type"
+        }
+      }
+    },
+    "algebra_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "variable",
+        "value"
+      ],
+      "properties": {
+        "variable": {
+          "$ref": "#/$defs/algebra_variable"
+        },
+        "value": {
+          "$ref": "facts.schema.json#/$defs/value"
+        }
+      }
+    },
+    "algebra_evaluation_proof_node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "rule_id",
+        "plan_node_id",
+        "premises",
+        "fact_ids",
+        "sources",
+        "bindings",
+        "opposing_negative_fact_ids",
+        "depth"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "rule_id": {
+          "enum": [
+            "query.fact_match.v1",
+            "query.and.v1",
+            "query.exists.v1",
+            "query.project.v1",
+            "query.reference.v1"
+          ]
+        },
+        "plan_node_id": {
+          "$ref": "#/$defs/id"
+        },
+        "premises": {
+          "type": "array",
+          "maxItems": 16384,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "fact_ids": {
+          "type": "array",
+          "maxItems": 4096,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "sources": {
+          "type": "array",
+          "maxItems": 4096,
+          "items": {
+            "$ref": "facts.schema.json#/$defs/source"
+          }
+        },
+        "atom": {
+          "$ref": "facts.schema.json#/$defs/atom"
+        },
+        "bindings": {
+          "type": "array",
+          "maxItems": 512,
+          "items": {
+            "$ref": "#/$defs/algebra_binding"
+          }
+        },
+        "witness": {
+          "$ref": "#/$defs/algebra_binding"
+        },
+        "reference": {
+          "$ref": "expression.schema.json#/$defs/declaration"
+        },
+        "opposing_negative_fact_ids": {
+          "type": "array",
+          "maxItems": 4096,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "depth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 128
+        }
+      }
+    },
+    "algebra_evaluation_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "status",
+        "profile",
+        "knowledge",
+        "context_id",
+        "facts_snapshot_id",
+        "formal_snapshot_id",
+        "evidence_fingerprint",
+        "plan_fingerprint",
+        "columns",
+        "answers",
+        "proof",
+        "input_evidence",
+        "complete",
+        "diagnostics",
+        "usage",
+        "limits",
+        "assumptions"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "status": {
+          "enum": [
+            "ok",
+            "invalid",
+            "unsupported",
+            "resource_limit",
+            "unknown",
+            "ambiguous",
+            "incomplete",
+            "error"
+          ]
+        },
+        "profile": {
+          "const": "positive-facts-v1"
+        },
+        "knowledge": {
+          "enum": [
+            "supported",
+            "unknown"
+          ]
+        },
+        "context_id": {
+          "$ref": "#/$defs/id"
+        },
+        "at": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "facts_snapshot_id": {
+          "$ref": "#/$defs/id"
+        },
+        "formal_snapshot_id": {
+          "$ref": "#/$defs/id"
+        },
+        "evidence_fingerprint": {
+          "$ref": "#/$defs/id"
+        },
+        "plan_fingerprint": {
+          "$ref": "#/$defs/id"
+        },
+        "columns": {
+          "type": "array",
+          "maxItems": 512,
+          "items": {
+            "$ref": "#/$defs/algebra_answer_port"
+          }
+        },
+        "answers": {
+          "type": "array",
+          "maxItems": 512,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "values",
+              "proof_ids",
+              "has_conflict"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/id"
+              },
+              "values": {
+                "type": "array",
+                "maxItems": 512,
+                "items": {
+                  "$ref": "facts.schema.json#/$defs/value"
+                }
+              },
+              "proof_ids": {
+                "type": "array",
+                "maxItems": 64,
+                "items": {
+                  "$ref": "#/$defs/id"
+                }
+              },
+              "has_conflict": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "proof": {
+          "type": "array",
+          "maxItems": 16384,
+          "items": {
+            "$ref": "#/$defs/algebra_evaluation_proof_node"
+          }
+        },
+        "input_evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "stored_facts",
+            "active_facts",
+            "inactive_facts",
+            "positive_records",
+            "negative_records",
+            "conflicts"
+          ],
+          "properties": {
+            "stored_facts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "active_facts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inactive_facts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "positive_records": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "negative_records": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "conflicts": {
+              "type": "array",
+              "maxItems": 4096,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "atom",
+                  "positive_ids",
+                  "negative_ids"
+                ],
+                "properties": {
+                  "atom": {
+                    "$ref": "facts.schema.json#/$defs/atom"
+                  },
+                  "positive_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "maxLength": 128
+                    }
+                  },
+                  "negative_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "maxLength": 128
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ground_atom_evidence": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "required": [
+            "state",
+            "positive",
+            "negative"
+          ],
+          "properties": {
+            "state": {
+              "enum": [
+                "unknown",
+                "positive",
+                "negative",
+                "both"
+              ]
+            },
+            "positive": {
+              "type": "array",
+              "items": {
+                "$ref": "facts.schema.json#/$defs/fact"
+              }
+            },
+            "negative": {
+              "type": "array",
+              "items": {
+                "$ref": "facts.schema.json#/$defs/fact"
+              }
+            }
+          }
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "stop_reason": {
+          "type": "string"
+        },
+        "diagnostics": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "status",
+              "code",
+              "path",
+              "message"
+            ],
+            "properties": {
+              "status": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string",
+                "maxLength": 128
+              },
+              "path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "message": {
+                "type": "string",
+                "maxLength": 2048
+              }
+            }
+          }
+        },
+        "usage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "work_units",
+            "join_attempts",
+            "indexed_facts",
+            "intermediate_rows",
+            "results",
+            "proof_nodes",
+            "proofs",
+            "output_bytes"
+          ],
+          "properties": {
+            "work_units": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "join_attempts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "indexed_facts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "intermediate_rows": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "results": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "proof_nodes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "proofs": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "output_bytes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "max_plan_atoms",
+            "max_variables",
+            "max_intermediate_rows",
+            "max_results",
+            "max_proof_nodes",
+            "max_proofs_per_answer",
+            "max_proof_depth",
+            "max_work_units",
+            "max_output_bytes",
+            "timeout_millis",
+            "term_limits"
+          ],
+          "properties": {
+            "max_plan_atoms": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_variables": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_intermediate_rows": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_results": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_proof_nodes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_proofs_per_answer": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_proof_depth": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_work_units": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_output_bytes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "timeout_millis": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "term_limits": {
+              "$ref": "expression.schema.json#/$defs/limits"
+            }
+          }
+        },
+        "assumptions": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "maxLength": 2048
+          }
+        },
+        "plan": {
+          "type": "object",
+          "maxProperties": 64,
+          "additionalProperties": true
+        }
+      },
+      "$comment": "The independent witness checker consumes only the result object; optional plan is descriptive and never trusted. complete is a producer claim, not an answer-set proof."
     }
   }
 }

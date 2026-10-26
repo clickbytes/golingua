@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"EQUIVALENCE_CERTIFICATE_CONTEXT_MISMATCH","message":"version, scope, snapshot, context, and exact profile must match the actual verification request","path":"certificate","severity":"error"}]}

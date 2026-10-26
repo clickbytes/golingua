@@ -1,0 +1,9 @@
+{
+  "id": "proof-neutral-all",
+  "rules": [
+    "alpha_v1",
+    "beta_v1",
+    "and_flatten_v1",
+    "and_order_v1"
+  ]
+}

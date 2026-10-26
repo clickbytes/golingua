@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -25,6 +26,10 @@ import (
 type algebraOptions struct {
 	command            string
 	input              string
+	left               string
+	right              string
+	proof              string
+	claim              string
 	goal               string
 	candidate          string
 	certificate        string
@@ -38,6 +43,8 @@ type algebraOptions struct {
 	at                 string
 	evaluationLimits   reason.AlgebraEvaluationLimits
 	evaluationLimitSet map[string]bool
+	comparisonLimits   algebra.EquivalenceLimits
+	comparisonLimitSet map[string]bool
 	json               bool
 	noCache            bool
 	searchLimits       synthesis.SearchLimits
@@ -179,6 +186,22 @@ type algebraEvaluationOutput struct {
 	ValidationScope string                         `json:"validation_scope"`
 }
 
+type algebraEquivalenceOutput struct {
+	Status          status.OutcomeKind        `json:"status"`
+	ClaimType       string                    `json:"claim_type"`
+	Result          algebra.EquivalenceResult `json:"result"`
+	Metadata        []metadataReference       `json:"metadata"`
+	ValidationScope string                    `json:"validation_scope"`
+}
+
+type algebraProofOutput struct {
+	Status          status.OutcomeKind  `json:"status"`
+	ClaimType       string              `json:"claim_type"`
+	Result          any                 `json:"result"`
+	Metadata        []metadataReference `json:"metadata"`
+	ValidationScope string              `json:"validation_scope"`
+}
+
 type synthesisOutput struct {
 	Status          status.OutcomeKind             `json:"status"`
 	Mode            string                         `json:"mode"`
@@ -228,6 +251,10 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		options.command = "verify_goal"
 	} else if args[1] == "evaluate" {
 		options.command = "evaluate"
+	} else if args[1] == "compare" {
+		options.command = "compare"
+	} else if args[1] == "verify-proof" {
+		options.command = "verify_proof"
 	} else if args[1] == "normalize" || args[1] == "verify-rewrite" || args[1] == "export" || args[1] == "inspect" || args[1] == "replay" {
 		options.command = args[1]
 	} else if args[1] == "metadata" {
@@ -249,7 +276,7 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		options.command = "catalog_export"
 		index = 3
 	} else {
-		return options, "expected algebra check, build, synthesize, verify-goal, evaluate, export, inspect, replay, normalize, verify-rewrite, metadata, facts, or catalog"
+		return options, "expected algebra check, build, synthesize, verify-goal, evaluate, compare, verify-proof, export, inspect, replay, normalize, verify-rewrite, metadata, facts, or catalog"
 	}
 	seenJSON, seenInput := false, false
 	seenNoCache := false
@@ -257,8 +284,10 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 	options.searchLimitSet = make(map[string]bool)
 	options.verifyLimitSet = make(map[string]bool)
 	options.evaluationLimitSet = make(map[string]bool)
+	options.comparisonLimitSet = make(map[string]bool)
 	seenExpression, seenFacts, seenSelection := false, false, false
 	seenContextID, seenProfile, seenAt := false, false, false
+	seenLeft, seenRight, seenProof, seenClaim := false, false, false, false
 	for i := index; i < len(args); i++ {
 		flag := args[i]
 		switch flag {
@@ -269,7 +298,7 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			seenJSON = true
 			options.json = true
 		case "--input":
-			if options.command != "check" && options.command != "build" && options.command != "normalize" && options.command != "verify-rewrite" && options.command != "export" && options.command != "inspect" && options.command != "replay" && options.command != "facts_validate" {
+			if options.command != "check" && options.command != "build" && options.command != "normalize" && options.command != "verify-rewrite" && options.command != "export" && options.command != "inspect" && options.command != "replay" && options.command != "facts_validate" && options.command != "verify_proof" {
 				return options, "--input is not valid for this algebra command"
 			}
 			if seenInput {
@@ -285,8 +314,9 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 				return options, "--input value must not be empty"
 			}
 		case "--expression", "--facts", "--select", "--context-id", "--profile", "--at", "--evaluation-limit":
-			if options.command != "evaluate" {
-				return options, flag + " is only valid for algebra evaluate"
+			allowed := options.command == "evaluate" || options.command == "verify_proof" || ((flag == "--context-id" || flag == "--profile") && options.command == "compare")
+			if !allowed {
+				return options, flag + " is not valid for this algebra command"
 			}
 			if i+1 >= len(args) || args[i+1] == "--json" || strings.HasPrefix(args[i+1], "--") {
 				return options, "missing value for " + flag
@@ -295,18 +325,27 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			value := args[i]
 			switch flag {
 			case "--expression":
+				if options.command != "evaluate" && options.command != "verify_proof" {
+					return options, "--expression is not valid for this command"
+				}
 				if seenExpression {
 					return options, "duplicate --expression flag"
 				}
 				seenExpression = true
 				options.expression = value
 			case "--facts":
+				if options.command != "evaluate" && options.command != "verify_proof" {
+					return options, "--facts is not valid for this command"
+				}
 				if seenFacts {
 					return options, "duplicate --facts flag"
 				}
 				seenFacts = true
 				options.factsInput = value
 			case "--select":
+				if options.command != "evaluate" && options.command != "verify_proof" {
+					return options, "--select is not valid for this command"
+				}
 				if seenSelection {
 					return options, "duplicate --select flag"
 				}
@@ -325,6 +364,9 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 				seenProfile = true
 				options.profile = value
 			case "--at":
+				if options.command != "evaluate" && options.command != "verify_proof" {
+					return options, "--at is not valid for this command"
+				}
 				if seenAt {
 					return options, "duplicate --at flag"
 				}
@@ -334,13 +376,16 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 					return options, "--at value must be a UTC timestamp"
 				}
 			case "--evaluation-limit":
+				if options.command != "evaluate" && options.command != "verify_proof" {
+					return options, "--evaluation-limit is not valid for this command"
+				}
 				if err := setEvaluationLimit(&options, value); err != "" {
 					return options, err
 				}
 			}
 		case "--goal":
-			if options.command != "synthesize" && options.command != "verify_goal" {
-				return options, "--goal is only valid for algebra synthesize or verify-goal"
+			if options.command != "synthesize" && options.command != "verify_goal" && options.command != "verify_proof" {
+				return options, "--goal is not valid for this algebra command"
 			}
 			if seenGoal {
 				return options, "duplicate --goal flag"
@@ -355,8 +400,8 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 				return options, "--goal value must not be empty"
 			}
 		case "--candidate":
-			if options.command != "verify_goal" {
-				return options, "--candidate is only valid for algebra verify-goal"
+			if options.command != "verify_goal" && options.command != "verify_proof" {
+				return options, "--candidate is not valid for this algebra command"
 			}
 			if seenCandidate {
 				return options, "duplicate --candidate flag"
@@ -371,8 +416,8 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 				return options, "--candidate requires a named file path"
 			}
 		case "--certificate":
-			if options.command != "verify_goal" {
-				return options, "--certificate is only valid for algebra verify-goal"
+			if options.command != "verify_goal" && options.command != "verify_proof" {
+				return options, "--certificate is not valid for this algebra command"
 			}
 			if seenCertificate {
 				return options, "duplicate --certificate flag"
@@ -411,8 +456,8 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 				return options, err
 			}
 		case "--verify-limit":
-			if options.command != "verify_goal" {
-				return options, "--verify-limit is only valid for algebra verify-goal"
+			if options.command != "verify_goal" && options.command != "verify_proof" {
+				return options, "--verify-limit is only valid for proof verification"
 			}
 			if i+1 >= len(args) || args[i+1] == "--json" || strings.HasPrefix(args[i+1], "--") {
 				return options, "missing value for --verify-limit"
@@ -420,6 +465,58 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			i++
 			if err := setVerifyLimit(&options, args[i]); err != "" {
 				return options, err
+			}
+		case "--comparison-limit":
+			if options.command != "compare" && options.command != "verify_proof" {
+				return options, "--comparison-limit is only valid for algebra compare or verify-proof equivalence"
+			}
+			if i+1 >= len(args) || args[i+1] == "--json" || strings.HasPrefix(args[i+1], "--") {
+				return options, "missing value for --comparison-limit"
+			}
+			i++
+			if err := setComparisonLimit(&options, args[i]); err != "" {
+				return options, err
+			}
+		case "--claim":
+			if options.command != "verify_proof" {
+				return options, "--claim is only valid for algebra verify-proof"
+			}
+			if seenClaim {
+				return options, "duplicate --claim flag"
+			}
+			seenClaim = true
+			if i+1 >= len(args) || args[i+1] == "--json" || strings.HasPrefix(args[i+1], "--") {
+				return options, "missing value for --claim"
+			}
+			i++
+			options.claim = args[i]
+		case "--left", "--right", "--proof":
+			if options.command != "compare" && options.command != "verify_proof" {
+				return options, flag + " is not valid for this algebra command"
+			}
+			if i+1 >= len(args) || args[i+1] == "--json" || strings.HasPrefix(args[i+1], "--") {
+				return options, "missing value for " + flag
+			}
+			i++
+			if args[i] == "" || args[i] == "-" {
+				return options, flag + " requires a named file path"
+			}
+			switch flag {
+			case "--left":
+				if seenLeft {
+					return options, "duplicate --left flag"
+				}
+				seenLeft, options.left = true, args[i]
+			case "--right":
+				if seenRight {
+					return options, "duplicate --right flag"
+				}
+				seenRight, options.right = true, args[i]
+			case "--proof":
+				if seenProof {
+					return options, "duplicate --proof flag"
+				}
+				seenProof, options.proof = true, args[i]
 			}
 		case "--metadata":
 			if options.command == "inspect" {
@@ -472,6 +569,60 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		}
 		if options.contextID == "" || options.profile != reason.AlgebraQueryProfile {
 			return options, "algebra evaluate requires a nonempty context ID and profile positive-facts-v1"
+		}
+	}
+	if options.command == "compare" {
+		if !seenLeft || !seenRight || !seenContextID || !seenProfile || len(options.metadata) == 0 {
+			return options, "algebra compare requires --left, --right, --profile, --context-id, and at least one --metadata file"
+		}
+		if options.contextID == "" || options.profile == "" {
+			return options, "comparison profile path and context ID must not be empty"
+		}
+		if options.input != "" || options.goal != "" || options.candidate != "" || options.certificate != "" || options.proof != "" || options.expression != "" || options.factsInput != "" || options.selection != "" || options.at != "" || options.claim != "" || len(options.verifyLimitSet) != 0 || len(options.evaluationLimitSet) != 0 {
+			return options, "algebra compare received flags from another command profile"
+		}
+	}
+	if options.command == "verify_proof" {
+		if !seenClaim || options.claim == "" {
+			return options, "algebra verify-proof requires an explicit --claim"
+		}
+		if options.claim == "equivalence" {
+			if !seenLeft || !seenRight || !seenProfile || !seenContextID || !seenCertificate || len(options.metadata) == 0 {
+				return options, "equivalence verification requires --left, --right, --profile, --context-id, --certificate, and metadata"
+			}
+			if options.left == "" || options.right == "" || options.profile == "" || options.contextID == "" {
+				return options, "equivalence verification file paths and context ID must not be empty"
+			}
+			if options.input != "" || options.goal != "" || options.candidate != "" || options.proof != "" || options.expression != "" || options.factsInput != "" || options.selection != "" || options.at != "" || len(options.evaluationLimitSet) != 0 || len(options.verifyLimitSet) != 0 {
+				return options, "equivalence verification received flags from another claim"
+			}
+		} else if options.claim == "rewrite" {
+			if !seenInput || len(options.metadata) == 0 {
+				return options, "rewrite verification requires --input and metadata"
+			}
+			if options.left != "" || options.right != "" || options.proof != "" || options.goal != "" || options.candidate != "" || options.certificate != "" || options.expression != "" || options.factsInput != "" || options.selection != "" || options.contextID != "" || options.profile != "" || options.at != "" || len(options.evaluationLimitSet)+len(options.verifyLimitSet)+len(options.comparisonLimitSet) != 0 {
+				return options, "rewrite verification received flags from another claim"
+			}
+		} else if options.claim == "goal" {
+			if !seenGoal || !seenCandidate || !seenCertificate || len(options.metadata) == 0 {
+				return options, "goal verification requires --goal, --candidate, --certificate, and metadata"
+			}
+			if options.left != "" || options.right != "" || options.proof != "" || options.input != "" || options.expression != "" || options.factsInput != "" || options.selection != "" || options.contextID != "" || options.profile != "" || options.at != "" || len(options.evaluationLimitSet)+len(options.comparisonLimitSet) != 0 {
+				return options, "goal verification received flags from another claim"
+			}
+		} else if options.claim == "evaluation" {
+			if !seenExpression || !seenFacts || !seenSelection || !seenContextID || !seenProfile || !seenProof || len(options.metadata) == 0 {
+				return options, "evaluation verification requires --expression, --facts, --select, --proof, --context-id, --profile, and metadata"
+			}
+			if options.expression == "" || options.factsInput == "" || options.selection == "" || options.proof == "" || options.contextID == "" || options.profile != reason.AlgebraQueryProfile {
+				return options, "evaluation verification requires named inputs, a context ID, and profile positive-facts-v1"
+			}
+			if options.expression == "-" || options.factsInput == "-" || options.selection == "-" || options.proof == "-" {
+				return options, "evaluation verification requires named file paths"
+			}
+			if options.left != "" || options.right != "" || options.input != "" || options.goal != "" || options.candidate != "" || options.certificate != "" || len(options.verifyLimitSet)+len(options.comparisonLimitSet) != 0 {
+				return options, "evaluation verification received flags from another claim"
+			}
 		}
 	}
 	if len(options.metadata) > 16 {
@@ -595,6 +746,37 @@ func setVerifyLimit(options *algebraOptions, assignment string) string {
 	return ""
 }
 
+func setComparisonLimit(options *algebraOptions, assignment string) string {
+	name, value, ok := strings.Cut(assignment, "=")
+	if !ok || name == "" || value == "" {
+		return "--comparison-limit must be name=value"
+	}
+	if options.comparisonLimitSet[name] {
+		return fmt.Sprintf("duplicate --comparison-limit %q", name)
+	}
+	for _, digit := range value {
+		if digit < '0' || digit > '9' {
+			return fmt.Sprintf("--comparison-limit %q must use a nonnegative decimal integer", name)
+		}
+	}
+	parsed, err := strconv.Atoi(value)
+	if err != nil {
+		return fmt.Sprintf("--comparison-limit %q is outside the supported integer range", name)
+	}
+	var destination *int
+	switch name {
+	case "max_work_units":
+		destination = &options.comparisonLimits.MaxWorkUnits
+	case "max_certificate_bytes":
+		destination = &options.comparisonLimits.MaxCertificateBytes
+	default:
+		return fmt.Sprintf("unknown --comparison-limit name %q", name)
+	}
+	*destination = parsed
+	options.comparisonLimitSet[name] = true
+	return ""
+}
+
 func setEvaluationLimit(options *algebraOptions, assignment string) string {
 	name, value, ok := strings.Cut(assignment, "=")
 	if !ok || name == "" || value == "" {
@@ -665,6 +847,28 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 			return ExitError
 		}
 		return ExitOK
+	}
+	if options.command == "compare" {
+		registries, err := readMetadataRegistries(options.metadata)
+		if err != nil {
+			return writeAlgebraError(stdout, stderr, err)
+		}
+		return runAlgebraCompare(options, stdout, stderr, registries)
+	}
+	if options.command == "verify_proof" {
+		switch options.claim {
+		case "equivalence", "rewrite", "goal", "evaluation":
+		default:
+			result := algebraProofOutput{Status: status.OutcomeUnsupported, ClaimType: options.claim,
+				Result:   map[string]any{"verdict": "undetermined", "diagnostics": []algebra.Error{{Status: status.OutcomeUnsupported, Code: "UNSUPPORTED_PROOF_CLAIM", Path: "claim", Message: "only equivalence, rewrite, goal, and evaluation proof claims are supported"}}},
+				Metadata: []metadataReference{}, ValidationScope: "unsupported claim type; no equivalence or other proof interpretation was attempted"}
+			return writeCappedAlgebraOutput(stdout, stderr, result, result.Status)
+		}
+		registries, err := readMetadataRegistries(options.metadata)
+		if err != nil {
+			return writeAlgebraError(stdout, stderr, err)
+		}
+		return runAlgebraVerifyProof(options, input, stdout, stderr, registries)
 	}
 	if options.command == "facts_validate" {
 		registries, err := readMetadataRegistries(options.metadata)
@@ -1602,6 +1806,350 @@ func writeNaryFactsError(stdout, stderr io.Writer, err error) int {
 		return writeResult(stdout, stderr, result)
 	}
 	return writeAlgebraError(stdout, stderr, err)
+}
+
+func runAlgebraCompare(options algebraOptions, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
+	leftBytes, err := readNamedAlgebraFile(options.left, algebra.MaxDocumentBytes, "comparison left")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	rightBytes, err := readNamedAlgebraFile(options.right, algebra.MaxDocumentBytes, "comparison right")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	profileBytes, err := readNamedAlgebraFile(options.profile, algebra.MaxDocumentBytes, "comparison profile")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	if len(leftBytes)+len(rightBytes)+len(profileBytes) > algebra.MaxEquivalenceBytes {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeResourceLimit, Code: "EQUIVALENCE_INPUT_BYTES", Path: "inputs", Message: "combined comparison inputs exceed the 16 MiB request cap"})
+	}
+	left, err := algebra.DecodeDocumentJSON(leftBytes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	right, err := algebra.DecodeDocumentJSON(rightBytes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	profile, err := algebra.DecodeRewriteProfileJSON(profileBytes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	limits, err := algebra.NormalizeEquivalenceLimits(options.comparisonLimits)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	parameters, err := mergeComparisonDeclarations(left.Parameters, right.Parameters, "parameters")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	references, err := mergeComparisonDeclarations(left.References, right.References, "references")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	environment, err := metamodel.NormalizationEnvironment(algebra.Document{SchemaVersion: algebra.SchemaVersion, Parameters: parameters, References: references, Limits: limits.TermLimits}, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	result, err := algebra.CompareExpressions(environment, left, right, profile, options.contextID, limits)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	output := algebraEquivalenceOutput{Status: result.Status, ClaimType: algebra.EquivalenceClaimProfile, Result: result, Metadata: metadataReferences(registries), ValidationScope: "positive equivalence only relative to the exact selected rewrite profile, metadata snapshot, context ID, and the two supplied expressions; different normal forms remain undetermined"}
+	return writeCappedAlgebraOutput(stdout, stderr, output, output.Status)
+}
+
+func mergeComparisonDeclarations(left, right []algebra.Declaration, path string) ([]algebra.Declaration, error) {
+	byID := make(map[string]algebra.Type, len(left)+len(right))
+	for _, declaration := range append(append([]algebra.Declaration{}, left...), right...) {
+		if !validAlgebraCLIText(declaration.ID, 256) {
+			return nil, &algebra.Error{Status: status.OutcomeInvalid, Code: "INVALID_COMPARISON_DECLARATION", Path: path, Message: "source declaration ID is empty or exceeds its bound"}
+		}
+		if existing, ok := byID[declaration.ID]; ok {
+			if !algebra.TypeEqual(existing, declaration.Type) {
+				return nil, &algebra.Error{Status: status.OutcomeInvalid, Code: "COMPARISON_DECLARATION_TYPE_CONFLICT", Path: path + "." + declaration.ID, Message: "the same parameter or reference ID has different types across comparison inputs"}
+			}
+			continue
+		}
+		byID[declaration.ID] = declaration.Type
+	}
+	ids := make([]string, 0, len(byID))
+	for id := range byID {
+		ids = append(ids, id)
+	}
+	sort.Strings(ids)
+	result := make([]algebra.Declaration, 0, len(ids))
+	for _, id := range ids {
+		result = append(result, algebra.Declaration{ID: id, Type: byID[id]})
+	}
+	return result, nil
+}
+
+func validAlgebraCLIText(value string, maximum int) bool {
+	return value != "" && len(value) <= maximum && utf8.ValidString(value)
+}
+
+func readNamedAlgebraFile(path string, maximum int, description string) ([]byte, error) {
+	if path == "" || path == "-" {
+		return nil, &algebra.Error{Status: status.OutcomeInvalid, Code: "NAMED_INPUT_REQUIRED", Path: description, Message: "this input requires a named file path"}
+	}
+	options := algebraOptions{input: path}
+	return readAlgebraInput(options, nil, maximum, description)
+}
+
+func writeCappedAlgebraOutput(stdout, stderr io.Writer, output any, kind status.OutcomeKind) int {
+	encoded, err := json.Marshal(output)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	if len(encoded)+1 > maxAlgebraEvaluationResponseBytes {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeResourceLimit, Code: "PROOF_RESPONSE_BYTES", Path: "result", Message: "complete proof response exceeds the 16 MiB output limit"})
+	}
+	if _, err := stdout.Write(append(encoded, '\n')); err != nil {
+		_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not write algebra proof response: %v\n", err)
+		return ExitError
+	}
+	return exitCode(kind)
+}
+
+func runAlgebraVerifyProof(options algebraOptions, input io.Reader, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
+	switch options.claim {
+	case "equivalence":
+		return runAlgebraVerifyEquivalence(options, stdout, stderr, registries)
+	case "rewrite":
+		return runAlgebraVerifyRewriteClaim(options, input, stdout, stderr, registries)
+	case "goal":
+		return runAlgebraVerifyGoalClaim(options, input, stdout, stderr, registries)
+	case "evaluation":
+		return runAlgebraVerifyEvaluation(options, stdout, stderr, registries)
+	default:
+		return ExitUnsupported
+	}
+}
+
+func runAlgebraVerifyEquivalence(options algebraOptions, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
+	leftBytes, err := readNamedAlgebraFile(options.left, algebra.MaxDocumentBytes, "equivalence left")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	rightBytes, err := readNamedAlgebraFile(options.right, algebra.MaxDocumentBytes, "equivalence right")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	profileBytes, err := readNamedAlgebraFile(options.profile, algebra.MaxDocumentBytes, "equivalence profile")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	limits, err := algebra.NormalizeEquivalenceLimits(options.comparisonLimits)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	certificateBytes, err := readNamedAlgebraFile(options.certificate, limits.MaxCertificateBytes, "equivalence certificate")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	if len(leftBytes)+len(rightBytes)+len(profileBytes)+len(certificateBytes) > algebra.MaxEquivalenceBytes {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeResourceLimit, Code: "EQUIVALENCE_INPUT_BYTES", Path: "inputs", Message: "combined equivalence proof inputs exceed the 16 MiB request cap"})
+	}
+	left, err := algebra.DecodeDocumentJSON(leftBytes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	right, err := algebra.DecodeDocumentJSON(rightBytes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	profile, err := algebra.DecodeRewriteProfileJSON(profileBytes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	certificate, err := algebra.DecodeEquivalenceCertificate(certificateBytes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	parameters, err := mergeComparisonDeclarations(left.Parameters, right.Parameters, "parameters")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	references, err := mergeComparisonDeclarations(left.References, right.References, "references")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	environment, err := metamodel.NormalizationEnvironment(algebra.Document{SchemaVersion: algebra.SchemaVersion, Parameters: parameters, References: references, Limits: limits.TermLimits}, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	result, err := algebra.VerifyEquivalenceCertificate(environment, left, right, profile, options.contextID, certificate, limits)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	output := algebraProofOutput{Status: result.Status, ClaimType: algebra.EquivalenceClaimProfile, Result: result, Metadata: metadataReferences(registries), ValidationScope: "independent positive profile-equivalence certificate verification; no general non-equivalence, entailment, or countermodel claim"}
+	return writeCappedAlgebraOutput(stdout, stderr, output, output.Status)
+}
+
+func runAlgebraVerifyRewriteClaim(options algebraOptions, input io.Reader, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
+	data, err := readAlgebraInput(options, input, algebra.MaxRewriteEnvelopeBytes, "rewrite proof request")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	envelope, err := algebra.DecodeRewriteVerificationRequest(data)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	request := envelope.Request
+	environment, err := metamodel.NormalizationEnvironment(request.Document, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	result, err := algebra.VerifyRewriteCertificate(environment, request.Profile, request.Document.Expression, envelope.Certificate, request.Budget)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	output := algebraProofOutput{Status: result.Status, ClaimType: "rewrite", Result: result, Metadata: metadataReferences(registries), ValidationScope: "independent verification of one submitted rewrite certificate under its explicit licensed profile"}
+	return writeCappedAlgebraOutput(stdout, stderr, output, output.Status)
+}
+
+func runAlgebraVerifyGoalClaim(options algebraOptions, input io.Reader, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
+	verifyLimits, err := synthesis.NormalizeGoalVerificationLimits(options.verifyLimits)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	goalBytes, err := readNamedAlgebraFile(options.goal, synthesis.MaxGoalInputBytes, "goal")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	goal, err := synthesis.DecodeGoal(goalBytes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	goalLimits, err := synthesis.NormalizeGoalLimits(goal.Limits)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	goal.Limits = goalLimits
+	candidateBytes, err := readNamedAlgebraFile(options.candidate, algebra.MaxDocumentBytes, "candidate")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	candidate, err := algebra.DecodeDocumentJSON(candidateBytes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	certificateBytes, err := readNamedAlgebraFile(options.certificate, verifyLimits.MaxCertificateBytes, "goal certificate")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	certificate, err := synthesis.DecodeSynthesisCertificate(certificateBytes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	primitiveContext, err := metamodel.DeclarationContext(algebra.Document{SchemaVersion: algebra.SchemaVersion, Limits: goalLimits.TermLimits}, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	rewriteEnvironment, err := metamodel.NormalizationEnvironment(algebra.Document{SchemaVersion: algebra.SchemaVersion, References: goal.References, Limits: goalLimits.TermLimits}, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	result, err := synthesis.VerifyGoalCertificate(primitiveContext, rewriteEnvironment, goal, candidate, certificate, verifyLimits)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	if result.Status == status.OutcomeOK && !goalVerificationAccepted(result) {
+		result.Status = status.OutcomeInvalid
+		result.Disposition = synthesis.GoalVerificationDispositionRejected
+		result.CertificateValid = false
+		result.Diagnostics = append(result.Diagnostics, algebra.Error{Status: status.OutcomeInvalid, Code: "GOAL_VERIFICATION_INCOMPLETE", Path: "result", Message: "all independent verification flags are required for acceptance"})
+	}
+	output := algebraProofOutput{Status: result.Status, ClaimType: "goal", Result: result, Metadata: metadataReferences(registries), ValidationScope: "independent finite positive-facts structural checking and operation replay; not world truth, uniqueness, or language approval"}
+	return writeCappedAlgebraOutput(stdout, stderr, output, output.Status)
+}
+
+func runAlgebraVerifyEvaluation(options algebraOptions, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
+	limits, err := reason.NormalizeAlgebraEvaluationLimits(options.evaluationLimits)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	expressionBytes, err := readNamedAlgebraFile(options.expression, algebra.MaxDocumentBytes, "expression")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	factBytes, err := readNamedAlgebraFile(options.factsInput, facts.MaxNaryInputBytes, "facts")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	selectionBytes, err := readNamedAlgebraFile(options.selection, algebra.MaxDocumentBytes, "selection")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	proofBytes, err := readNamedAlgebraFile(options.proof, reason.MaxAlgebraOutputBytes, "evaluation proof")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	if len(expressionBytes)+len(factBytes)+len(selectionBytes)+len(proofBytes) > algebra.MaxEquivalenceBytes {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeResourceLimit, Code: "EVALUATION_PROOF_INPUT_BYTES", Path: "inputs", Message: "combined evaluation proof inputs exceed the 16 MiB request cap"})
+	}
+	source, err := algebra.DecodeDocumentJSON(expressionBytes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	factInput, err := facts.DecodeNaryInput(factBytes)
+	if err != nil {
+		return writeNaryFactsError(stdout, stderr, err)
+	}
+	selection, err := reason.DecodeAlgebraSelections(selectionBytes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	claim, err := reason.DecodeAlgebraEvaluationProof(proofBytes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	if factInput.ContextID != options.contextID {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeInvalid, Code: "FACT_CONTEXT_MISMATCH", Path: "facts.context_id", Message: "--context-id must match the explicit fact input context"})
+	}
+	selectedAt := factInput.At
+	if options.at != "" {
+		flagTime, timeErr := parseEvaluationInstant(options.at, "--at")
+		if timeErr != nil {
+			return writeAlgebraError(stdout, stderr, timeErr)
+		}
+		if factInput.At != "" {
+			factTime, parseErr := parseEvaluationInstant(factInput.At, "facts.at")
+			if parseErr != nil {
+				return writeNaryFactsError(stdout, stderr, parseErr)
+			}
+			if !flagTime.Equal(factTime) {
+				return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeInvalid, Code: "FACT_INSTANT_MISMATCH", Path: "--at", Message: "--at conflicts with the explicit fact input instant"})
+			}
+		} else {
+			selectedAt, factInput.At = options.at, options.at
+		}
+	}
+	schema, err := metamodel.FactsSchema(registries)
+	if err != nil {
+		return writeNaryFactsError(stdout, stderr, err)
+	}
+	view, err := facts.BuildNary(schema, factInput)
+	if err != nil {
+		return writeNaryFactsError(stdout, stderr, err)
+	}
+	environment, err := metamodel.NormalizationEnvironment(algebra.Document{SchemaVersion: algebra.SchemaVersion, Parameters: source.Parameters, References: source.References, Limits: limits.TermLimits}, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	request := reason.AlgebraQueryRequest{SchemaVersion: reason.AlgebraQuerySchemaVersion, Profile: options.profile, ContextID: options.contextID, At: selectedAt, Select: selection}
+	plan, err := reason.CompileAlgebraQuery(context.Background(), schema, environment, source, request, limits)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	verification, err := reason.VerifyAlgebraEvaluationProof(context.Background(), plan, view, claim, limits)
+	if err != nil {
+		return writeNaryFactsOrAlgebraError(stdout, stderr, err)
+	}
+	output := algebraProofOutput{Status: verification.Status, ClaimType: "evaluation", Result: verification, Metadata: metadataReferences(registries), ValidationScope: "independent checking of supplied positive answer witnesses against the compiled query and active fact snapshot; completeness is never verified"}
+	return writeCappedAlgebraOutput(stdout, stderr, output, output.Status)
 }
 
 func algebraDiagnostic(kind status.OutcomeKind, code, message, path string) status.Result {
