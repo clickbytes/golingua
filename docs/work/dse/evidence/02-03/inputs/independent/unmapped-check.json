@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "references": [
+    {
+      "id": "E1",
+      "type": {
+        "kind": "Event"
+      }
+    }
+  ],
+  "expression": {
+    "kind": "Atom",
+    "symbol": "concept:seeing",
+    "args": []
+  }
+}

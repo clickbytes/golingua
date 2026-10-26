@@ -1,0 +1,16 @@
+{
+  "catalog_summary_unchanged": true,
+  "catalog_details_unchanged": true,
+  "record_count": 1002,
+  "export_package_sizes": [
+    400,
+    400,
+    202
+  ],
+  "export_repeat_byte_identical": true,
+  "ledger_unique_count": 1002,
+  "ledger_exact_source_coverage": true,
+  "ledger_reading_candidates": 1,
+  "all_export_symbols_opaque_pending": true,
+  "reconstructed_pre_provenance_metadata_same_output": true
+}

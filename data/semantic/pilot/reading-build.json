@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "steps": [
+    {
+      "id": "r",
+      "op": "relation",
+      "symbol": "concept:reading"
+    }
+  ],
+  "result": "r"
+}

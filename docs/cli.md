@@ -200,6 +200,28 @@ go run ./cmd/golingua forms --language en --surface children --json
 go run ./cmd/golingua forms --language en --surface fish --json
 ```
 
+## Eksport katalogu do inwentarza DSE
+
+`algebra catalog export --json` eksportuje skompilowany katalog z binarki jako ograniczony, nieaktywny inwentarz. Polecenie nie przyjmuje `--input`, `--metadata` ani `--no-cache` i zwraca JSON o polach `status`, `validation_scope`, `inventory`; sam inwentarz zawiera `schema_version`, `format`, `version`, `counts`, `source_records` i `packages`.
+
+```sh
+go run ./cmd/golingua algebra catalog export --json > /tmp/catalog-export.json
+python3 -c 'import json; x=json.load(open("/tmp/catalog-export.json")); json.dump(x["inventory"]["packages"][0], open("/tmp/catalog-part-1.json","w"))'
+go run ./cmd/golingua algebra metadata validate --metadata /tmp/catalog-part-1.json --json
+go run ./cmd/golingua algebra metadata validate --metadata data/semantic/pilot/metadata.json --json
+go run ./cmd/golingua algebra check --metadata data/semantic/pilot/metadata.json --input data/semantic/pilot/reading-check.json --json
+go run ./cmd/golingua algebra build --metadata data/semantic/pilot/metadata.json --input data/semantic/pilot/reading-build.json --json
+go run ./cmd/golingua algebra build --metadata data/semantic/pilot/metadata.json --input data/semantic/pilot/two-hop.json --json
+```
+
+`python3` w przykładzie jedynie wyciąga jeden obiekt JSON do pliku, aby przekazać go do istniejącego walidatora. Eksport ma 1002 rekordy źródłowe w deterministycznych chunkach 400/400/202. Każdy chunk jest niezależny; limit 512 deklaracji nie pozwala wybrać wszystkich trzech jednocześnie. Limity eksportu to 4096 rekordów, 400 wpisów/chunk, 16 chunków, 1 MiB/pakiet i 16 MiB łącznie. Błąd limitu lub walidacji zwraca odmowę bez częściowego inwentarza.
+
+Źródłowe definicje zachowują ID, kind, parent, role unions, definition edges, semantic effects, description i provenance. Pakiety eksportu zachowują identyfikatory i opisy jako `opaque_unformalized`/`pending`; nie zamieniają source roles na formalne ports i nie tworzą rules, aliases, axioms ani facts. Eksport nie podmienia liczników `catalog --summary`/`--details`: docelowy rozmiar 1000 jest celem redakcyjnym, nie rzeczywistą liczbą rekordów ani primitive signatures.
+
+Oddzielny pilot [`metadata.json`](../data/semantic/pilot/metadata.json) deklaruje `pilot.r`, `pilot.mark` i wersjonowane mapowanie `concept:reading`. Mapowanie jawnie dodaje port `event: Event` do istniejących ról `reader` i `material`; ten port nie występuje w oryginalnym CORE role list. [Mapping record](../data/semantic/pilot/mapping.json) zachowuje nowe źródło mapowania oddzielnie od oryginalnych CORE/PL/EN source refs. To ograniczona decyzja do strukturalnego użycia pilota, bez twierdzenia o równoważności całej definicji CORE ani o akceptacji PL/EN. Lexical anchors nie są automatyczną licencją nowej trasy tłumaczenia.
+
+Na aktywnej gałęzi walidacja pilota, check `reading`, build relacji reading i neutralny build dwuetapowy zwróciły `ok`. Niepoprawny typ portu został odrzucony przez `ARGUMENT_TYPE_MISMATCH`, a `concept:seeing` jest `UNKNOWN_SYMBOL` w małym pilocie. Resource fingerprint zależy od provenance; wartości z obserwacji sprzed korekty źródeł nie są fingerprintem końcowego manifestu. Pełny ledger 1002 ID znajduje się w [`catalog-review.tsv`](../data/semantic/catalog-review.tsv), a szczegóły zakresu w [catalog triage](work/dse/catalog-triage.md). Akceptacja językowa właściciela pozostaje `NOT_EVALUATED`; PR i CI na `main` są odrębnymi, oczekującymi statusami.
+
 ## Inwentarz katalogu
 
 `catalog --summary --json` kompiluje obecne dane Go CORE, PL i EN i pokazuje

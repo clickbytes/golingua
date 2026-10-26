@@ -1,0 +1,5643 @@
+{
+  "schema_version": 1,
+  "id": "golingua.catalog.inventory.2026-10-26.part-002",
+  "version": "2026-10-26.1",
+  "profile": "positive-facts-v1",
+  "provenance": [
+    {
+      "id": "golingua-core-authored",
+      "path": "internal/catalog/concepts.go",
+      "version": "2026-10-21-growth-01",
+      "license": "unknown",
+      "author": "golingua contributors"
+    },
+    {
+      "id": "golingua-core-proposed-2026-10-21",
+      "path": "data/core/1000-concept-proposals.tsv",
+      "version": "2026-10-21-draft",
+      "license": "unknown"
+    }
+  ],
+  "sorts": [],
+  "symbols": [
+    {
+      "id": "concept:grandchild",
+      "kind": "opaque_unformalized",
+      "description": "A child of a person's child, including recognized social kinship.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:grandparent",
+      "kind": "opaque_unformalized",
+      "description": "A parent of a person's parent, including recognized social kinship.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:grape_fruit_food",
+      "kind": "opaque_unformalized",
+      "description": "A small edible grape berry, distinct from the citrus fruit grapefruit.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:grasping",
+      "kind": "opaque_unformalized",
+      "description": "Closing a hand or implement around an object to hold it securely.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:grass_plant",
+      "kind": "opaque_unformalized",
+      "description": "A narrow-leaved plant of the grass family; not its ground cover as material.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:greeting",
+      "kind": "opaque_unformalized",
+      "description": "Acknowledging another participant at the start of an encounter.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:ground_surface",
+      "kind": "opaque_unformalized",
+      "description": "The outer surface of terrain on which a person or object can stand.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:group_of_people",
+      "kind": "opaque_unformalized",
+      "description": "A plurality of people treated as one socially relevant collective.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:guest",
+      "kind": "opaque_unformalized",
+      "description": "A person received or invited into another's premises or activity.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:hailstone",
+      "kind": "opaque_unformalized",
+      "description": "A pellet of layered ice formed inside a convective storm.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:hair_body",
+      "kind": "opaque_unformalized",
+      "description": "Filamentous keratin structures growing from the skin of a mammal.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:hallway",
+      "kind": "opaque_unformalized",
+      "description": "An interior passage connecting rooms or building spaces.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:hammer",
+      "kind": "opaque_unformalized",
+      "description": "A hand tool with a weighted head used to deliver impacts.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:hand",
+      "kind": "opaque_unformalized",
+      "description": "The terminal grasping part of a human arm.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-authored",
+          "path": "internal/catalog/concepts.go",
+          "version": "2026-10-21-growth-01",
+          "license": "unknown",
+          "author": "golingua contributors"
+        }
+      ]
+    },
+    {
+      "id": "concept:handle_object",
+      "kind": "opaque_unformalized",
+      "description": "A part designed for a hand to grasp when manipulating an object.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:hardness",
+      "kind": "opaque_unformalized",
+      "description": "Resistance of material to local deformation, scratching, or indentation.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:harvesting_crop",
+      "kind": "opaque_unformalized",
+      "description": "Collecting cultivated plants or plant products when ready for use.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:hat",
+      "kind": "opaque_unformalized",
+      "description": "A head covering worn for protection, warmth, or style.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:head",
+      "kind": "opaque_unformalized",
+      "description": "The upper or front body region containing the brain and principal sensory organs.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:headphones",
+      "kind": "opaque_unformalized",
+      "description": "A pair of sound transducers worn at or over the ears for listening.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:healing",
+      "kind": "opaque_unformalized",
+      "description": "Biological recovery of damaged tissue toward its ordinary function.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:health_condition",
+      "kind": "opaque_unformalized",
+      "description": "Overall state of bodily functioning and freedom from impairment.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:hearing",
+      "kind": "opaque_unformalized",
+      "description": "Auditory perception of a stimulus without requiring deliberate attention.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-authored",
+          "path": "internal/catalog/concepts.go",
+          "version": "2026-10-21-growth-01",
+          "license": "unknown",
+          "author": "golingua contributors"
+        }
+      ]
+    },
+    {
+      "id": "concept:heart",
+      "kind": "opaque_unformalized",
+      "description": "A muscular organ pumping blood through the circulatory system.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:heater_device",
+      "kind": "opaque_unformalized",
+      "description": "A device intended to raise the temperature of a space or material.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:heating_object",
+      "kind": "opaque_unformalized",
+      "description": "Causing the temperature of an object or substance to increase.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:height",
+      "kind": "opaque_unformalized",
+      "description": "Vertical extent of an object or position above a reference level.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:helping",
+      "kind": "opaque_unformalized",
+      "description": "Acting to make another participant's task easier or outcome more achievable.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:hill",
+      "kind": "opaque_unformalized",
+      "description": "A raised landform smaller or less dominant than a mountain.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:hip",
+      "kind": "opaque_unformalized",
+      "description": "The lateral pelvic region joining the torso and upper leg.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:hiring_service",
+      "kind": "opaque_unformalized",
+      "description": "Engaging a provider to perform work or services under an agreement.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:hitting_object",
+      "kind": "opaque_unformalized",
+      "description": "Delivering a discrete physical impact to an object or person.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:holding_object",
+      "kind": "opaque_unformalized",
+      "description": "Maintaining physical support or control of an object without releasing it.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:honey_food",
+      "kind": "opaque_unformalized",
+      "description": "A viscous sweet substance produced by bees from plant nectar or secretions.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:hoping",
+      "kind": "opaque_unformalized",
+      "description": "Mentally favoring a possible future state while recognizing uncertainty.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:horse",
+      "kind": "opaque_unformalized",
+      "description": "An individual domestic horse belonging to the equine species.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:hospital_building",
+      "kind": "opaque_unformalized",
+      "description": "A building equipped for medical care and treatment.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:hospital_institution",
+      "kind": "opaque_unformalized",
+      "description": "An organization providing inpatient or specialist medical services.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:host_person",
+      "kind": "opaque_unformalized",
+      "description": "A person receiving guests or facilitating an event for participants.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:hotel_building",
+      "kind": "opaque_unformalized",
+      "description": "A building providing temporary lodging rooms to paying guests.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:house",
+      "kind": "opaque_unformalized",
+      "description": "A building designed as a dwelling; occupancy is not asserted.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-authored",
+          "path": "internal/catalog/concepts.go",
+          "version": "2026-10-21-growth-01",
+          "license": "unknown",
+          "author": "golingua contributors"
+        }
+      ]
+    },
+    {
+      "id": "concept:household",
+      "kind": "opaque_unformalized",
+      "description": "People sharing domestic living arrangements and ordinary household resources.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:hunger_state",
+      "kind": "opaque_unformalized",
+      "description": "A bodily condition signaling need or desire for food.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:hypothesis",
+      "kind": "opaque_unformalized",
+      "description": "A provisional explanatory proposition advanced for investigation or testing.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:ice",
+      "kind": "opaque_unformalized",
+      "description": "Water in its solid crystalline state.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:ice_cream_food",
+      "kind": "opaque_unformalized",
+      "description": "A frozen sweet dessert typically made from milk or comparable ingredients.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:identity_card",
+      "kind": "opaque_unformalized",
+      "description": "An official or institutional card identifying its bearer.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:identity_descriptor",
+      "kind": "opaque_unformalized",
+      "description": "A set of identifying characteristics used to distinguish a referent from others.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:igniting_material",
+      "kind": "opaque_unformalized",
+      "description": "Causing combustion to begin in a combustible material.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:imagining",
+      "kind": "opaque_unformalized",
+      "description": "Constructing a mental representation not presently perceived as an external fact.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:importance",
+      "kind": "opaque_unformalized",
+      "description": "Relative significance of an item to a purpose or decision.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:increasing_quantity",
+      "kind": "opaque_unformalized",
+      "description": "A measurable magnitude becoming larger between two observations.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:infant",
+      "kind": "opaque_unformalized",
+      "description": "A child at the earliest stage of life who depends on others for basic care.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:information_content",
+      "kind": "opaque_unformalized",
+      "description": "Meaning encoded or conveyable by a representation, independently of its physical medium.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:informing",
+      "kind": "opaque_unformalized",
+      "description": "Conveying information that the sender expects the recipient to learn.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:inhaling",
+      "kind": "opaque_unformalized",
+      "description": "Drawing air or another respiratory gas into the respiratory system.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:inheriting_property",
+      "kind": "opaque_unformalized",
+      "description": "Receiving an asset because of a predecessor's death under inheritance rules.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:injuring_person",
+      "kind": "opaque_unformalized",
+      "description": "Causing bodily tissue damage to a living participant.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:insect",
+      "kind": "opaque_unformalized",
+      "description": "An arthropod with a six-legged adult body plan.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:inserting_object",
+      "kind": "opaque_unformalized",
+      "description": "Moving an object through an opening into a containing region.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:installing_object",
+      "kind": "opaque_unformalized",
+      "description": "Putting a component or device in place so that it can perform its intended role.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:instruction_content",
+      "kind": "opaque_unformalized",
+      "description": "Represented directions telling an agent how or when to perform an action.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:instruction_relationship",
+      "kind": "opaque_unformalized",
+      "description": "A person guides another's learning in an educator-learner role.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:intentional_action",
+      "kind": "opaque_unformalized",
+      "description": "An event undertaken deliberately by a participant to produce an effect.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:interpreter_person",
+      "kind": "opaque_unformalized",
+      "description": "A person transferring spoken or signed communication between languages.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:interpreting_spoken",
+      "kind": "opaque_unformalized",
+      "description": "Relaying live spoken or signed content into another language for recipients.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:intersection",
+      "kind": "opaque_unformalized",
+      "description": "A location where two or more roads meet or cross.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:interval_begins_with",
+      "kind": "opaque_unformalized",
+      "description": "An event or instant marks the starting boundary of a temporal interval.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:interval_ends_with",
+      "kind": "opaque_unformalized",
+      "description": "An event or instant marks the ending boundary of a temporal interval.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:intestine",
+      "kind": "opaque_unformalized",
+      "description": "A tubular digestive organ absorbing nutrients or processing waste.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:introducing_people",
+      "kind": "opaque_unformalized",
+      "description": "Presenting people to each other in order to establish social familiarity.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:inviting",
+      "kind": "opaque_unformalized",
+      "description": "Offering another participant the opportunity to attend or participate.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:invoice",
+      "kind": "opaque_unformalized",
+      "description": "A document requesting payment for specified supplied goods or services.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:iron",
+      "kind": "opaque_unformalized",
+      "description": "A material consisting mainly of the chemical element iron.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:island",
+      "kind": "opaque_unformalized",
+      "description": "A landmass surrounded by water and smaller than a continent.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:jacket",
+      "kind": "opaque_unformalized",
+      "description": "An outer garment covering the upper body, usually shorter than a coat.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:jar",
+      "kind": "opaque_unformalized",
+      "description": "A wide-mouthed rigid container commonly closed by a removable lid.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:joint_body",
+      "kind": "opaque_unformalized",
+      "description": "A structural connection between bones allowing support or movement.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:joking",
+      "kind": "opaque_unformalized",
+      "description": "Producing speech intended primarily to amuse rather than assert literally.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:journalist",
+      "kind": "opaque_unformalized",
+      "description": "A person gathering and communicating information as news reporting.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:joy",
+      "kind": "opaque_unformalized",
+      "description": "A positive affective condition characterized by delight or pleasure.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:juice_beverage",
+      "kind": "opaque_unformalized",
+      "description": "A drink consisting principally of extracted fruit or vegetable liquid.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:jumping",
+      "kind": "opaque_unformalized",
+      "description": "Propelled movement in which a body temporarily leaves its support surface.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:kettle",
+      "kind": "opaque_unformalized",
+      "description": "A vessel or appliance designed to heat water.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:key_tool",
+      "kind": "opaque_unformalized",
+      "description": "A shaped device that operates a corresponding lock.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:keyboard_device",
+      "kind": "opaque_unformalized",
+      "description": "A set of keys used to enter characters or commands into a machine.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:kicking_object",
+      "kind": "opaque_unformalized",
+      "description": "Striking an object or participant with a foot.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:kidney",
+      "kind": "opaque_unformalized",
+      "description": "An organ filtering blood and regulating fluid and solute balance.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:kitchen",
+      "kind": "opaque_unformalized",
+      "description": "A room or dedicated area equipped for preparing food.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:knee",
+      "kind": "opaque_unformalized",
+      "description": "The joint region linking thigh and lower leg.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:knife_utensil",
+      "kind": "opaque_unformalized",
+      "description": "A cutting utensil with a blade and handle, especially for food.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:knowledge_content",
+      "kind": "opaque_unformalized",
+      "description": "Information treated as established within a specified knowledge context.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:knowledge_level",
+      "kind": "opaque_unformalized",
+      "description": "Extent of information and understanding held about a domain.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:lake",
+      "kind": "opaque_unformalized",
+      "description": "A substantial inland body of standing water surrounded by land.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:lamp",
+      "kind": "opaque_unformalized",
+      "description": "A device intended to produce controlled illumination.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:landing",
+      "kind": "opaque_unformalized",
+      "description": "A flying vehicle making contact with a supporting surface after flight.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:laptop_computer",
+      "kind": "opaque_unformalized",
+      "description": "A portable computer with integrated screen and keyboard.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:lateral_order",
+      "kind": "opaque_unformalized",
+      "description": "One referent is to the left of another relative to an explicitly selected viewpoint.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:laughing",
+      "kind": "opaque_unformalized",
+      "description": "Producing characteristic voiced or breathy sounds in amusement or other strong feeling.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:leaf_plant",
+      "kind": "opaque_unformalized",
+      "description": "A plant organ specialized primarily for photosynthesis and gas exchange.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:learning",
+      "kind": "opaque_unformalized",
+      "description": "An event in which a participant acquires knowledge or skill.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-authored",
+          "path": "internal/catalog/concepts.go",
+          "version": "2026-10-21-growth-01",
+          "license": "unknown",
+          "author": "golingua contributors"
+        }
+      ]
+    },
+    {
+      "id": "concept:leather_material",
+      "kind": "opaque_unformalized",
+      "description": "Animal hide processed into a durable flexible material.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:leaving_vehicle",
+      "kind": "opaque_unformalized",
+      "description": "Exiting a vehicle after or during a journey.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:leg",
+      "kind": "opaque_unformalized",
+      "description": "A lower limb used for standing and locomotion.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:legal_ownership",
+      "kind": "opaque_unformalized",
+      "description": "A participant holds recognized ownership rights over an identifiable asset.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:lemon_fruit",
+      "kind": "opaque_unformalized",
+      "description": "An acidic yellow citrus fruit commonly used for juice or flavor.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:lending_object",
+      "kind": "opaque_unformalized",
+      "description": "Temporarily allowing another participant to use an item with an expectation of return.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:length",
+      "kind": "opaque_unformalized",
+      "description": "Extent of an object measured along its principal longitudinal direction.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:letter_document",
+      "kind": "opaque_unformalized",
+      "description": "A written document composed as correspondence to a specific recipient.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:lettuce_food",
+      "kind": "opaque_unformalized",
+      "description": "Edible leafy material from cultivated lettuce plants.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:librarian",
+      "kind": "opaque_unformalized",
+      "description": "A person organizing or facilitating access to library resources.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:library_building",
+      "kind": "opaque_unformalized",
+      "description": "A building or dedicated space housing library collections and users.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:library_institution",
+      "kind": "opaque_unformalized",
+      "description": "An organization maintaining and providing access to curated information resources.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:lifting_object",
+      "kind": "opaque_unformalized",
+      "description": "Moving a supported object to a higher position.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:light_bulb",
+      "kind": "opaque_unformalized",
+      "description": "A replaceable electric light source used in a luminaire.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:light_physical",
+      "kind": "opaque_unformalized",
+      "description": "Visible electromagnetic radiation, not a lighting device.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:liking",
+      "kind": "opaque_unformalized",
+      "description": "Experiencing positive preference or enjoyment toward an item or activity.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:lip",
+      "kind": "opaque_unformalized",
+      "description": "A soft movable boundary of the mouth opening.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:listening",
+      "kind": "opaque_unformalized",
+      "description": "Directing auditory attention toward sounds, regardless of whether information is understood.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:liver",
+      "kind": "opaque_unformalized",
+      "description": "A large abdominal organ with metabolic and detoxification functions.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:living",
+      "kind": "opaque_unformalized",
+      "description": "An organism maintaining integrated biological processes over a span of time.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:living_room",
+      "kind": "opaque_unformalized",
+      "description": "A domestic room intended for shared sitting and relaxation.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:lizard",
+      "kind": "opaque_unformalized",
+      "description": "A typically four-legged squamate reptile, distinct from snakes.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:located_in",
+      "kind": "opaque_unformalized",
+      "description": "An entity occupies a location, without asserting that the location fully encloses it.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:location",
+      "kind": "opaque_unformalized",
+      "description": "A spatial region that can serve as the site of an event or entity.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-authored",
+          "path": "internal/catalog/concepts.go",
+          "version": "2026-10-21-growth-01",
+          "license": "unknown",
+          "author": "golingua contributors"
+        }
+      ]
+    },
+    {
+      "id": "concept:lock_device",
+      "kind": "opaque_unformalized",
+      "description": "A mechanism restricting access or movement until appropriately released.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:locking_object",
+      "kind": "opaque_unformalized",
+      "description": "Engaging a mechanism that prevents opening or unauthorized access.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:locomotion",
+      "kind": "opaque_unformalized",
+      "description": "Movement accomplished primarily by an organism using its own body.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:logical_relation",
+      "kind": "opaque_unformalized",
+      "description": "A non-spatial relation between propositions, purposes, quantities, or explanatory facts.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:looking",
+      "kind": "opaque_unformalized",
+      "description": "Intentional direction of visual attention toward a target; successful seeing is not implied.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-authored",
+          "path": "internal/catalog/concepts.go",
+          "version": "2026-10-21-growth-01",
+          "license": "unknown",
+          "author": "golingua contributors"
+        }
+      ]
+    },
+    {
+      "id": "concept:losing_possession",
+      "kind": "opaque_unformalized",
+      "description": "Ceasing to know or control where a possessed item is, without intentional transfer.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:love_affection",
+      "kind": "opaque_unformalized",
+      "description": "A sustained affective attachment involving care or strong positive regard.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:loving_person",
+      "kind": "opaque_unformalized",
+      "description": "Experiencing enduring strong affection or attachment toward another person.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:lowering_object",
+      "kind": "opaque_unformalized",
+      "description": "Moving a supported object to a lower position deliberately.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:lunch_meal",
+      "kind": "opaque_unformalized",
+      "description": "A meal conventionally eaten around the middle of a day.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:lung",
+      "kind": "opaque_unformalized",
+      "description": "An organ responsible for exchanging respiratory gases with the environment.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:making_donation",
+      "kind": "opaque_unformalized",
+      "description": "Giving resources voluntarily to support a cause or recipient without equivalent compensation.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:making_object",
+      "kind": "opaque_unformalized",
+      "description": "Bringing a new artifact or object into existence by action.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:making_offer",
+      "kind": "opaque_unformalized",
+      "description": "Proposing to provide a resource or perform an action for another.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:mammal",
+      "kind": "opaque_unformalized",
+      "description": "A vertebrate of the mammalian class, typically nursing its young with milk.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:manager",
+      "kind": "opaque_unformalized",
+      "description": "A person responsible for coordinating work and supervising resources or staff.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:manipulating_object",
+      "kind": "opaque_unformalized",
+      "description": "Intentionally controlling an object's position, shape, or state by physical action.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:manufacturing",
+      "kind": "opaque_unformalized",
+      "description": "Producing goods by organized processes using equipment or labor.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:map_document",
+      "kind": "opaque_unformalized",
+      "description": "A spatial representation showing locations, routes, or boundaries.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:marriage_relationship",
+      "kind": "opaque_unformalized",
+      "description": "Two persons are partners in a recognized marriage institution.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:mass",
+      "kind": "opaque_unformalized",
+      "description": "Amount of matter in a body as characterized by its inertia.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:material_composition",
+      "kind": "opaque_unformalized",
+      "description": "A physical item has a particular substance among its constituent materials.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:meadow",
+      "kind": "opaque_unformalized",
+      "description": "An open area of land dominated by grasses and other low vegetation.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:meal",
+      "kind": "opaque_unformalized",
+      "description": "A socially organized portion or occasion of eating food, distinguished from the act of eating.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:measurement_unit",
+      "kind": "opaque_unformalized",
+      "description": "A conventional reference magnitude used to express measured quantities.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:measurement_value",
+      "kind": "opaque_unformalized",
+      "description": "A quantity assigned by comparison against an explicit scale or unit.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:meat_food",
+      "kind": "opaque_unformalized",
+      "description": "Edible animal muscle or associated tissue prepared or intended for consumption.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:meeting_people",
+      "kind": "opaque_unformalized",
+      "description": "Participants coming together for direct social or organized interaction.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:melting_substance",
+      "kind": "opaque_unformalized",
+      "description": "A solid substance changing into a liquid through addition of energy.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:memory_content",
+      "kind": "opaque_unformalized",
+      "description": "A mental representation retained or retrievable from earlier experience.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:merchant",
+      "kind": "opaque_unformalized",
+      "description": "A person supplying goods commercially to buyers.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:message",
+      "kind": "opaque_unformalized",
+      "description": "A discrete communicated or recorded unit intended to convey information to a recipient.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:metal_material",
+      "kind": "opaque_unformalized",
+      "description": "A class of typically conductive, malleable elemental or alloyed materials.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:microphone",
+      "kind": "opaque_unformalized",
+      "description": "A transducer converting sound into an electrical or digital signal.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:microwave_oven",
+      "kind": "opaque_unformalized",
+      "description": "An appliance heating food using microwave electromagnetic energy.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:milk_food",
+      "kind": "opaque_unformalized",
+      "description": "A nutrient-rich secretion produced by mammals and consumed as a drink or ingredient.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:mirror",
+      "kind": "opaque_unformalized",
+      "description": "A surface made to reflect an image of objects before it.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:misunderstanding",
+      "kind": "opaque_unformalized",
+      "description": "Constructing an interpretation that differs from the intended or actual meaning.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:mixing_materials",
+      "kind": "opaque_unformalized",
+      "description": "Combining distinct substances so their components become interspersed.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:moisture_content",
+      "kind": "opaque_unformalized",
+      "description": "Amount of water held in or on a material.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:monetary_amount",
+      "kind": "opaque_unformalized",
+      "description": "An amount of currency considered independently of a particular transaction.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:money",
+      "kind": "opaque_unformalized",
+      "description": "A socially accepted medium used to pay, measure value, or store purchasing power.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:monitoring",
+      "kind": "opaque_unformalized",
+      "description": "Repeatedly checking an ongoing condition for changes requiring attention.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:monkey",
+      "kind": "opaque_unformalized",
+      "description": "A non-ape simian primate, without restricting to one species.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:month_interval",
+      "kind": "opaque_unformalized",
+      "description": "A named or counted subdivision of a calendar year with calendar-dependent length.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:moon_earth",
+      "kind": "opaque_unformalized",
+      "description": "Earth's natural satellite considered as a celestial body.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:morning_interval",
+      "kind": "opaque_unformalized",
+      "description": "The portion of a day from its early hours through the period before midday.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:mosquito",
+      "kind": "opaque_unformalized",
+      "description": "A slender fly of the mosquito family whose females in many species take blood meals.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:mother",
+      "kind": "opaque_unformalized",
+      "description": "A parent identified as a mother within a kinship or caregiving relationship.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:motorcycle",
+      "kind": "opaque_unformalized",
+      "description": "A powered two-wheeled road vehicle ridden astride by its operator.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:mountain",
+      "kind": "opaque_unformalized",
+      "description": "A substantial elevation of Earth's surface rising above surrounding terrain.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:mouse_animal",
+      "kind": "opaque_unformalized",
+      "description": "A small rodent of a mouse type, not a computer device.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:mouse_device",
+      "kind": "opaque_unformalized",
+      "description": "A handheld pointing device used to control a computer cursor.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:mouth",
+      "kind": "opaque_unformalized",
+      "description": "The opening and cavity used for eating and speech production.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:movement",
+      "kind": "opaque_unformalized",
+      "description": "A change in an entity's spatial position over time.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-authored",
+          "path": "internal/catalog/concepts.go",
+          "version": "2026-10-21-growth-01",
+          "license": "unknown",
+          "author": "golingua contributors"
+        }
+      ]
+    },
+    {
+      "id": "concept:moving_away",
+      "kind": "opaque_unformalized",
+      "description": "Movement increasing distance between a mover and a reference.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:mud",
+      "kind": "opaque_unformalized",
+      "description": "A soft mixture of wet soil or sediment and water.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:mug",
+      "kind": "opaque_unformalized",
+      "description": "A relatively large handled drinking cup.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:muscle",
+      "kind": "opaque_unformalized",
+      "description": "Contractile body tissue capable of generating force and movement.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:museum_building",
+      "kind": "opaque_unformalized",
+      "description": "A facility exhibiting curated cultural, historical, or scientific objects.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:music_recording",
+      "kind": "opaque_unformalized",
+      "description": "A durable representation of audible musical performance or composition.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:musician",
+      "kind": "opaque_unformalized",
+      "description": "A person performing or creating music.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:naming",
+      "kind": "opaque_unformalized",
+      "description": "Assigning or stating a linguistic name for an entity or category.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:narrating",
+      "kind": "opaque_unformalized",
+      "description": "Relating a sequence of events as an organized account.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:navigation",
+      "kind": "opaque_unformalized",
+      "description": "Choosing or following a route to reach a spatial destination.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:necessity",
+      "kind": "opaque_unformalized",
+      "description": "A condition in which alternatives are excluded by specified facts or rules.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:neck",
+      "kind": "opaque_unformalized",
+      "description": "The region connecting the head to the torso.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:needing",
+      "kind": "opaque_unformalized",
+      "description": "Being in a condition where a resource or action is required for a particular goal.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:neighbor",
+      "kind": "opaque_unformalized",
+      "description": "A person occupying a nearby home or locality in relation to another.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:neighborhood_area",
+      "kind": "opaque_unformalized",
+      "description": "A local district within a settlement in which people live or work.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:nerve",
+      "kind": "opaque_unformalized",
+      "description": "A bundle of fibers transmitting signals in the peripheral nervous system.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:night_interval",
+      "kind": "opaque_unformalized",
+      "description": "The daily interval conventionally associated with darkness and sleep.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:nose",
+      "kind": "opaque_unformalized",
+      "description": "The projecting facial structure housing the external passages of breathing and smell.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:notebook",
+      "kind": "opaque_unformalized",
+      "description": "A bound or organized set of blank or used pages intended for notes.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:noticing",
+      "kind": "opaque_unformalized",
+      "description": "Becoming consciously aware of a feature or occurrence not previously attended to.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:number_value",
+      "kind": "opaque_unformalized",
+      "description": "An abstract mathematical number, distinct from grammatical singular or plural.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:nurse",
+      "kind": "opaque_unformalized",
+      "description": "A professional providing nursing assessment and patient care.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:obligation",
+      "kind": "opaque_unformalized",
+      "description": "A requirement imposed on a participant to act or ensure an outcome.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:observing",
+      "kind": "opaque_unformalized",
+      "description": "Attending to an occurrence or object to collect information about it.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:occurs_during",
+      "kind": "opaque_unformalized",
+      "description": "An event takes place within the time span of another event or interval.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:ocean",
+      "kind": "opaque_unformalized",
+      "description": "One of Earth's enormous connected bodies of saline water.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:office_room",
+      "kind": "opaque_unformalized",
+      "description": "A room intended for desk-based administrative or professional work.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:oil_substance",
+      "kind": "opaque_unformalized",
+      "description": "A liquid oily substance that resists mixing uniformly with water.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:onion_food",
+      "kind": "opaque_unformalized",
+      "description": "An edible layered bulb of the onion plant.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:opening_object",
+      "kind": "opaque_unformalized",
+      "description": "Moving an obstruction or mechanism so access to an interior becomes possible.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:opinion_content",
+      "kind": "opaque_unformalized",
+      "description": "An evaluative judgment or personal position whose acceptance may vary between people.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:orange_fruit",
+      "kind": "opaque_unformalized",
+      "description": "An edible citrus fruit with a segmented interior and orange peel.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:ordering_goods",
+      "kind": "opaque_unformalized",
+      "description": "Submitting a request for specified goods or services to a supplier.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:organization",
+      "kind": "opaque_unformalized",
+      "description": "A continuing structured collective with members or governing procedures and a purpose.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:organization_membership",
+      "kind": "opaque_unformalized",
+      "description": "A person or organization belongs to a specified organized collective.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:origin_from",
+      "kind": "opaque_unformalized",
+      "description": "An entity has a historical source from which it was made or came.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:oven",
+      "kind": "opaque_unformalized",
+      "description": "An enclosed appliance that heats food for baking or roasting.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:oxygen",
+      "kind": "opaque_unformalized",
+      "description": "The chemical element oxygen in a material form such as gas.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:pain_sensation",
+      "kind": "opaque_unformalized",
+      "description": "An unpleasant sensory and affective experience associated with actual or potential bodily harm.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:pan_cooking",
+      "kind": "opaque_unformalized",
+      "description": "A shallow metal vessel used to cook food by direct heating.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:paper_material",
+      "kind": "opaque_unformalized",
+      "description": "A thin sheet-form material made from pressed fibers.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:paper_sheet",
+      "kind": "opaque_unformalized",
+      "description": "A single thin piece of paper made for writing, printing, or wrapping.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:parent",
+      "kind": "opaque_unformalized",
+      "description": "A person standing in a recognized parental relationship to a child.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:park",
+      "kind": "opaque_unformalized",
+      "description": "A managed open space intended for recreation, conservation, or public use.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:parking_area",
+      "kind": "opaque_unformalized",
+      "description": "A designated area in which vehicles may be left stationary.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:parking_vehicle",
+      "kind": "opaque_unformalized",
+      "description": "Bringing a vehicle into a designated place and leaving it stationary.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:part_of",
+      "kind": "opaque_unformalized",
+      "description": "One object or component is included as a constituent of a larger whole.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:passenger",
+      "kind": "opaque_unformalized",
+      "description": "A person carried by a vehicle without controlling its operation.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:passport",
+      "kind": "opaque_unformalized",
+      "description": "An official travel identity document issued by a national authority.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:pasta_food",
+      "kind": "opaque_unformalized",
+      "description": "Dough-based shaped food commonly cooked in boiling water.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:path_walkway",
+      "kind": "opaque_unformalized",
+      "description": "A narrow route intended for travel on foot.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:patient",
+      "kind": "opaque_unformalized",
+      "description": "A person receiving or seeking medical care.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-authored",
+          "path": "internal/catalog/concepts.go",
+          "version": "2026-10-21-growth-01",
+          "license": "unknown",
+          "author": "golingua contributors"
+        }
+      ]
+    },
+    {
+      "id": "concept:paying",
+      "kind": "opaque_unformalized",
+      "description": "Transferring money or another accepted value to settle an obligation or purchase.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:pedestrian",
+      "kind": "opaque_unformalized",
+      "description": "A person traveling on foot in a space shared with traffic.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:pen",
+      "kind": "opaque_unformalized",
+      "description": "A handheld writing instrument delivering ink to a surface.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:pencil",
+      "kind": "opaque_unformalized",
+      "description": "A handheld writing instrument depositing graphite or similar material.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:pepper_spice",
+      "kind": "opaque_unformalized",
+      "description": "A pungent powdered or whole seasoning obtained from pepper plants.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:perception",
+      "kind": "opaque_unformalized",
+      "description": "An event in which a perceiver acquires sensory information about a stimulus.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-authored",
+          "path": "internal/catalog/concepts.go",
+          "version": "2026-10-21-growth-01",
+          "license": "unknown",
+          "author": "golingua contributors"
+        }
+      ]
+    },
+    {
+      "id": "concept:permission",
+      "kind": "opaque_unformalized",
+      "description": "A normative allowance for a participant to undertake an action.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:person",
+      "kind": "opaque_unformalized",
+      "description": "A human individual, irrespective of age, social role, or name.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-authored",
+          "path": "internal/catalog/concepts.go",
+          "version": "2026-10-21-growth-01",
+          "license": "unknown",
+          "author": "golingua contributors"
+        }
+      ]
+    },
+    {
+      "id": "concept:persuading",
+      "kind": "opaque_unformalized",
+      "description": "Attempting to change another person's beliefs or intended action through communication.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:pharmacy_building",
+      "kind": "opaque_unformalized",
+      "description": "Premises where medicines are dispensed or sold under pharmacy practice.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:photograph",
+      "kind": "opaque_unformalized",
+      "description": "A still visual image produced by recording light from a scene.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:photographing",
+      "kind": "opaque_unformalized",
+      "description": "Capturing a still image of a subject using a camera.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:physical_strength",
+      "kind": "opaque_unformalized",
+      "description": "Capacity to exert force through bodily muscles.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:physical_substance",
+      "kind": "opaque_unformalized",
+      "description": "Matter regarded as a material rather than as an individually bounded object.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:pig",
+      "kind": "opaque_unformalized",
+      "description": "An individual domestic pig raised or kept by people.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:pizza_food",
+      "kind": "opaque_unformalized",
+      "description": "A baked flat dough base topped with sauce, cheese, or other ingredients.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:placing_object",
+      "kind": "opaque_unformalized",
+      "description": "Moving an object to a target position and leaving it there.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:plan_content",
+      "kind": "opaque_unformalized",
+      "description": "A representation of intended future steps arranged toward a goal.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:planet",
+      "kind": "opaque_unformalized",
+      "description": "A major body orbiting a star and not itself undergoing stellar fusion.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:planning",
+      "kind": "opaque_unformalized",
+      "description": "Forming a prospective sequence of actions intended to achieve a goal.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:plant",
+      "kind": "opaque_unformalized",
+      "description": "A living organism of the plant kingdom.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-authored",
+          "path": "internal/catalog/concepts.go",
+          "version": "2026-10-21-growth-01",
+          "license": "unknown",
+          "author": "golingua contributors"
+        }
+      ]
+    },
+    {
+      "id": "concept:planting_seed",
+      "kind": "opaque_unformalized",
+      "description": "Placing a seed in growing medium to initiate cultivation.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:plastic_material",
+      "kind": "opaque_unformalized",
+      "description": "A moldable synthetic or semi-synthetic polymer material.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:plate",
+      "kind": "opaque_unformalized",
+      "description": "A shallow dish designed to hold food while it is served or eaten.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:playground",
+      "kind": "opaque_unformalized",
+      "description": "An area equipped or designated for children's outdoor play.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:playing_game",
+      "kind": "opaque_unformalized",
+      "description": "Taking part in a rule-governed activity primarily for recreation or competition.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:plug_electric",
+      "kind": "opaque_unformalized",
+      "description": "A connector inserted into a corresponding socket to make an electrical connection.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:plumber",
+      "kind": "opaque_unformalized",
+      "description": "A person installing or repairing water supply and drainage systems.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:police_department",
+      "kind": "opaque_unformalized",
+      "description": "An institution responsible for organized policing within a jurisdiction.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:police_officer",
+      "kind": "opaque_unformalized",
+      "description": "A person exercising an authorized policing role.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:pond",
+      "kind": "opaque_unformalized",
+      "description": "A relatively small, still inland water body.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:pork_food",
+      "kind": "opaque_unformalized",
+      "description": "Meat obtained from pigs.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:possibility",
+      "kind": "opaque_unformalized",
+      "description": "A state of affairs considered compatible with specified circumstances or constraints.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:pot_cooking",
+      "kind": "opaque_unformalized",
+      "description": "A deep heat-resistant vessel used to cook food.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:potato_food",
+      "kind": "opaque_unformalized",
+      "description": "An edible potato tuber considered as food.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:pouring_liquid",
+      "kind": "opaque_unformalized",
+      "description": "Transferring liquid by allowing it to flow from a tilted or opened source.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:praising",
+      "kind": "opaque_unformalized",
+      "description": "Expressing approval of a participant or their achievement.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:precedes",
+      "kind": "opaque_unformalized",
+      "description": "One event or interval ends or is ordered before another under an explicit temporal convention.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:preferring",
+      "kind": "opaque_unformalized",
+      "description": "Favoring one alternative over at least one competing option.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:pressure",
+      "kind": "opaque_unformalized",
+      "description": "Mechanical force distributed per unit area of a surface.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:price_amount",
+      "kind": "opaque_unformalized",
+      "description": "Monetary value requested or accepted for a specified good or service.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:price_tag",
+      "kind": "opaque_unformalized",
+      "description": "A label displaying the proposed price of a particular article.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:printer_device",
+      "kind": "opaque_unformalized",
+      "description": "A device producing physical text or graphics from digital input.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:printing_document",
+      "kind": "opaque_unformalized",
+      "description": "Producing a physical copy of document content with printing equipment.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:probability_value",
+      "kind": "opaque_unformalized",
+      "description": "A measure representing likelihood over a specified space of possible outcomes.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:programmer",
+      "kind": "opaque_unformalized",
+      "description": "A person writing or maintaining computer programs.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:promising",
+      "kind": "opaque_unformalized",
+      "description": "Committing oneself to a future action or result in relation to another.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:property",
+      "kind": "opaque_unformalized",
+      "description": "A quality that can be attributed to a bearer without identifying a particular bearer.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-authored",
+          "path": "internal/catalog/concepts.go",
+          "version": "2026-10-21-growth-01",
+          "license": "unknown",
+          "author": "golingua contributors"
+        }
+      ]
+    },
+    {
+      "id": "concept:proposition",
+      "kind": "opaque_unformalized",
+      "description": "A content unit that can be evaluated as true or false under an interpretation.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:proximity_relation",
+      "kind": "opaque_unformalized",
+      "description": "Two referents are near one another under a context-dependent distance threshold.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:pulling_object",
+      "kind": "opaque_unformalized",
+      "description": "Applying force directed toward the acting participant to move or draw an object.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:pungency",
+      "kind": "opaque_unformalized",
+      "description": "Degree of burning or irritating oral or nasal sensation caused by substances.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:purpose_relation",
+      "kind": "opaque_unformalized",
+      "description": "An action or artifact is directed toward achieving a particular intended goal.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:pushing_object",
+      "kind": "opaque_unformalized",
+      "description": "Applying force directed away from the acting participant to move or press an object.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:quantitative_order",
+      "kind": "opaque_unformalized",
+      "description": "One measured or numerical value exceeds another on a common ordered scale.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:quantity",
+      "kind": "opaque_unformalized",
+      "description": "A numerical or countable magnitude of a specified kind.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:question_content",
+      "kind": "opaque_unformalized",
+      "description": "A specified gap in knowledge and the information sought to resolve it.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:rabbit",
+      "kind": "opaque_unformalized",
+      "description": "A small lagomorph of the rabbit type, distinct from a hare.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:radio_device",
+      "kind": "opaque_unformalized",
+      "description": "A receiver or transceiver handling information carried by radio waves.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:rain_drop",
+      "kind": "opaque_unformalized",
+      "description": "A bounded droplet of liquid water falling from atmospheric condensation.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:rat",
+      "kind": "opaque_unformalized",
+      "description": "A rodent of a rat type, distinct from a mouse.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:reading",
+      "kind": "opaque_unformalized",
+      "description": "An event of interpreting written or otherwise recorded symbolic content.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-authored",
+          "path": "internal/catalog/concepts.go",
+          "version": "2026-10-21-growth-01",
+          "license": "unknown",
+          "author": "golingua contributors"
+        }
+      ]
+    },
+    {
+      "id": "concept:reasoning",
+      "kind": "opaque_unformalized",
+      "description": "Deriving or evaluating conclusions from premises or evidence.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:receipt",
+      "kind": "opaque_unformalized",
+      "description": "A record acknowledging that goods, money, or a service were received.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:receiving",
+      "kind": "opaque_unformalized",
+      "description": "A transfer considered from the participant gaining the theme.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-authored",
+          "path": "internal/catalog/concepts.go",
+          "version": "2026-10-21-growth-01",
+          "license": "unknown",
+          "author": "golingua contributors"
+        }
+      ]
+    },
+    {
+      "id": "concept:receiving_message",
+      "kind": "opaque_unformalized",
+      "description": "Obtaining a message delivered from another participant.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:receiving_payment",
+      "kind": "opaque_unformalized",
+      "description": "Acquiring a monetary payment from another participant.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:recognized_parenthood",
+      "kind": "opaque_unformalized",
+      "description": "One person holds a recognized parental status toward another person.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:recognizing",
+      "kind": "opaque_unformalized",
+      "description": "Identifying a perceived entity as familiar or belonging to a known category.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:recommending",
+      "kind": "opaque_unformalized",
+      "description": "Expressing positive preference for an option as suitable for a goal.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:recording_sound",
+      "kind": "opaque_unformalized",
+      "description": "Capturing sound into a reproducible recording.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:recovering_from_illness",
+      "kind": "opaque_unformalized",
+      "description": "Returning toward an ordinary state of health following illness.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:reducing_quantity",
+      "kind": "opaque_unformalized",
+      "description": "A measurable magnitude becoming smaller between two observations.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:refrigerator",
+      "kind": "opaque_unformalized",
+      "description": "An appliance that maintains a cooled compartment to preserve contents.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:refunding_payment",
+      "kind": "opaque_unformalized",
+      "description": "Returning money paid earlier because of cancellation, return, or correction.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:refusing",
+      "kind": "opaque_unformalized",
+      "description": "Declining a request, offer, or proposed course of action.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:region_area",
+      "kind": "opaque_unformalized",
+      "description": "A bounded or conventionally identified portion of a larger territory.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:relation",
+      "kind": "opaque_unformalized",
+      "description": "A recurring semantic link connecting two or more referents without itself being an occurrence in time.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:releasing_object",
+      "kind": "opaque_unformalized",
+      "description": "Ending a maintained physical hold or restraint on an object.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:reliability",
+      "kind": "opaque_unformalized",
+      "description": "Likelihood that a system or source performs consistently as expected.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:remembering",
+      "kind": "opaque_unformalized",
+      "description": "Retrieving or maintaining a mental representation of a past item or occurrence.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:remote_control",
+      "kind": "opaque_unformalized",
+      "description": "A handheld device sending commands to another apparatus from a distance.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:renting_property",
+      "kind": "opaque_unformalized",
+      "description": "Obtaining temporary use of property in exchange for periodic or agreed payment.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:repairing_object",
+      "kind": "opaque_unformalized",
+      "description": "Restoring a damaged or malfunctioning object toward its intended function.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:replacing_component",
+      "kind": "opaque_unformalized",
+      "description": "Removing one component and installing another in its functional position.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:representation_of",
+      "kind": "opaque_unformalized",
+      "description": "An artifact or information structure depicts or encodes another referent.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:reptile",
+      "kind": "opaque_unformalized",
+      "description": "A vertebrate in a reptilian lineage, generally bearing dry scales.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:request_content",
+      "kind": "opaque_unformalized",
+      "description": "Represented desire that another participant perform an action or supply something.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:requesting_action",
+      "kind": "opaque_unformalized",
+      "description": "Asking another participant to perform an action or grant a resource.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:reserving_resource",
+      "kind": "opaque_unformalized",
+      "description": "Arranging in advance for a resource or service to be available at a particular occasion.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:resident",
+      "kind": "opaque_unformalized",
+      "description": "A person whose usual dwelling is in a specified location.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:responsibility",
+      "kind": "opaque_unformalized",
+      "description": "Accountability or assigned duty for an activity or its outcome.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:restaurant_building",
+      "kind": "opaque_unformalized",
+      "description": "Premises used for preparing and serving meals to customers.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:restaurant_business",
+      "kind": "opaque_unformalized",
+      "description": "A business primarily preparing and serving meals to customers.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:resting",
+      "kind": "opaque_unformalized",
+      "description": "Temporarily reducing activity to recover energy or comfort.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:retail_business",
+      "kind": "opaque_unformalized",
+      "description": "A commercial organization whose activity includes selling goods to end customers.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:returning_borrowed",
+      "kind": "opaque_unformalized",
+      "description": "Restoring an item to the participant from whom it was borrowed.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:returning_to_place",
+      "kind": "opaque_unformalized",
+      "description": "Movement to a location where the mover was previously present.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:rice_food",
+      "kind": "opaque_unformalized",
+      "description": "Edible grains of rice typically prepared as a staple dish or ingredient.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:riding_as_passenger",
+      "kind": "opaque_unformalized",
+      "description": "Traveling in a vehicle without controlling its propulsion or route.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:right_entitlement",
+      "kind": "opaque_unformalized",
+      "description": "A recognized claim permitting access, action, or protection against interference.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:rising_motion",
+      "kind": "opaque_unformalized",
+      "description": "Movement from a lower spatial position to a higher one.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:river",
+      "kind": "opaque_unformalized",
+      "description": "A naturally flowing channel of water leading toward another body of water.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:road",
+      "kind": "opaque_unformalized",
+      "description": "A prepared route enabling vehicles or travelers to move between places.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:rock_material",
+      "kind": "opaque_unformalized",
+      "description": "Naturally consolidated mineral matter, distinguished from one stone object.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:romantic_partner",
+      "kind": "opaque_unformalized",
+      "description": "A participant in a continuing romantic relationship, irrespective of marriage.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:roof",
+      "kind": "opaque_unformalized",
+      "description": "The upper external covering of a building that protects its interior.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:room",
+      "kind": "opaque_unformalized",
+      "description": "A bounded interior space within a building, typically divided by walls.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:root_plant",
+      "kind": "opaque_unformalized",
+      "description": "A plant organ usually anchoring the plant and absorbing water or minerals.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:rope",
+      "kind": "opaque_unformalized",
+      "description": "A strong flexible length formed by twisting or braiding fibers or strands.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:rotating_object",
+      "kind": "opaque_unformalized",
+      "description": "Turning an object around an axis without requiring it to change location.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:roundness",
+      "kind": "opaque_unformalized",
+      "description": "Degree to which a boundary approximates a circle or sphere.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:rubber_material",
+      "kind": "opaque_unformalized",
+      "description": "An elastic polymer material, natural or synthetic.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:rule_content",
+      "kind": "opaque_unformalized",
+      "description": "A general constraint or prescription applicable to defined situations.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:running",
+      "kind": "opaque_unformalized",
+      "description": "Rapid locomotion on foot involving intervals without ground contact.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:sadness",
+      "kind": "opaque_unformalized",
+      "description": "An affective response characterized by sorrow or perceived loss.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:safety_level",
+      "kind": "opaque_unformalized",
+      "description": "Degree to which a situation avoids or controls risk of harm.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:salad_food",
+      "kind": "opaque_unformalized",
+      "description": "A prepared dish of mixed raw or cooked ingredients, commonly served cold.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:salt_food",
+      "kind": "opaque_unformalized",
+      "description": "Edible sodium chloride or similar salt used for seasoning or preservation.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:salt_water",
+      "kind": "opaque_unformalized",
+      "description": "Water containing substantial dissolved salts.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:saltiness",
+      "kind": "opaque_unformalized",
+      "description": "Perceived intensity of a salty taste component.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:sand",
+      "kind": "opaque_unformalized",
+      "description": "Loose granular mineral particles smaller than gravel.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:sandwich_food",
+      "kind": "opaque_unformalized",
+      "description": "A prepared food portion with filling held between or within bread.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:satisfaction_level",
+      "kind": "opaque_unformalized",
+      "description": "Degree to which an experience meets a participant's wants or expectations.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:saving_money",
+      "kind": "opaque_unformalized",
+      "description": "Retaining monetary resources instead of using them for immediate spending.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:saw_tool",
+      "kind": "opaque_unformalized",
+      "description": "A toothed blade tool used to cut through a material.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:scarf",
+      "kind": "opaque_unformalized",
+      "description": "A long fabric strip worn around the neck or head.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:school",
+      "kind": "opaque_unformalized",
+      "description": "A facility designed for organized instruction; a school organization is a distinct meaning.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-authored",
+          "path": "internal/catalog/concepts.go",
+          "version": "2026-10-21-growth-01",
+          "license": "unknown",
+          "author": "golingua contributors"
+        }
+      ]
+    },
+    {
+      "id": "concept:school_institution",
+      "kind": "opaque_unformalized",
+      "description": "An organization conducting structured teaching; distinct from its building.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:scissors",
+      "kind": "opaque_unformalized",
+      "description": "A tool with pivoted blades that cut when their handles close.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:screwdriver",
+      "kind": "opaque_unformalized",
+      "description": "A tool used to rotate screws by engaging their heads.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:scrubbing_surface",
+      "kind": "opaque_unformalized",
+      "description": "Cleaning a surface by repeated forceful rubbing.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:sea",
+      "kind": "opaque_unformalized",
+      "description": "A large connected body of saline water, usually part of an ocean system.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:searching_for_item",
+      "kind": "opaque_unformalized",
+      "description": "Actively examining places to locate a desired physical object.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:season_interval",
+      "kind": "opaque_unformalized",
+      "description": "A recurring part of a year characterized by calendar or climatic conventions.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:seed",
+      "kind": "opaque_unformalized",
+      "description": "A plant reproductive unit containing an embryo and stored or protective material.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:seeing",
+      "kind": "opaque_unformalized",
+      "description": "Visual perception of a stimulus; directed attention is not required.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-authored",
+          "path": "internal/catalog/concepts.go",
+          "version": "2026-10-21-growth-01",
+          "license": "unknown",
+          "author": "golingua contributors"
+        }
+      ]
+    },
+    {
+      "id": "concept:seller",
+      "kind": "opaque_unformalized",
+      "description": "A person taking the supplying role in a sale transaction.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:selling",
+      "kind": "opaque_unformalized",
+      "description": "Supplying goods or services to a buyer under an agreement for payment.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:sending_message",
+      "kind": "opaque_unformalized",
+      "description": "Dispatching a message through a physical or electronic channel.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:settlement",
+      "kind": "opaque_unformalized",
+      "description": "A locality where people live in a relatively persistent concentration.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:shadow",
+      "kind": "opaque_unformalized",
+      "description": "A region receiving less illumination because an object obstructs light.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:shampoo",
+      "kind": "opaque_unformalized",
+      "description": "A liquid or gel cleansing preparation intended for hair.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:shape",
+      "kind": "opaque_unformalized",
+      "description": "Geometric organization of an object's boundary, independent of its material.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:sharing_resource",
+      "kind": "opaque_unformalized",
+      "description": "Allowing multiple participants to access or use a resource under an arrangement.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:sharpness",
+      "kind": "opaque_unformalized",
+      "description": "Ability of an edge or point to concentrate force for cutting or piercing.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:sheep",
+      "kind": "opaque_unformalized",
+      "description": "An individual domestic sheep of either sex.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:shelf",
+      "kind": "opaque_unformalized",
+      "description": "A horizontal support used to hold stored or displayed objects.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:ship",
+      "kind": "opaque_unformalized",
+      "description": "A large watercraft equipped for sustained travel and transport over water.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:shipping_goods",
+      "kind": "opaque_unformalized",
+      "description": "Dispatching goods through a transport system for delivery elsewhere.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:shirt",
+      "kind": "opaque_unformalized",
+      "description": "A garment for the upper torso, generally with sleeves and a neck opening.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:shoe",
+      "kind": "opaque_unformalized",
+      "description": "Footwear with a sole and upper designed to protect a foot during movement.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:shop_building",
+      "kind": "opaque_unformalized",
+      "description": "Premises equipped for retail display and sale of goods.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:shop_clerk",
+      "kind": "opaque_unformalized",
+      "description": "A person assisting customers and handling sales in a retail shop.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:shopping",
+      "kind": "opaque_unformalized",
+      "description": "Visiting or using sellers to select items for potential or actual purchase.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:shore",
+      "kind": "opaque_unformalized",
+      "description": "The land boundary directly next to a body of water.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:shorts_garment",
+      "kind": "opaque_unformalized",
+      "description": "Short trousers ending above or near the knee.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:shoulder",
+      "kind": "opaque_unformalized",
+      "description": "The body region joining an upper limb to the torso.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:shouting",
+      "kind": "opaque_unformalized",
+      "description": "Producing speech at unusually high vocal intensity.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:shower_fixture",
+      "kind": "opaque_unformalized",
+      "description": "A water outlet and associated fittings designed for washing the body by spray.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:shrub",
+      "kind": "opaque_unformalized",
+      "description": "A woody perennial plant with multiple stems near ground level.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:sibling",
+      "kind": "opaque_unformalized",
+      "description": "A person sharing at least one parent or a socially recognized sibling relationship.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:siblinghood",
+      "kind": "opaque_unformalized",
+      "description": "Two people share recognized sibling kinship or at least one parent.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:sidewalk",
+      "kind": "opaque_unformalized",
+      "description": "A dedicated pedestrian path alongside a road.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:silver_material",
+      "kind": "opaque_unformalized",
+      "description": "The metallic element silver considered as material.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:simultaneous_with",
+      "kind": "opaque_unformalized",
+      "description": "Two events or instants occur at the same temporal point or defined reference time.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:singer",
+      "kind": "opaque_unformalized",
+      "description": "A musician producing organized musical sound with the voice.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "concept:sink_fixture",
+      "kind": "opaque_unformalized",
+      "description": "A fixed basin with a drain used for washing hands, objects, or food.",
+      "review_status": "pending",
+      "provenance": [
+        {
+          "id": "golingua-core-proposed-2026-10-21",
+          "path": "data/core/1000-concept-proposals.tsv",
+          "version": "2026-10-21-draft",
+          "license": "unknown"
+        }
+      ]
+    }
+  ],
+  "dependencies": [],
+  "typical_edges": [],
+  "axioms": []
+}
