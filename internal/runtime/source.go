@@ -3,7 +3,6 @@ package runtime
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/clickbytes/golingua/internal/analyzer"
 	"github.com/clickbytes/golingua/internal/construction"
@@ -80,63 +79,23 @@ func (pipeline *SourcePipeline) Analyze(ctx context.Context, input string) (sema
 	if err := ctx.Err(); err != nil {
 		return semantic.Result{}, pipelineError(status.OutcomeResourceLimit, "SOURCE_ANALYSIS_CANCELED", "context", "source analysis was canceled or timed out")
 	}
-	latticeBudget := pipeline.LatticeBudget
-	if latticeBudget == (analyzer.Budget{}) {
-		latticeBudget = analyzer.DefaultBudget()
-	}
-	scanInput := input
-	if pipeline.AllowFinalPeriod && strings.HasSuffix(input, ".") && len(input) > 1 && !strings.ContainsAny(input[:len(input)-1], ".?!") {
-		scanInput = input[:len(input)-1]
-	}
-	lattice, err := analyzer.BuildLattice(scanInput, pipeline.Language, pipeline.Tokenize, pipeline.Morphology, pipeline.Lexicon, pipeline.MWEPlans, latticeBudget)
+	syntax, err := pipeline.AnalyzeSyntax(ctx, input)
 	if err != nil {
 		return semantic.Result{}, err
-	}
-	attestConstructionTerminals(&lattice, pipeline.AllowedUnlexicalizedTerminals)
-	if err := ctx.Err(); err != nil {
-		return semantic.Result{}, pipelineError(status.OutcomeResourceLimit, "SOURCE_ANALYSIS_CANCELED", "context", "source analysis was canceled or timed out")
-	}
-	candidates, parseContext, err := pipeline.PhraseBuilder.Build(ctx, lattice)
-	if err != nil {
-		return semantic.Result{}, err
-	}
-	if err := ctx.Err(); err != nil {
-		return semantic.Result{}, pipelineError(status.OutcomeResourceLimit, "SOURCE_ANALYSIS_CANCELED", "context", "source analysis was canceled or timed out")
-	}
-	parseBudget := pipeline.ParseBudget
-	if parseBudget == (parser.Budget{}) {
-		parseBudget = parser.DefaultBudget()
-	}
-	forest, err := parser.Parse(lattice, candidates, parseContext, pipeline.ParserIndex, parseBudget)
-	if err != nil {
-		return semantic.Result{}, err
-	}
-	if err := ctx.Err(); err != nil {
-		return semantic.Result{}, pipelineError(status.OutcomeResourceLimit, "SOURCE_ANALYSIS_CANCELED", "context", "source analysis was canceled or timed out")
-	}
-	compositionEvidence := CompositionEvidence{}
-	if pipeline.EvidenceBuilder != nil {
-		compositionEvidence, err = pipeline.EvidenceBuilder.Build(ctx, lattice, candidates, forest)
-		if err != nil {
-			return semantic.Result{}, err
-		}
-		if err := ctx.Err(); err != nil {
-			return semantic.Result{}, pipelineError(status.OutcomeResourceLimit, "SOURCE_ANALYSIS_CANCELED", "context", "source analysis was canceled or timed out")
-		}
 	}
 	semanticBudget := pipeline.SemanticBudget
 	if semanticBudget == (semantic.Budget{}) {
 		semanticBudget = semantic.DefaultBudget()
 	}
 	composed, err := semantic.Compose(semantic.CompositionInput{
-		Forest: forest, Candidates: candidates, Lattice: lattice, SourceBytes: len(input),
+		Forest: syntax.Forest, Candidates: syntax.PhraseCandidates, Lattice: syntax.Lattice, SourceBytes: syntax.OriginalSourceBytes,
 		Lexicon: pipeline.Lexicon, Valency: pipeline.Valency, Core: pipeline.Core,
-		Constructions: pipeline.Constructions, References: compositionEvidence.References,
-		ImplicitRoles:            compositionEvidence.ImplicitRoles,
-		NodeAttributes:           compositionEvidence.NodeAttributes,
-		RequestContextID:         compositionEvidence.RequestContextID,
-		Operators:                compositionEvidence.Operators,
-		OperatorCoverageComplete: compositionEvidence.OperatorCoverageComplete,
+		Constructions: pipeline.Constructions, References: syntax.CompositionEvidence.References,
+		ImplicitRoles:            syntax.CompositionEvidence.ImplicitRoles,
+		NodeAttributes:           syntax.CompositionEvidence.NodeAttributes,
+		RequestContextID:         syntax.CompositionEvidence.RequestContextID,
+		Operators:                syntax.CompositionEvidence.Operators,
+		OperatorCoverageComplete: syntax.CompositionEvidence.OperatorCoverageComplete,
 		Budget:                   semanticBudget,
 	})
 	if err != nil {

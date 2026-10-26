@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "claim_type": "profile_equivalence_v1",
+  "scope": "selected_rewrite_profile",
+  "snapshot_id": "rewrite-formal-v1:1c796af1b79a795c9abcbc4e3a67e8ae8afbc193f99bb5a8ddf5d9d94c0af1be",
+  "context_id": "source-395-main",
+  "profile": {
+    "id": "source-395-empty-profile",
+    "rules": []
+  },
+  "left_fingerprint": "sha256:8cc295ff35664b39ae633d18bb955ba4a4d4a3a94ce334a6e9b7a93dd623e2ab",
+  "right_fingerprint": "sha256:8cc295ff35664b39ae633d18bb955ba4a4d4a3a94ce334a6e9b7a93dd623e2ab",
+  "left_rewrite": {
+    "context_fingerprint": "algebra-request-context-v1:sha256:4a92bcad793e8cac14d0d768ee6b8700284afe79747fd3f8d7441f670e94dadc",
+    "input": {
+      "args": [
+        {
+          "role": "event",
+          "value": {
+            "id": "E1",
+            "kind": "Ref",
+            "type": {
+              "kind": "Event"
+            }
+          }
+        },
+        {
+          "role": "experiencer",
+          "value": {
+            "id": "B",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        },
+        {
+          "role": "stimulus",
+          "value": {
+            "id": "A",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      ],
+      "kind": "Atom",
+      "symbol": "pilot.vision_event"
+    },
+    "normalized": true,
+    "output": {
+      "args": [
+        {
+          "role": "event",
+          "value": {
+            "id": "E1",
+            "kind": "Ref",
+            "type": {
+              "kind": "Event"
+            }
+          }
+        },
+        {
+          "role": "experiencer",
+          "value": {
+            "id": "B",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        },
+        {
+          "role": "stimulus",
+          "value": {
+            "id": "A",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      ],
+      "kind": "Atom",
+      "symbol": "pilot.vision_event"
+    },
+    "profile": {
+      "id": "source-395-empty-profile",
+      "rules": []
+    },
+    "schema_version": 1,
+    "snapshot_id": "rewrite-formal-v1:1c796af1b79a795c9abcbc4e3a67e8ae8afbc193f99bb5a8ddf5d9d94c0af1be",
+    "steps": []
+  },
+  "right_rewrite": {
+    "context_fingerprint": "algebra-request-context-v1:sha256:4a92bcad793e8cac14d0d768ee6b8700284afe79747fd3f8d7441f670e94dadc",
+    "input": {
+      "args": [
+        {
+          "role": "event",
+          "value": {
+            "id": "E1",
+            "kind": "Ref",
+            "type": {
+              "kind": "Event"
+            }
+          }
+        },
+        {
+          "role": "experiencer",
+          "value": {
+            "id": "B",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        },
+        {
+          "role": "stimulus",
+          "value": {
+            "id": "A",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      ],
+      "kind": "Atom",
+      "symbol": "pilot.vision_event"
+    },
+    "normalized": true,
+    "output": {
+      "args": [
+        {
+          "role": "event",
+          "value": {
+            "id": "E1",
+            "kind": "Ref",
+            "type": {
+              "kind": "Event"
+            }
+          }
+        },
+        {
+          "role": "experiencer",
+          "value": {
+            "id": "B",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        },
+        {
+          "role": "stimulus",
+          "value": {
+            "id": "A",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      ],
+      "kind": "Atom",
+      "symbol": "pilot.vision_event"
+    },
+    "profile": {
+      "id": "source-395-empty-profile",
+      "rules": []
+    },
+    "schema_version": 1,
+    "snapshot_id": "rewrite-formal-v1:1c796af1b79a795c9abcbc4e3a67e8ae8afbc193f99bb5a8ddf5d9d94c0af1be",
+    "steps": []
+  }
+}

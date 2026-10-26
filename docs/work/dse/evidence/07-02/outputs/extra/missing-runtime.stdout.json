@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_ALGEBRA_ARGUMENTS","message":"algebra analyze requires --runtime-config","path":"algebra","severity":"error"}]}

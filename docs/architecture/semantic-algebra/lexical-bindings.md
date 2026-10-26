@@ -8,6 +8,8 @@ Pakiet v1 podaje język, leksykon, sensy, ramy semantyczne i wiązania. Wiązani
 
 Role semantyczne ramy, jej funkcje gramatyczne (np. podmiot i dopełnienie), porty celu i role argumentów symbolu należą do odrębnych warstw. Ich zgodność wynika wyłącznie z wpisanych mapowań i typów. Nazwy, opisy i etykiety nie sterują wyborem ani nie tworzą aliasów. Pakiet może przechowywać cele oczekujące lub szerokie do inspekcji i walidacji; sama ich obecność nie daje prawa wykonania. Bramka instancjacji wymaga konkretnej zatwierdzonej deklaracji albo jawnie zatwierdzonego celu równoważnego. Nie można wykonać celu oczekującego, szerokiego ani nierozstrzygniętego.
 
+Osobny typ wiązania `reference_predicate` mapuje jawny symbol jednoargumentowy do referencji bez ramy i bez tworzenia fikcyjnej walencji. Nadal wymaga on jawnego typu i identyfikatora portu referencji oraz przechodzi tę samą kontrolę pakietu i autoryzacji. Nie zmienia formatu ani bramki istniejących wiązań ramowych i `CoreRef`.
+
 Wiązanie do symbolu tworzy typowany dokument: atom, gdy wszystkie jego porty są jawnie przypisane, albo funkcję z otwartymi portami. Port symbolu niepokryty rolą ramy można zamknąć osobną referencją z żądania; bez niej pozostaje typowanym argumentem funkcji. System nie wymyśla uczestników ani zdarzeń, a niezgodny typ referencji jest odrzucany. Wiązanie do celu zachowuje jego porty i ograniczenia.
 
 Opcjonalny `binding_index` wskazuje pozycję w uporządkowanej liście wszystkich celów danego sensu, zanim wybrany cel zostanie sprawdzony względem ramy. Bez wyboru kilka celów pozostawia przypadek `ambiguous`; jawny indeks wybiera konkretną pozycję, a niezgodność wybranego celu z ramą jest odrzucana. Żądanie i wynik zachowują identyfikatory sensu, ramy, kontekstu oraz wybrany cel.

@@ -1,0 +1,156 @@
+{
+  "tool": "jsonschema4.26.0",
+  "meta_schemas": "valid",
+  "artifacts": [
+    {
+      "file": "data/semantic/languages/pl/source.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_language_package",
+      "errors": []
+    },
+    {
+      "file": "data/semantic/languages/pl/source-plan.json",
+      "schema": "source-composition.schema.json",
+      "definition": "source_plan",
+      "errors": []
+    },
+    {
+      "file": "data/semantic/languages/en/source.json",
+      "schema": "lexical-binding.schema.json",
+      "definition": "semantic_language_package",
+      "errors": []
+    },
+    {
+      "file": "data/semantic/languages/en/source-plan.json",
+      "schema": "source-composition.schema.json",
+      "definition": "source_plan",
+      "errors": []
+    },
+    {
+      "file": "data/semantic/examples/source-composition/contexts/main.json",
+      "schema": "source-composition.schema.json",
+      "definition": "source_reference_context",
+      "errors": []
+    },
+    {
+      "file": "data/semantic/examples/source-composition/contexts/two-dogs.json",
+      "schema": "source-composition.schema.json",
+      "definition": "source_reference_context",
+      "errors": []
+    },
+    {
+      "file": "data/semantic/examples/source-composition/metadata.json",
+      "schema": "package.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/395-root-observations/pl-see-role-swap-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/395-root-observations/pl-see-positive-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/395-root-observations/pl-see-negative-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/395-root-observations/pl-same-class-two-dogs-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/395-root-observations/pl-hear-positive-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/395-root-observations/pl-hear-negative-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/395-root-observations/en-see-role-swap-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/395-root-observations/en-see-positive-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/395-root-observations/en-see-negative-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/395-root-observations/en-same-class-two-dogs-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/395-root-observations/en-hear-positive-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/395-root-observations/en-hear-negative-candidate-input.json",
+      "schema": "expression.schema.json",
+      "definition": null,
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/395-root-observations/same-class-two-dogs-equivalence-certificate-input.json",
+      "schema": "proof.schema.json",
+      "definition": "equivalence_certificate",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/395-root-observations/see-role-swap-equivalence-certificate-input.json",
+      "schema": "proof.schema.json",
+      "definition": "equivalence_certificate",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/395-root-observations/hear-negative-equivalence-certificate-input.json",
+      "schema": "proof.schema.json",
+      "definition": "equivalence_certificate",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/395-root-observations/hear-positive-equivalence-certificate-input.json",
+      "schema": "proof.schema.json",
+      "definition": "equivalence_certificate",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/395-root-observations/see-negative-equivalence-certificate-input.json",
+      "schema": "proof.schema.json",
+      "definition": "equivalence_certificate",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/395-root-observations/see-positive-equivalence-certificate-input.json",
+      "schema": "proof.schema.json",
+      "definition": "equivalence_certificate",
+      "errors": []
+    }
+  ]
+}

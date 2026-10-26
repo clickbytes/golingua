@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/clickbytes/golingua/schemas/semantic/source-composition.schema.json",
+  "title": "Typed source-fragment plan and caller reference context",
+  "description": "Finite declarative mappings from selected language senses and source operators to checked semantic fragments. This metadata does not parse text or assert facts.",
+  "$comment": "The runtime enforces a 1 MiB document limit and bounded nested JSON. A source plan is bound to an explicitly selected language package and approved primitive context. Conditions are placement labels, not logic rules. Caller references do not establish mention identity.",
+  "oneOf": [
+    { "$ref": "#/$defs/source_plan" },
+    { "$ref": "#/$defs/source_reference_context" }
+  ],
+  "$defs": {
+    "id": { "type": "string", "minLength": 1, "maxLength": 256, "pattern": "^[^\\u0000\\s]+$" },
+    "source_ref": { "$ref": "goals.schema.json#/$defs/source_ref" },
+    "request_reference": { "$ref": "lexical-binding.schema.json#/$defs/request_reference" },
+    "role_reference": { "$ref": "lexical-binding.schema.json#/$defs/role_reference" },
+    "port_reference": { "$ref": "lexical-binding.schema.json#/$defs/port_reference" },
+    "condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "code"],
+      "properties": {
+        "kind": { "enum": ["assumption", "presupposition"] },
+        "code": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[^\\u0000\\s]+$" }
+      }
+    },
+    "data_type": {
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["kind"], "properties": { "kind": { "const": "Entity" } } },
+        { "type": "object", "additionalProperties": false, "required": ["kind", "sort_id"], "properties": { "kind": { "const": "Nominal" }, "sort_id": { "$ref": "#/$defs/id" } } }
+      ]
+    },
+    "source_predicate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sense_id", "frame_id", "head_port_id", "allowed_family_ids", "allowed_variant_ids"],
+      "properties": {
+        "sense_id": { "$ref": "#/$defs/id" },
+        "frame_id": { "$ref": "#/$defs/id" },
+        "head_port_id": { "$ref": "#/$defs/id" },
+        "allowed_family_ids": { "type": "array", "minItems": 1, "maxItems": 4096, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "allowed_variant_ids": { "type": "array", "maxItems": 4096, "uniqueItems": true, "items": { "$ref": "#/$defs/id" }, "$comment": "An empty array adds no variant restriction; selection remains bounded by the nonempty allowed_family_ids, exact sense/frame, and parser permission. A nonempty array is an exact variant filter." },
+        "reference_condition": { "$ref": "#/$defs/condition" }
+      }
+    },
+    "operator_mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_kind", "operator"],
+      "properties": { "source_kind": { "const": "negation" }, "operator": { "const": "Not" } }
+    },
+    "feature_condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["feature_id", "value_id", "symbol_ref", "port_id", "type", "condition_kind", "code"],
+      "properties": {
+        "feature_id": { "$ref": "#/$defs/id", "$comment": "Condition scope is the union of feature IDs declared here and required_feature_ids, interpreted only against the explicitly selected context and metadata declarations. Other source morphology may remain trace evidence." },
+        "value_id": { "$ref": "#/$defs/id" },
+        "symbol_ref": { "$ref": "#/$defs/id" },
+        "port_id": { "$ref": "#/$defs/id" },
+        "type": { "$ref": "#/$defs/data_type" },
+        "condition_kind": { "enum": ["assumption", "presupposition"] },
+        "code": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[^\\u0000\\s]+$" }
+      }
+    },
+    "source_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "id", "version", "language", "profile", "provenance", "predicate_category", "reference_category", "predicate_mappings", "operator_mappings", "feature_conditions"],
+      "properties": {
+        "schema_version": { "const": 1 },
+        "id": { "$ref": "#/$defs/id" },
+        "version": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$" },
+        "language": { "type": "string", "minLength": 2, "maxLength": 35, "pattern": "^[a-z]{2,8}(-[a-z0-9]{1,8})*$" },
+        "profile": { "const": "typed-source-fragments-v1" },
+        "provenance": { "$ref": "#/$defs/source_ref" },
+        "predicate_category": { "const": "VP" },
+        "reference_category": { "const": "NP" },
+        "reference_non_head_pos_allowlist": { "type": "array", "maxItems": 64, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 64 } },
+        "predicate_mappings": { "type": "array", "maxItems": 128, "items": { "$ref": "#/$defs/source_predicate" } },
+        "operator_mappings": { "type": "array", "maxItems": 16, "items": { "$ref": "#/$defs/operator_mapping" } },
+        "feature_conditions": { "type": "array", "maxItems": 128, "items": { "$ref": "#/$defs/feature_condition" } },
+        "required_feature_ids": { "type": "array", "maxItems": 128, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }
+      }
+    },
+    "source_reference_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "context_id", "references", "role_references", "port_references"],
+      "properties": {
+        "schema_version": { "const": 1 },
+        "context_id": { "$ref": "#/$defs/id" },
+        "references": { "type": "array", "maxItems": 512, "items": { "$ref": "#/$defs/request_reference" } },
+        "request_context": { "$ref": "context.schema.json" },
+        "role_references": { "type": "array", "maxItems": 16, "items": { "$ref": "#/$defs/role_reference" } },
+        "port_references": { "type": "array", "maxItems": 16, "items": { "$ref": "#/$defs/port_reference" } }
+      },
+      "$comment": "References are explicit caller mappings, not automatic mention resolution or world identity assertions."
+    }
+  }
+}

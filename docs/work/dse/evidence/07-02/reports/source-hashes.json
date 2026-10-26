@@ -1,0 +1,15 @@
+{
+  "internal/cli/algebra.go": "0c3ccd1f4239b8bb51fa9166794b28850462ba870dc8b9880ae9637632efd0f1",
+  "internal/cli/cli.go": "3e7cbb0945e601b56d5bedd0f31483657413a9569fadb5740934a0ee9cdbf327",
+  "internal/language/semantic_binding.go": "f950f34d388098f2d50804b799105a2a7b313e961e904ecc7e893a5b573f584e",
+  "internal/language/semantic_package.go": "b615766032fce8ccdedebb80cba8739b6433b33cfb035845192d586eab588b5d",
+  "internal/language/semantic_source.go": "50d89d60be365db97f4ebadcfd3b36029f9eccbff9f482e8edb82377ad4296a4",
+  "internal/lexicon/semantic_binding.go": "5c306c94d689edf8ac33b9b6830679bb69779de866b7bc98c765fe3b822a5e08",
+  "internal/runtime/source.go": "dc48145c5979ae7da1cdfb6020984c462415de10b0d27fc22df62706ad7a8dc5",
+  "internal/runtime/source_dse.go": "d1428b13c92c7938d97e02fda1239ccb4923fb56e7c2d98933a72b184057707a",
+  "internal/runtime/source_syntax.go": "2e14d4761b144d717fb52e777d0972a1d08f052f9b34cb1f005258b44efbb9bf",
+  "internal/semantic/dse_compose.go": "2e2a7d602034c213a665ecec8c52cfb54d7455f2de22d5a2fdad9ae7ba368d36",
+  "internal/semantic/dse_types.go": "48813de18c2e660f4cd9be143a2eb9f5af6c682b9d3e850c7e448b534e2503e0",
+  "schemas/semantic/lexical-binding.schema.json": "39b001330a58561dbf66994084d3c5cbceac0d4ea2d61f9a28162628ae798670",
+  "schemas/semantic/source-composition.schema.json": "5718b04fda53e8cc1d895f54b9e7a122e52a7e5c2f2a64833cb7805b1b422b3d"
+}

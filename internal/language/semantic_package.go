@@ -218,6 +218,14 @@ func (pack *SemanticLanguagePackage) ValidateTargets(context algebra.Document) (
 		if binding.Target == nil {
 			continue
 		}
+		if binding.Target.Kind == lexicon.SemanticTargetReferencePredicate {
+			items, err := validateReferencePredicateEnvironment(context, binding.Target)
+			if err != nil {
+				return nil, err
+			}
+			rows = append(rows, TargetValidation{SenseID: binding.SenseID.String(), Kind: binding.Target.Kind, Status: binding.Status, Mapping: binding.Mapping, Authorized: binding.TargetExecutionAuthorized(), Unresolved: items})
+			continue
+		}
 		frameIDs := make([]string, 0)
 		seenFrames := make(map[string]bool)
 		for _, mapping := range binding.Target.RolePorts {
@@ -337,6 +345,29 @@ func validateSemanticTargetEnvironment(context algebra.Document, target *lexicon
 	default:
 		return nil, unsupported("UNSUPPORTED_TARGET_KIND", "target.kind", "semantic target kind is not executable")
 	}
+}
+
+func validateReferencePredicateEnvironment(context algebra.Document, target *lexicon.SemanticTarget) ([]synthesis.Unresolved, error) {
+	if target == nil || target.Kind != lexicon.SemanticTargetReferencePredicate || target.ReferencePort == nil || len(target.RolePorts) != 0 {
+		return nil, invalid("INVALID_REFERENCE_PREDICATE_TARGET", "target", "reference predicate requires one typed port and no frame-role mappings")
+	}
+	var signature *algebra.Signature
+	for i := range context.Signatures {
+		if context.Signatures[i].ID == string(target.SymbolRef) {
+			signature = &context.Signatures[i]
+			break
+		}
+	}
+	if signature == nil {
+		return nil, unknown("UNKNOWN_TARGET_SYMBOL", "target.symbol_ref", "symbol is not an approved primitive in the selected context")
+	}
+	if len(signature.Ports) != 1 || signature.Ports[0].Role != target.ReferencePort.PortID {
+		return nil, invalid("REFERENCE_PREDICATE_SIGNATURE_MISMATCH", "target.reference_port.port_id", "selected primitive must have exactly the declared reference port")
+	}
+	if !algebra.TypeEqual(signature.Ports[0].Type, target.ReferencePort.Type) {
+		return nil, invalid("TARGET_PORT_TYPE_MISMATCH", "target.reference_port.type", "reference port type differs from selected primitive signature")
+	}
+	return []synthesis.Unresolved{}, nil
 }
 
 func frameHasRole(frame valency.ValencyFrame, role string) bool {
@@ -668,6 +699,12 @@ func validateSemanticPackageFrames(index *lexicon.Index, packageLanguage lexicon
 	// regardless of pending/approved status.
 	for i, binding := range doc.Bindings {
 		if binding.Target == nil {
+			continue
+		}
+		if binding.Target.Kind == lexicon.SemanticTargetReferencePredicate {
+			if len(binding.Target.RolePorts) != 0 {
+				return invalid("INVALID_REFERENCE_PREDICATE_ROLE_MAP", fmt.Sprintf("bindings[%d].target.role_ports", i), "frameless reference predicates require an empty role map")
+			}
 			continue
 		}
 		for j, mapping := range binding.Target.RolePorts {

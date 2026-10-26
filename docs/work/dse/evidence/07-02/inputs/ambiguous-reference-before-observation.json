@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "/tmp/golingua-dse/bin/golingua-395-final",
+    "algebra",
+    "analyze",
+    "--language",
+    "en",
+    "--text",
+    "The teacher sees the dog.",
+    "--runtime-config",
+    "/tmp/golingua-dse/395-e-runtime.json",
+    "--language-package",
+    "/tmp/golingua-dse/395-extra-inputs/ambiguous-reference-package.json",
+    "--source-plan",
+    "data/semantic/languages/en/source-plan.json",
+    "--context",
+    "data/semantic/examples/source-composition/contexts/main.json",
+    "--metadata",
+    "/tmp/golingua-dse/395-extra-inputs/ambiguous-reference-metadata.json",
+    "--json"
+  ],
+  "exit_code": 7,
+  "stderr": ""
+}

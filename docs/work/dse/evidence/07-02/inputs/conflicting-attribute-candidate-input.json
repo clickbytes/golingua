@@ -1,0 +1,456 @@
+{
+  "closed": true,
+  "expression": {
+    "args": [
+      {
+        "role": "event",
+        "value": {
+          "id": "E1",
+          "kind": "Ref",
+          "type": {
+            "kind": "Event"
+          }
+        }
+      },
+      {
+        "role": "experiencer",
+        "value": {
+          "id": "A",
+          "kind": "Ref",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      },
+      {
+        "role": "stimulus",
+        "value": {
+          "id": "B",
+          "kind": "Ref",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      }
+    ],
+    "kind": "Atom",
+    "symbol": "pilot.vision_event"
+  },
+  "references": [
+    {
+      "id": "E1",
+      "type": {
+        "kind": "Event"
+      },
+      "temporal_frame": "present"
+    },
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      },
+      "multiplicity": "many"
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      },
+      "multiplicity": "one"
+    }
+  ],
+  "request_context": {
+    "conditions": [
+      {
+        "code": "lexical_descriptor",
+        "expression": {
+          "args": [
+            {
+              "role": "entity",
+              "value": {
+                "id": "A",
+                "kind": "Ref",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ],
+          "kind": "Atom",
+          "symbol": "probe.teacher"
+        },
+        "id": "teacher-role-A",
+        "kind": "presupposition",
+        "target_referent_ids": [
+          "A"
+        ]
+      },
+      {
+        "code": "definite_reference",
+        "expression": {
+          "args": [
+            {
+              "role": "entity",
+              "value": {
+                "id": "A",
+                "kind": "Ref",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ],
+          "kind": "Atom",
+          "symbol": "probe.definite"
+        },
+        "id": "definite-A",
+        "kind": "presupposition",
+        "target_referent_ids": [
+          "A"
+        ]
+      },
+      {
+        "code": "lexical_descriptor",
+        "expression": {
+          "args": [
+            {
+              "role": "entity",
+              "value": {
+                "id": "B",
+                "kind": "Ref",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ],
+          "kind": "Atom",
+          "symbol": "probe.dog"
+        },
+        "id": "dog-description-B",
+        "kind": "presupposition",
+        "target_referent_ids": [
+          "B"
+        ]
+      },
+      {
+        "code": "definite_reference",
+        "expression": {
+          "args": [
+            {
+              "role": "entity",
+              "value": {
+                "id": "B",
+                "kind": "Ref",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ],
+          "kind": "Atom",
+          "symbol": "probe.definite"
+        },
+        "id": "definite-B",
+        "kind": "presupposition",
+        "target_referent_ids": [
+          "B"
+        ]
+      }
+    ],
+    "id": "source-395-main",
+    "mentions": [
+      {
+        "context_id": "source-395-main",
+        "id": "phrase:35d829293eaff672b1ae61cf63c5a853d24fee522f669e78840079fcaac52990"
+      },
+      {
+        "context_id": "source-395-main",
+        "id": "phrase:36b167fe28de845a1e8e94b751ef165fe9b1634b3e7ffef4d00831118fd16e4c"
+      },
+      {
+        "context_id": "source-395-main",
+        "id": "phrase:42cae456c47e085343c322d21bba41e7a4491ee2e135b2d08002df461cfbce4c"
+      },
+      {
+        "context_id": "source-395-main",
+        "id": "phrase:46e3ee33edfa4065b029b88033b961256a5a4a56066759feb4daa1a22991a747"
+      },
+      {
+        "context_id": "source-395-main",
+        "id": "phrase:5456748d33c6532588bea44e837a74dd92c747247579e8e341ba96f7f9358810"
+      },
+      {
+        "context_id": "source-395-main",
+        "id": "phrase:9b098e3cf4cf512d7c3f6882996f65515dd74f640c70baf066816702f1f41c7d"
+      },
+      {
+        "context_id": "source-395-main",
+        "id": "phrase:b85dd15e439c240377d5ee0237daf5ebbfa85bed5975d8e9c4d280463d419da1"
+      },
+      {
+        "context_id": "source-395-main",
+        "id": "phrase:cefa5eda53659f6bf4c8d2282384b0f8ee5e0ebfb0ef4ec5d7f66d19102c4fdf"
+      },
+      {
+        "context_id": "source-395-main",
+        "id": "phrase:e8b43e36e7c54cbb14d09b59865b7aff2d0bb0a73177d273829648b14bfcf7fc"
+      },
+      {
+        "context_id": "source-395-main",
+        "id": "phrase:fbb2c3025e9571641a2325ab62759ac861ab528ce19f14d9121e8b9a703d97cd"
+      }
+    ],
+    "referents": [
+      {
+        "id": "E1",
+        "temporal_frame": "present",
+        "type": {
+          "kind": "Event"
+        }
+      },
+      {
+        "id": "A",
+        "multiplicity": "one",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "id": "B",
+        "multiplicity": "one",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ],
+    "resolution_evidence": [
+      {
+        "id": "ground-01",
+        "mention_id": "phrase:35d829293eaff672b1ae61cf63c5a853d24fee522f669e78840079fcaac52990",
+        "referent_id": "A",
+        "source": {
+          "id": "dse395-manual-mention-grounding",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "ground-02",
+        "mention_id": "phrase:36b167fe28de845a1e8e94b751ef165fe9b1634b3e7ffef4d00831118fd16e4c",
+        "referent_id": "A",
+        "source": {
+          "id": "dse395-manual-mention-grounding",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "ground-03",
+        "mention_id": "phrase:42cae456c47e085343c322d21bba41e7a4491ee2e135b2d08002df461cfbce4c",
+        "referent_id": "B",
+        "source": {
+          "id": "dse395-manual-mention-grounding",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "ground-04",
+        "mention_id": "phrase:46e3ee33edfa4065b029b88033b961256a5a4a56066759feb4daa1a22991a747",
+        "referent_id": "B",
+        "source": {
+          "id": "dse395-manual-mention-grounding",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "ground-05",
+        "mention_id": "phrase:5456748d33c6532588bea44e837a74dd92c747247579e8e341ba96f7f9358810",
+        "referent_id": "B",
+        "source": {
+          "id": "dse395-manual-mention-grounding",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "ground-06",
+        "mention_id": "phrase:9b098e3cf4cf512d7c3f6882996f65515dd74f640c70baf066816702f1f41c7d",
+        "referent_id": "B",
+        "source": {
+          "id": "dse395-manual-mention-grounding",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "ground-07",
+        "mention_id": "phrase:b85dd15e439c240377d5ee0237daf5ebbfa85bed5975d8e9c4d280463d419da1",
+        "referent_id": "B",
+        "source": {
+          "id": "dse395-manual-mention-grounding",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "ground-08",
+        "mention_id": "phrase:cefa5eda53659f6bf4c8d2282384b0f8ee5e0ebfb0ef4ec5d7f66d19102c4fdf",
+        "referent_id": "A",
+        "source": {
+          "id": "dse395-manual-mention-grounding",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "ground-09",
+        "mention_id": "phrase:e8b43e36e7c54cbb14d09b59865b7aff2d0bb0a73177d273829648b14bfcf7fc",
+        "referent_id": "A",
+        "source": {
+          "id": "dse395-manual-mention-grounding",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "ground-10",
+        "mention_id": "phrase:fbb2c3025e9571641a2325ab62759ac861ab528ce19f14d9121e8b9a703d97cd",
+        "referent_id": "B",
+        "source": {
+          "id": "dse395-manual-mention-grounding",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      }
+    ],
+    "schema_version": 1
+  },
+  "schema_version": 1,
+  "signatures": [
+    {
+      "id": "pilot.auditory_event",
+      "label": "pilot auditory-perception event relation",
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.r",
+      "label": "neutral ordered relation",
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.vision_event",
+      "label": "pilot visual-perception event relation",
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.definite",
+      "label": "explicit probe convention probe.definite",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.dog",
+      "label": "explicit probe convention probe.dog",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.teacher",
+      "label": "explicit probe convention probe.teacher",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    }
+  ]
+}

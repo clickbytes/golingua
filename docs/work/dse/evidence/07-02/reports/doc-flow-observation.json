@@ -1,0 +1,123 @@
+{
+  "binary_sha256": "c0499634e98b29259069e10949bb2ca7b0e0fc1fb40e4bad5a34f8a6d7659fa7",
+  "runtime_config": "inputs/runtime.json",
+  "profile": "inputs/profile.json",
+  "commands": [
+    {
+      "argv": [
+        "golingua",
+        "snapshot",
+        "--apply",
+        "--store",
+        "$TASK_TMP/store",
+        "--json"
+      ],
+      "exit_code": 0,
+      "output": "inputs/snapshot.json"
+    },
+    {
+      "argv": [
+        "golingua",
+        "algebra",
+        "analyze",
+        "--language",
+        "en",
+        "--text",
+        "The teacher sees the dog.",
+        "--runtime-config",
+        "inputs/runtime.json",
+        "--language-package",
+        "data/semantic/languages/en/source.json",
+        "--source-plan",
+        "data/semantic/languages/en/source-plan.json",
+        "--context",
+        "data/semantic/examples/source-composition/contexts/main.json",
+        "--metadata",
+        "data/semantic/examples/source-composition/metadata.json",
+        "--json"
+      ],
+      "exit_code": 0,
+      "output": "inputs/en.json"
+    },
+    {
+      "argv": [
+        "golingua",
+        "algebra",
+        "check",
+        "--input",
+        "inputs/en-document.json",
+        "--json"
+      ],
+      "exit_code": 0,
+      "output": "inputs/check-en.json"
+    },
+    {
+      "argv": [
+        "golingua",
+        "algebra",
+        "analyze",
+        "--language",
+        "pl",
+        "--text",
+        "Nauczyciel widzi psa.",
+        "--runtime-config",
+        "inputs/runtime.json",
+        "--language-package",
+        "data/semantic/languages/pl/source.json",
+        "--source-plan",
+        "data/semantic/languages/pl/source-plan.json",
+        "--context",
+        "data/semantic/examples/source-composition/contexts/main.json",
+        "--metadata",
+        "data/semantic/examples/source-composition/metadata.json",
+        "--json"
+      ],
+      "exit_code": 0,
+      "output": "inputs/pl.json"
+    },
+    {
+      "argv": [
+        "golingua",
+        "algebra",
+        "compare",
+        "--left",
+        "inputs/en-document.json",
+        "--right",
+        "inputs/pl-document.json",
+        "--profile",
+        "inputs/profile.json",
+        "--context-id",
+        "source-395-main",
+        "--metadata",
+        "data/semantic/examples/source-composition/metadata.json",
+        "--json"
+      ],
+      "exit_code": 0,
+      "output": "inputs/comparison.json"
+    },
+    {
+      "argv": [
+        "golingua",
+        "algebra",
+        "verify-proof",
+        "--claim",
+        "equivalence",
+        "--left",
+        "inputs/en-document.json",
+        "--right",
+        "inputs/pl-document.json",
+        "--profile",
+        "inputs/profile.json",
+        "--context-id",
+        "source-395-main",
+        "--certificate",
+        "inputs/equivalence-certificate.json",
+        "--metadata",
+        "data/semantic/examples/source-composition/metadata.json",
+        "--json"
+      ],
+      "exit_code": 0,
+      "output": "inputs/verify.json"
+    }
+  ]
+}

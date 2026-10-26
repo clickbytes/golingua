@@ -1,0 +1,9 @@
+{
+  "source": "docs/cli.md source analysis section",
+  "literal_blocks": 1,
+  "literal_flow_sha256": "799d997aa95b6c38e65cabca2a6527fa353f75deb59cafaf3db1e3153f114062",
+  "go_lingua_commands": 6,
+  "all_exit_zero": true,
+  "shell_exit_code": 0,
+  "binary_resolution": "PATH wrapper records exact calls to frozen golingua-395-final; literal commands unchanged"
+}

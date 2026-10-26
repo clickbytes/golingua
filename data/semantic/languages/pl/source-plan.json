@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "id": "golingua.language.pl.source-plan-395",
+  "version": "2026-10-26.1",
+  "language": "pl",
+  "profile": "typed-source-fragments-v1",
+  "provenance": {
+    "id": "golingua-dse-authored-395",
+    "uri": "https://github.com/clickbytes/golingua/issues/395",
+    "version": "2026-10-26.1",
+    "license": "internal-neutral-example",
+    "author": "Codex by owner delegation"
+  },
+  "predicate_category": "VP",
+  "reference_category": "NP",
+  "predicate_mappings": [
+    {
+      "sense_id": "sense:pl.widziec.visual",
+      "frame_id": "pl.widziec.visual.transitive",
+      "head_port_id": "event",
+      "allowed_family_ids": [
+        "construction:pl.transitive"
+      ],
+      "allowed_variant_ids": [
+        "construction:pl.transitive.svo"
+      ],
+      "reference_condition": {
+        "kind": "presupposition",
+        "code": "lexical_descriptor"
+      }
+    },
+    {
+      "sense_id": "sense:pl.widziec.visual",
+      "frame_id": "pl.widziec.visual.transitive_negative",
+      "head_port_id": "event",
+      "allowed_family_ids": [
+        "construction:pl.transitive_negative"
+      ],
+      "allowed_variant_ids": [
+        "construction:pl.transitive_negative.svo"
+      ],
+      "reference_condition": {
+        "kind": "presupposition",
+        "code": "lexical_descriptor"
+      }
+    },
+    {
+      "sense_id": "sense:pl.slyszec.auditory",
+      "frame_id": "pl.slyszec.auditory.transitive",
+      "head_port_id": "event",
+      "allowed_family_ids": [
+        "construction:pl.transitive"
+      ],
+      "allowed_variant_ids": [
+        "construction:pl.transitive.svo"
+      ],
+      "reference_condition": {
+        "kind": "presupposition",
+        "code": "lexical_descriptor"
+      }
+    },
+    {
+      "sense_id": "sense:pl.slyszec.auditory",
+      "frame_id": "pl.slyszec.auditory.transitive_negative",
+      "head_port_id": "event",
+      "allowed_family_ids": [
+        "construction:pl.transitive_negative"
+      ],
+      "allowed_variant_ids": [
+        "construction:pl.transitive_negative.svo"
+      ],
+      "reference_condition": {
+        "kind": "presupposition",
+        "code": "lexical_descriptor"
+      }
+    }
+  ],
+  "operator_mappings": [
+    {
+      "source_kind": "negation",
+      "operator": "Not"
+    }
+  ],
+  "feature_conditions": [],
+  "required_feature_ids": [],
+  "reference_non_head_pos_allowlist": []
+}

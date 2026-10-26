@@ -1,0 +1,9 @@
+{
+  "id": "pl-same-class-two-dogs",
+  "language": "pl",
+  "text": "Pies widzi psa.",
+  "context_file": "../contexts/two-dogs.json",
+  "language_package": "../../../languages/pl/source.json",
+  "source_plan": "../../../languages/pl/source-plan.json",
+  "metadata": "../metadata.json"
+}

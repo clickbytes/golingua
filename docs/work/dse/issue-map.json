@@ -636,11 +636,11 @@
         393
       ],
       "branch_name": "dse/07-01-lexical-goals",
-      "status": "ACTIVE",
+      "status": "DONE",
       "actual_base_sha": "71533b8e6c31e1fc090863f904c84d0e40a2ac3e",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/07-01-lexical-goals",
-      "pr_url": null,
-      "merge_sha": null,
+      "pr_url": "https://github.com/clickbytes/golingua/pull/418",
+      "merge_sha": "65e4d94913a97e0067a81b635eaed40058f9307c",
       "evidence_paths": [
         "docs/work/dse/evidence/07-01/README.md",
         "docs/work/dse/evidence/07-01/outputs/main/observations.jsonl",
@@ -665,12 +665,20 @@
         393
       ],
       "branch_name": "dse/07-02-source-composition",
-      "status": "QUEUED",
-      "actual_base_sha": null,
-      "branch_url": null,
+      "status": "ACTIVE",
+      "actual_base_sha": "dd4c0e21f3f10bccae21db73b2d0b4d5850a0e50",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/07-02-source-composition",
       "pr_url": null,
       "merge_sha": null,
-      "evidence_paths": []
+      "evidence_paths": [
+        "docs/work/dse/evidence/07-02/README.md",
+        "docs/work/dse/evidence/07-02/outputs/main/observations.jsonl",
+        "docs/work/dse/evidence/07-02/outputs/extra/observations.jsonl",
+        "docs/work/dse/evidence/07-02/reports/source-hashes.json",
+        "docs/work/dse/evidence/07-02/reports/technical-observation.json",
+        "docs/work/dse/evidence/07-02/reports/schema-observation.json",
+        "docs/work/dse/evidence/07-02/root-docflow/observation.json"
+      ]
     },
     {
       "issue_number": 396,

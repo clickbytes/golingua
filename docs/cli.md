@@ -867,4 +867,48 @@ golingua algebra check --input "$TASK_TMP/candidate.json" --json
 golingua algebra verify-goal --metadata data/semantic/examples/lexical-bindings/metadata.json --goal "$TASK_TMP/goal.json" --candidate "$TASK_TMP/candidate.json" --certificate "$TASK_TMP/certificate.json" --json
 ```
 
+
 Kilka pasujących wiązań daje `ambiguous`; wybór wymaga jawnego `binding_index`. Brak referencji, nieznana rola/port, zły typ albo kontekst przypięty do innego żądania nie są naprawiane przez zgadywanie. Szczegóły rozdziału między ramą, rolą i portem, granic kontekstu oraz ograniczeń pilota opisuje [kontrakt wiązań leksykalnych](architecture/semantic-algebra/lexical-bindings.md). Próbki i obserwacje znajdują się w [przykładach](../data/semantic/examples/lexical-bindings/README.md) oraz [evidence #394](work/dse/evidence/07-01/README.md). Akceptacja językowa właściciela pozostaje **NOT EVALUATED**.
+
+### Analiza źródłowa: `algebra analyze`
+
+To jawne wejście do ograniczonego pipeline'u składniowego. Wymaga aktywnego snapshotu runtime, pakietu i planu dla tego samego języka, kontekstu oraz wybranego zestawu metadanych. Polecenie nie zmienia domyślnego `translate` i nie przechodzi do starej kompozycji CORE.
+
+```sh
+TASK_TMP=$(mktemp -d)
+repo=$(pwd)
+printf '{"schema_version":1,"dataset_store":"%s/store","dataset_id":"golingua-authored","language_package_dirs":[]}\n' "$TASK_TMP" > "$TASK_TMP/runtime.json"
+golingua snapshot --apply --store "$TASK_TMP/store" --json
+
+golingua algebra analyze --language en --text 'The teacher sees the dog.' \
+  --runtime-config "$TASK_TMP/runtime.json" \
+  --language-package "$repo/data/semantic/languages/en/source.json" \
+  --source-plan "$repo/data/semantic/languages/en/source-plan.json" \
+  --context "$repo/data/semantic/examples/source-composition/contexts/main.json" \
+  --metadata "$repo/data/semantic/examples/source-composition/metadata.json" --json \
+  > "$TASK_TMP/en.json"
+jq '.composition.candidates[0].canonical_document' "$TASK_TMP/en.json" > "$TASK_TMP/en-document.json"
+golingua algebra check --input "$TASK_TMP/en-document.json" --json
+
+golingua algebra analyze --language pl --text 'Nauczyciel widzi psa.' \
+  --runtime-config "$TASK_TMP/runtime.json" \
+  --language-package "$repo/data/semantic/languages/pl/source.json" \
+  --source-plan "$repo/data/semantic/languages/pl/source-plan.json" \
+  --context "$repo/data/semantic/examples/source-composition/contexts/main.json" \
+  --metadata "$repo/data/semantic/examples/source-composition/metadata.json" --json \
+  > "$TASK_TMP/pl.json"
+jq '.composition.candidates[0].canonical_document' "$TASK_TMP/pl.json" > "$TASK_TMP/pl-document.json"
+printf '%s\n' '{"id":"source-profile-empty","rules":[]}' > "$TASK_TMP/profile.json"
+golingua algebra compare --left "$TASK_TMP/en-document.json" --right "$TASK_TMP/pl-document.json" \
+  --profile "$TASK_TMP/profile.json" --context-id source-395-main \
+  --metadata "$repo/data/semantic/examples/source-composition/metadata.json" --json \
+  > "$TASK_TMP/comparison.json"
+jq '.result.certificate' "$TASK_TMP/comparison.json" > "$TASK_TMP/equivalence-certificate.json"
+golingua algebra verify-proof --claim equivalence \
+  --left "$TASK_TMP/en-document.json" --right "$TASK_TMP/pl-document.json" \
+  --profile "$TASK_TMP/profile.json" --context-id source-395-main \
+  --certificate "$TASK_TMP/equivalence-certificate.json" \
+  --metadata "$repo/data/semantic/examples/source-composition/metadata.json" --json
+```
+
+Samo istnienie warunku w kontekście nie tworzy faktu. Identyfikatory wzmianek muszą pochodzić z rzeczywistych kandydatów składniowych i potwierdzonej evidencji rozstrzygnięcia; jawne `role_references` są założeniem wywołującego. Atrybuty referencji, presupozycje i zakres operatorów są zachowywane w dokumentach. Pełne kontrole porównania potwierdziły sześć par dla tego pilota; nie są oceną prawdy świata ani akceptacją językową właściciela (`NOT EVALUATED`). Zobacz [kontrakt składania analizy](architecture/semantic-algebra/source-composition.md), [przykłady](../data/semantic/examples/source-composition/) i [evidence #395](work/dse/evidence/07-02/README.md).
