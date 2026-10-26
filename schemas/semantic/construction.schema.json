@@ -47,6 +47,9 @@
         {"$ref": "#/$defs/value"},
         {"$ref": "#/$defs/atom"},
         {"$ref": "#/$defs/and"},
+        {"$ref": "#/$defs/not"},
+        {"$ref": "#/$defs/quantifier"},
+        {"$ref": "#/$defs/ask"},
         {"$ref": "#/$defs/join"},
         {"$ref": "#/$defs/bind"},
         {"$ref": "#/$defs/apply"},
@@ -60,6 +63,12 @@
     "value": {"type": "object", "additionalProperties": false, "required": ["id", "op", "value"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "value"}, "value": {"$ref": "#/$defs/leafValue"}}},
     "atom": {"type": "object", "additionalProperties": false, "required": ["id", "op", "symbol", "args"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "atom"}, "symbol": {"$ref": "#/$defs/id"}, "args": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/atomArgument"}}}},
     "and": {"type": "object", "additionalProperties": false, "required": ["id", "op", "inputs"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "and"}, "inputs": {"type": "array", "minItems": 1, "maxItems": 4096, "items": {"$ref": "#/$defs/stepRef"}}}},
+    "not": {"type": "object", "additionalProperties": false, "required": ["id", "op", "inputs"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "not"}, "inputs": {"type": "array", "minItems": 1, "maxItems": 1, "items": {"$ref": "#/$defs/stepRef"}}}},
+    "quantifier": {"oneOf": [
+      {"type": "object", "additionalProperties": false, "required": ["id", "op", "inputs", "quantifier"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "quantifier"}, "inputs": {"type": "array", "minItems": 1, "maxItems": 2, "items": {"$ref": "#/$defs/stepRef"}}, "quantifier": {"enum": ["some", "all"]}}},
+      {"type": "object", "additionalProperties": false, "required": ["id", "op", "inputs", "quantifier", "count"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "quantifier"}, "inputs": {"type": "array", "minItems": 1, "maxItems": 2, "items": {"$ref": "#/$defs/stepRef"}}, "quantifier": {"enum": ["exactly", "at_least", "at_most"]}, "count": {"type": "integer", "minimum": 0}}}
+    ]},
+    "ask": {"type": "object", "additionalProperties": false, "required": ["id", "op", "inputs"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "ask"}, "inputs": {"type": "array", "minItems": 1, "maxItems": 2, "items": {"$ref": "#/$defs/stepRef"}}}},
     "join": {"type": "object", "additionalProperties": false, "required": ["id", "op", "left", "right"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "join"}, "left": {"$ref": "#/$defs/stepRef"}, "right": {"$ref": "#/$defs/stepRef"}, "mapping": {"type": "array", "maxItems": 4096, "items": {"$ref": "#/$defs/joinPair"}}, "outputs": {"type": "array", "maxItems": 4096, "items": {"$ref": "#/$defs/joinOutput"}}}},
     "bind": {"type": "object", "additionalProperties": false, "required": ["id", "op", "function", "port", "argument"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "bind"}, "function": {"$ref": "#/$defs/stepRef"}, "port": {"$ref": "#/$defs/id"}, "argument": {"$ref": "#/$defs/stepRef"}}},
     "apply": {"type": "object", "additionalProperties": false, "required": ["id", "op", "function", "argument"], "properties": {"id": {"$ref": "#/$defs/id"}, "op": {"const": "apply"}, "function": {"$ref": "#/$defs/stepRef"}, "argument": {"$ref": "#/$defs/stepRef"}}},

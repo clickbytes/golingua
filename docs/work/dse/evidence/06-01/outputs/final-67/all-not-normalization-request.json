@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "document": {
+    "schema_version": 1,
+    "references": [
+      {
+        "id": "A",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "id": "B",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ],
+    "parameters": [],
+    "expression": {
+      "kind": "Quantifier",
+      "id": "x",
+      "type": {
+        "kind": "Entity"
+      },
+      "quantifier": "all",
+      "body": {
+        "kind": "Not",
+        "body": {
+          "kind": "Atom",
+          "symbol": "p",
+          "args": [
+            {
+              "role": "v",
+              "value": {
+                "kind": "Var",
+                "id": "x"
+              }
+            }
+          ]
+        }
+      },
+      "restrictor": {
+        "kind": "Atom",
+        "symbol": "q",
+        "args": [
+          {
+            "role": "v",
+            "value": {
+              "kind": "Var",
+              "id": "x"
+            }
+          }
+        ]
+      }
+    },
+    "limits": {}
+  },
+  "profile": {
+    "id": "scope-alpha-beta",
+    "rules": [
+      "alpha_v1",
+      "beta_v1"
+    ]
+  }
+}

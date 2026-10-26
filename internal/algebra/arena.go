@@ -18,17 +18,21 @@ type NodeArgument struct {
 // ParameterID, ReferenceID, or HoleID according to Kind; NodeID is never a
 // substitute for that semantic identity.
 type Node struct {
-	NodeID   NodeID         `json:"node_id"`
-	Kind     TermKind       `json:"kind"`
-	Identity string         `json:"identity,omitempty"`
-	Label    string         `json:"label,omitempty"`
-	Type     *Type          `json:"type,omitempty"`
-	Symbol   string         `json:"symbol,omitempty"`
-	Args     []NodeArgument `json:"args,omitempty"`
-	Operands []NodeID       `json:"operands,omitempty"`
-	Body     NodeID         `json:"body,omitempty"`
-	Function NodeID         `json:"function,omitempty"`
-	Argument NodeID         `json:"argument,omitempty"`
+	NodeID     NodeID         `json:"node_id"`
+	Kind       TermKind       `json:"kind"`
+	Identity   string         `json:"identity,omitempty"`
+	Label      string         `json:"label,omitempty"`
+	Type       *Type          `json:"type,omitempty"`
+	Symbol     string         `json:"symbol,omitempty"`
+	Args       []NodeArgument `json:"args,omitempty"`
+	Operands   []NodeID       `json:"operands,omitempty"`
+	Body       NodeID         `json:"body,omitempty"`
+	Function   NodeID         `json:"function,omitempty"`
+	Argument   NodeID         `json:"argument,omitempty"`
+	Quantifier string         `json:"quantifier,omitempty"`
+	Count      *int           `json:"count,omitempty"`
+	Restrictor NodeID         `json:"restrictor,omitempty"`
+	Answers    []Declaration  `json:"answers,omitempty"`
 }
 
 // Arena is an immutable, checked, artifact-local DAG. Its fields remain
@@ -70,7 +74,25 @@ func NewArena(context Document, root NodeID, nodes []Node) (*Arena, error) {
 		if node.NodeID != want {
 			return nil, invalid("NON_DENSE_NODE_IDS", fmt.Sprintf("nodes[%d].node_id", i), "NodeIDs must be unique and dense starting at one")
 		}
+		if node.Kind == TermAsk && len(node.Answers) > limits.MaxPorts {
+			return nil, resourceLimit(fmt.Sprintf("nodes[%d].answers", i), fmt.Sprintf("answer count %d exceeds limit %d", len(node.Answers), limits.MaxPorts))
+		}
 		copyNodes[i] = node
+		copyNodes[i].Count = nil
+		if node.Count != nil {
+			count := *node.Count
+			copyNodes[i].Count = &count
+		}
+		if node.Kind == TermAsk {
+			copyNodes[i].Answers = make([]Declaration, len(node.Answers))
+			for j, answer := range node.Answers {
+				typeCopy, typeErr := cloneStandaloneType(&answer.Type, limits)
+				if typeErr != nil {
+					return nil, typeErr
+				}
+				copyNodes[i].Answers[j] = Declaration{ID: answer.ID, Type: typeCopy}
+			}
+		}
 		if node.Type != nil {
 			typeCopy, typeErr := cloneStandaloneType(node.Type, limits)
 			if typeErr != nil {
@@ -86,10 +108,13 @@ func NewArena(context Document, root NodeID, nodes []Node) (*Arena, error) {
 	totalEdges := 0
 	for i, node := range copyNodes {
 		path := fmt.Sprintf("nodes[%d]", i)
+		if err := validateArenaNodeShape(node, path); err != nil {
+			return nil, err
+		}
 		if len(node.Args) > limits.MaxNodes || len(node.Operands) > limits.MaxNodes || len(node.Args)+len(node.Operands) > limits.MaxNodes {
 			return nil, resourceLimit(path, "node edge count exceeds the configured node limit")
 		}
-		edges := make([]NodeID, 0, len(node.Args)+len(node.Operands)+3)
+		edges := make([]NodeID, 0, len(node.Args)+len(node.Operands)+4)
 		for j, argument := range node.Args {
 			if argument.Value != 0 {
 				if err := validArenaEdge(argument.Value, len(copyNodes), fmt.Sprintf("%s.args[%d].value", path, j)); err != nil {
@@ -109,7 +134,7 @@ func NewArena(context Document, root NodeID, nodes []Node) (*Arena, error) {
 		for _, edge := range []struct {
 			field string
 			child NodeID
-		}{{"body", node.Body}, {"function", node.Function}, {"argument", node.Argument}} {
+		}{{"body", node.Body}, {"function", node.Function}, {"argument", node.Argument}, {"restrictor", node.Restrictor}} {
 			field, child := edge.field, edge.child
 			if child != 0 {
 				if err := validArenaEdge(child, len(copyNodes), path+"."+field); err != nil {
@@ -276,6 +301,44 @@ func (arena *Arena) Document() (Document, error) {
 	return context, nil
 }
 
+func validateArenaNodeShape(node Node, path string) error {
+	identityKind := node.Kind == TermVar || node.Kind == TermParam || node.Kind == TermRef || node.Kind == TermHole || node.Kind == TermExists || node.Kind == TermLambda || node.Kind == TermQuantifier
+	if !identityKind && node.Identity != "" {
+		return invalid("MALFORMED_ARENA_NODE", path+".identity", "identity is not allowed for this node kind")
+	}
+	if node.Kind != TermAtom && node.Symbol != "" {
+		return invalid("MALFORMED_ARENA_NODE", path+".symbol", "symbol is not allowed for this node kind")
+	}
+	if node.Kind != TermAtom && len(node.Args) != 0 {
+		return invalid("MALFORMED_ARENA_NODE", path+".args", "args are not allowed for this node kind")
+	}
+	if node.Kind != TermAnd && len(node.Operands) != 0 {
+		return invalid("MALFORMED_ARENA_NODE", path+".operands", "operands are not allowed for this node kind")
+	}
+	if node.Kind != TermLambda && node.Kind != TermExists && node.Kind != TermNot && node.Kind != TermQuantifier && node.Kind != TermAsk && node.Body != 0 {
+		return invalid("MALFORMED_ARENA_NODE", path+".body", "body edge is not allowed for this node kind")
+	}
+	if node.Kind != TermApply && (node.Function != 0 || node.Argument != 0) {
+		return invalid("MALFORMED_ARENA_NODE", path, "function/argument edges are not allowed for this node kind")
+	}
+	if node.Kind != TermParam && node.Kind != TermRef && node.Kind != TermHole && node.Kind != TermLambda && node.Kind != TermExists && node.Kind != TermQuantifier && node.Type != nil {
+		return invalid("MALFORMED_ARENA_NODE", path+".type", "type is not allowed for this node kind")
+	}
+	if node.Kind != TermQuantifier && node.Quantifier != "" {
+		return invalid("MALFORMED_ARENA_NODE", path+".quantifier", "quantifier is not allowed for this node kind")
+	}
+	if node.Kind != TermQuantifier && node.Count != nil {
+		return invalid("MALFORMED_ARENA_NODE", path+".count", "count is not allowed for this node kind")
+	}
+	if node.Kind != TermQuantifier && node.Kind != TermAsk && node.Restrictor != 0 {
+		return invalid("MALFORMED_ARENA_NODE", path+".restrictor", "restrictor edge is not allowed for this node kind")
+	}
+	if node.Kind != TermAsk && node.Answers != nil {
+		return invalid("MALFORMED_ARENA_NODE", path+".answers", "answers are not allowed for this node kind")
+	}
+	return nil
+}
+
 func validArenaEdge(id NodeID, count int, path string) error {
 	if id == 0 || uint64(id) > uint64(count) {
 		return invalid("INVALID_ARENA_EDGE", path, "edge must identify a declared node")
@@ -300,7 +363,21 @@ func arenaTerm(root NodeID, nodes []Node, limits Limits) (*Term, error) {
 			return cache[id], nil
 		}
 		node := nodes[id-1]
-		term := &Term{Kind: node.Kind, ID: node.Identity, Label: node.Label, Symbol: node.Symbol}
+		term := &Term{Kind: node.Kind, ID: node.Identity, Label: node.Label, Symbol: node.Symbol, Quantifier: node.Quantifier}
+		if node.Count != nil {
+			count := *node.Count
+			term.Count = &count
+		}
+		if node.Kind == TermAsk {
+			term.Answers = make([]Declaration, len(node.Answers))
+			for i, answer := range node.Answers {
+				typeCopy, err := cloneStandaloneType(&answer.Type, limits)
+				if err != nil {
+					return nil, err
+				}
+				term.Answers[i] = Declaration{ID: answer.ID, Type: typeCopy}
+			}
+		}
 		if node.Type != nil {
 			typeCopy, err := cloneStandaloneType(node.Type, limits)
 			if err != nil {
@@ -334,6 +411,10 @@ func arenaTerm(root NodeID, nodes []Node, limits Limits) (*Term, error) {
 		if err != nil {
 			return nil, err
 		}
+		term.Restrictor, err = build(node.Restrictor)
+		if err != nil {
+			return nil, err
+		}
 		term.Function, err = build(node.Function)
 		if err != nil {
 			return nil, err
@@ -354,6 +435,21 @@ func cloneArenaNodes(nodes []Node, limits Limits) ([]Node, error) {
 	copyNodes := make([]Node, len(nodes))
 	for i, node := range nodes {
 		copyNodes[i] = node
+		copyNodes[i].Count = nil
+		if node.Count != nil {
+			count := *node.Count
+			copyNodes[i].Count = &count
+		}
+		if node.Kind == TermAsk {
+			copyNodes[i].Answers = make([]Declaration, len(node.Answers))
+			for j, answer := range node.Answers {
+				typeCopy, typeErr := cloneStandaloneType(&answer.Type, limits)
+				if typeErr != nil {
+					return nil, typeErr
+				}
+				copyNodes[i].Answers[j] = Declaration{ID: answer.ID, Type: typeCopy}
+			}
+		}
 		if node.Type != nil {
 			typeCopy, err := cloneStandaloneType(node.Type, limits)
 			if err != nil {

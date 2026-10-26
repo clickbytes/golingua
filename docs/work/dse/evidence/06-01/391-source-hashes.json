@@ -1,0 +1,21 @@
+{
+  "internal/algebra/arena.go": "03c24fcb6a676e4469c78c6a5c774334d3ffec8b299567bba8ab07800133b832",
+  "internal/algebra/build.go": "fe79aac4ef2e40454fac0b23667896a927db65b72ef5135a9b22e4fe13ec9a02",
+  "internal/algebra/check.go": "d5c04369af0cb61775377f9a5aee9b12a8b828ef9dc886c2afd664ec3577d849",
+  "internal/algebra/document.go": "6c1d1512c1ea1cd73337c88b3ec6d79783612b2e1f8ea262faac5bc827ac5032",
+  "internal/algebra/intern.go": "7f08125adac71a2c4ba62e9baecb7b0d7b467569355822d1f919faada46c50a6",
+  "internal/algebra/json.go": "b8c951123c4fb45e670832c3694b5d27101a7b0d000304ef03ba2364761abf47",
+  "internal/algebra/proof.go": "27c485b7004303359b653bc888ddf57f19bb7a87b3f2d74cbd01617de9358e23",
+  "internal/algebra/scope.go": "1f97b868af42d2bc2e2ce529bf692ba6779906abb5b8bb407049a5e57b799bd6",
+  "internal/algebra/substitution.go": "b4f9a036d0f8ecc73fb82c89ae4e69b5c6d5d69b6c0e363d65cac9893a4e97d0",
+  "internal/algebra/terms.go": "e4cd7d976a10d41b08d025ac52f63496daa395888de278fbd72d56468c10f1f0",
+  "internal/algebra/types.go": "b05081078b390bd9c469b9e8d6b978980c2a5e4ac9694a3a30ba332523212c6e",
+  "internal/cli/algebra.go": "c7639919df33eba5bf5c0615d2624536fbd243d83f269eac2b756d553b9ce07a",
+  "internal/cli/cli.go": "cca41437a8673d851915b000c372b8bf1527056c3abf734e34cf8221dcf75502",
+  "internal/reason/algebra_plan.go": "e6b0d7e0b0eb9d20dea9ad5eb125dce0203a4ce3c6a6b5ec58f4557f20f9901d",
+  "internal/synthesis/certificate_json.go": "00f2e3977123c7626e594f38ddc34bfdd750b2591983f1fe513bcb169222cced",
+  "internal/synthesis/constraints.go": "e28cdee7e58da153afc0d9f6bb54dd8056587315f7931aa92ab3f4c61de74707",
+  "schemas/semantic/construction.schema.json": "effa84676701145ff07fc49c4e3ceee6b2a1b5484669e9efb2b4a10d2aea6ea5",
+  "schemas/semantic/expression.schema.json": "c2b9239d04971f647e239fb5fdb41e05add83cd7892a4a549dd210a784b3c08e",
+  "internal/algebra/scopes.go": "03aec27b5849fbc374d32a86994d59f60428fe4c3fc6e3211654960b9860415f"
+}

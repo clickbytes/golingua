@@ -862,6 +862,52 @@ func termWire(term *Term) (map[string]any, error) {
 			return nil, err
 		}
 		wire["id"], wire["type"], wire["body"] = term.ID, term.Type, body
+	case TermNot:
+		body, err := termWire(term.Body)
+		if err != nil {
+			return nil, err
+		}
+		wire["body"] = body
+	case TermQuantifier:
+		body, err := termWire(term.Body)
+		if err != nil {
+			return nil, err
+		}
+		wire["id"], wire["type"], wire["quantifier"], wire["body"] = term.ID, term.Type, term.Quantifier, body
+		if term.Count != nil {
+			wire["count"] = *term.Count
+		}
+		if term.Restrictor != nil {
+			restrictor, err := termWire(term.Restrictor)
+			if err != nil {
+				return nil, err
+			}
+			wire["restrictor"] = restrictor
+		}
+	case TermAsk:
+		body, err := termWire(term.Body)
+		if err != nil {
+			return nil, err
+		}
+		answers := make([]Declaration, len(term.Answers))
+		for i, answer := range term.Answers {
+			if !validText(answer.ID, 256) {
+				return nil, invalid("INVALID_ANSWER_ID", fmt.Sprintf("expression.answers[%d].id", i), "answer ID must be non-empty valid UTF-8 and at most 256 bytes")
+			}
+			typ, err := cloneStandaloneType(&answer.Type, DefaultLimits())
+			if err != nil {
+				return nil, err
+			}
+			answers[i] = Declaration{ID: answer.ID, Type: typ}
+		}
+		wire["answers"], wire["body"] = answers, body
+		if term.Restrictor != nil {
+			restrictor, err := termWire(term.Restrictor)
+			if err != nil {
+				return nil, err
+			}
+			wire["restrictor"] = restrictor
+		}
 	case TermApply:
 		function, err := termWire(term.Function)
 		if err != nil {
@@ -1102,7 +1148,7 @@ func validateTypeJSON(data json.RawMessage, path string) error {
 	}
 	var allowed, required []string
 	switch kind {
-	case TypeEntity, TypeEvent, TypeInterval, TypeProp:
+	case TypeEntity, TypeEvent, TypeInterval, TypeProp, TypeQuestion:
 		allowed, required = []string{"kind"}, []string{"kind"}
 	case TypeNominal:
 		allowed, required = []string{"kind", "sort_id"}, []string{"kind", "sort_id"}
@@ -1140,8 +1186,22 @@ func validateSortTypeJSON(data json.RawMessage, path string) error {
 	return nil
 }
 
+func validateDataTypeJSON(data json.RawMessage, path string) error {
+	if err := validateTypeJSON(data, path); err != nil {
+		return err
+	}
+	var value Type
+	if err := json.Unmarshal(data, &value); err != nil {
+		return invalid("MALFORMED_TYPE", path, "data sort type must be an object")
+	}
+	if !isDataType(value) {
+		return invalid("INVALID_DATA_SORT_TYPE", path, "binder or answer type must be Entity, Event, Interval, or a declared Nominal sort")
+	}
+	return nil
+}
+
 func validateTermJSON(data json.RawMessage, path string) error {
-	base, err := strictObject(data, path, []string{"kind", "id", "label", "type", "symbol", "args", "operands", "body", "function", "argument"}, []string{"kind"})
+	base, err := strictObjectNullable(data, path, []string{"kind", "id", "label", "type", "symbol", "args", "operands", "body", "function", "argument", "quantifier", "count", "restrictor", "answers"}, []string{"kind"}, []string{"restrictor"})
 	if err != nil {
 		return err
 	}
@@ -1163,15 +1223,21 @@ func validateTermJSON(data json.RawMessage, path string) error {
 		allowed, required = []string{"kind", "id", "label", "type", "body"}, []string{"kind", "id", "type", "body"}
 	case TermApply:
 		allowed, required = []string{"kind", "label", "function", "argument"}, []string{"kind", "function", "argument"}
+	case TermNot:
+		allowed, required = []string{"kind", "label", "body"}, []string{"kind", "body"}
+	case TermQuantifier:
+		allowed, required = []string{"kind", "id", "label", "type", "quantifier", "count", "restrictor", "body"}, []string{"kind", "id", "type", "quantifier", "body"}
+	case TermAsk:
+		allowed, required = []string{"kind", "label", "answers", "restrictor", "body"}, []string{"kind", "body"}
 	default:
 		return invalid("UNKNOWN_TERM_KIND", path+".kind", "term kind is unsupported")
 	}
-	fields, err := strictObject(data, path, allowed, required)
+	fields, err := strictObjectNullable(data, path, allowed, required, []string{"restrictor"})
 	if err != nil {
 		return err
 	}
 	switch kind {
-	case TermParam, TermRef, TermHole, TermExists, TermLambda:
+	case TermParam, TermRef, TermHole, TermExists, TermLambda, TermQuantifier:
 		if err := validateTypeJSON(fields["type"], path+".type"); err != nil {
 			return err
 		}
@@ -1204,6 +1270,46 @@ func validateTermJSON(data json.RawMessage, path string) error {
 		}
 	case TermExists, TermLambda:
 		return validateTermJSON(fields["body"], path+".body")
+	case TermNot:
+		return validateTermJSON(fields["body"], path+".body")
+	case TermQuantifier:
+		if raw, ok := fields["count"]; ok {
+			if _, err := rewriteJSONInt(raw, path+".count", 0, int(^uint(0)>>1)); err != nil {
+				return err
+			}
+		}
+		if raw, ok := fields["restrictor"]; ok && !bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+			if err := validateTermJSON(raw, path+".restrictor"); err != nil {
+				return err
+			}
+		}
+		return validateTermJSON(fields["body"], path+".body")
+	case TermAsk:
+		if raw, ok := fields["answers"]; ok {
+			answers, err := strictArray(raw, path+".answers", DefaultMaxPorts)
+			if err != nil {
+				return err
+			}
+			for i, answer := range answers {
+				answerPath := fmt.Sprintf("%s.answers[%d]", path, i)
+				af, err := strictObject(answer, answerPath, []string{"id", "type"}, []string{"id", "type"})
+				if err != nil {
+					return err
+				}
+				if _, err := rewriteJSONString(af["id"], answerPath+".id", 256, false); err != nil {
+					return err
+				}
+				if err := validateDataTypeJSON(af["type"], answerPath+".type"); err != nil {
+					return err
+				}
+			}
+		}
+		if raw, ok := fields["restrictor"]; ok && !bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+			if err := validateTermJSON(raw, path+".restrictor"); err != nil {
+				return err
+			}
+		}
+		return validateTermJSON(fields["body"], path+".body")
 	case TermApply:
 		if err := validateTermJSON(fields["function"], path+".function"); err != nil {
 			return err
@@ -1214,6 +1320,10 @@ func validateTermJSON(data json.RawMessage, path string) error {
 }
 
 func strictObject(data []byte, path string, allowed, required []string) (map[string]json.RawMessage, error) {
+	return strictObjectNullable(data, path, allowed, required, nil)
+}
+
+func strictObjectNullable(data []byte, path string, allowed, required, nullable []string) (map[string]json.RawMessage, error) {
 	var fields map[string]json.RawMessage
 	if err := json.Unmarshal(data, &fields); err != nil || fields == nil {
 		return nil, invalid("EXPECTED_OBJECT", path, "expected a non-null JSON object")
@@ -1221,6 +1331,10 @@ func strictObject(data []byte, path string, allowed, required []string) (map[str
 	allowedSet := make(map[string]struct{}, len(allowed))
 	for _, key := range allowed {
 		allowedSet[key] = struct{}{}
+	}
+	nullableSet := make(map[string]struct{}, len(nullable))
+	for _, key := range nullable {
+		nullableSet[key] = struct{}{}
 	}
 	keys := make([]string, 0, len(fields))
 	for key := range fields {
@@ -1233,6 +1347,9 @@ func strictObject(data []byte, path string, allowed, required []string) (map[str
 			return nil, invalid("UNKNOWN_FIELD", appendJSONPath(path, key), "field is not allowed in this object variant")
 		}
 		if bytes.Equal(bytes.TrimSpace(value), []byte("null")) {
+			if _, ok := nullableSet[key]; ok {
+				continue
+			}
 			return nil, invalid("NULL_FIELD", appendJSONPath(path, key), "field cannot be null")
 		}
 	}
@@ -1621,7 +1738,7 @@ func decodeArtifactNodes(data []byte) ([]Node, error) {
 	result := make([]Node, len(items))
 	for i, raw := range items {
 		path := fmt.Sprintf("artifact.nodes[%d]", i)
-		base, err := strictObject(raw, path, []string{"node_id", "kind", "label", "identity", "type", "symbol", "args", "operands", "body", "function", "argument"}, []string{"node_id", "kind"})
+		base, err := strictObject(raw, path, []string{"node_id", "kind", "label", "identity", "type", "symbol", "args", "operands", "body", "function", "argument", "quantifier", "count", "restrictor", "answers"}, []string{"node_id", "kind"})
 		if err != nil {
 			return nil, err
 		}
@@ -1651,6 +1768,12 @@ func decodeArtifactNodes(data []byte) ([]Node, error) {
 			allowed, required = []string{"node_id", "kind", "label", "operands"}, []string{"node_id", "kind", "operands"}
 		case TermExists, TermLambda:
 			allowed, required = []string{"node_id", "kind", "label", "identity", "type", "body"}, []string{"node_id", "kind", "identity", "type", "body"}
+		case TermNot:
+			allowed, required = []string{"node_id", "kind", "label", "body"}, []string{"node_id", "kind", "body"}
+		case TermQuantifier:
+			allowed, required = []string{"node_id", "kind", "label", "identity", "type", "quantifier", "count", "restrictor", "body"}, []string{"node_id", "kind", "identity", "type", "quantifier", "body"}
+		case TermAsk:
+			allowed, required = []string{"node_id", "kind", "label", "answers", "restrictor", "body"}, []string{"node_id", "kind", "answers", "body"}
 		case TermApply:
 			allowed, required = []string{"node_id", "kind", "label", "function", "argument"}, []string{"node_id", "kind", "function", "argument"}
 		default:
@@ -1712,7 +1835,56 @@ func decodeArtifactNodes(data []byte) ([]Node, error) {
 					return nil, err
 				}
 			}
-		case TermExists, TermLambda:
+		case TermExists, TermLambda, TermNot:
+			if node.Body, err = decodeNodeID(fields["body"], path+".body"); err != nil {
+				return nil, err
+			}
+		case TermQuantifier:
+			if node.Quantifier, err = rewriteJSONString(fields["quantifier"], path+".quantifier", 32, false); err != nil {
+				return nil, err
+			}
+			if raw, ok := fields["count"]; ok {
+				value, err := rewriteJSONInt(raw, path+".count", 0, int(^uint(0)>>1))
+				if err != nil {
+					return nil, err
+				}
+				node.Count = &value
+			}
+			if raw, ok := fields["restrictor"]; ok {
+				if node.Restrictor, err = decodeNodeID(raw, path+".restrictor"); err != nil {
+					return nil, err
+				}
+			}
+			if node.Body, err = decodeNodeID(fields["body"], path+".body"); err != nil {
+				return nil, err
+			}
+		case TermAsk:
+			answers, err := strictArray(fields["answers"], path+".answers", DefaultMaxPorts)
+			if err != nil {
+				return nil, err
+			}
+			node.Answers = make([]Declaration, len(answers))
+			for j, rawAnswer := range answers {
+				ap := fmt.Sprintf("%s.answers[%d]", path, j)
+				af, err := strictObject(rawAnswer, ap, []string{"id", "type"}, []string{"id", "type"})
+				if err != nil {
+					return nil, err
+				}
+				id, err := rewriteJSONString(af["id"], ap+".id", 256, false)
+				if err != nil {
+					return nil, err
+				}
+				typ, err := DecodeTypeJSON(af["type"], ap+".type")
+				if err != nil {
+					return nil, err
+				}
+				node.Answers[j] = Declaration{ID: id, Type: typ}
+			}
+			if raw, ok := fields["restrictor"]; ok {
+				if node.Restrictor, err = decodeNodeID(raw, path+".restrictor"); err != nil {
+					return nil, err
+				}
+			}
 			if node.Body, err = decodeNodeID(fields["body"], path+".body"); err != nil {
 				return nil, err
 			}

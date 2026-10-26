@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"ASK_SELECTION_FORBIDDEN","message":"Ask answer variables are the sole projection authority","path":"--select","severity":"error"}]}

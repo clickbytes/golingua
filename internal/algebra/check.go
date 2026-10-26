@@ -208,7 +208,7 @@ func (c *checker) validateType(value *Type, path string, depth int, active map[*
 	active[value] = true
 	defer delete(active, value)
 	switch value.Kind {
-	case TypeEntity, TypeEvent, TypeInterval, TypeProp:
+	case TypeEntity, TypeEvent, TypeInterval, TypeProp, TypeQuestion:
 		if value.SortID != "" || value.From != nil || value.To != nil {
 			return invalid("MALFORMED_TYPE", path, "built-in type cannot carry sort or arrow fields")
 		}
@@ -312,6 +312,19 @@ func (c *checker) visit(term *Term, path string, depth int) (Type, error) {
 		return *term.Type, nil
 	case TermAtom:
 		return c.visitAtom(term, path, depth)
+	case TermNot:
+		bodyType, err := c.visit(term.Body, path+".body", depth+1)
+		if err != nil {
+			return Type{}, err
+		}
+		if bodyType.Kind != TypeProp {
+			return Type{}, invalid("EXPECTED_PROP", path+".body", "Not body must have type Prop")
+		}
+		return Type{Kind: TypeProp}, nil
+	case TermQuantifier:
+		return c.visitQuantifier(term, path, depth)
+	case TermAsk:
+		return c.visitAsk(term, path, depth)
 	case TermAnd:
 		if len(term.Operands) == 0 {
 			return Type{}, invalid("EMPTY_CONJUNCTION", path+".operands", "And requires at least one proposition")
@@ -426,7 +439,8 @@ func validateTermShape(term *Term, path string) error {
 	bad := func(field string) error {
 		return invalid("MALFORMED_TERM", path+"."+field, "field is not allowed for this term kind")
 	}
-	if term.Kind != TermParam && term.Kind != TermRef && term.Kind != TermHole && term.Kind != TermLambda && term.Kind != TermExists && term.Type != nil {
+	usesType := term.Kind == TermParam || term.Kind == TermRef || term.Kind == TermHole || term.Kind == TermLambda || term.Kind == TermExists || term.Kind == TermQuantifier
+	if !usesType && term.Type != nil {
 		return bad("type")
 	}
 	if term.Kind != TermAtom && term.Symbol != "" {
@@ -438,31 +452,67 @@ func validateTermShape(term *Term, path string) error {
 	if term.Kind != TermAnd && len(term.Operands) != 0 {
 		return bad("operands")
 	}
-	if term.Kind != TermLambda && term.Kind != TermExists && term.Body != nil {
+	usesBody := term.Kind == TermLambda || term.Kind == TermExists || term.Kind == TermNot || term.Kind == TermQuantifier || term.Kind == TermAsk
+	if !usesBody && term.Body != nil {
 		return bad("body")
 	}
 	if term.Kind != TermApply && (term.Function != nil || term.Argument != nil) {
 		return bad("function/argument")
 	}
-	usesID := term.Kind == TermVar || term.Kind == TermParam || term.Kind == TermRef || term.Kind == TermHole || term.Kind == TermLambda || term.Kind == TermExists
+	if term.Kind != TermQuantifier && term.Quantifier != "" {
+		return bad("quantifier")
+	}
+	if term.Kind != TermQuantifier && term.Count != nil {
+		return bad("count")
+	}
+	if term.Kind != TermQuantifier && term.Kind != TermAsk && term.Restrictor != nil {
+		return bad("restrictor")
+	}
+	if term.Kind != TermAsk && term.Answers != nil {
+		return bad("answers")
+	}
+	usesID := term.Kind == TermVar || term.Kind == TermParam || term.Kind == TermRef || term.Kind == TermHole || term.Kind == TermLambda || term.Kind == TermExists || term.Kind == TermQuantifier
 	if !usesID && term.ID != "" {
 		return bad("id")
 	}
-	if term.Kind != TermAtom && term.Kind != TermAnd && (term.Kind != TermApply || term.Function == nil || term.Argument == nil) && (term.Kind != TermLambda && term.Kind != TermExists || term.Body == nil) && (term.Kind != TermParam && term.Kind != TermRef && term.Kind != TermHole || term.Type == nil) && term.Kind != TermVar {
-		return invalid("MALFORMED_TERM", path, "term fields do not form a valid tagged variant")
-	}
-	if term.Kind == TermAtom && !termHasFields(term, "symbol") {
-		return invalid("MALFORMED_TERM", path, "Atom requires a symbol")
-	}
-	if term.Kind == TermAnd && term.Operands == nil {
-		return invalid("MALFORMED_TERM", path+".operands", "And requires an operand list")
-	}
 	switch term.Kind {
-	case TermVar, TermParam, TermRef, TermHole, TermAtom, TermAnd, TermExists, TermLambda, TermApply:
-		return nil
+	case TermVar:
+	case TermParam, TermRef, TermHole:
+		if term.Type == nil {
+			return invalid("MALFORMED_TERM", path+".type", "typed term requires a type")
+		}
+	case TermAtom:
+		if !termHasFields(term, "symbol") {
+			return invalid("MALFORMED_TERM", path, "Atom requires a symbol")
+		}
+	case TermAnd:
+		if term.Operands == nil {
+			return invalid("MALFORMED_TERM", path+".operands", "And requires an operand list")
+		}
+	case TermExists, TermLambda:
+		if term.ID == "" || term.Type == nil || term.Body == nil {
+			return invalid("MALFORMED_TERM", path, "binder term requires id, type, and body")
+		}
+	case TermNot:
+		if term.Body == nil {
+			return invalid("MALFORMED_TERM", path+".body", "Not requires a body")
+		}
+	case TermQuantifier:
+		if term.ID == "" || term.Type == nil || term.Body == nil || term.Quantifier == "" {
+			return invalid("MALFORMED_TERM", path, "Quantifier requires id, type, quantifier, and body")
+		}
+	case TermAsk:
+		if term.Body == nil {
+			return invalid("MALFORMED_TERM", path+".body", "Ask requires a body")
+		}
+	case TermApply:
+		if term.Function == nil || term.Argument == nil {
+			return invalid("MALFORMED_TERM", path, "Apply requires function and argument")
+		}
 	default:
 		return invalid("UNKNOWN_TERM_KIND", path+".kind", "term kind is unsupported")
 	}
+	return nil
 }
 
 // termHasFields distinguishes an empty required string from an omitted field.

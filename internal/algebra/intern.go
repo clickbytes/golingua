@@ -170,7 +170,15 @@ func BuildArena(document Document, useInterning bool) (*Arena, error) {
 		}
 		candidate := Node{
 			Kind: term.Kind, Identity: term.ID, Label: term.Label,
-			Type: term.Type, Symbol: term.Symbol,
+			Type: term.Type, Symbol: term.Symbol, Quantifier: term.Quantifier,
+		}
+		if term.Count != nil {
+			count := *term.Count
+			candidate.Count = &count
+		}
+		if term.Kind == TermAsk {
+			candidate.Answers = make([]Declaration, len(term.Answers))
+			copy(candidate.Answers, term.Answers)
 		}
 		if term.Args != nil {
 			candidate.Args = make([]NodeArgument, len(term.Args))
@@ -195,6 +203,12 @@ func BuildArena(document Document, useInterning bool) (*Arena, error) {
 		var childErr error
 		if term.Body != nil {
 			candidate.Body, childErr = visit(term.Body, depth+1)
+			if childErr != nil {
+				return 0, childErr
+			}
+		}
+		if term.Restrictor != nil {
+			candidate.Restrictor, childErr = visit(term.Restrictor, depth+1)
 			if childErr != nil {
 				return 0, childErr
 			}
@@ -257,8 +271,17 @@ func arenaNodeFingerprint(node Node) ([sha256.Size]byte, error) {
 func equalArenaNode(left, right Node) bool {
 	if left.Kind != right.Kind || left.Identity != right.Identity || left.Label != right.Label || left.Symbol != right.Symbol ||
 		left.Body != right.Body || left.Function != right.Function || left.Argument != right.Argument ||
+		left.Quantifier != right.Quantifier || left.Restrictor != right.Restrictor ||
 		len(left.Args) != len(right.Args) || len(left.Operands) != len(right.Operands) {
 		return false
+	}
+	if (left.Count == nil) != (right.Count == nil) || (left.Count != nil && *left.Count != *right.Count) || len(left.Answers) != len(right.Answers) {
+		return false
+	}
+	for i := range left.Answers {
+		if left.Answers[i].ID != right.Answers[i].ID || !TypeEqual(left.Answers[i].Type, right.Answers[i].Type) {
+			return false
+		}
 	}
 	if (left.Type == nil) != (right.Type == nil) {
 		return false

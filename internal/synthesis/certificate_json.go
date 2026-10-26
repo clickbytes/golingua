@@ -400,7 +400,7 @@ func validateCertType(t algebra.Type, path string, depth int, active map[*algebr
 		active[v] = true
 		defer delete(active, v)
 		switch v.Kind {
-		case algebra.TypeEntity, algebra.TypeEvent, algebra.TypeInterval, algebra.TypeProp:
+		case algebra.TypeEntity, algebra.TypeEvent, algebra.TypeInterval, algebra.TypeProp, algebra.TypeQuestion:
 			if v.SortID != "" || v.From != nil || v.To != nil {
 				return certJSONInvalid("INVALID_TYPE_SHAPE", path, "built-in sort has irrelevant fields")
 			}

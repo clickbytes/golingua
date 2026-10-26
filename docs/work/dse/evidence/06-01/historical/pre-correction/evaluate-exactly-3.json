@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"QUERY_SELECTION_REQUIRED","message":"non-Ask query requires explicit answer selections","path":"select","severity":"error"}]}

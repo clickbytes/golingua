@@ -20,6 +20,7 @@ const (
 	TypeProp     TypeKind = "Prop"
 	TypeNominal  TypeKind = "Nominal"
 	TypeArrow    TypeKind = "Arrow"
+	TypeQuestion TypeKind = "Question"
 )
 
 // Type is either a built-in sort, a declared nominal sort, or a function type.

@@ -367,7 +367,9 @@ func RewriteTermEqual(left, right *Term, limits Limits) (bool, error) {
 		if termNodes > limits.MaxNodes {
 			return false, resourceLimit("term", "term equality exceeds configured node bound")
 		}
-		if a.Kind != b.Kind || a.ID != b.ID || a.Symbol != b.Symbol || len(a.Args) != len(b.Args) || len(a.Operands) != len(b.Operands) {
+		if a.Kind != b.Kind || a.ID != b.ID || a.Symbol != b.Symbol || a.Quantifier != b.Quantifier ||
+			len(a.Args) != len(b.Args) || len(a.Operands) != len(b.Operands) || len(a.Answers) != len(b.Answers) ||
+			(a.Count == nil) != (b.Count == nil) || (a.Count != nil && *a.Count != *b.Count) {
 			return false, nil
 		}
 		activePairs[pair] = true
@@ -375,6 +377,15 @@ func RewriteTermEqual(left, right *Term, limits Limits) (bool, error) {
 		typesEqual, err := equalType(a.Type, b.Type, 1, make(map[*Type]bool), make(map[*Type]bool))
 		if err != nil || !typesEqual {
 			return typesEqual, err
+		}
+		for i := range a.Answers {
+			if a.Answers[i].ID != b.Answers[i].ID {
+				return false, nil
+			}
+			answerTypesEqual, answerTypeErr := equalType(&a.Answers[i].Type, &b.Answers[i].Type, 1, make(map[*Type]bool), make(map[*Type]bool))
+			if answerTypeErr != nil || !answerTypesEqual {
+				return answerTypesEqual, answerTypeErr
+			}
 		}
 		for i := range a.Args {
 			if a.Args[i].Role != b.Args[i].Role {
@@ -391,7 +402,7 @@ func RewriteTermEqual(left, right *Term, limits Limits) (bool, error) {
 				return ok, e
 			}
 		}
-		for _, child := range [][2]*Term{{a.Body, b.Body}, {a.Function, b.Function}, {a.Argument, b.Argument}} {
+		for _, child := range [][2]*Term{{a.Restrictor, b.Restrictor}, {a.Body, b.Body}, {a.Function, b.Function}, {a.Argument, b.Argument}} {
 			ok, e := equalTerm(child[0], child[1], depth+1)
 			if e != nil || !ok {
 				return ok, e
@@ -469,10 +480,19 @@ func rewriteChildren(term *Term) []*Term {
 		return out
 	case TermAnd:
 		return term.Operands
-	case TermExists, TermLambda:
+	case TermExists, TermLambda, TermNot:
 		if term.Body != nil {
 			return []*Term{term.Body}
 		}
+	case TermQuantifier, TermAsk:
+		children := make([]*Term, 0, 2)
+		if term.Restrictor != nil {
+			children = append(children, term.Restrictor)
+		}
+		if term.Body != nil {
+			children = append(children, term.Body)
+		}
+		return children
 	case TermApply:
 		out := make([]*Term, 0, 2)
 		if term.Function != nil {
@@ -508,7 +528,19 @@ func replaceRewritePath(root *Term, path []int, replacement *Term) (*Term, error
 		}
 		parent.Operands[index] = replacement
 		return root, nil
-	case TermExists, TermLambda:
+	case TermExists, TermLambda, TermNot:
+		if index == 0 {
+			parent.Body = replacement
+			return root, nil
+		}
+	case TermQuantifier, TermAsk:
+		if parent.Restrictor != nil {
+			if index == 0 {
+				parent.Restrictor = replacement
+				return root, nil
+			}
+			index--
+		}
 		if index == 0 {
 			parent.Body = replacement
 			return root, nil
@@ -541,9 +573,13 @@ func rewriteReservedIDs(term *Term, limits Limits) ([]string, error) {
 		}
 		seen[current] = true
 		switch current.Kind {
-		case TermVar, TermLambda, TermExists, TermParam, TermRef, TermHole:
+		case TermVar, TermLambda, TermExists, TermQuantifier, TermParam, TermRef, TermHole:
 			if current.ID != "" {
 				ids[current.ID] = struct{}{}
+			}
+		case TermAsk:
+			for _, answer := range current.Answers {
+				ids[answer.ID] = struct{}{}
 			}
 		}
 		stack = append(stack, rewriteChildren(current)...)
@@ -597,8 +633,15 @@ func remapBinderIDs(root *Term, mapping map[string]string, limits Limits) error 
 		if nodes > limits.MaxNodes {
 			return resourceLimit("expression", "binder remap exceeds configured node limit")
 		}
-		if next, ok := mapping[it.term.ID]; (it.term.Kind == TermLambda || it.term.Kind == TermExists) && ok {
+		if next, ok := mapping[it.term.ID]; (it.term.Kind == TermLambda || it.term.Kind == TermExists || it.term.Kind == TermQuantifier) && ok {
 			it.term.ID = next
+		}
+		if it.term.Kind == TermAsk {
+			for i := range it.term.Answers {
+				if next, ok := mapping[it.term.Answers[i].ID]; ok {
+					it.term.Answers[i].ID = next
+				}
+			}
 		}
 		if it.term.Kind == TermVar {
 			if next, ok := mapping[it.term.ID]; ok {
@@ -620,8 +663,13 @@ func binderIDsInPreorder(root *Term) []string {
 		if t == nil {
 			return
 		}
-		if t.Kind == TermLambda || t.Kind == TermExists {
+		switch t.Kind {
+		case TermLambda, TermExists, TermQuantifier:
 			out = append(out, t.ID)
+		case TermAsk:
+			for _, answer := range t.Answers {
+				out = append(out, answer.ID)
+			}
 		}
 		for _, child := range rewriteChildren(t) {
 			walk(child)
@@ -732,9 +780,15 @@ func rewriteOuterScope(root *Term, path []int) (map[string]int, error) {
 	current := root
 	ordinal := 0
 	for depth, index := range path {
-		if (current.Kind == TermExists || current.Kind == TermLambda) && index == 0 {
+		switch current.Kind {
+		case TermExists, TermLambda, TermQuantifier:
 			scope[current.ID] = ordinal
 			ordinal++
+		case TermAsk:
+			for _, answer := range current.Answers {
+				scope[answer.ID] = ordinal
+				ordinal++
+			}
 		}
 		children := rewriteChildren(current)
 		if index < 0 || index >= len(children) {
@@ -753,6 +807,31 @@ func rewriteOrderKey(term *Term, outer map[string]int, limits Limits) (string, e
 	local := map[string]int{}
 	next := 0
 	nodes := 0
+	type localRestore struct {
+		id      string
+		old     int
+		existed bool
+	}
+	bindLocals := func(ids []string) []localRestore {
+		restores := make([]localRestore, 0, len(ids))
+		for _, id := range ids {
+			old, existed := local[id]
+			restores = append(restores, localRestore{id: id, old: old, existed: existed})
+			local[id] = next
+			next++
+		}
+		return restores
+	}
+	restoreLocals := func(restores []localRestore) {
+		for i := len(restores) - 1; i >= 0; i-- {
+			item := restores[i]
+			if item.existed {
+				local[item.id] = item.old
+			} else {
+				delete(local, item.id)
+			}
+		}
+	}
 	var walk func(*Term, int) error
 	walk = func(t *Term, depth int) error {
 		if t == nil {
@@ -802,21 +881,61 @@ func rewriteOrderKey(term *Term, outer map[string]int, limits Limits) (string, e
 					return err
 				}
 			}
+		case TermNot:
+			return walk(t.Body, depth+1)
 		case TermExists, TermLambda:
 			if err := rewriteTypeKey(&b, t.Type, 1, limits); err != nil {
 				return err
 			}
-			old, had := local[t.ID]
-			local[t.ID] = next
-			next++
-			if err := walk(t.Body, depth+1); err != nil {
+			restores := bindLocals([]string{t.ID})
+			err := walk(t.Body, depth+1)
+			restoreLocals(restores)
+			return err
+		case TermQuantifier:
+			token(t.Quantifier)
+			if t.Count == nil {
+				token("no-count")
+			} else {
+				token(strconv.Itoa(*t.Count))
+			}
+			if err := rewriteTypeKey(&b, t.Type, 1, limits); err != nil {
 				return err
 			}
-			if had {
-				local[t.ID] = old
+			restores := bindLocals([]string{t.ID})
+			if t.Restrictor == nil {
+				token("no-restrictor")
 			} else {
-				delete(local, t.ID)
+				token("restrictor")
+				if err := walk(t.Restrictor, depth+1); err != nil {
+					restoreLocals(restores)
+					return err
+				}
 			}
+			err := walk(t.Body, depth+1)
+			restoreLocals(restores)
+			return err
+		case TermAsk:
+			token(strconv.Itoa(len(t.Answers)))
+			ids := make([]string, len(t.Answers))
+			for i, answer := range t.Answers {
+				ids[i] = answer.ID
+				if err := rewriteTypeKey(&b, &answer.Type, 1, limits); err != nil {
+					return err
+				}
+			}
+			restores := bindLocals(ids)
+			if t.Restrictor == nil {
+				token("no-restrictor")
+			} else {
+				token("restrictor")
+				if err := walk(t.Restrictor, depth+1); err != nil {
+					restoreLocals(restores)
+					return err
+				}
+			}
+			err := walk(t.Body, depth+1)
+			restoreLocals(restores)
+			return err
 		case TermApply:
 			if err := walk(t.Function, depth+1); err != nil {
 				return err
@@ -867,7 +986,7 @@ func rewriteBinderFree(term *Term, limits Limits) (bool, error) {
 			continue
 		}
 		seen[t] = true
-		if t.Kind == TermLambda || t.Kind == TermExists {
+		if t.Kind == TermLambda || t.Kind == TermExists || t.Kind == TermQuantifier || (t.Kind == TermAsk && len(t.Answers) != 0) {
 			return false, nil
 		}
 		stack = append(stack, rewriteChildren(t)...)

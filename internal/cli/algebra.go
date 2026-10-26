@@ -38,6 +38,7 @@ type algebraOptions struct {
 	expression         string
 	factsInput         string
 	selection          string
+	selectionSpecified bool
 	contextID          string
 	profile            string
 	at                 string
@@ -51,6 +52,20 @@ type algebraOptions struct {
 	searchLimitSet     map[string]bool
 	verifyLimits       synthesis.GoalVerificationLimits
 	verifyLimitSet     map[string]bool
+}
+
+type algebraScopeCapability struct {
+	CanRepresent bool   `json:"can_represent"`
+	CanEvaluate  bool   `json:"can_evaluate"`
+	Condition    string `json:"condition,omitempty"`
+}
+
+type algebraCapabilitiesOutput struct {
+	Status       status.OutcomeKind                `json:"status"`
+	Scopes       map[string]algebraScopeCapability `json:"scopes"`
+	QuestionType string                            `json:"question_type"`
+	Evaluation   algebraScopeCapability            `json:"question_evaluation"`
+	Scope        string                            `json:"scope"`
 }
 
 type algebraNormalizeOutput struct {
@@ -243,6 +258,8 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 	index := 2
 	if args[1] == "check" {
 		options.command = "check"
+	} else if args[1] == "capabilities" {
+		options.command = "capabilities"
 	} else if args[1] == "build" {
 		options.command = "build"
 	} else if args[1] == "synthesize" {
@@ -350,6 +367,7 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 					return options, "duplicate --select flag"
 				}
 				seenSelection = true
+				options.selectionSpecified = true
 				options.selection = value
 			case "--context-id":
 				if seenContextID {
@@ -549,6 +567,9 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 	if !seenJSON {
 		return options, "algebra command requires --json"
 	}
+	if options.command == "capabilities" && (len(options.metadata) != 0 || options.input != "" || options.expression != "" || options.factsInput != "" || options.selectionSpecified || options.contextID != "" || options.profile != "" || options.at != "") {
+		return options, "algebra capabilities accepts only --json"
+	}
 	if strings.HasPrefix(options.command, "metadata_") && len(options.metadata) == 0 {
 		return options, "algebra metadata requires at least one --metadata file"
 	}
@@ -556,16 +577,19 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		return options, "algebra facts validate requires at least one --metadata file"
 	}
 	if options.command == "evaluate" {
-		if !seenExpression || !seenFacts || !seenSelection || !seenContextID || !seenProfile {
-			return options, "algebra evaluate requires --expression, --facts, --select, --context-id, and --profile"
+		if !seenExpression || !seenFacts || !seenContextID || !seenProfile {
+			return options, "algebra evaluate requires --expression, --facts, --context-id, and --profile"
 		}
 		if len(options.metadata) == 0 {
 			return options, "algebra evaluate requires at least one --metadata file"
 		}
-		for _, path := range []string{options.expression, options.factsInput, options.selection} {
+		for _, path := range []string{options.expression, options.factsInput} {
 			if path == "" || path == "-" {
 				return options, "algebra evaluate inputs must be named file paths"
 			}
+		}
+		if options.selectionSpecified && (options.selection == "" || options.selection == "-") {
+			return options, "an explicit --select input must be a named file path"
 		}
 		if options.contextID == "" || options.profile != reason.AlgebraQueryProfile {
 			return options, "algebra evaluate requires a nonempty context ID and profile positive-facts-v1"
@@ -611,13 +635,13 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 				return options, "goal verification received flags from another claim"
 			}
 		} else if options.claim == "evaluation" {
-			if !seenExpression || !seenFacts || !seenSelection || !seenContextID || !seenProfile || !seenProof || len(options.metadata) == 0 {
-				return options, "evaluation verification requires --expression, --facts, --select, --proof, --context-id, --profile, and metadata"
+			if !seenExpression || !seenFacts || !seenContextID || !seenProfile || !seenProof || len(options.metadata) == 0 {
+				return options, "evaluation verification requires --expression, --facts, --proof, --context-id, --profile, and metadata"
 			}
-			if options.expression == "" || options.factsInput == "" || options.selection == "" || options.proof == "" || options.contextID == "" || options.profile != reason.AlgebraQueryProfile {
+			if options.expression == "" || options.factsInput == "" || options.proof == "" || options.contextID == "" || options.profile != reason.AlgebraQueryProfile {
 				return options, "evaluation verification requires named inputs, a context ID, and profile positive-facts-v1"
 			}
-			if options.expression == "-" || options.factsInput == "-" || options.selection == "-" || options.proof == "-" {
+			if options.expression == "-" || options.factsInput == "-" || options.proof == "-" || options.selectionSpecified && (options.selection == "" || options.selection == "-") {
 				return options, "evaluation verification requires named file paths"
 			}
 			if options.left != "" || options.right != "" || options.input != "" || options.goal != "" || options.candidate != "" || options.certificate != "" || len(options.verifyLimitSet)+len(options.comparisonLimitSet) != 0 {
@@ -828,6 +852,18 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 	options, parseError := parseAlgebraArgs(args)
 	if parseError != "" {
 		return writeResult(stdout, stderr, algebraDiagnostic(status.OutcomeInvalid, "INVALID_ALGEBRA_ARGUMENTS", parseError, "algebra"))
+	}
+	if options.command == "capabilities" {
+		output := algebraCapabilitiesOutput{Status: status.OutcomeOK, Scopes: map[string]algebraScopeCapability{
+			"not":        {CanRepresent: true, CanEvaluate: false},
+			"quantifier": {CanRepresent: true, CanEvaluate: false},
+			"ask":        {CanRepresent: true, CanEvaluate: true, Condition: "root Ask with a positive Atom/And/Exists body after beta lowering; answer projection is embedded in Ask"},
+		}, QuestionType: string(algebra.TypeQuestion), Evaluation: algebraScopeCapability{CanRepresent: true, CanEvaluate: true, Condition: "only the bounded positive Ask profile; not arbitrary Question values"}, Scope: "representation and evaluation capability only; no world-truth or quantifier-completeness claim"}
+		if err := writeJSON(stdout, output); err != nil {
+			_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not serialize algebra capabilities: %v\n", err)
+			return ExitError
+		}
+		return ExitOK
 	}
 	if options.command == "metadata_inspect" || options.command == "metadata_validate" {
 		registries, err := readMetadataRegistries(options.metadata)
@@ -1113,6 +1149,13 @@ func runAlgebraEvaluate(options algebraOptions, stdout, stderr io.Writer, regist
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
 	}
+	askSource := source.Expression != nil && source.Expression.Kind == algebra.TermAsk
+	if askSource && options.selectionSpecified {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeInvalid, Code: "ASK_SELECTION_FORBIDDEN", Path: "--select", Message: "Ask answer variables are the sole projection authority"})
+	}
+	if !askSource && !options.selectionSpecified {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeInvalid, Code: "QUERY_SELECTION_REQUIRED", Path: "--select", Message: "non-Ask queries require an explicit answer selection"})
+	}
 	factsBytes, err := readNamed(options.factsInput, facts.MaxNaryInputBytes, "facts")
 	if err != nil {
 		return writeNaryFactsError(stdout, stderr, err)
@@ -1121,13 +1164,16 @@ func runAlgebraEvaluate(options algebraOptions, stdout, stderr io.Writer, regist
 	if err != nil {
 		return writeNaryFactsError(stdout, stderr, err)
 	}
-	selectionBytes, err := readNamed(options.selection, algebra.MaxDocumentBytes, "selection")
-	if err != nil {
-		return writeAlgebraError(stdout, stderr, err)
-	}
-	selection, err := reason.DecodeAlgebraSelections(selectionBytes)
-	if err != nil {
-		return writeAlgebraError(stdout, stderr, err)
+	var selection []reason.AlgebraSelection
+	if options.selectionSpecified {
+		selectionBytes, err := readNamed(options.selection, algebra.MaxDocumentBytes, "selection")
+		if err != nil {
+			return writeAlgebraError(stdout, stderr, err)
+		}
+		selection, err = reason.DecodeAlgebraSelections(selectionBytes)
+		if err != nil {
+			return writeAlgebraError(stdout, stderr, err)
+		}
 	}
 	if factInput.ContextID != options.contextID {
 		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeInvalid, Code: "FACT_CONTEXT_MISMATCH", Path: "facts.context_id", Message: "--context-id must match the explicit fact input context"})
@@ -2079,9 +2125,12 @@ func runAlgebraVerifyEvaluation(options algebraOptions, stdout, stderr io.Writer
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
 	}
-	selectionBytes, err := readNamedAlgebraFile(options.selection, algebra.MaxDocumentBytes, "selection")
-	if err != nil {
-		return writeAlgebraError(stdout, stderr, err)
+	var selectionBytes []byte
+	if options.selectionSpecified {
+		selectionBytes, err = readNamedAlgebraFile(options.selection, algebra.MaxDocumentBytes, "selection")
+		if err != nil {
+			return writeAlgebraError(stdout, stderr, err)
+		}
 	}
 	proofBytes, err := readNamedAlgebraFile(options.proof, reason.MaxAlgebraOutputBytes, "evaluation proof")
 	if err != nil {
@@ -2094,13 +2143,23 @@ func runAlgebraVerifyEvaluation(options algebraOptions, stdout, stderr io.Writer
 	if err != nil {
 		return writeAlgebraError(stdout, stderr, err)
 	}
+	askSource := source.Expression != nil && source.Expression.Kind == algebra.TermAsk
+	if askSource && options.selectionSpecified {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeInvalid, Code: "ASK_SELECTION_FORBIDDEN", Path: "--select", Message: "Ask answer variables are the sole projection authority"})
+	}
+	if !askSource && !options.selectionSpecified {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeInvalid, Code: "QUERY_SELECTION_REQUIRED", Path: "--select", Message: "non-Ask queries require an explicit answer selection"})
+	}
 	factInput, err := facts.DecodeNaryInput(factBytes)
 	if err != nil {
 		return writeNaryFactsError(stdout, stderr, err)
 	}
-	selection, err := reason.DecodeAlgebraSelections(selectionBytes)
-	if err != nil {
-		return writeAlgebraError(stdout, stderr, err)
+	var selection []reason.AlgebraSelection
+	if options.selectionSpecified {
+		selection, err = reason.DecodeAlgebraSelections(selectionBytes)
+		if err != nil {
+			return writeAlgebraError(stdout, stderr, err)
+		}
 	}
 	claim, err := reason.DecodeAlgebraEvaluationProof(proofBytes)
 	if err != nil {

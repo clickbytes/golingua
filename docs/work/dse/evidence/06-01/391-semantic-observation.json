@@ -1,0 +1,65 @@
+{
+  "first": {
+    "values": [
+      [
+        "A"
+      ],
+      [
+        "B"
+      ]
+    ],
+    "knowledge": "supported"
+  },
+  "second": {
+    "values": [
+      [
+        "B"
+      ],
+      [
+        "C"
+      ]
+    ],
+    "knowledge": "supported"
+  },
+  "pair": {
+    "values": [
+      [
+        "A",
+        "B"
+      ],
+      [
+        "B",
+        "C"
+      ]
+    ],
+    "knowledge": "supported"
+  },
+  "pair-reverse-order": {
+    "values": [
+      [
+        "B",
+        "A"
+      ],
+      [
+        "C",
+        "B"
+      ]
+    ],
+    "knowledge": "supported"
+  },
+  "yes": {
+    "values": [
+      []
+    ],
+    "knowledge": "supported"
+  },
+  "unknown": {
+    "values": [],
+    "knowledge": "unknown"
+  },
+  "empty-facts": {
+    "values": [],
+    "knowledge": "unknown"
+  },
+  "facts_file_unchanged": true
+}

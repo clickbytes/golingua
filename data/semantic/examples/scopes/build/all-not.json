@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "steps": [
+    {
+      "id": "p",
+      "op": "relation",
+      "symbol": "p"
+    },
+    {
+      "id": "q",
+      "op": "relation",
+      "symbol": "q"
+    },
+    {
+      "id": "n",
+      "op": "not",
+      "inputs": [
+        "p"
+      ]
+    },
+    {
+      "id": "all",
+      "op": "quantifier",
+      "inputs": [
+        "n",
+        "q"
+      ],
+      "quantifier": "all"
+    }
+  ],
+  "result": "all"
+}

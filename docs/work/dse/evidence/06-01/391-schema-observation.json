@@ -1,0 +1,111 @@
+{
+  "tool": "jsonschema4.26.0",
+  "meta_schemas": "valid",
+  "artifacts": [
+    {
+      "file": "/tmp/golingua-dse/391-independent-inputs/build-ask-pair.json",
+      "definition": "construction_request",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-independent-inputs/build-ask-yes.json",
+      "definition": "construction_request",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-independent-inputs/build-ask-second.json",
+      "definition": "construction_request",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-independent-inputs/build-ask-first.json",
+      "definition": "construction_request",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-independent-inputs/build-exactly-zero.json",
+      "definition": "construction_request",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-independent-inputs/build-all-not.json",
+      "definition": "construction_request",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-independent-inputs/build-not-all.json",
+      "definition": "construction_request",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-build-cli/ask-pair-built-document.json",
+      "definition": "expression_document",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-build-cli/ask-yes-built-document.json",
+      "definition": "expression_document",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-build-cli/ask-second-built-document.json",
+      "definition": "expression_document",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-build-cli/ask-first-built-document.json",
+      "definition": "expression_document",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-build-cli/exactly-zero-built-document.json",
+      "definition": "expression_document",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-build-cli/all-not-built-document.json",
+      "definition": "expression_document",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-build-cli/not-all-built-document.json",
+      "definition": "expression_document",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-cli-observations/export-ask-yes.json",
+      "definition": "artifact_envelope",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-cli-observations/export-ask-pair.json",
+      "definition": "artifact_envelope",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-cli-observations/export-ask-first.json",
+      "definition": "artifact_envelope",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-cli-observations/export-exactly-0.json",
+      "definition": "artifact_envelope",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-cli-observations/export-all-unrestricted.json",
+      "definition": "artifact_envelope",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-cli-observations/export-all-not.json",
+      "definition": "artifact_envelope",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/391-cli-observations/export-not-all.json",
+      "definition": "artifact_envelope",
+      "errors": []
+    }
+  ]
+}

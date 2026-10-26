@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "document": {
+    "schema_version": 1,
+    "references": [
+      {
+        "id": "A",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "id": "B",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ],
+    "parameters": [],
+    "expression": {
+      "kind": "Ask",
+      "answers": [],
+      "body": {
+        "kind": "Atom",
+        "symbol": "r",
+        "args": [
+          {
+            "role": "a",
+            "value": {
+              "kind": "Ref",
+              "id": "A",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          },
+          {
+            "role": "b",
+            "value": {
+              "kind": "Ref",
+              "id": "B",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "limits": {}
+  },
+  "profile": {
+    "id": "scope-alpha-beta",
+    "rules": [
+      "alpha_v1",
+      "beta_v1"
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "id": "scope-alpha-beta",
+  "rules": [
+    "alpha_v1",
+    "beta_v1"
+  ]
+}

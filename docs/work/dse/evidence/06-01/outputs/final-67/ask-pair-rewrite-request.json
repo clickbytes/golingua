@@ -1,0 +1,257 @@
+{
+  "schema_version": 1,
+  "request": {
+    "schema_version": 1,
+    "document": {
+      "schema_version": 1,
+      "references": [
+        {
+          "id": "A",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "id": "B",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ],
+      "parameters": [],
+      "expression": {
+        "kind": "Ask",
+        "answers": [
+          {
+            "id": "x",
+            "type": {
+              "kind": "Entity"
+            }
+          },
+          {
+            "id": "y",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        ],
+        "body": {
+          "kind": "Atom",
+          "symbol": "r",
+          "args": [
+            {
+              "role": "a",
+              "value": {
+                "kind": "Var",
+                "id": "x"
+              }
+            },
+            {
+              "role": "b",
+              "value": {
+                "kind": "Var",
+                "id": "y"
+              }
+            }
+          ]
+        }
+      },
+      "limits": {}
+    },
+    "profile": {
+      "id": "scope-alpha-beta",
+      "rules": [
+        "alpha_v1",
+        "beta_v1"
+      ]
+    }
+  },
+  "certificate": {
+    "input": {
+      "answers": [
+        {
+          "id": "x",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "id": "y",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ],
+      "body": {
+        "args": [
+          {
+            "role": "a",
+            "value": {
+              "id": "x",
+              "kind": "Var"
+            }
+          },
+          {
+            "role": "b",
+            "value": {
+              "id": "y",
+              "kind": "Var"
+            }
+          }
+        ],
+        "kind": "Atom",
+        "symbol": "r"
+      },
+      "kind": "Ask"
+    },
+    "normalized": true,
+    "output": {
+      "answers": [
+        {
+          "id": "norm_b1",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "id": "norm_b2",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ],
+      "body": {
+        "args": [
+          {
+            "role": "a",
+            "value": {
+              "id": "norm_b1",
+              "kind": "Var"
+            }
+          },
+          {
+            "role": "b",
+            "value": {
+              "id": "norm_b2",
+              "kind": "Var"
+            }
+          }
+        ],
+        "kind": "Atom",
+        "symbol": "r"
+      },
+      "kind": "Ask"
+    },
+    "profile": {
+      "id": "scope-alpha-beta",
+      "rules": [
+        "alpha_v1",
+        "beta_v1"
+      ]
+    },
+    "schema_version": 1,
+    "snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456",
+    "steps": [
+      {
+        "after": {
+          "answers": [
+            {
+              "id": "norm_b1",
+              "type": {
+                "kind": "Entity"
+              }
+            },
+            {
+              "id": "norm_b2",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          ],
+          "body": {
+            "args": [
+              {
+                "role": "a",
+                "value": {
+                  "id": "norm_b1",
+                  "kind": "Var"
+                }
+              },
+              {
+                "role": "b",
+                "value": {
+                  "id": "norm_b2",
+                  "kind": "Var"
+                }
+              }
+            ],
+            "kind": "Atom",
+            "symbol": "r"
+          },
+          "kind": "Ask"
+        },
+        "after_nodes": 4,
+        "before": {
+          "answers": [
+            {
+              "id": "x",
+              "type": {
+                "kind": "Entity"
+              }
+            },
+            {
+              "id": "y",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          ],
+          "body": {
+            "args": [
+              {
+                "role": "a",
+                "value": {
+                  "id": "x",
+                  "kind": "Var"
+                }
+              },
+              {
+                "role": "b",
+                "value": {
+                  "id": "y",
+                  "kind": "Var"
+                }
+              }
+            ],
+            "kind": "Atom",
+            "symbol": "r"
+          },
+          "kind": "Ask"
+        },
+        "before_nodes": 4,
+        "binder_mapping": [
+          {
+            "before": "x",
+            "after": "norm_b1",
+            "kind": "renamed"
+          },
+          {
+            "before": "y",
+            "after": "norm_b2",
+            "kind": "renamed"
+          }
+        ],
+        "parameter_mapping": {},
+        "path": [],
+        "profile_id": "scope-alpha-beta",
+        "rule_id": "alpha_v1",
+        "side_conditions": [
+          "binder IDs use deterministic preorder names",
+          "bound Var occurrences follow their exact binder",
+          "parameter and reference IDs are preserved"
+        ],
+        "snapshot_id": "rewrite-formal-v1:792ffacfb6398f3644496691268652c5503fce55ffdf61a09341de726cb17456"
+      }
+    ]
+  }
+}

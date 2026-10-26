@@ -178,7 +178,7 @@ func inspectTerm(term *Term, limits Limits) (termInfo, error) {
 				info.freeVars[value.ID] = struct{}{}
 			}
 		}
-		if value.Kind == TermLambda || value.Kind == TermExists {
+		if value.Kind == TermLambda || value.Kind == TermExists || value.Kind == TermQuantifier {
 			if !validText(value.ID, 256) {
 				return invalid("INVALID_BINDER_ID", path+".id", "binder ID must be non-empty valid UTF-8 and at most 256 bytes")
 			}
@@ -188,10 +188,42 @@ func inspectTerm(term *Term, limits Limits) (termInfo, error) {
 			info.binderIDs[value.ID] = struct{}{}
 			info.allIDs[value.ID] = struct{}{}
 			bound[value.ID]++
+			if err := walk(value.Restrictor, path+".restrictor", depth+1); err != nil {
+				return err
+			}
 			if err := walk(value.Body, path+".body", depth+1); err != nil {
 				return err
 			}
 			bound[value.ID]--
+			return nil
+		}
+		if value.Kind == TermAsk {
+			if len(value.Answers) > limits.MaxPorts {
+				return resourceLimit(path+".answers", fmt.Sprintf("answer count %d exceeds limit %d", len(value.Answers), limits.MaxPorts))
+			}
+			for i, answer := range value.Answers {
+				if !validText(answer.ID, 256) {
+					return invalid("INVALID_ANSWER_ID", fmt.Sprintf("%s.answers[%d].id", path, i), "answer ID must be non-empty valid UTF-8 and at most 256 bytes")
+				}
+				if !isDataType(answer.Type) {
+					return invalid("INVALID_ANSWER_TYPE", fmt.Sprintf("%s.answers[%d].type", path, i), "Ask answer variable must have a data sort type")
+				}
+				if _, exists := info.binderIDs[answer.ID]; exists {
+					return invalid("DUPLICATE_BINDER_ID", fmt.Sprintf("%s.answers[%d].id", path, i), "binder IDs must be unique in a copied term")
+				}
+				info.binderIDs[answer.ID] = struct{}{}
+				info.allIDs[answer.ID] = struct{}{}
+				bound[answer.ID]++
+			}
+			if err := walk(value.Restrictor, path+".restrictor", depth+1); err != nil {
+				return err
+			}
+			if err := walk(value.Body, path+".body", depth+1); err != nil {
+				return err
+			}
+			for _, answer := range value.Answers {
+				bound[answer.ID]--
+			}
 			return nil
 		}
 		for i, arg := range value.Args {
@@ -203,6 +235,9 @@ func inspectTerm(term *Term, limits Limits) (termInfo, error) {
 			if err := walk(operand, fmt.Sprintf("%s.operands[%d]", path, i), depth+1); err != nil {
 				return err
 			}
+		}
+		if err := walk(value.Restrictor, path+".restrictor", depth+1); err != nil {
+			return err
 		}
 		if err := walk(value.Body, path+".body", depth+1); err != nil {
 			return err
@@ -270,6 +305,11 @@ func (state *copyState) walk(value *Term, path string, depth, shadow int, typeDe
 	defer delete(state.active, value)
 	copyValue := *value
 	copyValue.Type = nil
+	copyValue.Count = nil
+	if value.Count != nil {
+		count := *value.Count
+		copyValue.Count = &count
+	}
 	if value.Type != nil {
 		typeCopy, err := state.cloneType(value.Type, path+".type", 1, make(map[*Type]bool))
 		if err != nil {
@@ -282,28 +322,64 @@ func (state *copyState) walk(value *Term, path string, depth, shadow int, typeDe
 			copyValue.ID = renamed
 		}
 	}
-	if value.Kind == TermLambda || value.Kind == TermExists {
-		original := value.ID
-		fresh := state.freshenAll
-		if _, capture := state.freeReplacementVars[original]; capture {
-			fresh = true
-		}
-		if fresh {
-			newID := state.freshID(original)
-			state.binderMap[original] = newID
-			copyValue.ID = newID
-		}
-		previous, hadPrevious := state.renamed[original]
-		state.renamed[original] = copyValue.ID
-		nextShadow := shadow
-		if target != "" && original == target {
-			nextShadow++
-		}
-		body, err := state.walk(value.Body, path+".body", depth+1, nextShadow, typeDepth, target, replacement, replacementType)
-		if hadPrevious {
-			state.renamed[original] = previous
+	if value.Kind == TermLambda || value.Kind == TermExists || value.Kind == TermQuantifier || value.Kind == TermAsk {
+		ids := []string{}
+		if value.Kind == TermAsk {
+			copyValue.Answers = make([]Declaration, len(value.Answers))
+			for i, answer := range value.Answers {
+				copyValue.Answers[i] = answer
+				typ, err := state.cloneType(&answer.Type, fmt.Sprintf("%s.answers[%d].type", path, i), 1, make(map[*Type]bool))
+				if err != nil {
+					return nil, err
+				}
+				copyValue.Answers[i].Type = *typ
+				ids = append(ids, answer.ID)
+			}
 		} else {
-			delete(state.renamed, original)
+			ids = append(ids, value.ID)
+		}
+		type renameRestore struct {
+			id, previous string
+			existed      bool
+		}
+		restores := make([]renameRestore, 0, len(ids))
+		nextShadow := shadow
+		for i, original := range ids {
+			fresh := state.freshenAll
+			if _, capture := state.freeReplacementVars[original]; capture {
+				fresh = true
+			}
+			newID := original
+			if fresh {
+				newID = state.freshID(original)
+				state.binderMap[original] = newID
+			}
+			if value.Kind == TermAsk {
+				copyValue.Answers[i].ID = newID
+			} else {
+				copyValue.ID = newID
+			}
+			previous, existed := state.renamed[original]
+			restores = append(restores, renameRestore{id: original, previous: previous, existed: existed})
+			state.renamed[original] = newID
+			if target != "" && original == target {
+				nextShadow++
+			}
+		}
+		restrictor, err := state.walk(value.Restrictor, path+".restrictor", depth+1, nextShadow, typeDepth, target, replacement, replacementType)
+		if err == nil {
+			copyValue.Restrictor = restrictor
+		}
+		var body *Term
+		if err == nil {
+			body, err = state.walk(value.Body, path+".body", depth+1, nextShadow, typeDepth, target, replacement, replacementType)
+		}
+		for _, restore := range restores {
+			if restore.existed {
+				state.renamed[restore.id] = restore.previous
+			} else {
+				delete(state.renamed, restore.id)
+			}
 		}
 		if err != nil {
 			return nil, err
@@ -335,6 +411,14 @@ func (state *copyState) walk(value *Term, path string, depth, shadow int, typeDe
 			return nil, err
 		}
 		copyValue.Body = body
+	}
+	copyValue.Restrictor = nil
+	if value.Restrictor != nil {
+		restrictor, err := state.walk(value.Restrictor, path+".restrictor", depth+1, shadow, typeDepth, target, replacement, replacementType)
+		if err != nil {
+			return nil, err
+		}
+		copyValue.Restrictor = restrictor
 	}
 	if value.Function != nil {
 		function, err := state.walk(value.Function, path+".function", depth+1, shadow, typeDepth, target, replacement, replacementType)
@@ -432,6 +516,7 @@ func copyTermDetached(term *Term, limits Limits) (*Term, error) {
 
 func standaloneTermType(term *Term, limits Limits) (Type, error) {
 	active := make(map[*Term]bool)
+	bound := make(map[string]Type)
 	nodes := 0
 	var infer func(*Term, string, int) (Type, error)
 	infer = func(value *Term, path string, depth int) (Type, error) {
@@ -451,6 +536,11 @@ func standaloneTermType(term *Term, limits Limits) (Type, error) {
 		active[value] = true
 		defer delete(active, value)
 		switch value.Kind {
+		case TermVar:
+			if typ, ok := bound[value.ID]; ok {
+				return typ, nil
+			}
+			return Type{}, &Error{Status: status.OutcomeUnsupported, Code: "UNRESOLVED_VARIABLE_TYPE", Path: path, Message: "a free Var type requires an enclosing checker context"}
 		case TermParam, TermRef, TermHole:
 			if value.Type == nil {
 				return Type{}, invalid("MISSING_TYPE", path+".type", "term type is required")
@@ -485,7 +575,9 @@ func standaloneTermType(term *Term, limits Limits) (Type, error) {
 			if value.Type == nil {
 				return Type{}, invalid("MISSING_TYPE", path+".type", "Exists binder type is required")
 			}
+			bound[value.ID] = *value.Type
 			bodyType, err := infer(value.Body, path+".body", depth+1)
+			delete(bound, value.ID)
 			if err != nil {
 				return Type{}, err
 			}
@@ -493,6 +585,88 @@ func standaloneTermType(term *Term, limits Limits) (Type, error) {
 				return Type{}, invalid("EXPECTED_PROP", path+".body", "Exists body must have type Prop")
 			}
 			return Type{Kind: TypeProp}, nil
+		case TermNot:
+			body, err := infer(value.Body, path+".body", depth+1)
+			if err != nil {
+				return Type{}, err
+			}
+			if body.Kind != TypeProp {
+				return Type{}, invalid("EXPECTED_PROP", path+".body", "Not body must have type Prop")
+			}
+			return Type{Kind: TypeProp}, nil
+		case TermQuantifier:
+			if value.Type == nil || !isDataType(*value.Type) {
+				return Type{}, invalid("INVALID_QUANTIFIER_BINDER_TYPE", path+".type", "quantifier binder must have a data sort type")
+			}
+			if value.Quantifier == "exactly" || value.Quantifier == "at_least" || value.Quantifier == "at_most" {
+				if value.Count == nil {
+					return Type{}, invalid("MISSING_QUANTIFIER_COUNT", path+".count", "numeric quantifier requires a count")
+				}
+				if *value.Count < 0 {
+					return Type{}, invalid("INVALID_QUANTIFIER_COUNT", path+".count", "count must be non-negative")
+				}
+			} else if (value.Quantifier == "some" || value.Quantifier == "all") && value.Count != nil {
+				return Type{}, invalid("INVALID_QUANTIFIER_COUNT", path+".count", "some and all do not accept count")
+			} else if value.Quantifier != "some" && value.Quantifier != "all" {
+				return Type{}, invalid("INVALID_QUANTIFIER_KIND", path+".quantifier", "quantifier kind is unsupported")
+			}
+			bound[value.ID] = *value.Type
+			if value.Restrictor != nil {
+				t, err := infer(value.Restrictor, path+".restrictor", depth+1)
+				if err != nil {
+					delete(bound, value.ID)
+					return Type{}, err
+				}
+				if t.Kind != TypeProp {
+					delete(bound, value.ID)
+					return Type{}, invalid("EXPECTED_PROP", path+".restrictor", "quantifier restrictor must have type Prop")
+				}
+			}
+			body, err := infer(value.Body, path+".body", depth+1)
+			delete(bound, value.ID)
+			if err != nil {
+				return Type{}, err
+			}
+			if body.Kind != TypeProp {
+				return Type{}, invalid("EXPECTED_PROP", path+".body", "quantifier body must have type Prop")
+			}
+			return Type{Kind: TypeProp}, nil
+		case TermAsk:
+			if len(value.Answers) > limits.MaxPorts {
+				return Type{}, resourceLimit(path+".answers", fmt.Sprintf("answer count %d exceeds limit %d", len(value.Answers), limits.MaxPorts))
+			}
+			for i, answer := range value.Answers {
+				if !isDataType(answer.Type) {
+					return Type{}, invalid("INVALID_ANSWER_TYPE", fmt.Sprintf("%s.answers[%d].type", path, i), "Ask answer variable must have a data sort type")
+				}
+				bound[answer.ID] = answer.Type
+			}
+			if value.Restrictor != nil {
+				t, err := infer(value.Restrictor, path+".restrictor", depth+1)
+				if err != nil {
+					for _, a := range value.Answers {
+						delete(bound, a.ID)
+					}
+					return Type{}, err
+				}
+				if t.Kind != TypeProp {
+					for _, a := range value.Answers {
+						delete(bound, a.ID)
+					}
+					return Type{}, invalid("EXPECTED_PROP", path+".restrictor", "Ask restrictor must have type Prop")
+				}
+			}
+			body, err := infer(value.Body, path+".body", depth+1)
+			for _, a := range value.Answers {
+				delete(bound, a.ID)
+			}
+			if err != nil {
+				return Type{}, err
+			}
+			if body.Kind != TypeProp {
+				return Type{}, invalid("EXPECTED_PROP", path+".body", "Ask body must have type Prop")
+			}
+			return Type{Kind: TypeQuestion}, nil
 		case TermLambda:
 			if value.Type == nil {
 				return Type{}, invalid("MISSING_TYPE", path+".type", "Lambda binder type is required")
@@ -501,7 +675,9 @@ func standaloneTermType(term *Term, limits Limits) (Type, error) {
 			if err != nil {
 				return Type{}, err
 			}
+			bound[value.ID] = *value.Type
 			bodyType, err := infer(value.Body, path+".body", depth+1)
+			delete(bound, value.ID)
 			if err != nil {
 				return Type{}, err
 			}
@@ -522,8 +698,6 @@ func standaloneTermType(term *Term, limits Limits) (Type, error) {
 				return Type{}, invalid("ARGUMENT_TYPE_MISMATCH", path+".argument", "argument type does not match function input type")
 			}
 			return *functionType.To, nil
-		case TermVar:
-			return Type{}, &Error{Status: status.OutcomeUnsupported, Code: "UNRESOLVED_VARIABLE_TYPE", Path: path, Message: "a free Var type requires an enclosing checker context"}
 		default:
 			return Type{}, invalid("UNKNOWN_TERM_KIND", path+".kind", "term kind is unsupported")
 		}

@@ -107,7 +107,7 @@
         389,
         390
       ],
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "branch_name": null,
       "actual_base_sha": null,
       "branch_url": null,
@@ -127,7 +127,7 @@
         392,
         393
       ],
-      "status": "QUEUED",
+      "status": "IN_PROGRESS",
       "branch_name": null,
       "actual_base_sha": null,
       "branch_url": null,
@@ -519,11 +519,11 @@
         389
       ],
       "branch_name": "dse/05-03-equivalence-proofs",
-      "status": "ACTIVE",
+      "status": "DONE",
       "actual_base_sha": "b7d1d9f36df3029f65877745de903f5a877e7dae",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/05-03-equivalence-proofs",
-      "pr_url": null,
-      "merge_sha": null,
+      "pr_url": "https://github.com/clickbytes/golingua/pull/414",
+      "merge_sha": "15bd3e92d6f9c63a33db7d355828fbe46d83a427",
       "evidence_paths": [
         "docs/work/dse/evidence/05-03/README.md",
         "docs/work/dse/evidence/05-03/observations.jsonl",
@@ -548,12 +548,18 @@
         390
       ],
       "branch_name": "dse/06-01-scopes-questions",
-      "status": "QUEUED",
-      "actual_base_sha": null,
-      "branch_url": null,
+      "status": "ACTIVE",
+      "actual_base_sha": "803c7a65f72d8bb5cdcbeb1e416807a477645025",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/06-01-scopes-questions",
       "pr_url": null,
       "merge_sha": null,
-      "evidence_paths": []
+      "evidence_paths": [
+        "docs/work/dse/evidence/06-01/README.md",
+        "docs/work/dse/evidence/06-01/cli-observations-67.jsonl",
+        "docs/work/dse/evidence/06-01/build-observations-18.jsonl",
+        "docs/work/dse/evidence/06-01/extra-observations-7.jsonl",
+        "docs/work/dse/evidence/06-01/documentation-flow-observation.json"
+      ]
     },
     {
       "issue_number": 392,
