@@ -47,7 +47,7 @@
         384,
         385
       ],
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "branch_name": null,
       "actual_base_sha": null,
       "branch_url": null,
@@ -87,7 +87,7 @@
         387,
         388
       ],
-      "status": "QUEUED",
+      "status": "IN_PROGRESS",
       "branch_name": null,
       "actual_base_sha": null,
       "branch_url": null,
@@ -391,11 +391,11 @@
         381
       ],
       "branch_name": "dse/02-03-catalog-triage",
-      "status": "ACTIVE",
+      "status": "DONE",
       "actual_base_sha": "b63a2560dd0d2ca24c76fad3a80e3937a8f0285d",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/02-03-catalog-triage",
-      "pr_url": null,
-      "merge_sha": null,
+      "pr_url": "https://github.com/clickbytes/golingua/pull/409",
+      "merge_sha": "9dc93879cdaec54ac1eadb3b142be15b621c4337",
       "evidence_paths": [
         "docs/work/dse/evidence/02-03/README.md",
         "docs/work/dse/evidence/02-03/environment.json",
@@ -415,12 +415,17 @@
         383
       ],
       "branch_name": "dse/04-01-goal-construction",
-      "status": "QUEUED",
-      "actual_base_sha": null,
-      "branch_url": null,
+      "status": "ACTIVE",
+      "actual_base_sha": "acc0ad9d6203fed4951b0c31d57b5a7e0fb5f8eb",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/04-01-goal-construction",
       "pr_url": null,
       "merge_sha": null,
-      "evidence_paths": []
+      "evidence_paths": [
+        "docs/work/dse/evidence/04-01/README.md",
+        "docs/work/dse/evidence/04-01/observations.jsonl",
+        "docs/work/dse/evidence/04-01/environment.json",
+        "docs/work/dse/evidence/04-01/invariants.json"
+      ]
     },
     {
       "issue_number": 387,

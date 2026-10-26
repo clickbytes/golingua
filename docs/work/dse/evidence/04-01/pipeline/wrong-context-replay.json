@@ -1,0 +1,195 @@
+{
+  "schema_version": 1,
+  "profile": {
+    "id": "dse-construct-artifact-v1",
+    "rules": []
+  },
+  "context_id": "other-goal-context",
+  "context_dependencies": [],
+  "provenance": [
+    {
+      "id": "dse386-neutral-goal",
+      "uri": "https://github.com/clickbytes/golingua/issues/386",
+      "version": "2026-10-26.1",
+      "license": "internal-neutral-example",
+      "author": "Codex by owner delegation"
+    }
+  ],
+  "artifact": {
+    "cache_key": "sha256:806df4c8b38d6a2dedb9e5a6c34b011ba7b92cec1f52ee28a5573a8ec7ff21b2",
+    "closed": false,
+    "context_dependencies": [],
+    "context_id": "neutral-goal-context",
+    "kind": "typed_expression_dag",
+    "limits": {
+      "max_nodes": 4096,
+      "max_depth": 64,
+      "max_type_depth": 32,
+      "max_symbols": 512,
+      "max_ports": 16
+    },
+    "meaning_fingerprint": "sha256:85a33064c234b721c18cb19ae0f9a97e8d3d16434ed9ca66fd946ffec5432663",
+    "nodes": [
+      {
+        "identity": "rel_r_a_1_fresh_1",
+        "kind": "Var",
+        "node_id": 1
+      },
+      {
+        "identity": "join_0_1",
+        "kind": "Var",
+        "node_id": 2
+      },
+      {
+        "args": [
+          {
+            "role": "a",
+            "value": 1
+          },
+          {
+            "role": "b",
+            "value": 2
+          }
+        ],
+        "kind": "Atom",
+        "node_id": 3,
+        "symbol": "r"
+      },
+      {
+        "identity": "rel_r_b_1_fresh_2",
+        "kind": "Var",
+        "node_id": 4
+      },
+      {
+        "args": [
+          {
+            "role": "a",
+            "value": 2
+          },
+          {
+            "role": "b",
+            "value": 4
+          }
+        ],
+        "kind": "Atom",
+        "node_id": 5,
+        "symbol": "r"
+      },
+      {
+        "kind": "And",
+        "node_id": 6,
+        "operands": [
+          3,
+          5
+        ]
+      },
+      {
+        "body": 6,
+        "identity": "join_0_1",
+        "kind": "Exists",
+        "node_id": 7,
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "args": [
+          {
+            "role": "v",
+            "value": 4
+          }
+        ],
+        "kind": "Atom",
+        "node_id": 8,
+        "symbol": "p"
+      },
+      {
+        "kind": "And",
+        "node_id": 9,
+        "operands": [
+          7,
+          8
+        ]
+      },
+      {
+        "body": 9,
+        "identity": "rel_r_b_1_fresh_2",
+        "kind": "Lambda",
+        "node_id": 10,
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "body": 10,
+        "identity": "rel_r_a_1_fresh_1",
+        "kind": "Lambda",
+        "node_id": 11,
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ],
+    "normalizer_version": "dse-normalizer-v1",
+    "parameters": [],
+    "profile": {
+      "id": "dse-construct-artifact-v1",
+      "rules": []
+    },
+    "provenance": [
+      {
+        "id": "dse386-neutral-goal",
+        "uri": "https://github.com/clickbytes/golingua/issues/386",
+        "version": "2026-10-26.1",
+        "license": "internal-neutral-example",
+        "author": "Codex by owner delegation"
+      }
+    ],
+    "references": [],
+    "registries": [
+      {
+        "id": "neutral.goal.package",
+        "version": "1",
+        "resource_fingerprint": "sha256:2b9e63da1e86c0e970eac4ce600a7e786b7ce66467c7adcce162e7cd73255407",
+        "formal_denotation_id": "sha256:a6000aff042fbb6ada1357f36ddb28a862ae4f9f428e57e091846788c66fed11"
+      }
+    ],
+    "registry_snapshot_id": "rewrite-formal-v1:d2ee7a00cc9846f708c507dbc3cd6888793aa3628cb06217475cc78d09df04b4",
+    "resource_fingerprint": "sha256:c09a86079b162649be4825b14f0c45f1bd29e21b716610e8d0b598d8b5f6aa97",
+    "root": 11,
+    "schema_version": 1,
+    "signatures": [
+      {
+        "id": "p",
+        "label": "arbitrary property label",
+        "ports": [
+          {
+            "role": "v",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        ]
+      },
+      {
+        "id": "r",
+        "label": "arbitrary relation label",
+        "ports": [
+          {
+            "role": "a",
+            "type": {
+              "kind": "Entity"
+            }
+          },
+          {
+            "role": "b",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        ]
+      }
+    ],
+    "sorts": []
+  }
+}

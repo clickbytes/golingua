@@ -15,11 +15,14 @@ import (
 	"github.com/clickbytes/golingua/internal/metamodel"
 	"github.com/clickbytes/golingua/internal/provenance"
 	"github.com/clickbytes/golingua/internal/status"
+	"github.com/clickbytes/golingua/internal/synthesis"
 )
 
 type algebraOptions struct {
 	command  string
 	input    string
+	goal     string
+	mode     string
 	metadata []string
 	json     bool
 	noCache  bool
@@ -151,6 +154,17 @@ type catalogExportOutput struct {
 	Inventory       catalogexport.ExportDocument `json:"inventory"`
 }
 
+type synthesisOutput struct {
+	Status          status.OutcomeKind             `json:"status"`
+	Mode            string                         `json:"mode"`
+	GoalProfile     string                         `json:"goal_profile"`
+	ContextID       string                         `json:"context_id"`
+	Metadata        []metadataReference            `json:"metadata"`
+	Result          synthesis.Result               `json:"result"`
+	ValidationScope string                         `json:"validation_scope"`
+	ExportRequest   *algebra.ArtifactExportRequest `json:"export_request,omitempty"`
+}
+
 type algebraInfrastructureError struct{ message string }
 
 func (failure *algebraInfrastructureError) Error() string { return failure.message }
@@ -165,6 +179,8 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		options.command = "check"
 	} else if args[1] == "build" {
 		options.command = "build"
+	} else if args[1] == "synthesize" {
+		options.command = "synthesize"
 	} else if args[1] == "normalize" || args[1] == "verify-rewrite" || args[1] == "export" || args[1] == "inspect" || args[1] == "replay" {
 		options.command = args[1]
 	} else if args[1] == "metadata" {
@@ -186,10 +202,11 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		options.command = "catalog_export"
 		index = 3
 	} else {
-		return options, "expected algebra check, build, export, inspect, replay, normalize, verify-rewrite, metadata, facts, or catalog"
+		return options, "expected algebra check, build, synthesize, export, inspect, replay, normalize, verify-rewrite, metadata, facts, or catalog"
 	}
 	seenJSON, seenInput := false, false
 	seenNoCache := false
+	seenGoal, seenMode := false, false
 	for i := index; i < len(args); i++ {
 		flag := args[i]
 		switch flag {
@@ -215,6 +232,35 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			if options.input == "" {
 				return options, "--input value must not be empty"
 			}
+		case "--goal":
+			if options.command != "synthesize" {
+				return options, "--goal is only valid for algebra synthesize"
+			}
+			if seenGoal {
+				return options, "duplicate --goal flag"
+			}
+			seenGoal = true
+			if i+1 >= len(args) || args[i+1] == "--json" || strings.HasPrefix(args[i+1], "--") {
+				return options, "missing value for --goal"
+			}
+			i++
+			options.goal = args[i]
+			if options.goal == "" {
+				return options, "--goal value must not be empty"
+			}
+		case "--mode":
+			if options.command != "synthesize" {
+				return options, "--mode is only valid for algebra synthesize"
+			}
+			if seenMode {
+				return options, "duplicate --mode flag"
+			}
+			seenMode = true
+			if i+1 >= len(args) || args[i+1] == "--json" || strings.HasPrefix(args[i+1], "--") {
+				return options, "missing value for --mode"
+			}
+			i++
+			options.mode = args[i]
 		case "--metadata":
 			if options.command == "inspect" {
 				return options, "algebra inspect is structural-only and does not accept --metadata"
@@ -260,6 +306,17 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			return options, "algebra build requires at least one --metadata file"
 		}
 	}
+	if options.command == "synthesize" {
+		if !seenMode || options.mode != "construct" {
+			return options, "algebra synthesize requires --mode construct"
+		}
+		if !seenGoal {
+			return options, "algebra synthesize requires --goal <file>"
+		}
+		if len(options.metadata) == 0 {
+			return options, "algebra synthesize requires at least one --metadata file"
+		}
+	}
 	if (options.command == "normalize" || options.command == "verify-rewrite") && len(options.metadata) == 0 {
 		return options, "algebra normalize and verify-rewrite require at least one --metadata file"
 	}
@@ -299,6 +356,13 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 			return writeAlgebraError(stdout, stderr, err)
 		}
 		return runNaryFactsValidate(options, input, stdout, stderr, registries)
+	}
+	if options.command == "synthesize" {
+		registries, err := readMetadataRegistries(options.metadata)
+		if err != nil {
+			return writeAlgebraError(stdout, stderr, err)
+		}
+		return runAlgebraSynthesize(options, input, stdout, stderr, registries)
 	}
 	if options.command == "catalog_export" {
 		return runAlgebraCatalogExport(stdout, stderr)
@@ -403,6 +467,45 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 		return ExitError
 	}
 	return exitCode(checked.Status)
+}
+
+func runAlgebraSynthesize(options algebraOptions, input io.Reader, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
+	goalInput := options
+	goalInput.input = options.goal
+	data, err := readAlgebraInput(goalInput, input, synthesis.MaxGoalInputBytes, "algebra synthesize goal")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	goal, err := synthesis.DecodeGoal(data)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	context, err := metamodel.DeclarationContext(algebra.Document{SchemaVersion: algebra.SchemaVersion}, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	result, err := synthesis.Construct(context, goal)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	output := synthesisOutput{
+		Status: result.Status, Mode: "construct", GoalProfile: goal.Profile, ContextID: goal.ContextID,
+		Metadata: metadataReferences(registries), Result: result,
+		ValidationScope: "finite explicit structural construction provenance; not an independent goal proof, world truth, or language approval",
+	}
+	if result.Status == status.OutcomeOK && result.Checked != nil && result.CanonicalDocument != nil {
+		output.ExportRequest = &algebra.ArtifactExportRequest{
+			SchemaVersion: algebra.SchemaVersion, Document: *result.CanonicalDocument,
+			Profile:   algebra.RewriteProfile{ID: "dse-construct-artifact-v1", Rules: []algebra.RewriteRule{}},
+			ContextID: goal.ContextID, ContextDependencies: []algebra.ContextDependency{},
+			Provenance: append([]provenance.SourceRef(nil), goal.Provenance...),
+		}
+	}
+	if err := writeJSON(stdout, output); err != nil {
+		_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not serialize algebra synthesis result: %v\n", err)
+		return ExitError
+	}
+	return exitCode(result.Status)
 }
 
 func runAlgebraCatalogExport(stdout, stderr io.Writer) int {

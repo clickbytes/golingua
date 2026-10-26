@@ -105,6 +105,55 @@ Profil unifikacji jest ograniczony do zadeklarowanych Param jako zmiennych, Ref,
 
 `build` używa wyłącznie zatwierdzonych primitive signatures z jawnego rejestru. Pending, aliasy i symbole opaque nie są tutaj rozwijane ani uruchamiane; pole review nie oznacza akceptacji językowej. Wynik jest sprawdzoną reprezentacją, a nie nowym faktem, świadkiem świata, regułą przechodniości ani zarejestrowanym aliasem. Limit wejścia wynosi 1 MiB, maksymalnie 64 kroki, 4096 węzłów i głębokość 64 na wyrażenie, 32 na typ, 512 deklaracji, 16 portów oraz 16384 węzłów termów zachowanych łącznie w rezultatach i śladzie. Przekroczenie daje `resource_limit`, nigdy zgadywanie mapowania. Kody wyjścia pozostają mapowane do statusu: `ok` 0, `invalid` 2, `unsupported` 3, `resource_limit` 4, `unknown` 5, `ambiguous` 6, `incomplete` 7, `error` 1. Pełny opis zachowania znajduje się w [kontrakcie składania](architecture/semantic-algebra/composition.md), [schemacie receptury](../schemas/semantic/construction.schema.json) i [przykładach](../data/semantic/examples/composition/).
 
+### Konstrukcja z jawnego celu
+
+`algebra synthesize` obsługuje ograniczony tryb `construct`: buduje sprawdzone,
+typowane wyrażenie dla w pełni określonego celu i jawnych pakietów metadanych.
+
+```sh
+go run ./cmd/golingua algebra synthesize --mode construct \
+  --metadata data/semantic/examples/goals/metadata.json \
+  --goal data/semantic/examples/goals/two-hop-property.json --json
+```
+
+Wymagane są `--mode construct`, `--goal` i `--json`; `--goal -` czyta stdin.
+Można powtarzać `--metadata` dla wybranych pakietów i ich jawnych zależności.
+Komenda odrzuca `--input`, `--no-cache` i inne tryby niż `construct`.
+Dokument celu nie zawiera AST ani inline sortów/sygnatur. Wymaga między innymi
+`context_id` (identyfikatora żądania, nie uwierzytelnienia ani tożsamości
+referentu), typu oczekiwanego, uporządkowanych portów, jawnych referencji,
+operatorów, ograniczeń, provenance i limitów. Dziura `Hole` pozostaje
+nierozstrzygnięta i daje `incomplete`; nie jest świadkiem ani argumentem
+operatora.
+
+Profil `positive-facts-v1` obsługuje jeden jawny binarny constraint ścieżki oraz
+jednoargumentowe ograniczenia unary na jej końcach. Obsługiwane operatory to
+`relation`, `join`, `restrict`, `bind` i `permute`. Brak wyboru liczby atomów
+pozostaje unresolved, a wiele dozwolonych liczności pozostaje
+underdetermined; komenda nie wybiera pierwszej. Nieznany symbol lub rola,
+niezgodny typ i nieobsługiwany kształt grafu są odmowami, również gdy inne
+elementy celu są niedookreślone. To nie jest ogólny planer grafów, wyszukiwarka,
+ewaluator faktów ani dowód twierdzenia.
+
+Wynik podaje `status`, `mode`, `goal_profile`, `context_id`, `metadata`,
+`result` i zakres walidacji. Pełny rezultat zawiera sprawdzone wyrażenie,
+interfejs, dokument kanoniczny, ślad operatorów i mapowanie ograniczeń na
+odrębne ścieżki atomów końcowego wyrażenia. `constructed_provenance` wiąże
+ograniczenie z krokami konstrukcji; nie jest niezależnym dowodem jego
+prawdziwości. Tylko pełny wynik zawiera `export_request`, z pustym profilem
+przepisywania `dse-construct-artifact-v1`; export nie normalizuje i nie
+potwierdza spełnienia celu. Statusy używają kodów: `ok` 0, `invalid` 2,
+`unsupported` 3, `resource_limit` 4, `unknown` 5, `ambiguous` 6,
+`incomplete` 7, błąd infrastruktury 1.
+
+Limity obejmują 16 atomów łącznie dla ścieżki i unary, 64 wywołania operatorów,
+16 portów, 16 źródeł, 32 ograniczenia i 1 MiB wejściowego JSON celu. Wspólny
+checker ogranicza wyrażenia do 4096 węzłów i głębokości 64, typy do głębokości
+32, deklaracje do 512 i porty relacji do 16. Szczegółowe [granice konstrukcji](architecture/semantic-algebra/synthesis.md),
+[schemat celu](../schemas/semantic/goals.schema.json) oraz [przykłady](../data/semantic/examples/goals/README.md)
+opisują format. Walidacja strukturalna nie dowodzi prawdy świata; akceptacja
+językowa właściciela pozostaje **NOT_EVALUATED**.
+
 ### Przechowywanie sprawdzonych wyrażeń
 
 `algebra export`, `algebra replay` i `algebra inspect` obsługują jeden version-1 artifact z jednym sprawdzonym korzeniem. Export i replay wymagają jawnie wybranych pakietów metadanych; inspect przyjmuje sam envelope i raportuje `metadata_verified: false`. Wejście może być plikiem albo stdin (`--input -`); `--no-cache` dotyczy wyłącznie exportu.

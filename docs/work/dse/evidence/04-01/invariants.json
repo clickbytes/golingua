@@ -1,0 +1,160 @@
+{
+  "coordinator_review_scope": "bounded independent inspection of literal construction outputs, not production proof verification or a quality gate",
+  "goal_checks": [
+    {
+      "input": "both-fixed-minimal.json",
+      "topology_matches_explicit_goal": true,
+      "unary_targets_match": true,
+      "obligations_resolve_exact_unique_occurrences": true,
+      "goal_interface_order_preserved": true,
+      "expected_type_matches": true,
+      "operator_trace_within_requested_budget": true,
+      "path_atoms": 1,
+      "unary_atoms": 0,
+      "existentials": 0,
+      "trace_steps": 3
+    },
+    {
+      "input": "duplicate-predicates-distinct-constraints.json",
+      "topology_matches_explicit_goal": true,
+      "unary_targets_match": true,
+      "obligations_resolve_exact_unique_occurrences": true,
+      "goal_interface_order_preserved": true,
+      "expected_type_matches": true,
+      "operator_trace_within_requested_budget": true,
+      "path_atoms": 2,
+      "unary_atoms": 2,
+      "existentials": 1,
+      "trace_steps": 7
+    },
+    {
+      "input": "fixed-reference.json",
+      "topology_matches_explicit_goal": true,
+      "unary_targets_match": true,
+      "obligations_resolve_exact_unique_occurrences": true,
+      "goal_interface_order_preserved": true,
+      "expected_type_matches": true,
+      "operator_trace_within_requested_budget": true,
+      "path_atoms": 2,
+      "unary_atoms": 1,
+      "existentials": 1,
+      "trace_steps": 6
+    },
+    {
+      "input": "missing-orientation.json",
+      "incomplete_has_no_candidate": true
+    },
+    {
+      "input": "missing-symbol.json",
+      "incomplete_has_no_candidate": true
+    },
+    {
+      "input": "multiple-counts.json",
+      "incomplete_has_no_candidate": true
+    },
+    {
+      "input": "one-hop-minimal.json",
+      "topology_matches_explicit_goal": true,
+      "unary_targets_match": true,
+      "obligations_resolve_exact_unique_occurrences": true,
+      "goal_interface_order_preserved": true,
+      "expected_type_matches": true,
+      "operator_trace_within_requested_budget": true,
+      "path_atoms": 1,
+      "unary_atoms": 0,
+      "existentials": 0,
+      "trace_steps": 1
+    },
+    {
+      "input": "path-after-unary.json",
+      "topology_matches_explicit_goal": true,
+      "unary_targets_match": true,
+      "obligations_resolve_exact_unique_occurrences": true,
+      "goal_interface_order_preserved": true,
+      "expected_type_matches": true,
+      "operator_trace_within_requested_budget": true,
+      "path_atoms": 2,
+      "unary_atoms": 1,
+      "existentials": 1,
+      "trace_steps": 5
+    },
+    {
+      "input": "permuted-open-ports.json",
+      "topology_matches_explicit_goal": true,
+      "unary_targets_match": true,
+      "obligations_resolve_exact_unique_occurrences": true,
+      "goal_interface_order_preserved": true,
+      "expected_type_matches": true,
+      "operator_trace_within_requested_budget": true,
+      "path_atoms": 2,
+      "unary_atoms": 1,
+      "existentials": 1,
+      "trace_steps": 6
+    },
+    {
+      "input": "renamed-goal.json",
+      "topology_matches_explicit_goal": true,
+      "unary_targets_match": true,
+      "obligations_resolve_exact_unique_occurrences": true,
+      "goal_interface_order_preserved": true,
+      "expected_type_matches": true,
+      "operator_trace_within_requested_budget": true,
+      "path_atoms": 2,
+      "unary_atoms": 1,
+      "existentials": 1,
+      "trace_steps": 5
+    },
+    {
+      "input": "reverse-orientation.json",
+      "topology_matches_explicit_goal": true,
+      "unary_targets_match": true,
+      "obligations_resolve_exact_unique_occurrences": true,
+      "goal_interface_order_preserved": true,
+      "expected_type_matches": true,
+      "operator_trace_within_requested_budget": true,
+      "path_atoms": 2,
+      "unary_atoms": 1,
+      "existentials": 1,
+      "trace_steps": 5
+    },
+    {
+      "input": "three-hop-property.json",
+      "topology_matches_explicit_goal": true,
+      "unary_targets_match": true,
+      "obligations_resolve_exact_unique_occurrences": true,
+      "goal_interface_order_preserved": true,
+      "expected_type_matches": true,
+      "operator_trace_within_requested_budget": true,
+      "path_atoms": 3,
+      "unary_atoms": 1,
+      "existentials": 2,
+      "trace_steps": 7
+    },
+    {
+      "input": "two-hop-property.json",
+      "topology_matches_explicit_goal": true,
+      "unary_targets_match": true,
+      "obligations_resolve_exact_unique_occurrences": true,
+      "goal_interface_order_preserved": true,
+      "expected_type_matches": true,
+      "operator_trace_within_requested_budget": true,
+      "path_atoms": 2,
+      "unary_atoms": 1,
+      "existentials": 1,
+      "trace_steps": 5
+    },
+    {
+      "input": "typed-hole.json",
+      "incomplete_has_no_candidate": true
+    }
+  ],
+  "labels_leave_expression_unchanged": true,
+  "labels_change_metadata_resource_receipt": true,
+  "export_replay_distinct_processes": true,
+  "export_replay_artifact_exact_equal": true,
+  "catalog_summary_unchanged": true,
+  "post_build_metadata_created_after_binary": true,
+  "final_source_hash_mismatches": [],
+  "post_build_goal_graph_matches_requested_topology": true,
+  "reversing_explicit_roles_changes_expression": true
+}
