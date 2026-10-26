@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_DATA_SORT_TYPE","message":"binder or answer type must be Entity, Event, Interval, or a declared Nominal sort","path":"expression.answers[0].type","severity":"error"}]}

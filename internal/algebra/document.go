@@ -627,6 +627,21 @@ func artifactNodeWire(node Node, includeNodeID bool) (map[string]any, error) {
 		wire["operands"] = operands
 	case TermExists, TermLambda:
 		wire["identity"], wire["type"], wire["body"] = node.Identity, node.Type, node.Body
+	case TermNot:
+		wire["body"] = node.Body
+	case TermQuantifier:
+		wire["identity"], wire["type"], wire["quantifier"], wire["body"] = node.Identity, node.Type, node.Quantifier, node.Body
+		if node.Count != nil {
+			wire["count"] = *node.Count
+		}
+		if node.Restrictor != 0 {
+			wire["restrictor"] = node.Restrictor
+		}
+	case TermAsk:
+		wire["answers"], wire["body"] = node.Answers, node.Body
+		if node.Restrictor != 0 {
+			wire["restrictor"] = node.Restrictor
+		}
 	case TermApply:
 		wire["function"], wire["argument"] = node.Function, node.Argument
 	default:
@@ -736,6 +751,43 @@ func artifactMeaningTerm(term *Term, depth int, active map[*Term]bool) (map[stri
 			return nil, err
 		}
 		wire["id"], wire["type"], wire["body"] = term.ID, term.Type, body
+	case TermNot:
+		body, err := artifactMeaningTerm(term.Body, depth+1, active)
+		if err != nil {
+			return nil, err
+		}
+		wire["body"] = body
+	case TermQuantifier:
+		body, err := artifactMeaningTerm(term.Body, depth+1, active)
+		if err != nil {
+			return nil, err
+		}
+		wire["id"], wire["type"], wire["quantifier"], wire["body"] = term.ID, term.Type, term.Quantifier, body
+		if term.Count != nil {
+			wire["count"] = *term.Count
+		}
+		if term.Restrictor != nil {
+			restrictor, err := artifactMeaningTerm(term.Restrictor, depth+1, active)
+			if err != nil {
+				return nil, err
+			}
+			wire["restrictor"] = restrictor
+		}
+	case TermAsk:
+		body, err := artifactMeaningTerm(term.Body, depth+1, active)
+		if err != nil {
+			return nil, err
+		}
+		answers := make([]Declaration, len(term.Answers))
+		copy(answers, term.Answers)
+		wire["answers"], wire["body"] = answers, body
+		if term.Restrictor != nil {
+			restrictor, err := artifactMeaningTerm(term.Restrictor, depth+1, active)
+			if err != nil {
+				return nil, err
+			}
+			wire["restrictor"] = restrictor
+		}
 	case TermApply:
 		function, err := artifactMeaningTerm(term.Function, depth+1, active)
 		if err != nil {

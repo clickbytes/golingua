@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "steps": [
+    {
+      "id": "r",
+      "op": "relation",
+      "symbol": "r"
+    },
+    {
+      "id": "selected",
+      "op": "project",
+      "function": "r",
+      "ports": []
+    },
+    {
+      "id": "question",
+      "op": "ask",
+      "inputs": [
+        "selected"
+      ]
+    }
+  ],
+  "result": "question"
+}

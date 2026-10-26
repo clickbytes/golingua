@@ -1,0 +1,1 @@
+{"status":"resource_limit","diagnostics":[{"code":"RESOURCE_LIMIT","message":"query compilation exceeds the logical work budget","path":"declarations","severity":"error"}]}

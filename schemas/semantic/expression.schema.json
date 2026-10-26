@@ -48,6 +48,7 @@
         {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "Event"}}},
         {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "Interval"}}},
         {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "Prop"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "Question"}}, "$comment": "A typed question act, distinct from a proposition; this type does not assert an answer."},
         {"type": "object", "additionalProperties": false, "required": ["kind", "sort_id"], "properties": {"kind": {"const": "Nominal"}, "sort_id": {"$ref": "#/$defs/id"}}, "$comment": "sort_id must also appear in the document's sorts list."},
         {"type": "object", "additionalProperties": false, "required": ["kind", "from", "to"], "properties": {"kind": {"const": "Arrow"}, "from": {"$ref": "#/$defs/type"}, "to": {"$ref": "#/$defs/type"}}}
       ]
@@ -58,6 +59,7 @@
         {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "Event"}}},
         {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "Interval"}}},
         {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "Prop"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "Question"}}, "$comment": "Question is an atomic act type, not a proposition."},
         {"type": "object", "additionalProperties": false, "required": ["kind", "sort_id"], "properties": {"kind": {"const": "Nominal"}, "sort_id": {"$ref": "#/$defs/id"}}, "$comment": "sort_id must also appear in the document's sorts list."}
       ]
     },
@@ -99,8 +101,28 @@
         {"type": "object", "additionalProperties": false, "required": ["kind", "operands"], "properties": {"kind": {"const": "And"}, "label": {"$ref": "#/$defs/label"}, "operands": {"type": "array", "minItems": 1, "maxItems": 4096, "items": {"$ref": "#/$defs/term"}}}},
         {"type": "object", "additionalProperties": false, "required": ["kind", "id", "type", "body"], "properties": {"kind": {"const": "Exists"}, "id": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}, "type": {"$ref": "#/$defs/type"}, "body": {"$ref": "#/$defs/term"}}},
         {"type": "object", "additionalProperties": false, "required": ["kind", "id", "type", "body"], "properties": {"kind": {"const": "Lambda"}, "id": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}, "type": {"$ref": "#/$defs/type"}, "body": {"$ref": "#/$defs/term"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "body"], "properties": {"kind": {"const": "Not"}, "label": {"$ref": "#/$defs/label"}, "body": {"$ref": "#/$defs/term"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "id", "type", "quantifier", "body"], "properties": {"kind": {"const": "Quantifier"}, "id": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}, "type": {"$ref": "#/$defs/data_type"}, "quantifier": {"enum": ["some", "all"]}, "restrictor": {"$ref": "#/$defs/optional_prop_term"}, "body": {"$ref": "#/$defs/term"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "id", "type", "quantifier", "count", "body"], "properties": {"kind": {"const": "Quantifier"}, "id": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}, "type": {"$ref": "#/$defs/data_type"}, "quantifier": {"enum": ["exactly", "at_least", "at_most"]}, "count": {"type": "integer", "minimum": 0}, "restrictor": {"$ref": "#/$defs/optional_prop_term"}, "body": {"$ref": "#/$defs/term"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "body"], "properties": {"kind": {"const": "Ask"}, "label": {"$ref": "#/$defs/label"}, "answers": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/data_declaration"}}, "restrictor": {"$ref": "#/$defs/optional_prop_term"}, "body": {"$ref": "#/$defs/term"}}},
         {"type": "object", "additionalProperties": false, "required": ["kind", "function", "argument"], "properties": {"kind": {"const": "Apply"}, "label": {"$ref": "#/$defs/label"}, "function": {"$ref": "#/$defs/term"}, "argument": {"$ref": "#/$defs/term"}}}
       ]
+    },
+    "data_type": {
+      "oneOf": [
+        {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "Entity"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "Event"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "Interval"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "sort_id"], "properties": {"kind": {"const": "Nominal"}, "sort_id": {"$ref": "#/$defs/id"}}, "$comment": "The nominal sort ID must be declared in the containing document."}
+      ]
+    },
+    "data_declaration": {
+      "type": "object", "additionalProperties": false, "required": ["id", "type"],
+      "properties": {"id": {"$ref": "#/$defs/id"}, "type": {"$ref": "#/$defs/data_type"}}
+    },
+    "optional_prop_term": {
+      "anyOf": [{"$ref": "#/$defs/term"}, {"type": "null"}],
+      "$comment": "Omitted or null means no additional restriction; runtime requires a present restriction expression to have type Prop. An empty object is malformed."
     },
     "limits": {
       "type": "object",
@@ -190,6 +212,10 @@
         {"type": "object", "additionalProperties": false, "required": ["node_id", "kind", "operands"], "properties": {"node_id": {"type": "integer", "minimum": 1, "maximum": 4096}, "kind": {"const": "And"}, "label": {"$ref": "#/$defs/label"}, "operands": {"type": "array", "minItems": 1, "maxItems": 4096, "items": {"type": "integer", "minimum": 1, "maximum": 4096}}}},
         {"type": "object", "additionalProperties": false, "required": ["node_id", "kind", "identity", "type", "body"], "properties": {"node_id": {"type": "integer", "minimum": 1, "maximum": 4096}, "kind": {"const": "Exists"}, "identity": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}, "type": {"$ref": "#/$defs/type"}, "body": {"type": "integer", "minimum": 1, "maximum": 4096}}},
         {"type": "object", "additionalProperties": false, "required": ["node_id", "kind", "identity", "type", "body"], "properties": {"node_id": {"type": "integer", "minimum": 1, "maximum": 4096}, "kind": {"const": "Lambda"}, "identity": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}, "type": {"$ref": "#/$defs/type"}, "body": {"type": "integer", "minimum": 1, "maximum": 4096}}},
+        {"type": "object", "additionalProperties": false, "required": ["node_id", "kind", "body"], "properties": {"node_id": {"type": "integer", "minimum": 1, "maximum": 4096}, "kind": {"const": "Not"}, "label": {"$ref": "#/$defs/label"}, "body": {"type": "integer", "minimum": 1, "maximum": 4096}}},
+        {"type": "object", "additionalProperties": false, "required": ["node_id", "kind", "identity", "type", "quantifier", "body"], "properties": {"node_id": {"type": "integer", "minimum": 1, "maximum": 4096}, "kind": {"const": "Quantifier"}, "identity": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}, "type": {"$ref": "#/$defs/data_type"}, "quantifier": {"enum": ["some", "all"]}, "restrictor": {"type": "integer", "minimum": 1, "maximum": 4096}, "body": {"type": "integer", "minimum": 1, "maximum": 4096}}},
+        {"type": "object", "additionalProperties": false, "required": ["node_id", "kind", "identity", "type", "quantifier", "count", "body"], "properties": {"node_id": {"type": "integer", "minimum": 1, "maximum": 4096}, "kind": {"const": "Quantifier"}, "identity": {"$ref": "#/$defs/id"}, "label": {"$ref": "#/$defs/label"}, "type": {"$ref": "#/$defs/data_type"}, "quantifier": {"enum": ["exactly", "at_least", "at_most"]}, "count": {"type": "integer", "minimum": 0}, "restrictor": {"type": "integer", "minimum": 1, "maximum": 4096}, "body": {"type": "integer", "minimum": 1, "maximum": 4096}}},
+        {"type": "object", "additionalProperties": false, "required": ["node_id", "kind", "answers", "body"], "properties": {"node_id": {"type": "integer", "minimum": 1, "maximum": 4096}, "kind": {"const": "Ask"}, "label": {"$ref": "#/$defs/label"}, "answers": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/data_declaration"}}, "restrictor": {"type": "integer", "minimum": 1, "maximum": 4096}, "body": {"type": "integer", "minimum": 1, "maximum": 4096}}},
         {"type": "object", "additionalProperties": false, "required": ["node_id", "kind", "function", "argument"], "properties": {"node_id": {"type": "integer", "minimum": 1, "maximum": 4096}, "kind": {"const": "Apply"}, "label": {"$ref": "#/$defs/label"}, "function": {"type": "integer", "minimum": 1, "maximum": 4096}, "argument": {"type": "integer", "minimum": 1, "maximum": 4096}}}
       ],
       "$comment": "DAG edge reachability, dense NodeIDs, cycles, scope, and typing are checked at runtime; JSON Schema validates only the bounded node record shapes."

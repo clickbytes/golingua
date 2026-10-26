@@ -19,6 +19,7 @@ const (
 	maxAlgebraPlanAtoms     = 64
 	maxAlgebraPlanVariables = 128
 	betaQueryProfile        = "dse-positive-query-beta-v1"
+	positiveAskQueryProfile = "dse-positive-query-beta-v1+positive-ask-v1"
 )
 
 // AlgebraPlanNodeKind is the checked positive query tree vocabulary.
@@ -181,6 +182,10 @@ func CompileAlgebraQuery(parent context.Context, schema facts.NarySchema, enviro
 	if err := state.checkContext(); err != nil {
 		return fail(err)
 	}
+	askSource := source.Expression.Kind == algebra.TermAsk
+	if askSource && request.Select != nil {
+		return fail(planInvalid("ASK_SELECTION_FORBIDDEN", "select", "Ask answer variables are the sole projection authority"))
+	}
 	lowered, lowerCert, lowerWork, err := lowerQuery(source, environment, limits.TermLimits, state.remaining())
 	if err != nil {
 		return fail(err)
@@ -190,6 +195,16 @@ func CompileAlgebraQuery(parent context.Context, schema facts.NarySchema, enviro
 	}
 	if err := state.checkContext(); err != nil {
 		return fail(err)
+	}
+	if askSource {
+		askLowered, askWork, askErr := lowerPositiveAsk(lowered, limits.TermLimits)
+		if askErr != nil {
+			return fail(askErr)
+		}
+		if err := state.charge(askWork, "positive_ask_lowering"); err != nil {
+			return fail(err)
+		}
+		lowered = askLowered
 	}
 	checkedLowered, err := algebra.Check(withSelectedInventory(source, schema.Document, lowered, limits.TermLimits))
 	if err != nil {
@@ -202,7 +217,16 @@ func CompileAlgebraQuery(parent context.Context, schema facts.NarySchema, enviro
 		return fail(err)
 	}
 
-	answers, leading, err := compileSelections(request.Select, lowered, checkedLowered)
+	selection := request.Select
+	if askSource {
+		ask := source.Expression
+		selection = make([]AlgebraSelection, len(ask.Answers))
+		for i, answer := range ask.Answers {
+			idx := i
+			selection[i] = AlgebraSelection{Kind: AlgebraSelectionLambda, Index: &idx, As: answer.ID}
+		}
+	}
+	answers, leading, err := compileSelections(selection, lowered, checkedLowered)
 	if err != nil {
 		return fail(err)
 	}
@@ -274,7 +298,35 @@ func CompileAlgebraQuery(parent context.Context, schema facts.NarySchema, enviro
 		root: root, limits: limits, usage: state.usage, deadline: deadline,
 		ctx: ctx, cancel: cancel,
 	}
+	if askSource {
+		plan.loweringProfile = positiveAskQueryProfile
+	}
 	return plan, nil
+}
+
+// lowerPositiveAsk exposes the answer binders as leading selections and joins
+// its optional restriction with the positive body. It is a compiler lowering,
+// not a rewrite law or a truth claim.
+func lowerPositiveAsk(term *algebra.Term, limits algebra.Limits) (*algebra.Term, int, error) {
+	if term == nil || term.Kind != algebra.TermAsk || term.Body == nil {
+		return nil, 0, planUnsupported("ASK_LOWERING_UNSUPPORTED", "expression", "only a root Ask with a positive body is executable")
+	}
+	if len(term.Answers) > limits.MaxPorts {
+		return nil, 0, planResource("expression.answers", "Ask answer count exceeds the port limit")
+	}
+	body := term.Body
+	if term.Restrictor != nil {
+		body = &algebra.Term{Kind: algebra.TermAnd, Operands: []*algebra.Term{term.Restrictor, term.Body}}
+	}
+	for i := len(term.Answers) - 1; i >= 0; i-- {
+		typ := term.Answers[i].Type
+		body = &algebra.Term{Kind: algebra.TermLambda, ID: term.Answers[i].ID, Type: &typ, Body: body}
+	}
+	work := 1 + len(term.Answers)
+	if term.Restrictor != nil {
+		work++
+	}
+	return body, work, nil
 }
 
 // Describe returns a detached, non-executable plan summary.
@@ -380,6 +432,12 @@ func (compiler *planCompiler) compileTree(term *algebra.Term, path string, depth
 		compiler.nodes[idx] = AlgebraPlanNode{ID: nodeID, Kind: AlgebraPlanExists, Path: path, Binder: &key, Type: &typ, Children: []string{child}}
 	case algebra.TermApply, algebra.TermLambda:
 		return "", planUnsupported("UNSUPPORTED_QUERY_CONSTRUCTOR", path, "query body may contain only Atom, And, and Exists after beta lowering")
+	case algebra.TermNot:
+		return "", planUnsupported("NOT_QUERY_UNSUPPORTED", path, "Not is representable but is outside the positive query execution profile")
+	case algebra.TermQuantifier:
+		return "", planUnsupported("QUANTIFIER_QUERY_UNSUPPORTED", path, "quantifier evaluation requires a separately declared complete domain profile")
+	case algebra.TermAsk:
+		return "", planUnsupported("NESTED_ASK_UNSUPPORTED", path, "only one root Ask is lowered by the positive answer projection profile")
 	case algebra.TermHole:
 		return "", planIncomplete("QUERY_HOLE_UNRESOLVED", path, "query contains an unresolved typed hole")
 	default:

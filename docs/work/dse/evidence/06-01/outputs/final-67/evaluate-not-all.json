@@ -1,0 +1,1 @@
+{"status":"unsupported","diagnostics":[{"code":"NOT_QUERY_UNSUPPORTED","message":"Not is representable but is outside the positive query execution profile","path":"expression.body","severity":"error"}]}

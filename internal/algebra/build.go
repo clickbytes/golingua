@@ -21,21 +21,23 @@ type BuildArgument struct {
 // fields that do not belong to the selected Op; Build validates the same
 // constraints for programmatically created requests.
 type BuildStep struct {
-	ID        string          `json:"id"`
-	Op        string          `json:"op"`
-	Symbol    string          `json:"symbol,omitempty"`
-	Value     *Term           `json:"value,omitempty"`
-	Args      []BuildArgument `json:"args,omitempty"`
-	Inputs    []string        `json:"inputs,omitempty"`
-	Left      string          `json:"left,omitempty"`
-	Right     string          `json:"right,omitempty"`
-	Mapping   []JoinPair      `json:"mapping,omitempty"`
-	Outputs   []JoinOutput    `json:"outputs,omitempty"`
-	Function  string          `json:"function,omitempty"`
-	Port      string          `json:"port,omitempty"`
-	Argument  string          `json:"argument,omitempty"`
-	Predicate string          `json:"predicate,omitempty"`
-	Ports     []string        `json:"ports,omitempty"`
+	ID         string          `json:"id"`
+	Op         string          `json:"op"`
+	Symbol     string          `json:"symbol,omitempty"`
+	Quantifier string          `json:"quantifier,omitempty"`
+	Count      *int            `json:"count,omitempty"`
+	Value      *Term           `json:"value,omitempty"`
+	Args       []BuildArgument `json:"args,omitempty"`
+	Inputs     []string        `json:"inputs,omitempty"`
+	Left       string          `json:"left,omitempty"`
+	Right      string          `json:"right,omitempty"`
+	Mapping    []JoinPair      `json:"mapping,omitempty"`
+	Outputs    []JoinOutput    `json:"outputs,omitempty"`
+	Function   string          `json:"function,omitempty"`
+	Port       string          `json:"port,omitempty"`
+	Argument   string          `json:"argument,omitempty"`
+	Predicate  string          `json:"predicate,omitempty"`
+	Ports      []string        `json:"ports,omitempty"`
 }
 
 // BuildRequest is a finite construction recipe. It contains no final AST,
@@ -368,6 +370,132 @@ func executeBuildStep(context Document, step BuildStep, values map[string]buildV
 			operands[i] = term
 		}
 		return buildValue{expression: &Term{Kind: TermAnd, Operands: operands}, kind: "expression"}, append([]string(nil), step.Inputs...), nil
+	case "not":
+		if len(step.Inputs) != 1 {
+			return buildValue{}, nil, invalid("INVALID_NOT_INPUTS", path+".inputs", "not requires exactly one input")
+		}
+		value, err := lookup(step.Inputs[0], "inputs[0]")
+		if err != nil {
+			return buildValue{}, nil, err
+		}
+		if value.expression == nil || value.kind == "substitution" {
+			return buildValue{}, nil, invalid("STEP_KIND_MISMATCH", path+".inputs[0]", "not requires an expression")
+		}
+		if value.function == nil {
+			result, err := Negate(context, value.expression)
+			if err != nil {
+				return buildValue{}, nil, err
+			}
+			return buildValue{expression: result, kind: "expression"}, []string{step.Inputs[0]}, nil
+		}
+		fn, err := NegateFunction(context, *value.function)
+		if err != nil {
+			return buildValue{}, nil, err
+		}
+		return buildValue{expression: fn.Expression, function: &fn, kind: "function"}, []string{step.Inputs[0]}, nil
+	case "quantifier":
+		if len(step.Inputs) < 1 || len(step.Inputs) > 2 {
+			return buildValue{}, nil, invalid("INVALID_QUANTIFIER_INPUTS", path+".inputs", "quantifier requires a predicate and optional restrictor")
+		}
+		value, err := lookup(step.Inputs[0], "inputs[0]")
+		if err != nil {
+			return buildValue{}, nil, err
+		}
+		if value.function == nil || len(value.function.Interface) != 1 {
+			return buildValue{}, nil, invalid("QUANTIFIER_REQUIRES_UNARY_PREDICATE", path+".inputs[0]", "quantifier consumes exactly one leading predicate lambda")
+		}
+		binders, body, err := peelLeading(value.expression, 1)
+		if err != nil {
+			return buildValue{}, nil, err
+		}
+		var restrictor *Term
+		if len(step.Inputs) == 2 {
+			rv, err := lookup(step.Inputs[1], "inputs[1]")
+			if err != nil {
+				return buildValue{}, nil, err
+			}
+			if rv.function == nil || len(rv.function.Interface) != 1 {
+				return buildValue{}, nil, invalid("QUANTIFIER_RESTRICTOR_INTERFACE", path+".inputs[1]", "restrictor must have one leading lambda")
+			}
+			rb, rbBody, err := peelLeading(rv.expression, 1)
+			if err != nil {
+				return buildValue{}, nil, err
+			}
+			if !TypeEqual(*binders[0].Type, *rb[0].Type) {
+				return buildValue{}, nil, invalid("QUANTIFIER_RESTRICTOR_TYPE", path+".inputs[1]", "restrictor binder type must match the quantified variable")
+			}
+			restrictor, err = SubstituteBinder(rbBody, rb[0].ID, &Term{Kind: TermVar, ID: binders[0].ID}, context.Limits)
+			if err != nil {
+				return buildValue{}, nil, err
+			}
+		}
+		result, err := NewQuantifier(context, binders[0].ID, *binders[0].Type, step.Quantifier, step.Count, restrictor, body)
+		if err != nil {
+			return buildValue{}, nil, err
+		}
+		return buildValue{expression: result, kind: "expression"}, append([]string{}, step.Inputs...), nil
+	case "ask":
+		if len(step.Inputs) < 1 || len(step.Inputs) > 2 {
+			return buildValue{}, nil, invalid("INVALID_ASK_INPUTS", path+".inputs", "ask requires a proposition and optional restrictor")
+		}
+		value, err := lookup(step.Inputs[0], "inputs[0]")
+		if err != nil {
+			return buildValue{}, nil, err
+		}
+		if value.expression == nil || value.kind == "substitution" {
+			return buildValue{}, nil, invalid("STEP_KIND_MISMATCH", path+".inputs[0]", "ask requires an expression")
+		}
+		var answers []Declaration
+		var body *Term
+		if value.function != nil {
+			binders, peeled, err := peelLeading(value.expression, len(value.function.Interface))
+			if err != nil {
+				return buildValue{}, nil, err
+			}
+			answers = make([]Declaration, len(binders))
+			for i, binder := range binders {
+				answers[i] = Declaration{ID: binder.ID, Type: *cloneTypeValue(*binder.Type)}
+			}
+			body = peeled
+		} else {
+			body = value.expression
+		}
+		var restrictor *Term
+		if len(step.Inputs) == 2 {
+			rv, err := lookup(step.Inputs[1], "inputs[1]")
+			if err != nil {
+				return buildValue{}, nil, err
+			}
+			if len(answers) == 0 {
+				if rv.function != nil || rv.expression == nil {
+					return buildValue{}, nil, invalid("ASK_RESTRICTOR_INTERFACE", path+".inputs[1]", "yes/no Ask restrictor must be a proposition")
+				}
+				restrictor = rv.expression
+			} else {
+				if rv.function == nil || len(rv.function.Interface) != len(answers) {
+					return buildValue{}, nil, invalid("ASK_RESTRICTOR_INTERFACE", path+".inputs[1]", "Ask restrictor must match the ordered answer interface")
+				}
+				rbinders, rbody, err := peelLeading(rv.expression, len(rv.function.Interface))
+				if err != nil {
+					return buildValue{}, nil, err
+				}
+				for i, binder := range rbinders {
+					if !TypeEqual(answers[i].Type, *binder.Type) {
+						return buildValue{}, nil, invalid("ASK_RESTRICTOR_TYPE", fmt.Sprintf("%s.inputs[1].interface[%d]", path, i), "restrictor binder type must match the ordered answer")
+					}
+					rbody, err = SubstituteBinder(rbody, binder.ID, &Term{Kind: TermVar, ID: answers[i].ID}, context.Limits)
+					if err != nil {
+						return buildValue{}, nil, err
+					}
+				}
+				restrictor = rbody
+			}
+		}
+		result, err := NewAsk(context, answers, restrictor, body)
+		if err != nil {
+			return buildValue{}, nil, err
+		}
+		return buildValue{expression: result, kind: "expression"}, append([]string{}, step.Inputs...), nil
 	case "join":
 		left, err := function(step.Left, "left")
 		if err != nil {
@@ -559,6 +687,7 @@ func validateBuildStepShape(object map[string]json.RawMessage, path string) erro
 	}
 	fields := map[string][]string{
 		"relation": {"id", "op", "symbol"}, "value": {"id", "op", "value"}, "atom": {"id", "op", "symbol", "args"}, "and": {"id", "op", "inputs"},
+		"not": {"id", "op", "inputs"}, "quantifier": {"id", "op", "inputs", "quantifier", "count"}, "ask": {"id", "op", "inputs"},
 		"join": {"id", "op", "left", "right", "mapping", "outputs"}, "bind": {"id", "op", "function", "port", "argument"}, "apply": {"id", "op", "function", "argument"},
 		"restrict": {"id", "op", "function", "port", "predicate"}, "project": {"id", "op", "function", "ports"}, "permute": {"id", "op", "function", "ports"}, "unify": {"id", "op", "left", "right"},
 	}
@@ -573,7 +702,7 @@ func validateBuildStepShape(object map[string]json.RawMessage, path string) erro
 	if err := checkFields(object, allowedSet, path); err != nil {
 		return err
 	}
-	optional := map[string]bool{"mapping": true, "outputs": true}
+	optional := map[string]bool{"mapping": true, "outputs": true, "count": true}
 	for _, key := range allowed {
 		if optional[key] {
 			continue
@@ -605,6 +734,11 @@ func validateBuildStepShape(object map[string]json.RawMessage, path string) erro
 		}
 		if term.Kind != TermParam && term.Kind != TermRef && term.Kind != TermHole {
 			return invalid("INVALID_VALUE_KIND", path+".value.kind", "value permits only Param, Ref, or Hole")
+		}
+	}
+	if op == "quantifier" {
+		if raw, exists := object["count"]; exists && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+			return invalid("NULL_FIELD", path+".count", "count cannot be null")
 		}
 	}
 	return nil
@@ -686,6 +820,12 @@ func buildStepReferences(s BuildStep) []stepReference {
 			r[i] = stepReference{id, fmt.Sprintf("inputs[%d]", i)}
 		}
 		return r
+	case "not", "quantifier", "ask":
+		r := make([]stepReference, len(s.Inputs))
+		for i, id := range s.Inputs {
+			r[i] = stepReference{id, fmt.Sprintf("inputs[%d]", i)}
+		}
+		return r
 	case "join", "unify":
 		return []stepReference{{s.Left, "left"}, {s.Right, "right"}}
 	case "bind", "apply":
@@ -704,6 +844,7 @@ func validateBuildStepFields(step BuildStep, path string) error {
 	}
 	allowed := map[string]map[string]bool{
 		"relation": {"symbol": true}, "value": {"value": true}, "atom": {"symbol": true, "args": true}, "and": {"inputs": true},
+		"not": {"inputs": true}, "quantifier": {"inputs": true, "quantifier": true, "count": true}, "ask": {"inputs": true},
 		"join": {"left": true, "right": true, "mapping": true, "outputs": true}, "bind": {"function": true, "port": true, "argument": true},
 		"apply": {"function": true, "argument": true}, "restrict": {"function": true, "port": true, "predicate": true},
 		"project": {"function": true, "ports": true}, "permute": {"function": true, "ports": true}, "unify": {"left": true, "right": true},
@@ -712,7 +853,7 @@ func validateBuildStepFields(step BuildStep, path string) error {
 	if !known {
 		return &Error{Status: status.OutcomeUnsupported, Code: "UNSUPPORTED_BUILD_OPERATION", Path: path + ".op", Message: "build operation is not supported"}
 	}
-	if step.Symbol != "" && !fields["symbol"] || step.Value != nil && !fields["value"] || step.Args != nil && !fields["args"] || step.Inputs != nil && !fields["inputs"] || step.Left != "" && !fields["left"] || step.Right != "" && !fields["right"] || step.Mapping != nil && !fields["mapping"] || step.Outputs != nil && !fields["outputs"] || step.Function != "" && !fields["function"] || step.Port != "" && !fields["port"] || step.Argument != "" && !fields["argument"] || step.Predicate != "" && !fields["predicate"] || step.Ports != nil && !fields["ports"] {
+	if step.Symbol != "" && !fields["symbol"] || step.Quantifier != "" && !fields["quantifier"] || step.Count != nil && !fields["count"] || step.Value != nil && !fields["value"] || step.Args != nil && !fields["args"] || step.Inputs != nil && !fields["inputs"] || step.Left != "" && !fields["left"] || step.Right != "" && !fields["right"] || step.Mapping != nil && !fields["mapping"] || step.Outputs != nil && !fields["outputs"] || step.Function != "" && !fields["function"] || step.Port != "" && !fields["port"] || step.Argument != "" && !fields["argument"] || step.Predicate != "" && !fields["predicate"] || step.Ports != nil && !fields["ports"] {
 		return invalid("IRRELEVANT_FIELD", path, "step carries fields unrelated to its operation")
 	}
 	checkString := func(value, field string) error {
@@ -741,6 +882,30 @@ func validateBuildStepFields(step BuildStep, path string) error {
 	case "and":
 		if step.Inputs == nil {
 			return invalid("MISSING_FIELD", path+".inputs", "inputs array is required")
+		}
+	case "not":
+		if step.Inputs == nil || len(step.Inputs) != 1 {
+			return invalid("INVALID_NOT_INPUTS", path+".inputs", "not requires exactly one input")
+		}
+	case "quantifier":
+		if step.Inputs == nil || len(step.Inputs) < 1 || len(step.Inputs) > 2 {
+			return invalid("INVALID_QUANTIFIER_INPUTS", path+".inputs", "quantifier requires a predicate and optional restrictor")
+		}
+		switch step.Quantifier {
+		case "some", "all":
+			if step.Count != nil {
+				return invalid("INVALID_QUANTIFIER_COUNT", path+".count", "some and all do not accept count")
+			}
+		case "exactly", "at_least", "at_most":
+			if step.Count == nil || *step.Count < 0 {
+				return invalid("INVALID_QUANTIFIER_COUNT", path+".count", "numeric quantifier requires a non-negative count")
+			}
+		default:
+			return invalid("INVALID_QUANTIFIER_KIND", path+".quantifier", "quantifier kind is unsupported")
+		}
+	case "ask":
+		if step.Inputs == nil || len(step.Inputs) < 1 || len(step.Inputs) > 2 {
+			return invalid("INVALID_ASK_INPUTS", path+".inputs", "ask requires a proposition and optional restrictor")
 		}
 	case "join":
 		if err := checkString(step.Left, "left"); err != nil {

@@ -447,6 +447,12 @@ func walkGoalConstraintTerm(term *algebra.Term, path string, depth int, inventor
 		if err := walkGoalConstraintTerm(term.Body, path+".body", depth+1, inventory, limits); err != nil {
 			return err
 		}
+	case algebra.TermNot:
+		return goalCheckUnsupported("NOT_UNSUPPORTED", path, "the positive structural goal profile does not interpret Not")
+	case algebra.TermQuantifier:
+		return goalCheckUnsupported("QUANTIFIER_UNSUPPORTED", path, "quantifiers are represented but not executed by the positive structural goal profile")
+	case algebra.TermAsk:
+		return goalCheckUnsupported("ASK_UNSUPPORTED", path, "Ask is represented but query answer projection is outside the positive structural goal profile")
 	case algebra.TermAtom:
 		for i, argument := range term.Args {
 			argumentPath := fmt.Sprintf("%s.args[%d].value", path, i)

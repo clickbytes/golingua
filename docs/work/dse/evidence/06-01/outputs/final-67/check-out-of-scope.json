@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"UNBOUND_VARIABLE","message":"variable does not refer to an in-scope binder","path":"expression.body.args[1].value.id","severity":"error"}]}

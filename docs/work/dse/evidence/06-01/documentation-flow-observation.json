@@ -1,0 +1,51 @@
+[
+  {
+    "command": "go run ./cmd/golingua algebra build \\\n  --metadata data/semantic/examples/scopes/metadata.json \\\n  --input data/semantic/examples/scopes/build/not-all.json --json",
+    "exit_code": 0,
+    "stdout_file": "/tmp/golingua-dse/391-docflow-0.json",
+    "stdout_sha256": "7c33d78169b8f3fccdc66c1536ee90d515206fdc9f0c249e77cf27b551bca389",
+    "stderr": ""
+  },
+  {
+    "command": "go run ./cmd/golingua algebra build \\\n  --metadata data/semantic/examples/scopes/metadata.json \\\n  --input data/semantic/examples/scopes/build/all-not.json --json",
+    "exit_code": 0,
+    "stdout_file": "/tmp/golingua-dse/391-docflow-1.json",
+    "stdout_sha256": "732bb9d7e52759311815d322fee57716423400cf85a696dbe39bf08d94b4669e",
+    "stderr": ""
+  },
+  {
+    "command": "go run ./cmd/golingua algebra normalize \\\n  --metadata data/semantic/examples/scopes/metadata.json \\\n  --input data/semantic/examples/scopes/normalization/not-all.json --json",
+    "exit_code": 0,
+    "stdout_file": "/tmp/golingua-dse/391-docflow-2.json",
+    "stdout_sha256": "15ad447899a84181dd65b45c9d401587306ba33a5beba3f67ab96fc421eb8595",
+    "stderr": ""
+  },
+  {
+    "command": "go run ./cmd/golingua algebra export \\\n  --metadata data/semantic/examples/scopes/metadata.json \\\n  --input data/semantic/examples/scopes/export/not-all.json --json",
+    "exit_code": 0,
+    "stdout_file": "/tmp/golingua-dse/391-docflow-3.json",
+    "stdout_sha256": "f2dc02d9e9bfe2240a0515a22ae65a9a24641783c4a9bf9b8943f1993926776e",
+    "stderr": ""
+  },
+  {
+    "command": "go run ./cmd/golingua algebra replay \\\n  --metadata data/semantic/examples/scopes/metadata.json \\\n  --input data/semantic/examples/scopes/replay/not-all.json --json",
+    "exit_code": 0,
+    "stdout_file": "/tmp/golingua-dse/391-docflow-4.json",
+    "stdout_sha256": "f2aeceb05bcea944a85c5eb2583734dfb4f250a95def2dc4249a2e3cd40622bc",
+    "stderr": ""
+  },
+  {
+    "command": "go run ./cmd/golingua algebra evaluate \\\n  --metadata data/semantic/examples/scopes/metadata.json \\\n  --expression data/semantic/examples/scopes/query/ask-first.json \\\n  --facts data/semantic/examples/scopes/facts-simple.json \\\n  --context-id eval-neutral --profile positive-facts-v1 --json",
+    "exit_code": 0,
+    "stdout_file": "/tmp/golingua-dse/391-docflow-5.json",
+    "stdout_sha256": "cdb1d0817084ece6facfe0ae6e9d5d0646c02fdd1b48a9c9ba7cafdf156c2c83",
+    "stderr": ""
+  },
+  {
+    "command": "go run ./cmd/golingua algebra evaluate \\\n  --metadata data/semantic/examples/scopes/metadata.json \\\n  --expression data/semantic/examples/scopes/query/ask-second.json \\\n  --facts data/semantic/examples/scopes/facts-simple.json \\\n  --context-id eval-neutral --profile positive-facts-v1 --json",
+    "exit_code": 0,
+    "stdout_file": "/tmp/golingua-dse/391-docflow-6.json",
+    "stdout_sha256": "7265dfb13e9a18cb77e30a51774ed80fb0c2bad08af950b4dc046cf995761544",
+    "stderr": ""
+  }
+]

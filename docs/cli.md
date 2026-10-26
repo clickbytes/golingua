@@ -180,6 +180,78 @@ Profil unifikacji jest ograniczony do zadeklarowanych Param jako zmiennych, Ref,
 
 `build` używa wyłącznie zatwierdzonych primitive signatures z jawnego rejestru. Pending, aliasy i symbole opaque nie są tutaj rozwijane ani uruchamiane; pole review nie oznacza akceptacji językowej. Wynik jest sprawdzoną reprezentacją, a nie nowym faktem, świadkiem świata, regułą przechodniości ani zarejestrowanym aliasem. Limit wejścia wynosi 1 MiB, maksymalnie 64 kroki, 4096 węzłów i głębokość 64 na wyrażenie, 32 na typ, 512 deklaracji, 16 portów oraz 16384 węzłów termów zachowanych łącznie w rezultatach i śladzie. Przekroczenie daje `resource_limit`, nigdy zgadywanie mapowania. Kody wyjścia pozostają mapowane do statusu: `ok` 0, `invalid` 2, `unsupported` 3, `resource_limit` 4, `unknown` 5, `ambiguous` 6, `incomplete` 7, `error` 1. Pełny opis zachowania znajduje się w [kontrakcie składania](architecture/semantic-algebra/composition.md), [schemacie receptury](../schemas/semantic/construction.schema.json) i [przykładach](../data/semantic/examples/composition/).
 
+### Zakresy negacji, kwantyfikatorów i Ask
+
+`algebra build` może jawnie zbudować termy `Not`, `Quantifier` i `Ask` z
+wcześniejszych kroków receptury. Przykłady neutralne znajdują się w
+[`data/semantic/examples/scopes/`](../data/semantic/examples/scopes/):
+
+```sh
+go run ./cmd/golingua algebra build \
+  --metadata data/semantic/examples/scopes/metadata.json \
+  --input data/semantic/examples/scopes/build/not-all.json --json
+
+go run ./cmd/golingua algebra build \
+  --metadata data/semantic/examples/scopes/metadata.json \
+  --input data/semantic/examples/scopes/build/all-not.json --json
+
+go run ./cmd/golingua algebra normalize \
+  --metadata data/semantic/examples/scopes/metadata.json \
+  --input data/semantic/examples/scopes/normalization/not-all.json --json
+
+go run ./cmd/golingua algebra export \
+  --metadata data/semantic/examples/scopes/metadata.json \
+  --input data/semantic/examples/scopes/export/not-all.json --json
+
+go run ./cmd/golingua algebra replay \
+  --metadata data/semantic/examples/scopes/metadata.json \
+  --input data/semantic/examples/scopes/replay/not-all.json --json
+
+go run ./cmd/golingua algebra evaluate \
+  --metadata data/semantic/examples/scopes/metadata.json \
+  --expression data/semantic/examples/scopes/query/ask-first.json \
+  --facts data/semantic/examples/scopes/facts-simple.json \
+  --context-id eval-neutral --profile positive-facts-v1 --json
+
+go run ./cmd/golingua algebra evaluate \
+  --metadata data/semantic/examples/scopes/metadata.json \
+  --expression data/semantic/examples/scopes/query/ask-second.json \
+  --facts data/semantic/examples/scopes/facts-simple.json \
+  --context-id eval-neutral --profile positive-facts-v1 --json
+```
+
+W przykładach `not-all` i `all-not` kolejność operatorów jest jawna i różna;
+oba przepisywania oraz eksport/odtworzenie artefaktu są zapisane w evidence.
+Przykłady Ask pytają o pierwszy albo drugi port tej samej relacji i tego samego
+zestawu faktów. Wyniki pokazują odpowiednio `(A),(B)` oraz `(B),(C)`. `Ask`
+przenosi projekcję w uporządkowanym polu `answers`, więc `evaluate` i
+`verify-proof --claim evaluation` nie przyjmują zewnętrznego `--select`; jego
+podanie jest `invalid`. `Ask` bez odpowiedzi jest pytaniem yes/no i dodatnie
+wsparcie zwraca pustą krotkę. Brak dopasowania, także przy pustym zestawie
+faktów, zwraca `knowledge: "unknown"`, nie odpowiedź negatywną.
+
+Termy są opisane w [kontrakcie zakresów](architecture/semantic-algebra/scopes.md).
+`Not` wymaga `Prop`. `some`/`all` nie przyjmują `count`; `exactly`, `at_least`
+i `at_most` wymagają nieujemnej liczby, w tym zera. Pominięty lub `null`
+restrictor oznacza brak restrictora; pusty obiekt `{}` jest nieprawidłowy.
+`Not` i kwantyfikatory są typowane i składane, ale ich ewaluacja pozostaje
+`unsupported`, również gdy znana jest liczba dopasowanych faktów. Nie dodano
+profilu kompletnej dziedziny ani semantyki prawda/fałsz dla tych operatorów.
+
+W zakresie pytań evaluator obsługuje wyłącznie root `Ask` z dodatnim `Atom`/`And`/`Exists`
+po beta-lowering. Wbudowany restrictor zostaje połączony z body. Zamknięte
+pozytywne wyrażenie niebędące `Ask` może użyć jawnej pustej selekcji `[]`; brak
+zewnętrznej selekcji nie zmienia go w `Ask`. Karta `algebra capabilities
+--json` odróżnia możliwość reprezentacji od warunkowej ewaluacji i nie deklaruje
+ogólnej obsługi typu `Question`. Dodatni proof potwierdza podane świadki, nie
+kompletność odpowiedzi ani prawdziwość całego pytania. Nie dodano parsera ani
+realizatora PL/EN dla tych scope'ów.
+
+Rzeczywiste komendy, wejścia, wyjścia, skróty i kody wyjścia znajdują się w
+[evidence DSE-06-01](work/dse/evidence/06-01/README.md). Odbiór techniczny
+koordynatora i ocena językowa właściciela są osobnymi statusami; właścicielskie
+`NOT_EVALUATED` nie jest zgodą semantyczną.
+
 ### Konstrukcja z jawnego celu
 
 `algebra synthesize` obsługuje ograniczony tryb `construct`: buduje sprawdzone,

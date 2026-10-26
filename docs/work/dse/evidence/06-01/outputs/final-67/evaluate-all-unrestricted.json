@@ -1,0 +1,1 @@
+{"status":"unsupported","diagnostics":[{"code":"QUANTIFIER_QUERY_UNSUPPORTED","message":"quantifier evaluation requires a separately declared complete domain profile","path":"expression.body","severity":"error"}]}
