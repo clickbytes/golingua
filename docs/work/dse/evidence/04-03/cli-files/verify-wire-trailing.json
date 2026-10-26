@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"TRAILING_DOCUMENT","message":"expected exactly one JSON value","path":"document","severity":"error"}]}

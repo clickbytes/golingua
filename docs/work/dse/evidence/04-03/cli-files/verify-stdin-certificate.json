@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_ALGEBRA_ARGUMENTS","message":"--certificate requires a named file path","path":"algebra","severity":"error"}]}

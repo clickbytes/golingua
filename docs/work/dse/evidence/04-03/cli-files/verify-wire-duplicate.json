@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"DUPLICATE_JSON_KEY","message":"object key is duplicated","path":"document.schema_version","severity":"error"}]}

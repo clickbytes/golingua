@@ -1,0 +1,15 @@
+{
+  "raw_input_omitted": true,
+  "input_name": "certificate-whitespace.json",
+  "byte_length": 17841,
+  "sha256": "03ec7f7fc8860484c498c01f8b2c17df20c3fe3055ccb436b867d42af15619db",
+  "base_input": "cli-files/certificate-valid.json",
+  "base_byte_length": 7841,
+  "python_recipe": "(Path('cli-files/certificate-valid.json').read_text() + ' ' * 10000).encode()",
+  "requested_max_certificate_bytes": 7941,
+  "receipt_name": "verify-raw-whitespace-cap",
+  "receipt_file": "extra-observations.jsonl",
+  "observed_exit_code": 4,
+  "observed_status": "resource_limit",
+  "reason": "intentional trailing-space byte-budget input retained outside repository and reproduced by this manifest"
+}

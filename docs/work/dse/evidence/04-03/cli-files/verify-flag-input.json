@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_ALGEBRA_ARGUMENTS","message":"--input is not valid for this algebra command","path":"algebra","severity":"error"}]}

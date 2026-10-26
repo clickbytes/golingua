@@ -439,11 +439,11 @@
         383
       ],
       "branch_name": "dse/04-02-bounded-synthesis",
-      "status": "ACTIVE",
+      "status": "DONE",
       "actual_base_sha": "14df22d0d663bc72ab88c6352f14507798ee5756",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/04-02-bounded-synthesis",
-      "pr_url": null,
-      "merge_sha": null,
+      "pr_url": "https://github.com/clickbytes/golingua/pull/411",
+      "merge_sha": "559e62346720b0bf370a332f59123f79493894e9",
       "evidence_paths": [
         "docs/work/dse/evidence/04-02/README.md",
         "docs/work/dse/evidence/04-02/observations.jsonl",
@@ -467,12 +467,19 @@
         382
       ],
       "branch_name": "dse/04-03-synthesis-verifier",
-      "status": "QUEUED",
-      "actual_base_sha": null,
-      "branch_url": null,
+      "status": "ACTIVE",
+      "actual_base_sha": "ec10a2cb178d7ad5587884c730a7762fed506d90",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/04-03-synthesis-verifier",
       "pr_url": null,
       "merge_sha": null,
-      "evidence_paths": []
+      "evidence_paths": [
+        "docs/work/dse/evidence/04-03/README.md",
+        "docs/work/dse/evidence/04-03/observations.jsonl",
+        "docs/work/dse/evidence/04-03/extra-observations.jsonl",
+        "docs/work/dse/evidence/04-03/environment.json",
+        "docs/work/dse/evidence/04-03/agent-assessment.json",
+        "docs/work/dse/evidence/04-03/schema-observation.json"
+      ]
     },
     {
       "issue_number": 389,

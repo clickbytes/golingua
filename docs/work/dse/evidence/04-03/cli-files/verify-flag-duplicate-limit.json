@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_ALGEBRA_ARGUMENTS","message":"duplicate --verify-limit \"max_work_nodes\"","path":"algebra","severity":"error"}]}

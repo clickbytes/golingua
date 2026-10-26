@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/clickbytes/golingua/schemas/semantic/synthesis-certificate.schema.json",
+  "title": "Finite goal construction certificate",
+  "description": "Bounded producer claims for later independent structural verification. This certificate does not establish truth or owner acceptance.",
+  "$comment": "Runtime hard limit is 8388608 UTF-8 bytes with strict duplicate-key, UTF-8, Unicode escape, nesting, and single-document preflight. Decoding is not verification. The separate candidate document is required for independent checking.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "format", "producer_status", "goal_verified", "origin", "goal_fingerprint", "snapshot_id", "context_id", "profile", "concrete_goal", "choices", "candidate_fingerprint", "interface", "operations", "scopes", "obligations", "assumptions"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "format": {"const": "finite-goal-certificate-v1"},
+    "producer_status": {"type": "string", "minLength": 1, "maxLength": 256},
+    "goal_verified": {"type": "boolean", "$comment": "This producer claim is untrusted and is not proof of goal satisfaction."},
+    "origin": {"enum": ["construct", "search"]},
+    "goal_fingerprint": {"$ref": "#/$defs/id"},
+    "snapshot_id": {"$ref": "#/$defs/id"},
+    "context_id": {"$ref": "#/$defs/id"},
+    "profile": {"$ref": "#/$defs/id"},
+    "concrete_goal": {"$ref": "goals.schema.json"},
+    "choices": {"type": "array", "maxItems": 64, "items": {"$ref": "#/$defs/choice"}},
+    "candidate_fingerprint": {"$ref": "#/$defs/id"},
+    "interface": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/port_binding"}},
+    "operations": {"type": "array", "maxItems": 64, "items": {"$ref": "#/$defs/operation"}},
+    "scopes": {"type": "array", "maxItems": 4096, "items": {"$ref": "#/$defs/scope"}},
+    "obligations": {"type": "array", "maxItems": 32, "items": {"$ref": "#/$defs/obligation"}},
+    "assumptions": {"type": "array", "maxItems": 3, "items": {"$ref": "#/$defs/assumption"}}
+  },
+  "$defs": {
+    "id": {"type": "string", "minLength": 1, "maxLength": 256, "$comment": "Runtime limit is 256 UTF-8 bytes."},
+    "path": {"type": "string", "minLength": 1, "maxLength": 1024, "$comment": "Runtime limit is 1024 UTF-8 bytes."},
+    "port_binding": {
+      "type": "object", "additionalProperties": false, "required": ["port", "binder"],
+      "properties": {"port": {"$ref": "#/$defs/id"}, "binder": {"$ref": "#/$defs/id"}}
+    },
+    "choice": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "axis_id"],
+      "properties": {
+        "kind": {"enum": ["path_signature", "path_length", "unary", "hole_binding"]},
+        "axis_id": {"$ref": "#/$defs/id"},
+        "constraint_id": {"$ref": "#/$defs/id"},
+        "symbol": {"$ref": "#/$defs/id"},
+        "from_role": {"$ref": "#/$defs/id"},
+        "to_role": {"$ref": "#/$defs/id"},
+        "atom_count": {"type": "integer", "minimum": 0, "maximum": 16},
+        "port_id": {"$ref": "#/$defs/id"},
+        "unary_role": {"$ref": "#/$defs/id"},
+        "hole_id": {"$ref": "#/$defs/id"},
+        "reference_id": {"$ref": "#/$defs/id"},
+        "outside_path_bound": {"type": "boolean"}
+      }
+    },
+    "join_pair": {
+      "type": "object", "additionalProperties": false, "required": ["left_port", "right_port"],
+      "properties": {"left_port": {"$ref": "#/$defs/id"}, "right_port": {"$ref": "#/$defs/id"}}
+    },
+    "join_output": {
+      "type": "object", "additionalProperties": false, "required": ["side", "port", "as"],
+      "properties": {"side": {"enum": ["left", "right"]}, "port": {"$ref": "#/$defs/id"}, "as": {"$ref": "#/$defs/id"}}
+    },
+    "substitution": {
+      "type": "object", "additionalProperties": false, "required": ["binder_id", "reference_id", "type"],
+      "properties": {"binder_id": {"$ref": "#/$defs/id"}, "reference_id": {"$ref": "#/$defs/id"}, "type": {"$ref": "expression.schema.json#/$defs/type"}}
+    },
+    "operation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "rule_id", "op", "inputs", "mapping", "outputs", "ports", "claimed_status", "checked_type", "interface", "substitutions"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "rule_id": {"enum": ["algebra.relation.v1", "algebra.join.v1", "algebra.restrict.v1", "algebra.bind.v1", "algebra.project.v1", "algebra.permute.v1"]},
+        "op": {"enum": ["relation", "join", "restrict", "bind", "project", "permute"]},
+        "inputs": {"type": "array", "maxItems": 64, "items": {"$ref": "#/$defs/id"}},
+        "symbol": {"$ref": "#/$defs/id"},
+        "mapping": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/join_pair"}},
+        "outputs": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/join_output"}},
+        "port": {"$ref": "#/$defs/id"},
+        "ports": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/id"}},
+        "reference_id": {"$ref": "#/$defs/id"},
+        "goal_port_id": {"$ref": "#/$defs/id"},
+        "claimed_status": {"enum": ["ok", "unsupported", "unknown", "ambiguous", "incomplete", "invalid", "resource_limit", "error"]},
+        "checked_type": {"$ref": "expression.schema.json#/$defs/type"},
+        "interface": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/port_binding"}},
+        "substitutions": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/substitution"}}
+      },
+      "allOf": [
+        {"if": {"properties": {"op": {"const": "relation"}}, "required": ["op"]}, "then": {"properties": {"rule_id": {"const": "algebra.relation.v1"}}}},
+        {"if": {"properties": {"op": {"const": "join"}}, "required": ["op"]}, "then": {"properties": {"rule_id": {"const": "algebra.join.v1"}}}},
+        {"if": {"properties": {"op": {"const": "restrict"}}, "required": ["op"]}, "then": {"properties": {"rule_id": {"const": "algebra.restrict.v1"}}}},
+        {"if": {"properties": {"op": {"const": "bind"}}, "required": ["op"]}, "then": {"properties": {"rule_id": {"const": "algebra.bind.v1"}}}},
+        {"if": {"properties": {"op": {"const": "project"}}, "required": ["op"]}, "then": {"properties": {"rule_id": {"const": "algebra.project.v1"}}}},
+        {"if": {"properties": {"op": {"const": "permute"}}, "required": ["op"]}, "then": {"properties": {"rule_id": {"const": "algebra.permute.v1"}}}}
+      ]
+    },
+    "scope": {
+      "type": "object", "additionalProperties": false, "required": ["binder_id", "kind", "type", "path"],
+      "properties": {
+        "binder_id": {"$ref": "#/$defs/id"}, "kind": {"enum": ["Lambda", "Exists"]},
+        "type": {"$ref": "expression.schema.json#/$defs/type"}, "path": {"$ref": "#/$defs/path"},
+        "parent_binder_id": {"$ref": "#/$defs/id"}
+      }
+    },
+    "obligation": {
+      "type": "object", "additionalProperties": false, "required": ["constraint_id", "kind", "status", "step_ids", "fragments"],
+      "properties": {
+        "constraint_id": {"$ref": "#/$defs/id"}, "kind": {"enum": ["path", "unary"]},
+        "status": {"$ref": "#/$defs/id"},
+        "step_ids": {"type": "array", "maxItems": 64, "items": {"$ref": "#/$defs/id"}},
+        "fragments": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/path"}}
+      }
+    },
+    "assumption": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "value"],
+      "properties": {
+        "kind": {"enum": ["typed_registry_snapshot", "request_reference_boundary", "positive_structural_profile"]},
+        "value": {"$ref": "#/$defs/id"}
+      },
+      "$comment": "These are declared structural scope assumptions, not domain axioms or world facts."
+    }
+  }
+}

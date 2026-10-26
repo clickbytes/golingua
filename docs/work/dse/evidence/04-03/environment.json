@@ -1,0 +1,64 @@
+{
+  "recorded_at_utc": "2026-10-26T06:00:12.279191+00:00",
+  "base_sha": "ec10a2cb178d7ad5587884c730a7762fed506d90",
+  "branch": "dse/04-03-synthesis-verifier",
+  "binary": "/tmp/golingua-dse/bin/golingua-388-final",
+  "binary_sha256": "dad3fe833b8748fb2e9f1bcfa4a2b54873fe0f7a1fec269ab1469b769ccc5ac2",
+  "commands_observed": [
+    {
+      "command": "gofmt -l internal/synthesis internal/cli/algebra.go internal/cli/cli.go",
+      "exit_code": 0,
+      "formatted_file_list": []
+    },
+    {
+      "command": "go vet ./...",
+      "exit_code": 0
+    },
+    {
+      "command": "go build -o /tmp/golingua-dse/bin/golingua-388-final ./cmd/golingua",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    },
+    {
+      "command": "/tmp/golingua-dse/bin/golingua-388-final --version",
+      "exit_code": 0,
+      "stdout": "0.1.0-alpha.1\n"
+    },
+    {
+      "command": "/tmp/golingua-dse/bin/golingua-388-final --help",
+      "exit_code": 0,
+      "observed": "help includes named-file verify-goal and independent verification/export boundaries"
+    }
+  ],
+  "source_hashes": {
+    "internal/cli/algebra.go": "562ff7ca29d55d3f15fd8080e9b3818e99d69cec8894f36690d70259de4dd808",
+    "internal/cli/cli.go": "d40bf95715f054d62299613022251aca362e623c24d871065d9f30ad89e9d37e",
+    "internal/synthesis/budget.go": "8d0caa6b9f6c1a1e1d55dc53adaeec2fb8fb54150c7440d3488e9bf6e3fc0a70",
+    "internal/synthesis/certificate.go": "55c633a3180c05e8a6aaff19e0f2a32841171b886531ea8a5230ed7b6752b150",
+    "internal/synthesis/certificate_emit.go": "7d1fe5e72f59b5c495e98cc0c1588305f5c29fe9945b78e63a977831e028bf7a",
+    "internal/synthesis/certificate_json.go": "d1ee52129bfa6c015266e0d38eb698fe186cedf34b39a747e60fafb0048a9bfb",
+    "internal/synthesis/constraints.go": "a068225990f866a25f5950e58674330eb21bdcae711145cf1730ee0396194518",
+    "internal/synthesis/construct.go": "a3ae6ea1de074c31d11cdac6487eb00dd6539c22c3980272cbf873f3bf8290c4",
+    "internal/synthesis/enumerate.go": "c2c95cee40c3d70ce1ba70de20ed68b3859e566f9a6f10827e6b8406717c936b",
+    "internal/synthesis/goal.go": "d899729446d585c3026d73a4847c3f5f9bf5db5041c2e0985a15329cc72b8cd2",
+    "internal/synthesis/goal_validate.go": "e0bb0e7ef69caeb7c07d431672f620421b916c6eddeb31d6e51de4eeb0a0f388",
+    "internal/synthesis/goal_verify.go": "8c862e082b1bd320a5dca1e9a460e83252664b6483cfd885485d083331d575f5",
+    "internal/synthesis/index.go": "2b6d74ad23f75004a12887ec7d7e040bbfeb46cad80c2ad0c6b59fac0cd31d8a",
+    "internal/synthesis/json.go": "02c1e7e3d4fc5b7d9b73bf831c1aa9c01fa3906b4c76e1771597fc7e87a3f1fd",
+    "internal/synthesis/obligations.go": "42a606b1823c9d324283afd12f885012a07f6e31dda1a6f75696b036e60f2ad2",
+    "internal/synthesis/replay.go": "44f641aa3c937f3bb706c56f1629ddc247feb21dbe0fe26fcd30645eca1b5fee",
+    "internal/synthesis/result.go": "2d34d3213ef155e11787928a94cfe4cf27f801c1ae434b989cd97ead5b18e572",
+    "internal/synthesis/search.go": "3a1edc81a2b420e46307f0fdc17a5bc9c5bcd4f1292d27f899e81ba69918c082",
+    "internal/synthesis/verify.go": "b2e9a2bb350a99cce6d55e0d96d9506b9bcdda9e7388311dc2345bd786f8e824",
+    "schemas/semantic/synthesis-certificate.schema.json": "dff254ed342028f6208ce860d4f3152d8a91d0f393957cb2510f71d93741a8ea"
+  },
+  "cli_receipts": [
+    "388-cli-observations.jsonl",
+    "388-extra-cli-observations.jsonl"
+  ],
+  "owner_language_acceptance": "NOT_EVALUATED",
+  "scope": "bounded anonymous mathematical structural profile; no world truth or global theory consistency"
+}

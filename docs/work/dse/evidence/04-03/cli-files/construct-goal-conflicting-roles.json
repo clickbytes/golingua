@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"CONFLICTING_ROLE_MAPPING","message":"one relation role cannot map to both path endpoints","path":"constraints[0]","severity":"error"}]}

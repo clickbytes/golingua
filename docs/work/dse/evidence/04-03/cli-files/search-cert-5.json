@@ -1,0 +1,299 @@
+{
+  "schema_version": 1,
+  "format": "finite-goal-certificate-v1",
+  "producer_status": "constructed_unverified",
+  "goal_verified": false,
+  "origin": "search",
+  "goal_fingerprint": "ce3234669692c4771bcd15b7b9750f04a9f87f59eaa19519b9549d839e5e02f6",
+  "snapshot_id": "rewrite-formal-v1:976116cbe74135d49210c13db3d3d63d50fafc04473019fcd192356abb7ff589",
+  "context_id": "search-neutral-context",
+  "profile": "positive-facts-v1",
+  "concrete_goal": {
+    "schema_version": 1,
+    "profile": "positive-facts-v1",
+    "context_id": "search-neutral-context",
+    "expected_type": {
+      "kind": "Arrow",
+      "from": {
+        "kind": "Entity"
+      },
+      "to": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Entity"
+        },
+        "to": {
+          "kind": "Prop"
+        }
+      }
+    },
+    "ports": [
+      {
+        "id": "x",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "id": "y",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ],
+    "references": [],
+    "allowed_operators": [
+      "relation",
+      "join",
+      "restrict",
+      "bind",
+      "permute",
+      "project"
+    ],
+    "constraints": [
+      {
+        "id": "path01",
+        "kind": "path",
+        "symbol": "s",
+        "from_port": "x",
+        "to_port": "y",
+        "from_role": "a",
+        "to_role": "b",
+        "allowed_atom_counts": [
+          1
+        ]
+      },
+      {
+        "id": "property01",
+        "kind": "unary",
+        "symbol": "p",
+        "port": "y"
+      }
+    ],
+    "provenance": [
+      {
+        "id": "dse387-neutral",
+        "uri": "https://github.com/clickbytes/golingua/issues/387",
+        "version": "2026-10-26.1",
+        "license": "internal-neutral-example",
+        "author": "Codex by owner delegation"
+      }
+    ],
+    "limits": {
+      "max_atoms": 16,
+      "max_steps": 64,
+      "term_limits": {
+        "max_nodes": 4096,
+        "max_depth": 64,
+        "max_type_depth": 32,
+        "max_symbols": 512,
+        "max_ports": 16
+      }
+    }
+  },
+  "choices": [
+    {
+      "kind": "path_signature",
+      "axis_id": "axis-1",
+      "constraint_id": "path01",
+      "symbol": "s",
+      "from_role": "a",
+      "to_role": "b",
+      "port_id": "x"
+    },
+    {
+      "kind": "path_length",
+      "axis_id": "axis-2",
+      "constraint_id": "path01",
+      "atom_count": 1
+    },
+    {
+      "kind": "unary",
+      "axis_id": "axis-3",
+      "constraint_id": "property01",
+      "symbol": "p",
+      "port_id": "y",
+      "unary_role": "v"
+    }
+  ],
+  "candidate_fingerprint": "sha256:2957bca392284f2f84d334cec0498a78bcefcbd0e8294c6188a60ed1c89e1bd6",
+  "interface": [
+    {
+      "port": "x",
+      "binder": "rel_s_a_1"
+    },
+    {
+      "port": "y",
+      "binder": "rel_s_b_1"
+    }
+  ],
+  "operations": [
+    {
+      "id": "s1",
+      "rule_id": "algebra.relation.v1",
+      "op": "relation",
+      "inputs": [],
+      "symbol": "s",
+      "mapping": [],
+      "outputs": [],
+      "ports": [
+        "a",
+        "b"
+      ],
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Entity"
+        },
+        "to": {
+          "kind": "Arrow",
+          "from": {
+            "kind": "Entity"
+          },
+          "to": {
+            "kind": "Prop"
+          }
+        }
+      },
+      "interface": [
+        {
+          "port": "a",
+          "binder": "rel_s_a_1"
+        },
+        {
+          "port": "b",
+          "binder": "rel_s_b_1"
+        }
+      ],
+      "substitutions": []
+    },
+    {
+      "id": "s2",
+      "rule_id": "algebra.relation.v1",
+      "op": "relation",
+      "inputs": [],
+      "symbol": "p",
+      "mapping": [],
+      "outputs": [],
+      "ports": [
+        "v"
+      ],
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Entity"
+        },
+        "to": {
+          "kind": "Prop"
+        }
+      },
+      "interface": [
+        {
+          "port": "v",
+          "binder": "rel_p_v_1"
+        }
+      ],
+      "substitutions": []
+    },
+    {
+      "id": "s3",
+      "rule_id": "algebra.restrict.v1",
+      "op": "restrict",
+      "inputs": [
+        "s1",
+        "s2"
+      ],
+      "symbol": "p",
+      "mapping": [],
+      "outputs": [],
+      "port": "b",
+      "ports": [
+        "a",
+        "b"
+      ],
+      "goal_port_id": "y",
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Entity"
+        },
+        "to": {
+          "kind": "Arrow",
+          "from": {
+            "kind": "Entity"
+          },
+          "to": {
+            "kind": "Prop"
+          }
+        }
+      },
+      "interface": [
+        {
+          "port": "a",
+          "binder": "rel_s_a_1"
+        },
+        {
+          "port": "b",
+          "binder": "rel_s_b_1"
+        }
+      ],
+      "substitutions": []
+    }
+  ],
+  "scopes": [
+    {
+      "binder_id": "rel_s_a_1",
+      "kind": "Lambda",
+      "type": {
+        "kind": "Entity"
+      },
+      "path": "expression"
+    },
+    {
+      "binder_id": "rel_s_b_1",
+      "kind": "Lambda",
+      "type": {
+        "kind": "Entity"
+      },
+      "path": "expression.body",
+      "parent_binder_id": "rel_s_a_1"
+    }
+  ],
+  "obligations": [
+    {
+      "constraint_id": "path01",
+      "kind": "path",
+      "status": "structural_claim",
+      "step_ids": [],
+      "fragments": [
+        "candidate.expression.body.body.operands[0]"
+      ]
+    },
+    {
+      "constraint_id": "property01",
+      "kind": "unary",
+      "status": "structural_claim",
+      "step_ids": [],
+      "fragments": [
+        "candidate.expression.body.body.operands[1]"
+      ]
+    }
+  ],
+  "assumptions": [
+    {
+      "kind": "typed_registry_snapshot",
+      "value": "rewrite-formal-v1:976116cbe74135d49210c13db3d3d63d50fafc04473019fcd192356abb7ff589"
+    },
+    {
+      "kind": "request_reference_boundary",
+      "value": "sha256:8693bf410db4f31f1fb22c3c183c7019bdf717a0a4e959d5311cd5ac38956f93"
+    },
+    {
+      "kind": "positive_structural_profile",
+      "value": "positive-facts-v1"
+    }
+  ]
+}

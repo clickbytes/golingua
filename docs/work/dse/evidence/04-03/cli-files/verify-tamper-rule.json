@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_OPERATION_RULE","message":"operation and versioned rule_id do not match the closed certificate vocabulary","path":"certificate.operations[0]","severity":"error"}]}

@@ -28,6 +28,7 @@ const (
 	SearchStopMaxAtoms          = SearchStopReason("max_atoms")
 	SearchStopMaxSteps          = SearchStopReason("max_steps")
 	SearchStopConstructionLimit = SearchStopReason("construction_resource_limit")
+	SearchStopGoalVerification  = SearchStopReason("goal_verification_incomplete")
 	searchArtifactProfileID     = "dse-search-artifact-v1"
 	searchResultSchema          = 1
 	searchConstructionReserve   = algebra.DefaultMaxNodes + MaxGoalSteps
@@ -355,6 +356,27 @@ func chargeCompletedRewriteWork(budget *searchBudget, work, granted int) error {
 	return nil
 }
 
+func chargeCompletedGoalVerificationWork(budget *searchBudget, work, granted int) error {
+	if budget == nil || work < 0 || work > granted || work > budget.remainingWork() {
+		return searchIdentityInvalid("INVALID_GOAL_VERIFICATION_WORK_REPORT", "verification.statistics.work_nodes", "goal verification reported work outside its finite grant")
+	}
+	// Charge work completed by a component even if the request deadline expired
+	// while that component was running.
+	budget.usage.WorkUnits += work
+	return nil
+}
+
+func isIncompleteError(err error) bool {
+	var typed *algebra.Error
+	return errors.As(err, &typed) && typed.Status == status.OutcomeIncomplete
+}
+
+func fullyValidatedGoal(result GoalVerificationResult) bool {
+	return result.Status == status.OutcomeOK && result.Disposition == GoalVerificationDispositionChecked &&
+		result.TypeCorrect && result.RefinementChecked && result.ReplayChecked && result.CertificateValid &&
+		result.GoalSatisfied && result.Complete
+}
+
 func rewriteResultIsWorkLimited(resultStatus status.OutcomeKind, diagnostics []algebra.Error) bool {
 	if resultStatus != status.OutcomeResourceLimit {
 		return false
@@ -579,13 +601,17 @@ func Search(parent context.Context, primitiveContext algebra.Document, rewriteEn
 		Space: emptySearchSpaceDescriptor(budget.limits), Candidates: []SearchCandidate{},
 		Complete: false, UniqueWithinDeclaredSpace: false,
 		Trace: []SearchTraceEntry{}, ExhaustedBounds: []SearchStopReason{},
-		ValidationScope: SearchValidationScope,
+		ValidationScope: "finite declared positive-facts path profile; independently verified goal constraints and operation replay plus alpha identity; not world truth, speaker intent, or language approval",
 	}
 
 	// Validate the complete user request before fingerprint serialization or
 	// signature-index construction. Candidate-specific type/operator fit is
 	// deliberately deferred to Construct for each explicit assignment.
 	_, err = validateSearchGoal(primitiveContext, goal)
+	if err != nil {
+		return SearchResult{}, err
+	}
+	goalLimits, err := NormalizeGoalLimits(goal.Limits)
 	if err != nil {
 		return SearchResult{}, err
 	}
@@ -716,6 +742,78 @@ func Search(parent context.Context, primitiveContext algebra.Document, rewriteEn
 			}
 			break
 		}
+		if !budget.checkDeadlineCancel() {
+			break
+		}
+		remainingWork := budget.remainingWork()
+		if remainingWork <= 0 {
+			budget.stopReason = SearchStopGoalVerification
+			break
+		}
+		producerWorkLimit := minInt(remainingWork, MaxGoalVerificationMaxWorkNodes)
+		producerCertificateLimit := minInt(budget.limits.MaxCandidateBytes, MaxGoalVerificationMaxCertificateBytes)
+		producerLimits := GoalVerificationLimits{
+			MaxCertificateBytes: producerCertificateLimit,
+			MaxReplaySteps:      minInt(goalLimits.MaxSteps, MaxGoalVerificationMaxReplaySteps),
+			MaxWorkNodes:        producerWorkLimit,
+			TermLimits:          goalLimits.TermLimits,
+		}
+		goalCertificate, producerStats, producerErr := CreateSynthesisCertificate(
+			primitiveContext, rewriteEnv, goal, concreteGoal, choices,
+			CertificateOriginSearch, constructed, producerLimits,
+		)
+		if chargeErr := chargeCompletedGoalVerificationWork(budget, producerStats.WorkNodes, producerWorkLimit); chargeErr != nil {
+			return SearchResult{}, chargeErr
+		}
+		if !budget.checkDeadlineCancel() {
+			break
+		}
+		if producerErr != nil {
+			if isResourceError(producerErr) || isIncompleteError(producerErr) {
+				budget.stopReason = SearchStopGoalVerification
+				appendSearchErrorTrace(budget, &result, attempt, string(SearchStopGoalVerification), producerErr, choices)
+				break
+			}
+			return SearchResult{}, producerErr
+		}
+		remainingWork = budget.remainingWork()
+		if remainingWork <= 0 {
+			budget.stopReason = SearchStopGoalVerification
+			break
+		}
+		verifierWorkLimit := minInt(remainingWork, MaxGoalVerificationMaxWorkNodes)
+		verifierLimits := GoalVerificationLimits{
+			MaxCertificateBytes: producerCertificateLimit,
+			MaxReplaySteps:      minInt(goalLimits.MaxSteps, MaxGoalVerificationMaxReplaySteps),
+			MaxWorkNodes:        verifierWorkLimit,
+			TermLimits:          goalLimits.TermLimits,
+		}
+		verification, verifyErr := VerifyGoalCertificate(primitiveContext, rewriteEnv, goal, *constructed.CanonicalDocument, goalCertificate, verifierLimits)
+		if chargeErr := chargeCompletedGoalVerificationWork(budget, verification.Statistics.WorkNodes, verifierWorkLimit); chargeErr != nil {
+			return SearchResult{}, chargeErr
+		}
+		if !budget.checkDeadlineCancel() {
+			break
+		}
+		if verifyErr != nil {
+			if isResourceError(verifyErr) || isIncompleteError(verifyErr) {
+				budget.stopReason = SearchStopGoalVerification
+				appendSearchErrorTrace(budget, &result, attempt, string(SearchStopGoalVerification), verifyErr, choices)
+				break
+			}
+			return SearchResult{}, verifyErr
+		}
+		if verification.Status == status.OutcomeResourceLimit || verification.Status == status.OutcomeIncomplete || verification.Disposition == GoalVerificationDispositionUndetermined {
+			budget.stopReason = SearchStopGoalVerification
+			appendSearchTrace(budget, &result, SearchTraceEntry{Attempt: attempt, Stage: "goal_verification", Code: string(SearchStopGoalVerification), Status: verification.Status})
+			break
+		}
+		if !fullyValidatedGoal(verification) {
+			return SearchResult{}, searchIdentityInvalid("GOAL_CERTIFICATE_REJECTED", "candidate.verification", "candidate did not pass independent goal and operation verification")
+		}
+		constructed.Certificate = &goalCertificate
+		constructed.Verification = &verification
+		constructed.FullyValidated = true
 		duplicateIndex := -1
 		for _, priorIndex := range identityBuckets[identity.key] {
 			same, compareErr := identity.sameCandidate(identities[priorIndex], primitiveContext.Limits)

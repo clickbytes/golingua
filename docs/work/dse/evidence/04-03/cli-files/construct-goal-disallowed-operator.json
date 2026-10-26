@@ -1,0 +1,1 @@
+{"status":"unsupported","diagnostics":[{"code":"OPERATOR_NOT_ALLOWED","message":"goal requires an operator that is not allowed: restrict","path":"allowed_operators","severity":"error"}]}

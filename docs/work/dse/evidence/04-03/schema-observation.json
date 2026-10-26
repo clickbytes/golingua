@@ -1,0 +1,80 @@
+{
+  "tool": "jsonschema",
+  "version": "4.26.0",
+  "installed_outside_repository": true,
+  "schema_meta_validation": "passed",
+  "certificates": [
+    {
+      "file": "/tmp/golingua-dse/388-cli-observations/certificate-whitespace.json",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/388-cli-observations/hole-2-certificate.json",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/388-cli-observations/hole-1-certificate.json",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/388-cli-observations/shared-one-hop-certificate.json",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/388-cli-observations/both-projected-certificate.json",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/388-cli-observations/projected-certificate.json",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/388-cli-observations/goal-reverse-roles-certificate.json",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/388-cli-observations/goal-shared-reference-certificate.json",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/388-cli-observations/goal-duplicate-unary-certificate.json",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/388-cli-observations/search-cert-8.json",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/388-cli-observations/search-cert-7.json",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/388-cli-observations/search-cert-6.json",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/388-cli-observations/search-cert-5.json",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/388-cli-observations/search-cert-4.json",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/388-cli-observations/search-cert-3.json",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/388-cli-observations/search-cert-2.json",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/388-cli-observations/search-cert-1.json",
+      "errors": []
+    },
+    {
+      "file": "/tmp/golingua-dse/388-cli-observations/certificate-valid.json",
+      "errors": []
+    }
+  ]
+}

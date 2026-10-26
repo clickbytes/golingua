@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_ARRAY","message":"expected a non-null JSON array","path":"certificate.operations","severity":"error"}]}

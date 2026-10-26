@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_BOOLEAN","message":"boolean cannot be null","path":"certificate.goal_verified","severity":"error"}]}

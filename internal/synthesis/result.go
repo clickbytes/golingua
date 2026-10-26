@@ -25,6 +25,9 @@ type Result struct {
 	Checked           *algebra.CheckedExpression `json:"checked,omitempty"`
 	Interface         []algebra.PortBinding      `json:"interface,omitempty"`
 	CanonicalDocument *algebra.Document          `json:"canonical_document,omitempty"`
+	Certificate       *SynthesisCertificate      `json:"certificate,omitempty"`
+	Verification      *GoalVerificationResult    `json:"verification,omitempty"`
+	FullyValidated    bool                       `json:"fully_validated"`
 	Trace             []algebra.BuildTrace       `json:"trace"`
 	Unresolved        []Unresolved               `json:"unresolved"`
 	Obligations       []GoalObligation           `json:"obligations"`
