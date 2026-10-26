@@ -1,0 +1,20 @@
+[
+  {
+    "command": "/tmp/golingua-dse/bin/golingua-390-verified algebra compare \\\n  --left data/semantic/examples/proofs/equivalence/alpha-left.json \\\n  --right data/semantic/examples/proofs/equivalence/alpha-right.json \\\n  --profile data/semantic/examples/proofs/equivalence/profile-alpha.json \\\n  --context-id proof-neutral \\\n  --metadata data/semantic/examples/proofs/equivalence/metadata.json --json",
+    "exit_code": 0,
+    "stdout_file": "/tmp/golingua-dse/390-docflow-0-0.json",
+    "stderr": ""
+  },
+  {
+    "command": "/tmp/golingua-dse/bin/golingua-390-verified algebra verify-proof --claim equivalence \\\n  --left data/semantic/examples/proofs/equivalence/alpha-left.json \\\n  --right data/semantic/examples/proofs/equivalence/alpha-right.json \\\n  --profile data/semantic/examples/proofs/equivalence/profile-alpha.json \\\n  --context-id proof-neutral \\\n  --metadata data/semantic/examples/proofs/equivalence/metadata.json \\\n  --certificate data/semantic/examples/proofs/equivalence/certificate-alpha.json --json",
+    "exit_code": 0,
+    "stdout_file": "/tmp/golingua-dse/390-docflow-0-1.json",
+    "stderr": ""
+  },
+  {
+    "command": "/tmp/golingua-dse/bin/golingua-390-verified algebra verify-proof --claim evaluation \\\n  --expression data/semantic/examples/proofs/evaluation/evaluation-expression.json \\\n  --facts data/semantic/examples/proofs/evaluation/facts-branch-conflict.json \\\n  --select data/semantic/examples/proofs/evaluation/select-evaluation-original.json \\\n  --context-id eval-neutral --profile positive-facts-v1 \\\n  --metadata data/semantic/examples/proofs/evaluation/metadata.json \\\n  --proof data/semantic/examples/proofs/evaluation/evaluation-proof.json --json",
+    "exit_code": 0,
+    "stdout_file": "/tmp/golingua-dse/390-docflow-1-0.json",
+    "stderr": ""
+  }
+]

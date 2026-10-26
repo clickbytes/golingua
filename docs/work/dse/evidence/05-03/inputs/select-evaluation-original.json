@@ -1,0 +1,12 @@
+[
+  {
+    "kind": "lambda",
+    "index": 0,
+    "as": "x"
+  },
+  {
+    "kind": "lambda",
+    "index": 1,
+    "as": "y"
+  }
+]

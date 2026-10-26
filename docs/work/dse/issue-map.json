@@ -493,11 +493,11 @@
         388
       ],
       "branch_name": "dse/05-02-query-evaluator",
-      "status": "ACTIVE",
+      "status": "DONE",
       "actual_base_sha": "cf21625b7b85bcf2735c89bb02ffd11fdcf6993f",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/05-02-query-evaluator",
-      "pr_url": null,
-      "merge_sha": null,
+      "pr_url": "https://github.com/clickbytes/golingua/pull/413",
+      "merge_sha": "3bda5526661809cda8ac80875b8311dc003a6833",
       "evidence_paths": [
         "docs/work/dse/evidence/05-02/README.md",
         "docs/work/dse/evidence/05-02/observations.jsonl",
@@ -519,12 +519,22 @@
         389
       ],
       "branch_name": "dse/05-03-equivalence-proofs",
-      "status": "QUEUED",
-      "actual_base_sha": null,
-      "branch_url": null,
+      "status": "ACTIVE",
+      "actual_base_sha": "b7d1d9f36df3029f65877745de903f5a877e7dae",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/05-03-equivalence-proofs",
       "pr_url": null,
       "merge_sha": null,
-      "evidence_paths": []
+      "evidence_paths": [
+        "docs/work/dse/evidence/05-03/README.md",
+        "docs/work/dse/evidence/05-03/observations.jsonl",
+        "docs/work/dse/evidence/05-03/extra-observations.jsonl",
+        "docs/work/dse/evidence/05-03/doc-flow-observation.json",
+        "docs/work/dse/evidence/05-03/environment.json",
+        "docs/work/dse/evidence/05-03/source-hashes.json",
+        "docs/work/dse/evidence/05-03/schema-observation.json",
+        "docs/work/dse/evidence/05-03/inputs/",
+        "docs/work/dse/evidence/05-03/cli-outputs/"
+      ]
     },
     {
       "issue_number": 391,

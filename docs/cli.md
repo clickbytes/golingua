@@ -86,6 +86,81 @@ The six rule IDs are `alpha_v1`, `beta_v1`, `alias_v1`, `and_flatten_v1`, `and_o
 
 These examples are neutral mathematical controls from issue #382, not language data or owner-approved meanings. The coordinator owns the scoped mathematical assessment, supported by independent Luna review; owner language acceptance remains `NOT_EVALUATED`. Runtime evidence and its actual commands/exit codes are recorded separately from these docs.
 
+### Porównanie i niezależne sprawdzanie dowodów
+
+`algebra compare` porównuje dwa dokumenty względem jawnego, skończonego
+profilu przepisywania. `algebra verify-proof` ma oddzielne typowane ścieżki dla
+roszczeń `equivalence`, `rewrite`, `goal` i `evaluation`; każda wymaga
+odpowiednich wejść i niezależnie sprawdza dostarczony certyfikat lub proof.
+Przykłady dla porównania i weryfikacji równoważności są w
+[examples/proofs/equivalence](../data/semantic/examples/proofs/equivalence/), a
+dla weryfikacji świadków ewaluacji w
+[examples/proofs/evaluation](../data/semantic/examples/proofs/evaluation/).
+
+```sh
+golingua algebra compare \
+  --left data/semantic/examples/proofs/equivalence/alpha-left.json \
+  --right data/semantic/examples/proofs/equivalence/alpha-right.json \
+  --profile data/semantic/examples/proofs/equivalence/profile-alpha.json \
+  --context-id proof-neutral \
+  --metadata data/semantic/examples/proofs/equivalence/metadata.json --json
+
+golingua algebra verify-proof --claim equivalence \
+  --left data/semantic/examples/proofs/equivalence/alpha-left.json \
+  --right data/semantic/examples/proofs/equivalence/alpha-right.json \
+  --profile data/semantic/examples/proofs/equivalence/profile-alpha.json \
+  --context-id proof-neutral \
+  --metadata data/semantic/examples/proofs/equivalence/metadata.json \
+  --certificate data/semantic/examples/proofs/equivalence/certificate-alpha.json --json
+
+golingua algebra verify-proof --claim evaluation \
+  --expression data/semantic/examples/proofs/evaluation/evaluation-expression.json \
+  --facts data/semantic/examples/proofs/evaluation/facts-branch-conflict.json \
+  --select data/semantic/examples/proofs/evaluation/select-evaluation-original.json \
+  --context-id eval-neutral --profile positive-facts-v1 \
+  --metadata data/semantic/examples/proofs/evaluation/metadata.json \
+  --proof data/semantic/examples/proofs/evaluation/evaluation-proof.json --json
+```
+
+Wymagane są `--json` oraz jawne pakiety `--metadata` (flaga może być
+powtórzona). Porównanie przyjmuje dwa dokumenty, plik profilu i `context-id`;
+weryfikacja równoważności dostaje także certyfikat z porównania. Weryfikacja
+ewaluacji dostaje oryginalne wyrażenie, fakty, selekcję, `context-id`, profil
+`positive-facts-v1` i proof. Limity porównania podaje się jako powtarzane
+`--comparison-limit name=value`; wartości zero wybierają skończone domyślne
+limity, a nie nielimitowane działanie. Limity ewaluacji mają osobną flagę
+`--evaluation-limit name=value`.
+
+Pozytywny wynik `equivalence` jest ograniczony do wybranego snapshotu metadanych,
+profilu i kontekstu. Alpha, beta lub porządkowanie `And` są dozwolone tylko,
+gdy dany profil jawnie licencjonuje regułę. Weryfikator niezależnie odtwarza
+obie strony; różne postacie normalne, zamiana ról, inne ID referencji lub
+zdarzeń oraz nieporządek `And` bez licencji pozostają `undetermined`, a nie
+dowodem nierównoważności. Zakres nie obejmuje pełnego model checkera,
+kontrmodeli ani entailmentu; te typy roszczeń są jawnie odrzucane jako
+`unsupported`.
+
+Weryfikacja `evaluation` sprawdza wyłącznie dostarczone dodatnie świadki
+odpowiedzi względem wybranego wyrażenia, aktywnych faktów, ról, referencji,
+czasu, kontekstu i profilu. Nie uruchamia ewaluatora ani nie szuka kolejnych
+odpowiedzi. `completeness_verified` pozostaje `false`; brak świadków oznacza
+`unknown`, nie fałsz. Dodatni i ujemny dowód źródłowy mogą współistnieć;
+konflikt nie usuwa dodatniego wsparcia. Zasoby lub błędy weryfikacji nie są
+zamieniane na negatywny dowód.
+
+Limity są skończone. Porównanie domyślnie zużywa do 1 048 576 jednostek pracy
+(twardy limit 16 777 216) i ogranicza certyfikat do 16 MiB. Ewaluacja domyślnie
+zużywa do 1 048 576 jednostek pracy (twardy limit 16 777 216), ogranicza proof
+do 4096 węzłów (twardo 16 384) oraz 8 MiB wyjścia (twardo 16 MiB) i ma domyślny
+limit czasu 2 sekundy (maksymalnie 30 sekund). Wspólne limity typowanego terminu
+również obowiązują. Przekroczenie limitu zachowuje status odmowy lub
+`resource_limit` i nie dowodzi wyniku negatywnego. Przykłady oraz szczegółowy zakres są opisane w
+[kontrakcie proofów](architecture/semantic-algebra/proofs.md) i
+[neutralnym katalogu przykładów](../data/semantic/examples/proofs/README.md);
+rzeczywiste CLI-obserwacje, wejścia i skróty plików znajdują się w
+[#390 evidence](work/dse/evidence/05-03/README.md). Akceptacja językowa
+właściciela pozostaje `NOT_EVALUATED`.
+
 ### Jawne składanie: `algebra build`
 
 `algebra build` wykonuje version-1 recepturę jawnych kroków konstrukcji na wskazanych pakietach metadanych. Każdy krok wskazuje wcześniejsze ID kroku; nie ma tu automatycznego wyszukiwania planu ani wnioskowania z etykiet.

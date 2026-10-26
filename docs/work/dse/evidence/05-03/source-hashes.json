@@ -1,0 +1,9 @@
+{
+  "internal/algebra/equivalence.go": "ba875429719876c6d1be0a9cac90b98f42367c16b1e3195f1736bd0d2ad607b8",
+  "internal/algebra/proofcheck.go": "f8d9f73370d04d229fb51b1146b4452536e598f3f048823aec65f1320570c8fb",
+  "internal/reason/algebra_proofcheck.go": "2c18dd35bafcf6d83e7f43e005259b8ccd42e05635f13c6f073ab868155e9b40",
+  "internal/reason/algebra_json.go": "0ac7d01a273f374fc86d5af2dc93030e3a663a7142b13d444037c6dd12f1cf96",
+  "internal/cli/algebra.go": "aa25aa12602539bf2fb6db10c9895a5ace09db2bbdc28ad3f193bfff3ccf5575",
+  "internal/cli/cli.go": "15f54a15ec0f09a088eb779fdfe3a8fff525a822f8f4ba8ea5cf5993f8b26791",
+  "schemas/semantic/proof.schema.json": "464150442407da7d0c1920594a68d55c1605874e973fb337846c3ff9a567bf8c"
+}
