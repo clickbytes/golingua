@@ -1,0 +1,41 @@
+{
+  "sense_id": "sense:en.see.visual",
+  "frame_id": "en.see.visual.transitive",
+  "context_id": "perception-case-1",
+  "references": [
+    {
+      "id": "E1",
+      "type": {
+        "kind": "Event"
+      }
+    },
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ],
+  "role_references": [
+    {
+      "role": "experiencer",
+      "reference_id": "B"
+    },
+    {
+      "role": "stimulus",
+      "reference_id": "A"
+    }
+  ],
+  "port_references": [
+    {
+      "port_id": "event",
+      "reference_id": "E1"
+    }
+  ]
+}

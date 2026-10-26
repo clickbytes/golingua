@@ -1,0 +1,342 @@
+{
+  "schema_version": 1,
+  "format": "finite-goal-certificate-v1",
+  "producer_status": "constructed_unverified",
+  "goal_verified": false,
+  "origin": "construct",
+  "goal_fingerprint": "f25debbb0fb5d1fd51977d405223055e79f1068aca0aec0421b85921953abee2",
+  "snapshot_id": "rewrite-formal-v1:b47da8932222cb2478c27540ae55e6fb2ff056305cbe1a7fa18cfa16bd7c7804",
+  "context_id": "technical-link-case-1",
+  "profile": "positive-facts-v1",
+  "concrete_goal": {
+    "schema_version": 1,
+    "profile": "positive-facts-v1",
+    "context_id": "technical-link-case-1",
+    "expected_type": {
+      "kind": "Prop"
+    },
+    "ports": [
+      {
+        "id": "origin",
+        "type": {
+          "kind": "Entity"
+        },
+        "binding": {
+          "kind": "Ref",
+          "id": "A",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      },
+      {
+        "id": "endpoint",
+        "type": {
+          "kind": "Entity"
+        },
+        "binding": {
+          "kind": "Ref",
+          "id": "B",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      }
+    ],
+    "references": [
+      {
+        "id": "A",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "id": "B",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ],
+    "allowed_operators": [
+      "relation",
+      "join",
+      "bind",
+      "permute",
+      "project"
+    ],
+    "constraints": [
+      {
+        "id": "two-steps",
+        "kind": "path",
+        "symbol": "pilot.r",
+        "from_port": "origin",
+        "to_port": "endpoint",
+        "from_role": "a",
+        "to_role": "b",
+        "allowed_atom_counts": [
+          2
+        ]
+      }
+    ],
+    "provenance": [
+      {
+        "id": "dse394-lexical-pilot",
+        "uri": "https://github.com/clickbytes/golingua/issues/394",
+        "version": "2026-10-26.1",
+        "license": "internal-neutral-example",
+        "author": "Codex by owner delegation"
+      }
+    ],
+    "limits": {
+      "term_limits": {}
+    }
+  },
+  "choices": [],
+  "candidate_fingerprint": "sha256:04d3fd9757611698dc2b9ba7eedb5e12ca0ffaeb14b167d189614abdcf57983b",
+  "interface": [],
+  "operations": [
+    {
+      "id": "s1",
+      "rule_id": "algebra.relation.v1",
+      "op": "relation",
+      "inputs": [],
+      "symbol": "pilot.r",
+      "mapping": [],
+      "outputs": [],
+      "ports": [
+        "a",
+        "b"
+      ],
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Entity"
+        },
+        "to": {
+          "kind": "Arrow",
+          "from": {
+            "kind": "Entity"
+          },
+          "to": {
+            "kind": "Prop"
+          }
+        }
+      },
+      "interface": [
+        {
+          "port": "a",
+          "binder": "rel_pilot.r_a_1"
+        },
+        {
+          "port": "b",
+          "binder": "rel_pilot.r_b_1"
+        }
+      ],
+      "substitutions": []
+    },
+    {
+      "id": "s2",
+      "rule_id": "algebra.relation.v1",
+      "op": "relation",
+      "inputs": [],
+      "symbol": "pilot.r",
+      "mapping": [],
+      "outputs": [],
+      "ports": [
+        "a",
+        "b"
+      ],
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Entity"
+        },
+        "to": {
+          "kind": "Arrow",
+          "from": {
+            "kind": "Entity"
+          },
+          "to": {
+            "kind": "Prop"
+          }
+        }
+      },
+      "interface": [
+        {
+          "port": "a",
+          "binder": "rel_pilot.r_a_1"
+        },
+        {
+          "port": "b",
+          "binder": "rel_pilot.r_b_1"
+        }
+      ],
+      "substitutions": []
+    },
+    {
+      "id": "s3",
+      "rule_id": "algebra.join.v1",
+      "op": "join",
+      "inputs": [
+        "s1",
+        "s2"
+      ],
+      "mapping": [
+        {
+          "left_port": "b",
+          "right_port": "a"
+        }
+      ],
+      "outputs": [
+        {
+          "side": "left",
+          "port": "a",
+          "as": "origin"
+        },
+        {
+          "side": "right",
+          "port": "b",
+          "as": "endpoint"
+        }
+      ],
+      "ports": [
+        "origin",
+        "endpoint"
+      ],
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Entity"
+        },
+        "to": {
+          "kind": "Arrow",
+          "from": {
+            "kind": "Entity"
+          },
+          "to": {
+            "kind": "Prop"
+          }
+        }
+      },
+      "interface": [
+        {
+          "port": "origin",
+          "binder": "rel_pilot.r_a_1_fresh_1"
+        },
+        {
+          "port": "endpoint",
+          "binder": "rel_pilot.r_b_1_fresh_2"
+        }
+      ],
+      "substitutions": []
+    },
+    {
+      "id": "s4",
+      "rule_id": "algebra.bind.v1",
+      "op": "bind",
+      "inputs": [
+        "s3"
+      ],
+      "mapping": [],
+      "outputs": [],
+      "port": "origin",
+      "ports": [
+        "endpoint"
+      ],
+      "reference_id": "A",
+      "goal_port_id": "origin",
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Entity"
+        },
+        "to": {
+          "kind": "Prop"
+        }
+      },
+      "interface": [
+        {
+          "port": "endpoint",
+          "binder": "rel_pilot.r_b_1_fresh_2"
+        }
+      ],
+      "substitutions": [
+        {
+          "binder_id": "rel_pilot.r_a_1_fresh_1",
+          "reference_id": "A",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "rule_id": "algebra.bind.v1",
+      "op": "bind",
+      "inputs": [
+        "s4"
+      ],
+      "mapping": [],
+      "outputs": [],
+      "port": "endpoint",
+      "ports": [],
+      "reference_id": "B",
+      "goal_port_id": "endpoint",
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Prop"
+      },
+      "interface": [],
+      "substitutions": [
+        {
+          "binder_id": "rel_pilot.r_b_1_fresh_2",
+          "reference_id": "B",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    }
+  ],
+  "scopes": [
+    {
+      "binder_id": "join_0_1",
+      "kind": "Exists",
+      "type": {
+        "kind": "Entity"
+      },
+      "path": "expression"
+    }
+  ],
+  "obligations": [
+    {
+      "constraint_id": "two-steps",
+      "kind": "path",
+      "status": "structural_claim",
+      "step_ids": [],
+      "fragments": [
+        "candidate.expression.body.operands[0]",
+        "candidate.expression.body.operands[1]"
+      ]
+    }
+  ],
+  "assumptions": [
+    {
+      "kind": "typed_registry_snapshot",
+      "value": "rewrite-formal-v1:b47da8932222cb2478c27540ae55e6fb2ff056305cbe1a7fa18cfa16bd7c7804"
+    },
+    {
+      "kind": "request_reference_boundary",
+      "value": "sha256:b7364f53bc82faf85d55162efb7d7f3e2580ae37c1606649a4a95f3f8af68aef"
+    },
+    {
+      "kind": "positive_structural_profile",
+      "value": "positive-facts-v1"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "binary_sha256_before_after": "dd8e95c102ffcbb339cc036c517ab81fb90df4163d080648565b4297bec6991b",
+  "package_files_created_after_binary": true,
+  "files": [
+    {
+      "file": "data/semantic/languages/pl/pilot.json",
+      "sha256": "84e4885f76eed641007e4d15106f36f0af6d9c220235d4cd544b2f584a4d08b0"
+    },
+    {
+      "file": "data/semantic/languages/en/pilot.json",
+      "sha256": "3eabf59392c0235f22d21f4a9a856b9da52e8e6348a981477dba1f3d5571da0f"
+    },
+    {
+      "file": "data/semantic/examples/lexical-bindings/metadata.json",
+      "sha256": "07a758a048ed6fae2cd035222caf3b4ccecc0ba07d8939eaeb657a5916a14721"
+    }
+  ],
+  "pl_en_seeing_identical_expression": true,
+  "pl_en_hearing_identical_expression": true,
+  "seeing_hearing_distinct": true,
+  "roleswap_changes_expression": true,
+  "explicit_event_ref_preserved": true,
+  "calls": 20,
+  "exit_codes": {
+    "0": 19,
+    "2": 1
+  }
+}

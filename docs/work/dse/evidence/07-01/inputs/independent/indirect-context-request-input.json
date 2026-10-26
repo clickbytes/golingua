@@ -1,0 +1,53 @@
+{
+  "sense_id": "sense:en.link.indirect",
+  "frame_id": "en.link.indirect.transitive",
+  "context_id": "lexical-neutral",
+  "references": [
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ],
+  "role_references": [
+    {
+      "role": "origin",
+      "reference_id": "A"
+    },
+    {
+      "role": "endpoint",
+      "reference_id": "B"
+    }
+  ],
+  "port_references": [],
+  "request_context": {
+    "schema_version": 1,
+    "id": "lexical-neutral",
+    "referents": [
+      {
+        "id": "A",
+        "type": {
+          "kind": "Entity"
+        },
+        "multiplicity": "one"
+      },
+      {
+        "id": "B",
+        "type": {
+          "kind": "Entity"
+        },
+        "multiplicity": "many"
+      }
+    ],
+    "mentions": [],
+    "resolution_evidence": [],
+    "conditions": []
+  }
+}

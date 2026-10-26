@@ -40,6 +40,7 @@ func (status BindingStatus) Valid() bool {
 type SemanticBinding struct {
 	SenseID    ids.SenseID          `json:"sense_id"`
 	CoreRef    ids.ConceptID        `json:"core_ref"`
+	Target     *SemanticTarget      `json:"target,omitempty"`
 	Mapping    MappingKind          `json:"mapping_kind"`
 	Status     BindingStatus        `json:"status"`
 	Provenance provenance.SourceRef `json:"provenance"`
@@ -48,6 +49,9 @@ type SemanticBinding struct {
 // TransferAuthorized reports whether this binding may license semantic
 // transfer. It does not select among multiple bindings or validate CORE.
 func (binding SemanticBinding) TransferAuthorized() bool {
+	if binding.Target != nil {
+		return false
+	}
 	if binding.Mapping != MappingEquivalent || binding.Status != BindingApproved {
 		return false
 	}
@@ -58,4 +62,21 @@ func (binding SemanticBinding) TransferAuthorized() bool {
 		return false
 	}
 	return binding.Provenance.Validate() == nil
+}
+
+// TargetExecutionAuthorized is separate from legacy Sense-to-CORE transfer.
+// Full document and selected-registry validation remains the caller's job.
+func (binding SemanticBinding) TargetExecutionAuthorized() bool {
+	if binding.Target == nil || binding.CoreRef.String() != "" || binding.Mapping != MappingEquivalent || binding.Status != BindingApproved || binding.Provenance.Validate() != nil {
+		return false
+	}
+	frames := make(map[string]struct{}, len(binding.Target.RolePorts))
+	sense := LexicalSense{ValencyIDs: make([]ValencyID, 0, len(binding.Target.RolePorts))}
+	for _, mapping := range binding.Target.RolePorts {
+		if _, exists := frames[mapping.FrameID]; !exists {
+			frames[mapping.FrameID] = struct{}{}
+			sense.ValencyIDs = append(sense.ValencyIDs, ValencyID(mapping.FrameID))
+		}
+	}
+	return validateSemanticTarget(binding.Target, sense, "target") == nil && binding.Target.ExecutionAuthorized(binding.Mapping, binding.Status, true)
 }

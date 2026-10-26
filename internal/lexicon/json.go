@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/clickbytes/golingua/internal/algebra"
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/provenance"
 )
@@ -105,34 +106,79 @@ func (sense LexicalSense) MarshalJSON() ([]byte, error) {
 }
 
 func (binding *SemanticBinding) UnmarshalJSON(data []byte) error {
-	var wire struct {
-		SenseID    string          `json:"sense_id"`
-		CoreRef    string          `json:"core_ref"`
-		Mapping    MappingKind     `json:"mapping_kind"`
-		Status     BindingStatus   `json:"status"`
-		Provenance json.RawMessage `json:"provenance"`
+	if err := algebra.PreflightJSONLimit(data, MaxDocumentBytes); err != nil {
+		return fmt.Errorf("semantic binding: %w", err)
 	}
-	allowed := map[string]bool{"sense_id": true, "core_ref": true, "mapping_kind": true, "status": true, "provenance": true}
-	if err := decodeExactObject(data, allowed, &wire); err != nil {
+	var fields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &fields); err != nil || fields == nil {
+		return fmt.Errorf("semantic binding must be an object")
+	}
+	_, hasCore := fields["core_ref"]
+	_, hasTarget := fields["target"]
+	if hasCore == hasTarget {
+		return fmt.Errorf("semantic binding requires exactly one of core_ref or target")
+	}
+	allowed := map[string]bool{"sense_id": true, "mapping_kind": true, "status": true, "provenance": true, "core_ref": true, "target": true}
+	if err := decodeExactObject(data, allowed, &fields); err != nil {
 		return err
 	}
-	senseID, err := ids.ParseSenseID(wire.SenseID)
+	var senseIDRaw, mappingRaw, statusRaw, provenanceRaw json.RawMessage
+	senseIDRaw, _ = fields["sense_id"]
+	mappingRaw, _ = fields["mapping_kind"]
+	statusRaw, _ = fields["status"]
+	provenanceRaw, _ = fields["provenance"]
+	var senseText string
+	if err := json.Unmarshal(senseIDRaw, &senseText); err != nil {
+		return fmt.Errorf("binding sense id: %w", err)
+	}
+	senseID, err := ids.ParseSenseID(senseText)
 	if err != nil {
 		return fmt.Errorf("binding sense id: %w", err)
 	}
-	coreRef, err := ids.ParseConceptID(wire.CoreRef)
-	if err != nil {
-		return fmt.Errorf("binding core ref: %w", err)
+	var mapping MappingKind
+	if err := json.Unmarshal(mappingRaw, &mapping); err != nil {
+		return fmt.Errorf("binding mapping kind: %w", err)
+	}
+	var bindingStatus BindingStatus
+	if err := json.Unmarshal(statusRaw, &bindingStatus); err != nil {
+		return fmt.Errorf("binding status: %w", err)
 	}
 	var source provenance.SourceRef
-	if err := decodeExactObject(wire.Provenance, map[string]bool{"id": true, "path": true, "uri": true, "version": true, "license": true, "author": true, "checksum_sha256": true}, &source); err != nil {
+	if err := decodeExactObject(provenanceRaw, map[string]bool{"id": true, "path": true, "uri": true, "version": true, "license": true, "author": true, "checksum_sha256": true}, &source); err != nil {
 		return fmt.Errorf("binding provenance: %w", err)
 	}
-	*binding = SemanticBinding{SenseID: senseID, CoreRef: coreRef, Mapping: wire.Mapping, Status: wire.Status, Provenance: source}
+	decoded := SemanticBinding{SenseID: senseID, Mapping: mapping, Status: bindingStatus, Provenance: source}
+	if hasCore {
+		var coreText string
+		if err := json.Unmarshal(fields["core_ref"], &coreText); err != nil {
+			return fmt.Errorf("binding core ref: %w", err)
+		}
+		coreRef, err := ids.ParseConceptID(coreText)
+		if err != nil {
+			return fmt.Errorf("binding core ref: %w", err)
+		}
+		decoded.CoreRef = coreRef
+	} else {
+		var target SemanticTarget
+		if err := json.Unmarshal(fields["target"], &target); err != nil {
+			return fmt.Errorf("binding target: %w", err)
+		}
+		decoded.Target = &target
+	}
+	*binding = decoded
 	return nil
 }
 
 func (binding SemanticBinding) MarshalJSON() ([]byte, error) {
+	if binding.Target != nil {
+		return json.Marshal(struct {
+			SenseID    string               `json:"sense_id"`
+			Target     *SemanticTarget      `json:"target"`
+			Mapping    MappingKind          `json:"mapping_kind"`
+			Status     BindingStatus        `json:"status"`
+			Provenance provenance.SourceRef `json:"provenance"`
+		}{SenseID: binding.SenseID.String(), Target: binding.Target, Mapping: binding.Mapping, Status: binding.Status, Provenance: binding.Provenance})
+	}
 	return json.Marshal(struct {
 		SenseID    string               `json:"sense_id"`
 		CoreRef    string               `json:"core_ref"`

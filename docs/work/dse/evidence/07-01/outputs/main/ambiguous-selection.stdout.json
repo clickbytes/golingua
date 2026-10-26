@@ -1,0 +1,1 @@
+{"status":"ambiguous","diagnostics":[{"code":"AMBIGUOUS_SEMANTIC_TARGET","message":"multiple semantic targets exist; select one explicitly","path":"binding_index","severity":"error"}]}

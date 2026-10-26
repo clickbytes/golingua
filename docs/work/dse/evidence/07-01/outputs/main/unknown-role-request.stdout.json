@@ -1,0 +1,1 @@
+{"status":"unknown","diagnostics":[{"code":"UNMAPPED_FRAME_ROLE","message":"role is not explicitly mapped to a target port for this frame","path":"role_references[0].role","severity":"error"}]}

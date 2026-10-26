@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_ALGEBRA_ARGUMENTS","message":"algebra binding validate requires at least one --metadata file","path":"algebra","severity":"error"}]}

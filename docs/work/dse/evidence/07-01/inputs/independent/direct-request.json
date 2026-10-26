@@ -1,0 +1,30 @@
+{
+  "sense_id": "sense:en.link.direct",
+  "frame_id": "en.link.direct.transitive",
+  "context_id": "lexical-neutral",
+  "references": [
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ],
+  "role_references": [
+    {
+      "role": "origin",
+      "reference_id": "A"
+    },
+    {
+      "role": "endpoint",
+      "reference_id": "B"
+    }
+  ],
+  "port_references": []
+}

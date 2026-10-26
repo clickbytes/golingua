@@ -835,3 +835,36 @@ referentów z zapytania i wejścia faktów. To nie jest negacja przez brak,
 rekurencyjny Datalog, globalny solver ani niezależny weryfikator dowodów #390.
 
 Pełne ograniczenia i zapisany przykład znajdują się w [kontrakcie ewaluacji](architecture/semantic-algebra/execution.md) i [neutralnych danych](../data/semantic/examples/evaluation/README.md). Obserwacje branch CLI, ocena agenta i akceptacja właściciela są osobne; akceptacja językowa pozostaje **NOT_EVALUATED**.
+
+### Wiązania leksykalne
+
+Polecenia `algebra binding` operują na jawnym pakiecie językowym wersji 1. Każde polecenie wymaga `--language-package`; `validate` i `instantiate` wymagają też jednego lub większej liczby jawnych `--metadata`. `inspect` pokazuje zawartość pakietu bez walidacji jego celów wobec metadanych i zwraca `metadata_verified: false`. `validate` sprawdza podpisy i autoryzację odrębnie. `instantiate` przyjmuje `--input <plik>` albo `--input -` dla stdin.
+
+```sh
+golingua algebra binding inspect --language-package data/semantic/languages/pl/pilot.json --json
+golingua algebra binding validate --language-package data/semantic/languages/pl/pilot.json --metadata data/semantic/examples/lexical-bindings/metadata.json --json
+golingua algebra binding instantiate --language-package data/semantic/languages/pl/pilot.json --metadata data/semantic/examples/lexical-bindings/metadata.json --input data/semantic/examples/lexical-bindings/pl-see-request.json --json
+```
+
+Wynik `instantiate` dla celu `symbol` umieszcza dokument w `.result.symbol.document`. Można przekazać go do zwykłego kontrolera wyrażeń:
+
+```sh
+TASK_TMP=$(mktemp -d)
+golingua algebra binding instantiate --language-package data/semantic/languages/pl/pilot.json --metadata data/semantic/examples/lexical-bindings/metadata.json --input data/semantic/examples/lexical-bindings/pl-see-request.json --json > "$TASK_TMP/instantiation.json"
+jq '.result.symbol.document' "$TASK_TMP/instantiation.json" > "$TASK_TMP/document.json"
+golingua algebra check --input "$TASK_TMP/document.json" --json
+```
+
+Dla celu `goal` wynik zawiera `.result.goal`, `.result.construction.canonical_document` i `.result.certificate`. Każdy element można sprawdzić oddzielnie; kontrola celu ponownie wymaga wybranych metadanych:
+
+```sh
+TASK_TMP=$(mktemp -d)
+golingua algebra binding instantiate --language-package data/semantic/languages/en/pilot.json --metadata data/semantic/examples/lexical-bindings/metadata.json --input data/semantic/examples/lexical-bindings/en-link-indirect-request.json --json > "$TASK_TMP/instantiation.json"
+jq '.result.goal' "$TASK_TMP/instantiation.json" > "$TASK_TMP/goal.json"
+jq '.result.construction.canonical_document' "$TASK_TMP/instantiation.json" > "$TASK_TMP/candidate.json"
+jq '.result.certificate' "$TASK_TMP/instantiation.json" > "$TASK_TMP/certificate.json"
+golingua algebra check --input "$TASK_TMP/candidate.json" --json
+golingua algebra verify-goal --metadata data/semantic/examples/lexical-bindings/metadata.json --goal "$TASK_TMP/goal.json" --candidate "$TASK_TMP/candidate.json" --certificate "$TASK_TMP/certificate.json" --json
+```
+
+Kilka pasujących wiązań daje `ambiguous`; wybór wymaga jawnego `binding_index`. Brak referencji, nieznana rola/port, zły typ albo kontekst przypięty do innego żądania nie są naprawiane przez zgadywanie. Szczegóły rozdziału między ramą, rolą i portem, granic kontekstu oraz ograniczeń pilota opisuje [kontrakt wiązań leksykalnych](architecture/semantic-algebra/lexical-bindings.md). Próbki i obserwacje znajdują się w [przykładach](../data/semantic/examples/lexical-bindings/README.md) oraz [evidence #394](work/dse/evidence/07-01/README.md). Akceptacja językowa właściciela pozostaje **NOT EVALUATED**.

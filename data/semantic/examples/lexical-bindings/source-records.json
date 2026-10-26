@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "scope": "Source-history record for the four language-pilot target senses. These records preserve the previously reviewed CORE links separately; they are not active bindings and do not change the compiled catalog.",
+  "records": [
+    {
+      "language": "pl",
+      "sense_id": "sense:pl.widziec.visual",
+      "lexical_description": "perceive visually",
+      "frame_id": "pl.widziec.visual.transitive",
+      "previous_binding": {
+        "core_ref": "concept:seeing",
+        "mapping_kind": "equivalent",
+        "status": "approved",
+        "provenance": {
+          "id": "golingua-pl-delegated-lexical-review",
+          "uri": "https://github.com/clickbytes/golingua/issues/152#issuecomment-6352315888",
+          "version": "2026-10-23-batch-01",
+          "license": "unknown",
+          "author": "codex-owner-delegated"
+        }
+      },
+      "lexeme_source": {
+        "id": "golingua-pl-authored",
+        "path": "languages/pl/lexicon.go",
+        "version": "2026-10-23-receiving",
+        "license": "unknown",
+        "author": "golingua contributors"
+      },
+      "frame_source": {
+        "id": "golingua-pl-valency-authored",
+        "path": "languages/pl/valency.go",
+        "version": "2026-10-21-initial",
+        "license": "unknown",
+        "author": "golingua contributors"
+      },
+      "note": "Copied as source history only; no core_ref was combined with the pilot target."
+    },
+    {
+      "language": "pl",
+      "sense_id": "sense:pl.slyszec.auditory",
+      "lexical_description": "perceive through hearing",
+      "frame_id": "pl.slyszec.auditory.transitive",
+      "previous_binding": {
+        "core_ref": "concept:hearing",
+        "mapping_kind": "equivalent",
+        "status": "approved",
+        "provenance": {
+          "id": "golingua-pl-delegated-lexical-review",
+          "uri": "https://github.com/clickbytes/golingua/issues/152#issuecomment-6352315888",
+          "version": "2026-10-23-batch-01",
+          "license": "unknown",
+          "author": "codex-owner-delegated"
+        }
+      },
+      "lexeme_source": {
+        "id": "golingua-pl-authored",
+        "path": "languages/pl/lexicon.go",
+        "version": "2026-10-23-receiving",
+        "license": "unknown",
+        "author": "golingua contributors"
+      },
+      "frame_source": {
+        "id": "golingua-pl-valency-authored",
+        "path": "languages/pl/valency.go",
+        "version": "2026-10-21-initial",
+        "license": "unknown",
+        "author": "golingua contributors"
+      },
+      "note": "Copied as source history only; no core_ref was combined with the pilot target."
+    },
+    {
+      "language": "en",
+      "sense_id": "sense:en.see.visual",
+      "lexical_description": "perceive visually",
+      "frame_id": "en.see.visual.transitive",
+      "previous_binding": {
+        "core_ref": "concept:seeing",
+        "mapping_kind": "equivalent",
+        "status": "approved",
+        "provenance": {
+          "id": "golingua-en-delegated-lexical-review",
+          "uri": "https://github.com/clickbytes/golingua/issues/61#issuecomment-6352023863",
+          "version": "2026-10-22-batch-01",
+          "license": "unknown",
+          "author": "Codex by owner delegation"
+        }
+      },
+      "lexeme_source": {
+        "id": "golingua-en-authored",
+        "path": "languages/en/lexicon.go",
+        "version": "2026-10-23-receiving",
+        "license": "unknown",
+        "author": "golingua contributors"
+      },
+      "frame_source": {
+        "id": "golingua-en-valency-authored",
+        "path": "languages/en/valency.go",
+        "version": "2026-10-21-initial",
+        "license": "unknown",
+        "author": "golingua contributors"
+      },
+      "note": "Copied as source history only; no core_ref was combined with the pilot target."
+    },
+    {
+      "language": "en",
+      "sense_id": "sense:en.hear.auditory",
+      "lexical_description": "perceive through hearing",
+      "frame_id": "en.hear.auditory.transitive",
+      "previous_binding": {
+        "core_ref": "concept:hearing",
+        "mapping_kind": "equivalent",
+        "status": "approved",
+        "provenance": {
+          "id": "golingua-en-delegated-lexical-review",
+          "uri": "https://github.com/clickbytes/golingua/issues/61#issuecomment-6352023863",
+          "version": "2026-10-22-batch-01",
+          "license": "unknown",
+          "author": "Codex by owner delegation"
+        }
+      },
+      "lexeme_source": {
+        "id": "golingua-en-authored",
+        "path": "languages/en/lexicon.go",
+        "version": "2026-10-23-receiving",
+        "license": "unknown",
+        "author": "golingua contributors"
+      },
+      "frame_source": {
+        "id": "golingua-en-valency-authored",
+        "path": "languages/en/valency.go",
+        "version": "2026-10-21-initial",
+        "license": "unknown",
+        "author": "golingua contributors"
+      },
+      "note": "Copied as source history only; no core_ref was combined with the pilot target."
+    }
+  ]
+}

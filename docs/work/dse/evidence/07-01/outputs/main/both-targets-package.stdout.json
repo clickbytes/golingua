@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_LEXICON_JSON","message":"semantic binding requires exactly one of core_ref or target","path":"document","severity":"error"}]}

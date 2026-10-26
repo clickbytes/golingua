@@ -1,0 +1,111 @@
+{
+  "expression": {
+    "args": [
+      {
+        "role": "a",
+        "value": {
+          "id": "A",
+          "kind": "Ref",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      },
+      {
+        "role": "b",
+        "value": {
+          "id": "B",
+          "kind": "Ref",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      }
+    ],
+    "kind": "Atom",
+    "symbol": "pilot.r"
+  },
+  "references": [
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ],
+  "schema_version": 1,
+  "signatures": [
+    {
+      "id": "pilot.auditory_event",
+      "label": "pilot auditory-perception event relation",
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.r",
+      "label": "neutral ordered relation",
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.vision_event",
+      "label": "pilot visual-perception event relation",
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    }
+  ]
+}

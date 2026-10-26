@@ -1,6 +1,7 @@
 package lexicon
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"unicode"
@@ -198,6 +199,7 @@ func ValidateDocument(document Document, ontology *core.ConceptGraph, budget Bud
 	}
 	seenBindings := make(map[string]struct{}, len(document.Bindings))
 	parsedBindings := make([]ids.ConceptID, len(document.Bindings))
+	legacyBindingCount := 0
 	for index, binding := range document.Bindings {
 		path := fmt.Sprintf("bindings[%d]", index)
 		if err := meter.add(112, binding.SenseID.String(), binding.CoreRef.String(), string(binding.Mapping), string(binding.Status), binding.Provenance.ID, binding.Provenance.Path, binding.Provenance.URI, binding.Provenance.Version, binding.Provenance.License); err != nil {
@@ -209,14 +211,6 @@ func ValidateDocument(document Document, ontology *core.ConceptGraph, budget Bud
 		if _, exists := senses[binding.SenseID.String()]; !exists {
 			return unknown("UNKNOWN_SENSE", path+".sense_id", "binding sense does not resolve")
 		}
-		if binding.CoreRef.String() == "" {
-			return invalid("INVALID_CONCEPT_ID", path+".core_ref", "binding CORE concept ID is empty")
-		}
-		coreRef, err := ids.ParseConceptID(binding.CoreRef.String())
-		if err != nil {
-			return invalid("INVALID_CONCEPT_ID", path+".core_ref", "binding CORE concept ID is malformed")
-		}
-		parsedBindings[index] = coreRef
 		if !binding.Mapping.Valid() {
 			return invalid("INVALID_MAPPING_KIND", path+".mapping_kind", "mapping kind is empty or unsupported")
 		}
@@ -226,16 +220,49 @@ func ValidateDocument(document Document, ontology *core.ConceptGraph, budget Bud
 		if err := binding.Provenance.Validate(); err != nil {
 			return invalid("INVALID_PROVENANCE", path+".provenance", "binding provenance is malformed")
 		}
-		key := binding.SenseID.String() + "\x00" + coreRef.String()
+		var key string
+		if binding.Target != nil {
+			if binding.CoreRef.String() != "" {
+				return invalid("CONFLICTING_BINDING_TARGETS", path, "target binding cannot also contain core_ref")
+			}
+			if err := validateSemanticTarget(binding.Target, senses[binding.SenseID.String()], path+".target"); err != nil {
+				return err
+			}
+			encoded, err := json.Marshal(canonicalSemanticTarget(binding.Target))
+			if err != nil {
+				return invalid("INVALID_SEMANTIC_TARGET", path+".target", "semantic target cannot be encoded safely")
+			}
+			if len(encoded) > MaxSemanticTargetBytes {
+				return resourceLimit("semantic_target_bytes", len(encoded), MaxSemanticTargetBytes)
+			}
+			if err := meter.add(16, string(encoded)); err != nil {
+				return err
+			}
+			key = binding.SenseID.String() + "\x00target\x00" + string(encoded)
+		} else {
+			if binding.CoreRef.String() == "" {
+				return invalid("INVALID_CONCEPT_ID", path+".core_ref", "binding CORE concept ID is empty")
+			}
+			coreRef, err := ids.ParseConceptID(binding.CoreRef.String())
+			if err != nil {
+				return invalid("INVALID_CONCEPT_ID", path+".core_ref", "binding CORE concept ID is malformed")
+			}
+			parsedBindings[index] = coreRef
+			legacyBindingCount++
+			key = binding.SenseID.String() + "\x00core\x00" + coreRef.String()
+		}
 		if _, exists := seenBindings[key]; exists {
 			return invalid("DUPLICATE_SEMANTIC_BINDING", path, "sense-to-concept pair has multiple competing bindings")
 		}
 		seenBindings[key] = struct{}{}
 	}
-	if len(document.Bindings) > 0 && ontology == nil {
+	if legacyBindingCount > 0 && ontology == nil {
 		return unknown("CORE_GRAPH_REQUIRED", "bindings", "CORE snapshot is required to validate semantic bindings")
 	}
 	for index, coreRef := range parsedBindings {
+		if document.Bindings[index].Target != nil {
+			continue
+		}
 		if _, exists := ontology.Lookup(coreRef); !exists {
 			return unknown("UNKNOWN_CONCEPT", fmt.Sprintf("bindings[%d].core_ref", index), "binding concept does not resolve in the supplied CORE snapshot")
 		}

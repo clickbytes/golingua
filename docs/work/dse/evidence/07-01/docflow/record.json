@@ -1,0 +1,99 @@
+{
+  "executable_name": "golingua",
+  "resolved_path": "/tmp/golingua-dse/bin/golingua",
+  "binary_sha256": "dd8e95c102ffcbb339cc036c517ab81fb90df4163d080648565b4297bec6991b",
+  "path_environment": "/tmp/golingua-dse/bin prepended to PATH; golingua resolved to frozen #394 binary",
+  "commands": [
+    "golingua algebra binding inspect --language-package data/semantic/languages/pl/pilot.json --json",
+    "golingua algebra binding validate --language-package data/semantic/languages/pl/pilot.json --metadata data/semantic/examples/lexical-bindings/metadata.json --json",
+    "golingua algebra binding instantiate --language-package data/semantic/languages/pl/pilot.json --metadata data/semantic/examples/lexical-bindings/metadata.json --input data/semantic/examples/lexical-bindings/pl-see-request.json --json",
+    "jq '.result.symbol.document' \"$TASK_TMP/instantiation.json\" > \"$TASK_TMP/document.json\"",
+    "golingua algebra check --input \"$TASK_TMP/document.json\" --json",
+    "golingua algebra binding instantiate --language-package data/semantic/languages/en/pilot.json --metadata data/semantic/examples/lexical-bindings/metadata.json --input data/semantic/examples/lexical-bindings/en-link-indirect-request.json --json",
+    "jq '.result.goal' \"$TASK_TMP/instantiation.json\" > \"$TASK_TMP/goal.json\"",
+    "jq '.result.construction.canonical_document' \"$TASK_TMP/instantiation.json\" > \"$TASK_TMP/candidate.json\"",
+    "jq '.result.certificate' \"$TASK_TMP/instantiation.json\" > \"$TASK_TMP/certificate.json\"",
+    "golingua algebra check --input \"$TASK_TMP/candidate.json\" --json",
+    "golingua algebra verify-goal --metadata data/semantic/examples/lexical-bindings/metadata.json --goal \"$TASK_TMP/goal.json\" --candidate \"$TASK_TMP/candidate.json\" --certificate \"$TASK_TMP/certificate.json\" --json"
+  ],
+  "observations": [
+    {
+      "file": "docflow/symbol/check.json",
+      "status": "ok",
+      "result_status": null,
+      "target_authorized": null,
+      "certificate_valid": null
+    },
+    {
+      "file": "docflow/symbol/document.json",
+      "status": null,
+      "result_status": null,
+      "target_authorized": null,
+      "certificate_valid": null
+    },
+    {
+      "file": "docflow/symbol/inspect.json",
+      "status": "ok",
+      "result_status": null,
+      "target_authorized": null,
+      "certificate_valid": null
+    },
+    {
+      "file": "docflow/symbol/instantiation.json",
+      "status": "ok",
+      "result_status": "ok",
+      "target_authorized": true,
+      "certificate_valid": null
+    },
+    {
+      "file": "docflow/symbol/validate.json",
+      "status": "ok",
+      "result_status": null,
+      "target_authorized": null,
+      "certificate_valid": null
+    },
+    {
+      "file": "docflow/goal/candidate.json",
+      "status": null,
+      "result_status": null,
+      "target_authorized": null,
+      "certificate_valid": null
+    },
+    {
+      "file": "docflow/goal/certificate.json",
+      "status": null,
+      "result_status": null,
+      "target_authorized": null,
+      "certificate_valid": null
+    },
+    {
+      "file": "docflow/goal/check.json",
+      "status": "ok",
+      "result_status": null,
+      "target_authorized": null,
+      "certificate_valid": null
+    },
+    {
+      "file": "docflow/goal/goal.json",
+      "status": null,
+      "result_status": null,
+      "target_authorized": null,
+      "certificate_valid": null
+    },
+    {
+      "file": "docflow/goal/instantiation.json",
+      "status": "ok",
+      "result_status": "ok",
+      "target_authorized": true,
+      "certificate_valid": null
+    },
+    {
+      "file": "docflow/goal/verify-goal.json",
+      "status": "ok",
+      "result_status": "ok",
+      "target_authorized": null,
+      "certificate_valid": true
+    }
+  ],
+  "independent_source_hashes_match": true
+}
