@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "profile": {
+    "id": "storage-demo",
+    "rules": []
+  },
+  "context_id": "request:artifact383",
+  "context_dependencies": [
+    {
+      "id": "context:demo",
+      "fingerprint": "context-fp:demo1"
+    }
+  ],
+  "provenance": [
+    {
+      "id": "neutral-storage-383",
+      "uri": "https://github.com/clickbytes/golingua/issues/383",
+      "version": "2026-10-26",
+      "license": "internal-neutral-example"
+    }
+  ],
+  "document": {
+    "schema_version": 1,
+    "expression": {
+      "kind": "And",
+      "operands": [
+        {
+          "kind": "Atom",
+          "symbol": "r",
+          "args": [
+            {
+              "role": "a",
+              "value": {
+                "kind": "Ref",
+                "id": "A",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            },
+            {
+              "role": "b",
+              "value": {
+                "kind": "Ref",
+                "id": "B",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ],
+          "label": "presentation only"
+        },
+        {
+          "kind": "Atom",
+          "symbol": "r",
+          "args": [
+            {
+              "role": "a",
+              "value": {
+                "kind": "Ref",
+                "id": "A",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            },
+            {
+              "role": "b",
+              "value": {
+                "kind": "Ref",
+                "id": "B",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "references": [
+      {
+        "id": "A",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "id": "B",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ]
+  }
+}

@@ -319,11 +319,11 @@
         381
       ],
       "branch_name": "dse/05-01-rewrite-kernel",
-      "status": "ACTIVE",
+      "status": "DONE",
       "actual_base_sha": "a2211de2fae897b428b71af2689a3923c5cf4786",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/05-01-rewrite-kernel",
-      "pr_url": null,
-      "merge_sha": null,
+      "pr_url": "https://github.com/clickbytes/golingua/pull/406",
+      "merge_sha": "f72363e2a967951762a6874d2096dbba29ac3bc5",
       "evidence_paths": [
         "docs/architecture/semantic-algebra/normalization.md",
         "docs/work/dse/evidence/05-01/README.md",
@@ -344,12 +344,18 @@
         382
       ],
       "branch_name": "dse/03-03-runtime-dag",
-      "status": "QUEUED",
-      "actual_base_sha": null,
-      "branch_url": null,
+      "status": "ACTIVE",
+      "actual_base_sha": "9a343db4ff590adaa3aa12f9385d20ebff843c84",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/03-03-runtime-dag",
       "pr_url": null,
       "merge_sha": null,
-      "evidence_paths": []
+      "evidence_paths": [
+        "docs/architecture/semantic-algebra/runtime-storage.md",
+        "docs/work/dse/evidence/03-03/README.md",
+        "docs/work/dse/evidence/03-03/observations.jsonl",
+        "docs/work/dse/evidence/03-03/cache-api-observation.json",
+        "docs/work/dse/evidence/03-03/environment.json"
+      ]
     },
     {
       "issue_number": 384,

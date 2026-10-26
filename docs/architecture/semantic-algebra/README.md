@@ -10,6 +10,7 @@ For the issue record and work procedure, see the [DSE work index](../../work/dse
 - [Meaning v1 compatibility](compatibility.md): explicit route selection, authority boundaries, partial conversion rules, context and identity preservation, and refusal behavior for lossy mappings.
 - [Finite explicit composition](composition.md): the bounded algebra construction command implemented in #381, its operator limits and neutral examples; it does not implement the broader DSE synthesis and evaluation plans above.
 - [Bounded normalization](normalization.md): the explicitly licensed rewrite command, strict certificate verification, finite budgets, and neutral #382 examples; it does not evaluate facts or synthesize proofs from goals.
+- [Runtime artifact storage](runtime-storage.md): the bounded #383 export, structural inspection, and metadata-bound replay path, with neutral storage requests; artifacts preserve checked syntax and receipts, not facts or proofs.
 
 The formal contract's initial executable profile allows structural alpha/beta reduction and positive matching against supplied facts. Its domain-axiom and rule allowlist is empty; absence of a matching fact remains `unknown`. The compatibility contract keeps existing Meaning v1 routes authoritative unless a future route explicitly opts into DSE. Neither contract introduces an API, schema migration, fallback, or language binding.
 

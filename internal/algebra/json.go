@@ -7,6 +7,8 @@ import (
 	"io"
 	"sort"
 	"unicode/utf8"
+
+	"github.com/clickbytes/golingua/internal/provenance"
 )
 
 // MaxDocumentBytes is the hard wire-format size ceiling for one algebra
@@ -15,6 +17,36 @@ const MaxDocumentBytes = 1 << 20
 
 // MaxJSONNesting is a pre-decode cap on nested JSON arrays and objects.
 const MaxJSONNesting = 256
+
+const (
+	MaxArtifactExportRequestBytes = MaxDocumentBytes
+	MaxArtifactEnvelopeBytes      = MaxArtifactBytes
+	MaxArtifactReplayRequestBytes = MaxRewriteEnvelopeBytes
+)
+
+// ArtifactExportRequest carries source text and explicit request metadata. It
+// contains no trusted registry inventory; a metadata factory supplies that.
+type ArtifactExportRequest struct {
+	SchemaVersion       int                    `json:"schema_version"`
+	Document            Document               `json:"document"`
+	Profile             RewriteProfile         `json:"profile"`
+	ContextID           string                 `json:"context_id"`
+	ContextDependencies []ContextDependency    `json:"context_dependencies"`
+	Provenance          []provenance.SourceRef `json:"provenance"`
+}
+
+// ArtifactReplayRequest separates expected metadata claims from the artifact
+// being checked. Its profile, context, dependencies, provenance, and limits are
+// request inputs rather than artifact assertions.
+type ArtifactReplayRequest struct {
+	SchemaVersion       int                    `json:"schema_version"`
+	Profile             RewriteProfile         `json:"profile"`
+	ContextID           string                 `json:"context_id"`
+	ContextDependencies []ContextDependency    `json:"context_dependencies"`
+	Provenance          []provenance.SourceRef `json:"provenance"`
+	Limits              Limits                 `json:"limits,omitempty"`
+	Artifact            ArtifactEnvelope       `json:"artifact"`
+}
 
 // Decode strictly decodes and structurally checks one version-1 expression
 // document. It does not evaluate the expression or infer truth.
@@ -1225,4 +1257,732 @@ func strictArray(data []byte, path string, maxItems int) ([]json.RawMessage, err
 
 func appendJSONPath(path, key string) string {
 	return path + "." + key
+}
+
+// DecodeArtifactExportRequest strictly decodes one bounded artifact export
+// request. Metadata declarations are supplied separately by a trusted caller.
+func DecodeArtifactExportRequest(data []byte) (ArtifactExportRequest, error) {
+	if err := PreflightJSONLimit(data, MaxArtifactExportRequestBytes); err != nil {
+		return ArtifactExportRequest{}, err
+	}
+	fields, err := strictObject(data, "request", []string{"schema_version", "document", "profile", "context_id", "context_dependencies", "provenance"}, []string{"schema_version", "document", "profile", "context_id", "context_dependencies", "provenance"})
+	if err != nil {
+		return ArtifactExportRequest{}, err
+	}
+	version, err := rewriteJSONInt(fields["schema_version"], "request.schema_version", 1, 1)
+	if err != nil {
+		return ArtifactExportRequest{}, err
+	}
+	document, err := DecodeDocumentJSON(fields["document"])
+	if err != nil {
+		return ArtifactExportRequest{}, err
+	}
+	profile, err := decodeRewriteProfile(fields["profile"], "request.profile")
+	if err != nil {
+		return ArtifactExportRequest{}, err
+	}
+	contextID, err := rewriteJSONString(fields["context_id"], "request.context_id", 256, false)
+	if err != nil {
+		return ArtifactExportRequest{}, err
+	}
+	dependencies, err := decodeContextDependencies(fields["context_dependencies"], "request.context_dependencies")
+	if err != nil {
+		return ArtifactExportRequest{}, err
+	}
+	provenanceRefs, err := decodeArtifactProvenance(fields["provenance"], "request.provenance")
+	if err != nil {
+		return ArtifactExportRequest{}, err
+	}
+	return ArtifactExportRequest{SchemaVersion: version, Document: document, Profile: profile, ContextID: contextID, ContextDependencies: dependencies, Provenance: provenanceRefs}, nil
+}
+
+// DecodeArtifactEnvelope strictly decodes one artifact's explicit versioned
+// wire representation. It validates shape, not registry approval or trust.
+func DecodeArtifactEnvelope(data []byte) (ArtifactEnvelope, error) {
+	if err := PreflightJSONLimit(data, MaxArtifactEnvelopeBytes); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	allowed := []string{"kind", "schema_version", "normalizer_version", "registry_snapshot_id", "registries", "profile", "context_id", "context_dependencies", "sorts", "signatures", "parameters", "references", "closed", "limits", "root", "nodes", "provenance", "resource_fingerprint", "meaning_fingerprint", "cache_key"}
+	fields, err := strictObject(data, "artifact", allowed, allowed)
+	if err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	var envelope ArtifactEnvelope
+	if envelope.Kind, err = rewriteJSONString(fields["kind"], "artifact.kind", 64, false); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if envelope.SchemaVersion, err = rewriteJSONInt(fields["schema_version"], "artifact.schema_version", 1, ArtifactFormatVersion); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if envelope.NormalizerVersion, err = rewriteJSONString(fields["normalizer_version"], "artifact.normalizer_version", 256, false); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if envelope.RegistrySnapshotID, err = rewriteJSONString(fields["registry_snapshot_id"], "artifact.registry_snapshot_id", 256, false); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if envelope.Registries, err = decodeRegistryPins(fields["registries"], "artifact.registries"); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if envelope.Profile, err = decodeRewriteProfile(fields["profile"], "artifact.profile"); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if envelope.ContextID, err = rewriteJSONString(fields["context_id"], "artifact.context_id", 256, false); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if envelope.ContextDependencies, err = decodeContextDependencies(fields["context_dependencies"], "artifact.context_dependencies"); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if envelope.Sorts, err = decodeArtifactSorts(fields["sorts"], "artifact.sorts"); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if envelope.Signatures, err = decodeArtifactSignatures(fields["signatures"], "artifact.signatures"); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if envelope.Parameters, err = decodeDeclarations(fields["parameters"], "artifact.parameters"); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if envelope.References, err = decodeDeclarations(fields["references"], "artifact.references"); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if envelope.Closed, err = rewriteJSONBool(fields["closed"], "artifact.closed"); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if envelope.Limits, err = decodeArtifactLimits(fields["limits"], "artifact.limits"); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if envelope.Root, err = decodeNodeID(fields["root"], "artifact.root"); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if envelope.Nodes, err = decodeArtifactNodes(fields["nodes"]); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if envelope.Provenance, err = decodeArtifactProvenance(fields["provenance"], "artifact.provenance"); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if envelope.ResourceFingerprint, err = rewriteJSONString(fields["resource_fingerprint"], "artifact.resource_fingerprint", 256, false); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if envelope.MeaningFingerprint, err = rewriteJSONString(fields["meaning_fingerprint"], "artifact.meaning_fingerprint", 256, false); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if envelope.CacheKey, err = rewriteJSONString(fields["cache_key"], "artifact.cache_key", 256, false); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if _, err := NormalizeLimits(envelope.Limits); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	if err := validateReplayHeader(envelope); err != nil {
+		return ArtifactEnvelope{}, err
+	}
+	return envelope, nil
+}
+
+// DecodeArtifactReplayRequest strictly decodes a replay request. Expected
+// profile/context/provenance fields remain independent of the embedded claims.
+func DecodeArtifactReplayRequest(data []byte) (ArtifactReplayRequest, error) {
+	if err := PreflightJSONLimit(data, MaxArtifactReplayRequestBytes); err != nil {
+		return ArtifactReplayRequest{}, err
+	}
+	fields, err := strictObject(data, "request", []string{"schema_version", "profile", "context_id", "context_dependencies", "provenance", "limits", "artifact"}, []string{"schema_version", "profile", "context_id", "context_dependencies", "provenance", "artifact"})
+	if err != nil {
+		return ArtifactReplayRequest{}, err
+	}
+	version, err := rewriteJSONInt(fields["schema_version"], "request.schema_version", 1, 1)
+	if err != nil {
+		return ArtifactReplayRequest{}, err
+	}
+	profile, err := decodeRewriteProfile(fields["profile"], "request.profile")
+	if err != nil {
+		return ArtifactReplayRequest{}, err
+	}
+	contextID, err := rewriteJSONString(fields["context_id"], "request.context_id", 256, false)
+	if err != nil {
+		return ArtifactReplayRequest{}, err
+	}
+	dependencies, err := decodeContextDependencies(fields["context_dependencies"], "request.context_dependencies")
+	if err != nil {
+		return ArtifactReplayRequest{}, err
+	}
+	provenanceRefs, err := decodeArtifactProvenance(fields["provenance"], "request.provenance")
+	if err != nil {
+		return ArtifactReplayRequest{}, err
+	}
+	var limits Limits
+	if raw, exists := fields["limits"]; exists {
+		limits, err = decodeArtifactLimits(raw, "request.limits")
+		if err != nil {
+			return ArtifactReplayRequest{}, err
+		}
+		if _, err := NormalizeLimits(limits); err != nil {
+			return ArtifactReplayRequest{}, err
+		}
+	}
+	envelope, err := DecodeArtifactEnvelope(fields["artifact"])
+	if err != nil {
+		return ArtifactReplayRequest{}, err
+	}
+	return ArtifactReplayRequest{SchemaVersion: version, Profile: profile, ContextID: contextID, ContextDependencies: dependencies, Provenance: provenanceRefs, Limits: limits, Artifact: envelope}, nil
+}
+
+func decodeRegistryPins(data []byte, path string) ([]RegistryPin, error) {
+	items, err := strictArray(data, path, 16)
+	if err != nil {
+		return nil, err
+	}
+	if len(items) == 0 {
+		return nil, invalid("MISSING_REGISTRY_PINS", path, "at least one registry pin is required")
+	}
+	result := make([]RegistryPin, len(items))
+	seen := make(map[string]struct{}, len(items))
+	for i, raw := range items {
+		itemPath := fmt.Sprintf("%s[%d]", path, i)
+		fields, err := strictObject(raw, itemPath, []string{"id", "version", "resource_fingerprint", "formal_denotation_id"}, []string{"id", "version", "resource_fingerprint", "formal_denotation_id"})
+		if err != nil {
+			return nil, err
+		}
+		values := []*string{&result[i].ID, &result[i].Version, &result[i].ResourceFingerprint, &result[i].FormalDenotationID}
+		keys := []string{"id", "version", "resource_fingerprint", "formal_denotation_id"}
+		for j, key := range keys {
+			value, e := rewriteJSONString(fields[key], itemPath+"."+key, 256, false)
+			if e != nil {
+				return nil, e
+			}
+			*values[j] = value
+		}
+		if _, exists := seen[result[i].ID]; exists {
+			return nil, invalid("DUPLICATE_REGISTRY_PIN", itemPath+".id", "registry pin ID is duplicated")
+		}
+		seen[result[i].ID] = struct{}{}
+	}
+	return result, nil
+}
+
+func decodeContextDependencies(data []byte, path string) ([]ContextDependency, error) {
+	items, err := strictArray(data, path, DefaultMaxSymbols)
+	if err != nil {
+		return nil, err
+	}
+	result := make([]ContextDependency, len(items))
+	seen := make(map[string]struct{}, len(items))
+	for i, raw := range items {
+		itemPath := fmt.Sprintf("%s[%d]", path, i)
+		fields, err := strictObject(raw, itemPath, []string{"id", "fingerprint"}, []string{"id", "fingerprint"})
+		if err != nil {
+			return nil, err
+		}
+		if result[i].ID, err = rewriteJSONString(fields["id"], itemPath+".id", 256, false); err != nil {
+			return nil, err
+		}
+		if result[i].Fingerprint, err = rewriteJSONString(fields["fingerprint"], itemPath+".fingerprint", 256, false); err != nil {
+			return nil, err
+		}
+		if _, exists := seen[result[i].ID]; exists {
+			return nil, invalid("DUPLICATE_CONTEXT_DEPENDENCY", itemPath+".id", "context dependency ID is duplicated")
+		}
+		seen[result[i].ID] = struct{}{}
+	}
+	return result, nil
+}
+
+func decodeArtifactSorts(data []byte, path string) ([]SortDeclaration, error) {
+	items, err := strictArray(data, path, DefaultMaxSymbols)
+	if err != nil {
+		return nil, err
+	}
+	result := make([]SortDeclaration, len(items))
+	for i, raw := range items {
+		itemPath := fmt.Sprintf("%s[%d]", path, i)
+		fields, err := strictObject(raw, itemPath, []string{"id", "label"}, []string{"id"})
+		if err != nil {
+			return nil, err
+		}
+		if result[i].ID, err = rewriteJSONString(fields["id"], itemPath+".id", 256, false); err != nil {
+			return nil, err
+		}
+		if rawLabel, ok := fields["label"]; ok {
+			if result[i].Label, err = rewriteJSONString(rawLabel, itemPath+".label", 1024, true); err != nil {
+				return nil, err
+			}
+		}
+	}
+	return result, nil
+}
+
+func decodeArtifactSignatures(data []byte, path string) ([]Signature, error) {
+	items, err := strictArray(data, path, DefaultMaxSymbols)
+	if err != nil {
+		return nil, err
+	}
+	result := make([]Signature, len(items))
+	for i, raw := range items {
+		itemPath := fmt.Sprintf("%s[%d]", path, i)
+		fields, err := strictObject(raw, itemPath, []string{"id", "label", "ports"}, []string{"id", "ports"})
+		if err != nil {
+			return nil, err
+		}
+		if result[i].ID, err = rewriteJSONString(fields["id"], itemPath+".id", 256, false); err != nil {
+			return nil, err
+		}
+		if rawLabel, ok := fields["label"]; ok {
+			if result[i].Label, err = rewriteJSONString(rawLabel, itemPath+".label", 1024, true); err != nil {
+				return nil, err
+			}
+		}
+		ports, err := strictArray(fields["ports"], itemPath+".ports", DefaultMaxPorts)
+		if err != nil {
+			return nil, err
+		}
+		result[i].Ports = make([]Port, len(ports))
+		for j, portRaw := range ports {
+			portPath := fmt.Sprintf("%s.ports[%d]", itemPath, j)
+			portFields, err := strictObject(portRaw, portPath, []string{"role", "type"}, []string{"role", "type"})
+			if err != nil {
+				return nil, err
+			}
+			role, err := rewriteJSONString(portFields["role"], portPath+".role", 256, false)
+			if err != nil {
+				return nil, err
+			}
+			if err := validateSortTypeJSON(portFields["type"], portPath+".type"); err != nil {
+				return nil, err
+			}
+			typeValue, err := DecodeTypeJSON(portFields["type"], portPath+".type")
+			if err != nil {
+				return nil, err
+			}
+			result[i].Ports[j] = Port{Role: role, Type: typeValue}
+		}
+	}
+	return result, nil
+}
+
+func decodeDeclarations(data []byte, path string) ([]Declaration, error) {
+	items, err := strictArray(data, path, DefaultMaxSymbols)
+	if err != nil {
+		return nil, err
+	}
+	result := make([]Declaration, len(items))
+	for i, raw := range items {
+		itemPath := fmt.Sprintf("%s[%d]", path, i)
+		fields, err := strictObject(raw, itemPath, []string{"id", "type"}, []string{"id", "type"})
+		if err != nil {
+			return nil, err
+		}
+		if result[i].ID, err = rewriteJSONString(fields["id"], itemPath+".id", 256, false); err != nil {
+			return nil, err
+		}
+		if result[i].Type, err = DecodeTypeJSON(fields["type"], itemPath+".type"); err != nil {
+			return nil, err
+		}
+	}
+	return result, nil
+}
+
+func decodeArtifactLimits(data []byte, path string) (Limits, error) {
+	fields, err := strictObject(data, path, []string{"max_nodes", "max_depth", "max_type_depth", "max_symbols", "max_ports"}, nil)
+	if err != nil {
+		return Limits{}, err
+	}
+	limits := Limits{}
+	values := []struct {
+		name string
+		cap  int
+		dest *int
+	}{
+		{"max_nodes", DefaultMaxNodes, &limits.MaxNodes}, {"max_depth", DefaultMaxDepth, &limits.MaxDepth},
+		{"max_type_depth", DefaultMaxTypeDepth, &limits.MaxTypeDepth}, {"max_symbols", DefaultMaxSymbols, &limits.MaxSymbols},
+		{"max_ports", DefaultMaxPorts, &limits.MaxPorts},
+	}
+	for _, item := range values {
+		if raw, exists := fields[item.name]; exists {
+			value, err := rewriteJSONInt(raw, path+"."+item.name, 0, item.cap)
+			if err != nil {
+				return Limits{}, err
+			}
+			*item.dest = value
+		}
+	}
+	return limits, nil
+}
+
+func decodeNodeID(data []byte, path string) (NodeID, error) {
+	value, err := rewriteJSONInt(data, path, 1, DefaultMaxNodes)
+	return NodeID(value), err
+}
+
+func decodeArtifactNodes(data []byte) ([]Node, error) {
+	items, err := strictArray(data, "artifact.nodes", DefaultMaxNodes)
+	if err != nil {
+		return nil, err
+	}
+	if len(items) == 0 {
+		return nil, invalid("EMPTY_ARTIFACT_NODES", "artifact.nodes", "artifact requires at least one node")
+	}
+	result := make([]Node, len(items))
+	for i, raw := range items {
+		path := fmt.Sprintf("artifact.nodes[%d]", i)
+		base, err := strictObject(raw, path, []string{"node_id", "kind", "label", "identity", "type", "symbol", "args", "operands", "body", "function", "argument"}, []string{"node_id", "kind"})
+		if err != nil {
+			return nil, err
+		}
+		id, err := decodeNodeID(base["node_id"], path+".node_id")
+		if err != nil {
+			return nil, err
+		}
+		kindText, err := rewriteJSONString(base["kind"], path+".kind", 32, false)
+		if err != nil {
+			return nil, err
+		}
+		node := Node{NodeID: id, Kind: TermKind(kindText)}
+		if rawLabel, ok := base["label"]; ok {
+			if node.Label, err = rewriteJSONString(rawLabel, path+".label", 1024, true); err != nil {
+				return nil, err
+			}
+		}
+		var allowed, required []string
+		switch node.Kind {
+		case TermVar:
+			allowed, required = []string{"node_id", "kind", "label", "identity"}, []string{"node_id", "kind", "identity"}
+		case TermParam, TermRef, TermHole:
+			allowed, required = []string{"node_id", "kind", "label", "identity", "type"}, []string{"node_id", "kind", "identity", "type"}
+		case TermAtom:
+			allowed, required = []string{"node_id", "kind", "label", "symbol", "args"}, []string{"node_id", "kind", "symbol", "args"}
+		case TermAnd:
+			allowed, required = []string{"node_id", "kind", "label", "operands"}, []string{"node_id", "kind", "operands"}
+		case TermExists, TermLambda:
+			allowed, required = []string{"node_id", "kind", "label", "identity", "type", "body"}, []string{"node_id", "kind", "identity", "type", "body"}
+		case TermApply:
+			allowed, required = []string{"node_id", "kind", "label", "function", "argument"}, []string{"node_id", "kind", "function", "argument"}
+		default:
+			return nil, invalid("UNKNOWN_TERM_KIND", path+".kind", "artifact node kind is unsupported")
+		}
+		fields, err := strictObject(raw, path, allowed, required)
+		if err != nil {
+			return nil, err
+		}
+		if value, ok := fields["identity"]; ok {
+			if node.Identity, err = rewriteJSONString(value, path+".identity", 256, false); err != nil {
+				return nil, err
+			}
+		}
+		if value, ok := fields["type"]; ok {
+			typeValue, typeErr := DecodeTypeJSON(value, path+".type")
+			if typeErr != nil {
+				return nil, typeErr
+			}
+			node.Type = &typeValue
+		}
+		switch node.Kind {
+		case TermAtom:
+			if node.Symbol, err = rewriteJSONString(fields["symbol"], path+".symbol", 256, false); err != nil {
+				return nil, err
+			}
+			args, err := strictArray(fields["args"], path+".args", DefaultMaxPorts)
+			if err != nil {
+				return nil, err
+			}
+			node.Args = make([]NodeArgument, len(args))
+			for j, argRaw := range args {
+				argPath := fmt.Sprintf("%s.args[%d]", path, j)
+				argFields, err := strictObject(argRaw, argPath, []string{"role", "value"}, []string{"role", "value"})
+				if err != nil {
+					return nil, err
+				}
+				role, err := rewriteJSONString(argFields["role"], argPath+".role", 256, false)
+				if err != nil {
+					return nil, err
+				}
+				value, err := decodeNodeID(argFields["value"], argPath+".value")
+				if err != nil {
+					return nil, err
+				}
+				node.Args[j] = NodeArgument{Role: role, Value: value}
+			}
+		case TermAnd:
+			operands, err := strictArray(fields["operands"], path+".operands", DefaultMaxNodes)
+			if err != nil {
+				return nil, err
+			}
+			if len(operands) == 0 {
+				return nil, invalid("EMPTY_AND", path+".operands", "And requires at least one operand")
+			}
+			node.Operands = make([]NodeID, len(operands))
+			for j, rawID := range operands {
+				if node.Operands[j], err = decodeNodeID(rawID, fmt.Sprintf("%s.operands[%d]", path, j)); err != nil {
+					return nil, err
+				}
+			}
+		case TermExists, TermLambda:
+			if node.Body, err = decodeNodeID(fields["body"], path+".body"); err != nil {
+				return nil, err
+			}
+		case TermApply:
+			if node.Function, err = decodeNodeID(fields["function"], path+".function"); err != nil {
+				return nil, err
+			}
+			if node.Argument, err = decodeNodeID(fields["argument"], path+".argument"); err != nil {
+				return nil, err
+			}
+		}
+		result[i] = node
+	}
+	return result, nil
+}
+
+func decodeArtifactProvenance(data []byte, path string) ([]provenance.SourceRef, error) {
+	items, err := strictArray(data, path, DefaultMaxSymbols)
+	if err != nil {
+		return nil, err
+	}
+	result := make([]provenance.SourceRef, len(items))
+	seen := make(map[string]struct{}, len(items))
+	for i, raw := range items {
+		itemPath := fmt.Sprintf("%s[%d]", path, i)
+		fields, err := strictObject(raw, itemPath, []string{"id", "path", "uri", "version", "license", "author", "checksum_sha256"}, []string{"id", "version", "license"})
+		if err != nil {
+			return nil, err
+		}
+		limits := map[string]int{"id": provenance.MaxSourceIDBytes, "path": provenance.MaxSourceLocationBytes, "uri": provenance.MaxSourceLocationBytes, "version": provenance.MaxSourceVersionBytes, "license": provenance.MaxSourceLicenseBytes, "author": provenance.MaxSourceAuthorBytes, "checksum_sha256": provenance.SHA256HexBytes}
+		values := map[string]*string{"id": &result[i].ID, "path": &result[i].Path, "uri": &result[i].URI, "version": &result[i].Version, "license": &result[i].License, "author": &result[i].Author, "checksum_sha256": &result[i].ChecksumSHA256}
+		for key, rawValue := range fields {
+			value, err := rewriteJSONString(rawValue, itemPath+"."+key, limits[key], key == "path" || key == "uri" || key == "author" || key == "checksum_sha256")
+			if err != nil {
+				return nil, err
+			}
+			*values[key] = value
+		}
+		if err := result[i].Validate(); err != nil {
+			return nil, invalid("INVALID_PROVENANCE", itemPath, err.Error())
+		}
+		if _, exists := seen[result[i].ID]; exists {
+			return nil, invalid("DUPLICATE_PROVENANCE_ID", itemPath+".id", "provenance ID is duplicated")
+		}
+		seen[result[i].ID] = struct{}{}
+	}
+	return result, nil
+}
+
+func (request ArtifactExportRequest) MarshalJSON() ([]byte, error) {
+	if request.SchemaVersion != 1 {
+		return nil, invalid("INVALID_SCHEMA_VERSION", "request.schema_version", "schema version must be 1")
+	}
+	if err := ValidateRewriteProfile(request.Profile); err != nil {
+		return nil, err
+	}
+	if !validText(request.ContextID, 256) || len(request.ContextDependencies) > DefaultMaxSymbols || len(request.Provenance) > DefaultMaxSymbols {
+		return nil, invalid("INVALID_ARTIFACT_REQUEST", "request", "context or request metadata exceeds bounds")
+	}
+	documentWireValue, err := rewriteDocumentWire(request.Document)
+	if err != nil {
+		return nil, err
+	}
+	dependencies, err := encodeContextDependencies(request.ContextDependencies)
+	if err != nil {
+		return nil, err
+	}
+	provenanceValues, err := encodeArtifactProvenance(request.Provenance)
+	if err != nil {
+		return nil, err
+	}
+	wire := map[string]any{"schema_version": request.SchemaVersion, "document": documentWireValue, "profile": rewriteProfileWire(request.Profile), "context_id": request.ContextID, "context_dependencies": dependencies, "provenance": provenanceValues}
+	return marshalBoundedWire(wire, MaxArtifactExportRequestBytes, "request")
+}
+
+func (request ArtifactReplayRequest) MarshalJSON() ([]byte, error) {
+	if request.SchemaVersion != 1 {
+		return nil, invalid("INVALID_SCHEMA_VERSION", "request.schema_version", "schema version must be 1")
+	}
+	if err := ValidateRewriteProfile(request.Profile); err != nil {
+		return nil, err
+	}
+	if !validText(request.ContextID, 256) {
+		return nil, invalid("INVALID_CONTEXT_ID", "request.context_id", "context ID must be bounded nonempty text")
+	}
+	dependencies, err := encodeContextDependencies(request.ContextDependencies)
+	if err != nil {
+		return nil, err
+	}
+	provenanceValues, err := encodeArtifactProvenance(request.Provenance)
+	if err != nil {
+		return nil, err
+	}
+	wire := map[string]any{"schema_version": request.SchemaVersion, "profile": rewriteProfileWire(request.Profile), "context_id": request.ContextID, "context_dependencies": dependencies, "provenance": provenanceValues, "artifact": request.Artifact}
+	if request.Limits != (Limits{}) {
+		if _, err := NormalizeLimits(request.Limits); err != nil {
+			return nil, err
+		}
+		wire["limits"] = request.Limits
+	}
+	return marshalBoundedWire(wire, MaxArtifactReplayRequestBytes, "request")
+}
+
+func encodeContextDependencies(values []ContextDependency) ([]ContextDependency, error) {
+	if len(values) > DefaultMaxSymbols {
+		return nil, resourceLimit("context_dependencies", "context dependency count exceeds 512")
+	}
+	result := append([]ContextDependency{}, values...)
+	seen := make(map[string]struct{}, len(result))
+	for i, value := range result {
+		if !validText(value.ID, 256) || !validText(value.Fingerprint, 256) {
+			return nil, invalid("INVALID_CONTEXT_DEPENDENCY", fmt.Sprintf("context_dependencies[%d]", i), "dependency ID and fingerprint must be bounded nonempty text")
+		}
+		if _, exists := seen[value.ID]; exists {
+			return nil, invalid("DUPLICATE_CONTEXT_DEPENDENCY", fmt.Sprintf("context_dependencies[%d].id", i), "dependency ID is duplicated")
+		}
+		seen[value.ID] = struct{}{}
+	}
+	return result, nil
+}
+
+func encodeArtifactProvenance(values []provenance.SourceRef) ([]provenance.SourceRef, error) {
+	if len(values) > DefaultMaxSymbols {
+		return nil, resourceLimit("provenance", "provenance count exceeds 512")
+	}
+	result := append([]provenance.SourceRef{}, values...)
+	seen := make(map[string]struct{}, len(result))
+	for i, source := range result {
+		if err := source.Validate(); err != nil {
+			return nil, invalid("INVALID_PROVENANCE", fmt.Sprintf("provenance[%d]", i), err.Error())
+		}
+		if _, exists := seen[source.ID]; exists {
+			return nil, invalid("DUPLICATE_PROVENANCE_ID", fmt.Sprintf("provenance[%d].id", i), "provenance ID is duplicated")
+		}
+		seen[source.ID] = struct{}{}
+	}
+	return result, nil
+}
+
+func (envelope ArtifactEnvelope) MarshalJSON() ([]byte, error) {
+	if err := validateArtifactEnvelopeLocal(envelope); err != nil {
+		return nil, err
+	}
+	return artifactEnvelopeBytes(envelope)
+}
+
+// validateArtifactEnvelopeLocal checks wire integrity against declarations
+// carried by the envelope itself. It is structural only and is not trusted
+// metadata admission; ReplayArtifact still requires an independent environment.
+func validateArtifactEnvelopeLocal(envelope ArtifactEnvelope) error {
+	if err := validateReplayHeader(envelope); err != nil {
+		return err
+	}
+	if err := validateCanonicalArtifactOrder(envelope); err != nil {
+		return err
+	}
+	for i, pin := range envelope.Registries {
+		if !validText(pin.ID, 256) || !validText(pin.Version, 256) || !validText(pin.ResourceFingerprint, 256) || !validText(pin.FormalDenotationID, 256) {
+			return invalid("INVALID_REGISTRY_PIN", fmt.Sprintf("registries[%d]", i), "registry pin fields must be bounded nonempty text")
+		}
+	}
+	for i, dependency := range envelope.ContextDependencies {
+		if !validText(dependency.ID, 256) || !validText(dependency.Fingerprint, 256) {
+			return invalid("INVALID_CONTEXT_DEPENDENCY", fmt.Sprintf("context_dependencies[%d]", i), "context dependency fields must be bounded nonempty text")
+		}
+	}
+	seenProvenance := make(map[string]struct{}, len(envelope.Provenance))
+	for i, source := range envelope.Provenance {
+		if err := source.Validate(); err != nil {
+			return invalid("INVALID_PROVENANCE", fmt.Sprintf("provenance[%d]", i), err.Error())
+		}
+		if _, exists := seenProvenance[source.ID]; exists {
+			return invalid("DUPLICATE_PROVENANCE_ID", fmt.Sprintf("provenance[%d].id", i), "provenance ID is duplicated")
+		}
+		seenProvenance[source.ID] = struct{}{}
+	}
+	limits, err := NormalizeLimits(envelope.Limits)
+	if err != nil {
+		return err
+	}
+	if len(envelope.Nodes) > limits.MaxNodes {
+		return resourceLimit("nodes", "artifact node count exceeds its declared limits")
+	}
+	if err := preflightReplayNodes(envelope.Nodes, limits); err != nil {
+		return err
+	}
+	if err := validateReplayDeclarations(envelope); err != nil {
+		return err
+	}
+	context := Document{SchemaVersion: SchemaVersion, Sorts: envelope.Sorts, Signatures: envelope.Signatures, Parameters: envelope.Parameters, References: envelope.References, Closed: envelope.Closed, Limits: limits}
+	arena, err := NewArena(context, envelope.Root, envelope.Nodes)
+	if err != nil {
+		return err
+	}
+	resourceBytes, err := artifactResourceBytes(envelope)
+	if err != nil {
+		return err
+	}
+	if len(resourceBytes) > MaxArtifactBytes {
+		return resourceLimit("artifact", "canonical artifact resource descriptor exceeds 8 MiB")
+	}
+	document, err := arena.Document()
+	if err != nil {
+		return err
+	}
+	meaningBytes, err := artifactMeaningBytes(envelope, document.Expression)
+	if err != nil {
+		return err
+	}
+	if artifactDigest("golingua-artifact-resource-v1\x00", resourceBytes) != envelope.ResourceFingerprint ||
+		artifactDigest("golingua-artifact-meaning-v1\x00", meaningBytes) != envelope.MeaningFingerprint ||
+		artifactDigest("golingua-artifact-cache-v1\x00", meaningBytes) != envelope.CacheKey {
+		return invalid("ARTIFACT_RECEIPT_MISMATCH", "artifact", "artifact receipts do not match the structurally checked envelope")
+	}
+	payload, err := artifactEnvelopeBytes(envelope)
+	if err != nil {
+		return err
+	}
+	if len(payload) > MaxArtifactBytes {
+		return resourceLimit("artifact", "complete artifact envelope exceeds 8 MiB")
+	}
+	return nil
+}
+
+func validateCanonicalArtifactOrder(envelope ArtifactEnvelope) error {
+	check := func(ids []string, path string) error {
+		for i := 1; i < len(ids); i++ {
+			if ids[i-1] >= ids[i] {
+				return invalid("NONCANONICAL_ARTIFACT_ORDER", fmt.Sprintf("%s[%d]", path, i), "artifact records must use strict ID order")
+			}
+		}
+		return nil
+	}
+	registryIDs := make([]string, len(envelope.Registries))
+	for i, value := range envelope.Registries {
+		registryIDs[i] = value.ID
+	}
+	if err := check(registryIDs, "registries"); err != nil {
+		return err
+	}
+	dependencyIDs := make([]string, len(envelope.ContextDependencies))
+	for i, value := range envelope.ContextDependencies {
+		dependencyIDs[i] = value.ID
+	}
+	if err := check(dependencyIDs, "context_dependencies"); err != nil {
+		return err
+	}
+	provenanceIDs := make([]string, len(envelope.Provenance))
+	for i, value := range envelope.Provenance {
+		provenanceIDs[i] = value.ID
+	}
+	if err := check(provenanceIDs, "provenance"); err != nil {
+		return err
+	}
+	sortIDs := make([]string, len(envelope.Sorts))
+	for i, value := range envelope.Sorts {
+		sortIDs[i] = value.ID
+	}
+	if err := check(sortIDs, "sorts"); err != nil {
+		return err
+	}
+	signatureIDs := make([]string, len(envelope.Signatures))
+	for i, value := range envelope.Signatures {
+		signatureIDs[i] = value.ID
+	}
+	if err := check(signatureIDs, "signatures"); err != nil {
+		return err
+	}
+	if !strictlySortedDeclarations(envelope.Parameters) || !strictlySortedDeclarations(envelope.References) {
+		return invalid("NONCANONICAL_ARTIFACT_ORDER", "declarations", "parameter and reference declarations must use strict ID order")
+	}
+	return nil
 }

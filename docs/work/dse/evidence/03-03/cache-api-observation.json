@@ -1,0 +1,23 @@
+{
+  "name": "request-local-cache-invalidation-api",
+  "isolation": "/tmp/golingua-383-cache-probe-y1e_5bbw",
+  "command": [
+    "go",
+    "run",
+    "./cmd/cacheprobe"
+  ],
+  "env": {
+    "GOPROXY": "off"
+  },
+  "exit_code": 0,
+  "stdout": "first export: miss\nexact repeat: hit, same immutable artifact\nchanged actual profile: miss\nchanged context ID: miss\nchanged context dependency: miss\nchanged actual compiled registry: miss\nchanged typed reference ID: miss\nlabel-only source: miss, same meaning, changed resource\ncache on/off: same meaning, unique nodes 4/7\nmissing full structure: bypass\n",
+  "stderr": "",
+  "probe_sha256": "385c73ca0c5757218c88e378fa8cbc49edb54c02cfaf57f7569dd2cda8035bd8",
+  "source_state": "copy of frozen active source, no .git or credentials copied",
+  "initial_probe_attempt": {
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "# github.com/clickbytes/golingua/cmd/cacheprobe\ncmd/cacheprobe/main.go:24:39: cache.Statistics undefined (type *algebra.ArtifactCache has no field or method Statistics)\n",
+    "note": "Coordinator probe referenced a nonexistent statistics getter; removed that diagnostic-only call without changing product code or the invalidation requirements."
+  }
+}

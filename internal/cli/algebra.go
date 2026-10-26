@@ -20,6 +20,7 @@ type algebraOptions struct {
 	input    string
 	metadata []string
 	json     bool
+	noCache  bool
 }
 
 type algebraNormalizeOutput struct {
@@ -89,6 +90,46 @@ type metadataCommandOutput struct {
 	Packages        []metadataPackageOutput `json:"packages"`
 }
 
+type artifactExportOutput struct {
+	Status        status.OutcomeKind        `json:"status"`
+	Artifact      algebra.ArtifactEnvelope  `json:"artifact"`
+	Checked       algebra.CheckedExpression `json:"checked"`
+	UniqueNodes   int                       `json:"unique_nodes"`
+	ExpandedNodes int                       `json:"expanded_nodes"`
+	Interning     bool                      `json:"interning_enabled"`
+	CacheHit      bool                      `json:"cache_hit"`
+	Metadata      []metadataReference       `json:"metadata"`
+}
+
+type artifactReplayOutput struct {
+	Status        status.OutcomeKind        `json:"status"`
+	Artifact      algebra.ArtifactEnvelope  `json:"artifact"`
+	Checked       algebra.CheckedExpression `json:"checked"`
+	UniqueNodes   int                       `json:"unique_nodes"`
+	ExpandedNodes int                       `json:"expanded_nodes"`
+	Metadata      []metadataReference       `json:"metadata"`
+}
+
+type artifactInspectionOutput struct {
+	Status              status.OutcomeKind          `json:"status"`
+	ValidationScope     string                      `json:"validation_scope"`
+	MetadataVerified    bool                        `json:"metadata_verified"`
+	NormalizerVersion   string                      `json:"normalizer_version"`
+	RegistrySnapshotID  string                      `json:"registry_snapshot_id"`
+	RequiredRegistries  []algebra.RegistryPin       `json:"required_registry_pins"`
+	Profile             algebra.RewriteProfile      `json:"profile"`
+	ContextID           string                      `json:"context_id"`
+	ContextDependencies []algebra.ContextDependency `json:"context_dependencies"`
+	Provenance          []provenance.SourceRef      `json:"provenance"`
+	ResourceFingerprint string                      `json:"resource_fingerprint"`
+	MeaningFingerprint  string                      `json:"meaning_fingerprint"`
+	CacheKey            string                      `json:"cache_key"`
+	Root                algebra.NodeID              `json:"root"`
+	UniqueNodes         int                         `json:"unique_nodes"`
+	ExpandedNodes       int                         `json:"expanded_nodes"`
+	Checked             algebra.CheckedExpression   `json:"checked"`
+}
+
 type algebraInfrastructureError struct{ message string }
 
 func (failure *algebraInfrastructureError) Error() string { return failure.message }
@@ -103,7 +144,7 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		options.command = "check"
 	} else if args[1] == "build" {
 		options.command = "build"
-	} else if args[1] == "normalize" || args[1] == "verify-rewrite" {
+	} else if args[1] == "normalize" || args[1] == "verify-rewrite" || args[1] == "export" || args[1] == "inspect" || args[1] == "replay" {
 		options.command = args[1]
 	} else if args[1] == "metadata" {
 		if len(args) < 3 || (args[2] != "inspect" && args[2] != "validate") {
@@ -112,9 +153,10 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		options.command = "metadata_" + args[2]
 		index = 3
 	} else {
-		return options, "expected algebra check, build, normalize, verify-rewrite, or metadata"
+		return options, "expected algebra check, build, export, inspect, replay, normalize, verify-rewrite, or metadata"
 	}
 	seenJSON, seenInput := false, false
+	seenNoCache := false
 	for i := index; i < len(args); i++ {
 		flag := args[i]
 		switch flag {
@@ -125,8 +167,8 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			seenJSON = true
 			options.json = true
 		case "--input":
-			if options.command != "check" && options.command != "build" && options.command != "normalize" && options.command != "verify-rewrite" {
-				return options, "--input is only valid for algebra check, build, normalize, or verify-rewrite"
+			if options.command != "check" && options.command != "build" && options.command != "normalize" && options.command != "verify-rewrite" && options.command != "export" && options.command != "inspect" && options.command != "replay" {
+				return options, "--input is not valid for this algebra command"
 			}
 			if seenInput {
 				return options, "duplicate --input flag"
@@ -141,6 +183,9 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 				return options, "--input value must not be empty"
 			}
 		case "--metadata":
+			if options.command == "inspect" {
+				return options, "algebra inspect is structural-only and does not accept --metadata"
+			}
 			if i+1 >= len(args) || args[i+1] == "--json" || strings.HasPrefix(args[i+1], "--") {
 				return options, "missing value for --metadata"
 			}
@@ -149,8 +194,17 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 				return options, "--metadata value must not be empty"
 			}
 			options.metadata = append(options.metadata, args[i])
+		case "--no-cache":
+			if options.command != "export" {
+				return options, "--no-cache is only valid for algebra export"
+			}
+			if seenNoCache {
+				return options, "duplicate --no-cache flag"
+			}
+			seenNoCache = true
+			options.noCache = true
 		default:
-			return options, fmt.Sprintf("unknown algebra check argument %q", flag)
+			return options, fmt.Sprintf("unknown algebra argument %q", flag)
 		}
 	}
 	if !seenJSON {
@@ -169,6 +223,9 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 	}
 	if (options.command == "normalize" || options.command == "verify-rewrite") && len(options.metadata) == 0 {
 		return options, "algebra normalize and verify-rewrite require at least one --metadata file"
+	}
+	if (options.command == "export" || options.command == "replay") && len(options.metadata) == 0 {
+		return options, "algebra export and replay require at least one --metadata file"
 	}
 	return options, ""
 }
@@ -196,6 +253,23 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
 			return ExitError
 		}
 		return ExitOK
+	}
+	if options.command == "export" {
+		registries, err := readMetadataRegistries(options.metadata)
+		if err != nil {
+			return writeAlgebraError(stdout, stderr, err)
+		}
+		return runArtifactExport(options, input, stdout, stderr, registries)
+	}
+	if options.command == "inspect" {
+		return runArtifactInspect(options, input, stdout, stderr)
+	}
+	if options.command == "replay" {
+		registries, err := readMetadataRegistries(options.metadata)
+		if err != nil {
+			return writeAlgebraError(stdout, stderr, err)
+		}
+		return runArtifactReplay(options, input, stdout, stderr, registries)
 	}
 	var registries []*metamodel.Registry
 	if len(options.metadata) != 0 {
@@ -354,6 +428,115 @@ func readAlgebraInput(options algebraOptions, input io.Reader, maximum int, desc
 		return nil, &algebra.Error{Status: status.OutcomeResourceLimit, Code: "JSON_BYTE_LIMIT", Path: "input", Message: fmt.Sprintf("input exceeds %d byte limit", maximum)}
 	}
 	return data, nil
+}
+
+func runArtifactExport(options algebraOptions, input io.Reader, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
+	data, err := readAlgebraInput(options, input, algebra.MaxArtifactExportRequestBytes, "algebra export")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	request, err := algebra.DecodeArtifactExportRequest(data)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	environment, err := metamodel.ArtifactEnvironment(registries, request.Profile, request.ContextID, request.ContextDependencies, request.Provenance)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	var cache *algebra.ArtifactCache
+	if !options.noCache {
+		cache, err = algebra.NewArtifactCache(0, 0)
+		if err != nil {
+			return writeAlgebraError(stdout, stderr, err)
+		}
+	}
+	artifact, hit, err := algebra.ExportArtifact(environment, request.Document, cache)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	checked := artifact.Arena().Checked()
+	output := artifactExportOutput{
+		Status: checked.Status, Artifact: artifact.Envelope(), Checked: checked,
+		UniqueNodes: artifact.Arena().Count(), ExpandedNodes: checked.NodeCount,
+		Interning: !options.noCache, CacheHit: hit, Metadata: metadataReferences(registries),
+	}
+	if err := writeJSON(stdout, output); err != nil {
+		_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not serialize artifact export: %v\n", err)
+		return ExitError
+	}
+	return exitCode(checked.Status)
+}
+
+func runArtifactInspect(options algebraOptions, input io.Reader, stdout, stderr io.Writer) int {
+	data, err := readAlgebraInput(options, input, algebra.MaxArtifactEnvelopeBytes, "algebra inspect")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	envelope, err := algebra.DecodeArtifactEnvelope(data)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	// The scoped envelope marshaler checks graph integrity and its self-reported
+	// receipts against the envelope's declared content. This remains explicitly
+	// structural and does not validate metadata approval or request authority.
+	if _, err := json.Marshal(envelope); err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	context := algebra.Document{
+		SchemaVersion: algebra.SchemaVersion, Sorts: envelope.Sorts, Signatures: envelope.Signatures,
+		Parameters: envelope.Parameters, References: envelope.References, Closed: envelope.Closed, Limits: envelope.Limits,
+	}
+	arena, err := algebra.NewArena(context, envelope.Root, envelope.Nodes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	checked := arena.Checked()
+	output := artifactInspectionOutput{
+		Status:            checked.Status,
+		ValidationScope:   "structural artifact integrity against declared content only; selected metadata, approval, identity authority, and external resources are not verified",
+		MetadataVerified:  false,
+		NormalizerVersion: envelope.NormalizerVersion, RegistrySnapshotID: envelope.RegistrySnapshotID,
+		RequiredRegistries: append([]algebra.RegistryPin{}, envelope.Registries...), Profile: envelope.Profile,
+		ContextID: envelope.ContextID, ContextDependencies: append([]algebra.ContextDependency{}, envelope.ContextDependencies...),
+		Provenance:          append([]provenance.SourceRef{}, envelope.Provenance...),
+		ResourceFingerprint: envelope.ResourceFingerprint, MeaningFingerprint: envelope.MeaningFingerprint, CacheKey: envelope.CacheKey,
+		Root: arena.Root(), UniqueNodes: arena.Count(), ExpandedNodes: checked.NodeCount, Checked: checked,
+	}
+	if err := writeJSON(stdout, output); err != nil {
+		_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not serialize artifact inspection: %v\n", err)
+		return ExitError
+	}
+	return exitCode(checked.Status)
+}
+
+func runArtifactReplay(options algebraOptions, input io.Reader, stdout, stderr io.Writer, registries []*metamodel.Registry) int {
+	data, err := readAlgebraInput(options, input, algebra.MaxArtifactReplayRequestBytes, "algebra replay")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	request, err := algebra.DecodeArtifactReplayRequest(data)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	expected, err := metamodel.ArtifactEnvironment(registries, request.Profile, request.ContextID, request.ContextDependencies, request.Provenance)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	artifact, err := algebra.ReplayArtifact(expected, request.Artifact, request.Limits)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	checked := artifact.Arena().Checked()
+	output := artifactReplayOutput{
+		Status: checked.Status, Artifact: artifact.Envelope(), Checked: checked,
+		UniqueNodes: artifact.Arena().Count(), ExpandedNodes: checked.NodeCount,
+		Metadata: metadataReferences(registries),
+	}
+	if err := writeJSON(stdout, output); err != nil {
+		_, _ = fmt.Fprintf(stderr, "INFRASTRUCTURE_ERROR: could not serialize artifact replay: %v\n", err)
+		return ExitError
+	}
+	return exitCode(checked.Status)
 }
 
 func metadataReferences(registries []*metamodel.Registry) []metadataReference {
