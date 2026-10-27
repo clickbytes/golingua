@@ -1,0 +1,199 @@
+{
+  "schema_version": 1,
+  "id": "dse398.relation.vision-event-binary.proposal",
+  "version": "2026-10-27.1",
+  "profile": "positive-facts-v1",
+  "provenance": [
+    {
+      "id": "dse-08-03-event-projection-agent-review",
+      "uri": "https://github.com/clickbytes/golingua/issues/398",
+      "version": "2026-10-27.1",
+      "license": "internal-neutral-example",
+      "author": "Codex by owner delegation"
+    }
+  ],
+  "sorts": [],
+  "dependencies": [],
+  "typical_edges": [],
+  "axioms": [],
+  "symbols": [
+    {
+      "id": "pilot.vision_event",
+      "kind": "primitive",
+      "label": "pilot visual-perception event relation",
+      "description": "Agent-reviewed bounded formal pilot relation vision_event(event, experiencer, stimulus); Entity-valued experiencer/stimulus only. No facts or owner language approval.",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "dse394-formal-target-review",
+          "uri": "https://github.com/clickbytes/golingua/issues/394",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        { "role": "event", "type": { "kind": "Event" } },
+        { "role": "experiencer", "type": { "kind": "Entity" } },
+        { "role": "stimulus", "type": { "kind": "Entity" } }
+      ],
+      "constraints": [
+        { "kind": "arity", "count": 3 },
+        { "kind": "port_type", "role": "event", "type": { "kind": "Event" } },
+        { "kind": "port_type", "role": "experiencer", "type": { "kind": "Entity" } },
+        { "kind": "port_type", "role": "stimulus", "type": { "kind": "Entity" } }
+      ]
+    },
+    {
+      "id": "pilot.auditory_event",
+      "kind": "primitive",
+      "label": "pilot auditory-perception event relation",
+      "description": "Formal signature retained because the independent relation input declares it; this proposal makes no claim about auditory-language realization.",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "dse394-formal-target-review",
+          "uri": "https://github.com/clickbytes/golingua/issues/394",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        { "role": "event", "type": { "kind": "Event" } },
+        { "role": "experiencer", "type": { "kind": "Entity" } },
+        { "role": "stimulus", "type": { "kind": "Entity" } }
+      ],
+      "constraints": [
+        { "kind": "arity", "count": 3 },
+        { "kind": "port_type", "role": "event", "type": { "kind": "Event" } },
+        { "kind": "port_type", "role": "experiencer", "type": { "kind": "Entity" } },
+        { "kind": "port_type", "role": "stimulus", "type": { "kind": "Entity" } }
+      ]
+    },
+    {
+      "id": "pilot.r",
+      "kind": "alias",
+      "label": "proposed binary projection of pilot.vision_event",
+      "description": "Agent-reviewed formal proposal for the DSE-08-03 paired-vision slice only: pilot.r(a,b) means there exists a vision event with experiencer a and stimulus b. This does not assert a general natural-language relation mapping. Owner semantic and language acceptance remain NOT EVALUATED.",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "dse-08-03-event-projection-agent-review",
+          "uri": "https://github.com/clickbytes/golingua/issues/398",
+          "version": "2026-10-27.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        { "role": "a", "type": { "kind": "Entity" } },
+        { "role": "b", "type": { "kind": "Entity" } }
+      ],
+      "constraints": [
+        { "kind": "arity", "count": 2 },
+        { "kind": "port_type", "role": "a", "type": { "kind": "Entity" } },
+        { "kind": "port_type", "role": "b", "type": { "kind": "Entity" } }
+      ],
+      "alias": {
+        "interface": [
+          { "port": "a", "binder": "rel_a" },
+          { "port": "b", "binder": "rel_b" }
+        ],
+        "expression": {
+          "kind": "Lambda",
+          "id": "rel_a",
+          "type": { "kind": "Entity" },
+          "body": {
+            "kind": "Lambda",
+            "id": "rel_b",
+            "type": { "kind": "Entity" },
+            "body": {
+              "kind": "Exists",
+              "id": "rel_event",
+              "type": { "kind": "Event" },
+              "body": {
+                "kind": "Atom",
+                "symbol": "pilot.vision_event",
+                "args": [
+                  { "role": "event", "value": { "kind": "Var", "id": "rel_event" } },
+                  { "role": "experiencer", "value": { "kind": "Var", "id": "rel_a" } },
+                  { "role": "stimulus", "value": { "kind": "Var", "id": "rel_b" } }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "probe.teacher",
+      "kind": "primitive",
+      "label": "explicit probe convention probe.teacher",
+      "description": "Signature retained from the independent relation input; no world fact is asserted.",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "dse395-independent-probe",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26-probe",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        { "role": "entity", "type": { "kind": "Entity" } }
+      ],
+      "constraints": [
+        { "kind": "arity", "count": 1 },
+        { "kind": "port_type", "role": "entity", "type": { "kind": "Entity" } }
+      ]
+    },
+    {
+      "id": "probe.dog",
+      "kind": "primitive",
+      "label": "explicit probe convention probe.dog",
+      "description": "Signature retained from the independent relation input; no world fact is asserted.",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "dse395-independent-probe",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26-probe",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        { "role": "entity", "type": { "kind": "Entity" } }
+      ],
+      "constraints": [
+        { "kind": "arity", "count": 1 },
+        { "kind": "port_type", "role": "entity", "type": { "kind": "Entity" } }
+      ]
+    },
+    {
+      "id": "probe.definite",
+      "kind": "primitive",
+      "label": "explicit probe convention probe.definite",
+      "description": "Signature retained from the independent relation input; no world fact is asserted.",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "dse395-independent-probe",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26-probe",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        { "role": "entity", "type": { "kind": "Entity" } }
+      ],
+      "constraints": [
+        { "kind": "arity", "count": 1 },
+        { "kind": "port_type", "role": "entity", "type": { "kind": "Entity" } }
+      ]
+    }
+  ]
+}

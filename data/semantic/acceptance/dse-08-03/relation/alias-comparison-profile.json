@@ -1,0 +1,8 @@
+{
+  "id": "dse-08-03-agent-reviewed-alias-proposal",
+  "rules": [
+    "alpha_v1",
+    "beta_v1",
+    "alias_v1"
+  ]
+}
