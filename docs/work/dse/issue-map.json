@@ -146,7 +146,7 @@
         394,
         395
       ],
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "branch_name": null,
       "actual_base_sha": null,
       "branch_url": null,
@@ -166,7 +166,7 @@
         397,
         398
       ],
-      "status": "QUEUED",
+      "status": "IN_PROGRESS",
       "branch_name": null,
       "actual_base_sha": null,
       "branch_url": null,
@@ -665,11 +665,11 @@
         393
       ],
       "branch_name": "dse/07-02-source-composition",
-      "status": "ACTIVE",
+      "status": "DONE",
       "actual_base_sha": "dd4c0e21f3f10bccae21db73b2d0b4d5850a0e50",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/07-02-source-composition",
-      "pr_url": null,
-      "merge_sha": null,
+      "pr_url": "https://github.com/clickbytes/golingua/pull/419",
+      "merge_sha": "bae377aafca64ae3878cbd4eba7a97dbd1450c18",
       "evidence_paths": [
         "docs/work/dse/evidence/07-02/README.md",
         "docs/work/dse/evidence/07-02/outputs/main/observations.jsonl",
@@ -694,12 +694,15 @@
         393
       ],
       "branch_name": "dse/08-01-target-coverage",
-      "status": "QUEUED",
-      "actual_base_sha": null,
-      "branch_url": null,
-      "pr_url": null,
-      "merge_sha": null,
-      "evidence_paths": []
+      "status": "DONE",
+      "actual_base_sha": "3bddd60266795ab1ea77cc772054b61e6bba2247",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/08-01-target-coverage",
+      "pr_url": "https://github.com/clickbytes/golingua/pull/420",
+      "merge_sha": "ba17286fc8bf48af42bc1d1af835f24f41fc69a8",
+      "evidence_paths": [
+        "docs/work/dse/evidence/08-01/README.md",
+        "docs/work/dse/evidence/08-01/outputs/"
+      ]
     },
     {
       "issue_number": 397,
@@ -714,12 +717,18 @@
         383
       ],
       "branch_name": "dse/08-02-runtime-integration",
-      "status": "QUEUED",
-      "actual_base_sha": null,
-      "branch_url": null,
+      "status": "ACTIVE",
+      "actual_base_sha": "ce8c0653b3d98d9929663eddbf74a60683d735f6",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/08-02-runtime-integration",
       "pr_url": null,
       "merge_sha": null,
-      "evidence_paths": []
+      "evidence_paths": [
+        "docs/work/dse/evidence/08-02/README.md",
+        "docs/work/dse/evidence/08-02/environment.json",
+        "docs/work/dse/evidence/08-02/runtime-config-positive.json",
+        "docs/work/dse/evidence/08-02/runtime-config-unsupported.json",
+        "docs/work/dse/evidence/08-02/outputs/"
+      ]
     },
     {
       "issue_number": 398,

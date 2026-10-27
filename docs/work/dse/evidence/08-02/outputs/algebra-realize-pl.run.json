@@ -1,0 +1,24 @@
+{
+  "command": "/tmp/golingua-dse/397/golingua algebra realize --language pl --language-package data/semantic/languages/pl/pilot.json --runtime-config /tmp/golingua-dse/395-doc-flow/runtime.json --input docs/work/dse/evidence/08-01/inputs/anonymous-vision.json --metadata data/semantic/examples/source-composition/metadata.json --json",
+  "exit_code": 0,
+  "stdout_file": "algebra-realize-pl.stdout.json",
+  "stderr_file": "algebra-realize-pl.stderr.txt",
+  "argv": [
+    "/tmp/golingua-dse/397/golingua",
+    "algebra",
+    "realize",
+    "--language",
+    "pl",
+    "--language-package",
+    "data/semantic/languages/pl/pilot.json",
+    "--runtime-config",
+    "/tmp/golingua-dse/395-doc-flow/runtime.json",
+    "--input",
+    "docs/work/dse/evidence/08-01/inputs/anonymous-vision.json",
+    "--metadata",
+    "data/semantic/examples/source-composition/metadata.json",
+    "--json"
+  ],
+  "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443",
+  "observed_at_utc": "2026-10-27T10:43:04+00:00"
+}

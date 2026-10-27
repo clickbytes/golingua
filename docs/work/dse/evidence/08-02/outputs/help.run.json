@@ -1,0 +1,12 @@
+{
+  "command": "/tmp/golingua-dse/397/golingua --help",
+  "exit_code": 0,
+  "stdout_file": "help.stdout.txt",
+  "stderr_file": "help.stderr.txt",
+  "argv": [
+    "/tmp/golingua-dse/397/golingua",
+    "--help"
+  ],
+  "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443",
+  "observed_at_utc": "2026-10-27T10:43:08+00:00"
+}

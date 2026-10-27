@@ -12,7 +12,7 @@ go run ./cmd/golingua --help
 go run ./cmd/golingua capabilities --json
 ```
 
-`--version` zwraca wersję technicznego podglądu v0. `--help` pokazuje dostępne komendy. `capabilities --json` opisuje gotowość bez wybranego runtime'u, dlatego obecnie zwraca `status: "unsupported"`, puste tablice `languages` i `features` oraz `ready: false`; sama komenda kończy się kodem 0. `forms` i `catalog` mają własne komendy opisane poniżej.
+`--version` zwraca wersję technicznego podglądu v0. `--help` pokazuje dostępne komendy. `capabilities --json` bez runtime'u zwraca `status: "unsupported"` i `ready: false`. Z `--runtime-config <path>` ładuje dokładnie wskazany runtime albo zwraca typowaną odmowę; odpowiedź rozdziela `representation`, `analysis`, `realization` i `evaluation` dla faktycznie skonfigurowanych zasobów. `forms` i `catalog` mają własne komendy opisane poniżej.
 
 ## Typowany IR: `algebra check`
 
@@ -580,6 +580,37 @@ Użyj jawnych flag, aktywnego snapshotu i wymaganej odpowiedzi JSON:
 ```sh
 go run ./cmd/golingua snapshot --apply --store ./store --json
 go run ./cmd/golingua translate --from pl --to en --text 'Nauczyciel widzi psa.' --runtime-config ./runtime.json --json
+```
+
+Istniejący runtime bez pola `semantic_profile` zachowuje trasę Meaning v1. Jawne
+`"semantic_profile": "dse"` wybiera osobny przepływ DSE; `dse_profile` wtedy
+obowiązkowo przypina wersję profilu, fingerprint całego wybranego registry,
+pakiety metadanych z ich ID/wersją/fingerprintem oraz dla `en` i `pl` pakiet
+źródłowy i docelowy, plan analizy i kontekst referencji. Pakiety językowe i plany
+przypinają SHA-256 dokładnych bajtów pliku; kontekst przypina `context_id`, wersję
+schematu i SHA-256. Ścieżki względne są liczone względem pliku runtime. Błędny
+pin lub brak wymaganej zdolności odrzuca aktywację. DSE nie wraca automatycznie
+do Meaning v1.
+
+W tej iteracji runtime DSE obsługuje wyłącznie jeden dodatni, bezpośredni Atom.
+Kontekst i warunki, których target nie zużywa, pozostają w DSE trace/residualach;
+nieobsłużony warunek kończy się jawnym `unsupported` przed wywołaniem generatora.
+Warunek `lexical_descriptor` może zostać zużyty tylko dla dokładnego źródłowego
+sensu z zatwierdzonym wiązaniem referencji i jednym zatwierdzonym, równoważnym
+transferem do CORE; wynik zapisuje to w `consumed_conditions`. Każdy referent
+uczestnika dostaje koncept wyłącznie z dokładnego źródłowego sensu powiązanego
+z jednym zatwierdzonym transfer bindingiem CORE. Brak, konflikt lub kilka mapowań
+kończy się jawną odmową przed generacją. Wynik DSE ma `dse_trace` z pełnym
+składaniem, GoalSpec/certyfikatami, canonical document, pinami i pokryciem
+realizatora; alternatywy nie zawierają konkurencyjnego grafu Meaning. Jawne
+`--preview-id` może pokazać wybrany przez wywołującego wariant, ale zbiorczy
+`ambiguous` oraz pozostałe warianty i ich założenia zostają zachowane.
+
+Przykładowe sprawdzenie skonfigurowanego profilu:
+
+```sh
+golingua capabilities --runtime-config ./runtime-dse.json --json
+golingua translate --from en --to pl --text 'The teacher sees the dog.' --runtime-config ./runtime-dse.json --json
 ```
 
 `runtime.json` wskazuje aktywny snapshot. W skompilowanym CLI nie trzeba podawać `language_package_dirs`: binarka kompiluje ograniczone pakiety PL/EN dla dokładnych szlaków `seeing`, `hearing`, `looking`, `reading` oraz `receiving`. `seeing`, `hearing`, `looking` i `reading` obsługują jawne formy teraźniejsze 3. osoby liczby pojedynczej i mnogiej; `seeing`, `hearing` i `looking` mają też ograniczoną negację teraźniejszą w obu liczbach (`does/do not` / `nie`), a ich warianty EN zachowują zadeklarowane `a`, `an` i `the`; `a/an` wymaga jawnej właściwości leksykalnej i liczby pojedynczej. `reading` używa angielskich `read/reads` i polskich `czyta/czytają` w teraźniejszości oraz angielskiego simple past `read` i jawnych polskich form przeszłych `czytać` w 3. osobie liczby pojedynczej i mnogiej. Angielskie mnogie `read` pozostaje niejednoznaczne między czasem teraźniejszym i przeszłym; konstrukcja zachowuje obie analizy. Negacja `reading` pozostaje poza zakresem. Przy realizacji PL→EN brak określoności zostaje widoczny jako jawne założenie rodzajnika; kandydat może pozostać `incomplete` albo wynik może być `ambiguous`, gdy kilka wariantów rodzajnika jest licencjonowanych. `receiving` obsługuje angielskie `got` oraz polskie 3. osobowe formy czasu przeszłego liczby pojedynczej i mnogiej, jeśli liczba i klasa rodzaju podmiotu są znane. `looking` zachowuje `look at` / `patrzeć na` i polski biernik. Bez `--runtime-config` odpowiedź pozostaje `unsupported`, ponieważ proces nie ma wybranego snapshotu.

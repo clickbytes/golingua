@@ -1,0 +1,23 @@
+{
+  "command": "/tmp/golingua-dse/397/golingua translate --from pl --to en --text 'Nauczyciel widzi psa.' --runtime-config /home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-02/runtime-config-positive.json --json --preview-id translation:ed751e2480c81eb1c42a16d63d670e6a6d8c679e24df4c8949097fb598a92558",
+  "exit_code": 6,
+  "stdout_file": "translate-pl-en-explicit-preview.stdout.json",
+  "stderr_file": "translate-pl-en-explicit-preview.stderr.txt",
+  "argv": [
+    "/tmp/golingua-dse/397/golingua",
+    "translate",
+    "--from",
+    "pl",
+    "--to",
+    "en",
+    "--text",
+    "Nauczyciel widzi psa.",
+    "--runtime-config",
+    "/home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-02/runtime-config-positive.json",
+    "--json",
+    "--preview-id",
+    "translation:ed751e2480c81eb1c42a16d63d670e6a6d8c679e24df4c8949097fb598a92558"
+  ],
+  "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443",
+  "observed_at_utc": "2026-10-27T10:43:12+00:00"
+}

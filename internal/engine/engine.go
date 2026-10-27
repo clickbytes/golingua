@@ -5,8 +5,10 @@ package engine
 import (
 	"context"
 	"reflect"
+	"sort"
 	"time"
 
+	"github.com/clickbytes/golingua/internal/algebra"
 	"github.com/clickbytes/golingua/internal/core"
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/language"
@@ -66,6 +68,62 @@ type SourceAnalyzer interface {
 	Analyze(context.Context, string) (semantic.Result, error)
 }
 
+// DSESourceAnalyzer is the explicitly configured algebra route. It is kept
+// separate from SourceAnalyzer so selecting DSE cannot silently fall back to
+// Meaning v1 when a candidate or resource is missing.
+type DSESourceAnalyzer interface {
+	AnalyzeDSE(context.Context, string) (semantic.DSEResult, error)
+}
+
+// DSELanguageResources bind one source analyzer and its checked source/target
+// semantic packages to the runtime profile that loaded them.
+type DSELanguageResources struct {
+	Source                   DSESourceAnalyzer
+	SourcePackage            *language.SemanticLanguagePackage
+	SourcePackageID          string
+	SourcePackageVersion     string
+	SourcePackageFingerprint string
+	TargetPackage            *language.SemanticLanguagePackage
+	TargetPackageFingerprint string
+	TargetBindingsUsable     bool
+	SourcePlanID             string
+	SourcePlanVersion        string
+	SourcePlanFingerprint    string
+	SourceContextID          string
+	SourceContextVersion     string
+	SourceContextFingerprint string
+}
+
+// DSERegistryPin is the immutable metadata identity visible in each DSE
+// translation trace.
+type DSERegistryPin struct {
+	ID          string `json:"id"`
+	Version     string `json:"version"`
+	Fingerprint string `json:"fingerprint"`
+}
+
+// DSEProfile selects one versioned DSE resource set. Metadata remains
+// independent of the CORE/lexicon Pack and is only supplied to algebra stages.
+type DSEProfile struct {
+	ID                  string
+	Version             string
+	RegistryFingerprint string
+	Registries          []DSERegistryPin
+	SelectedMetadata    algebra.Document
+	Languages           map[features.LanguageID]DSELanguageResources
+}
+
+// RuntimeCapabilities reports only resources selected into this immutable
+// engine. Empty evaluation means this translate profile does not evaluate facts.
+type RuntimeCapabilities struct {
+	SemanticProfile string
+	Languages       []string
+	Representation  []string
+	Analysis        []string
+	Realization     []string
+	Evaluation      []string
+}
+
 // SurfaceAlternative is one target-side lexicalization/plan/realization
 // result for exactly one source Meaning candidate.
 type SurfaceAlternative struct {
@@ -101,6 +159,7 @@ type Config struct {
 	PackSnapshot     *pack.Pack
 	Analyzers        map[features.LanguageID]SourceAnalyzer
 	Realizers        map[features.LanguageID]TargetRealizer
+	DSEProfile       *DSEProfile
 	Budget           Budget
 }
 
@@ -114,6 +173,7 @@ type Engine struct {
 	snapshotMatchesCore bool
 	analyzers           map[features.LanguageID]SourceAnalyzer
 	realizers           map[features.LanguageID]TargetRealizer
+	dseProfile          *DSEProfile
 	budget              Budget
 }
 
@@ -138,6 +198,29 @@ func New(config Config) (*Engine, error) {
 		snapshotMatchesCore: snapshotMatchesCore,
 		analyzers:           make(map[features.LanguageID]SourceAnalyzer, len(config.Analyzers)),
 		realizers:           make(map[features.LanguageID]TargetRealizer, len(config.Realizers)), budget: budget,
+	}
+	if config.DSEProfile != nil {
+		profile := *config.DSEProfile
+		if profile.ID == "" || profile.Version == "" || profile.RegistryFingerprint == "" || len(profile.Registries) == 0 || len(profile.Languages) == 0 {
+			return nil, engineError(status.OutcomeInvalid, "INVALID_DSE_PROFILE", "dse_profile", "DSE profile requires an identity, pinned metadata, and language resources")
+		}
+		profile.SelectedMetadata.Sorts = append([]algebra.SortDeclaration(nil), profile.SelectedMetadata.Sorts...)
+		profile.SelectedMetadata.Signatures = append([]algebra.Signature(nil), profile.SelectedMetadata.Signatures...)
+		for i := range profile.SelectedMetadata.Signatures {
+			profile.SelectedMetadata.Signatures[i].Ports = append([]algebra.Port(nil), profile.SelectedMetadata.Signatures[i].Ports...)
+		}
+		profile.Registries = append([]DSERegistryPin(nil), profile.Registries...)
+		profile.Languages = make(map[features.LanguageID]DSELanguageResources, len(config.DSEProfile.Languages))
+		for id, resources := range config.DSEProfile.Languages {
+			if !validLanguage(string(id)) || resources.Source == nil || resources.TargetPackage == nil ||
+				resources.SourcePackageID == "" || resources.SourcePackageVersion == "" || resources.SourcePackageFingerprint == "" ||
+				resources.SourcePlanID == "" || resources.SourcePlanVersion == "" || resources.SourcePlanFingerprint == "" ||
+				resources.SourceContextID == "" || resources.SourceContextVersion == "" || resources.SourceContextFingerprint == "" || resources.TargetPackageFingerprint == "" || !resources.TargetBindingsUsable {
+				return nil, engineError(status.OutcomeInvalid, "INVALID_DSE_LANGUAGE_RESOURCES", "dse_profile.languages", "each DSE language requires pinned source, plan, context and target resources")
+			}
+			profile.Languages[id] = resources
+		}
+		engine.dseProfile = &profile
 	}
 	for languageID, adapter := range config.Analyzers {
 		if adapter == nil || !validLanguage(string(languageID)) {
@@ -176,6 +259,50 @@ func (engine *Engine) PackSnapshot() *pack.Pack {
 		return nil
 	}
 	return engine.snapshot
+}
+
+// Capabilities returns a detached summary of the configured runtime stages.
+func (engine *Engine) Capabilities() RuntimeCapabilities {
+	result := RuntimeCapabilities{
+		SemanticProfile: "meaning-v1", Languages: []string{}, Representation: []string{},
+		Analysis: []string{}, Realization: []string{}, Evaluation: []string{},
+	}
+	if engine == nil {
+		return result
+	}
+	if engine.languages != nil {
+		for _, registered := range engine.languages.Languages() {
+			id := registered.Manifest.Language
+			result.Languages = append(result.Languages, string(id))
+			if _, ok := engine.SourceAnalyzerFor(id); ok {
+				result.Analysis = append(result.Analysis, string(id))
+			}
+			if _, ok := engine.TargetRealizerFor(id); ok {
+				result.Realization = append(result.Realization, string(id))
+			}
+		}
+	}
+	if engine.dseProfile != nil {
+		result.SemanticProfile = "dse"
+		result.Representation = append(result.Representation, "typed-algebra@"+engine.dseProfile.ID+"/"+engine.dseProfile.Version)
+		result.Analysis = result.Analysis[:0]
+		result.Realization = result.Realization[:0]
+		for id, resources := range engine.dseProfile.Languages {
+			if resources.Source != nil {
+				result.Analysis = append(result.Analysis, string(id))
+			}
+			if resources.TargetPackage != nil && resources.TargetBindingsUsable {
+				if _, ok := engine.TargetRealizerFor(id); ok {
+					result.Realization = append(result.Realization, string(id))
+				}
+			}
+		}
+	}
+	sort.Strings(result.Languages)
+	sort.Strings(result.Analysis)
+	sort.Strings(result.Realization)
+	sort.Strings(result.Representation)
+	return result
 }
 
 // TargetRealizerFor returns a target adapter only when the selected immutable

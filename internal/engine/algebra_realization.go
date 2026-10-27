@@ -101,6 +101,31 @@ func (engine *Engine) RealizeAlgebra(
 	languagePackage *language.SemanticLanguagePackage,
 	selectedMetadata algebra.Document,
 ) (AlgebraRealizationResult, error) {
+	return engine.realizeAlgebra(ctx, languageID, input, languagePackage, selectedMetadata, false)
+}
+
+// RealizeDSEAlgebra applies the stricter DSE translation contract: any
+// unsupported request-context residual blocks target generation. The source
+// pipeline may remove mention-resolution provenance before calling this
+// method because the canonical DSE candidate retains that evidence.
+func (engine *Engine) RealizeDSEAlgebra(
+	ctx context.Context,
+	languageID features.LanguageID,
+	input algebra.Document,
+	languagePackage *language.SemanticLanguagePackage,
+	selectedMetadata algebra.Document,
+) (AlgebraRealizationResult, error) {
+	return engine.realizeAlgebra(ctx, languageID, input, languagePackage, selectedMetadata, true)
+}
+
+func (engine *Engine) realizeAlgebra(
+	ctx context.Context,
+	languageID features.LanguageID,
+	input algebra.Document,
+	languagePackage *language.SemanticLanguagePackage,
+	selectedMetadata algebra.Document,
+	refuseContextResiduals bool,
+) (AlgebraRealizationResult, error) {
 	result := AlgebraRealizationResult{
 		Status: status.OutcomeInvalid, Language: string(languageID),
 		Coverage: []AlgebraRealizationCoverage{}, Residuals: []AlgebraRealizationResidual{},
@@ -221,6 +246,9 @@ func (engine *Engine) RealizeAlgebra(
 		return algebraRealizationFailure(result, status.OutcomeResourceLimit, "RESIDUAL_REPORT_LIMIT", "residuals", "request contains more residual items than this result can report"), nil
 	}
 	result.Coverage = append(result.Coverage, coverage)
+	if refuseContextResiduals && len(result.Residuals) != 0 {
+		return algebraRealizationFailure(result, status.OutcomeUnsupported, "DSE_CONTEXT_CONSTRAINT_UNSUPPORTED", "input.request_context", "target generation was refused because the request context contains constraints this DSE translation profile cannot realize"), nil
+	}
 
 	target, ok := engine.TargetRealizerFor(languageID)
 	if !ok || target == nil {

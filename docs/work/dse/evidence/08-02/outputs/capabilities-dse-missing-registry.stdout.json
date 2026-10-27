@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_DSE_REGISTRY_PATHS","message":"DSE profile requires a bounded, non-empty metamodel package set","path":"dse_profile.registries","severity":"error"}]}

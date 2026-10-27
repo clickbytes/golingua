@@ -1,0 +1,21 @@
+{
+  "command": "/tmp/golingua-dse/397/golingua translate --from en --to pl --text 'The teacher sees the dog.' --runtime-config /home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-02/runtime-config-positive.json --json",
+  "exit_code": 3,
+  "stdout_file": "translate-en-pl-definite.stdout.json",
+  "stderr_file": "translate-en-pl-definite.stderr.txt",
+  "argv": [
+    "/tmp/golingua-dse/397/golingua",
+    "translate",
+    "--from",
+    "en",
+    "--to",
+    "pl",
+    "--text",
+    "The teacher sees the dog.",
+    "--runtime-config",
+    "/home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-02/runtime-config-positive.json",
+    "--json"
+  ],
+  "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443",
+  "observed_at_utc": "2026-10-27T10:43:10+00:00"
+}
