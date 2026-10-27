@@ -68,6 +68,8 @@ type constructionBindingDeclaration struct {
 var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.question.wh", "pl.question.wh.subject"},
 	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.question.wh", "pl.question.wh.object.fronted"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.question.wh", "pl.question.wh.subject.realize"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.question.wh", "pl.question.wh.object.realize"},
 	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing", "pl.attributed_seeing.svo"},
 	{"pl.byc.class_membership", "pl.byc.class_membership.frame", "pl.identification", "pl.identification.to"},
 	{"pl.byc.class_membership", "pl.byc.class_membership.frame", "pl.identification_negative", "pl.identification_negative.to"},

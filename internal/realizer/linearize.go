@@ -92,7 +92,7 @@ func Linearize(plan RealizationPlan, family construction.ConstructionFamily, slo
 	if plan.Outcome != status.OutcomeOK && plan.Outcome != status.OutcomeIncomplete {
 		return LinearizedResult{}, linearizeError(plan.Outcome, "PLAN_OUTCOME_NOT_REALIZABLE", "plan.outcome", "only ok or explicitly incomplete plans may be linearized")
 	}
-	if len(plan.Construction.Steps) != 0 && !explicitSurfaceNegation(plan, family) {
+	if len(plan.Construction.Steps) != 0 && !explicitSurfaceNegation(plan, family) && !explicitSurfaceQuestion(plan, family) {
 		return LinearizedResult{}, linearizeError(status.OutcomeUnsupported, "CONSTRUCTION_OPERATORS_NOT_LINEARIZED", "plan.construction.steps", "the selected family has no explicit surface realization for this operator chain")
 	}
 	compiled := plan.CompiledVariant

@@ -47,6 +47,9 @@ type AlgebraRealizationCoverage struct {
 	EventReferenceID  string                    `json:"event_reference_id"`
 	EventMeaningNode  meaning.NodeID            `json:"event_meaning_node_id"`
 	RoleSubstitutions []AlgebraRoleSubstitution `json:"role_substitutions"`
+	AnswerVariableID  string                    `json:"answer_variable_id,omitempty"`
+	AnswerSort        string                    `json:"answer_sort,omitempty"`
+	AnswerRole        string                    `json:"answer_role,omitempty"`
 }
 
 // AlgebraRealizationResidual retains input meaning that this bounded route did
@@ -79,14 +82,17 @@ type AlgebraRealizationResult struct {
 }
 
 type algebraAtomMatch struct {
-	path       string
-	atom       *algebra.Term
-	signature  algebra.Signature
-	binding    lexicon.SemanticBinding
-	eventPort  string
-	rolePorts  []lexicon.SemanticRolePort
-	arguments  map[string]*algebra.Term
-	validation language.TargetValidation
+	path             string
+	atom             *algebra.Term
+	signature        algebra.Signature
+	binding          lexicon.SemanticBinding
+	eventPort        string
+	rolePorts        []lexicon.SemanticRolePort
+	arguments        map[string]*algebra.Term
+	answerVariableID string
+	answerSort       string
+	answerRole       string
+	validation       language.TargetValidation
 }
 
 // RealizeAlgebra selects one approved, exact symbol binding from an explicitly
@@ -130,7 +136,7 @@ func (engine *Engine) realizeAlgebra(
 		Status: status.OutcomeInvalid, Language: string(languageID),
 		Coverage: []AlgebraRealizationCoverage{}, Residuals: []AlgebraRealizationResidual{},
 		Alternatives: []SurfaceAlternative{}, Diagnostics: []status.Diagnostic{},
-		Scope: "exact approved symbol target; one positive Atom; language adapter output is not a truth claim",
+		Scope: "exact approved symbol target; one positive Atom or one typed Entity WH Ask over a direct Atom; language adapter output is not a truth claim",
 	}
 	if ctx == nil {
 		return algebraRealizationFailure(result, status.OutcomeInvalid, "MISSING_REQUEST_CONTEXT", "context", "algebra realization requires a caller context"), nil
@@ -178,7 +184,25 @@ func (engine *Engine) realizeAlgebra(
 	if input.Expression == nil {
 		return algebraRealizationFailure(result, status.OutcomeInvalid, "MISSING_EXPRESSION", "input.expression", "an expression is required for realization"), nil
 	}
-	parts, partPaths := realizationParts(input.Expression)
+	queryAnswer := (*algebra.Declaration)(nil)
+	expression := input.Expression
+	if expression.Kind == algebra.TermAsk {
+		if expression.Restrictor != nil || len(expression.Answers) != 1 || expression.Body == nil || expression.Body.Kind != algebra.TermAtom {
+			result.Residuals = append(result.Residuals, AlgebraRealizationResidual{Path: "input.expression", Code: "UNSUPPORTED_ASK_SHAPE", Message: "this route supports only one Entity answer bound in the role of one direct Atom, without a restrictor", Term: cloneAlgebraTerm(expression)})
+			return algebraRealizationFailure(result, status.OutcomeUnsupported, "UNSUPPORTED_ASK_SHAPE", "input.expression", "only a single typed WH answer over one direct Atom is supported"), nil
+		}
+		if expression.Answers[0].Type.Kind != algebra.TypeEntity {
+			result.Residuals = append(result.Residuals, AlgebraRealizationResidual{Path: "input.expression.answers[0]", Code: "UNSUPPORTED_ANSWER_SORT", Message: "target WH realization currently supports Entity answer variables only", Term: cloneAlgebraTerm(expression)})
+			return algebraRealizationFailure(result, status.OutcomeUnsupported, "UNSUPPORTED_ANSWER_SORT", "input.expression.answers[0]", "target WH realization currently supports Entity answer variables only"), nil
+		}
+		answer := expression.Answers[0]
+		queryAnswer = &answer
+		expression = expression.Body
+	}
+	parts, partPaths := realizationParts(expression)
+	if queryAnswer != nil {
+		partPaths = []string{"input.expression.body"}
+	}
 	if len(parts) > maxAlgebraRealizationParts {
 		result.Residuals = append(result.Residuals, AlgebraRealizationResidual{Path: "input.expression", Code: "EXPRESSION_PART_LIMIT", Message: "entire expression was retained because its top-level part count exceeds the realization limit", Term: cloneAlgebraTerm(input.Expression)})
 		return algebraRealizationFailure(result, status.OutcomeResourceLimit, "RESOURCE_LIMIT", "input.expression", "expression has too many top-level parts for realization"), nil
@@ -188,10 +212,10 @@ func (engine *Engine) realizeAlgebra(
 	refusalStatus := status.OutcomeUnsupported
 	for index, part := range parts {
 		if part == nil || part.Kind != algebra.TermAtom {
-			unresolved = append(unresolved, AlgebraRealizationResidual{Path: partPaths[index], Code: "UNSUPPORTED_EXPRESSION_PART", Message: "only a directly matched positive Atom is realized by this route", Term: cloneAlgebraTerm(part)})
+			unresolved = append(unresolved, AlgebraRealizationResidual{Path: partPaths[index], Code: "UNSUPPORTED_EXPRESSION_PART", Message: "only a directly matched positive Atom, or one direct Atom inside a bounded WH Ask, is realized by this route", Term: cloneAlgebraTerm(part)})
 			continue
 		}
-		match, matchStatus, matchCode, matchMessage := findAlgebraAtomMatch(part, partPaths[index], languagePackage, validations, validatedSignatures)
+		match, matchStatus, matchCode, matchMessage := findAlgebraAtomMatch(part, partPaths[index], languagePackage, validations, validatedSignatures, queryAnswer)
 		if match != nil {
 			matches = append(matches, *match)
 			continue
@@ -401,6 +425,7 @@ func findAlgebraAtomMatch(
 	languagePackage *language.SemanticLanguagePackage,
 	validations []language.TargetValidation,
 	signatures map[string]algebra.Signature,
+	answer *algebra.Declaration,
 ) (*algebraAtomMatch, status.OutcomeKind, string, string) {
 	var signature algebra.Signature
 	var hasSignature bool
@@ -455,6 +480,7 @@ func findAlgebraAtomMatch(
 		roleNames[rolePort.Role] = true
 	}
 	args := make(map[string]*algebra.Term, len(atom.Args))
+	answerRole := ""
 	for _, argument := range atom.Args {
 		if _, duplicate := args[argument.Role]; duplicate {
 			return nil, status.OutcomeInvalid, "DUPLICATE_ATOM_ARGUMENT", "atom argument role is duplicated"
@@ -472,6 +498,14 @@ func findAlgebraAtomMatch(
 			if !algebra.TypeEqual(port.Type, rolePort.Type) || port.Type.Kind != algebra.TypeEntity {
 				return nil, status.OutcomeUnsupported, "TARGET_PORT_TYPE_MISMATCH", "mapped role port does not exactly match an Entity-valued metadata port"
 			}
+			if answer != nil && argument.Kind == algebra.TermVar && argument.ID == answer.ID {
+				if answerRole != "" {
+					return nil, status.OutcomeUnsupported, "ANSWER_VARIABLE_ROLE_AMBIGUOUS", "one answer variable cannot fill more than one event role in this route"
+				}
+				answerRole = rolePort.Role
+			} else if argument.Kind != algebra.TermRef {
+				return nil, status.OutcomeUnsupported, "ROLE_ARGUMENT_NOT_REFERENCE", "every non-answer Entity role must be bound to an explicit reference"
+			}
 			continue
 		}
 		if port.Type.Kind != algebra.TypeEvent || eventPort != "" {
@@ -482,11 +516,18 @@ func findAlgebraAtomMatch(
 	if eventPort == "" || len(args) != len(signature.Ports) {
 		return nil, status.OutcomeUnsupported, "TARGET_PORT_SHAPE_UNSUPPORTED", "target does not cover the signature with participant roles and one Event identity"
 	}
+	if answer != nil && answerRole == "" {
+		return nil, status.OutcomeUnsupported, "ANSWER_VARIABLE_ROLE_NOT_FOUND", "the declared answer variable must fill exactly one mapped Entity role of the target event"
+	}
 	validation, found := findTargetValidation(validations, binding)
 	if !found || !validation.Authorized || len(validation.Unresolved) != 0 {
 		return nil, status.OutcomeUnsupported, "UNRESOLVED_TARGET_METADATA", "matching target ports did not validate against the selected metadata"
 	}
-	return &algebraAtomMatch{path: path, atom: atom, signature: signature, binding: binding, eventPort: eventPort, rolePorts: append([]lexicon.SemanticRolePort{}, binding.Target.RolePorts...), arguments: args, validation: validation}, status.OutcomeOK, "", ""
+	answerVariableID, answerSort := "", ""
+	if answer != nil {
+		answerVariableID, answerSort = answer.ID, string(answer.Type.Kind)
+	}
+	return &algebraAtomMatch{path: path, atom: atom, signature: signature, binding: binding, eventPort: eventPort, rolePorts: append([]lexicon.SemanticRolePort{}, binding.Target.RolePorts...), arguments: args, answerVariableID: answerVariableID, answerSort: answerSort, answerRole: answerRole, validation: validation}, status.OutcomeOK, "", ""
 }
 
 func targetValidationAuthorized(validations []language.TargetValidation, binding lexicon.SemanticBinding) bool {
@@ -591,6 +632,12 @@ func buildAlgebraMeaningCandidate(
 	sort.Slice(rolePorts, func(i, j int) bool { return rolePorts[i].PortID < rolePorts[j].PortID })
 	for _, rolePort := range rolePorts {
 		argument := args[rolePort.PortID]
+		if argument != nil && argument.Kind == algebra.TermVar && argument.ID == match.answerVariableID {
+			if match.answerRole == "" || rolePort.Role != match.answerRole || match.answerSort != string(algebra.TypeEntity) {
+				return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "INVALID_QUESTION_ANSWER_MAPPING", match.path + ".args." + rolePort.PortID, "typed answer variable does not match the selected Entity role mapping"
+			}
+			continue
+		}
 		if argument == nil || argument.Kind != algebra.TermRef {
 			return nil, emptyCoverage, noResiduals, status.OutcomeUnsupported, "ROLE_ARGUMENT_NOT_REFERENCE", match.path + ".args." + rolePort.PortID, "every mapped Entity role must be bound to an explicit reference"
 		}
@@ -684,7 +731,7 @@ func buildAlgebraMeaningCandidate(
 	if eventFrame != "" && !event.TemporalFrame.Valid() {
 		return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "INVALID_EVENT_TEMPORAL_FRAME", "input.request_context.referents." + eventReferenceID + ".temporal_frame", "event temporal frame is unsupported"
 	}
-	nodes := make([]meaning.Node, 0, len(participantNodes)+2)
+	nodes := make([]meaning.Node, 0, len(participantNodes)+3)
 	nodes = append(nodes, event)
 	referenceIDs := make([]string, 0, len(participantNodes))
 	for referenceID := range participantNodes {
@@ -710,8 +757,25 @@ func buildAlgebraMeaningCandidate(
 			EvidenceID: algebraReferenceEvidenceID(referenceID),
 		})
 	}
+	contentID := eventNodeID
+	discourseAct := meaning.ActStatement
+	var queryAnswer *semantic.QuestionAnswer
+	if match.answerVariableID != "" {
+		questionID := meaning.NodeID("dse_question_0")
+		question, questionErr := meaning.NewQuestion(questionID, eventNodeID)
+		if questionErr != nil {
+			return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "MEANING_BUILD_FAILED", "meaning.question", questionErr.Error()
+		}
+		nodes = append(nodes, question)
+		contentID = questionID
+		discourseAct = meaning.ActQuestion
+		queryAnswer = &semantic.QuestionAnswer{
+			VariableID: match.answerVariableID, Sort: match.answerSort,
+			Role: meaning.Role(match.answerRole), TargetNodeID: eventNodeID,
+		}
+	}
 	discourseID := meaning.NodeID("dse_discourse_0")
-	discourse, err := meaning.NewDiscourse(discourseID, meaning.ActStatement, []meaning.NodeID{eventNodeID})
+	discourse, err := meaning.NewDiscourse(discourseID, discourseAct, []meaning.NodeID{contentID})
 	if err != nil {
 		return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "MEANING_BUILD_FAILED", "meaning.discourse", err.Error()
 	}
@@ -726,9 +790,14 @@ func buildAlgebraMeaningCandidate(
 	if err := meaning.ValidateReferences(graph, meaningContext, meaning.DefaultBudget()); err != nil {
 		return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "MEANING_CONTEXT_VALIDATION_FAILED", "meaning.context", err.Error()
 	}
+	if queryAnswer != nil {
+		if err := queryAnswer.Validate(graph, engine.core); err != nil {
+			return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "INVALID_QUESTION_ANSWER", "meaning.question_answer", err.Error()
+		}
+	}
 	candidateID := algebraCandidateID(input, languagePackage.ID(), match.binding.SenseID.String())
 	candidate := &semantic.MeaningCandidate{
-		ID: candidateID, SemanticID: candidateID, Meaning: &graph,
+		ID: candidateID, SemanticID: candidateID, Meaning: &graph, QuestionAnswer: queryAnswer,
 		Contexts: []semantic.MeaningContext{{Meaning: graph, Context: meaningContext}}, Status: status.OutcomeOK,
 		Evidence: semantic.EvidenceTrace{AlternativeID: candidateID, Outcome: status.OutcomeOK, Records: []semantic.EvidenceRecord{}},
 	}
@@ -737,6 +806,11 @@ func buildAlgebraMeaningCandidate(
 		Path: match.path, Symbol: match.atom.Symbol, SenseID: match.binding.SenseID.String(), CoreRef: coreRef.String(),
 		EventPortID: match.eventPort, EventReferenceID: eventReferenceID, EventMeaningNode: eventNodeID,
 		RoleSubstitutions: roleSubstitutions,
+	}
+	if queryAnswer != nil {
+		coverage.AnswerVariableID = queryAnswer.VariableID
+		coverage.AnswerSort = queryAnswer.Sort
+		coverage.AnswerRole = string(queryAnswer.Role)
 	}
 	return candidate, coverage, noResiduals, status.OutcomeOK, "", "", ""
 }

@@ -222,7 +222,8 @@
         "construction:en.transitive_personal",
         "construction:en.transitive_negative",
         "construction:en.transitive_past",
-        "construction:en.attributed_seeing"
+        "construction:en.attributed_seeing",
+        "construction:en.question.wh"
       ],
       "provenance": {
         "id": "golingua-en-valency-authored",

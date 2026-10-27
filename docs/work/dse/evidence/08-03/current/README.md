@@ -1,47 +1,54 @@
 # DSE-08-03 current CLI evidence
 
-These are bounded observations from the active #398 branch, not acceptance of the three full language slices. The required six paths per slice remain **NOT RUN** as a complete set; owner language acceptance remains **NOT EVALUATED**.
+This report records the active #398 branch observations. The WH slice now reaches the production CLI in both languages, but its realization and translation results remain `incomplete`; relation and scope remain unsupported in the language paths. Overall status is **PARTIAL**. Owner language acceptance is **NOT EVALUATED**.
 
 ## Build and controls
 
-- Source HEAD: `dab9d23b48fe429ca4221c5efdf8e081bc6405b3` plus the uncommitted #398 evaluator change.
-- Binary: `/tmp/golingua-dse/08-03-evaluator/golingua`, SHA-256 `b16653da5489fa0062b4cc674a0ea4ca0330668fc46ca5afc210091c663cf097`.
-- `go vet ./...`: PASS.
-- `go build -o /tmp/golingua-dse/08-03-evaluator/golingua ./cmd/golingua`: PASS.
-- `golingua --help` and `golingua --version`: PASS; version `0.1.0-alpha.1`.
-- `git diff --check` and `gofmt`: PASS. No Go tests were added or run.
-- Read-only code review of the temporal evaluator change: NO_BLOCKERS. The reviewer confirmed Event-only, present-only, explicit-At behavior and retained refusals for past, reference-time links, and multiplicity `many`.
+- Base/source HEAD recorded by the latest run: `3e9b7dcdbd389c54b65c02d8877a05dde2553b78`; the current working tree contains the #398 changes.
+- Latest executable: `/tmp/golingua-dse-08-03-current`, SHA-256 `46758c5a47a3c031697b0ebdc0ccc5be6cded475b8eb2d99b1a7a43a141f545e`.
+- `gofmt -l` on changed Go files: clean; `git diff --check`: PASS.
+- `go vet ./...`: PASS; `go build -o /tmp/golingua-dse-08-03-current ./cmd/golingua`: PASS.
+- `--help` and `--version`: PASS; version `0.1.0-alpha.1`. No new Go tests were added or run.
+- A read-only final diff review found no blockers. The reviewer separately flagged the stale evidence text, which this update corrects.
 
-Commands and raw outputs are in `commands.jsonl`, `replay/commands.jsonl`, `slices/commands.jsonl`, and their referenced output files. `replay/` reruns the earlier source/translate/realize controls on the active branch. `slices/` contains CLI checks and comparisons for independent IR, GoalSpec synthesis, source analysis, target realization, translation, scope/role swaps, and the evaluator. The canonical source inputs include the signatures emitted in the configured source-analysis candidate; independently authored formal candidates are in `data/semantic/acceptance/dse-08-03/`. Earlier stripped projections are kept separately to document the reproduction discrepancy.
+The current run manifest is `slices/current-run-commands.jsonl`; raw stdout and stderr are under `slices/outputs/current-*`. The earlier failed comparison with full request contexts is preserved in `slices/current-run-commands.pre-context-projection.jsonl`. The working expression-only comparisons intentionally omit request context; they prove only the Ask expression, not equivalence of referents, assumptions, or presuppositions. An earlier evaluator run and the historical binary reproduction remain in `slices/commands.jsonl` and `replay/commands.jsonl`.
 
-## Observed CLI behavior
+## Current WH observations
 
-The four configured source-analysis inputs (`Who sees the dog?`, `The teacher sees whom?`, `Kto widzi psa?`, `Kogo widzi nauczyciel?`) produced complete typed `Ask` documents. They preserve the expected experiencer/stimulus gap distinction for these configured examples. This does not establish neutral WH syntax or owner-approved language quality.
+| Route | Current observation |
+| --- | --- |
+| EN/PL source analysis | All four subject/object inputs return `ok` and the expected typed `Ask` role gap. The four expression-only comparisons return `proved_equivalent` to their independently authored WH expressions. |
+| Independent Meaning → EN/PL | All four realizations emit a surface candidate, but overall status is `incomplete`. Context referents and conditions not consumed by the selected expression remain explicit residuals. English also records caller-supplied person/definiteness assumptions where required. |
+| Translation EN↔PL | The four observed pairs are `Who sees the dog?` → `Kto widzi psa?`, `Kto widzi psa?` → `Who sees the dog?`, `The teacher sees whom?` → `Kogo widzi nauczyciel?`, and `Kogo widzi nauczyciel?` → `Whom does the teacher see?`. Every result remains `incomplete`: Polish candidates retain context residuals; English candidates expose assumptions such as person or definite article. Candidate status is also `incomplete`. |
+| Surface re-analysis | All four translated surface candidates re-analyze with status `ok`. Their expression-only comparisons return `proved_equivalent`; full-context comparison is not established because the translation context and independently authored context use different referent sets. |
+| Negative agreement control | `Whom does the teachers see?` is refused with `UNSUPPORTED_SOURCE_FOREST`; the bounded do-support path requires an adjacent singular third-person NP. `forms --surface does` returns `UNKNOWN_SURFACE_FORM` because `does` is a construction terminal, while `forms --surface see` finds the base form. |
 
-With the four canonical `Ask` documents in `inputs/`, the independent evaluator produced:
+The exact output records are in `slices/outputs/current-analyze-*`, `current-realize-*`, `current-translate-*`, `current-roundtrip-analyze-*`, and the corresponding `*-expression-compare` files. A previous round-trip attempt failed at `UNSUPPORTED_SOURCE_FOREST` for English object WH; the preserved pre-fix output is `slices/outputs/pre-fix-roundtrip-analyze-pl-en-object.*`. The current exact singular construction now parses `Whom does the teacher see?` as an object-gap Ask.
+
+## Evaluator evidence
+
+The bounded evaluator probe uses an explicit synthetic fact with agent-authored provenance; it is not an owner-supplied world fact or a language gold. Its preserved CLI evidence reports:
 
 | Probe | Observed result |
 | --- | --- |
-| EN subject gap, active explicit fact | `supported`, answer `A`, proof cites `dse-08-03-explicit-see-A-B` |
-| EN object gap, same fact | `supported`, answer `B`, proof cites the same explicit fact |
-| PL subject gap, active explicit fact | `supported`, answer `A`, proof cites the same explicit fact |
-| PL object gap, same fact | `supported`, answer `B`, proof cites the same explicit fact |
+| EN/PL subject gap with the explicit fact | `supported`, answer `A`, with proof citing `dse-08-03-explicit-see-A-B` |
+| EN/PL object gap with the same fact | `supported`, answer `B`, with proof citing the same fact |
 | Empty or expired fact set | `knowledge: unknown`, no answers |
-| Present Event without a query instant | `unsupported`, `QUERY_INSTANT_REQUIRED` |
-| Past Event with a query instant | `unsupported`, `UNSUPPORTED_RELATIVE_TEMPORAL_REFERENCE` |
+| Present event without a query instant | `unsupported`, `QUERY_INSTANT_REQUIRED` |
+| Past event with a query instant | `unsupported`, `UNSUPPORTED_RELATIVE_TEMPORAL_REFERENCE` |
 
-The fact is a synthetic diagnostic probe with agent-authored provenance. It is not an owner-supplied world fact or a language gold. The evaluator consumes the typed Ask body and explicit fact; it does not validate the natural-language presuppositions as facts. This evidence covers query evaluation only.
+This checks query evaluation only. It does not establish the natural-language presuppositions as facts, and the question is not inserted as an assertion.
 
-The active branch rerun confirmed the remaining integration gaps: the production `translate` path does not accept these WH inputs; `algebra realize` refuses the independent Ask for both PL and EN with `UNSUPPORTED_EXPRESSION_PART`; the proposed scope example stops at `UNSUPPORTED_SOURCE_FOREST`. The two-hop relation’s six language routes were not implemented or evaluated.
+## Relation and scope observations
 
-The independent WH subject/object documents, relation GoalSpec/expression, and two scope trees all pass `algebra check`. The relation GoalSpec builds a two-atom `pilot.r` path with one shared binder; `algebra compare` proves the generated expression equivalent to the independent expression. `algebra compare` also proves each of four configured source WH outputs equivalent to its independent EN/PL Ask. Role-swap and scope-swap comparisons keep different normal forms and return `undetermined`; neither result is a proof of non-equivalence. Proposed two-hop and scope source strings were tried in both languages; all four source-analysis and translation routes return `UNSUPPORTED_SOURCE_FOREST`. Independent target realization attempts for WH, relation, and both scope trees in EN/PL return `UNSUPPORTED_EXPRESSION_PART`.
+- The independent `r∘r` GoalSpec still synthesizes two `pilot.r` atoms with a shared binder and compares as `proved_equivalent` to the independent expression. This proves formal representability only. The latest EN and PL source/translation attempts stop at `UNSUPPORTED_SOURCE_FOREST`; independent target realization is `unsupported` with `NO_EXACT_REALIZATION_BINDING`.
+- The independent scope trees pass `algebra check`. Scope swaps retain distinct normal forms, while comparison returns `undetermined` (not proof of non-equivalence). Both proposed EN/PL surface pairs (`Not every...` / `Nie każdy...` and `Every...no...` / `Każdy...żadnego...`) were attempted; source and translation return `UNSUPPORTED_SOURCE_FOREST`. The All-Not pair remains an agent proposal with unresolved language readings, not owner-approved data. Independent target realization is `unsupported` with `NO_EXACT_REALIZATION_BINDING`.
+- These two slices do not have complete production language paths. Their candidate surface readings and mappings remain proposals, not owner-approved language data.
 
 ## Historical baseline discrepancy
 
-The old `baseline/outputs/en-wh-evaluate.stdout.json` records `UNSUPPORTED_RELATIVE_TEMPORAL_REFERENCE`. Re-running the exact command with the preserved baseline binary (SHA-256 `2890fe56ea260a43213b6e2e65de0056f00d53213f5d85a2099fa51a4cbdd5b5`) and the preserved projected Ask/facts instead returns `UNKNOWN_SYMBOL` at `expression.body.symbol`; see `replay/commands.jsonl` entry `baseline-binary-en-wh-evaluate-reproduction`. The projected Ask omitted all six declared signatures, including `pilot.vision_event`.
+The old `baseline/outputs/en-wh-evaluate.stdout.json` records `UNSUPPORTED_RELATIVE_TEMPORAL_REFERENCE`. Re-running the saved command with the preserved baseline binary (SHA-256 `2890fe56ea260a43213b6e2e65de0056f00d53213f5d85a2099fa51a4cbdd5b5`) and the same projected Ask/facts returns `UNKNOWN_SYMBOL` at `expression.body.symbol`; see `replay/commands.jsonl` entry `baseline-binary-en-wh-evaluate-reproduction`. The projected Ask omitted all six declared signatures, including `pilot.vision_event`. That historical temporal-refusal result is not treated as reproducible evidence. The canonical documents in `inputs/` retain signatures emitted by the configured source-analysis candidate.
 
-The temporal-refusal record therefore cannot be reproduced from its preserved command, binary, and inputs. We do not treat that historical line as verified evidence. The corrected canonical documents in `inputs/` retain their emitted signatures and independently reproduce the bounded evaluator results above.
+## Limits and acceptance
 
-## Limits
-
-This does not complete #398. Independent Meaning→EN/PL realization, all six routes, the relation-composition slice, and the scope-contrast slice remain open. The result is `PARTIAL`; the agent review and owner acceptance are separate records.
+WH source analysis and the two translated round-trip directions are observable, but the independent realization and all four translations remain `incomplete`. Relation and scope do not have supported production language paths. Therefore #398 is **PARTIAL**, not DONE. The agent review and owner language acceptance are separate; owner acceptance remains **NOT EVALUATED**.

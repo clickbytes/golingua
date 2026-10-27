@@ -83,7 +83,8 @@
         "id": "A",
         "type": {
           "kind": "Entity"
-        }
+        },
+        "concept_id": "concept:teacher"
       },
       {
         "id": "B",

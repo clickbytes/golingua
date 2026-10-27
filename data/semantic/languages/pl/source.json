@@ -263,7 +263,8 @@
         "construction:pl.transitive",
         "construction:pl.transitive_personal",
         "construction:pl.transitive_personal_explicit",
-        "construction:pl.attributed_seeing"
+        "construction:pl.attributed_seeing",
+        "construction:pl.question.wh"
       ],
       "provenance": {
         "id": "golingua-pl-valency-authored",

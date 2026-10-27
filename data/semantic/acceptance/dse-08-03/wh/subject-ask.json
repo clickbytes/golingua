@@ -193,7 +193,8 @@
         "id": "B",
         "type": {
           "kind": "Entity"
-        }
+        },
+        "concept_id": "concept:dog"
       }
     ],
     "mentions": [],

@@ -76,6 +76,19 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 	if (predicate.Kind == meaning.KindEvent || predicate.Kind == meaning.KindState) && !englishPredicateEvidenceConsistent(source, predicate) {
 		return nil, fmt.Errorf("English target Meaning attributes conflict with explicit source evidence")
 	}
+	if predicate.QuestionAnswer != nil && predicate.QuestionAnswer.TargetNodeID == predicate.NodeID && slot.Category == construction.CategoryVP {
+		switch predicate.QuestionAnswer.Role {
+		case "experiencer":
+			// English subject WH uses the ordinary finite third-person singular form.
+			return englishFiniteVerbFeatures("present", "third", "singular"), nil
+		case "stimulus":
+			// The fronted object question has overt do-support in the construction;
+			// its lexical verb therefore selects the base cell.
+			return []features.FeatureValue{{Feature: "verb_form", State: features.StateKnown, Value: "base"}}, nil
+		default:
+			return nil, fmt.Errorf("English WH target does not support answer role %q", predicate.QuestionAnswer.Role)
+		}
+	}
 	if slot.ModifierBinding != nil && englishAttributedSeeingFamily(predicate) {
 		shape, valid := englishAttributedSeeingShape(source)
 		if !valid || source.Meaning == nil {
@@ -234,6 +247,36 @@ func (englishSentenceOperatorBuilder) Build(ctx context.Context, source semantic
 	}
 	if intent, valid := englishParticipantContextIntent(source); intent && !valid {
 		return nil, false, englishParticipantContextError{}
+	}
+	if source.QuestionAnswer != nil {
+		if source.Meaning == nil {
+			return nil, false, fmt.Errorf("English WH operator requires its typed Meaning question")
+		}
+		if _, _, _, negated := englishNegatedPresent(source); negated {
+			return nil, false, fmt.Errorf("English WH target does not combine a typed answer with present negation")
+		}
+		var question meaning.Node
+		questionCount := 0
+		for _, node := range source.Meaning.Nodes {
+			if node.Kind != meaning.KindQuestion {
+				continue
+			}
+			question = node
+			questionCount++
+		}
+		if questionCount != 1 || question.Target != source.QuestionAnswer.TargetNodeID {
+			return nil, false, fmt.Errorf("English WH operator requires one question wrapper over the typed answer target")
+		}
+		familyID, err := ids.NewConstructionID("en.question.wh")
+		if err != nil {
+			return nil, false, err
+		}
+		return []construction.Operator{{
+			ID: "question-wh", Kind: construction.OperatorQuestion, Value: construction.ValueWH,
+			InputFamilyID: familyID, OutputFamilyID: familyID,
+			SemanticScope: construction.SemanticScope{TargetNodeID: source.QuestionAnswer.TargetNodeID, ScopeNodeID: question.ID},
+			Capabilities:  []construction.Capability{"question-wh"}, Provenance: englishWHQuestionSource,
+		}}, true, nil
 	}
 	scope, event, route, found := englishNegatedPresent(source)
 	if !found {
@@ -417,6 +460,9 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 	}
 	if has, valid := englishParticipantContextIntent(source); has && !valid {
 		return false
+	}
+	if source.QuestionAnswer != nil && (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState) && candidate.NodeID == source.QuestionAnswer.TargetNodeID {
+		return englishWHQuestionTargetCandidate(source, candidate)
 	}
 	const (
 		transitiveFamily     = "construction:en.transitive"
@@ -728,6 +774,73 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 	return true
 }
 
+// englishWHQuestionTargetCandidate selects a neutral target variant by its
+// actual missing role slot and licensed WH terminals. Variant IDs remain data
+// identifiers; they do not decide the answer role.
+func englishWHQuestionTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate) bool {
+	answer := source.QuestionAnswer
+	if answer == nil || candidate.QuestionAnswer == nil || *candidate.QuestionAnswer != *answer ||
+		candidate.Family.Family.ID.String() != "construction:en.question.wh" ||
+		candidate.CompiledVariant.Variant.DirectionPolicy == construction.DirectionAnalyze ||
+		candidate.CompiledVariant.Variant.Markedness != construction.MarkednessNeutral {
+		return false
+	}
+	if answer.TargetNodeID != candidate.NodeID {
+		return false
+	}
+	roleSlots := make(map[meaning.Role]construction.SlotSpec, len(candidate.Family.Family.SlotSpecs))
+	for _, slot := range candidate.Family.Family.SlotSpecs {
+		if slot.ArgumentBinding != nil {
+			roleSlots[slot.ArgumentBinding.SemanticRole] = slot
+		}
+	}
+	answerSlot, exists := roleSlots[answer.Role]
+	if !exists || answerSlot.Category != construction.CategoryNP {
+		return false
+	}
+	sequenceSlots := make(map[string]struct{}, len(candidate.CompiledVariant.Variant.Sequence))
+	terminals := make(map[string]struct{})
+	for _, token := range candidate.CompiledVariant.Variant.Sequence {
+		if token.Kind == construction.TokenSlot {
+			sequenceSlots[token.SlotID] = struct{}{}
+		} else if token.Kind == construction.TokenTerminal {
+			terminals[token.Terminal] = struct{}{}
+		}
+	}
+	if _, included := sequenceSlots[answerSlot.ID]; included {
+		return false
+	}
+	for _, argument := range candidate.Frame.Arguments {
+		if !argument.Required || argument.Role == answer.Role {
+			continue
+		}
+		slot, bound := roleSlots[argument.Role]
+		if !bound {
+			return false
+		}
+		if _, included := sequenceSlots[slot.ID]; !included {
+			return false
+		}
+	}
+	if _, hasVerb := sequenceSlots["verb"]; !hasVerb {
+		return false
+	}
+	switch answer.Role {
+	case "experiencer":
+		_, who := terminals["who"]
+		_, whom := terminals["whom"]
+		_, does := terminals["does"]
+		return who && !whom && !does
+	case "stimulus":
+		_, whom := terminals["whom"]
+		_, does := terminals["does"]
+		_, who := terminals["who"]
+		return whom && does && !who
+	default:
+		return false
+	}
+}
+
 func englishChildKinshipTargetCandidate(candidate realizer.TargetCandidate) bool {
 	return candidate.Lexeme.ID.String() == "lexeme:en.child.n" && candidate.Sense.ID.String() == "sense:en.child.kinship"
 }
@@ -880,6 +993,26 @@ func englishStandardDeterminerVariant(familyID string) string {
 
 func englishDeterminerForRole(candidate realizer.TargetCandidate, role meaning.Role) (string, bool) {
 	familyID := candidate.Family.Family.ID.String()
+	if familyID == "construction:en.question.wh" {
+		for _, slot := range candidate.Family.Family.SlotSpecs {
+			if slot.ArgumentBinding == nil || slot.ArgumentBinding.SemanticRole != role {
+				continue
+			}
+			for index, token := range candidate.CompiledVariant.Variant.Sequence {
+				if token.Kind != construction.TokenSlot || token.SlotID != slot.ID {
+					continue
+				}
+				if index > 0 {
+					previous := candidate.CompiledVariant.Variant.Sequence[index-1]
+					if previous.Kind == construction.TokenTerminal && isEnglishDeterminerToken(previous.Terminal) {
+						return previous.Terminal, true
+					}
+				}
+				return "bare", true
+			}
+		}
+		return "", false
+	}
 	if familyID != "construction:en.transitive" && familyID != "construction:en.transitive_past" && familyID != "construction:en.transitive_negative" && familyID != "construction:en.oblique" && familyID != "construction:en.oblique_negative" && familyID != "construction:en.attributed_seeing" && familyID != "construction:en.transitive_personal" {
 		return "", false
 	}

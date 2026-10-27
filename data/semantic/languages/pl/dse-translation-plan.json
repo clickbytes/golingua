@@ -19,10 +19,13 @@
       "frame_id": "pl.widziec.visual.transitive",
       "head_port_id": "event",
       "allowed_family_ids": [
-        "construction:pl.transitive"
+        "construction:pl.transitive",
+        "construction:pl.question.wh"
       ],
       "allowed_variant_ids": [
-        "construction:pl.transitive.svo"
+        "construction:pl.transitive.svo",
+        "construction:pl.question.wh.subject",
+        "construction:pl.question.wh.object.fronted"
       ],
       "reference_condition": {
         "kind": "presupposition",

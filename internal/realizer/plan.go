@@ -15,6 +15,7 @@ import (
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/provenance"
+	"github.com/clickbytes/golingua/internal/semantic"
 	"github.com/clickbytes/golingua/internal/status"
 	"github.com/clickbytes/golingua/internal/valency"
 )
@@ -126,6 +127,7 @@ type RealizationPlan struct {
 	FamilyPlanID         construction.ConstructionPlanID `json:"family_plan_id"`
 	VariantID            construction.VariantID          `json:"variant_id"`
 	Construction         construction.ConstructionPlan   `json:"construction"`
+	QuestionAnswer       *semantic.QuestionAnswer        `json:"question_answer,omitempty"`
 	CompiledVariant      construction.CompiledVariant    `json:"compiled_variant,omitempty"`
 	TransferProvenance   provenance.SourceRef            `json:"transfer_provenance"`
 	FrameProvenance      provenance.SourceRef            `json:"frame_provenance,omitempty"`
@@ -194,11 +196,19 @@ func BuildPlan(input PlanInput) (RealizationPlan, error) {
 	if node.Kind != meaning.KindEvent && node.Kind != meaning.KindState && node.Kind != meaning.KindReferent {
 		return RealizationPlan{}, planError(status.OutcomeUnsupported, "TARGET_NODE_NOT_LEXICAL", "candidate.node_id", "target lexicalization requires an event, state, or referent node")
 	}
-	if err := validateTarget(input.Candidate, node, input.Meaning); err != nil {
+	if err := validateTarget(input.Candidate, node, input.Meaning, input.Core); err != nil {
 		return RealizationPlan{}, err
 	}
 	if node.Kind == meaning.KindEvent || node.Kind == meaning.KindState {
-		validation, err := valency.ValidateFrame(input.Candidate.Frame, valency.ValidationRequest{
+		validationFrame := input.Candidate.Frame
+		if input.Candidate.QuestionAnswer != nil {
+			var gapOK bool
+			validationFrame, gapOK = frameForQuestionGapValidation(input.Candidate.Frame, input.Candidate.QuestionAnswer.Role)
+			if !gapOK {
+				return RealizationPlan{}, planError(status.OutcomeUnsupported, "QUESTION_GAP_FRAME_ROLE_MISMATCH", "candidate.question_answer.role", "typed WH answer role is not required by the selected valency frame")
+			}
+		}
+		validation, err := valency.ValidateFrame(validationFrame, valency.ValidationRequest{
 			Meaning: input.Meaning, NodeID: node.ID,
 			SemanticBinding: input.Candidate.TransferBinding, ConstructionBinding: input.Candidate.ConstructionBinding,
 		}, input.Core)
@@ -209,7 +219,7 @@ func BuildPlan(input PlanInput) (RealizationPlan, error) {
 			return RealizationPlan{}, planError(status.OutcomeInvalid, "SOFT_CONSTRAINT_EVIDENCE_MISMATCH", "candidate.soft_constraint_misses", "candidate soft-constraint evidence does not match the validated Meaning and frame")
 		}
 	}
-	autoLosses, err := unrepresentedWrapperLosses(input.Meaning, node.ID, input.Candidate.ConstructionPlan.Steps, budget.Meaning.MaxDepth, budget.MaxLosses-len(input.Losses))
+	autoLosses, err := unrepresentedWrapperLosses(input.Meaning, node.ID, input.Candidate.ConstructionPlan.Steps, input.Candidate.QuestionAnswer, budget.Meaning.MaxDepth, budget.MaxLosses-len(input.Losses))
 	if err != nil {
 		return RealizationPlan{}, err
 	}
@@ -336,6 +346,7 @@ func BuildPlan(input PlanInput) (RealizationPlan, error) {
 		CoreConceptID: candidate.TransferBinding.CoreRef, LexemeID: candidate.Lexeme.ID,
 		SenseID:              candidate.Sense.ID,
 		Construction:         cloneConstructionPlan(candidate.ConstructionPlan),
+		QuestionAnswer:       cloneQuestionAnswer(candidate.QuestionAnswer),
 		CompiledVariant:      cloneCompiledVariant(candidate.CompiledVariant),
 		TransferProvenance:   candidate.TransferBinding.Provenance,
 		SoftConstraintMisses: append([]valency.SoftConstraintMiss(nil), candidate.SoftConstraintMisses...),
@@ -362,7 +373,7 @@ func BuildPlan(input PlanInput) (RealizationPlan, error) {
 	return plan, nil
 }
 
-func validateTarget(candidate TargetCandidate, node meaning.Node, graph meaning.Meaning) error {
+func validateTarget(candidate TargetCandidate, node meaning.Node, graph meaning.Meaning, ontology *core.ConceptGraph) error {
 	if !validPlanField(candidate.SourceCandidateID) || !validPlanField(candidate.SemanticID) {
 		return planError(status.OutcomeInvalid, "INVALID_TARGET_IDENTITY", "candidate", "selected target requires source and semantic candidate IDs")
 	}
@@ -380,8 +391,28 @@ func validateTarget(candidate TargetCandidate, node meaning.Node, graph meaning.
 	if !sameRoles(candidate.Roles, node.ID, graph) {
 		return planError(status.OutcomeInvalid, "TARGET_ROLE_MISMATCH", "candidate.roles", "target candidate roles do not match the selected Meaning node")
 	}
+	questionForTarget := false
+	for _, wrapper := range graph.Nodes {
+		if wrapper.Kind == meaning.KindQuestion && wrapper.Target == node.ID {
+			questionForTarget = true
+			break
+		}
+	}
+	if candidate.QuestionAnswer != nil {
+		if node.Kind != meaning.KindEvent || candidate.QuestionAnswer.TargetNodeID != node.ID {
+			return planError(status.OutcomeUnsupported, "QUESTION_ANSWER_TARGET_MISMATCH", "candidate.question_answer", "typed WH answer must target the selected event")
+		}
+		if err := candidate.QuestionAnswer.Validate(graph, ontology); err != nil {
+			return planError(status.OutcomeInvalid, "INVALID_QUESTION_ANSWER", "candidate.question_answer", err.Error())
+		}
+		if err := validateQuestionDiscourse(graph, *candidate.QuestionAnswer); err != nil {
+			return planError(status.OutcomeUnsupported, "UNSUPPORTED_QUESTION_SCOPE", "candidate.question_answer", err.Error())
+		}
+	} else if questionForTarget || hasQuestionAct(graph.Nodes) {
+		return planError(status.OutcomeUnsupported, "QUESTION_ANSWER_UNAVAILABLE", "candidate.question_answer", "a question target requires an explicit typed answer role")
+	}
 	if node.Kind == meaning.KindReferent {
-		if candidate.Frame.ID != "" || candidate.ConstructionBinding.SenseID.String() != "" || candidate.Family.Family.ID.String() != "" || candidate.ConstructionPlan.ID != "" || candidate.CompiledVariant.Variant.ID != "" || len(candidate.ConstructionPlan.Steps) != 0 || len(candidate.CompiledVariant.Variant.Sequence) != 0 || len(candidate.CompiledVariant.FirstAllowed) != 0 || len(candidate.CompiledVariant.LastAllowed) != 0 {
+		if candidate.QuestionAnswer != nil || candidate.Frame.ID != "" || candidate.ConstructionBinding.SenseID.String() != "" || candidate.Family.Family.ID.String() != "" || candidate.ConstructionPlan.ID != "" || candidate.CompiledVariant.Variant.ID != "" || len(candidate.ConstructionPlan.Steps) != 0 || len(candidate.CompiledVariant.Variant.Sequence) != 0 || len(candidate.CompiledVariant.FirstAllowed) != 0 || len(candidate.CompiledVariant.LastAllowed) != 0 {
 			return planError(status.OutcomeInvalid, "REFERENT_HAS_PREDICATE_LICENSE", "candidate", "referent candidates must not carry predicate frame, family, variant, or composition licenses")
 		}
 		return nil
@@ -401,6 +432,11 @@ func validateTarget(candidate TargetCandidate, node meaning.Node, graph meaning.
 		return planError(status.OutcomeUnsupported, "INVALID_COMPOSITION_PLAN", "candidate.construction_plan", "explicit construction composition does not match the selected target license")
 	}
 	currentFamily := composition.InputFamilyID
+	if candidate.QuestionAnswer != nil {
+		if len(composition.Steps) != 1 || composition.Steps[0].Kind != construction.OperatorQuestion || composition.Steps[0].Value != construction.ValueWH {
+			return planError(status.OutcomeUnsupported, "QUESTION_OPERATOR_MISMATCH", "candidate.construction_plan.steps", "typed WH target requires exactly one explicit WH construction operator")
+		}
+	}
 	for index, operator := range composition.Steps {
 		if err := operator.Validate(); err != nil {
 			return err
@@ -419,7 +455,18 @@ func validateTarget(candidate TargetCandidate, node meaning.Node, graph meaning.
 	if candidate.CompiledVariant.Variant.Provenance.Validate() != nil || candidate.ConstructionBinding.Provenance.Validate() != nil || candidate.Frame.Provenance.Validate() != nil || candidate.Family.Family.Provenance.Validate() != nil {
 		return planError(status.OutcomeInvalid, "INVALID_LICENSE_PROVENANCE", "candidate", "predicate license records require valid provenance")
 	}
-	compiled, err := construction.ValidateVariantForFrame(candidate.CompiledVariant.Variant, family, candidate.Frame)
+	var (
+		compiled construction.CompiledVariant
+		err      error
+	)
+	if candidate.QuestionAnswer != nil {
+		compiled, err = construction.ValidateVariantForQuestionGap(candidate.CompiledVariant.Variant, family, candidate.Frame, candidate.QuestionAnswer.Role)
+		if err == nil && !questionGapVariantHasOnlyOmittedRequiredRole(candidate.CompiledVariant.Variant, family, candidate.Frame, candidate.QuestionAnswer.Role) {
+			return planError(status.OutcomeUnsupported, "QUESTION_GAP_ADDITIONAL_ROLE_OMITTED", "candidate.compiled_variant", "all required roles except the typed WH answer role must have explicit target slots")
+		}
+	} else {
+		compiled, err = construction.ValidateVariantForFrame(candidate.CompiledVariant.Variant, family, candidate.Frame)
+	}
 	if err != nil {
 		return err
 	}
@@ -664,7 +711,7 @@ func accountNodePath(account func(...string) bool, path []meaning.NodeID) bool {
 	return true
 }
 
-func unrepresentedWrapperLosses(graph meaning.Meaning, target meaning.NodeID, operators []construction.Operator, maxDepth, maxLosses int) ([]FieldLoss, error) {
+func unrepresentedWrapperLosses(graph meaning.Meaning, target meaning.NodeID, operators []construction.Operator, answer *semantic.QuestionAnswer, maxDepth, maxLosses int) ([]FieldLoss, error) {
 	fields := make(map[meaning.NodeID]string)
 	for _, node := range meaningAncestors(graph.Nodes, target) {
 		field := ""
@@ -676,7 +723,7 @@ func unrepresentedWrapperLosses(graph meaning.Meaning, target meaning.NodeID, op
 		case meaning.KindQuantifier:
 			field = "meaning.quantifier"
 		case meaning.KindDiscourse:
-			if node.Act != meaning.ActStatement {
+			if node.Act != meaning.ActStatement && !questionDiscourseOperatorRepresented(graph, node, target, operators, answer) {
 				field = "meaning.discourse_act"
 			}
 		}
@@ -703,6 +750,14 @@ func unrepresentedWrapperLosses(graph meaning.Meaning, target meaning.NodeID, op
 		return losses[i].Field < losses[j].Field
 	})
 	return losses, nil
+}
+
+func questionDiscourseOperatorRepresented(graph meaning.Meaning, discourse meaning.Node, target meaning.NodeID, operators []construction.Operator, answer *semantic.QuestionAnswer) bool {
+	if answer == nil || answer.TargetNodeID != target || discourse.Act != meaning.ActQuestion || len(discourse.Content) != 1 {
+		return false
+	}
+	question, found := meaningNodeIDInNodes(graph.Nodes, discourse.Content[0])
+	return found && question.Kind == meaning.KindQuestion && question.Target == target && exactWrapperOperator(question, target, operators)
 }
 
 func pathsToNodes(graph meaning.Meaning, targets map[meaning.NodeID]string, maxDepth int) map[meaning.NodeID][]meaning.NodeID {
@@ -824,6 +879,14 @@ func cloneConstructionPlan(plan construction.ConstructionPlan) construction.Cons
 		copy.Steps[index].Capabilities = append([]construction.Capability(nil), operator.Capabilities...)
 	}
 	return copy
+}
+
+func cloneQuestionAnswer(answer *semantic.QuestionAnswer) *semantic.QuestionAnswer {
+	if answer == nil {
+		return nil
+	}
+	copy := *answer
+	return &copy
 }
 
 func cloneCompiledVariant(variant construction.CompiledVariant) construction.CompiledVariant {

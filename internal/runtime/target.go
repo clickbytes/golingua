@@ -118,7 +118,7 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 	// Surface candidates are the top-level predicates or noun phrases. Role
 	// referents are passed to slot execution as supporting candidates, but are
 	// never realized as independent alternatives for a sentence response.
-	surfaceIDs := topLevelTargetNodeIDs(*source.Meaning)
+	surfaceIDs := topLevelTargetNodeIDs(*source.Meaning, source.QuestionAnswer != nil)
 	neededIDs := targetExecutionNodeIDs(*source.Meaning, surfaceIDs)
 	candidates := make([]realizer.TargetCandidate, 0, len(selection.Candidates))
 	surfaceCandidates := make([]realizer.TargetCandidate, 0, len(selection.Candidates))
@@ -263,7 +263,7 @@ func cloneFieldAssumptions(values []realizer.FieldAssumption) []realizer.FieldAs
 func meaningHasNoExplicitOperators(graph meaning.Meaning) bool {
 	for _, node := range graph.Nodes {
 		switch node.Kind {
-		case meaning.KindScope, meaning.KindModality, meaning.KindQuantifier:
+		case meaning.KindScope, meaning.KindModality, meaning.KindQuantifier, meaning.KindQuestion:
 			return false
 		}
 	}
@@ -293,7 +293,7 @@ func targetExecutionNodeIDs(graph meaning.Meaning, surfaceIDs map[meaning.NodeID
 	return result
 }
 
-func topLevelTargetNodeIDs(graph meaning.Meaning) map[meaning.NodeID]bool {
+func topLevelTargetNodeIDs(graph meaning.Meaning, allowTypedQuestion bool) map[meaning.NodeID]bool {
 	nodes := make(map[meaning.NodeID]meaning.Node, len(graph.Nodes))
 	for _, node := range graph.Nodes {
 		nodes[node.ID] = node
@@ -310,8 +310,12 @@ func topLevelTargetNodeIDs(graph meaning.Meaning) map[meaning.NodeID]bool {
 		}
 		switch node.Kind {
 		case meaning.KindDiscourse:
-			if node.Act == meaning.ActStatement && len(node.Content) == 1 {
+			if (node.Act == meaning.ActStatement || allowTypedQuestion && node.Act == meaning.ActQuestion) && len(node.Content) == 1 {
 				visit(node.Content[0], depth+1)
+			}
+		case meaning.KindQuestion:
+			if allowTypedQuestion {
+				visit(node.Target, depth+1)
 			}
 		case meaning.KindScope:
 			if node.Operator == meaning.OperatorNegation {

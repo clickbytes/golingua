@@ -286,19 +286,24 @@ func englishWHQuestionCoverage(lattice analyzer.LexicalLattice, forest parser.Fo
 			if alternative.FamilyID.String() != "construction:en.question.wh" {
 				return false
 			}
-			terminal, slotID, role := "", "", ""
+			terminal, auxiliary, slotID, role := "", "", "", ""
 			switch alternative.VariantID.String() {
 			case "construction:en.question.wh.subject":
 				terminal, slotID, role = "who", "subject", "experiencer"
 			case "construction:en.question.wh.object.echo":
 				terminal, slotID, role = "whom", "object", "stimulus"
+			case "construction:en.question.wh.object.neutral.analyze":
+				terminal, auxiliary, slotID, role = "whom", "does", "object", "stimulus"
 			default:
 				return false
 			}
-			terminalCount, gapCount := 0, 0
+			terminalCount, auxiliaryCount, gapCount := 0, 0, 0
 			for _, token := range lattice.Tokens {
 				if token.Token.Folded == terminal {
 					terminalCount++
+				}
+				if auxiliary != "" && token.Token.Folded == auxiliary {
+					auxiliaryCount++
 				}
 			}
 			for _, slot := range alternative.Slots {
@@ -309,10 +314,26 @@ func englishWHQuestionCoverage(lattice analyzer.LexicalLattice, forest parser.Fo
 					gapCount++
 				}
 			}
-			if terminalCount != 1 || gapCount > 1 {
+			if terminalCount != 1 || auxiliary != "" && auxiliaryCount != 1 || gapCount > 1 {
 				return false
 			}
 			if gapCount == 1 {
+				for _, requiredSlotID := range []string{"subject", "verb", "object"} {
+					if requiredSlotID == slotID {
+						continue
+					}
+					found, populated := false, false
+					for _, slot := range alternative.Slots {
+						if slot.SlotID == requiredSlotID {
+							found = true
+							populated = len(slot.CandidateIDs) > 0 && slot.WHGap == nil
+							break
+						}
+					}
+					if !found || !populated {
+						return false
+					}
+				}
 				copy := alternative
 				gapAlternative = &copy
 			} else {
@@ -465,6 +486,10 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 				continue
 			}
 			route, number, negated := englishNegatedPredicateContext(lattice, candidate)
+			whDoSupport := englishWHDoSupportContext(lattice, candidate)
+			if whDoSupport && !englishWHDoSupportAgreement(candidate, candidates) {
+				continue
+			}
 			if negated {
 				if candidate.Features["mood"] != "imperative" || negatedBaseSeen[candidate.TokenStart] {
 					continue
@@ -478,7 +503,16 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 				}
 				negatedBaseSeen[candidate.TokenStart] = true
 			}
-			if !supportedEnglishPredicateRoute(candidate) && (!negated || candidate.LexemeID.String() != route.lexeme) {
+			if whDoSupport {
+				// In the licensed neutral object-WH pattern, does supplies the
+				// finite features and the main verb keeps its base cell.
+				candidate.Features = map[features.FeatureID]features.FeatureValueID{
+					"verb_form": "base", "tense": "present", "person": "third",
+					"number": "singular", "verb_number": "singular",
+					"mood": "indicative", "voice": "active",
+				}
+			}
+			if !supportedEnglishPredicateRoute(candidate) && (!negated || candidate.LexemeID.String() != route.lexeme) && !whDoSupport {
 				continue
 			}
 			if !englishPersonalAgreementCandidate(candidate, candidates) {
@@ -650,6 +684,36 @@ func supportedEnglishPredicateRoute(candidate parser.PhraseCandidate) bool {
 			if sense.String() == "sense:en.get.receive" || sense.String() == "sense:en.read.text" || sense.String() == "sense:en.see.visual" {
 				return true
 			}
+		}
+	}
+	return false
+}
+
+func englishWHDoSupportContext(lattice analyzer.LexicalLattice, candidate parser.PhraseCandidate) bool {
+	if candidate.Category != construction.CategoryVP || candidate.LexemeID.String() != "lexeme:en.see.v" ||
+		candidate.Features["verb_form"] != "base" || candidate.TokenStart < 2 || candidate.TokenStart >= len(lattice.Tokens) {
+		return false
+	}
+	if lattice.Tokens[0].Token.Folded != "whom" || lattice.Tokens[1].Token.Folded != "does" || candidate.TokenStart <= 1 {
+		return false
+	}
+	whomCount, doesCount := 0, 0
+	for _, token := range lattice.Tokens {
+		if token.Token.Folded == "whom" {
+			whomCount++
+		}
+		if token.Token.Folded == "does" {
+			doesCount++
+		}
+	}
+	return whomCount == 1 && doesCount == 1
+}
+
+func englishWHDoSupportAgreement(vp parser.PhraseCandidate, candidates []parser.PhraseCandidate) bool {
+	for _, np := range candidates {
+		if np.Category == construction.CategoryNP && np.TokenEnd == vp.TokenStart &&
+			np.Features["person"] == "third" && np.Features["number"] == "singular" {
+			return true
 		}
 	}
 	return false

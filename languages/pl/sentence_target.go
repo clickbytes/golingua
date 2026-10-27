@@ -166,6 +166,31 @@ func polishIdentificationDefaults(predicatePath, referentPath []meaning.NodeID, 
 type polishSentenceFeatures struct{}
 
 func (polishSentenceFeatures) Features(_ context.Context, source semantic.MeaningCandidate, predicate realizer.TargetCandidate, slot construction.SlotSpec, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) ([]features.FeatureValue, error) {
+	if answer := predicate.QuestionAnswer; answer != nil && answer.TargetNodeID == predicate.NodeID && slot.Category == construction.CategoryVP {
+		if !polishFrameEvidenceConsistent(source, predicate.NodeID, predicate.TransferBinding.CoreRef) {
+			return nil, fmt.Errorf("Polish WH target conflicts with explicit event frame evidence")
+		}
+		predicateMeaning, exists := polishMeaningNode(source, predicate.NodeID)
+		if !exists || predicateMeaning.TemporalFrame != "" && predicateMeaning.TemporalFrame != meaning.TemporalFramePresent {
+			return nil, fmt.Errorf("Polish WH target supports only the present temporal frame")
+		}
+		number := "singular"
+		if answer.Role == "stimulus" {
+			var known bool
+			number, known = polishPredicateNumber(source, predicate, candidates)
+			if !known {
+				return nil, fmt.Errorf("Polish WH object question requires explicit or lexeme-grounded subject number for agreement")
+			}
+		} else if answer.Role != "experiencer" {
+			return nil, fmt.Errorf("Polish WH target does not support answer role %q", answer.Role)
+		}
+		return knownPolishFeatures(
+			[2]string{"verb_form", "finite"}, [2]string{"tense", "present"},
+			[2]string{"aspect", "imperfective"}, [2]string{"person", "third"},
+			[2]string{"number", number}, [2]string{"mood", "indicative"},
+			[2]string{"voice", "active"},
+		), nil
+	}
 	if slot.ModifierBinding != nil && polishAttributedSeeingFamily(predicate) {
 		shape, valid := polishAttributedSeeingShape(source)
 		if !valid || source.Meaning == nil {
@@ -325,6 +350,33 @@ func (polishSentenceOperatorBuilder) Build(ctx context.Context, source semantic.
 	if intent, valid := polishPersonalContext(source); intent && !valid {
 		return nil, false, polishParticipantContextError{}
 	}
+	if source.QuestionAnswer != nil {
+		if source.Meaning == nil {
+			return nil, false, fmt.Errorf("Polish WH operator requires its typed Meaning question")
+		}
+		var question meaning.Node
+		questionCount := 0
+		for _, node := range source.Meaning.Nodes {
+			if node.Kind != meaning.KindQuestion {
+				continue
+			}
+			question = node
+			questionCount++
+		}
+		if questionCount != 1 || question.Target != source.QuestionAnswer.TargetNodeID {
+			return nil, false, fmt.Errorf("Polish WH operator requires one question wrapper over the typed answer target")
+		}
+		familyID, err := ids.NewConstructionID("pl.question.wh")
+		if err != nil {
+			return nil, false, err
+		}
+		return []construction.Operator{{
+			ID: "question-wh", Kind: construction.OperatorQuestion, Value: construction.ValueWH,
+			InputFamilyID: familyID, OutputFamilyID: familyID,
+			SemanticScope: construction.SemanticScope{TargetNodeID: source.QuestionAnswer.TargetNodeID, ScopeNodeID: question.ID},
+			Capabilities:  []construction.Capability{"question-wh"}, Provenance: polishWHQuestionSource,
+		}}, true, nil
+	}
 	scope, event, route, found := polishNegatedPresent(source)
 	if !found {
 		return runtime.NoOperatorEvidenceBuilder{}.Build(ctx, source)
@@ -351,6 +403,9 @@ func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.Meaning
 	anchorIntent, contextsValid := polishPersonalContext(source)
 	if anchorIntent && !contextsValid {
 		return false
+	}
+	if source.QuestionAnswer != nil && (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState) {
+		return candidate.NodeID == source.QuestionAnswer.TargetNodeID && polishWHQuestionTargetCandidate(source, candidate)
 	}
 	familyID := candidate.Family.Family.ID.String()
 	if familyID == "construction:pl.transitive_personal_explicit" {
@@ -460,6 +515,67 @@ func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.Meaning
 		return false
 	}
 	return polishMultiplicityEvidenceConsistent(source, event.ID, route.subjectRole, referent, candidate.TransferBinding.CoreRef, true)
+}
+
+func polishWHQuestionTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate) bool {
+	answer := source.QuestionAnswer
+	if answer == nil || candidate.QuestionAnswer == nil || *candidate.QuestionAnswer != *answer ||
+		candidate.Family.Family.ID.String() != "construction:pl.question.wh" ||
+		candidate.CompiledVariant.Variant.DirectionPolicy == construction.DirectionAnalyze || answer.TargetNodeID != candidate.NodeID {
+		return false
+	}
+	roleSlots := make(map[meaning.Role]construction.SlotSpec, len(candidate.Family.Family.SlotSpecs))
+	for _, slot := range candidate.Family.Family.SlotSpecs {
+		if slot.ArgumentBinding != nil {
+			roleSlots[slot.ArgumentBinding.SemanticRole] = slot
+		}
+	}
+	answerSlot, exists := roleSlots[answer.Role]
+	if !exists || answerSlot.Category != construction.CategoryNP {
+		return false
+	}
+	sequenceSlots := make(map[string]struct{}, len(candidate.CompiledVariant.Variant.Sequence))
+	terminals := make(map[string]struct{})
+	for _, token := range candidate.CompiledVariant.Variant.Sequence {
+		if token.Kind == construction.TokenSlot {
+			sequenceSlots[token.SlotID] = struct{}{}
+		} else if token.Kind == construction.TokenTerminal {
+			terminals[token.Terminal] = struct{}{}
+		}
+	}
+	if _, included := sequenceSlots[answerSlot.ID]; included {
+		return false
+	}
+	for _, argument := range candidate.Frame.Arguments {
+		if !argument.Required || argument.Role == answer.Role {
+			continue
+		}
+		slot, bound := roleSlots[argument.Role]
+		if !bound {
+			return false
+		}
+		if _, included := sequenceSlots[slot.ID]; !included {
+			return false
+		}
+	}
+	if _, hasVerb := sequenceSlots["verb"]; !hasVerb {
+		return false
+	}
+	if _, hasQuestionMark := terminals["?"]; !hasQuestionMark {
+		return false
+	}
+	switch answer.Role {
+	case "experiencer":
+		_, kto := terminals["kto"]
+		_, kogo := terminals["kogo"]
+		return kto && !kogo
+	case "stimulus":
+		_, kogo := terminals["kogo"]
+		_, kto := terminals["kto"]
+		return kogo && !kto
+	default:
+		return false
+	}
 }
 
 func polishNegatedPredicateTarget(source semantic.MeaningCandidate, predicateID meaning.NodeID) bool {

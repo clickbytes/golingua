@@ -122,8 +122,8 @@ func (engine *Engine) translateDSE(ctx context.Context, request Request) (Transl
 			result.Candidates = append(result.Candidates, dseUnresolvedAlternative(candidate, status.OutcomeInvalid, []status.Diagnostic{refusal}))
 			continue
 		}
-		if document.Expression == nil || document.Expression.Kind != algebra.TermAtom {
-			refusal := diagnostic("DSE_EXPRESSION_PROFILE_UNSUPPORTED", "composition.candidates."+candidate.ID, "this configured translation profile realizes only one direct positive Atom")
+		if !dseTranslationExpressionSupported(document.Expression) {
+			refusal := diagnostic("DSE_EXPRESSION_PROFILE_UNSUPPORTED", "composition.candidates."+candidate.ID, "this configured translation profile realizes one direct positive Atom or one Entity WH Ask over a direct Atom")
 			realizationReceipt.Status = status.OutcomeUnsupported
 			realizationReceipt.Diagnostics = []status.Diagnostic{refusal}
 			trace.Realizations = append(trace.Realizations, realizationReceipt)
@@ -167,7 +167,17 @@ func (engine *Engine) translateDSE(ctx context.Context, request Request) (Transl
 		// The target checker revalidates this projection against the separately
 		// pinned metadata. Inline declarations from the source candidate are not
 		// allowed to become a second target-side authority.
-		realized, realizeErr := engine.RealizeDSEAlgebra(requestContext, request.To, targetDocument, targetResources.TargetPackage, profile.SelectedMetadata)
+		var realized AlgebraRealizationResult
+		var realizeErr error
+		if targetDocument.Expression != nil && targetDocument.Expression.Kind == algebra.TermAsk {
+			// A bounded WH Ask can still produce a verified surface candidate when
+			// unrelated or unsupported request-context details remain. The ordinary
+			// realizer retains those details as residuals and returns an incomplete
+			// result; it does not let them become a complete translation.
+			realized, realizeErr = engine.realizeAlgebra(requestContext, request.To, targetDocument, targetResources.TargetPackage, profile.SelectedMetadata, false)
+		} else {
+			realized, realizeErr = engine.RealizeDSEAlgebra(requestContext, request.To, targetDocument, targetResources.TargetPackage, profile.SelectedMetadata)
+		}
 		if realizeErr != nil {
 			failed := stageFailure(request, realizeErr, "DSE_TARGET_REALIZATION_FAILED")
 			realizationReceipt.Status = failed.Status
@@ -201,6 +211,9 @@ func (engine *Engine) translateDSE(ctx context.Context, request Request) (Transl
 			// only its own surface outcome so an explicit preview can select it
 			// without erasing ambiguity among sibling alternatives.
 			outcome := mergeDSEOutcomes(candidate.Status, surface.Outcome)
+			if len(realized.Residuals) > 0 {
+				outcome = mergeDSEOutcomes(outcome, status.OutcomeIncomplete)
+			}
 			diagnostics := append([]status.Diagnostic(nil), surface.Diagnostics...)
 			if outcome != status.OutcomeOK && len(diagnostics) == 0 {
 				diagnostics = append([]status.Diagnostic(nil), realized.Diagnostics...)
@@ -414,7 +427,43 @@ func dseFailure(result TranslationResult, outcome status.OutcomeKind, code, path
 	return finalized
 }
 
+func dseTranslationAsk(expression *algebra.Term) (answerID, answerRole string, isAsk, supported bool) {
+	if expression == nil {
+		return "", "", false, false
+	}
+	if expression.Kind == algebra.TermAtom {
+		return "", "", false, true
+	}
+	if expression.Kind != algebra.TermAsk || len(expression.Answers) != 1 || expression.Restrictor != nil || expression.Body == nil || expression.Body.Kind != algebra.TermAtom {
+		return "", "", false, false
+	}
+	answer := expression.Answers[0]
+	if answer.ID == "" || answer.Type.Kind != algebra.TypeEntity {
+		return "", "", false, false
+	}
+	occurrences := 0
+	for _, argument := range expression.Body.Args {
+		if argument.Value != nil && argument.Value.Kind == algebra.TermVar && argument.Value.ID == answer.ID {
+			occurrences++
+			answerRole = argument.Role
+		}
+	}
+	if occurrences != 1 || answerRole == "" {
+		return "", "", false, false
+	}
+	return answer.ID, answerRole, true, true
+}
+
+func dseTranslationExpressionSupported(expression *algebra.Term) bool {
+	_, _, _, supported := dseTranslationAsk(expression)
+	return supported
+}
+
 func enrichDSEContext(engine *Engine, document algebra.Document, candidate semantic.DSECandidate) (algebra.Document, []DSEReferenceConceptMapping, status.OutcomeKind, string, string) {
+	answerID, answerRole, isAsk, supported := dseTranslationAsk(document.Expression)
+	if !supported {
+		return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_EXPRESSION_PROFILE_UNSUPPORTED", "translation accepts one direct positive Atom or one Entity WH Ask without a restrictor over a direct Atom"
+	}
 	if document.RequestContext == nil {
 		return algebra.Document{}, nil, status.OutcomeInvalid, "DSE_REQUEST_CONTEXT_REQUIRED", "canonical document has no explicit request context"
 	}
@@ -429,8 +478,19 @@ func enrichDSEContext(engine *Engine, document algebra.Document, candidate seman
 	sourceReferences = append(sourceReferences, sourceReference{role: "event", referenceID: candidate.HeadEventReferenceID, senseID: candidate.Source.SenseID})
 	bindingsByReference := make(map[string]string, len(candidate.RoleSources)+1)
 	bindingsByReference[candidate.HeadEventReferenceID] = candidate.Source.SenseID
+	whGapCount := 0
 	for _, role := range candidate.RoleSources {
-		if role.WHGap != nil || role.ReferenceID == "" || role.Source.SenseID == "" {
+		if role.WHGap != nil {
+			whGapCount++
+			if !isAsk || role.WHGap.Role != role.Role || role.Role != answerRole {
+				return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_WH_GAP_MISMATCH", "the typed WH answer must match exactly one source gap in the same semantic role"
+			}
+			continue
+		}
+		if isAsk && role.Role == answerRole {
+			return algebra.Document{}, nil, status.OutcomeInvalid, "DSE_WH_ROLE_DUPLICATED", "the answer role cannot also be mapped to an explicit source reference"
+		}
+		if role.ReferenceID == "" || role.Source.SenseID == "" {
 			return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_ROLE_REFERENCE_UNRESOLVED", "every realized role requires an exact source sense and explicit reference"
 		}
 		if prior, exists := bindingsByReference[role.ReferenceID]; exists && prior != role.Source.SenseID {
@@ -438,6 +498,12 @@ func enrichDSEContext(engine *Engine, document algebra.Document, candidate seman
 		}
 		bindingsByReference[role.ReferenceID] = role.Source.SenseID
 		sourceReferences = append(sourceReferences, sourceReference{role: role.Role, referenceID: role.ReferenceID, senseID: role.Source.SenseID})
+	}
+	if (isAsk && whGapCount != 1) || (!isAsk && whGapCount != 0) {
+		return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_WH_GAP_CARDINALITY", "the typed WH Ask requires exactly one matching source gap and a direct Atom permits none"
+	}
+	if isAsk && !dseQuestionSourcesMatch(document.Expression.Body, candidate, answerID) {
+		return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_WH_ARGUMENT_MAPPING_MISMATCH", "the Ask atom arguments must match the event reference, explicit role references, and one typed source WH gap"
 	}
 	knownDeclarations := make(map[string]algebra.Declaration, len(document.References))
 	for _, declaration := range document.References {
@@ -490,4 +556,52 @@ func enrichDSEContext(engine *Engine, document algebra.Document, candidate seman
 	}
 	document.RequestContext = &context
 	return document, mappings, status.OutcomeOK, "", ""
+}
+
+func dseQuestionSourcesMatch(atom *algebra.Term, candidate semantic.DSECandidate, answerID string) bool {
+	if atom == nil || atom.Kind != algebra.TermAtom || answerID == "" || candidate.HeadEventReferenceID == "" {
+		return false
+	}
+	roles := make(map[string]semantic.DSERoleSource, len(candidate.RoleSources))
+	for _, role := range candidate.RoleSources {
+		if role.Role == "" {
+			return false
+		}
+		if _, duplicate := roles[role.Role]; duplicate {
+			return false
+		}
+		roles[role.Role] = role
+	}
+	seenEvent := false
+	seenRoles := make(map[string]struct{}, len(roles))
+	for _, argument := range atom.Args {
+		if argument.Value == nil || argument.Role == "" {
+			return false
+		}
+		if argument.Role == "event" {
+			if seenEvent || argument.Value.Kind != algebra.TermRef || argument.Value.ID != candidate.HeadEventReferenceID {
+				return false
+			}
+			seenEvent = true
+			continue
+		}
+		role, exists := roles[argument.Role]
+		if !exists {
+			return false
+		}
+		if _, duplicate := seenRoles[argument.Role]; duplicate {
+			return false
+		}
+		seenRoles[argument.Role] = struct{}{}
+		if role.WHGap != nil {
+			if role.WHGap.Role != role.Role || role.Role != argument.Role || argument.Value.Kind != algebra.TermVar || argument.Value.ID != answerID {
+				return false
+			}
+			continue
+		}
+		if role.ReferenceID == "" || argument.Value.Kind != algebra.TermRef || argument.Value.ID != role.ReferenceID {
+			return false
+		}
+	}
+	return seenEvent && len(seenRoles) == len(roles)
 }
