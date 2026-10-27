@@ -1,0 +1,213 @@
+{
+  "schema_version": 1,
+  "captured_at_utc": "2026-10-27T10:44:13+00:00",
+  "repository": "https://github.com/clickbytes/golingua",
+  "branch": "dse/08-02-runtime-integration",
+  "source_base_sha": "ce8c0653b3d98d9929663eddbf74a60683d735f6",
+  "binary": {
+    "path": "/tmp/golingua-dse/397/golingua",
+    "sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443",
+    "version": "0.1.0-alpha.1",
+    "build_command": "go build -o /tmp/golingua-dse/397/golingua ./cmd/golingua",
+    "go_version": "go1.27.0 linux/amd64"
+  },
+  "active_pack": {
+    "dataset_id": "golingua-authored",
+    "dataset_version": "2026-10-23",
+    "digest": "e62fdf8903c59fd27690aa46e58b00d199a10a0e1108869e3aa8d47a8f7196f0"
+  },
+  "registry": {
+    "id": "dse395.independent.probe",
+    "version": "2026-10-26.1",
+    "resource_fingerprint": "sha256:ad5be13b6bda00502a4c259e18b44e6b353c134362d86b760c7f971c89d8b67e",
+    "registry_set_fingerprint": "dse-registry-set-v1:0d7ea618816a36e40aac0d86db6b2b2c4cab02b0ccc2d4f7287987030a787f86"
+  },
+  "source_file_sha256": {
+    "internal/cli/cli.go": "1e8f6290a5d2d80bca73d578ec9c34f6042267b84f66c66f6b0ba2e018444407",
+    "internal/engine/algebra_realization.go": "6fdd0674aba7d2ef768359592eae02e8f3cfca936433f2085f827023a4cef75a",
+    "internal/engine/engine.go": "441bbd3330904cdc860ceca64c028ecea26d21d98995a7581e77a14285df73cc",
+    "internal/engine/result.go": "b496eb9c06f209f11f3998cc02b1b94c8e033a40d450b5b2c27ab2071deaa483",
+    "internal/engine/translate.go": "65257cddbca86ec99abd249533515a25cbadd7d12695cf611d3dda72e2488617",
+    "internal/engine/dse_translate.go": "5cc012640470a4f156d3befe3533d5aba33f54c3e1719bae2eeb49531b98f5b4",
+    "internal/runtime/config.go": "b9c5eddb3611a7459f0edc251bd84311d21a8211d0ee636efc72a3f78dd80771",
+    "internal/runtime/dse_profile.go": "54257dda58d6b32707d118158ecb218cb1e1880e1811cc8343af6dd42e6364c0"
+  },
+  "resource_file_sha256": {
+    "data/semantic/examples/source-composition/metadata.json": "808576b35c4da6a798355239cbd8134fe3315b3635f634defce433c85c02beea",
+    "data/semantic/languages/en/source.json": "af4c3fa26d8b78bf45dc00e1cc8f4649312be2fb52f324a9d0f5eee0507a55c9",
+    "data/semantic/languages/pl/source.json": "9c289747ff60ac99f49df9ebc03b6d1f86a11580b5184e0d6bb67c846aac838b",
+    "data/semantic/languages/en/pilot.json": "3eabf59392c0235f22d21f4a9a856b9da52e8e6348a981477dba1f3d5571da0f",
+    "data/semantic/languages/pl/pilot.json": "84e4885f76eed641007e4d15106f36f0af6d9c220235d4cd544b2f584a4d08b0",
+    "data/semantic/languages/en/dse-translation-plan.json": "952af9c8e03002868ffa0f168b34a250ca425f7deeb1363fa1552b7c4c220dd8",
+    "data/semantic/languages/pl/dse-translation-plan.json": "93c181fb7853350c29718eee3abfe7e5d82101303f17d13c6300d0398ee7baeb",
+    "docs/work/dse/evidence/08-02/inputs/positive-source-context.json": "16d4a32dfe3dfe34d4f1a2f242dbcd5d1add2b3a0f06049cb5a1f0d9cc5365bc",
+    "docs/work/dse/evidence/08-02/inputs/unsupported-source-context.json": "7f35b483be5554a12c29eb708fca0cf8121c225b4a5e6e2ded2d2fa95225e987"
+  },
+  "runtime_config_sha256": {
+    "docs/work/dse/evidence/08-02/runtime-config-context-mismatch.json": "3034f828ddaba3ff4be23cfcb5dbcb4f75b3dab54ff90f33a47d1e3862049468",
+    "docs/work/dse/evidence/08-02/runtime-config-missing-registry.json": "ec0543f8824c1283c4c6ff50112e1c21f3844d0107b222c950fde80d6e082aee",
+    "docs/work/dse/evidence/08-02/runtime-config-positive.json": "83068627b14432d9cc7841a914d1a8447c7dbf02ba9e040c867ed0b37dfe1ebe",
+    "docs/work/dse/evidence/08-02/runtime-config-unsupported.json": "678544e5271e007a00015d92f71f13119c6796bd86aa4b2e7a9a15e1ff5d60a0",
+    "docs/work/dse/evidence/08-02/runtime-config-wrong-plan-version.json": "c6add925099549e979592a1b37714bd4e2b8d2ff406d5704925084a97883619e"
+  },
+  "cli_observations": [
+    {
+      "name": "algebra-analyze-pl",
+      "command": "/tmp/golingua-dse/397/golingua algebra analyze --language pl --text 'Nauczyciel widzi psa.' --runtime-config /tmp/golingua-dse/395-doc-flow/runtime.json --language-package data/semantic/languages/pl/source.json --source-plan data/semantic/languages/pl/dse-translation-plan.json --context /home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-02/inputs/positive-source-context.json --metadata data/semantic/examples/source-composition/metadata.json --json",
+      "exit_code": 0,
+      "status": "ok",
+      "stdout_file": "algebra-analyze-pl.stdout.json",
+      "stderr_file": "algebra-analyze-pl.stderr.txt",
+      "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443"
+    },
+    {
+      "name": "algebra-realize-en",
+      "command": "/tmp/golingua-dse/397/golingua algebra realize --language en --language-package data/semantic/languages/en/pilot.json --runtime-config /tmp/golingua-dse/395-doc-flow/runtime.json --input docs/work/dse/evidence/08-01/inputs/anonymous-vision.json --metadata data/semantic/examples/source-composition/metadata.json --json",
+      "exit_code": 6,
+      "status": "ambiguous",
+      "stdout_file": "algebra-realize-en.stdout.json",
+      "stderr_file": "algebra-realize-en.stderr.txt",
+      "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443"
+    },
+    {
+      "name": "algebra-realize-pl",
+      "command": "/tmp/golingua-dse/397/golingua algebra realize --language pl --language-package data/semantic/languages/pl/pilot.json --runtime-config /tmp/golingua-dse/395-doc-flow/runtime.json --input docs/work/dse/evidence/08-01/inputs/anonymous-vision.json --metadata data/semantic/examples/source-composition/metadata.json --json",
+      "exit_code": 0,
+      "status": "ok",
+      "stdout_file": "algebra-realize-pl.stdout.json",
+      "stderr_file": "algebra-realize-pl.stderr.txt",
+      "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443"
+    },
+    {
+      "name": "capabilities-dse-context-mismatch",
+      "command": "/tmp/golingua-dse/397/golingua capabilities --runtime-config /home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-02/runtime-config-context-mismatch.json --json",
+      "exit_code": 2,
+      "status": "invalid",
+      "stdout_file": "capabilities-dse-context-mismatch.stdout.json",
+      "stderr_file": "capabilities-dse-context-mismatch.stderr.txt",
+      "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443"
+    },
+    {
+      "name": "capabilities-dse-missing-registry",
+      "command": "/tmp/golingua-dse/397/golingua capabilities --runtime-config /home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-02/runtime-config-missing-registry.json --json",
+      "exit_code": 2,
+      "status": "invalid",
+      "stdout_file": "capabilities-dse-missing-registry.stdout.json",
+      "stderr_file": "capabilities-dse-missing-registry.stderr.txt",
+      "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443"
+    },
+    {
+      "name": "capabilities-dse-positive",
+      "command": "/tmp/golingua-dse/397/golingua capabilities --runtime-config /home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-02/runtime-config-positive.json --json",
+      "exit_code": 0,
+      "status": "ok",
+      "stdout_file": "capabilities-dse-positive.stdout.json",
+      "stderr_file": "capabilities-dse-positive.stderr.txt",
+      "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443"
+    },
+    {
+      "name": "capabilities-dse-wrong-plan-version",
+      "command": "/tmp/golingua-dse/397/golingua capabilities --runtime-config /home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-02/runtime-config-wrong-plan-version.json --json",
+      "exit_code": 2,
+      "status": "invalid",
+      "stdout_file": "capabilities-dse-wrong-plan-version.stdout.json",
+      "stderr_file": "capabilities-dse-wrong-plan-version.stderr.txt",
+      "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443"
+    },
+    {
+      "name": "capabilities-v1",
+      "command": "/tmp/golingua-dse/397/golingua capabilities --runtime-config /tmp/golingua-dse/395-doc-flow/runtime.json --json",
+      "exit_code": 0,
+      "status": "ok",
+      "stdout_file": "capabilities-v1.stdout.json",
+      "stderr_file": "capabilities-v1.stderr.txt",
+      "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443"
+    },
+    {
+      "name": "help",
+      "command": "/tmp/golingua-dse/397/golingua --help",
+      "exit_code": 0,
+      "status": null,
+      "stdout_file": "help.stdout.txt",
+      "stderr_file": "help.stderr.txt",
+      "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443"
+    },
+    {
+      "name": "translate-en-pl-context-constraints",
+      "command": "/tmp/golingua-dse/397/golingua translate --from en --to pl --text 'The teacher sees the dog.' --runtime-config docs/work/dse/evidence/08-02/runtime-config-unsupported.json --json",
+      "exit_code": 3,
+      "status": "unsupported",
+      "stdout_file": "translate-en-pl-context-constraints.stdout.json",
+      "stderr_file": "translate-en-pl-context-constraints.stderr.txt",
+      "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443"
+    },
+    {
+      "name": "translate-en-pl-definite",
+      "command": "/tmp/golingua-dse/397/golingua translate --from en --to pl --text 'The teacher sees the dog.' --runtime-config /home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-02/runtime-config-positive.json --json",
+      "exit_code": 3,
+      "status": "unsupported",
+      "stdout_file": "translate-en-pl-definite.stdout.json",
+      "stderr_file": "translate-en-pl-definite.stderr.txt",
+      "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443"
+    },
+    {
+      "name": "translate-pl-en-context-constraints",
+      "command": "/tmp/golingua-dse/397/golingua translate --from pl --to en --text 'Nauczyciel widzi psa.' --runtime-config /home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-02/runtime-config-unsupported.json --json",
+      "exit_code": 3,
+      "status": "unsupported",
+      "stdout_file": "translate-pl-en-context-constraints.stdout.json",
+      "stderr_file": "translate-pl-en-context-constraints.stderr.txt",
+      "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443"
+    },
+    {
+      "name": "translate-pl-en-explicit-preview",
+      "command": "/tmp/golingua-dse/397/golingua translate --from pl --to en --text 'Nauczyciel widzi psa.' --runtime-config /home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-02/runtime-config-positive.json --json --preview-id translation:ed751e2480c81eb1c42a16d63d670e6a6d8c679e24df4c8949097fb598a92558",
+      "exit_code": 6,
+      "status": "ambiguous",
+      "stdout_file": "translate-pl-en-explicit-preview.stdout.json",
+      "stderr_file": "translate-pl-en-explicit-preview.stderr.txt",
+      "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443"
+    },
+    {
+      "name": "translate-pl-en",
+      "command": "/tmp/golingua-dse/397/golingua translate --from pl --to en --text 'Nauczyciel widzi psa.' --runtime-config /home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-02/runtime-config-positive.json --json",
+      "exit_code": 6,
+      "status": "ambiguous",
+      "stdout_file": "translate-pl-en.stdout.json",
+      "stderr_file": "translate-pl-en.stderr.txt",
+      "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443"
+    },
+    {
+      "name": "translate-v1-pl-en",
+      "command": "/tmp/golingua-dse/397/golingua translate --from pl --to en --text 'Nauczyciel widzi psa.' --runtime-config /tmp/golingua-dse/395-doc-flow/runtime.json --json",
+      "exit_code": 6,
+      "status": "ambiguous",
+      "stdout_file": "translate-v1-pl-en.stdout.json",
+      "stderr_file": "translate-v1-pl-en.stderr.txt",
+      "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443"
+    },
+    {
+      "name": "version",
+      "command": "/tmp/golingua-dse/397/golingua --version",
+      "exit_code": 0,
+      "status": null,
+      "stdout_file": "version.stdout.txt",
+      "stderr_file": "version.stderr.txt",
+      "binary_sha256": "1adab7bf8f0ec1b6a5f551bcd21c12bd7208b6e12979c9ff0310ee24928cf443"
+    }
+  ],
+  "technical_checks": {
+    "gofmt": "PASS: gofmt -l on all changed Go files produced no output",
+    "git_diff_check": "PASS",
+    "go_vet": "PASS: go vet ./...",
+    "go_build": "PASS: go build -o /tmp/golingua-dse/397/golingua ./cmd/golingua",
+    "go_test": "NOT RUN",
+    "pr_ci": "PENDING: PR #421",
+    "main_ci_after_merge": "NOT RUN: pending PR merge"
+  },
+  "review": {
+    "delegated_implementer": "GPT Luna Low",
+    "read_only_final_review": "PASS: unsupported context residuals stop before target adapter; exact lexical condition consumption and provenance retained",
+    "owner_language_acceptance": "NOT EVALUATED"
+  }
+}

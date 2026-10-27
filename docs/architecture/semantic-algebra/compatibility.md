@@ -1,8 +1,8 @@
 # DSE and Meaning v1 compatibility (RFC)
 
-**Status:** normative compatibility contract for the proposed DSE route; implementation `NOT RUN`; owner acceptance `NOT_EVALUATED`.
+**Status:** normative compatibility contract; DSE translate route is wired and locally verified by #397; PR/main CI and owner acceptance remain separate, with owner acceptance `NOT_EVALUATED`.
 
-This document defines how future DSE work coexists with the existing request-scoped Meaning v1. It does not add an API, route, schema version, migration, or fallback in the current product. Until an explicitly selected DSE integration is implemented and reviewed, the existing Meaning v1 paths remain unchanged.
+This document defines how the configured DSE translate route coexists with the existing request-scoped Meaning v1. Runtime config schema version 1 now supports an explicit semantic profile. Configurations that omit it retain the existing Meaning v1 route.
 
 ## 1. Authority and opt-in
 
@@ -11,13 +11,13 @@ Each request uses one explicitly selected semantic route:
 | Route selection | Authority | Behavior |
 | --- | --- | --- |
 | No DSE opt-in / existing route | Meaning v1 | Existing parser, candidate, context, evaluation, and realization behavior remains authoritative. |
-| Explicit DSE opt-in on a future supported route | DSE expression | One DSE term is authoritative for that selected route; v1 may be used only through a reviewed, semantics-preserving conversion. |
+| `semantic_profile: "dse"` in the selected runtime config | DSE canonical expression | The checked DSE expression is authoritative for that translation; the target adapter receives only the supported positive atomic fragment. |
 
 An opt-in must name and pin the DSE registry identity, version, and content fingerprint for the request. DSE metadata lives in a separately versioned registry selected by request/configuration; it is not silently merged into, or used to mutate, the current CORE/lexicon `Pack`. The Pack is an immutable snapshot identified by its own dataset version and digest. A DSE registry fingerprint is not a Pack digest and must not be presented as one.
 
 If the explicitly selected DSE route returns `unsupported`, `unknown`, `incomplete`, `invalid`, or `resource_limit`, the caller receives that result and its diagnostics. The engine MUST NOT silently retry the same request through Meaning v1 and return the fallback as though DSE had succeeded. A caller may explicitly submit a separate v1 request, but that is a separate interpretation with a separate result. A request may not carry competing v1 and DSE authorities for one semantic alternative.
 
-All nonselected routes remain v1-authoritative. Selection and future integration belong to a separately reviewed implementation leaf (planned #397); this RFC does not claim that configuration or CLI controls exist.
+All runtime configs without `semantic_profile: "dse"` remain v1-authoritative. When DSE is selected, missing resources, failed checks, unsupported terms, unresolved candidates and target failures are returned on that route; the engine does not retry the same input through Meaning v1.
 
 ## 2. Existing v1 structures and identity boundaries
 
@@ -94,12 +94,14 @@ Existing `EvidenceTrace` is request-scoped and may include source spans, senses,
 
 The existing v1 Pack is an immutable CORE/lexicon snapshot pinned by dataset ID, version, and digest ([Pack decisions](../03-data-decisions.md)). DSE uses its own pinned metadata registry and fingerprint. Changing one cannot silently mutate or reinterpret the other. No schema migration, automatic import, Pack extension, or public API change is authorized by this compatibility RFC.
 
-Future configuration may explicitly opt a route into DSE and supply the DSE registry fingerprint. Any API field or CLI option required for that route must be proposed and reviewed in its implementation leaf; it must not overload the existing dataset ID/digest or infer opt-in from an installed registry. A missing or mismatched DSE registry fails closed. Existing v1 clients and routes keep their behavior when DSE is not selected.
+The runtime config uses `semantic_profile: "dse"` with a `dse_profile` object containing a profile ID/version, a combined registry fingerprint, pinned metamodel registry resources, and explicit `en`/`pl` source package, target package, source plan and source context pins. Relative resource paths resolve from the runtime config file. Language packages and plans pin SHA-256 of the exact file bytes; registry resources pin their validated resource fingerprints; source contexts pin `context_id`, schema version and SHA-256. Every dependency registry has its own ID/version/fingerprint pin. Missing or mismatched resources fail before the engine is activated. The selected DSE registry remains independent of the Pack identity.
+
+The current configured profile accepts one direct positive Atom for translation. It refuses candidates with non-`ok` source status, non-`ok` fragment checks, semantic residuals or unsupported expression structure before target generation. A `lexical_descriptor` presupposition is consumed only when its exact reference, source sense, approved source reference-predicate binding, and unique approved equivalent CORE transfer all agree; the result trace records that consumption. Other non-asserted context conditions stay in the canonical document and are reported as target residuals; if the bounded target route cannot consume them, it returns `unsupported` before invoking the target adapter. Source mentions and resolution evidence remain in the canonical candidate trace; after the source has resolved typed references, they are omitted from the target Meaning context because they are not target-side semantic constraints. A participant reference receives its CORE classification only from its exact source SenseID and one approved equivalent transfer binding; that mapping and the active Pack identity are included in the result trace. The target checker revalidates the projected expression against the separately pinned metadata, without source-inline declarations. Capabilities report realization only if selected metadata validates at least one approved usable target binding and the compiled target adapter is present.
 
 The DSE evaluator consumes explicit facts under a named profile. The v1 Meaning graph is not a fact set, the CORE ontology is not an implicit fact database, and lexical bindings are not evidence that a proposition is true. No fact is synthesized from a translated sentence or from a conversion. Any future bridge from DSE derivations to v1 evidence must preserve premises, rule IDs, registry/profile versions, and derivation IDs explicitly.
 
 ## 7. Verification and delivery status
 
-This issue is documentation-only. It does not authorize Go changes, migrations, API additions, runtime commands, new tests, test runners, or workflow changes. Later work follows the current `AGENTS.md` and its own active leaf; this RFC does not create standing test authorization.
+The #397 code path passed its local build and real CLI checks; the exact commands and outputs are recorded under [`docs/work/dse/evidence/08-02/`](../../work/dse/evidence/08-02/README.md). PR CI and post-merge `main` CI remain required before marking the issue complete. This verification is not a language-quality acceptance. This RFC does not authorize schema migration, automatic memory, new servers, test runners, or workflow changes; the active issue and `AGENTS.md` determine any verification work.
 
-Review status, mathematical correctness assessment, technical implementation, language evaluation, and owner acceptance are separate. This compatibility design has not been executed in a runtime: implementation/runtime `NOT RUN`, owner acceptance `NOT_EVALUATED`. Future implementation evidence must name the actual base SHA, registry fingerprint, selected routes, exact commands, outputs, and unresolved limitations. Documentation alone is not a runtime pass.
+Review status, mathematical correctness assessment, technical implementation, language evaluation, and owner acceptance are separate. Local coordinator verification and the bounded read-only review are recorded; CI remains pending and owner language acceptance remains `NOT_EVALUATED`. Evidence names the actual base SHA, Pack identity, registry fingerprint, resource pins, selected routes, exact commands, outputs, and unresolved limitations. Documentation alone is not a runtime pass.

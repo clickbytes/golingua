@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"DSE_SOURCE_PLAN_IDENTITY_MISMATCH","message":"source plan identity or version differs from its pin or package declarations","path":"dse_profile.languages.en.source_plan","severity":"error"}]}

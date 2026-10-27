@@ -11,6 +11,7 @@ import (
 
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/meaning"
+	"github.com/clickbytes/golingua/internal/pack"
 	"github.com/clickbytes/golingua/internal/realizer"
 	"github.com/clickbytes/golingua/internal/semantic"
 	"github.com/clickbytes/golingua/internal/status"
@@ -47,6 +48,69 @@ type TranslationAlternative struct {
 	Diagnostics       []status.Diagnostic        `json:"diagnostics,omitempty"`
 }
 
+// DSETranslationRealization records how one exact composed candidate was
+// offered to the configured target route. It retains all target coverage and
+// residuals without storing a second, projected Meaning graph.
+type DSETranslationRealization struct {
+	CandidateID        string                       `json:"candidate_id"`
+	Status             status.OutcomeKind           `json:"status"`
+	Coverage           []AlgebraRealizationCoverage `json:"coverage"`
+	Residuals          []AlgebraRealizationResidual `json:"residuals"`
+	SourceResiduals    []semantic.DSEResidual       `json:"source_residuals"`
+	Diagnostics        []status.Diagnostic          `json:"diagnostics"`
+	Source             DSEResourceReceipt           `json:"source"`
+	SourcePlan         DSEResourceReceipt           `json:"source_plan"`
+	SourceContext      DSEResourceReceipt           `json:"source_context"`
+	Target             DSEResourceReceipt           `json:"target"`
+	Mappings           []DSEReferenceConceptMapping `json:"reference_mappings"`
+	ConsumedConditions []DSEConditionConsumption    `json:"consumed_conditions"`
+}
+
+// DSEReferenceConceptMapping records the exact approved source sense transfer
+// used to enrich one request-local reference for target realization.
+type DSEReferenceConceptMapping struct {
+	Role           string `json:"role"`
+	ReferenceID    string `json:"reference_id"`
+	SourceSenseID  string `json:"source_sense_id"`
+	CoreConceptID  string `json:"core_concept_id"`
+	MappingKind    string `json:"mapping_kind"`
+	ApprovalStatus string `json:"approval_status"`
+	ProvenanceID   string `json:"provenance_id"`
+}
+
+// DSEConditionConsumption records a source lexical condition that the target
+// Meaning consumes through the same exact sense's approved CORE transfer.
+type DSEConditionConsumption struct {
+	ConditionID             string `json:"condition_id"`
+	Kind                    string `json:"kind"`
+	Code                    string `json:"code"`
+	Symbol                  string `json:"symbol"`
+	ReferenceID             string `json:"reference_id"`
+	SourceSenseID           string `json:"source_sense_id"`
+	CoreConceptID           string `json:"core_concept_id"`
+	SourceBindingProvenance string `json:"source_binding_provenance_id"`
+}
+
+// DSEResourceReceipt ties an output to the exact checked source/target data
+// snapshots selected by the runtime config.
+type DSEResourceReceipt struct {
+	ID          string `json:"id"`
+	Version     string `json:"version"`
+	Fingerprint string `json:"fingerprint"`
+}
+
+// DSETranslationTrace makes the composed canonical documents and their
+// checked realization receipts the only semantic authority for a DSE route.
+type DSETranslationTrace struct {
+	ProfileID           string                      `json:"profile_id"`
+	ProfileVersion      string                      `json:"profile_version"`
+	RegistryFingerprint string                      `json:"registry_fingerprint"`
+	Registries          []DSERegistryPin            `json:"registries"`
+	PackIdentity        pack.Identity               `json:"active_pack"`
+	Composition         semantic.DSEResult          `json:"composition"`
+	Realizations        []DSETranslationRealization `json:"realizations"`
+}
+
 // TranslationResult is the bounded outward result of one translation request.
 // Text is present for a completed result, or for a preview explicitly selected
 // by PreviewID while the overall result remains ambiguous or incomplete.
@@ -58,6 +122,7 @@ type TranslationResult struct {
 	PreviewID   string                   `json:"preview_id,omitempty"`
 	Candidates  []TranslationAlternative `json:"candidates,omitempty"`
 	Diagnostics []status.Diagnostic      `json:"diagnostics,omitempty"`
+	DSETrace    *DSETranslationTrace     `json:"dse_trace,omitempty"`
 }
 
 // Clone returns a defensive copy of slices and nested Meaning/evidence data.
@@ -100,6 +165,15 @@ func (result TranslationResult) Clone() TranslationResult {
 		result.Candidates[i] = result.Candidates[i].Clone()
 	}
 	result.Diagnostics = append([]status.Diagnostic(nil), result.Diagnostics...)
+	if result.DSETrace != nil {
+		encoded, err := json.Marshal(result.DSETrace)
+		if err == nil {
+			var copied DSETranslationTrace
+			if json.Unmarshal(encoded, &copied) == nil {
+				result.DSETrace = &copied
+			}
+		}
+	}
 	return result
 }
 
@@ -195,6 +269,9 @@ func (result TranslationResult) Validate() error {
 			return invalid(path+".text", "a complete candidate requires realized text")
 		}
 		if candidate.Meaning != nil {
+			if result.DSETrace != nil {
+				return invalid(path+".meaning", "DSE translation candidates cannot expose a competing Meaning authority")
+			}
 			if err := meaning.ValidateStructure(*candidate.Meaning, meaning.DefaultBudget()); err != nil {
 				return invalid(path+".meaning", err.Error())
 			}
@@ -203,6 +280,42 @@ func (result TranslationResult) Validate() error {
 		}
 		if candidate.ID == result.PreviewID {
 			selected = candidate
+		}
+	}
+	if result.DSETrace != nil {
+		trace := result.DSETrace
+		if strings.TrimSpace(trace.ProfileID) == "" || strings.TrimSpace(trace.ProfileVersion) == "" || strings.TrimSpace(trace.RegistryFingerprint) == "" || len(trace.Registries) == 0 || !trace.Composition.Status.Valid() || trace.PackIdentity.DatasetID == "" || trace.PackIdentity.DatasetVersion == "" || trace.PackIdentity.Digest == "" {
+			return invalid("dse_trace", "DSE trace requires a pinned profile, registry and valid composition status")
+		}
+		candidateIDs := make(map[string]struct{}, len(trace.Composition.Candidates))
+		for _, candidate := range trace.Composition.Candidates {
+			if !validID(candidate.ID) || !candidate.Status.Valid() {
+				return invalid("dse_trace.composition.candidates", "DSE candidates require valid IDs and statuses")
+			}
+			candidateIDs[candidate.ID] = struct{}{}
+		}
+		for i, realization := range trace.Realizations {
+			if _, exists := candidateIDs[realization.CandidateID]; !exists || !realization.Status.Valid() || realization.Source.ID == "" || realization.Source.Version == "" || realization.Source.Fingerprint == "" || realization.SourcePlan.ID == "" || realization.SourcePlan.Version == "" || realization.SourcePlan.Fingerprint == "" || realization.SourceContext.ID == "" || realization.SourceContext.Version == "" || realization.SourceContext.Fingerprint == "" || realization.Target.ID == "" || realization.Target.Version == "" || realization.Target.Fingerprint == "" {
+				return invalid(fmt.Sprintf("dse_trace.realizations[%d]", i), "realization must identify a composed candidate and pinned source/target resources")
+			}
+			if len(realization.Diagnostics) > status.MaxDiagnostics {
+				return invalid(fmt.Sprintf("dse_trace.realizations[%d].diagnostics", i), "diagnostic count exceeds limit")
+			}
+			for j, mapping := range realization.Mappings {
+				if mapping.Role == "" || mapping.ReferenceID == "" || mapping.SourceSenseID == "" || mapping.CoreConceptID == "" || mapping.MappingKind != "equivalent" || mapping.ApprovalStatus != "approved" || mapping.ProvenanceID == "" {
+					return invalid(fmt.Sprintf("dse_trace.realizations[%d].reference_mappings[%d]", i, j), "reference mapping must retain an exact approved equivalent source-sense transfer")
+				}
+			}
+			for j, consumed := range realization.ConsumedConditions {
+				if consumed.ConditionID == "" || consumed.Kind != "presupposition" || consumed.Code != "lexical_descriptor" || consumed.Symbol == "" || consumed.ReferenceID == "" || consumed.SourceSenseID == "" || consumed.CoreConceptID == "" || consumed.SourceBindingProvenance == "" {
+					return invalid(fmt.Sprintf("dse_trace.realizations[%d].consumed_conditions[%d]", i, j), "consumed source condition must retain its exact lexical binding and approved CORE transfer")
+				}
+			}
+			for j, diagnostic := range realization.Diagnostics {
+				if err := diagnostic.Validate(); err != nil {
+					return invalid(fmt.Sprintf("dse_trace.realizations[%d].diagnostics[%d]", i, j), err.Error())
+				}
+			}
 		}
 	}
 	if payloadBytes > MaxTranslationPayloadBytes || meaningNodes > MaxTranslationMeaningNodes || evidenceRows > MaxTranslationEvidenceRows {

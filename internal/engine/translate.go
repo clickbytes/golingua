@@ -53,6 +53,9 @@ func (engine *Engine) Translate(ctx context.Context, request Request) (Translati
 	budget := engineBudget(engine)
 	requestContext, cancel := context.WithTimeout(ctx, budget.RequestTimeout)
 	defer cancel()
+	if engine.dseProfile != nil {
+		return engine.translateDSE(requestContext, request)
+	}
 
 	if engine.languages == nil {
 		return emptyResult(request, status.OutcomeUnsupported, diagnostic("LANGUAGE_REGISTRY_UNAVAILABLE", "languages", "no verified language registry is configured")), nil

@@ -33,10 +33,12 @@ const (
 // file's directory. Provider and analyzer implementations are supplied by the
 // compiled Go application, never loaded from data.
 type Config struct {
-	SchemaVersion       int      `json:"schema_version"`
-	DatasetStore        string   `json:"dataset_store"`
-	DatasetID           string   `json:"dataset_id"`
-	LanguagePackageDirs []string `json:"language_package_dirs"`
+	SchemaVersion       int               `json:"schema_version"`
+	DatasetStore        string            `json:"dataset_store"`
+	DatasetID           string            `json:"dataset_id"`
+	LanguagePackageDirs []string          `json:"language_package_dirs"`
+	SemanticProfile     string            `json:"semantic_profile,omitempty"`
+	DSEProfile          *DSEProfileConfig `json:"dse_profile,omitempty"`
 }
 
 // Options supplies trusted compiled providers and the engine stage adapters
@@ -118,6 +120,9 @@ func LoadConfigFile(path string) (Config, error) {
 	for index, directory := range config.LanguagePackageDirs {
 		config.LanguagePackageDirs[index] = resolvePath(base, directory)
 	}
+	if config.DSEProfile != nil {
+		config.DSEProfile.resolvePaths(base)
+	}
 	if err := config.Validate(); err != nil {
 		return Config{}, err
 	}
@@ -153,6 +158,17 @@ func (config Config) validateFields() error {
 	}
 	if len(config.LanguagePackageDirs) > MaxPackagePaths {
 		return runtimeError(status.OutcomeInvalid, "INVALID_LANGUAGE_PACKAGE_PATHS", "language_package_dirs", "runtime config contains too many language package paths")
+	}
+	if config.SemanticProfile != "" && config.SemanticProfile != "meaning-v1" && config.SemanticProfile != "dse" {
+		return runtimeError(status.OutcomeInvalid, "UNSUPPORTED_SEMANTIC_PROFILE", "semantic_profile", "semantic_profile must be meaning-v1 or dse")
+	}
+	if (config.SemanticProfile == "dse") != (config.DSEProfile != nil) {
+		return runtimeError(status.OutcomeInvalid, "DSE_PROFILE_CONFIG_MISMATCH", "dse_profile", "DSE activation requires exactly one explicit dse_profile configuration")
+	}
+	if config.DSEProfile != nil {
+		if err := config.DSEProfile.validate(); err != nil {
+			return err
+		}
 	}
 	for index, directory := range config.LanguagePackageDirs {
 		if strings.TrimSpace(directory) == "" || strings.TrimSpace(directory) != directory {
@@ -203,9 +219,16 @@ func LoadEngineFile(path string, options Options) (*engine.Engine, error) {
 		}
 	}
 	analyzers, realizers := providerStages(registry, options)
+	var dseProfile *engine.DSEProfile
+	if config.SemanticProfile == "dse" {
+		dseProfile, err = loadDSEProfile(*config.DSEProfile, snapshot, analyzers)
+		if err != nil {
+			return nil, err
+		}
+	}
 	return engine.New(engine.Config{
 		Core: snapshot.CoreGraph(), LanguageRegistry: registry, PackSnapshot: snapshot,
-		Analyzers: analyzers, Realizers: realizers, Budget: options.Budget,
+		Analyzers: analyzers, Realizers: realizers, DSEProfile: dseProfile, Budget: options.Budget,
 	})
 }
 

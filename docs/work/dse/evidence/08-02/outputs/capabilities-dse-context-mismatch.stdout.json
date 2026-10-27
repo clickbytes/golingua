@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"DSE_SOURCE_CONTEXT_IDENTITY_MISMATCH","message":"source context identity or schema version differs from its pin","path":"dse_profile.languages.en.source_context","severity":"error"}]}
