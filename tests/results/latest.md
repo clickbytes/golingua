@@ -2,8 +2,8 @@
 
 > Observational report generated on push to `main`. Matrix outcomes do not gate the technical `go-ci` workflow.
 
-- Source SHA: `65e4d94913a97e0067a81b635eaed40058f9307c`
-- Generated (UTC): `2026-10-26T16:52:05Z`
+- Source SHA: `bae377aafca64ae3878cbd4eba7a97dbd1450c18`
+- Generated (UTC): `2026-10-27T09:08:57Z`
 - Command: `go test ./tests/... -count=1 -v`
 - Command exit code: `1` (NONZERO)
 - Registered records: 1000; record checks: 3000
@@ -1081,10 +1081,10 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/known_present_frame_is_unsupported_even_with_At` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/many_experiencer_referent_is_unsupported` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/many_stimulus_referent_is_unsupported` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/present_versus_past` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/present_versus_absent_frame` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/one_versus_many` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/one_versus_absent_multiplicity` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/present_versus_past` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_null` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_empty` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_unknown` | PASS |
@@ -1093,11 +1093,11 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_unknown` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_frame_on_referent` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_on_predicate` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_omitted` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_participant_roles_swapped` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_changed` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_omitted` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_participant_roles_swapped` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/temporal_frames` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/referent_multiplicity` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestNegationExpansionFixturesValidateAndRetainScope` | PASS |
@@ -1590,7 +1590,7 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 - Sense catalogue associations parsed: 2031 (not morphology execution coverage).
 - Declared Meaning ID references: 1094 allowed; 1094 required.
 - Inventory fields preserve declared tags, source semantics, allowed/required Meaning IDs, and owner status separately from runtime observations.
-- Inventory source SHA `65e4d94913a97e0067a81b635eaed40058f9307c`: 1000 directions.
+- Inventory source SHA `bae377aafca64ae3878cbd4eba7a97dbd1450c18`: 1000 directions.
 
 ### Declared source requirements
 
@@ -1663,7 +1663,7 @@ Aggregates below summarize authored source requirements; they are not observed a
 | `writing_message` | 2 |
 
 Declared role mentions: `agent` 16, `asset` 4, `associate` 4, `associated` 22, `author` 4, `back` 8, `bearer` 24, `beneficiary` 6, `choice_restriction` 2, `companion` 2, `content` 2, `destination` 2, `document` 2, `drinker` 16, `eater` 12, `entity` 2, `existence` 50, `experiencer` 160, `figure` 4, `food` 10, `friend_a` 2, `friend_b` 2, `front` 8, `giver` 20, `helper` 6, `higher` 6, `holder` 50, `instrument` 4, `item` 4, `landmark` 32, `landmark_a` 4, `landmark_b` 4, `liquid` 12, `located` 34, `location` 10, `lower` 6, `manner` 2, `material` 38, `member` 2, `object` 56, `occupant` 6, `owner` 4, `partner` 2, `person_variable` 6, `possessor` 18, `quantified_set` 50, `reader` 38, `reason` 2, `recipient` 24, `runner` 4, `sibling_a` 4, `sibling_b` 4, `sleeper` 22, `source` 2, `speaker` 4, `stimulus` 160, `support` 2, `supported` 2, `target` 4, `thanker` 2, `theme` 20, `time` 4, `tool` 2, `user` 2, `walker` 2, `writer` 2.
-- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "e62fdf8903c59fd27690aa46e58b00d199a10a0e1108869e3aa8d47a8f7196f0", "format_version": 1}`; inventory source SHA: `65e4d94913a97e0067a81b635eaed40058f9307c`.
+- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "e62fdf8903c59fd27690aa46e58b00d199a10a0e1108869e3aa8d47a8f7196f0", "format_version": 1}`; inventory source SHA: `bae377aafca64ae3878cbd4eba7a97dbd1450c18`.
 
 Catalogue sense associations are not proof that a paradigm form or morphology procedure ran. Aggregates below describe declared pack associations only.
 
@@ -1893,15 +1893,15 @@ Observed top-level outcomes by runtime stage; these do not replace check statuse
 | independent_realization | unknown | 47 |
 | independent_realization | unsupported | 372 |
 | integration | ambiguous | 120 |
-| integration | incomplete | 43 |
+| integration | incomplete | 46 |
 | integration | ok | 44 |
 | integration | unknown | 28 |
-| integration | unsupported | 765 |
+| integration | unsupported | 762 |
 | native_analysis | ambiguous | 38 |
-| native_analysis | incomplete | 43 |
+| native_analysis | incomplete | 46 |
 | native_analysis | ok | 143 |
 | native_analysis | unknown | 23 |
-| native_analysis | unsupported | 765 |
+| native_analysis | unsupported | 762 |
 | source_gap_probe | unknown | 1 |
 | source_gap_probe | unsupported | 346 |
 | translation | invalid | 2 |
@@ -1966,36 +1966,36 @@ These are the authored graphs supplied to the realizer, distinct from source ana
 
 Authored `meaning_input` supplied to independent realization is excluded from observed graphs below. Graph summaries deduplicate identical graphs within a case and stage. Missing temporal frames or multiplicities are counted as unknown.
 
-- Unique observed graph snapshots: 670
+- Unique observed graph snapshots: 676
 
 | Graph property | Value | Count |
 |---|---|---:|
-| node kind | event | 525 |
-| node kind | referent | 1195 |
+| node kind | event | 531 |
+| node kind | referent | 1201 |
 | node kind | scope | 48 |
 | node kind | state | 184 |
 | predicate (event) | `concept:hearing` | 112 |
 | predicate (event) | `concept:looking` | 24 |
 | predicate (event) | `concept:reading` | 140 |
 | predicate (event) | `concept:receiving` | 22 |
-| predicate (event) | `concept:seeing` | 227 |
+| predicate (event) | `concept:seeing` | 233 |
 | predicate (state) | `concept:black` | 81 |
 | predicate (state) | `concept:class_membership` | 103 |
 | participant role | agent | 24 |
 | participant role | bearer | 81 |
-| participant role | experiencer | 339 |
+| participant role | experiencer | 341 |
 | participant role | material | 140 |
 | participant role | member | 103 |
 | participant role | reader | 140 |
 | participant role | recipient | 22 |
-| participant role | stimulus | 339 |
+| participant role | stimulus | 343 |
 | participant role | target | 24 |
 | participant role | theme | 22 |
 | temporal_frame | past | 82 |
-| temporal_frame | present | 586 |
-| temporal_frame | unknown | 1284 |
+| temporal_frame | present | 592 |
+| temporal_frame | unknown | 1290 |
 | referent multiplicity | many | 221 |
-| referent multiplicity | one | 941 |
+| referent multiplicity | one | 947 |
 | referent multiplicity | unknown | 33 |
 
 ## Observed trace and feature associations
@@ -2023,6 +2023,7 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:en.oblique` | `construction:en.oblique.svo.indefinite_subject_an_target_a` | `en.look.directed.at` | ok | 2 |
 | `construction:en.oblique` | `construction:en.oblique.svo.indefinite_subject_target` | `en.look.directed.at` | ok | 10 |
 | `construction:en.oblique` | `construction:en.oblique.svo.indefinite_target` | `en.look.directed.at` | ok | 10 |
+| `construction:en.question.wh` | `construction:en.question.wh.subject` | `en.see.visual.transitive` | ok | 2 |
 | `construction:en.transitive` | `construction:en.transitive.svo` | `en.hear.auditory.transitive` | ok | 59 |
 | `construction:en.transitive` | `construction:en.transitive.svo` | `en.see.visual.transitive` | ok | 116 |
 | `construction:en.transitive` | `construction:en.transitive.svo.bare_object.subject_a` | `en.hear.auditory.transitive` | ok | 1 |
@@ -2116,6 +2117,8 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:pl.identification` | `construction:pl.identification.to` | `pl.byc.class_membership.frame` | ok | 85 |
 | `construction:pl.identification_negative` | `construction:pl.identification_negative.to` | `pl.byc.class_membership.frame` | ok | 9 |
 | `construction:pl.oblique` | `construction:pl.oblique.svo` | `pl.patrzec.directed.na` | ok | 20 |
+| `construction:pl.question.wh` | `construction:pl.question.wh.object.fronted` | `pl.widziec.visual.transitive` | ok | 2 |
+| `construction:pl.question.wh` | `construction:pl.question.wh.subject` | `pl.widziec.visual.transitive` | ok | 2 |
 | `construction:pl.transitive` | `construction:pl.transitive.svo` | `pl.czytac.interpret.frame` | ok | 69 |
 | `construction:pl.transitive` | `construction:pl.transitive.svo` | `pl.dostac.receive.transitive` | ok | 17 |
 | `construction:pl.transitive` | `construction:pl.transitive.svo` | `pl.slyszec.auditory.transitive` | ok | 54 |
@@ -2148,41 +2151,41 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | Feature | State | Value | Deduplicated observations |
 |---|---|---|---:|
 | `adjective_degree` | known | positive | 48 |
-| `aspect` | known | imperfective | 251 |
+| `aspect` | known | imperfective | 255 |
 | `aspect` | known | perfective | 9 |
-| `case` | known | accusative | 181 |
+| `case` | known | accusative | 183 |
 | `case` | known | genitive | 20 |
-| `case` | known | nominative | 239 |
+| `case` | known | nominative | 241 |
 | `degree` | known | positive | 35 |
 | `determiner` | known | bare | 8 |
-| `determiner` | known | definite | 224 |
+| `determiner` | known | definite | 226 |
 | `determiner` | known | indefinite | 63 |
 | `gender` | known | feminine | 81 |
-| `gender` | known | masculine_animal | 147 |
+| `gender` | known | masculine_animal | 151 |
 | `gender` | known | masculine_inanimate | 25 |
 | `gender` | known | masculine_personal | 98 |
 | `gender` | known | neuter | 44 |
 | `gender` | known | non_masculine_personal | 2 |
-| `mood` | known | indicative | 534 |
+| `mood` | known | indicative | 540 |
 | `noun_number` | known | plural | 59 |
-| `noun_number` | known | singular | 277 |
+| `noun_number` | known | singular | 279 |
 | `number` | known | plural | 162 |
-| `number` | known | singular | 540 |
+| `number` | known | singular | 546 |
 | `person` | known | first | 44 |
 | `person` | known | second | 36 |
-| `person` | known | third | 576 |
+| `person` | known | third | 582 |
 | `pronoun_case` | known | subject | 40 |
 | `pronoun_number` | known | plural | 13 |
 | `pronoun_number` | known | singular | 9 |
 | `pronoun_person` | known | first | 22 |
 | `pronoun_person` | known | second | 18 |
 | `tense` | known | past | 78 |
-| `tense` | known | present | 489 |
+| `tense` | known | present | 495 |
 | `verb_form` | known | base | 16 |
-| `verb_form` | known | finite | 518 |
+| `verb_form` | known | finite | 524 |
 | `verb_number` | known | plural | 83 |
-| `verb_number` | known | singular | 171 |
-| `voice` | known | active | 534 |
+| `verb_number` | known | singular | 173 |
+| `voice` | known | active | 540 |
 
 ## Representation gap diagnosis
 
@@ -2202,13 +2205,15 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | Meaning representation | `conversation` | No reciprocal conversation predicate is licensed; speaking would assert a different one-way event. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.11-CASE-1179-EN-PL`, `A1.11-CASE-1180-PL-EN` |
 | Meaning representation | `crying_emotionally` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-975-EN-PL`, `A1.9-Q-976-PL-EN` |
 | Meaning representation | `cutting_object` | CORE cutting_object omits the instrument role; knife_utensil is only a referent concept. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.11-CASE-1175-EN-PL`, `A1.11-CASE-1176-PL-EN` |
-| Meaning representation | `drinking` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-933-EN-PL`, `A1.9-Q-934-PL-EN`, `A1.9-Q-935-EN-PL`, `A1.9-Q-936-PL-EN` |
+| Meaning representation | `drinking` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-935-EN-PL`, `A1.9-Q-936-PL-EN` |
+| Meaning representation | `drinking` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-933-EN-PL`, `A1.9-Q-934-PL-EN` |
 | Meaning representation | `drinking` | Negation over the existentially bound cat participant is required: the actor must be quantified, while negating one event does not quantify its drinker. Meaning has no typed bound-variable link from a quantifier to that event role. | NO_SEMANTIC_ALTERNATIVES, NO_START_PLAN, UNKNOWN_SURFACE | `A1.8-NEG-887-EN-PL` |
 | Meaning representation | `drinking` | Negation over the existentially bound cat participant is required: the actor must be quantified, while negating one event does not quantify its drinker. Meaning has no typed bound-variable link from a quantifier to that event role. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.8-NEG-888-PL-EN` |
 | Meaning representation | `drinking` | The requested amount requires a typed quantity variable bound to the liquid role; omission of that argument does not encode a WH amount. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-969-EN-PL`, `A1.9-Q-970-PL-EN` |
 | Meaning representation | `drinking` | The source asserts a future event or state, but Meaning.TemporalFrame represents only past or present; the future frame value/operator cannot be represented. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.10-TIME-1101-EN-PL`, `A1.10-TIME-1102-PL-EN` |
 | Meaning representation | `drinking+reading` | The source asserts two past events with temporal overlap in a when-clause; Meaning has no temporal relation/binding between event nodes, so event overlap and the linked reading cannot be represented. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.10-TIME-1109-EN-PL`, `A1.10-TIME-1110-PL-EN` |
-| Meaning representation | `eating` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-929-EN-PL`, `A1.9-Q-930-PL-EN`, `A1.9-Q-931-EN-PL`, `A1.9-Q-932-PL-EN` |
+| Meaning representation | `eating` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-931-EN-PL`, `A1.9-Q-932-PL-EN` |
+| Meaning representation | `eating` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-929-EN-PL`, `A1.9-Q-930-PL-EN` |
 | Meaning representation | `eating` | The question requires an explicit unknown time variable bound to the event; a past frame alone does not encode a WH-time query. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-971-EN-PL`, `A1.9-Q-972-PL-EN` |
 | Meaning representation | `eating` | The requested count requires a typed quantity variable bound to the food role; omission of that argument does not encode a WH count. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-963-EN-PL`, `A1.9-Q-964-PL-EN` |
 | Meaning representation | `eating` | The sentence requires explicit negative scope over a frequency restriction (never / not always); no frequency operator is represented in Meaning. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.8-NEG-883-EN-PL`, `A1.8-NEG-884-PL-EN` |
@@ -2254,10 +2259,11 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | Meaning representation | `friendship_relationship` | CORE friendship_relationship is KindRelation, not a Meaning State/Event predicate. The neutral Meaning model cannot encode the full relation with roles friend_a, friend_b; no partial graph is supplied. Association or kinship is not legal ownership of the associated person or object. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-667-EN-PL` |
 | Meaning representation | `friendship_relationship` | CORE friendship_relationship is KindRelation, not a Meaning State/Event predicate. The neutral Meaning model cannot encode the full relation with roles friend_a, friend_b; no partial graph is supplied. Association or kinship is not legal ownership of the associated person or object. Polish friend noun morphology does not establish the friend’s personal gender. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-668-PL-EN` |
 | Meaning representation | `front_back_order` | The full sentence requires the present-time spatial relation front_back_order with roles front, back; CORE spatial relation concepts are KindRelation, not Meaning State predicates. A generic located_in relation cannot substitute for this specific relation. Front/back viewpoint remains unresolved; do not invent an observer position. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-717-EN-PL`, `A1.7-LQ-718-PL-EN`, `A1.7-LQ-719-EN-PL`, `A1.7-LQ-720-PL-EN`, `A1.7-LQ-733-EN-PL`, `A1.7-LQ-734-PL-EN`, `A1.7-LQ-735-EN-PL`, `A1.7-LQ-736-PL-EN` |
-| Meaning representation | `giving` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-941-EN-PL`, `A1.9-Q-942-PL-EN`, `A1.9-Q-943-EN-PL`, `A1.9-Q-944-PL-EN`, `A1.9-Q-945-EN-PL`, `A1.9-Q-946-PL-EN` |
+| Meaning representation | `giving` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-943-EN-PL`, `A1.9-Q-944-PL-EN`, `A1.9-Q-945-EN-PL`, `A1.9-Q-946-PL-EN` |
+| Meaning representation | `giving` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-941-EN-PL`, `A1.9-Q-942-PL-EN` |
 | Meaning representation | `giving` | Meaning v1 request act does not preserve explicit please/politeness; neither a bare request nor one child sense represents the selected politeness and child-sense ambiguity. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.13-COMP-1349-EN-PL`, `A1.13-COMP-1350-PL-EN` |
 | Meaning representation | `green` | CORE has black but no green property predicate; generic color has no bearer role/value, so this sentence has no honest MeaningGraph fixture | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.5-ID-575-EN-PL`, `A1.5-ID-576-PL-EN` |
-| Meaning representation | `have_unspecified` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_SEMANTIC_ALTERNATIVES, NO_START_PLAN, UNKNOWN_SURFACE | `A1.9-Q-985-EN-PL`, `A1.9-Q-986-PL-EN` |
+| Meaning representation | `have_unspecified` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_SEMANTIC_ALTERNATIVES, UNKNOWN_SURFACE | `A1.9-Q-985-EN-PL`, `A1.9-Q-986-PL-EN` |
 | Meaning representation | `have_unspecified` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-983-EN-PL`, `A1.9-Q-984-PL-EN`, `A1.9-Q-987-EN-PL`, `A1.9-Q-988-PL-EN` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-616-PL-EN` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-615-EN-PL` |
@@ -2270,7 +2276,8 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | Meaning representation | `have_unspecified` | Generic HAVE does not distinguish temporary possession from legal ownership and implies neither legal title nor duration; CORE temporary_possession is KindRelation, not a Meaning State/Event predicate, and neutral Meaning has no holder/object possession roles. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1-PO-002-PL-EN`, `A1-PO-003-EN-PL`, `A1-PO-004-PL-EN`, `A1.2-PO-201-PL-EN`, `A1.2-PO-203-PL-EN`, `A1.2-PO-205-PL-EN`, `A1.2-PO-206-EN-PL`, `A1.2-PO-207-PL-EN` |
 | Meaning representation | `have_unspecified` | Generic HAVE does not distinguish temporary possession from legal ownership and implies neither legal title nor duration; CORE temporary_possession is KindRelation, not a Meaning State/Event predicate, and neutral Meaning has no holder/object possession roles. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1-PO-001-EN-PL`, `A1.2-PO-202-EN-PL`, `A1.2-PO-204-EN-PL`, `A1.2-PO-208-EN-PL` |
 | Meaning representation | `have_unspecified` | The full possession proposition is required; available CORE possession predicates encode a specific relation and cannot express unspecified control or possession without that inference. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-979-EN-PL`, `A1.9-Q-980-PL-EN`, `A1.9-Q-981-EN-PL`, `A1.9-Q-982-PL-EN` |
-| Meaning representation | `hearing` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-1011-EN-PL`, `A1.9-Q-1012-PL-EN`, `A1.9-Q-925-EN-PL`, `A1.9-Q-926-PL-EN`, `A1.9-Q-927-EN-PL`, `A1.9-Q-928-PL-EN` |
+| Meaning representation | `hearing` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_PARSE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-1012-PL-EN`, `A1.9-Q-925-EN-PL`, `A1.9-Q-926-PL-EN`, `A1.9-Q-928-PL-EN` |
+| Meaning representation | `hearing` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-1011-EN-PL`, `A1.9-Q-927-EN-PL` |
 | Meaning representation | `hearing` | The source asserts a future event or state, but Meaning.TemporalFrame represents only past or present; the future frame value/operator cannot be represented. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.10-TIME-1099-EN-PL`, `A1.10-TIME-1100-PL-EN` |
 | Meaning representation | `interior_location` | The full sentence requires the present-time spatial relation interior_location with roles located, landmark; CORE spatial relation concepts are KindRelation, not Meaning State predicates. A generic located_in relation cannot substitute for this specific relation. Interior location does not entail full enclosure or a closed container. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-710-PL-EN` |
 | Meaning representation | `interior_location` | The full sentence requires the present-time spatial relation interior_location with roles located, landmark; CORE spatial relation concepts are KindRelation, not Meaning State predicates. A generic located_in relation cannot substitute for this specific relation. Interior location does not entail full enclosure or a closed container. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-707-EN-PL`, `A1.7-LQ-708-PL-EN`, `A1.7-LQ-709-EN-PL`, `A1.7-LQ-743-EN-PL`, `A1.7-LQ-744-PL-EN`, `A1.7-LQ-745-EN-PL`, `A1.7-LQ-746-PL-EN` |
@@ -2300,7 +2307,8 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | Meaning representation | `possessive_association` | CORE has no generic possessive-association predicate with possessor/associated roles. temporary_possession and legal_ownership are KindRelation and cannot substitute for association marked by a possessive determiner. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | NO_PARSE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-657-EN-PL`, `A1.6-PO-658-PL-EN` |
 | Meaning representation | `possessive_association` | CORE has no generic possessive-association predicate with possessor/associated roles. temporary_possession and legal_ownership are KindRelation and cannot substitute for association marked by a possessive determiner. No partial graph is supplied. Polish jego permits masculine or neuter reference. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-646-PL-EN` |
 | Meaning representation | `proximity_relation` | The full sentence requires the present-time spatial relation proximity_relation with roles located, landmark; CORE spatial relation concepts are KindRelation, not Meaning State predicates. A generic located_in relation cannot substitute for this specific relation. Nearness has no numeric distance threshold. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-713-EN-PL`, `A1.7-LQ-714-PL-EN`, `A1.7-LQ-747-EN-PL`, `A1.7-LQ-748-PL-EN` |
-| Meaning representation | `reading` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-937-EN-PL`, `A1.9-Q-938-PL-EN`, `A1.9-Q-939-EN-PL`, `A1.9-Q-940-PL-EN` |
+| Meaning representation | `reading` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_PARSE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-937-EN-PL`, `A1.9-Q-938-PL-EN` |
+| Meaning representation | `reading` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-939-EN-PL`, `A1.9-Q-940-PL-EN` |
 | Meaning representation | `reading` | The question requires an explicit unknown time variable bound to the event; a present frame alone does not encode a WH-time query. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-973-EN-PL`, `A1.9-Q-974-PL-EN` |
 | Meaning representation | `reading` | The requested count requires a typed quantity variable bound to the material role; omission of that argument does not encode a WH count. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-965-EN-PL`, `A1.9-Q-966-PL-EN` |
 | Meaning representation | `reading` | The source asserts a future event or state, but Meaning.TemporalFrame represents only past or present; the future frame value/operator cannot be represented. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.10-TIME-1097-EN-PL`, `A1.10-TIME-1098-PL-EN` |
@@ -2311,7 +2319,9 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | Meaning representation | `reflexive_possessive_association` | CORE has no generic reflexive-possessive association predicate with holder/associated roles. temporary_possession and legal_ownership are KindRelation and cannot substitute for reflexive association. No partial graph is supplied. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-659-EN-PL`, `A1.6-PO-660-PL-EN`, `A1.6-PO-661-EN-PL`, `A1.6-PO-662-PL-EN` |
 | Meaning representation | `running` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-977-EN-PL`, `A1.9-Q-978-PL-EN` |
 | Meaning representation | `sadness` | The negative sadness state requires a bearer role, but CORE sadness has no compatible bearer role; no partial graph substitutes for the complete proposition. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.8-NEG-855-EN-PL`, `A1.8-NEG-856-PL-EN`, `A1.8-NEG-857-EN-PL`, `A1.8-NEG-858-PL-EN`, `A1.8-NEG-859-EN-PL`, `A1.8-NEG-860-PL-EN` |
-| Meaning representation | `seeing` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-1009-EN-PL`, `A1.9-Q-1010-PL-EN`, `A1.9-Q-921-EN-PL`, `A1.9-Q-922-PL-EN`, `A1.9-Q-923-EN-PL`, `A1.9-Q-924-PL-EN` |
+| Meaning representation | `seeing` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | MISSING_REQUIRED_ROLE, PARTIAL_PARSE_EVIDENCE, UNRESOLVED_PARSE_EVIDENCE | `A1.9-Q-921-EN-PL`, `A1.9-Q-922-PL-EN`, `A1.9-Q-924-PL-EN` |
+| Meaning representation | `seeing` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_PARSE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-1009-EN-PL`, `A1.9-Q-1010-PL-EN` |
+| Meaning representation | `seeing` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-923-EN-PL` |
 | Meaning representation | `seeing` | Meaning cannot bind the child specifically to the stated mother; child_of_person alone does not encode which parent. | NO_PARSE, UNMATCHED_PARSE_CANDIDATE | `A1.12-AMB-1286-PL-EN` |
 | Meaning representation | `seeing` | Meaning cannot bind the child specifically to the stated mother; child_of_person alone does not encode which parent. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.12-AMB-1285-EN-PL` |
 | Meaning representation | `seeing` | Meaning cannot bind “on the table” specifically to cat versus seeing event/observer without a location/attachment relation. | NO_PARSE, UNMATCHED_PARSE_CANDIDATE | `A1.12-AMB-1278-PL-EN` |
@@ -2351,7 +2361,7 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | Meaning representation | `walking` | The input explicitly licenses walking; the WH destination remains unrepresented because Meaning has no typed unknown-variable binding. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-959-EN-PL`, `A1.9-Q-960-PL-EN` |
 | Meaning representation | `white` | CORE has black but no white property predicate; generic color has no bearer role/value, so this sentence has no honest MeaningGraph fixture | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.5-ID-571-EN-PL`, `A1.5-ID-572-PL-EN` |
 | Meaning representation | `writing_content` | Full negative writing-content proposition requires content binding on writing_message; writing_document would assert a durable document instead. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.8-NEG-809-EN-PL`, `A1.8-NEG-810-PL-EN` |
-| Meaning representation | `writing_content` | The full writing-content event needs a content participant, and the WH writer needs an explicit unknown-variable binding; neither is supplied by a partial writing-message event. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-947-EN-PL`, `A1.9-Q-948-PL-EN` |
+| Meaning representation | `writing_content` | The full writing-content event needs a content participant, and the WH writer needs an explicit unknown-variable binding; neither is supplied by a partial writing-message event. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-947-EN-PL`, `A1.9-Q-948-PL-EN` |
 | Meaning representation | `writing_instrument` | No writing-with-instrument predicate/role is licensed. writing_document would add durable-document meaning. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.11-CASE-1177-EN-PL`, `A1.11-CASE-1178-PL-EN` |
 | Meaning representation | `writing_message` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-949-EN-PL`, `A1.9-Q-950-PL-EN` |
 
@@ -2397,28 +2407,32 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | integration | `AMBIGUOUS_PARSE` | 13 |
 | integration | `DISAMBIGUATION_INCOMPLETE` | 22 |
 | integration | `EXPLICIT_REALIZATION_ASSUMPTION` | 800 |
-| integration | `NO_PARSE` | 73 |
+| integration | `MISSING_REQUIRED_ROLE` | 9 |
+| integration | `NO_PARSE` | 81 |
 | integration | `NO_SEMANTIC_ALTERNATIVES` | 23 |
-| integration | `NO_START_PLAN` | 248 |
+| integration | `NO_START_PLAN` | 227 |
 | integration | `OPERATOR_COVERAGE_UNKNOWN` | 3 |
-| integration | `PARTIAL_PARSE_EVIDENCE` | 231 |
+| integration | `PARTIAL_PARSE_EVIDENCE` | 240 |
 | integration | `PRINCIPAL_PARTS_UNAVAILABLE` | 2 |
 | integration | `REALIZATION_FIELD_LOSS` | 64 |
 | integration | `TARGET_ALTERNATIVES_AMBIGUOUS` | 118 |
 | integration | `TARGET_NO_SURFACE_CANDIDATE` | 16 |
 | integration | `TRANSLATION_NOT_OK` | 17 |
-| integration | `UNKNOWN_SURFACE` | 1128 |
-| integration | `UNMATCHED_PARSE_CANDIDATE` | 4851 |
+| integration | `UNKNOWN_SURFACE` | 1102 |
+| integration | `UNMATCHED_PARSE_CANDIDATE` | 4834 |
+| integration | `UNRESOLVED_PARSE_EVIDENCE` | 3 |
 | integration | `UNRESOLVED_ROLE_SENSE` | 231 |
 | native_analysis | `AMBIGUOUS_PARSE` | 13 |
 | native_analysis | `DISAMBIGUATION_INCOMPLETE` | 30 |
-| native_analysis | `NO_PARSE` | 73 |
+| native_analysis | `MISSING_REQUIRED_ROLE` | 6 |
+| native_analysis | `NO_PARSE` | 81 |
 | native_analysis | `NO_SEMANTIC_ALTERNATIVES` | 23 |
-| native_analysis | `NO_START_PLAN` | 248 |
+| native_analysis | `NO_START_PLAN` | 227 |
 | native_analysis | `OPERATOR_COVERAGE_UNKNOWN` | 2 |
-| native_analysis | `PARTIAL_PARSE_EVIDENCE` | 91 |
-| native_analysis | `UNKNOWN_SURFACE` | 1128 |
-| native_analysis | `UNMATCHED_PARSE_CANDIDATE` | 2808 |
+| native_analysis | `PARTIAL_PARSE_EVIDENCE` | 97 |
+| native_analysis | `UNKNOWN_SURFACE` | 1102 |
+| native_analysis | `UNMATCHED_PARSE_CANDIDATE` | 2798 |
+| native_analysis | `UNRESOLVED_PARSE_EVIDENCE` | 3 |
 | native_analysis | `UNRESOLVED_ROLE_SENSE` | 91 |
 | source_gap_probe | `NO_PARSE` | 62 |
 | source_gap_probe | `NO_SEMANTIC_ALTERNATIVES` | 1 |
