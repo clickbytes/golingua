@@ -1,0 +1,421 @@
+{
+  "schema_version": 1,
+  "id": "golingua.language.en.semantic-pilot",
+  "version": "2026-10-26.1",
+  "language": "en",
+  "provenance": {
+    "id": "dse394-lexical-pilot",
+    "uri": "https://github.com/clickbytes/golingua/issues/394",
+    "version": "2026-10-26.1",
+    "license": "internal-neutral-example",
+    "author": "Codex by owner delegation"
+  },
+  "lexicon": {
+    "schema_version": 1,
+    "lexemes": [
+      {
+        "id": "lexeme:en.see.v",
+        "language": "en",
+        "lemma": "see",
+        "pos": "verb"
+      },
+      {
+        "id": "lexeme:en.hear.v",
+        "language": "en",
+        "lemma": "hear",
+        "pos": "verb"
+      },
+      {
+        "id": "lexeme:en.link.v",
+        "language": "en",
+        "lemma": "link",
+        "pos": "verb"
+      }
+    ],
+    "senses": [
+      {
+        "id": "sense:en.see.visual",
+        "lexeme_id": "lexeme:en.see.v",
+        "usage": [
+          "perceive visually"
+        ],
+        "valency_ids": [
+          "en.see.visual.transitive"
+        ]
+      },
+      {
+        "id": "sense:en.hear.auditory",
+        "lexeme_id": "lexeme:en.hear.v",
+        "usage": [
+          "perceive through hearing"
+        ],
+        "valency_ids": [
+          "en.hear.auditory.transitive"
+        ]
+      },
+      {
+        "id": "sense:en.link.direct",
+        "lexeme_id": "lexeme:en.link.v",
+        "usage": [
+          "technical naming convention for one ordered relation"
+        ],
+        "valency_ids": [
+          "en.link.direct.transitive"
+        ]
+      },
+      {
+        "id": "sense:en.link.indirect",
+        "lexeme_id": "lexeme:en.link.v",
+        "usage": [
+          "technical naming convention for a two-step relation path"
+        ],
+        "valency_ids": [
+          "en.link.indirect.transitive"
+        ]
+      }
+    ],
+    "bindings": [
+      {
+        "sense_id": "sense:en.see.visual",
+        "mapping_kind": "equivalent",
+        "status": "approved",
+        "provenance": {
+          "id": "dse394-formal-target-review",
+          "uri": "https://github.com/clickbytes/golingua/issues/394",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        },
+        "target": {
+          "schema_version": 1,
+          "kind": "symbol",
+          "profile": "positive-facts-v1",
+          "symbol_ref": "pilot.vision_event_renamed",
+          "role_ports": [
+            {
+              "frame_id": "en.see.visual.transitive",
+              "role": "experiencer",
+              "port_id": "experiencer",
+              "type": {
+                "kind": "Entity"
+              }
+            },
+            {
+              "frame_id": "en.see.visual.transitive",
+              "role": "stimulus",
+              "port_id": "stimulus",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "sense_id": "sense:en.hear.auditory",
+        "mapping_kind": "equivalent",
+        "status": "approved",
+        "provenance": {
+          "id": "dse394-formal-target-review",
+          "uri": "https://github.com/clickbytes/golingua/issues/394",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        },
+        "target": {
+          "schema_version": 1,
+          "kind": "symbol",
+          "profile": "positive-facts-v1",
+          "symbol_ref": "pilot.auditory_event",
+          "role_ports": [
+            {
+              "frame_id": "en.hear.auditory.transitive",
+              "role": "experiencer",
+              "port_id": "experiencer",
+              "type": {
+                "kind": "Entity"
+              }
+            },
+            {
+              "frame_id": "en.hear.auditory.transitive",
+              "role": "stimulus",
+              "port_id": "stimulus",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "sense_id": "sense:en.link.direct",
+        "mapping_kind": "equivalent",
+        "status": "approved",
+        "provenance": {
+          "id": "dse394-formal-target-review",
+          "uri": "https://github.com/clickbytes/golingua/issues/394",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        },
+        "target": {
+          "schema_version": 1,
+          "kind": "symbol",
+          "profile": "positive-facts-v1",
+          "symbol_ref": "pilot.r",
+          "role_ports": [
+            {
+              "frame_id": "en.link.direct.transitive",
+              "role": "origin",
+              "port_id": "a",
+              "type": {
+                "kind": "Entity"
+              }
+            },
+            {
+              "frame_id": "en.link.direct.transitive",
+              "role": "endpoint",
+              "port_id": "b",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "sense_id": "sense:en.link.indirect",
+        "mapping_kind": "equivalent",
+        "status": "approved",
+        "provenance": {
+          "id": "dse394-formal-target-review",
+          "uri": "https://github.com/clickbytes/golingua/issues/394",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        },
+        "target": {
+          "schema_version": 1,
+          "kind": "goal",
+          "profile": "positive-facts-v1",
+          "goal_spec": {
+            "schema_version": 1,
+            "profile": "positive-facts-v1",
+            "context_id": "lexical-bindings-neutral",
+            "expected_type": {
+              "kind": "Arrow",
+              "from": {
+                "kind": "Entity"
+              },
+              "to": {
+                "kind": "Arrow",
+                "from": {
+                  "kind": "Entity"
+                },
+                "to": {
+                  "kind": "Prop"
+                }
+              }
+            },
+            "ports": [
+              {
+                "id": "origin",
+                "type": {
+                  "kind": "Entity"
+                }
+              },
+              {
+                "id": "endpoint",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            ],
+            "references": [],
+            "allowed_operators": [
+              "relation",
+              "join",
+              "bind",
+              "permute",
+              "project"
+            ],
+            "constraints": [
+              {
+                "id": "two-steps",
+                "kind": "path",
+                "symbol": "pilot.r",
+                "from_port": "origin",
+                "to_port": "endpoint",
+                "from_role": "a",
+                "to_role": "b",
+                "allowed_atom_counts": [
+                  2
+                ]
+              }
+            ],
+            "provenance": [
+              {
+                "id": "dse394-lexical-pilot",
+                "uri": "https://github.com/clickbytes/golingua/issues/394",
+                "version": "2026-10-26.1",
+                "license": "internal-neutral-example",
+                "author": "Codex by owner delegation"
+              }
+            ],
+            "limits": {}
+          },
+          "role_ports": [
+            {
+              "frame_id": "en.link.indirect.transitive",
+              "role": "origin",
+              "port_id": "origin",
+              "type": {
+                "kind": "Entity"
+              }
+            },
+            {
+              "frame_id": "en.link.indirect.transitive",
+              "role": "endpoint",
+              "port_id": "endpoint",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "frames": [
+    {
+      "id": "en.see.visual.transitive",
+      "sense_id": "sense:en.see.visual",
+      "semantic_roles": [
+        "experiencer",
+        "stimulus"
+      ],
+      "arguments": [
+        {
+          "id": "subject",
+          "role": "experiencer",
+          "required": true,
+          "grammatical_function": "subject"
+        },
+        {
+          "id": "object",
+          "role": "stimulus",
+          "required": true,
+          "grammatical_function": "object"
+        }
+      ],
+      "allowed_family_ids": [
+        "construction:en.transitive",
+        "construction:en.transitive_personal",
+        "construction:en.transitive_negative",
+        "construction:en.transitive_past",
+        "construction:en.attributed_seeing"
+      ],
+      "provenance": {
+        "id": "golingua-en-valency-authored",
+        "path": "languages/en/valency.go",
+        "version": "2026-10-21-initial",
+        "license": "unknown",
+        "author": "golingua contributors"
+      }
+    },
+    {
+      "id": "en.hear.auditory.transitive",
+      "sense_id": "sense:en.hear.auditory",
+      "semantic_roles": [
+        "experiencer",
+        "stimulus"
+      ],
+      "arguments": [
+        {
+          "id": "subject",
+          "role": "experiencer",
+          "required": true,
+          "grammatical_function": "subject"
+        },
+        {
+          "id": "object",
+          "role": "stimulus",
+          "required": true,
+          "grammatical_function": "object"
+        }
+      ],
+      "allowed_family_ids": [
+        "construction:en.transitive",
+        "construction:en.transitive_personal",
+        "construction:en.transitive_negative"
+      ],
+      "provenance": {
+        "id": "golingua-en-valency-authored",
+        "path": "languages/en/valency.go",
+        "version": "2026-10-21-initial",
+        "license": "unknown",
+        "author": "golingua contributors"
+      }
+    },
+    {
+      "id": "en.link.direct.transitive",
+      "sense_id": "sense:en.link.direct",
+      "semantic_roles": [
+        "origin",
+        "endpoint"
+      ],
+      "arguments": [
+        {
+          "id": "origin",
+          "role": "origin",
+          "required": true
+        },
+        {
+          "id": "endpoint",
+          "role": "endpoint",
+          "required": true
+        }
+      ],
+      "allowed_family_ids": [
+        "construction:neutral.link"
+      ],
+      "provenance": {
+        "id": "dse394-lexical-pilot",
+        "uri": "https://github.com/clickbytes/golingua/issues/394",
+        "version": "2026-10-26.1",
+        "license": "internal-neutral-example",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "en.link.indirect.transitive",
+      "sense_id": "sense:en.link.indirect",
+      "semantic_roles": [
+        "origin",
+        "endpoint"
+      ],
+      "arguments": [
+        {
+          "id": "origin",
+          "role": "origin",
+          "required": true
+        },
+        {
+          "id": "endpoint",
+          "role": "endpoint",
+          "required": true
+        }
+      ],
+      "allowed_family_ids": [
+        "construction:neutral.link"
+      ],
+      "provenance": {
+        "id": "dse394-lexical-pilot",
+        "uri": "https://github.com/clickbytes/golingua/issues/394",
+        "version": "2026-10-26.1",
+        "license": "internal-neutral-example",
+        "author": "Codex by owner delegation"
+      }
+    }
+  ]
+}

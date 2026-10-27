@@ -17,6 +17,7 @@ import (
 
 	"github.com/clickbytes/golingua/internal/algebra"
 	"github.com/clickbytes/golingua/internal/catalogexport"
+	"github.com/clickbytes/golingua/internal/engine"
 	"github.com/clickbytes/golingua/internal/facts"
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/language"
@@ -32,6 +33,7 @@ import (
 type algebraOptions struct {
 	command            string
 	input              string
+	language           string
 	languagePackage    string
 	sourceLanguage     string
 	sourceText         string
@@ -368,6 +370,8 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		options.command = "verify_proof"
 	} else if args[1] == "analyze" {
 		return parseAlgebraAnalyzeArgs(args[2:])
+	} else if args[1] == "realize" {
+		options.command = "realize"
 	} else if args[1] == "normalize" || args[1] == "verify-rewrite" || args[1] == "export" || args[1] == "inspect" || args[1] == "replay" {
 		options.command = args[1]
 	} else if args[1] == "metadata" {
@@ -401,7 +405,7 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		options.command = "context_check"
 		index = 3
 	} else {
-		return options, "expected algebra check, analyze, build, synthesize, verify-goal, evaluate, compare, verify-proof, binding, export, inspect, replay, normalize, verify-rewrite, metadata, facts, or catalog"
+		return options, "expected algebra check, analyze, realize, build, synthesize, verify-goal, evaluate, compare, verify-proof, binding, export, inspect, replay, normalize, verify-rewrite, metadata, facts, or catalog"
 	}
 	seenJSON, seenInput := false, false
 	seenNoCache := false
@@ -414,6 +418,7 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 	seenLanguagePackage := false
 	seenContextID, seenProfile, seenAt := false, false, false
 	seenLeft, seenRight, seenProof, seenClaim := false, false, false, false
+	seenLanguage, seenRuntimeConfig := false, false
 	for i := index; i < len(args); i++ {
 		flag := args[i]
 		switch flag {
@@ -424,7 +429,7 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			seenJSON = true
 			options.json = true
 		case "--input":
-			if options.command != "check" && options.command != "context_check" && options.command != "build" && options.command != "normalize" && options.command != "verify-rewrite" && options.command != "export" && options.command != "inspect" && options.command != "replay" && options.command != "facts_validate" && options.command != "verify_proof" && options.command != "binding_instantiate" {
+			if options.command != "check" && options.command != "context_check" && options.command != "build" && options.command != "normalize" && options.command != "verify-rewrite" && options.command != "export" && options.command != "inspect" && options.command != "replay" && options.command != "facts_validate" && options.command != "verify_proof" && options.command != "binding_instantiate" && options.command != "realize" {
 				return options, "--input is not valid for this algebra command"
 			}
 			if seenInput {
@@ -661,8 +666,8 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			}
 			options.metadata = append(options.metadata, args[i])
 		case "--language-package":
-			if !strings.HasPrefix(options.command, "binding_") {
-				return options, "--language-package is only valid for algebra binding"
+			if !strings.HasPrefix(options.command, "binding_") && options.command != "realize" {
+				return options, "--language-package is only valid for algebra binding or realize"
 			}
 			if seenLanguagePackage {
 				return options, "duplicate --language-package flag"
@@ -675,6 +680,38 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 			options.languagePackage = args[i]
 			if options.languagePackage == "" || options.languagePackage == "-" {
 				return options, "--language-package requires an explicit named file path"
+			}
+		case "--language":
+			if options.command != "realize" {
+				return options, "--language is only valid for algebra realize"
+			}
+			if seenLanguage {
+				return options, "duplicate --language flag"
+			}
+			seenLanguage = true
+			if i+1 >= len(args) || args[i+1] == "--json" || strings.HasPrefix(args[i+1], "--") {
+				return options, "missing value for --language"
+			}
+			i++
+			options.language = args[i]
+			if options.language != "pl" && options.language != "en" {
+				return options, "--language must be pl or en"
+			}
+		case "--runtime-config":
+			if options.command != "realize" {
+				return options, "--runtime-config is only valid for algebra realize"
+			}
+			if seenRuntimeConfig {
+				return options, "duplicate --runtime-config flag"
+			}
+			seenRuntimeConfig = true
+			if i+1 >= len(args) || args[i+1] == "--json" || strings.HasPrefix(args[i+1], "--") {
+				return options, "missing value for --runtime-config"
+			}
+			i++
+			options.runtimeConfig = args[i]
+			if options.runtimeConfig == "" || options.runtimeConfig == "-" {
+				return options, "--runtime-config requires an explicit named file path"
 			}
 		case "--no-cache":
 			if options.command != "export" {
@@ -691,6 +728,9 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 	}
 	if !seenJSON {
 		return options, "algebra command requires --json"
+	}
+	if options.command == "realize" && (!seenInput || options.input == "" || !seenLanguage || !seenLanguagePackage || !seenRuntimeConfig || len(options.metadata) == 0) {
+		return options, "algebra realize requires --language pl|en, --language-package, --runtime-config, --input, and at least one --metadata file"
 	}
 	if options.command == "capabilities" && (len(options.metadata) != 0 || options.input != "" || options.expression != "" || options.factsInput != "" || options.selectionSpecified || options.contextID != "" || options.profile != "" || options.at != "") {
 		return options, "algebra capabilities accepts only --json"
@@ -1126,6 +1166,13 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer, loader
 		}
 		return runAlgebraAnalyze(options, stdout, stderr, loader)
 	}
+	if options.command == "realize" {
+		var loader EngineLoader
+		if len(loaders) != 0 {
+			loader = loaders[0]
+		}
+		return runAlgebraRealize(options, input, stdout, stderr, loader)
+	}
 	if strings.HasPrefix(options.command, "binding_") {
 		return runAlgebraBinding(options, input, stdout, stderr)
 	}
@@ -1479,6 +1526,65 @@ func writeSemanticLanguageError(stdout, stderr io.Writer, err error) int {
 		return writeResult(stdout, stderr, result)
 	}
 	return writeAlgebraError(stdout, stderr, err)
+}
+
+func runAlgebraRealize(options algebraOptions, input io.Reader, stdout, stderr io.Writer, loader EngineLoader) int {
+	if loader == nil {
+		return writeResult(stdout, stderr, algebraDiagnostic(status.OutcomeUnsupported, "RUNTIME_LOADER_UNAVAILABLE", "algebra realize requires a configured language runtime loader", "runtime_config"))
+	}
+	inputBytes, err := readAlgebraInput(options, input, algebra.MaxDocumentBytes, "algebra realization input")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	document, err := algebra.DecodeDocumentJSON(inputBytes)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	languagePackageBytes, err := readNamedAlgebraFile(options.languagePackage, language.MaxSemanticLanguagePackageBytes, "semantic language package")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	languagePackage, err := language.LoadSemanticPackage(languagePackageBytes, nil)
+	if err != nil {
+		return writeSemanticLanguageError(stdout, stderr, err)
+	}
+	registries, err := readMetadataRegistries(options.metadata)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	selectedMetadata, err := metamodel.DeclarationContext(algebra.Document{SchemaVersion: algebra.SchemaVersion}, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	loadedEngine, err := loader(options.runtimeConfig)
+	if err != nil {
+		return writeResult(stdout, stderr, diagnosticResult(status.OutcomeError, "ENGINE_SETUP_ERROR", "configured language runtime could not be loaded", "runtime_config"))
+	}
+	if loadedEngine == nil {
+		return writeResult(stdout, stderr, diagnosticResult(status.OutcomeUnknown, "ENGINE_SETUP_ERROR", "configured language runtime returned no engine", "runtime_config"))
+	}
+	result, err := loadedEngine.RealizeAlgebra(context.Background(), features.LanguageID(options.language), document, languagePackage, selectedMetadata)
+	if err != nil {
+		return writeSemanticLanguageError(stdout, stderr, err)
+	}
+	metadata := make([]metadataReference, 0, len(registries))
+	for _, registry := range registries {
+		metadata = append(metadata, metadataReference{ID: registry.ID(), Version: registry.Version(), ResourceFingerprint: registry.ResourceFingerprint()})
+	}
+	output := struct {
+		Status          status.OutcomeKind              `json:"status"`
+		Language        string                          `json:"language"`
+		PackageID       string                          `json:"language_package_id"`
+		PackageVersion  string                          `json:"language_package_version"`
+		Metadata        []metadataReference             `json:"metadata"`
+		Realization     engine.AlgebraRealizationResult `json:"realization"`
+		ValidationScope string                          `json:"validation_scope"`
+	}{
+		Status: result.Status, Language: options.language, PackageID: languagePackage.ID(),
+		PackageVersion: languagePackage.Version(), Metadata: metadata, Realization: result,
+		ValidationScope: "licensed selected-language target realization from an independent typed algebra document; unsupported subexpressions remain residuals; no source text or world-truth claim",
+	}
+	return writeCappedAlgebraOutput(stdout, stderr, output, result.Status)
 }
 
 func runAlgebraContextCheck(options algebraOptions, input io.Reader, stdout, stderr io.Writer, registries []*metamodel.Registry) int {

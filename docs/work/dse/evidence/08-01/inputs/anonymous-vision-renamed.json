@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "references": [
+    {
+      "id": "e1",
+      "type": {
+        "kind": "Event"
+      },
+      "temporal_frame": "present"
+    },
+    {
+      "id": "viewer",
+      "type": {
+        "kind": "Entity"
+      },
+      "multiplicity": "one"
+    },
+    {
+      "id": "scene",
+      "type": {
+        "kind": "Entity"
+      },
+      "multiplicity": "one"
+    }
+  ],
+  "closed": true,
+  "expression": {
+    "kind": "Atom",
+    "symbol": "pilot.vision_event_renamed",
+    "args": [
+      {
+        "role": "event",
+        "value": {
+          "kind": "Ref",
+          "id": "e1",
+          "type": {
+            "kind": "Event"
+          }
+        }
+      },
+      {
+        "role": "experiencer",
+        "value": {
+          "kind": "Ref",
+          "id": "viewer",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      },
+      {
+        "role": "stimulus",
+        "value": {
+          "kind": "Ref",
+          "id": "scene",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      }
+    ]
+  },
+  "request_context": {
+    "schema_version": 1,
+    "id": "dse-08-01-anonymous-vision",
+    "referents": [
+      {
+        "id": "e1",
+        "type": {
+          "kind": "Event"
+        },
+        "temporal_frame": "present"
+      },
+      {
+        "id": "viewer",
+        "type": {
+          "kind": "Entity"
+        },
+        "concept_id": "concept:teacher",
+        "multiplicity": "one"
+      },
+      {
+        "id": "scene",
+        "type": {
+          "kind": "Entity"
+        },
+        "concept_id": "concept:dog",
+        "multiplicity": "one"
+      }
+    ],
+    "mentions": [],
+    "resolution_evidence": [],
+    "conditions": []
+  }
+}
