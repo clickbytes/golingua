@@ -56,3 +56,5 @@ The old `baseline/outputs/en-wh-evaluate.stdout.json` records `UNSUPPORTED_RELAT
 ## Limits and acceptance
 
 WH source analysis and the two translated round-trip directions are observable, but the independent realization and all four translations remain `incomplete`. Relation and scope do not have supported production language paths. Therefore #398 is **PARTIAL**, not DONE. The agent review and owner language acceptance are separate; owner acceptance remains **NOT EVALUATED**.
+
+A separate source-independent target probe isolates the two-event case from the `pilot.r` alias and Lambda/Exists boundaries. An explicit root `And` of two existing `pilot.vision_event` atoms, with declared E1/E2 and shared B, returns `MULTIPLE_REALIZABLE_ATOMS` in both EN and PL, exit 6, with no partial surface alternative. Raw input, output, commands, binary identity, and config fingerprints are in `current/slices/target-coordination-probe/`. This is a baseline diagnostic, not an acceptance gold; it establishes the current target-composition boundary for the next narrowly bounded implementation task.

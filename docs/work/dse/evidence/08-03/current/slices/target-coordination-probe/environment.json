@@ -1,0 +1,30 @@
+{
+  "observed_at_utc": "2026-10-27T14:29:19.682122+00:00",
+  "source_sha": "691a8fa1b6790c1c45aa89c197bb9f601d5ba8b2",
+  "binary_path": "/tmp/golingua-dse/current-head/golingua",
+  "binary_sha256": "b25fd0d14d5823973f299291fc3dc47499ab0a71ffa17af68e4bd6f045d49a2b",
+  "binary_vcs_revision": "691a8fa1b6790c1c45aa89c197bb9f601d5ba8b2",
+  "binary_vcs_modified": true,
+  "tracked_worktree_diff_at_probe": false,
+  "runtime_config": "docs/work/dse/evidence/08-03/current/runtime-config-wh-object.json",
+  "runtime_config_sha256": "8a0e8c03974c7209ab433338db51852f4d87379c81dc7889de4dd9da9e88adda",
+  "metadata": {
+    "path": "data/semantic/examples/source-composition/metadata.json",
+    "sha256": "808576b35c4da6a798355239cbd8134fe3315b3635f634defce433c85c02beea"
+  },
+  "language_packages": {
+    "en": {
+      "source_package_id": "golingua.language.en.source-395",
+      "source_package_sha256": "sha256:13c84536eb3820afcf88906276901bd007791ccc8e5f1379b45e21293d25acb1",
+      "target_package_id": "golingua.language.en.semantic-pilot",
+      "target_package_sha256": "sha256:3eabf59392c0235f22d21f4a9a856b9da52e8e6348a981477dba1f3d5571da0f"
+    },
+    "pl": {
+      "source_package_id": "golingua.language.pl.source-395",
+      "source_package_sha256": "sha256:b0063e76f80f3bb9f6e2905f842c2d62981ab1becdb886ff14467b69880091c5",
+      "target_package_id": "golingua.language.pl.semantic-pilot",
+      "target_package_sha256": "sha256:84e4885f76eed641007e4d15106f36f0af6d9c220235d4cd544b2f584a4d08b0"
+    }
+  },
+  "note": "The Go binary was built from source_sha. Its Go build metadata reports vcs.modified=true because the worktree contains untracked local artifacts; no tracked Go source was modified."
+}
