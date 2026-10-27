@@ -202,8 +202,8 @@
     "go_vet": "PASS: go vet ./...",
     "go_build": "PASS: go build -o /tmp/golingua-dse/397/golingua ./cmd/golingua",
     "go_test": "NOT RUN",
-    "pr_ci": "NOT RUN",
-    "main_ci_after_merge": "NOT RUN"
+    "pr_ci": "PENDING: PR #421",
+    "main_ci_after_merge": "NOT RUN: pending PR merge"
   },
   "review": {
     "delegated_implementer": "GPT Luna Low",

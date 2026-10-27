@@ -720,7 +720,7 @@
       "status": "ACTIVE",
       "actual_base_sha": "ce8c0653b3d98d9929663eddbf74a60683d735f6",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/08-02-runtime-integration",
-      "pr_url": null,
+      "pr_url": "https://github.com/clickbytes/golingua/pull/421",
       "merge_sha": null,
       "evidence_paths": [
         "docs/work/dse/evidence/08-02/README.md",

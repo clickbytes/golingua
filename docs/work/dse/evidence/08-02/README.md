@@ -1,6 +1,6 @@
 # Evidence #397 — runtime integration
 
-This directory records the bounded DSE integration on branch `dse/08-02-runtime-integration`, based on `ce8c0653b3d98d9929663eddbf74a60683d735f6`. The captured binary, exact resource hashes, command arguments, raw outputs, and exit codes are in [`environment.json`](environment.json), [`runtime-config-positive.json`](runtime-config-positive.json), [`runtime-config-unsupported.json`](runtime-config-unsupported.json), [`inputs/`](inputs/), and [`outputs/`](outputs/).
+This directory records the bounded DSE integration on branch `dse/08-02-runtime-integration`, based on `ce8c0653b3d98d9929663eddbf74a60683d735f6`, in [PR #421](https://github.com/clickbytes/golingua/pull/421). The captured binary, exact resource hashes, command arguments, raw outputs, and exit codes are in [`environment.json`](environment.json), [`runtime-config-positive.json`](runtime-config-positive.json), [`runtime-config-unsupported.json`](runtime-config-unsupported.json), [`inputs/`](inputs/), and [`outputs/`](outputs/).
 
 The route is opt-in through `semantic_profile: "dse"`; the same input without that field remains on Meaning v1. The configured route validates the exact registry, source and target language packages, source plans, contexts, and active Pack before translating. There is no automatic retry through Meaning v1.
 
@@ -35,7 +35,8 @@ The EN → PL refusal is an intentional limitation of this profile: its source c
 | `go build -o /tmp/golingua-dse/397/golingua ./cmd/golingua` | PASS, exit 0 |
 | Built binary `--help` / `--version` | PASS, exit 0 |
 | `go test ./...` | NOT RUN; not required by the active issue instructions |
-| PR CI and post-merge `main` CI | NOT RUN yet; this evidence is prepared before PR creation |
+| PR CI | PENDING for PR #421 |
+| Post-merge `main` CI | NOT RUN; pending PR merge |
 
 OpenCode was unavailable for execution because this environment had no authenticated provider/model, as recorded in the #397 START comment. The bounded implementation was delegated to Luna Low; the coordinator integrated and verified it. A separate Luna Low read-only final review passed the strict pre-generation refusal and meaning/provenance checks. Coordinator technical verification and agent review are not owner language approval. Owner language acceptance: **NOT EVALUATED**.
 
