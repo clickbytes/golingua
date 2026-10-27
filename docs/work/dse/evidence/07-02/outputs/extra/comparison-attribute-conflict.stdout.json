@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"COMPARISON_DECLARATION_ATTRIBUTE_CONFLICT","message":"the same reference ID has different explicit attributes across comparison inputs","path":"references.A","severity":"error"}]}

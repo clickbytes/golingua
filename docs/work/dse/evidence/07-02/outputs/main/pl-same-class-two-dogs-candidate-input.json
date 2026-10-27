@@ -1,0 +1,360 @@
+{
+  "closed": true,
+  "expression": {
+    "args": [
+      {
+        "role": "event",
+        "value": {
+          "id": "E1",
+          "kind": "Ref",
+          "type": {
+            "kind": "Event"
+          }
+        }
+      },
+      {
+        "role": "experiencer",
+        "value": {
+          "id": "B",
+          "kind": "Ref",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      },
+      {
+        "role": "stimulus",
+        "value": {
+          "id": "C",
+          "kind": "Ref",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      }
+    ],
+    "kind": "Atom",
+    "symbol": "pilot.vision_event"
+  },
+  "references": [
+    {
+      "id": "E1",
+      "type": {
+        "kind": "Event"
+      },
+      "temporal_frame": "present"
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      },
+      "multiplicity": "one"
+    },
+    {
+      "id": "C",
+      "type": {
+        "kind": "Entity"
+      },
+      "multiplicity": "one"
+    }
+  ],
+  "request_context": {
+    "conditions": [
+      {
+        "code": "lexical_descriptor",
+        "expression": {
+          "args": [
+            {
+              "role": "entity",
+              "value": {
+                "id": "B",
+                "kind": "Ref",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ],
+          "kind": "Atom",
+          "symbol": "probe.dog"
+        },
+        "id": "dog-description-B",
+        "kind": "presupposition",
+        "target_referent_ids": [
+          "B"
+        ]
+      },
+      {
+        "code": "lexical_descriptor",
+        "expression": {
+          "args": [
+            {
+              "role": "entity",
+              "value": {
+                "id": "C",
+                "kind": "Ref",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ],
+          "kind": "Atom",
+          "symbol": "probe.dog"
+        },
+        "id": "dog-description-C",
+        "kind": "presupposition",
+        "target_referent_ids": [
+          "C"
+        ]
+      },
+      {
+        "code": "definite_reference",
+        "expression": {
+          "args": [
+            {
+              "role": "entity",
+              "value": {
+                "id": "B",
+                "kind": "Ref",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ],
+          "kind": "Atom",
+          "symbol": "probe.definite"
+        },
+        "id": "given-def-B",
+        "kind": "presupposition",
+        "target_referent_ids": [
+          "B"
+        ]
+      },
+      {
+        "code": "definite_reference",
+        "expression": {
+          "args": [
+            {
+              "role": "entity",
+              "value": {
+                "id": "C",
+                "kind": "Ref",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ],
+          "kind": "Atom",
+          "symbol": "probe.definite"
+        },
+        "id": "given-def-C",
+        "kind": "presupposition",
+        "target_referent_ids": [
+          "C"
+        ]
+      }
+    ],
+    "id": "source-395-two-dogs",
+    "mentions": [
+      {
+        "context_id": "source-395-two-dogs",
+        "id": "phrase:42cae456c47e085343c322d21bba41e7a4491ee2e135b2d08002df461cfbce4c"
+      },
+      {
+        "context_id": "source-395-two-dogs",
+        "id": "phrase:46e3ee33edfa4065b029b88033b961256a5a4a56066759feb4daa1a22991a747"
+      },
+      {
+        "context_id": "source-395-two-dogs",
+        "id": "phrase:9b098e3cf4cf512d7c3f6882996f65515dd74f640c70baf066816702f1f41c7d"
+      },
+      {
+        "context_id": "source-395-two-dogs",
+        "id": "phrase:b85dd15e439c240377d5ee0237daf5ebbfa85bed5975d8e9c4d280463d419da1"
+      }
+    ],
+    "referents": [
+      {
+        "id": "E1",
+        "temporal_frame": "present",
+        "type": {
+          "kind": "Event"
+        }
+      },
+      {
+        "id": "B",
+        "multiplicity": "one",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "id": "C",
+        "multiplicity": "one",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ],
+    "resolution_evidence": [
+      {
+        "id": "ground-01",
+        "mention_id": "phrase:42cae456c47e085343c322d21bba41e7a4491ee2e135b2d08002df461cfbce4c",
+        "referent_id": "C",
+        "source": {
+          "id": "dse395-manual-mention-grounding",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "ground-02",
+        "mention_id": "phrase:46e3ee33edfa4065b029b88033b961256a5a4a56066759feb4daa1a22991a747",
+        "referent_id": "C",
+        "source": {
+          "id": "dse395-manual-mention-grounding",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "ground-03",
+        "mention_id": "phrase:9b098e3cf4cf512d7c3f6882996f65515dd74f640c70baf066816702f1f41c7d",
+        "referent_id": "B",
+        "source": {
+          "id": "dse395-manual-mention-grounding",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "ground-04",
+        "mention_id": "phrase:b85dd15e439c240377d5ee0237daf5ebbfa85bed5975d8e9c4d280463d419da1",
+        "referent_id": "B",
+        "source": {
+          "id": "dse395-manual-mention-grounding",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      }
+    ],
+    "schema_version": 1
+  },
+  "schema_version": 1,
+  "signatures": [
+    {
+      "id": "pilot.auditory_event",
+      "label": "pilot auditory-perception event relation",
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.r",
+      "label": "neutral ordered relation",
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.vision_event",
+      "label": "pilot visual-perception event relation",
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.definite",
+      "label": "explicit probe convention probe.definite",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.dog",
+      "label": "explicit probe convention probe.dog",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.teacher",
+      "label": "explicit probe convention probe.teacher",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    }
+  ]
+}

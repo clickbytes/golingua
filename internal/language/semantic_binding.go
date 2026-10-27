@@ -33,7 +33,7 @@ type SemanticPortReference struct {
 // target exists for SenseID.
 type SemanticBindingRequest struct {
 	SenseID        ids.SenseID                      `json:"sense_id"`
-	FrameID        valency.FrameID                  `json:"frame_id"`
+	FrameID        valency.FrameID                  `json:"frame_id,omitempty"`
 	BindingIndex   *int                             `json:"binding_index,omitempty"`
 	ContextID      string                           `json:"context_id"`
 	References     []algebra.Declaration            `json:"references"`
@@ -51,22 +51,27 @@ func DecodeSemanticBindingRequest(data []byte) (SemanticBindingRequest, error) {
 	if err := algebra.PreflightJSONLimit(data, MaxSemanticBindingRequestBytes); err != nil {
 		return SemanticBindingRequest{}, err
 	}
-	fields, err := languageStrictObject(data, "request", []string{"sense_id", "frame_id", "binding_index", "context_id", "references", "request_context", "role_references", "port_references", "verification_limits"}, []string{"sense_id", "frame_id", "context_id", "references", "role_references", "port_references"})
+	fields, err := languageStrictObject(data, "request", []string{"sense_id", "frame_id", "binding_index", "context_id", "references", "request_context", "role_references", "port_references", "verification_limits"}, []string{"sense_id", "context_id", "references", "role_references", "port_references"})
 	if err != nil {
 		return SemanticBindingRequest{}, err
 	}
 	var senseText, frameID, contextID string
-	for key, target := range map[string]*string{"sense_id": &senseText, "frame_id": &frameID, "context_id": &contextID} {
+	for key, target := range map[string]*string{"sense_id": &senseText, "context_id": &contextID} {
 		if err := languageStrictValue(fields[key], target); err != nil {
 			return SemanticBindingRequest{}, invalid("INVALID_BINDING_REQUEST_FIELD", key, "field must be a non-null string")
+		}
+	}
+	if raw, ok := fields["frame_id"]; ok {
+		if err := languageStrictValue(raw, &frameID); err != nil || !validSemanticPackageText(frameID, 128) {
+			return SemanticBindingRequest{}, invalid("INVALID_BINDING_REQUEST_ID", "frame_id", "a present frame ID must be a non-empty bounded string")
 		}
 	}
 	senseID, err := ids.ParseSenseID(senseText)
 	if err != nil {
 		return SemanticBindingRequest{}, invalid("INVALID_SENSE_ID", "sense_id", "sense_id must be a typed sense identifier")
 	}
-	if !validSemanticPackageText(frameID, 128) || !validSemanticPackageText(contextID, algebra.MaxContextIDBytes) {
-		return SemanticBindingRequest{}, invalid("INVALID_BINDING_REQUEST_ID", "request", "frame and context IDs must be bounded")
+	if !validSemanticPackageText(contextID, algebra.MaxContextIDBytes) {
+		return SemanticBindingRequest{}, invalid("INVALID_BINDING_REQUEST_ID", "request", "context ID must be bounded")
 	}
 	request := SemanticBindingRequest{SenseID: senseID, FrameID: valency.FrameID(frameID), ContextID: contextID, References: []algebra.Declaration{}, RoleReferences: []SemanticRoleReference{}, PortReferences: []SemanticPortReference{}}
 	if raw, ok := fields["binding_index"]; ok {
@@ -251,7 +256,7 @@ type SemanticInstantiationResult struct {
 	PackageVersion   string                            `json:"package_version"`
 	Language         string                            `json:"language"`
 	SenseID          string                            `json:"sense_id"`
-	FrameID          string                            `json:"frame_id"`
+	FrameID          string                            `json:"frame_id,omitempty"`
 	BindingIndex     int                               `json:"binding_index"`
 	BindingKey       string                            `json:"binding_key"`
 	TargetKind       lexicon.SemanticTargetKind        `json:"target_kind"`
@@ -293,10 +298,6 @@ func InstantiateSemanticBinding(pack *SemanticLanguagePackage, selected algebra.
 	if !ok {
 		return result, unknown("UNKNOWN_SENSE", "sense_id", "sense ID is not present in the selected language package")
 	}
-	frame, ok := pack.frameByIDForSense(request.SenseID, request.FrameID)
-	if !ok {
-		return result, unknown("UNKNOWN_VALENCY_FRAME", "frame_id", "frame ID is not linked to the exact selected sense")
-	}
 	bindings := pack.lexicon.TargetBindingsForSense(request.SenseID)
 	if len(bindings) == 0 {
 		return result, unsupported("LEGACY_OR_UNMAPPED_BINDING", "sense_id", "selected sense has no explicit semantic target; legacy CORE bindings are not used as fallback")
@@ -314,11 +315,29 @@ func InstantiateSemanticBinding(pack *SemanticLanguagePackage, selected algebra.
 	if binding.Target == nil {
 		return result, invalid("MISSING_SEMANTIC_TARGET", "binding.target", "selected binding has no tagged target")
 	}
-	if err := validateTargetForFrame(binding.Target, frame); err != nil {
-		return result, err
-	}
-	if _, err := validateSemanticTargetEnvironment(selected, binding.Target, frame); err != nil {
-		return result, err
+	var frame valency.ValencyFrame
+	if binding.Target.Kind == lexicon.SemanticTargetReferencePredicate {
+		if request.FrameID != "" {
+			return result, invalid("FRAME_ID_FORBIDDEN", "frame_id", "frameless reference predicates require frame_id to be omitted")
+		}
+		if len(request.RoleReferences) != 0 {
+			return result, invalid("ROLE_REFERENCES_FORBIDDEN", "role_references", "frameless reference predicates accept port_references only")
+		}
+		if _, err := validateReferencePredicateEnvironment(selected, binding.Target); err != nil {
+			return result, err
+		}
+	} else {
+		var ok bool
+		frame, ok = pack.frameByIDForSense(request.SenseID, request.FrameID)
+		if !ok {
+			return result, unknown("UNKNOWN_VALENCY_FRAME", "frame_id", "frame ID is not linked to the exact selected sense")
+		}
+		if err := validateTargetForFrame(binding.Target, frame); err != nil {
+			return result, err
+		}
+		if _, err := validateSemanticTargetEnvironment(selected, binding.Target, frame); err != nil {
+			return result, err
+		}
 	}
 	authorized := binding.TargetExecutionAuthorized()
 	if !authorized {
@@ -386,9 +405,74 @@ func InstantiateSemanticBinding(pack *SemanticLanguagePackage, selected algebra.
 			return result, err
 		}
 		return instantiateGoalTarget(result, selected, rewrite, binding.Target, frame, request, refs, roleAssignments, portAssignments)
+	case lexicon.SemanticTargetReferencePredicate:
+		refs, err := mergeReferences(nil, request.References)
+		if err != nil {
+			return result, err
+		}
+		contextDoc, err := buildInstantiationContext(selected, refs, request.RequestContext)
+		if err != nil {
+			return result, err
+		}
+		assignments, err := resolveReferencePredicateAssignments(binding.Target, request, refs)
+		if err != nil {
+			return result, err
+		}
+		function, err := algebra.Relation(selected, string(binding.Target.SymbolRef))
+		if err != nil {
+			return result, err
+		}
+		for _, item := range assignments {
+			function, err = algebra.Bind(contextDoc, function, item.portID, referenceTerm(refs, item.referenceID))
+			if err != nil {
+				return result, err
+			}
+		}
+		checkedDoc := contextDoc
+		checkedDoc.Expression = function.Expression
+		checked, err := algebra.Check(checkedDoc)
+		if err != nil {
+			return result, err
+		}
+		result.Symbol = &SemanticSymbolInstantiation{Document: checkedDoc, Checked: checked, Interface: append([]algebra.PortBinding{}, function.Interface...)}
+		result.Status = checked.Status
+		return result, nil
 	default:
 		return result, unsupported("UNSUPPORTED_TARGET_KIND", "binding.target.kind", "semantic target kind is not supported")
 	}
+}
+
+func resolveReferencePredicateAssignments(target *lexicon.SemanticTarget, request SemanticBindingRequest, refs []algebra.Declaration) ([]resolvedSemanticAssignment, error) {
+	if target.ReferencePort == nil || len(request.RoleReferences) != 0 {
+		return nil, invalid("INVALID_REFERENCE_PREDICATE_REQUEST", "request", "reference predicate requires its single port and no role references")
+	}
+	refMap := make(map[string]algebra.Declaration, len(refs))
+	for _, ref := range refs {
+		refMap[ref.ID] = ref
+	}
+	seen := false
+	out := make([]resolvedSemanticAssignment, 0, 1)
+	for i, item := range request.PortReferences {
+		if !validSemanticPackageText(item.PortID, 256) || !validSemanticPackageText(item.ReferenceID, 256) {
+			return nil, invalid("INVALID_PORT_REFERENCE", fmt.Sprintf("port_references[%d]", i), "port and reference IDs must be explicit bounded strings")
+		}
+		if item.PortID != target.ReferencePort.PortID {
+			return nil, unknown("UNKNOWN_TARGET_PORT", fmt.Sprintf("port_references[%d].port_id", i), "port is not declared by the selected target")
+		}
+		if seen {
+			return nil, invalid("DUPLICATE_TARGET_PORT_BINDING", fmt.Sprintf("port_references[%d].port_id", i), "the reference port may be bound only once")
+		}
+		seen = true
+		ref, ok := refMap[item.ReferenceID]
+		if !ok {
+			return nil, unknown("UNDECLARED_REFERENCE", fmt.Sprintf("port_references[%d].reference_id", i), "reference must be declared by this request")
+		}
+		if !algebra.TypeEqual(ref.Type, target.ReferencePort.Type) {
+			return nil, invalid("PORT_REFERENCE_TYPE_MISMATCH", fmt.Sprintf("port_references[%d].reference_id", i), "reference type differs from target port")
+		}
+		out = append(out, resolvedSemanticAssignment{target.ReferencePort.PortID, item.ReferenceID})
+	}
+	return out, nil
 }
 
 func buildInstantiationContext(selected algebra.Document, refs []algebra.Declaration, supplied *algebra.RequestContext) (algebra.Document, error) {

@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "id": "golingua.language.en.source-plan-395",
+  "version": "2026-10-27.1",
+  "language": "en",
+  "profile": "typed-source-fragments-v1",
+  "provenance": {
+    "id": "golingua-dse-authored-395",
+    "uri": "https://github.com/clickbytes/golingua/issues/395",
+    "version": "2026-10-27.1",
+    "license": "internal-neutral-example",
+    "author": "Codex by owner delegation"
+  },
+  "predicate_category": "VP",
+  "reference_category": "NP",
+  "predicate_mappings": [
+    {
+      "sense_id": "sense:en.see.visual",
+      "frame_id": "en.see.visual.transitive",
+      "head_port_id": "event",
+      "allowed_family_ids": [
+        "construction:en.transitive",
+        "construction:en.transitive_negative",
+        "construction:en.question.wh"
+      ],
+      "allowed_variant_ids": [
+        "construction:en.transitive.svo",
+        "construction:en.transitive_negative.svo",
+        "construction:en.question.wh.subject",
+        "construction:en.question.wh.object.echo"
+      ],
+      "reference_condition": {
+        "kind": "presupposition",
+        "code": "lexical_descriptor"
+      }
+    },
+    {
+      "sense_id": "sense:en.hear.auditory",
+      "frame_id": "en.hear.auditory.transitive",
+      "head_port_id": "event",
+      "allowed_family_ids": [
+        "construction:en.transitive",
+        "construction:en.transitive_negative"
+      ],
+      "allowed_variant_ids": [
+        "construction:en.transitive.svo",
+        "construction:en.transitive_negative.svo"
+      ],
+      "reference_condition": {
+        "kind": "presupposition",
+        "code": "lexical_descriptor"
+      }
+    }
+  ],
+  "operator_mappings": [
+    {
+      "source_kind": "negation",
+      "operator": "Not"
+    }
+  ],
+  "feature_conditions": [
+    {
+      "feature_id": "determiner",
+      "value_id": "definite",
+      "symbol_ref": "probe.definite",
+      "port_id": "entity",
+      "type": {
+        "kind": "Entity"
+      },
+      "condition_kind": "presupposition",
+      "code": "definite_reference"
+    }
+  ],
+  "required_feature_ids": [
+    "determiner"
+  ],
+  "reference_non_head_pos_allowlist": [
+    "determiner"
+  ]
+}

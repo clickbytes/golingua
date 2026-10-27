@@ -35,6 +35,11 @@ var polishAttributedSeeingSource = provenance.SourceRef{
 	Version: "2026-10-25", License: "internal", Author: "Codex by owner delegation",
 }
 
+var polishWHQuestionSource = provenance.SourceRef{
+	ID: "golingua-pl-wh-questions-395", URI: "https://github.com/clickbytes/golingua/issues/395",
+	Version: "2026-10-27", License: "internal", Author: "Codex by owner delegation",
+}
+
 var polishReadingConstructionSource = provenance.SourceRef{
 	ID: "golingua-g10-19-reading-route-review", URI: "https://github.com/clickbytes/golingua/issues/251#issuecomment-6359339236",
 	Version: "2026-10-23-g10-19", License: "internal", Author: "Codex by owner delegation",
@@ -61,6 +66,8 @@ type constructionBindingDeclaration struct {
 }
 
 var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.question.wh", "pl.question.wh.subject"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.question.wh", "pl.question.wh.object.fronted"},
 	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing", "pl.attributed_seeing.svo"},
 	{"pl.byc.class_membership", "pl.byc.class_membership.frame", "pl.identification", "pl.identification.to"},
 	{"pl.byc.class_membership", "pl.byc.class_membership.frame", "pl.identification_negative", "pl.identification_negative.to"},
@@ -221,6 +228,11 @@ func CompileValency() (*valency.Index, error) {
 				return nil, fmt.Errorf("Polish attributed seeing frame family: %w", err)
 			}
 			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, attributedFamilyID)
+			questionFamilyID, err := ids.NewConstructionID("pl.question.wh")
+			if err != nil {
+				return nil, fmt.Errorf("Polish WH question family: %w", err)
+			}
+			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, questionFamilyID)
 		case "pl.patrzec.directed.na":
 			negativeFamilyID, err := ids.NewConstructionID("pl.oblique_negative")
 			if err != nil {
@@ -255,6 +267,9 @@ func CompileValency() (*valency.Index, error) {
 }
 
 func polishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.family == "pl.question.wh" {
+		return polishWHQuestionSource
+	}
 	if item.family == "pl.transitive_personal" {
 		return polishPersonalConstructionSource
 	}

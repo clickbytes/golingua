@@ -23,8 +23,9 @@ const (
 type SemanticTargetKind string
 
 const (
-	SemanticTargetSymbol SemanticTargetKind = "symbol"
-	SemanticTargetGoal   SemanticTargetKind = "goal"
+	SemanticTargetSymbol             SemanticTargetKind = "symbol"
+	SemanticTargetGoal               SemanticTargetKind = "goal"
+	SemanticTargetReferencePredicate SemanticTargetKind = "reference_predicate"
 )
 
 // SymbolRef is an opaque selected-registry symbol ID. It carries no behavior.
@@ -40,23 +41,30 @@ type SemanticRolePort struct {
 	Type    algebra.Type `json:"type"`
 }
 
+// SemanticReferencePort names the sole typed input of a frameless predicate.
+type SemanticReferencePort struct {
+	PortID string       `json:"port_id"`
+	Type   algebra.Type `json:"type"`
+}
+
 // SemanticTarget is a closed tagged data reference. Exactly one of SymbolRef
 // and GoalSpec is present according to Kind. Profile is an explicit bounded
 // execution profile, not a callback or a fallback selector.
 type SemanticTarget struct {
-	SchemaVersion int                 `json:"schema_version"`
-	Kind          SemanticTargetKind  `json:"kind"`
-	Profile       string              `json:"profile"`
-	SymbolRef     SymbolRef           `json:"symbol_ref,omitempty"`
-	GoalSpec      *synthesis.GoalSpec `json:"goal_spec,omitempty"`
-	RolePorts     []SemanticRolePort  `json:"role_ports"`
+	SchemaVersion int                    `json:"schema_version"`
+	Kind          SemanticTargetKind     `json:"kind"`
+	Profile       string                 `json:"profile"`
+	SymbolRef     SymbolRef              `json:"symbol_ref,omitempty"`
+	GoalSpec      *synthesis.GoalSpec    `json:"goal_spec,omitempty"`
+	RolePorts     []SemanticRolePort     `json:"role_ports"`
+	ReferencePort *SemanticReferencePort `json:"reference_port,omitempty"`
 }
 
 func (target *SemanticTarget) UnmarshalJSON(data []byte) error {
 	if err := algebra.PreflightJSONLimit(data, MaxSemanticTargetBytes); err != nil {
 		return fmt.Errorf("semantic target: %w", err)
 	}
-	fields, err := strictTargetObject(data, "target", []string{"schema_version", "kind", "profile", "symbol_ref", "goal_spec", "role_ports"}, []string{"schema_version", "kind", "profile", "role_ports"})
+	fields, err := strictTargetObject(data, "target", []string{"schema_version", "kind", "profile", "symbol_ref", "goal_spec", "role_ports", "reference_port"}, []string{"schema_version", "kind", "profile", "role_ports"})
 	if err != nil {
 		return err
 	}
@@ -90,6 +98,30 @@ func (target *SemanticTarget) UnmarshalJSON(data []byte) error {
 		}
 		out.GoalSpec = &goal
 	}
+	if raw, ok := fields["reference_port"]; ok {
+		if isJSONNull(raw) {
+			return targetError("INVALID_TARGET_FIELD", "target.reference_port", "reference_port cannot be null")
+		}
+		f, e := strictTargetObject(raw, "target.reference_port", []string{"port_id", "type"}, []string{"port_id", "type"})
+		if e != nil {
+			return e
+		}
+		var port SemanticReferencePort
+		if isJSONNull(f["port_id"]) {
+			return targetError("INVALID_TARGET_FIELD", "target.reference_port.port_id", "port_id cannot be null")
+		}
+		if e := json.Unmarshal(f["port_id"], &port.PortID); e != nil {
+			return targetFormatError("target.reference_port.port_id", e)
+		}
+		port.Type, e = algebra.DecodeTypeJSON(f["type"], "target.reference_port.type")
+		if e != nil {
+			return e
+		}
+		if !validTargetID(port.PortID) || !isReferenceDataType(port.Type) {
+			return targetError("INVALID_REFERENCE_PREDICATE_PORT", "target.reference_port", "reference port requires a bounded ID and supported data sort type")
+		}
+		out.ReferencePort = &port
+	}
 	roleRows, err := strictTargetArray(fields["role_ports"], "target.role_ports", MaxSemanticRolePorts)
 	if err != nil {
 		return err
@@ -118,12 +150,16 @@ func (target *SemanticTarget) UnmarshalJSON(data []byte) error {
 	}
 	switch out.Kind {
 	case SemanticTargetSymbol:
-		if _, ok := fields["symbol_ref"]; !ok || fields["goal_spec"] != nil || !validTargetText(string(out.SymbolRef), 256) {
+		if _, ok := fields["symbol_ref"]; !ok || fields["goal_spec"] != nil || fields["reference_port"] != nil || !validTargetText(string(out.SymbolRef), 256) {
 			return targetError("INVALID_TARGET_VARIANT", "target", "symbol target requires a bounded symbol_ref and forbids goal_spec")
 		}
 	case SemanticTargetGoal:
-		if fields["symbol_ref"] != nil || out.GoalSpec == nil {
+		if fields["symbol_ref"] != nil || fields["reference_port"] != nil || out.GoalSpec == nil {
 			return targetError("INVALID_TARGET_VARIANT", "target", "goal target requires goal_spec and forbids symbol_ref")
+		}
+	case SemanticTargetReferencePredicate:
+		if _, ok := fields["symbol_ref"]; !ok || fields["goal_spec"] != nil || out.GoalSpec != nil || out.ReferencePort == nil || !validTargetText(string(out.SymbolRef), 256) || len(out.RolePorts) != 0 {
+			return targetError("INVALID_TARGET_VARIANT", "target", "reference predicate requires symbol_ref, reference_port, empty role_ports, and forbids goal_spec")
 		}
 	default:
 		return targetError("UNSUPPORTED_TARGET_KIND", "target.kind", "semantic target kind is unsupported")
@@ -174,7 +210,7 @@ func strictTargetArray(raw json.RawMessage, path string, maximum int) ([]json.Ra
 func isJSONNull(raw []byte) bool { return bytes.Equal(bytes.TrimSpace(raw), []byte("null")) }
 
 func (target SemanticTarget) ExecutionAuthorized(mapping MappingKind, status BindingStatus, provenanceValid bool) bool {
-	if mapping != MappingEquivalent || status != BindingApproved || !provenanceValid || target.SchemaVersion != SemanticTargetSchemaVersion || target.Profile != SemanticExecutionProfile || len(target.RolePorts) == 0 {
+	if mapping != MappingEquivalent || status != BindingApproved || !provenanceValid || target.SchemaVersion != SemanticTargetSchemaVersion || target.Profile != SemanticExecutionProfile {
 		return false
 	}
 	switch target.Kind {
@@ -182,6 +218,8 @@ func (target SemanticTarget) ExecutionAuthorized(mapping MappingKind, status Bin
 		return target.SymbolRef != "" && target.GoalSpec == nil
 	case SemanticTargetGoal:
 		return target.SymbolRef == "" && target.GoalSpec != nil
+	case SemanticTargetReferencePredicate:
+		return target.SymbolRef != "" && target.GoalSpec == nil && target.ReferencePort != nil && target.RolePorts != nil && len(target.RolePorts) == 0
 	default:
 		return false
 	}
@@ -192,7 +230,7 @@ func cloneSemanticTarget(source *SemanticTarget) *SemanticTarget {
 		return nil
 	}
 	result := *source
-	result.RolePorts = append([]SemanticRolePort(nil), source.RolePorts...)
+	result.RolePorts = append([]SemanticRolePort{}, source.RolePorts...)
 	for i := range result.RolePorts {
 		result.RolePorts[i].Type = cloneAlgebraType(result.RolePorts[i].Type)
 	}
@@ -209,6 +247,11 @@ func cloneSemanticTarget(source *SemanticTarget) *SemanticTarget {
 	if source.GoalSpec != nil {
 		goal := cloneGoalSpec(*source.GoalSpec)
 		result.GoalSpec = &goal
+	}
+	if source.ReferencePort != nil {
+		port := *source.ReferencePort
+		port.Type = cloneAlgebraType(port.Type)
+		result.ReferencePort = &port
 	}
 	return &result
 }
@@ -288,6 +331,18 @@ func validateSemanticTarget(target *SemanticTarget, sense LexicalSense, path str
 	if target.Profile != SemanticExecutionProfile {
 		return targetError("UNSUPPORTED_TARGET_PROFILE", path+".profile", "target requires an explicitly supported execution profile")
 	}
+	if target.Kind == SemanticTargetReferencePredicate {
+		if target.SymbolRef == "" || !validTargetID(string(target.SymbolRef)) || target.GoalSpec != nil || target.ReferencePort == nil || target.RolePorts == nil || len(target.RolePorts) != 0 || len(sense.ValencyIDs) != 0 {
+			return targetError("INVALID_REFERENCE_PREDICATE_TARGET", path, "frameless reference predicate requires a symbol, typed reference port, empty role map, and no linked valency frames")
+		}
+		if !validTargetID(target.ReferencePort.PortID) || !isReferenceDataType(target.ReferencePort.Type) {
+			return targetError("INVALID_REFERENCE_PREDICATE_PORT", path+".reference_port", "reference predicate port requires a bounded ID and data sort type")
+		}
+		return validateTargetTypes([]algebra.Type{target.ReferencePort.Type}, nil, nil, path+".reference_port.type")
+	}
+	if target.ReferencePort != nil {
+		return targetError("INVALID_TARGET_VARIANT", path, "reference_port is allowed only for reference_predicate targets")
+	}
 	if len(target.RolePorts) == 0 {
 		return targetError("MISSING_ROLE_PORT_MAPPING", path+".role_ports", "semantic target requires an explicit frame-role-to-port mapping")
 	}
@@ -362,6 +417,17 @@ func validateSemanticTarget(target *SemanticTarget, sense LexicalSense, path str
 		return targetError("UNSUPPORTED_TARGET_KIND", path+".kind", "semantic target kind is unsupported")
 	}
 	return nil
+}
+
+func isReferenceDataType(t algebra.Type) bool {
+	switch t.Kind {
+	case algebra.TypeEntity, algebra.TypeEvent, algebra.TypeInterval:
+		return t.SortID == "" && t.From == nil && t.To == nil
+	case algebra.TypeNominal:
+		return t.SortID != "" && t.From == nil && t.To == nil
+	default:
+		return false
+	}
 }
 
 func validateGoalTemplateShape(goal *synthesis.GoalSpec, path string) error {

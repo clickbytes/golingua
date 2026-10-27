@@ -1,0 +1,9 @@
+{
+  "id": "pl-hear-negative",
+  "language": "pl",
+  "text": "Nauczyciel nie słyszy psa.",
+  "context_file": "../contexts/main.json",
+  "language_package": "../../../languages/pl/source.json",
+  "source_plan": "../../../languages/pl/source-plan.json",
+  "metadata": "../metadata.json"
+}

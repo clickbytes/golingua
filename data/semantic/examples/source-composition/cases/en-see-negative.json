@@ -1,0 +1,9 @@
+{
+  "id": "en-see-negative",
+  "language": "en",
+  "text": "The teacher does not see the dog.",
+  "context_file": "../contexts/main.json",
+  "language_package": "../../../languages/en/source.json",
+  "source_plan": "../../../languages/en/source-plan.json",
+  "metadata": "../metadata.json"
+}

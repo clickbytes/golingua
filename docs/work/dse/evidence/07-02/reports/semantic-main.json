@@ -1,0 +1,17 @@
+{
+  "calls": 36,
+  "exit_codes": {
+    "0": 36
+  },
+  "source_inputs": 12,
+  "independent_document_checks": 12,
+  "intact_context_equivalent_pairs": 6,
+  "independent_equivalence_verifications": 6,
+  "actual_reference_grounding": true,
+  "single_negation_scope": true,
+  "roleswap_B_A": true,
+  "same_class_distinct_B_C": true,
+  "present_and_one_preserved": true,
+  "whole_scope": "type_scope_context_only",
+  "binary_sha256": "c0499634e98b29259069e10949bb2ca7b0e0fc1fb40e4bad5a34f8a6d7659fa7"
+}

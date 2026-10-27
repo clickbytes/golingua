@@ -88,8 +88,37 @@
             "goal_spec": { "$ref": "goals.schema.json" },
             "role_ports": { "$ref": "#/$defs/role_ports" }
           }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["schema_version", "kind", "profile", "symbol_ref", "reference_port", "role_ports"],
+          "properties": {
+            "schema_version": { "const": 1 },
+            "kind": { "const": "reference_predicate" },
+            "profile": { "const": "positive-facts-v1" },
+            "symbol_ref": { "$ref": "#/$defs/id" },
+            "reference_port": { "$ref": "#/$defs/reference_port" },
+            "role_ports": { "type": "array", "maxItems": 0 }
+          }
         }
       ]
+    },
+    "reference_port": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["port_id", "type"],
+      "properties": {
+        "port_id": { "$ref": "#/$defs/id" },
+        "type": {
+          "oneOf": [
+            { "type": "object", "additionalProperties": false, "required": ["kind"], "properties": { "kind": { "const": "Entity" } } },
+            { "type": "object", "additionalProperties": false, "required": ["kind"], "properties": { "kind": { "const": "Event" } } },
+            { "type": "object", "additionalProperties": false, "required": ["kind"], "properties": { "kind": { "const": "Interval" } } },
+            { "type": "object", "additionalProperties": false, "required": ["kind", "sort_id"], "properties": { "kind": { "const": "Nominal" }, "sort_id": { "$ref": "#/$defs/id" } } }
+          ]
+        }
+      }
     },
     "role_ports": {
       "type": "array",
@@ -209,7 +238,7 @@
     "semantic_binding_request": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["sense_id", "frame_id", "context_id", "references", "role_references", "port_references"],
+      "required": ["sense_id", "context_id", "references", "role_references", "port_references"],
       "properties": {
         "sense_id": { "type": "string", "minLength": 1, "maxLength": 256 },
         "frame_id": { "type": "string", "minLength": 1, "maxLength": 128 },
@@ -221,7 +250,7 @@
         "port_references": { "type": "array", "maxItems": 16, "items": { "$ref": "#/$defs/port_reference" } },
         "verification_limits": { "$ref": "#/$defs/verification_limits" }
       },
-      "$comment": "The runtime parses sense_id from an explicit string into the typed ID. Every reference is caller-declared; no free variable, callback, or label is accepted."
+      "$comment": "The runtime parses sense_id from an explicit string into the typed ID. frame_id is required by existing framed targets and must be omitted for reference_predicate targets. Every reference is caller-declared; no free variable, callback, or label is accepted."
     },
     "request_reference": {
       "type": "object",

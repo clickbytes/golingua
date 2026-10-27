@@ -1,0 +1,9 @@
+{
+  "id": "pl-see-role-swap",
+  "language": "pl",
+  "text": "Pies widzi nauczyciela.",
+  "context_file": "../contexts/main.json",
+  "language_package": "../../../languages/pl/source.json",
+  "source_plan": "../../../languages/pl/source-plan.json",
+  "metadata": "../metadata.json"
+}

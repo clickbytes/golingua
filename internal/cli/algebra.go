@@ -18,10 +18,13 @@ import (
 	"github.com/clickbytes/golingua/internal/algebra"
 	"github.com/clickbytes/golingua/internal/catalogexport"
 	"github.com/clickbytes/golingua/internal/facts"
+	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/language"
 	"github.com/clickbytes/golingua/internal/metamodel"
 	"github.com/clickbytes/golingua/internal/provenance"
 	"github.com/clickbytes/golingua/internal/reason"
+	"github.com/clickbytes/golingua/internal/runtime"
+	"github.com/clickbytes/golingua/internal/semantic"
 	"github.com/clickbytes/golingua/internal/status"
 	"github.com/clickbytes/golingua/internal/synthesis"
 )
@@ -30,6 +33,13 @@ type algebraOptions struct {
 	command            string
 	input              string
 	languagePackage    string
+	sourceLanguage     string
+	sourceText         string
+	runtimeConfig      string
+	sourcePlan         string
+	sourceContext      string
+	sourceBudget       semantic.DSEBudget
+	sourceBudgetSet    map[string]bool
 	left               string
 	right              string
 	proof              string
@@ -356,6 +366,8 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		options.command = "compare"
 	} else if args[1] == "verify-proof" {
 		options.command = "verify_proof"
+	} else if args[1] == "analyze" {
+		return parseAlgebraAnalyzeArgs(args[2:])
 	} else if args[1] == "normalize" || args[1] == "verify-rewrite" || args[1] == "export" || args[1] == "inspect" || args[1] == "replay" {
 		options.command = args[1]
 	} else if args[1] == "metadata" {
@@ -389,7 +401,7 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 		options.command = "context_check"
 		index = 3
 	} else {
-		return options, "expected algebra check, build, synthesize, verify-goal, evaluate, compare, verify-proof, binding, export, inspect, replay, normalize, verify-rewrite, metadata, facts, or catalog"
+		return options, "expected algebra check, analyze, build, synthesize, verify-goal, evaluate, compare, verify-proof, binding, export, inspect, replay, normalize, verify-rewrite, metadata, facts, or catalog"
 	}
 	seenJSON, seenInput := false, false
 	seenNoCache := false
@@ -830,6 +842,124 @@ func parseAlgebraArgs(args []string) (algebraOptions, string) {
 	return options, ""
 }
 
+func parseAlgebraAnalyzeArgs(args []string) (algebraOptions, string) {
+	options := algebraOptions{command: "analyze", sourceBudgetSet: make(map[string]bool)}
+	seen := map[string]bool{}
+	for i := 0; i < len(args); i++ {
+		flag := args[i]
+		if flag == "--json" {
+			if seen[flag] {
+				return options, "duplicate --json flag"
+			}
+			seen[flag] = true
+			options.json = true
+			continue
+		}
+		if flag != "--language" && flag != "--text" && flag != "--runtime-config" && flag != "--language-package" && flag != "--source-plan" && flag != "--context" && flag != "--metadata" && flag != "--source-limit" {
+			return options, fmt.Sprintf("unknown or invalid algebra analyze argument %q", flag)
+		}
+		if i+1 >= len(args) || strings.HasPrefix(args[i+1], "--") {
+			return options, "missing value for " + flag
+		}
+		i++
+		value := args[i]
+		if value == "" {
+			return options, flag + " value must not be empty"
+		}
+		switch flag {
+		case "--language", "--text":
+			if seen[flag] {
+				return options, "duplicate " + flag + " flag"
+			}
+			seen[flag] = true
+			if flag == "--language" {
+				options.sourceLanguage = value
+			} else {
+				options.sourceText = value
+			}
+		case "--runtime-config", "--language-package", "--source-plan", "--context":
+			if seen[flag] {
+				return options, "duplicate " + flag + " flag"
+			}
+			seen[flag] = true
+			if value == "-" {
+				return options, flag + " requires a named file"
+			}
+			switch flag {
+			case "--runtime-config":
+				options.runtimeConfig = value
+			case "--language-package":
+				options.languagePackage = value
+			case "--source-plan":
+				options.sourcePlan = value
+			case "--context":
+				options.sourceContext = value
+			}
+		case "--metadata":
+			options.metadata = append(options.metadata, value)
+		case "--source-limit":
+			if err := setSourceLimit(&options, value); err != "" {
+				return options, err
+			}
+		}
+	}
+	if !seen["--json"] {
+		return options, "algebra analyze requires --json"
+	}
+	for _, key := range []string{"--language", "--text", "--runtime-config", "--language-package", "--source-plan", "--context"} {
+		if !seen[key] {
+			return options, "algebra analyze requires " + key
+		}
+	}
+	if len(options.metadata) == 0 || len(options.metadata) > 16 {
+		return options, "algebra analyze requires 1 to 16 --metadata files"
+	}
+	if options.sourceLanguage != "en" && options.sourceLanguage != "pl" {
+		return options, "--language must be en or pl"
+	}
+	if len(options.sourceText) > 1<<20 {
+		return options, "source text exceeds the 1 MiB input limit"
+	}
+	if !utf8.ValidString(options.sourceText) {
+		return options, "source text must be valid UTF-8"
+	}
+	if _, err := semantic.NormalizeDSEBudget(options.sourceBudget); err != nil {
+		return options, err.Error()
+	}
+	return options, ""
+}
+
+func setSourceLimit(options *algebraOptions, assignment string) string {
+	name, value, ok := strings.Cut(assignment, "=")
+	if !ok || name == "" || value == "" {
+		return "--source-limit must be name=value"
+	}
+	if options.sourceBudgetSet[name] {
+		return fmt.Sprintf("duplicate --source-limit %q", name)
+	}
+	for _, digit := range value {
+		if digit < '0' || digit > '9' {
+			return "--source-limit value must be a nonnegative decimal integer"
+		}
+	}
+	parsed, err := strconv.Atoi(value)
+	if err != nil {
+		return "--source-limit value exceeds integer range"
+	}
+	switch name {
+	case "max_alternatives":
+		options.sourceBudget.MaxAlternatives = parsed
+	case "max_work":
+		options.sourceBudget.MaxWork = parsed
+	case "max_output_bytes":
+		options.sourceBudget.MaxOutputBytes = parsed
+	default:
+		return fmt.Sprintf("unknown --source-limit name %q", name)
+	}
+	options.sourceBudgetSet[name] = true
+	return ""
+}
+
 func setSearchLimit(options *algebraOptions, assignment string) string {
 	name, value, ok := strings.Cut(assignment, "=")
 	if !ok || name == "" || value == "" {
@@ -984,10 +1114,17 @@ func setEvaluationLimit(options *algebraOptions, assignment string) string {
 	return ""
 }
 
-func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer) int {
+func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer, loaders ...EngineLoader) int {
 	options, parseError := parseAlgebraArgs(args)
 	if parseError != "" {
 		return writeResult(stdout, stderr, algebraDiagnostic(status.OutcomeInvalid, "INVALID_ALGEBRA_ARGUMENTS", parseError, "algebra"))
+	}
+	if options.command == "analyze" {
+		var loader EngineLoader
+		if len(loaders) != 0 {
+			loader = loaders[0]
+		}
+		return runAlgebraAnalyze(options, stdout, stderr, loader)
 	}
 	if strings.HasPrefix(options.command, "binding_") {
 		return runAlgebraBinding(options, input, stdout, stderr)
@@ -2261,18 +2398,21 @@ func runAlgebraCompare(options algebraOptions, stdout, stderr io.Writer, registr
 }
 
 func mergeComparisonDeclarations(left, right []algebra.Declaration, path string) ([]algebra.Declaration, error) {
-	byID := make(map[string]algebra.Type, len(left)+len(right))
+	byID := make(map[string]algebra.Declaration, len(left)+len(right))
 	for _, declaration := range append(append([]algebra.Declaration{}, left...), right...) {
 		if !validAlgebraCLIText(declaration.ID, 256) {
 			return nil, &algebra.Error{Status: status.OutcomeInvalid, Code: "INVALID_COMPARISON_DECLARATION", Path: path, Message: "source declaration ID is empty or exceeds its bound"}
 		}
 		if existing, ok := byID[declaration.ID]; ok {
-			if !algebra.TypeEqual(existing, declaration.Type) {
+			if !algebra.TypeEqual(existing.Type, declaration.Type) {
 				return nil, &algebra.Error{Status: status.OutcomeInvalid, Code: "COMPARISON_DECLARATION_TYPE_CONFLICT", Path: path + "." + declaration.ID, Message: "the same parameter or reference ID has different types across comparison inputs"}
+			}
+			if existing.TemporalFrame != declaration.TemporalFrame || existing.ReferenceTimeID != declaration.ReferenceTimeID || existing.Multiplicity != declaration.Multiplicity {
+				return nil, &algebra.Error{Status: status.OutcomeInvalid, Code: "COMPARISON_DECLARATION_ATTRIBUTE_CONFLICT", Path: path + "." + declaration.ID, Message: "the same reference ID has different explicit attributes across comparison inputs"}
 			}
 			continue
 		}
-		byID[declaration.ID] = declaration.Type
+		byID[declaration.ID] = declaration
 	}
 	ids := make([]string, 0, len(byID))
 	for id := range byID {
@@ -2281,7 +2421,7 @@ func mergeComparisonDeclarations(left, right []algebra.Declaration, path string)
 	sort.Strings(ids)
 	result := make([]algebra.Declaration, 0, len(ids))
 	for _, id := range ids {
-		result = append(result, algebra.Declaration{ID: id, Type: byID[id]})
+		result = append(result, byID[id])
 	}
 	return result, nil
 }
@@ -2296,6 +2436,236 @@ func readNamedAlgebraFile(path string, maximum int, description string) ([]byte,
 	}
 	options := algebraOptions{input: path}
 	return readAlgebraInput(options, nil, maximum, description)
+}
+
+type sourceAnalyzeAdapter interface {
+	AnalyzeDSE(context.Context, string, runtime.DSEOptions) (runtime.DSEAnalysis, error)
+}
+
+func runAlgebraAnalyze(options algebraOptions, stdout, stderr io.Writer, loader EngineLoader) int {
+	if loader == nil {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeUnsupported, Code: "SOURCE_RUNTIME_UNAVAILABLE", Path: "runtime_config", Message: "algebra analyze requires an injected configured engine loader"})
+	}
+	configBytes, err := readNamedAlgebraFile(options.runtimeConfig, 1<<20, "runtime config")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	_ = configBytes // The configured loader owns strict runtime-config decoding.
+	selectedEngine, err := loader(options.runtimeConfig)
+	if err != nil {
+		return writeDSEError(stdout, stderr, err)
+	}
+	if selectedEngine == nil {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeUnsupported, Code: "SOURCE_RUNTIME_UNAVAILABLE", Path: "runtime_config", Message: "runtime configuration did not provide an engine"})
+	}
+	languageID := features.LanguageID(options.sourceLanguage)
+	configured, ok := selectedEngine.SourceAnalyzerFor(languageID)
+	if !ok {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeUnsupported, Code: "SOURCE_ANALYZER_UNAVAILABLE", Path: "language", Message: "the selected engine has no configured source analyzer for this language"})
+	}
+	adapter, ok := configured.(sourceAnalyzeAdapter)
+	if !ok {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeUnsupported, Code: "DSE_SOURCE_ANALYZER_UNAVAILABLE", Path: "language", Message: "the configured source analyzer does not expose the opt-in DSE pipeline"})
+	}
+	if pipeline, ok := configured.(*runtime.SourcePipeline); ok && string(pipeline.Language) != options.sourceLanguage {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeInvalid, Code: "SOURCE_PIPELINE_LANGUAGE_MISMATCH", Path: "language", Message: "configured source pipeline language must match --language"})
+	}
+	packSnapshot := selectedEngine.PackSnapshot()
+	if packSnapshot == nil {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeUnsupported, Code: "PACK_SNAPSHOT_UNAVAILABLE", Path: "runtime_config", Message: "the selected engine has no immutable pack snapshot"})
+	}
+
+	packageBytes, err := readNamedAlgebraFile(options.languagePackage, language.MaxSemanticLanguagePackageBytes, "semantic language package")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	semanticPackage, err := language.LoadSemanticPackage(packageBytes, nil)
+	if err != nil {
+		return writeSemanticLanguageError(stdout, stderr, err)
+	}
+	if string(semanticPackage.Language()) != options.sourceLanguage {
+		return writeAlgebraError(stdout, stderr, &algebra.Error{Status: status.OutcomeInvalid, Code: "LANGUAGE_PACKAGE_MISMATCH", Path: "language_package.language", Message: "selected package language must match --language"})
+	}
+	registries, err := readMetadataRegistries(options.metadata)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	selected, err := metamodel.DeclarationContext(algebra.Document{SchemaVersion: algebra.SchemaVersion}, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	planBytes, err := readNamedAlgebraFile(options.sourcePlan, language.MaxSourcePlanBytes, "source plan")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	plan, err := language.LoadSourcePlan(planBytes, semanticPackage, selected)
+	if err != nil {
+		return writeSemanticLanguageError(stdout, stderr, err)
+	}
+	contextBytes, err := readNamedAlgebraFile(options.sourceContext, language.MaxSemanticBindingRequestBytes, "source reference context")
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	references, err := language.DecodeSourceReferenceContext(contextBytes, selected)
+	if err != nil {
+		return writeSemanticLanguageError(stdout, stderr, err)
+	}
+	rewrite, err := metamodel.NormalizationEnvironment(algebra.Document{SchemaVersion: algebra.SchemaVersion}, registries)
+	if err != nil {
+		return writeAlgebraError(stdout, stderr, err)
+	}
+	budget, err := semantic.NormalizeDSEBudget(options.sourceBudget)
+	if err != nil {
+		return writeDSEError(stdout, stderr, err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	analysis, err := adapter.AnalyzeDSE(ctx, options.sourceText, runtime.DSEOptions{Package: semanticPackage, Plan: plan, Selected: selected, Rewrite: rewrite, References: references, Budget: budget})
+	if err != nil {
+		return writeDSEError(stdout, stderr, err)
+	}
+	identity := packSnapshot.Identity()
+	packageDigest := sha256.Sum256(packageBytes)
+	planDigest := sha256.Sum256(planBytes)
+	contextDigest := sha256.Sum256(contextBytes)
+	output := map[string]any{
+		"status":           analysis.Composition.Status,
+		"language":         options.sourceLanguage,
+		"text":             options.sourceText,
+		"source_bytes":     analysis.Syntax.OriginalSourceBytes,
+		"runtime_snapshot": map[string]any{"format_version": identity.FormatVersion, "dataset_id": identity.DatasetID, "dataset_version": identity.DatasetVersion, "digest": identity.Digest},
+		"language_package": map[string]any{"id": semanticPackage.ID(), "version": semanticPackage.Version(), "language": string(semanticPackage.Language()), "input_fingerprint": "sha256:" + hex.EncodeToString(packageDigest[:])},
+		"source_plan":      map[string]any{"id": plan.ID(), "version": plan.Version(), "language": plan.Language(), "input_fingerprint": "sha256:" + hex.EncodeToString(planDigest[:])},
+		"source_context":   map[string]any{"id": references.ContextID, "input_fingerprint": "sha256:" + hex.EncodeToString(contextDigest[:])},
+		"metadata":         metadataReferences(registries),
+		"source_trace":     sourceSyntaxWire(analysis.Syntax),
+		"composition":      analysis.Composition,
+		"validation_scope": "explicit configured source syntax and typed fragment composition; retained alternatives and residuals are reported without choosing a translation or claiming whole-sentence proof/world truth",
+	}
+	return writeCappedAlgebraOutput(stdout, stderr, output, analysis.Composition.Status)
+}
+
+func writeDSEError(stdout, stderr io.Writer, err error) int {
+	var dseErr *semantic.DSEError
+	if errors.As(err, &dseErr) {
+		return writeResult(stdout, stderr, dseErr.Result())
+	}
+	var languageErr *language.Error
+	if errors.As(err, &languageErr) {
+		return writeResult(stdout, stderr, languageErr.Result())
+	}
+	var algebraErr *algebra.Error
+	if errors.As(err, &algebraErr) {
+		return writeAlgebraError(stdout, stderr, algebraErr)
+	}
+	var resultErr interface{ Result() status.Result }
+	if errors.As(err, &resultErr) {
+		return writeResult(stdout, stderr, resultErr.Result())
+	}
+	return writeAlgebraError(stdout, stderr, err)
+}
+
+func sourceSyntaxWire(syntax runtime.SourceSyntax) map[string]any {
+	mwes := make([]map[string]any, 0, len(syntax.Lattice.MWEs))
+	for _, mwe := range syntax.Lattice.MWEs {
+		components := make([]map[string]any, 0, len(mwe.Components))
+		for _, component := range mwe.Components {
+			components = append(components, map[string]any{"component_id": component.ComponentID, "token_index": component.TokenIndex, "reading_ids": component.ReadingIDs})
+		}
+		mwes = append(mwes, map[string]any{"plan_id": mwe.PlanID, "lexeme_id": mwe.LexemeID.String(), "sense_id": mwe.SenseID.String(), "token_start": mwe.TokenStart, "token_end": mwe.TokenEnd, "span": mwe.Span, "components": components})
+	}
+	tokens := make([]map[string]any, 0, len(syntax.Lattice.Tokens))
+	for _, node := range syntax.Lattice.Tokens {
+		readings := make([]map[string]any, 0)
+		for _, candidate := range node.Readings {
+			for _, reading := range candidate.Senses {
+				readings = append(readings, map[string]any{"reading_id": candidate.Reading.ID, "lexeme_id": candidate.Lexeme.ID.String(), "sense_id": reading.Sense.ID.String(), "features": featureBundleMap(candidate.Reading.Features), "pos": candidate.Reading.POS, "state": candidate.State})
+			}
+			if len(candidate.Senses) == 0 {
+				readings = append(readings, map[string]any{"reading_id": candidate.Reading.ID, "lexeme_id": candidate.Lexeme.ID.String(), "features": featureBundleMap(candidate.Reading.Features), "pos": candidate.Reading.POS, "state": candidate.State})
+			}
+		}
+		tokens = append(tokens, map[string]any{"index": node.Index, "surface": node.Token.Surface, "normalized": node.Token.Normalized, "folded": node.Token.Folded, "kind": node.Token.Kind, "span": node.Token.Span, "outcome": node.Outcome, "readings": readings})
+	}
+	phrases := make([]map[string]any, 0, len(syntax.PhraseCandidates))
+	for _, c := range syntax.PhraseCandidates {
+		phrases = append(phrases, map[string]any{"id": c.ID, "category": c.Category, "token_start": c.TokenStart, "token_end": c.TokenEnd, "span": c.Span, "head_token_index": c.HeadTokenIndex, "reading_ids": c.ReadingIDs, "lexeme_id": c.LexemeID.String(), "sense_ids": idStrings(c.SenseIDs), "features": featureMap(c.Features), "case": c.Case, "case_known": c.CaseKnown})
+	}
+	nodes := make([]map[string]any, 0, len(syntax.Forest.Nodes))
+	for _, n := range syntax.Forest.Nodes {
+		alts := make([]map[string]any, 0, len(n.Alternatives))
+		for _, a := range n.Alternatives {
+			slots := make([]map[string]any, 0, len(a.Slots))
+			for _, slot := range a.Slots {
+				slots = append(slots, map[string]any{"slot_id": slot.SlotID, "role": string(slot.Role), "candidate_ids": slot.CandidateIDs, "node_ids": slot.NodeIDs, "unresolved_gap": slot.WHGap != nil})
+			}
+			alts = append(alts, map[string]any{"plan_id": string(a.PlanID), "family_id": a.FamilyID.String(), "variant_id": string(a.VariantID), "sense_id": a.Permission.SenseID.String(), "frame_id": string(a.Permission.FrameID), "derivation_id": a.DerivationID, "slots": slots, "unresolved": a.Unresolved})
+		}
+		nodes = append(nodes, map[string]any{"id": string(n.ID), "span": n.Span, "category": n.Category, "candidate_ids": n.CandidateIDs, "alternatives": alts})
+	}
+	operators := make([]map[string]any, 0, len(syntax.CompositionEvidence.Operators))
+	for _, op := range syntax.CompositionEvidence.Operators {
+		operators = append(operators, map[string]any{"target_candidate_id": op.TargetCandidateID, "kind": op.Operator.Kind, "value": op.Operator.Value, "span": op.Span})
+	}
+	refs := make([]map[string]any, 0, len(syntax.CompositionEvidence.References))
+	for _, ref := range syntax.CompositionEvidence.References {
+		refs = append(refs, map[string]any{"candidate_id": ref.CandidateID, "referent_id": string(ref.ReferentID), "evidence_id": ref.EvidenceID, "anchored": ref.Anchor != nil})
+	}
+	attrs := make([]map[string]any, 0, len(syntax.CompositionEvidence.NodeAttributes))
+	for _, a := range syntax.CompositionEvidence.NodeAttributes {
+		attrs = append(attrs, map[string]any{"candidate_id": a.CandidateID, "temporal_frame": a.TemporalFrame, "multiplicity": a.Multiplicity})
+	}
+	implicit := make([]map[string]any, 0, len(syntax.CompositionEvidence.ImplicitRoles))
+	for _, role := range syntax.CompositionEvidence.ImplicitRoles {
+		implicit = append(implicit, map[string]any{"derivation_id": role.DerivationID, "slot_id": role.SlotID, "predicate_candidate_id": role.PredicateCandidateID, "role": string(role.Role), "core_concept_id": role.CoreConceptID.String(), "multiplicity": role.Multiplicity, "source_span": role.SourceSpan})
+	}
+	whGaps := make([]map[string]any, 0, len(syntax.ParseContext.WHGaps))
+	for _, gap := range syntax.ParseContext.WHGaps {
+		whGaps = append(whGaps, map[string]any{"slot_id": gap.SlotID, "role": string(gap.Role), "scope_node_id": string(gap.ScopeNodeID), "span": gap.Span})
+	}
+	info := make(map[string]string, len(syntax.ParseContext.InformationStructure))
+	for role, value := range syntax.ParseContext.InformationStructure {
+		info[string(role)] = string(value)
+	}
+	return map[string]any{
+		"lattice":           map[string]any{"language": syntax.Lattice.Language, "outcome": syntax.Lattice.Outcome, "tokens": tokens, "mwe_edges": mwes, "diagnostics": syntax.Lattice.Diagnostics},
+		"phrase_candidates": phrases,
+		"parse_context":     map[string]any{"wh_gaps": whGaps, "information_structure": info},
+		"forest":            map[string]any{"language": syntax.Forest.Language, "outcome": syntax.Forest.Outcome, "roots": syntax.Forest.Roots, "nodes": nodes, "unmatched": syntax.Forest.Unmatched, "diagnostics": syntax.Forest.Diagnostics},
+		"references":        refs, "implicit_roles": implicit, "operators": operators, "node_attributes": attrs, "operator_coverage_complete": syntax.CompositionEvidence.OperatorCoverageComplete, "request_context_id": syntax.CompositionEvidence.RequestContextID,
+	}
+}
+
+func featureMap(values map[features.FeatureID]features.FeatureValueID) map[string]string {
+	result := make(map[string]string, len(values))
+	for key, value := range values {
+		result[string(key)] = string(value)
+	}
+	return result
+}
+
+func featureBundleMap(bundle features.FeatureBundle) map[string]any {
+	values := make([]map[string]any, 0, len(bundle.Values))
+	for _, value := range bundle.Values {
+		item := map[string]any{"feature": string(value.Feature), "state": value.State}
+		if value.Value != "" {
+			item["value"] = string(value.Value)
+		}
+		if value.Variable != nil {
+			item["variable"] = map[string]string{"id": string(value.Variable.ID), "scope": string(value.Variable.Scope)}
+		}
+		values = append(values, item)
+	}
+	return map[string]any{"language": string(bundle.Language), "profile_version": string(bundle.ProfileVersion), "values": values}
+}
+
+func idStrings[T interface{ String() string }](values []T) []string {
+	result := make([]string, 0, len(values))
+	for _, value := range values {
+		result = append(result, value.String())
+	}
+	return result
 }
 
 func writeCappedAlgebraOutput(stdout, stderr io.Writer, output any, kind status.OutcomeKind) int {

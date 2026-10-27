@@ -1,0 +1,273 @@
+{
+  "schema_version": 1,
+  "id": "dse395.independent.probe",
+  "version": "2026-10-26.1",
+  "profile": "positive-facts-v1",
+  "provenance": [
+    {
+      "id": "dse394-lexical-pilot",
+      "uri": "https://github.com/clickbytes/golingua/issues/394",
+      "version": "2026-10-26.1",
+      "license": "internal-neutral-example",
+      "author": "Codex by owner delegation"
+    },
+    {
+      "id": "dse394-formal-target-review",
+      "uri": "https://github.com/clickbytes/golingua/issues/394",
+      "version": "2026-10-26.1",
+      "license": "internal-neutral-example",
+      "author": "Codex by owner delegation"
+    }
+  ],
+  "sorts": [],
+  "dependencies": [],
+  "typical_edges": [],
+  "axioms": [],
+  "symbols": [
+    {
+      "id": "pilot.vision_event",
+      "kind": "primitive",
+      "label": "pilot visual-perception event relation",
+      "description": "Agent-reviewed bounded formal pilot relation vision_event(event, experiencer, stimulus); Entity-valued experiencer/stimulus only. No facts, axioms, or owner language approval.",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "dse394-formal-target-review",
+          "uri": "https://github.com/clickbytes/golingua/issues/394",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "kind": "arity",
+          "count": 3
+        },
+        {
+          "kind": "port_type",
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "kind": "port_type",
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "kind": "port_type",
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.auditory_event",
+      "kind": "primitive",
+      "label": "pilot auditory-perception event relation",
+      "description": "Agent-reviewed bounded formal pilot relation auditory_event(event, experiencer, stimulus); Entity-valued experiencer/stimulus only. No facts, axioms, or owner language approval.",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "dse394-formal-target-review",
+          "uri": "https://github.com/clickbytes/golingua/issues/394",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "kind": "arity",
+          "count": 3
+        },
+        {
+          "kind": "port_type",
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "kind": "port_type",
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "kind": "port_type",
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.r",
+      "kind": "primitive",
+      "label": "neutral ordered relation",
+      "description": "Neutral mathematical ordered Entity relation for a direct/two-step technical naming convention; no claim of broad natural-language equivalence.",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "dse394-lexical-pilot",
+          "uri": "https://github.com/clickbytes/golingua/issues/394",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "kind": "arity",
+          "count": 2
+        },
+        {
+          "kind": "port_type",
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "kind": "port_type",
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.teacher",
+      "kind": "primitive",
+      "review_status": "approved",
+      "label": "explicit probe convention probe.teacher",
+      "provenance": [
+        {
+          "id": "dse395-independent-probe",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26-probe",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.dog",
+      "kind": "primitive",
+      "review_status": "approved",
+      "label": "explicit probe convention probe.dog",
+      "provenance": [
+        {
+          "id": "dse395-independent-probe",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26-probe",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.definite",
+      "kind": "primitive",
+      "review_status": "approved",
+      "label": "explicit probe convention probe.definite",
+      "provenance": [
+        {
+          "id": "dse395-independent-probe",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26-probe",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "opaque_feature_input",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    }
+  ]
+}

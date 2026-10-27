@@ -133,6 +133,7 @@ type WHGapEvidence struct {
 	SlotID      string
 	Role        meaning.Role
 	ScopeNodeID meaning.NodeID
+	Span        text.Span
 }
 
 // ParseContext carries request-scoped evidence used by variant conditions.
