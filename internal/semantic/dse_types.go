@@ -88,10 +88,18 @@ type DSEConditionCoverage struct {
 }
 
 type DSERoleSource struct {
-	Role            string          `json:"role"`
-	Source          DSESourceRecord `json:"source"`
-	ReferenceID     string          `json:"reference_id,omitempty"`
-	ResolutionBasis string          `json:"resolution_basis,omitempty"`
+	Role            string            `json:"role"`
+	Source          DSESourceRecord   `json:"source"`
+	ReferenceID     string            `json:"reference_id,omitempty"`
+	ResolutionBasis string            `json:"resolution_basis,omitempty"`
+	WHGap           *DSEWHGapEvidence `json:"wh_gap,omitempty"`
+}
+
+type DSEWHGapEvidence struct {
+	SlotID      string    `json:"slot_id"`
+	Role        string    `json:"role"`
+	ScopeNodeID string    `json:"scope_node_id"`
+	Span        text.Span `json:"span"`
 }
 
 type DSEResidual struct {

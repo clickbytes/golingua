@@ -86,6 +86,11 @@ var englishSeeingPastConstructionSource = provenance.SourceRef{
 	Version: "2026-10-25", License: "internal", Author: "Codex by owner delegation",
 }
 
+var englishWHQuestionSource = provenance.SourceRef{
+	ID: "golingua-en-wh-questions-395", URI: "https://github.com/clickbytes/golingua/issues/395",
+	Version: "2026-10-27", License: "internal", Author: "Codex by owner delegation",
+}
+
 type frameDeclaration struct {
 	id, sense, family string
 	roles             []meaning.Role
@@ -97,6 +102,8 @@ type constructionBindingDeclaration struct {
 }
 
 var englishConstructionBindingDeclarations = append(append(append([]constructionBindingDeclaration{
+	{"en.see.visual", "en.see.visual.transitive", "en.question.wh", "en.question.wh.subject"},
+	{"en.see.visual", "en.see.visual.transitive", "en.question.wh", "en.question.wh.object.echo"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_object"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_object_an"},
@@ -411,6 +418,13 @@ func CompileValency() (*valency.Index, error) {
 			}
 			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
 			if item.id == "en.see.visual.transitive" {
+				questionFamilyID, err := ids.NewConstructionID("en.question.wh")
+				if err != nil {
+					return nil, fmt.Errorf("English WH question family: %w", err)
+				}
+				frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, questionFamilyID)
+			}
+			if item.id == "en.see.visual.transitive" {
 				pastFamilyID, err := ids.NewConstructionID("en.transitive_past")
 				if err != nil {
 					return nil, fmt.Errorf("English past seeing frame family: %w", err)
@@ -466,6 +480,9 @@ func CompileValency() (*valency.Index, error) {
 }
 
 func englishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.family == "en.question.wh" {
+		return englishWHQuestionSource
+	}
 	if item.sense == "en.read.text" && item.family == "en.transitive" {
 		for _, suffix := range englishReadingPresentIndefiniteSuffixes {
 			if item.variant == "en.transitive.svo"+suffix {

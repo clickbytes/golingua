@@ -8,7 +8,7 @@ import (
 	"github.com/clickbytes/golingua/internal/valency"
 )
 
-//go:embed constructions/transitive_personal.json constructions/transitive_personal_explicit.json constructions/transitive.json constructions/transitive_negative.json constructions/oblique.json constructions/oblique_negative.json constructions/intransitive.json constructions/ditransitive.json constructions/double_np.json constructions/transitive_oblique.json constructions/question.json constructions/identification.json constructions/identification_negative.json constructions/attribution.json constructions/attributed_seeing.json
+//go:embed constructions/transitive_personal.json constructions/transitive_personal_explicit.json constructions/transitive.json constructions/transitive_negative.json constructions/oblique.json constructions/oblique_negative.json constructions/intransitive.json constructions/ditransitive.json constructions/double_np.json constructions/transitive_oblique.json constructions/question.json constructions/wh_question.json constructions/identification.json constructions/identification_negative.json constructions/attribution.json constructions/attributed_seeing.json
 var sentenceConstructions embed.FS
 
 // SentenceConstructions compiles the language-local templates against the
@@ -17,7 +17,7 @@ var sentenceConstructions embed.FS
 func SentenceConstructions(index *valency.Index) ([]construction.CompiledConstructionPackage, *construction.Registry, error) {
 	files := []string{
 		"transitive_personal.json", "transitive_personal_explicit.json", "transitive.json", "transitive_negative.json", "oblique.json", "oblique_negative.json", "intransitive.json", "ditransitive.json",
-		"double_np.json", "transitive_oblique.json", "question.json", "identification.json", "identification_negative.json", "attribution.json", "attributed_seeing.json",
+		"double_np.json", "transitive_oblique.json", "question.json", "wh_question.json", "identification.json", "identification_negative.json", "attribution.json", "attributed_seeing.json",
 	}
 	packages := make([]construction.CompiledConstructionPackage, 0, len(files))
 	families := make([]construction.ConstructionFamily, 0, len(files))

@@ -14,6 +14,10 @@ The package keeps the original lexical and frame records separate from the added
 
 The English plan maps the known `determiner=definite` feature to a `probe.definite` presupposition. Other determiner values are not guessed. The Polish plan has no determiner feature mapping; its references and conditions come from the supplied context. The plans allow only the observed present declarative and present negative variants. The PL negative frames are the existing `pl.widziec.visual.transitive_negative` and `pl.slyszec.auditory.transitive_negative` frames, with their source-authored genitive object arguments.
 
+## WH questions
+
+A separate four-input subset under [`wh-questions/`](wh-questions/README.md) exercises typed subject and object gaps for `see/widzieć`. It yields standalone `Ask` expressions with an answer variable at the exact selected frame role port. The caller supplies the other role reference and event; the answer is not filled from facts. Each input/package carries explicit #395 neutral provenance. This small subset does not claim general WH coverage or owner acceptance.
+
 ## Cases and observations
 
 The 12 inputs are stored under [`cases/`](cases/), with literal CLI JSON observations under [`observations/`](observations/).

@@ -32,7 +32,7 @@ func Parse(lattice analyzer.LexicalLattice, candidates []PhraseCandidate, contex
 	if err := validateLattice(lattice); err != nil {
 		return Forest{}, err
 	}
-	if err := validateParseContext(context); err != nil {
+	if err := validateParseContext(lattice, context); err != nil {
 		return Forest{}, err
 	}
 	forest := Forest{Language: lattice.Language, Outcome: status.OutcomeOK, Diagnostics: append([]status.Diagnostic(nil), lattice.Diagnostics...)}
@@ -182,7 +182,7 @@ func validTokenKind(kind text.TokenKind) bool {
 	return kind == text.TokenWord || kind == text.TokenPunctuation || kind == text.TokenOther
 }
 
-func validateParseContext(context ParseContext) error {
+func validateParseContext(lattice analyzer.LexicalLattice, context ParseContext) error {
 	if len(context.WHGaps) > 256 {
 		return newCompileLimitError("context.wh_gaps", len(context.WHGaps), 256)
 	}
@@ -191,8 +191,18 @@ func validateParseContext(context ParseContext) error {
 	}
 	seen := map[string]bool{}
 	for i, g := range context.WHGaps {
-		if !validRoleName(string(g.Role)) || !validMeaningNodeID(string(g.ScopeNodeID)) || len(g.SlotID) > construction.MaxFamilyTextBytes || g.SlotID == "" {
-			return newParserError(fmt.Sprintf("context.wh_gaps[%d]", i), "WH gap requires bounded slot, canonical role, and scope node IDs")
+		if !validRoleName(string(g.Role)) || !validMeaningNodeID(string(g.ScopeNodeID)) || len(g.SlotID) > construction.MaxFamilyTextBytes || g.SlotID == "" || g.Span.Start < 0 || g.Span.End <= g.Span.Start {
+			return newParserError(fmt.Sprintf("context.wh_gaps[%d]", i), "WH gap requires bounded slot, canonical role and scope node IDs, and a non-empty token span")
+		}
+		spanMatchesWordToken := false
+		for _, token := range lattice.Tokens {
+			if token.Token.Span == g.Span && token.Token.Kind == text.TokenWord {
+				spanMatchesWordToken = true
+				break
+			}
+		}
+		if !spanMatchesWordToken {
+			return newParserError(fmt.Sprintf("context.wh_gaps[%d].span", i), "WH gap span must identify an exact source word token")
 		}
 		key := g.SlotID + "\x00" + string(g.Role) + "\x00" + string(g.ScopeNodeID)
 		if seen[key] {

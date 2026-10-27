@@ -10,6 +10,7 @@ import (
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/lexicon"
+	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/pack"
 	"github.com/clickbytes/golingua/internal/parser"
 	"github.com/clickbytes/golingua/internal/runtime"
@@ -73,15 +74,15 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	}
 	return &runtime.SourcePipeline{
 		Language: "en", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}},
-		AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "do": true, "does": true, "not": true, "this": true, "that": true, "it": true, "is": true, "a": true},
+		AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "do": true, "does": true, "not": true, "this": true, "that": true, "it": true, "is": true, "a": true, "who": true, "whom": true},
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
-		PhraseBuilder: englishIdentificationPhraseBuilder{inner: englishDeterminerNPBuilder{inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
+		PhraseBuilder: englishWHGapPhraseBuilder{inner: englishIdentificationPhraseBuilder{inner: englishDeterminerNPBuilder{inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
 			Categories: map[lexicon.PartOfSpeech][]construction.SlotCategory{
 				"noun": {construction.CategoryNP}, "pronoun": {construction.CategoryNP}, "verb": {construction.CategoryVP}, "adjective": {construction.CategoryAP},
 			},
-		}}, lexicon: snapshot.Lexicon()}},
+		}}, lexicon: snapshot.Lexicon()}}},
 		EvidenceBuilder: englishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), base: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true},
 			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
@@ -126,6 +127,31 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	}, nil
 }
 
+// englishWHGapPhraseBuilder carries a gap only when the exact WH terminal is
+// present in the analyzed lattice. The construction parser must also consume
+// that terminal in an approved question variant before the gap can be used.
+type englishWHGapPhraseBuilder struct{ inner runtime.PhraseEvidenceBuilder }
+
+func (builder englishWHGapPhraseBuilder) Build(ctx context.Context, lattice analyzer.LexicalLattice) ([]parser.PhraseCandidate, parser.ParseContext, error) {
+	candidates, parseContext, err := builder.inner.Build(ctx, lattice)
+	if err != nil {
+		return nil, parser.ParseContext{}, err
+	}
+	for _, token := range lattice.Tokens {
+		slot, role := "", ""
+		switch token.Token.Folded {
+		case "who":
+			slot, role = "subject", "experiencer"
+		case "whom":
+			slot, role = "object", "stimulus"
+		}
+		if slot != "" {
+			parseContext.WHGaps = append(parseContext.WHGaps, parser.WHGapEvidence{SlotID: slot, Role: meaning.Role(role), ScopeNodeID: meaning.NodeID(fmt.Sprintf("wh_en_%s_%d_%d", slot, token.Token.Span.Start, token.Token.Span.End)), Span: token.Token.Span})
+		}
+	}
+	return candidates, parseContext, nil
+}
+
 type englishSentenceEvidenceBuilder struct {
 	base    runtime.BareDeclarativeEvidenceBuilder
 	lexicon *lexicon.Index
@@ -159,7 +185,10 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 		}
 		evidence = addEnglishPersonalReferences(evidence, candidates, forest)
 		if !evidence.OperatorCoverageComplete {
-			return evidence, nil
+			if !englishWHQuestionCoverage(lattice, forest) {
+				return evidence, nil
+			}
+			evidence.OperatorCoverageComplete = true
 		}
 		return addEnglishIdentificationReferences(evidence, candidates, forest), nil
 	}
@@ -238,6 +267,100 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 	}
 	evidence.OperatorCoverageComplete = operatorCount > 0
 	return evidence, nil
+}
+
+func englishWHQuestionCoverage(lattice analyzer.LexicalLattice, forest parser.Forest) bool {
+	seenClause := false
+	for _, node := range forest.Nodes {
+		if node.Category != "clause" {
+			continue
+		}
+		seenClause = true
+		if len(node.Alternatives) == 0 {
+			return false
+		}
+		var gapAlternative *parser.ParseAlternative
+		var omissionAlternatives []parser.ParseAlternative
+		for altIndex := range node.Alternatives {
+			alternative := node.Alternatives[altIndex]
+			if alternative.FamilyID.String() != "construction:en.question.wh" {
+				return false
+			}
+			terminal, slotID, role := "", "", ""
+			switch alternative.VariantID.String() {
+			case "construction:en.question.wh.subject":
+				terminal, slotID, role = "who", "subject", "experiencer"
+			case "construction:en.question.wh.object.echo":
+				terminal, slotID, role = "whom", "object", "stimulus"
+			default:
+				return false
+			}
+			terminalCount, gapCount := 0, 0
+			for _, token := range lattice.Tokens {
+				if token.Token.Folded == terminal {
+					terminalCount++
+				}
+			}
+			for _, slot := range alternative.Slots {
+				if slot.WHGap != nil {
+					if slot.SlotID != slotID || string(slot.WHGap.Role) != role || string(slot.WHGap.SlotID) != slotID || slot.WHGap.ScopeNodeID == "" || len(slot.CandidateIDs) != 0 {
+						return false
+					}
+					gapCount++
+				}
+			}
+			if terminalCount != 1 || gapCount > 1 {
+				return false
+			}
+			if gapCount == 1 {
+				copy := alternative
+				gapAlternative = &copy
+			} else {
+				omissionAlternatives = append(omissionAlternatives, alternative)
+			}
+		}
+		if gapAlternative == nil {
+			return false
+		}
+		for _, omission := range omissionAlternatives {
+			if !englishSameParseExceptGap(*gapAlternative, omission) {
+				return false
+			}
+		}
+	}
+	return seenClause
+}
+
+func englishSameParseExceptGap(withGap, withoutGap parser.ParseAlternative) bool {
+	if withGap.PlanID != withoutGap.PlanID || withGap.FamilyID != withoutGap.FamilyID || withGap.VariantID != withoutGap.VariantID || withGap.Permission != withoutGap.Permission || len(withGap.Slots) != len(withoutGap.Slots) || len(withGap.Unresolved) != len(withoutGap.Unresolved) {
+		return false
+	}
+	for i := range withGap.Unresolved {
+		if withGap.Unresolved[i] != withoutGap.Unresolved[i] {
+			return false
+		}
+	}
+	gapCount := 0
+	for i, a := range withGap.Slots {
+		b := withoutGap.Slots[i]
+		if a.SlotID != b.SlotID || a.Role != b.Role || len(a.CandidateIDs) != len(b.CandidateIDs) || len(a.NodeIDs) != len(b.NodeIDs) || b.WHGap != nil {
+			return false
+		}
+		for j := range a.CandidateIDs {
+			if a.CandidateIDs[j] != b.CandidateIDs[j] {
+				return false
+			}
+		}
+		for j := range a.NodeIDs {
+			if a.NodeIDs[j] != b.NodeIDs[j] {
+				return false
+			}
+		}
+		if a.WHGap != nil {
+			gapCount++
+		}
+	}
+	return gapCount == 1
 }
 
 func englishNegativeClassificationInput(lattice analyzer.LexicalLattice) bool {

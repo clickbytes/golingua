@@ -1,0 +1,72 @@
+{
+  "observed_at_utc": "2026-10-27T09:03:46.327636+00:00",
+  "base_sha": "cae0ecbd03eda8087a059a027510d6233968d9cd",
+  "binary_path": "/tmp/golingua-dse/bin/golingua-395-wh-final2",
+  "binary_sha256": "d16172f814815f0fec586272e64c9e943115df24861666aed1ae0ed0cb288f13",
+  "gofmt_files": [
+    "internal/cli/algebra.go",
+    "internal/parser/forest.go",
+    "internal/parser/match.go",
+    "internal/semantic/dse_compose.go",
+    "internal/semantic/dse_types.go",
+    "languages/en/construction_runtime.go",
+    "languages/en/sentence_source.go",
+    "languages/en/valency.go",
+    "languages/pl/construction_runtime.go",
+    "languages/pl/sentence_source.go",
+    "languages/pl/valency.go"
+  ],
+  "checks": [
+    {
+      "command": "gofmt -l internal/cli/algebra.go internal/parser/forest.go internal/parser/match.go internal/semantic/dse_compose.go internal/semantic/dse_types.go languages/en/construction_runtime.go languages/en/sentence_source.go languages/en/valency.go languages/pl/construction_runtime.go languages/pl/sentence_source.go languages/pl/valency.go",
+      "exit_code": 0,
+      "duration_seconds": 0.018,
+      "stdout": "empty",
+      "stderr": "empty"
+    },
+    {
+      "command": "go vet ./...",
+      "exit_code": 0,
+      "duration_seconds": 0.126,
+      "stdout": "empty",
+      "stderr": "empty"
+    },
+    {
+      "command": "go build -o /tmp/golingua-dse/bin/golingua-395-wh-final2 ./cmd/golingua",
+      "exit_code": 0,
+      "duration_seconds": 0.066,
+      "stdout": "empty",
+      "stderr": "empty"
+    },
+    {
+      "command": "/tmp/golingua-dse/bin/golingua-395-wh-final2 --help",
+      "exit_code": 0,
+      "duration_seconds": 0.003,
+      "stdout": "reading (present 3sg/3pl and past 3sg/3pl), bounded present negation for seeing/hearing/looking in 3sg/3pl (EN do/does not; PL nie), and receiving (past 3sg/3pl); Polish plural past requires known subject number and agreement class. Reading supports English simple past read and Polish czytać past forms in third-person singular and plural; plural English read remains tense-ambiguous. Identification classifies a compatible known referent (for example, cat or dog) and attributes black to that referent in the tested PL/EN routes. English realization retains this/that/it alternatives for unresolved reference and this/that for demonstrative reference, with explicit reference assumptions; Polish to/ten may carry a declared deixis loss when source proximity is not preserved. A bounded positive composition route supports a present seeing event with a black subject and an object, both singular, including compatible known nouns. Other modifier combinations, tenses, numbers, and unsupported or missing lexical forms are refused. These routes do not resolve entity identity or animal sex. translate requires --runtime-config with an active snapshot.\nAlgebra binding: algebra binding inspect --language-package <package.json> [--metadata <package.json> ...] --json; algebra binding validate --language-package <package.json> --metadata <package.json> [--metadata ...] --json; algebra binding instantiate --language-package <package.json> --metadata <package.json> [--metadata ...] --input <request.json|-> --json. Inspection is structural; validation and instantiation use explicitly selected metadata. These commands do not parse or translate text.\nAlgebra source composition: algebra analyze --language pl|en --text <literal> --runtime-config <file> --language-package <package.json> --source-plan <plan.json> --context <context.json> --metadata <package.json> [--metadata ...] [--source-limit name=value ...] --json. This is an explicit DSE analysis route and does not change translate defaults.\n",
+      "stderr": "empty"
+    },
+    {
+      "command": "/tmp/golingua-dse/bin/golingua-395-wh-final2 --version",
+      "exit_code": 0,
+      "duration_seconds": 0.003,
+      "stdout": "0.1.0-alpha.1\n",
+      "stderr": "empty"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "duration_seconds": 0.007,
+      "stdout": "empty",
+      "stderr": "empty"
+    },
+    {
+      "command": "git diff --cached --check",
+      "exit_code": 0,
+      "duration_seconds": 0.006,
+      "stdout": "empty",
+      "stderr": "empty"
+    }
+  ],
+  "go_test": "NOT RUN",
+  "note": "The staged diff check passed after the intended implementation and evidence files were staged; unrelated user-owned untracked files remain excluded."
+}

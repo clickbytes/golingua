@@ -1,0 +1,302 @@
+{
+  "base_sha": "cae0ecbd03eda8087a059a027510d6233968d9cd",
+  "scope": "#395 bounded WH source changes, language inputs, runtime observations and preserved raw CLI evidence",
+  "files": [
+    {
+      "path": "data/semantic/examples/source-composition/README.md",
+      "sha256": "6a07462b179b02d4d35dab6d620f1681091f392971f929f919debee83c5ccf46"
+    },
+    {
+      "path": "data/semantic/examples/source-composition/wh-questions/README.md",
+      "sha256": "e5a4b2a433fddb04041ae37d1acace7639c1dc3695465315d28dbc8c3825e766"
+    },
+    {
+      "path": "data/semantic/examples/source-composition/wh-questions/cases/en-object.json",
+      "sha256": "bccd1b4a7a0a9278ac3b887cc05801354390f587fada918b01b608ce7bcfc344"
+    },
+    {
+      "path": "data/semantic/examples/source-composition/wh-questions/cases/en-subject.json",
+      "sha256": "6d8cc8485b78c515a57b1fc4198cf5e0274445c0cd3fcd3e73fc1a51c1b08d74"
+    },
+    {
+      "path": "data/semantic/examples/source-composition/wh-questions/cases/pl-object.json",
+      "sha256": "2233ee2950e4c5ad5249974da159af7315f15833bff8c0c4951ab712ef0584a2"
+    },
+    {
+      "path": "data/semantic/examples/source-composition/wh-questions/cases/pl-subject.json",
+      "sha256": "3bf4a0d51a8da48d615a011944bec799a44fd852b519ea96832bb6bf830cc1f4"
+    },
+    {
+      "path": "data/semantic/examples/source-composition/wh-questions/contexts/object.json",
+      "sha256": "828575ebfd4082bfedd546b8be67ad8cb8eba789a957314466d1bfed3ac57b87"
+    },
+    {
+      "path": "data/semantic/examples/source-composition/wh-questions/contexts/subject.json",
+      "sha256": "4e888e0126d1e649b072b01a2effcae473568746a951a53bcfb9c5513d256113"
+    },
+    {
+      "path": "data/semantic/examples/source-composition/wh-questions/metadata.json",
+      "sha256": "808576b35c4da6a798355239cbd8134fe3315b3635f634defce433c85c02beea"
+    },
+    {
+      "path": "data/semantic/examples/source-composition/wh-questions/packages/en.json",
+      "sha256": "c76ad2d7034e799f7655b951352f732c978e96fe5a7bdf026a1fcfae31e72b38"
+    },
+    {
+      "path": "data/semantic/examples/source-composition/wh-questions/packages/pl.json",
+      "sha256": "f70bddb3531d3ad5225821057ede6cd870c19cd01f31b33a21519899a85dedc4"
+    },
+    {
+      "path": "data/semantic/languages/en/source-plan.json",
+      "sha256": "81b64902c75572e9231f9f60e4323e1fce7b400a5c309d9553a8089b6adef544"
+    },
+    {
+      "path": "data/semantic/languages/pl/source-plan.json",
+      "sha256": "d83ef95fa03ee598d9cd9f620f87470be7553656385191e504869869abcfeea6"
+    },
+    {
+      "path": "docs/architecture/semantic-algebra/source-composition.md",
+      "sha256": "c896e422f1d222de806d4794ce030a37c4d437d7097c5efac7700a01d477d2c3"
+    },
+    {
+      "path": "docs/cli.md",
+      "sha256": "66346dfdc9daf6d37ebfcb465144d2de393932e29d0be0264c2a23e9b9a505cd"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/README.md",
+      "sha256": "07c5a945f553c48224d00e37fac9c8939335f51088615a31a83df26353d37640"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/inputs/wh-questions/cases/en-object.json",
+      "sha256": "bccd1b4a7a0a9278ac3b887cc05801354390f587fada918b01b608ce7bcfc344"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/inputs/wh-questions/cases/en-subject.json",
+      "sha256": "6d8cc8485b78c515a57b1fc4198cf5e0274445c0cd3fcd3e73fc1a51c1b08d74"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/inputs/wh-questions/cases/pl-object.json",
+      "sha256": "2233ee2950e4c5ad5249974da159af7315f15833bff8c0c4951ab712ef0584a2"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/inputs/wh-questions/cases/pl-subject.json",
+      "sha256": "3bf4a0d51a8da48d615a011944bec799a44fd852b519ea96832bb6bf830cc1f4"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/inputs/wh-questions/contexts/conflicting-answer-reference.json",
+      "sha256": "7ad8e5b58b6eb5eac13df4105771c37af0094a34ee6e81a69c5873b648be3eeb"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/inputs/wh-questions/contexts/declarative-control.json",
+      "sha256": "7ad8e5b58b6eb5eac13df4105771c37af0094a34ee6e81a69c5873b648be3eeb"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/inputs/wh-questions/contexts/object.json",
+      "sha256": "828575ebfd4082bfedd546b8be67ad8cb8eba789a957314466d1bfed3ac57b87"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/inputs/wh-questions/contexts/subject.json",
+      "sha256": "4e888e0126d1e649b072b01a2effcae473568746a951a53bcfb9c5513d256113"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/inputs/wh-questions/en-source-plan.json",
+      "sha256": "81b64902c75572e9231f9f60e4323e1fce7b400a5c309d9553a8089b6adef544"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/inputs/wh-questions/metadata.json",
+      "sha256": "808576b35c4da6a798355239cbd8134fe3315b3635f634defce433c85c02beea"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/inputs/wh-questions/packages/en.json",
+      "sha256": "c76ad2d7034e799f7655b951352f732c978e96fe5a7bdf026a1fcfae31e72b38"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/inputs/wh-questions/packages/pl.json",
+      "sha256": "f70bddb3531d3ad5225821057ede6cd870c19cd01f31b33a21519899a85dedc4"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/inputs/wh-questions/pl-source-plan.json",
+      "sha256": "d83ef95fa03ee598d9cd9f620f87470be7553656385191e504869869abcfeea6"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/conflicting-answer-reference.analyze.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/conflicting-answer-reference.analyze.stdout.json",
+      "sha256": "ac52c78d657425b75dc1ce5dec239a63c1db2fe0aaef9ce5a44f3123c83274b7"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/declarative-control.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/declarative-control.stdout.json",
+      "sha256": "1de36be89510512597517c97816c20c6ea8594b711c65f13f84998435685e84f"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/en-object-document.json",
+      "sha256": "80af0ec478876f78e7b41b7338d1d85364448f49cc993aad20098337e48e96f2"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/en-object.algebra_check.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/en-object.algebra_check.stdout.json",
+      "sha256": "4f54e30c226b01c61bf15c8201497ef6baaa4eb9ac6632d74352d65962ba47db"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/en-object.analyze.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/en-object.analyze.stdout.json",
+      "sha256": "00bf2e308b30744bb42a9ab3888ec7a4a754ba827931a1196283c72b86835854"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/en-subject-document.json",
+      "sha256": "ea1ad1050d260fcb2a111206cef8d5eecb95dc5c201bde5b013f90aa4097575a"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/en-subject.algebra_check.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/en-subject.algebra_check.stdout.json",
+      "sha256": "8655ae8fbdfb673354e12179b25eeb12ccd326da185f91ff3b7090b2a0ad59dc"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/en-subject.analyze.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/en-subject.analyze.stdout.json",
+      "sha256": "b5cfcf6a8ac6353859a2ea57643bdeee69e01eb5fcd822dc0820b41df15b5bd7"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/observations.jsonl",
+      "sha256": "33bebd7212e8cd113ba1f39b880f039095b4c1b9346432137e7de34614ab7d67"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/pl-object-document.json",
+      "sha256": "612291193bdbd9bef9ba60af42fb0410961cd7c50c7af8357dd3a9bfef1c0ec2"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/pl-object.algebra_check.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/pl-object.algebra_check.stdout.json",
+      "sha256": "955d51bdacca93e4090288e6475c3390fcf9d968ddcbf3963475b6ad3b7289d8"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/pl-object.analyze.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/pl-object.analyze.stdout.json",
+      "sha256": "6c111b52c54823ed19ab4b356cd6973047eeb322e076eec9f2d059918bc3b458"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/pl-subject-document.json",
+      "sha256": "c64a5005b8bf911c3357f60804d8b11399b58d9aced106dee9da050d53c3684f"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/pl-subject.algebra_check.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/pl-subject.algebra_check.stdout.json",
+      "sha256": "6007f50f67abee6783cea075fac0c8791553862f8f1ea2131b7c18c0b9e25498"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/pl-subject.analyze.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/pl-subject.analyze.stdout.json",
+      "sha256": "41d4342af835215fbb467a7dae83b1ac89fdd6ad006d86f8b591fec1751c65a4"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/unpunctuated-wh.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/outputs/wh-questions/unpunctuated-wh.stdout.json",
+      "sha256": "f41b9a522c3b7b3c9a44d6ae4854e2ec99526c3c8f830d525d3ee748761fa3bb"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/reports/wh-observation.json",
+      "sha256": "0cb76c447f0f9b6ea570e1a99b7a84c4a18e38186b9d991a48ba9bdc20072ac7"
+    },
+    {
+      "path": "docs/work/dse/evidence/07-02/reports/wh-technical-observation.json",
+      "sha256": "984a01239f29a747bc2ad6021afd6521385f796941bd1e219b1f3b9f14cc93cc"
+    },
+    {
+      "path": "internal/cli/algebra.go",
+      "sha256": "f57f6dbae16144b13f77d330dc224775daf5679e54fecb3f1fd38dd3dd8a14a4"
+    },
+    {
+      "path": "internal/parser/forest.go",
+      "sha256": "7af5bcde5e300b903348ca94f1a0b0196b59fd6d5181e1f25126416e060c45ba"
+    },
+    {
+      "path": "internal/parser/match.go",
+      "sha256": "e57cb797f83cc1ecc79940ed4d3a5a3290881641186d43736758148dabab5048"
+    },
+    {
+      "path": "internal/semantic/dse_compose.go",
+      "sha256": "192faa992a5d055426dd46d6cae8f06204d0f1c61c99a05adfc2ebc12b30fa12"
+    },
+    {
+      "path": "internal/semantic/dse_types.go",
+      "sha256": "d36d8a6574d96d420621161c024df8149c5501276eac7e7c448571c86b1ce31e"
+    },
+    {
+      "path": "languages/en/construction_runtime.go",
+      "sha256": "45f6bb8641df30ffa414b60337491ccf346d86260cb89281b105c6024d078787"
+    },
+    {
+      "path": "languages/en/constructions/wh_question.json",
+      "sha256": "757e4e2548c0742df73d972b56e25d42581e4e63c12c6006d8e61fa0bd0c808a"
+    },
+    {
+      "path": "languages/en/sentence_source.go",
+      "sha256": "d0ad77bd16f519f8d7f540b9e0bdf42f72524118c0ddb6767193f26cdf727b49"
+    },
+    {
+      "path": "languages/en/valency.go",
+      "sha256": "99a43b25c3bb8c2b34e11aff1188c0a2550b6b617ef6ac098f8bf27108389b7d"
+    },
+    {
+      "path": "languages/pl/construction_runtime.go",
+      "sha256": "bddfd15e8813eb136c49067f47c3d0b6acb1666ed44451d8552adf20c4008267"
+    },
+    {
+      "path": "languages/pl/constructions/wh_question.json",
+      "sha256": "91e43f596053afbbaaec8c484a925759cf907477c573d4696a7d6b04f994e0c9"
+    },
+    {
+      "path": "languages/pl/sentence_source.go",
+      "sha256": "76d7b11fb77e60e02068bc42fff6e4cae7f30542040164d10bee42b8a71e5c1d"
+    },
+    {
+      "path": "languages/pl/valency.go",
+      "sha256": "93fd9ac2357f370913caaebe0f5c80680edcab23ccc55677a4e93cd9aea25543"
+    }
+  ],
+  "legacy_construction_files_unchanged_from_head": [
+    {
+      "path": "languages/en/constructions/question.json",
+      "sha256": "7934963ba42d036bad86563ae183b1b38eac25ebfb137740ea5c75a1f82dbd0f",
+      "unchanged_from_head": true
+    },
+    {
+      "path": "languages/pl/constructions/question.json",
+      "sha256": "a130d07af5127308c757b03212805ca3d707746751b01966c42871d0fe159a09",
+      "unchanged_from_head": true
+    }
+  ]
+}

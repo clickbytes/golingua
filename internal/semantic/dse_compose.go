@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"sort"
+	"strings"
 	"unicode/utf8"
 
 	"github.com/clickbytes/golingua/internal/algebra"
@@ -19,6 +20,7 @@ import (
 	"github.com/clickbytes/golingua/internal/parser"
 	"github.com/clickbytes/golingua/internal/status"
 	"github.com/clickbytes/golingua/internal/synthesis"
+	"github.com/clickbytes/golingua/internal/text"
 	"github.com/clickbytes/golingua/internal/valency"
 )
 
@@ -68,6 +70,11 @@ func ComposeDSE(input DSEInput) (DSEResult, error) {
 			return DSEResult{}, dseError(status.OutcomeInvalid, "INVALID_FOREST_DIAGNOSTIC", fmt.Sprintf("forest.diagnostics[%d]", i), err.Error())
 		}
 	}
+	if input.Forest.Outcome == status.OutcomeAmbiguous {
+		if resolved, ok := dseResolveExplicitWHGapOmissions(input.Forest); ok {
+			input.Forest = resolved
+		}
+	}
 	if input.Forest.Outcome != status.OutcomeOK && input.Forest.Outcome != status.OutcomeIncomplete && input.Forest.Outcome != status.OutcomeResourceLimit {
 		return DSEResult{}, dseError(status.OutcomeUnsupported, "UNSUPPORTED_SOURCE_FOREST", "forest.outcome", "only valid, incomplete, or resource-limited forests can be composed")
 	}
@@ -85,7 +92,7 @@ func ComposeDSE(input DSEInput) (DSEResult, error) {
 	defer cancel()
 	input.Context = budgetContext
 
-	result := DSEResult{Status: status.OutcomeOK, Complete: input.Forest.Outcome == status.OutcomeOK, Candidates: []DSECandidate{}, Residuals: []DSEResidual{}, Diagnostics: []status.Diagnostic{}, WholeVerificationScope: "type_scope_context_only"}
+	result := DSEResult{Status: status.OutcomeOK, Complete: input.Forest.Outcome == status.OutcomeOK || dseForestIsIncompleteOnlyForWHGaps(input.Forest), Candidates: []DSECandidate{}, Residuals: []DSEResidual{}, Diagnostics: []status.Diagnostic{}, WholeVerificationScope: "type_scope_context_only"}
 	candidates := make(map[string]parser.PhraseCandidate, len(input.Candidates))
 	for i, candidate := range input.Candidates {
 		if candidate.ID == "" || len(candidate.ID) > 256 || candidate.Span.Start < 0 || candidate.Span.End < candidate.Span.Start || candidate.Span.End > input.SourceBytes {
@@ -179,7 +186,7 @@ func ComposeDSE(input DSEInput) (DSEResult, error) {
 			if len(result.Candidates) >= budget.MaxAlternatives {
 				return dseResourcePrefix(result, "DSE_ALTERNATIVE_LIMIT", "forest", work), nil
 			}
-			if len(alternative.Unresolved) != 0 {
+			if len(alternative.Unresolved) != 0 && !dseUnresolvedSlotsAreWHGaps(alternative) {
 				if appendDSEIncomplete(&result, fmt.Sprintf("root:%s:%d", rootID, altIndex), DSESourceRecord{DerivationID: alternative.DerivationID, Span: root.Span}, "UNRESOLVED_PARSE_SLOTS", "parse alternative has unresolved source slots", budget, work) {
 					return result, nil
 				}
@@ -274,7 +281,7 @@ func ComposeDSE(input DSEInput) (DSEResult, error) {
 				invalidSlots := false
 				for _, role := range frame.SemanticRoles {
 					slot, exists := roleSlots[string(role)]
-					if !exists || slot.WHGap != nil || len(slot.CandidateIDs) == 0 {
+					if !exists || (slot.WHGap == nil && len(slot.CandidateIDs) == 0) || (slot.WHGap != nil && (len(slot.CandidateIDs) != 0 || string(slot.WHGap.Role) != string(role) || slot.WHGap.ScopeNodeID == "" || !dseWHGapMatchesSource(slot.WHGap, input.Lattice))) {
 						invalidSlots = true
 						break
 					}
@@ -349,6 +356,12 @@ func ComposeDSE(input DSEInput) (DSEResult, error) {
 						return
 					}
 					slot := roleSelections[pos].slot
+					if slot.WHGap != nil {
+						selectedRoles = append(selectedRoles, dseSelectedRole{role: roleSelections[pos].role, gap: slot.WHGap})
+						expand(pos+1, selectedRoles)
+						selectedRoles = selectedRoles[:len(selectedRoles)-1]
+						return
+					}
 					for _, candidateID := range slot.CandidateIDs {
 						if !chargeDSEWork(&result, &work, budget.MaxWork) {
 							resourceStopped, resourceCode, resourcePath = true, "DSE_WORK_LIMIT", "forest"
@@ -389,7 +402,7 @@ func ComposeDSE(input DSEInput) (DSEResult, error) {
 			}
 		}
 	}
-	if input.Forest.Outcome != status.OutcomeOK {
+	if input.Forest.Outcome != status.OutcomeOK && !dseForestIsIncompleteOnlyForWHGaps(input.Forest) {
 		result.Complete = false
 	}
 	if !input.OperatorCoverageComplete {
@@ -414,6 +427,144 @@ func ComposeDSE(input DSEInput) (DSEResult, error) {
 	return result, nil
 }
 
+func dseUnresolvedSlotsAreWHGaps(alternative parser.ParseAlternative) bool {
+	if len(alternative.Unresolved) == 0 {
+		return true
+	}
+	gapSlots := make(map[string]struct{}, len(alternative.Unresolved))
+	for _, slot := range alternative.Slots {
+		if slot.WHGap == nil || len(slot.CandidateIDs) != 0 || slot.WHGap.ScopeNodeID == "" || string(slot.WHGap.SlotID) != slot.SlotID {
+			continue
+		}
+		gapSlots[slot.SlotID] = struct{}{}
+	}
+	if len(gapSlots) != len(alternative.Unresolved) {
+		return false
+	}
+	for _, unresolved := range alternative.Unresolved {
+		if _, ok := gapSlots[unresolved]; !ok {
+			return false
+		}
+	}
+	return true
+}
+
+func dseForestIsIncompleteOnlyForWHGaps(forest parser.Forest) bool {
+	if forest.Outcome != status.OutcomeIncomplete || len(forest.Unmatched) != 0 || len(forest.Roots) == 0 {
+		return false
+	}
+	byID := make(map[parser.NodeID]parser.PackedNode, len(forest.Nodes))
+	for _, node := range forest.Nodes {
+		byID[node.ID] = node
+	}
+	seenAlternative := false
+	for _, rootID := range forest.Roots {
+		root, ok := byID[rootID]
+		if !ok || root.Category != "clause" || len(root.Alternatives) == 0 {
+			return false
+		}
+		for _, alternative := range root.Alternatives {
+			seenAlternative = true
+			if len(alternative.Unresolved) == 0 || !dseUnresolvedSlotsAreWHGaps(alternative) {
+				return false
+			}
+		}
+	}
+	return seenAlternative
+}
+
+// dseResolveExplicitWHGapOmissions removes only parser alternatives that are
+// identical to a sibling apart from omission of an explicitly supplied WH
+// gap. Optional argument slots otherwise admit both branches even when the
+// same parse context supplies a scoped gap for that slot.
+func dseResolveExplicitWHGapOmissions(forest parser.Forest) (parser.Forest, bool) {
+	if forest.Outcome != status.OutcomeAmbiguous || len(forest.Unmatched) != 0 || len(forest.Roots) == 0 {
+		return parser.Forest{}, false
+	}
+	nodesByID := make(map[parser.NodeID]parser.PackedNode, len(forest.Nodes))
+	for _, node := range forest.Nodes {
+		nodesByID[node.ID] = node
+	}
+	resolvedRoots := make(map[parser.NodeID][]parser.ParseAlternative, len(forest.Roots))
+	for _, rootID := range forest.Roots {
+		root, ok := nodesByID[rootID]
+		if !ok || root.Category != "clause" || len(root.Alternatives) < 2 {
+			return parser.Forest{}, false
+		}
+		gapIndex := -1
+		for i, alternative := range root.Alternatives {
+			count := 0
+			for _, slot := range alternative.Slots {
+				if slot.WHGap != nil {
+					if slot.WHGap.ScopeNodeID == "" || slot.WHGap.SlotID != slot.SlotID || string(slot.WHGap.Role) != string(slot.Role) || len(slot.CandidateIDs) != 0 {
+						return parser.Forest{}, false
+					}
+					count++
+				}
+			}
+			if count == 1 {
+				if gapIndex >= 0 {
+					return parser.Forest{}, false
+				}
+				gapIndex = i
+			} else if count != 0 {
+				return parser.Forest{}, false
+			}
+		}
+		if gapIndex < 0 {
+			return parser.Forest{}, false
+		}
+		gapAlternative := root.Alternatives[gapIndex]
+		for i, alternative := range root.Alternatives {
+			if i != gapIndex && !dseSameParseExceptWHGap(gapAlternative, alternative) {
+				return parser.Forest{}, false
+			}
+		}
+		resolvedRoots[rootID] = []parser.ParseAlternative{gapAlternative}
+	}
+	filtered := forest
+	filtered.Nodes = append([]parser.PackedNode(nil), forest.Nodes...)
+	for i := range filtered.Nodes {
+		if alternatives, ok := resolvedRoots[filtered.Nodes[i].ID]; ok {
+			filtered.Nodes[i].Alternatives = alternatives
+		}
+	}
+	filtered.Outcome = status.OutcomeOK
+	return filtered, true
+}
+
+func dseSameParseExceptWHGap(withGap, withoutGap parser.ParseAlternative) bool {
+	if withGap.PlanID != withoutGap.PlanID || withGap.FamilyID != withoutGap.FamilyID || withGap.VariantID != withoutGap.VariantID || withGap.Permission != withoutGap.Permission || len(withGap.Slots) != len(withoutGap.Slots) || len(withGap.Unresolved) != len(withoutGap.Unresolved) {
+		return false
+	}
+	for i := range withGap.Unresolved {
+		if withGap.Unresolved[i] != withoutGap.Unresolved[i] {
+			return false
+		}
+	}
+	gapCount := 0
+	for i := range withGap.Slots {
+		a, b := withGap.Slots[i], withoutGap.Slots[i]
+		if a.SlotID != b.SlotID || a.Role != b.Role || len(a.CandidateIDs) != len(b.CandidateIDs) || len(a.NodeIDs) != len(b.NodeIDs) || b.WHGap != nil {
+			return false
+		}
+		for j := range a.CandidateIDs {
+			if a.CandidateIDs[j] != b.CandidateIDs[j] {
+				return false
+			}
+		}
+		for j := range a.NodeIDs {
+			if a.NodeIDs[j] != b.NodeIDs[j] {
+				return false
+			}
+		}
+		if a.WHGap != nil {
+			gapCount++
+		}
+	}
+	return gapCount == 1
+}
+
 type dseRoleSelection struct {
 	role string
 	slot parser.SlotBinding
@@ -422,6 +573,19 @@ type dseSelectedRole struct {
 	role      string
 	candidate parser.PhraseCandidate
 	senseID   string
+	gap       *parser.WHGapEvidence
+}
+
+func dseWHGapMatchesSource(gap *parser.WHGapEvidence, lattice analyzer.LexicalLattice) bool {
+	if gap == nil || gap.Span.Start < 0 || gap.Span.End <= gap.Span.Start {
+		return false
+	}
+	for _, token := range lattice.Tokens {
+		if token.Token.Kind == text.TokenWord && token.Token.Span == gap.Span {
+			return true
+		}
+	}
+	return false
 }
 
 func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp parser.PhraseCandidate, mapping language.SourcePredicateMapping, frame *valency.ValencyFrame, roles []dseSelectedRole, refsByCandidate map[string]ReferenceEvidence, attrs map[string]NodeAttributesEvidence, mentionRefs map[string]dseMentionReference) (DSECandidate, bool, error) {
@@ -456,7 +620,29 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 	roleReferenceByRole := make(map[string]string, len(roles))
 	roleBasisByRole := make(map[string]string, len(roles))
 	referenceByCandidate := make(map[string]string, len(roles))
+	var answer *algebra.Declaration
+	var answerRole string
+	var err error
 	for _, selected := range roles {
+		if selected.gap != nil {
+			if _, hasRoleReference := sourceRoleReference(input.ReferenceContext, selected.role); hasRoleReference {
+				return incompleteDSE(vp, alternative, "WH_ROLE_REFERENCE_CONFLICT", "a WH answer role cannot also be bound to a caller-supplied referent")
+			}
+			if answer != nil || selected.gap.ScopeNodeID == "" || string(selected.gap.Role) != selected.role {
+				return incompleteDSE(vp, alternative, "INVALID_WH_GAP", "the selected question variant must provide one exact frame-role gap")
+			}
+			port, ok := dseTargetRolePort(target, string(alternative.Permission.FrameID), selected.role)
+			if !ok {
+				return incompleteDSE(vp, alternative, "UNMAPPED_WH_ROLE", "the exact selected frame role has no authorized target port")
+			}
+			answerID := "answer_" + strings.TrimPrefix(string(selected.gap.ScopeNodeID), "wh_")
+			if len(answerID) > 256 {
+				return incompleteDSE(vp, alternative, "WH_ANSWER_ID_LIMIT", "question answer binder exceeds the bounded identifier profile")
+			}
+			answer = &algebra.Declaration{ID: answerID, Type: cloneDSEType(port.Type)}
+			answerRole = selected.role
+			continue
+		}
 		fallback, hasFallback := sourceRoleReference(input.ReferenceContext, selected.role)
 		refID, resolved, anchored, basis, err := resolveDSEReference(selected.candidate.ID, fallback, hasFallback, refsByCandidate, mentionRefs)
 		if err != nil {
@@ -483,24 +669,42 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 		}
 	}
 	request := language.SemanticBindingRequest{SenseID: alternative.Permission.SenseID, FrameID: alternative.Permission.FrameID, BindingIndex: &selectedIndex, ContextID: input.ReferenceContext.ContextID, References: cloneAlgebraDeclarations(input.ReferenceContext.References), RequestContext: cloneDSEContext(input.ReferenceContext.RequestContext), RoleReferences: roleRefs, PortReferences: []language.SemanticPortReference{{PortID: mapping.HeadPortID, ReferenceID: headRef}}}
-	instantiated, err := language.InstantiateSemanticBinding(pack, input.Selected, input.Rewrite, request)
-	if err != nil {
-		return incompleteDSE(vp, alternative, "PREDICATE_INSTANTIATION_REFUSED", err.Error())
-	}
+	var instantiated language.SemanticInstantiationResult
 	var predicate *algebra.Term
 	var candidate DSECandidate
 	candidate = dseCandidateStart(vp, alternative)
 	candidate.HeadEventReferenceID = headRef
 	for _, selected := range roles {
+		if selected.gap != nil {
+			gap := DSEWHGapEvidence{SlotID: selected.gap.SlotID, Role: string(selected.gap.Role), ScopeNodeID: string(selected.gap.ScopeNodeID), Span: selected.gap.Span}
+			source := DSESourceRecord{ReadingIDs: []string{}, Span: selected.gap.Span}
+			candidate.RoleSources = append(candidate.RoleSources, DSERoleSource{Role: selected.role, Source: source, WHGap: &gap, ResolutionBasis: "parser_wh_gap"})
+			continue
+		}
 		candidate.RoleSources = append(candidate.RoleSources, DSERoleSource{Role: selected.role, Source: dseRoleRecord(selected.candidate, selected.senseID), ReferenceID: roleReferenceByRole[selected.role], ResolutionBasis: roleBasisByRole[selected.role]})
 	}
-	if instantiated.Symbol != nil {
+	instantiatedStatus := status.OutcomeOK
+	if answer != nil {
+		predicate, err = buildDSEQuestionAtom(input.Selected, target, string(alternative.Permission.FrameID), mapping.HeadPortID, roleReferenceByRole, headRef, answerRole, answer.ID)
+		if err != nil {
+			return incompleteDSE(vp, alternative, "QUESTION_TARGET_REFUSED", boundedDSEMessage(err.Error()))
+		}
+		typ := algebra.Type{Kind: algebra.TypeProp}
+		candidate.FragmentChecks = append(candidate.FragmentChecks, DSEFragmentCheck{Kind: "predicate", Status: status.OutcomeOK, CheckedType: &typ, Interface: []algebra.PortBinding{}})
+	} else {
+		instantiated, err = language.InstantiateSemanticBinding(pack, input.Selected, input.Rewrite, request)
+		if err != nil {
+			return incompleteDSE(vp, alternative, "PREDICATE_INSTANTIATION_REFUSED", err.Error())
+		}
+		instantiatedStatus = instantiated.Status
+	}
+	if answer == nil && instantiated.Symbol != nil {
 		predicate = instantiated.Symbol.Document.Expression
 		checked := instantiated.Symbol.Checked
 		candidate.Checked = &checked
 		typ := checked.Type
 		candidate.FragmentChecks = append(candidate.FragmentChecks, DSEFragmentCheck{Kind: "predicate", BindingKey: instantiated.BindingKey, Status: instantiated.Status, CheckedType: &typ, Interface: append([]algebra.PortBinding{}, instantiated.Symbol.Interface...)})
-	} else if instantiated.Goal != nil {
+	} else if answer == nil && instantiated.Goal != nil {
 		goalWire, _ := json.Marshal(instantiated.Goal)
 		candidate.GoalSpecs = append(candidate.GoalSpecs, goalWire)
 		if instantiated.Construction != nil && instantiated.Construction.CanonicalDocument != nil && instantiated.Construction.Checked != nil {
@@ -524,17 +728,21 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 			}
 			candidate.FragmentChecks = append(candidate.FragmentChecks, DSEFragmentCheck{Kind: "goal_fragment", BindingKey: instantiated.BindingKey, Status: instantiated.Status, CheckedType: &typ, Interface: append([]algebra.PortBinding{}, instantiated.Construction.Interface...), GoalEvidence: goalEvidence})
 		}
-	} else {
+	} else if answer == nil {
 		return incompleteDSE(vp, alternative, "UNSUPPORTED_TARGET_RESULT", "selected semantic target did not produce a typed symbol or goal expression")
 	}
 	if predicate == nil {
 		return incompleteDSE(vp, alternative, "INCOMPLETE_TARGET_EXPRESSION", "selected target has no fully constructed proposition")
 	}
-	if instantiated.Status != status.OutcomeOK {
+	if instantiatedStatus != status.OutcomeOK {
 		candidate.Status = status.OutcomeIncomplete
 		candidate.Residuals = append(candidate.Residuals, DSEResidual{Code: "OPEN_TARGET_INTERFACE", CandidateID: vp.ID, Message: "semantic target retains an unbound interface port"})
 	}
-	if len(roleReferenceByRole) != len(frame.SemanticRoles) {
+	roleCoverage := len(roleReferenceByRole)
+	if answer != nil {
+		roleCoverage++
+	}
+	if roleCoverage != len(frame.SemanticRoles) {
 		return incompleteDSE(vp, alternative, "SOURCE_ROLE_COVERAGE_MISMATCH", "explicit role bindings do not cover the selected frame")
 	}
 	// Rebuild a standalone context after adding explicit source attributes and
@@ -569,7 +777,7 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 	}
 	conditionCoverage = append(conditionCoverage, coverage...)
 	candidate.Residuals = append(candidate.Residuals, featureResiduals...)
-	if instantiated.Status == status.OutcomeOK {
+	if instantiatedStatus == status.OutcomeOK {
 		if err := applyOperatorMappings(input, vp, &predicate, &candidate); err != nil {
 			return DSECandidate{}, false, err
 		}
@@ -577,6 +785,13 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 		candidate.Residuals = append(candidate.Residuals, DSEResidual{Code: "NEGATION_REQUIRES_CLOSED_PREDICATE", CandidateID: vp.ID, Message: "negation cannot be applied to a target with an open interface"})
 	}
 	final := algebra.Document{SchemaVersion: algebra.SchemaVersion, Sorts: cloneAlgebraSorts(input.Selected.Sorts), Signatures: cloneAlgebraSignatures(input.Selected.Signatures), References: cloneAlgebraDeclarations(input.ReferenceContext.References), Closed: true, Expression: predicate, Limits: input.Selected.Limits, RequestContext: requestContext}
+	if answer != nil {
+		asked, askErr := algebra.NewAsk(final, []algebra.Declaration{*answer}, nil, predicate)
+		if askErr != nil {
+			return incompleteDSE(vp, alternative, "QUESTION_SCOPE_REFUSED", boundedDSEMessage(askErr.Error()))
+		}
+		final.Expression = asked
+	}
 	for _, selected := range roles {
 		if err := mergeDSECandidateAttributes(&final, selected.candidate, roleReferenceByRole[selected.role], attrs); err != nil {
 			return DSECandidate{}, false, err
@@ -609,6 +824,85 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 	return candidate, true, nil
 }
 
+func dseTargetRolePort(target *lexicon.SemanticTarget, frameID, role string) (lexicon.SemanticRolePort, bool) {
+	if target == nil {
+		return lexicon.SemanticRolePort{}, false
+	}
+	var found lexicon.SemanticRolePort
+	for _, port := range target.RolePorts {
+		if port.FrameID != frameID || port.Role != role {
+			continue
+		}
+		if found.PortID != "" {
+			return lexicon.SemanticRolePort{}, false
+		}
+		found = port
+	}
+	return found, found.PortID != ""
+}
+
+func buildDSEQuestionAtom(selected algebra.Document, target *lexicon.SemanticTarget, frameID, headPort string, roleRefs map[string]string, headRef, answerRole, answerID string) (*algebra.Term, error) {
+	if target == nil || target.Kind != lexicon.SemanticTargetSymbol || target.SymbolRef == "" || headPort == "" || headRef == "" || answerRole == "" || answerID == "" {
+		return nil, fmt.Errorf("WH questions require one approved predicate symbol and explicit event/answer bindings")
+	}
+	var signature *algebra.Signature
+	for i := range selected.Signatures {
+		if selected.Signatures[i].ID == string(target.SymbolRef) {
+			if signature != nil {
+				return nil, fmt.Errorf("predicate symbol has duplicate selected signatures")
+			}
+			signature = &selected.Signatures[i]
+		}
+	}
+	if signature == nil || len(signature.Ports) == 0 || len(signature.Ports) > algebra.DefaultMaxPorts {
+		return nil, fmt.Errorf("approved predicate signature is unavailable or outside the finite profile")
+	}
+	args := make([]algebra.Argument, 0, len(signature.Ports))
+	usedRoles := make(map[string]bool, len(roleRefs)+1)
+	usedHead := false
+	for _, port := range signature.Ports {
+		var value *algebra.Term
+		if port.Role == headPort {
+			if usedHead {
+				return nil, fmt.Errorf("event port is repeated in the predicate signature")
+			}
+			usedHead = true
+			typ := cloneDSEType(port.Type)
+			value = &algebra.Term{Kind: algebra.TermRef, ID: headRef, Type: &typ}
+		} else {
+			var rolePort *lexicon.SemanticRolePort
+			for i := range target.RolePorts {
+				candidate := &target.RolePorts[i]
+				if candidate.FrameID == frameID && candidate.PortID == port.Role {
+					if rolePort != nil {
+						return nil, fmt.Errorf("predicate port has duplicate exact frame-role mappings")
+					}
+					rolePort = candidate
+				}
+			}
+			if rolePort == nil || !algebra.TypeEqual(rolePort.Type, port.Type) || usedRoles[rolePort.Role] {
+				return nil, fmt.Errorf("predicate port lacks one exact typed frame-role mapping")
+			}
+			usedRoles[rolePort.Role] = true
+			if rolePort.Role == answerRole {
+				value = &algebra.Term{Kind: algebra.TermVar, ID: answerID}
+			} else {
+				refID := roleRefs[rolePort.Role]
+				if refID == "" {
+					return nil, fmt.Errorf("non-question frame role lacks an explicit reference")
+				}
+				typ := cloneDSEType(port.Type)
+				value = &algebra.Term{Kind: algebra.TermRef, ID: refID, Type: &typ}
+			}
+		}
+		args = append(args, algebra.Argument{Role: port.Role, Value: value})
+	}
+	if !usedHead || len(usedRoles) != len(roleRefs)+1 || !usedRoles[answerRole] {
+		return nil, fmt.Errorf("predicate signature does not cover the selected frame roles and WH answer exactly")
+	}
+	return &algebra.Term{Kind: algebra.TermAtom, Symbol: string(target.SymbolRef), Args: args}, nil
+}
+
 func instantiateRolePredicates(input DSEInput, alternative parser.ParseAlternative, roles []dseSelectedRole, roleRefs map[string]string, request language.SemanticBindingRequest, rc *algebra.RequestContext) ([]algebra.ContextCondition, []DSEFragmentCheck, []DSEResidual, error) {
 	var conditions []algebra.ContextCondition
 	var checks []DSEFragmentCheck
@@ -627,6 +921,9 @@ func instantiateRolePredicates(input DSEInput, alternative parser.ParseAlternati
 		return conditions, checks, residuals, nil
 	}
 	for _, selected := range roles {
+		if selected.gap != nil {
+			continue
+		}
 		_, ok := input.Package.LexiconIndex().ByLexemeID(selected.candidate.LexemeID)
 		if !ok {
 			residuals = append(residuals, DSEResidual{Code: "UNKNOWN_ROLE_LEXEME", CandidateID: selected.candidate.ID, Message: "selected NP lexeme is absent from package"})
@@ -723,7 +1020,9 @@ func dseReferenceNonHeadResidual(lattice analyzer.LexicalLattice, candidate pars
 func instantiateFeatureConditions(input DSEInput, alternative parser.ParseAlternative, vp parser.PhraseCandidate, roles []dseSelectedRole, target *lexicon.SemanticTarget, mapping language.SourcePredicateMapping, roleRefs map[string]string, headRef string, request language.SemanticBindingRequest, rc *algebra.RequestContext) ([]algebra.ContextCondition, []DSEConditionCoverage, []DSEResidual, error) {
 	allCandidates := []parser.PhraseCandidate{vp}
 	for _, role := range roles {
-		allCandidates = append(allCandidates, role.candidate)
+		if role.gap == nil {
+			allCandidates = append(allCandidates, role.candidate)
+		}
 	}
 	doc := input.Plan.Document()
 	scopedFeatures := make(map[string]bool, len(doc.FeatureConditions)+len(doc.RequiredFeatureIDs))

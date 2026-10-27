@@ -1,0 +1,113 @@
+{
+  "binary_path": "/tmp/golingua-dse/bin/golingua-395-wh-final2",
+  "binary_sha256": "d16172f814815f0fec586272e64c9e943115df24861666aed1ae0ed0cb288f13",
+  "runtime_config": "/tmp/golingua-dse/395-e-runtime.json",
+  "runtime_snapshot": {
+    "dataset_id": "golingua-authored",
+    "dataset_version": "2026-10-23",
+    "digest": "e62fdf8903c59fd27690aa46e58b00d199a10a0e1108869e3aa8d47a8f7196f0",
+    "format_version": 1
+  },
+  "source_hash_manifest": "reports/wh-source-hashes.json",
+  "records": "outputs/wh-questions/observations.jsonl",
+  "summary": {
+    "analyze_calls": 4,
+    "analyze_exit_0": 4,
+    "complete_Ask_candidates": 4,
+    "independent_checks": 4,
+    "check_exit_0": 4,
+    "answer_roles": {
+      "en-subject": "experiencer",
+      "en-object": "stimulus",
+      "pl-subject": "experiencer",
+      "pl-object": "stimulus"
+    },
+    "source_spans": {
+      "en-subject": {
+        "Start": 0,
+        "End": 3
+      },
+      "en-object": {
+        "Start": 17,
+        "End": 21
+      },
+      "pl-subject": {
+        "Start": 0,
+        "End": 3
+      },
+      "pl-object": {
+        "Start": 0,
+        "End": 4
+      }
+    },
+    "wh_gap_spans": {
+      "en-subject": {
+        "Start": 0,
+        "End": 3
+      },
+      "en-object": {
+        "Start": 17,
+        "End": 21
+      },
+      "pl-subject": {
+        "Start": 0,
+        "End": 3
+      },
+      "pl-object": {
+        "Start": 0,
+        "End": 4
+      }
+    },
+    "question_mark_spans": {
+      "en-subject": {
+        "Start": 16,
+        "End": 17
+      },
+      "en-object": {
+        "Start": 21,
+        "End": 22
+      },
+      "pl-subject": {
+        "Start": 13,
+        "End": 14
+      },
+      "pl-object": {
+        "Start": 21,
+        "End": 22
+      }
+    },
+    "conflict_control": {
+      "exit_code": 7,
+      "status": "incomplete",
+      "complete": false,
+      "candidate_statuses": [
+        "incomplete"
+      ],
+      "residual_codes": [
+        "WH_ROLE_REFERENCE_CONFLICT"
+      ]
+    },
+    "unpunctuated-wh": {
+      "exit_code": 3,
+      "status": "unsupported",
+      "composition_status": null,
+      "complete": null,
+      "candidate_count": 0,
+      "expression_kinds": [],
+      "variant_ids": []
+    },
+    "declarative-control": {
+      "exit_code": 0,
+      "status": "ok",
+      "composition_status": "ok",
+      "complete": true,
+      "candidate_count": 1,
+      "expression_kinds": [
+        "Atom"
+      ],
+      "variant_ids": [
+        "construction:en.transitive.svo"
+      ]
+    }
+  }
+}

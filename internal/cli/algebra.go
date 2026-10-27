@@ -2622,7 +2622,7 @@ func sourceSyntaxWire(syntax runtime.SourceSyntax) map[string]any {
 	}
 	whGaps := make([]map[string]any, 0, len(syntax.ParseContext.WHGaps))
 	for _, gap := range syntax.ParseContext.WHGaps {
-		whGaps = append(whGaps, map[string]any{"slot_id": gap.SlotID, "role": string(gap.Role), "scope_node_id": string(gap.ScopeNodeID)})
+		whGaps = append(whGaps, map[string]any{"slot_id": gap.SlotID, "role": string(gap.Role), "scope_node_id": string(gap.ScopeNodeID), "span": gap.Span})
 	}
 	info := make(map[string]string, len(syntax.ParseContext.InformationStructure))
 	for role, value := range syntax.ParseContext.InformationStructure {
