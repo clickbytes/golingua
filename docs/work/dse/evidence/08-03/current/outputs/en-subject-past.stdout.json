@@ -1,0 +1,1 @@
+{"status":"unsupported","diagnostics":[{"code":"UNSUPPORTED_RELATIVE_TEMPORAL_REFERENCE","message":"only present Event references are supported by the bounded explicit-time query profile","path":"references.E1.temporal_frame","severity":"error"}]}

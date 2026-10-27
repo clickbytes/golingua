@@ -164,7 +164,7 @@ func prepareAlgebraEvaluation(parent context.Context, plan *AlgebraQueryPlan, vi
 		cancel()
 		return nil, err
 	}
-	if err := validateUsedKnownReferenceAttributes(plan.nodes, known, plan.requestContext, schema, plan.variables); err != nil {
+	if err := validateUsedKnownReferenceAttributes(plan.nodes, known, plan.requestContext, schema, plan.variables, plan.at); err != nil {
 		cancel()
 		return nil, err
 	}
@@ -220,7 +220,7 @@ func prepareAlgebraEvaluation(parent context.Context, plan *AlgebraQueryPlan, vi
 	return state, nil
 }
 
-func validateUsedKnownReferenceAttributes(nodes []AlgebraPlanNode, known map[string]algebra.Declaration, requestContext *algebra.RequestContext, schema algebra.Document, variables []AlgebraPlanVariable) error {
+func validateUsedKnownReferenceAttributes(nodes []AlgebraPlanNode, known map[string]algebra.Declaration, requestContext *algebra.RequestContext, schema algebra.Document, variables []AlgebraPlanVariable, at string) error {
 	used := make(map[string]bool)
 	for _, node := range nodes {
 		for _, argument := range node.Args {
@@ -259,7 +259,19 @@ func validateUsedKnownReferenceAttributes(nodes []AlgebraPlanNode, known map[str
 			return err
 		}
 		if attributes.TemporalFrame != "" {
-			return planUnsupported("UNSUPPORTED_RELATIVE_TEMPORAL_REFERENCE", "references."+id+".temporal_frame", "the positive-facts query profile has no relative-time mapping to the explicit query instant")
+			declaration, ok := known[id]
+			if !ok || declaration.Type.Kind != algebra.TypeEvent {
+				return planInvalid("ATTRIBUTE_TYPE_MISMATCH", "references."+id+".temporal_frame", "temporal frame is available only on Event references")
+			}
+			if attributes.TemporalFrame != "present" {
+				return planUnsupported("UNSUPPORTED_RELATIVE_TEMPORAL_REFERENCE", "references."+id+".temporal_frame", "only present Event references are supported by the bounded explicit-time query profile")
+			}
+			if at == "" {
+				return planUnsupported("QUERY_INSTANT_REQUIRED", "at", "a present Event reference requires an explicit UTC query instant")
+			}
+		}
+		if attributes.ReferenceTimeID != "" {
+			return planUnsupported("UNSUPPORTED_REFERENCE_TIME", "references."+id+".reference_time_id", "reference-time links are not mapped by the positive-facts query profile")
 		}
 		if attributes.Multiplicity == "many" {
 			return planUnsupported("UNSUPPORTED_MANY_REFERENCE", "references."+id+".multiplicity", "the positive-facts query profile does not expand or group a many-valued reference")

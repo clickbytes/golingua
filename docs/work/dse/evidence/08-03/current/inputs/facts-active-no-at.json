@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "context_id": "source-independent",
+  "referents": [
+    {
+      "id": "E1",
+      "type": {
+        "kind": "Event"
+      }
+    },
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ],
+  "facts": [
+    {
+      "id": "dse-08-03-explicit-see-A-B",
+      "atom": {
+        "symbol": "pilot.vision_event",
+        "args": [
+          {
+            "role": "event",
+            "value": {
+              "kind": "Ref",
+              "id": "E1"
+            }
+          },
+          {
+            "role": "experiencer",
+            "value": {
+              "kind": "Ref",
+              "id": "A"
+            }
+          },
+          {
+            "role": "stimulus",
+            "value": {
+              "kind": "Ref",
+              "id": "B"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {
+        "from": "2026-10-01T00:00:00Z",
+        "to": "2026-11-01T00:00:00Z"
+      },
+      "source": {
+        "kind": "user",
+        "id": "dse-08-03-explicit-probe"
+      },
+      "assertion_scope": "asserted"
+    }
+  ]
+}

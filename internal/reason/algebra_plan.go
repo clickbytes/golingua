@@ -307,7 +307,7 @@ func CompileAlgebraQuery(parent context.Context, schema facts.NarySchema, enviro
 		}
 		plan.requestContext = &contextCopy
 	}
-	if err := validateUsedReferenceAttributes(plan.nodes, plan.references, plan.requestContext, schema.Document, plan.variables); err != nil {
+	if err := validateUsedReferenceAttributes(plan.nodes, plan.references, plan.requestContext, schema.Document, plan.variables, plan.at); err != nil {
 		return fail(err)
 	}
 	if askSource {
@@ -958,9 +958,20 @@ func clonePlanDeclarations(in []algebra.Declaration) []algebra.Declaration {
 	return out
 }
 
-func validateUsedReferenceAttributes(nodes []AlgebraPlanNode, references []algebra.Declaration, requestContext *algebra.RequestContext, schema algebra.Document, variables []AlgebraPlanVariable) error {
+func validateUsedReferenceAttributes(nodes []AlgebraPlanNode, references []algebra.Declaration, requestContext *algebra.RequestContext, schema algebra.Document, variables []AlgebraPlanVariable, at string) error {
 	document := schema
 	document.References = clonePlanDeclarations(references)
+	referenceTypes := make(map[string]algebra.Type, len(references))
+	for _, declaration := range references {
+		referenceTypes[declaration.ID] = declaration.Type
+	}
+	if requestContext != nil {
+		for _, referent := range requestContext.Referents {
+			if _, exists := referenceTypes[referent.ID]; !exists {
+				referenceTypes[referent.ID] = referent.Type
+			}
+		}
+	}
 	used := make(map[string]bool)
 	for _, node := range nodes {
 		for _, arg := range node.Args {
@@ -997,7 +1008,18 @@ func validateUsedReferenceAttributes(nodes []AlgebraPlanNode, references []algeb
 			return err
 		}
 		if attrs.TemporalFrame != "" {
-			return planUnsupported("UNSUPPORTED_RELATIVE_TEMPORAL_REFERENCE", "references."+id+".temporal_frame", "the positive-facts query profile has no relative-time mapping to the explicit query instant")
+			if typ, ok := referenceTypes[id]; !ok || typ.Kind != algebra.TypeEvent {
+				return planInvalid("ATTRIBUTE_TYPE_MISMATCH", "references."+id+".temporal_frame", "temporal frame is available only on Event references")
+			}
+			if attrs.TemporalFrame != "present" {
+				return planUnsupported("UNSUPPORTED_RELATIVE_TEMPORAL_REFERENCE", "references."+id+".temporal_frame", "only present Event references are supported by the bounded explicit-time query profile")
+			}
+			if at == "" {
+				return planUnsupported("QUERY_INSTANT_REQUIRED", "at", "a present Event reference requires an explicit UTC query instant")
+			}
+		}
+		if attrs.ReferenceTimeID != "" {
+			return planUnsupported("UNSUPPORTED_REFERENCE_TIME", "references."+id+".reference_time_id", "reference-time links are not mapped by the positive-facts query profile")
 		}
 		if attrs.Multiplicity == "many" {
 			return planUnsupported("UNSUPPORTED_MANY_REFERENCE", "references."+id+".multiplicity", "the positive-facts query profile does not expand or group a many-valued reference")

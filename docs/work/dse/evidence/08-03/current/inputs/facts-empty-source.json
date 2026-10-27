@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "context_id": "source-independent",
+  "referents": [
+    {
+      "id": "E1",
+      "type": {
+        "kind": "Event"
+      }
+    },
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ],
+  "facts": [],
+  "at": "2026-10-27T12:00:00Z"
+}

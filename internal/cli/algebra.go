@@ -1182,7 +1182,7 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer, loader
 			"modal":         {CanRepresent: true, CanEvaluate: false, Condition: "opaque possible/necessary/likely wrapper; no modal fact semantics"},
 			"quantifier":    {CanRepresent: true, CanEvaluate: false},
 			"ask":           {CanRepresent: true, CanEvaluate: true, Condition: "root Ask with a positive Atom/And/Exists body after beta lowering; answer projection is embedded in Ask"},
-			"relative_time": {CanRepresent: true, CanEvaluate: false, Condition: "past/present are explicit reference attributes; no mapping to the query instant"},
+			"relative_time": {CanRepresent: true, CanEvaluate: true, Condition: "present Event references only, with an explicit UTC query instant; past and reference-time links are unsupported"},
 			"multiplicity":  {CanRepresent: true, CanEvaluate: false, Condition: "one is accepted only in the atomic reference profile; many has no grouping semantics"},
 		}, QuestionType: string(algebra.TypeQuestion), Evaluation: algebraScopeCapability{CanRepresent: true, CanEvaluate: true, Condition: "only the bounded positive Ask profile; not arbitrary Question values"}, Scope: "representation and evaluation capability only; missing attributes remain unknown; no world-truth or quantifier-completeness claim"}
 		if err := writeJSON(stdout, output); err != nil {

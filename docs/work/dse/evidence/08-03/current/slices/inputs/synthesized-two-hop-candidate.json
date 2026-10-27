@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "signatures": [
+    {
+      "id": "pilot.auditory_event",
+      "label": "pilot auditory-perception event relation",
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.r",
+      "label": "neutral ordered relation",
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.vision_event",
+      "label": "pilot visual-perception event relation",
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.definite",
+      "label": "explicit probe convention probe.definite",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.dog",
+      "label": "explicit probe convention probe.dog",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.teacher",
+      "label": "explicit probe convention probe.teacher",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    }
+  ],
+  "expression": {
+    "kind": "Lambda",
+    "id": "rel_pilot.r_a_1_fresh_1",
+    "type": {
+      "kind": "Entity"
+    },
+    "body": {
+      "kind": "Lambda",
+      "id": "rel_pilot.r_b_1_fresh_2",
+      "type": {
+        "kind": "Entity"
+      },
+      "body": {
+        "kind": "Exists",
+        "id": "join_0_1",
+        "type": {
+          "kind": "Entity"
+        },
+        "body": {
+          "kind": "And",
+          "operands": [
+            {
+              "kind": "Atom",
+              "symbol": "pilot.r",
+              "args": [
+                {
+                  "role": "a",
+                  "value": {
+                    "kind": "Var",
+                    "id": "rel_pilot.r_a_1_fresh_1"
+                  }
+                },
+                {
+                  "role": "b",
+                  "value": {
+                    "kind": "Var",
+                    "id": "join_0_1"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "Atom",
+              "symbol": "pilot.r",
+              "args": [
+                {
+                  "role": "a",
+                  "value": {
+                    "kind": "Var",
+                    "id": "join_0_1"
+                  }
+                },
+                {
+                  "role": "b",
+                  "value": {
+                    "kind": "Var",
+                    "id": "rel_pilot.r_b_1_fresh_2"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "limits": {
+    "max_nodes": 4096,
+    "max_depth": 64,
+    "max_type_depth": 32,
+    "max_symbols": 512,
+    "max_ports": 16
+  }
+}

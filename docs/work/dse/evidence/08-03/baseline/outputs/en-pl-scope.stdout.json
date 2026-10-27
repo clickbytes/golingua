@@ -1,0 +1,1 @@
+{"status":"unsupported","from":"en","to":"pl","diagnostics":[{"code":"UNSUPPORTED_SOURCE_FOREST","message":"only valid, incomplete, or resource-limited forests can be composed","path":"forest.outcome","severity":"error"}]}
