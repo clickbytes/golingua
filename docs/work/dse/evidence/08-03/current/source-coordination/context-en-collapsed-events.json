@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "context_id": "dse398.coordination.en",
+  "references": [
+    {
+      "id": "E1",
+      "type": {
+        "kind": "Event"
+      },
+      "temporal_frame": "present"
+    },
+    {
+      "id": "E2",
+      "type": {
+        "kind": "Event"
+      },
+      "temporal_frame": "present"
+    },
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      },
+      "multiplicity": "one"
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      },
+      "multiplicity": "one"
+    }
+  ],
+  "request_context": {
+    "schema_version": 1,
+    "id": "dse398.coordination.en",
+    "referents": [
+      {
+        "id": "E1",
+        "type": {
+          "kind": "Event"
+        },
+        "temporal_frame": "present"
+      },
+      {
+        "id": "E2",
+        "type": {
+          "kind": "Event"
+        },
+        "temporal_frame": "present"
+      },
+      {
+        "id": "A",
+        "type": {
+          "kind": "Entity"
+        },
+        "multiplicity": "one"
+      },
+      {
+        "id": "B",
+        "type": {
+          "kind": "Entity"
+        },
+        "multiplicity": "one"
+      }
+    ],
+    "mentions": [
+      {
+        "id": "phrase:46e3ee33edfa4065b029b88033b961256a5a4a56066759feb4daa1a22991a747",
+        "context_id": "dse398.coordination.en",
+        "referent_id": "B"
+      },
+      {
+        "id": "phrase:35d829293eaff672b1ae61cf63c5a853d24fee522f669e78840079fcaac52990",
+        "context_id": "dse398.coordination.en",
+        "referent_id": "A"
+      },
+      {
+        "id": "phrase:fcada03f0cdca3d15c1ffad569ab603933947b45aa557e7b616eade63f242cbb",
+        "context_id": "dse398.coordination.en",
+        "referent_id": "E1"
+      },
+      {
+        "id": "phrase:fdd978ab6b825debe2e8a2962fb7deb1ecb55e8e786514f3bc354d9150b87383",
+        "context_id": "dse398.coordination.en",
+        "referent_id": "A"
+      },
+      {
+        "id": "phrase:8308f5f873c381b43f7b7d1569ad675a24108a3205905772cbe3d5c601906997",
+        "context_id": "dse398.coordination.en",
+        "referent_id": "B"
+      },
+      {
+        "id": "phrase:08167abcddb2791f6e1201a8437129583f55124ca9deac951fe9fcfe9274389a",
+        "context_id": "dse398.coordination.en",
+        "referent_id": "E1"
+      }
+    ],
+    "resolution_evidence": [
+      {
+        "id": "explicit-1",
+        "mention_id": "phrase:46e3ee33edfa4065b029b88033b961256a5a4a56066759feb4daa1a22991a747",
+        "referent_id": "B",
+        "source": {
+          "id": "dse398.explicit.coordination.identities",
+          "uri": "https://github.com/clickbytes/golingua/issues/398",
+          "version": "2026-10-28",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "explicit-2",
+        "mention_id": "phrase:35d829293eaff672b1ae61cf63c5a853d24fee522f669e78840079fcaac52990",
+        "referent_id": "A",
+        "source": {
+          "id": "dse398.explicit.coordination.identities",
+          "uri": "https://github.com/clickbytes/golingua/issues/398",
+          "version": "2026-10-28",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "explicit-3",
+        "mention_id": "phrase:fcada03f0cdca3d15c1ffad569ab603933947b45aa557e7b616eade63f242cbb",
+        "referent_id": "E1",
+        "source": {
+          "id": "dse398.explicit.coordination.identities",
+          "uri": "https://github.com/clickbytes/golingua/issues/398",
+          "version": "2026-10-28",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "explicit-4",
+        "mention_id": "phrase:fdd978ab6b825debe2e8a2962fb7deb1ecb55e8e786514f3bc354d9150b87383",
+        "referent_id": "A",
+        "source": {
+          "id": "dse398.explicit.coordination.identities",
+          "uri": "https://github.com/clickbytes/golingua/issues/398",
+          "version": "2026-10-28",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "explicit-5",
+        "mention_id": "phrase:8308f5f873c381b43f7b7d1569ad675a24108a3205905772cbe3d5c601906997",
+        "referent_id": "B",
+        "source": {
+          "id": "dse398.explicit.coordination.identities",
+          "uri": "https://github.com/clickbytes/golingua/issues/398",
+          "version": "2026-10-28",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "explicit-6",
+        "mention_id": "phrase:08167abcddb2791f6e1201a8437129583f55124ca9deac951fe9fcfe9274389a",
+        "referent_id": "E1",
+        "source": {
+          "id": "dse398.explicit.coordination.identities",
+          "uri": "https://github.com/clickbytes/golingua/issues/398",
+          "version": "2026-10-28",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      }
+    ],
+    "conditions": []
+  },
+  "role_references": [],
+  "port_references": []
+}

@@ -1,6 +1,6 @@
 # DSE-08-03: niezależne specyfikacje wycinków PL↔IR↔EN
 
-Status: wymagane sześć ścieżek dla każdego z trzech wycinków nie jest domknięte. WH źródła i round-trip powierzchni są teraz wykonywalne, ale niezależna realizacja i tłumaczenia zwracają `incomplete`; relacja i scope pozostają nieobsłużone w produkcyjnych ścieżkach językowych. Cały #398 jest **PARTIAL**, a akceptacja językowa właściciela **NOT EVALUATED**. To nie są goldy ani twierdzenia o zatwierdzonej jakości językowej. Oczekiwania IR poniżej wynikają z formuł i ról, nie z outputu parsera lub generatora.
+Status: wymagane sześć ścieżek dla każdego z trzech wycinków nie jest domknięte. WH źródła i round-trip powierzchni są teraz wykonywalne, ale niezależna realizacja i tłumaczenia zwracają `incomplete`; źródłowa koordynacja dwóch dodatnich klauzul EN/PL jest wykonywalna z jawnymi mapowaniami kandydatów, natomiast target relacji i obie ścieżki scope pozostają nieobsłużone. Cały #398 jest **PARTIAL**, a akceptacja językowa właściciela **NOT EVALUATED**. To nie są goldy ani twierdzenia o zatwierdzonej jakości językowej. Oczekiwania IR poniżej wynikają z formuł i ról, nie z outputu parsera lub generatora.
 
 ## Wspólny kontrakt wykonania
 
@@ -129,3 +129,9 @@ Występuje rozbieżność w historycznym logu bazowym: zarejestrowany wynik temp
 - Neutralny WH evaluator i jawne fakty: `data/semantic/examples/scopes/query/ask-first.json`, `data/semantic/examples/scopes/facts-simple.json`, `docs/architecture/semantic-algebra/scopes.md`.
 - Neutralne kontrasty zakresu: `data/semantic/examples/scopes/build/not-all.json`, `build/all-not.json`, `query/not-all.json`, `query/all-not.json`.
 - Odczyt granic w implementacji (nie wynik CLI): `internal/engine/algebra_realization.go`, `internal/engine/dse_translate.go`, `internal/runtime/compiled_plan_realizer.go`, `internal/runtime/source_dse.go`, `internal/cli/algebra.go`.
+
+## Aktualizacja źródłowej koordynacji — 2026-10-28
+
+Commit `9f25acb` dodaje ograniczoną, produkcyjną analizę dwóch pełnych dodatnich klauzul z jednym językowym łącznikiem EN `and` / PL `i`. `algebra analyze` zwraca `ok/complete`, dwa odrębne Event refs oraz `And(see(E1,A,B),see(E2,B,A))` dla jawnych kontekstów. Nie wnioskuje tożsamości z powtórzenia rzeczownika. Brak/niejednoznaczność mapowania, zlanie zdarzeń, dodatkowy łącznik i limity nie dają pozornie kompletnej koniunkcji. Publiczny trace zachowuje oba lasy klauzul, plany, kandydatów, zakresy i łącznik; legacy forest pozostaje odmową.
+
+Niezależne porównania wyrażeń dla obu języków zwracają `proved_equivalent`; jawnie projektują request context, więc nie dowodzą równoważności pełnego kontekstu. Ten wynik nie jest też jeszcze realizacją anonimowej lambda-ścieżki `r∘r`. IR→PL/EN, oba tłumaczenia/round-tripy relacji oraz scope nadal wymagają dalszych osobnych zleceń w tym samym PR. Pełne komendy, rzeczywiste odmowy, źródłowe SHA i granice: [evidence koordynacji](evidence/08-03/current/source-coordination/README.md). Ocena językowa właściciela pozostaje NOT EVALUATED; #398 nadal PARTIAL.

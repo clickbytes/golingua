@@ -1,0 +1,115 @@
+// Temporary diagnostic helper for DSE-08-03 source-stage evidence.
+// Copy this file to cmd/dseprobe/main.go in an isolated worktree and run:
+//
+//	go run ./cmd/dseprobe <runtime-config.json> en|pl
+//
+// It calls SourcePipeline.AnalyzeSyntax only; it does not compose or realize meaning.
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"os"
+
+	"github.com/clickbytes/golingua/internal/engine"
+	"github.com/clickbytes/golingua/internal/features"
+	"github.com/clickbytes/golingua/internal/language"
+	"github.com/clickbytes/golingua/internal/pack"
+	"github.com/clickbytes/golingua/internal/runtime"
+	"github.com/clickbytes/golingua/languages/en"
+	"github.com/clickbytes/golingua/languages/pl"
+)
+
+func options() runtime.Options {
+	return runtime.Options{
+		LanguageFactory: func(snapshot *pack.Pack) ([]language.Package, []language.LanguageProvider, error) {
+			pp, pprov, err := pl.NewSentenceProvider(snapshot)
+			if err != nil {
+				return nil, nil, err
+			}
+			ep, eprov, err := en.NewSentenceProvider(snapshot)
+			if err != nil {
+				return nil, nil, err
+			}
+			return []language.Package{pp, ep}, []language.LanguageProvider{pprov, eprov}, nil
+		},
+		StageFactory: func(snapshot *pack.Pack, registry *language.Registry) (runtime.StageAdapters, error) {
+			ps, err := pl.NewSentenceSource(snapshot)
+			if err != nil {
+				return runtime.StageAdapters{}, err
+			}
+			es, err := en.NewSentenceSource(snapshot)
+			if err != nil {
+				return runtime.StageAdapters{}, err
+			}
+			pt, err := pl.NewSentenceTarget(snapshot, registry)
+			if err != nil {
+				return runtime.StageAdapters{}, err
+			}
+			et, err := en.NewSentenceTarget(snapshot, registry)
+			if err != nil {
+				return runtime.StageAdapters{}, err
+			}
+			return runtime.StageAdapters{
+				Analyzers: map[features.LanguageID]engine.SourceAnalyzer{"pl": ps, "en": es},
+				Realizers: map[features.LanguageID]engine.TargetRealizer{"pl": pt, "en": et},
+			}, nil
+		},
+	}
+}
+
+type token struct {
+	Index    int    `json:"index"`
+	Surface  string `json:"surface"`
+	Outcome  string `json:"outcome"`
+	Start    int    `json:"start"`
+	End      int    `json:"end"`
+	Readings int    `json:"readings"`
+}
+type root struct {
+	ID       string   `json:"id"`
+	Category string   `json:"category"`
+	Start    int      `json:"start"`
+	End      int      `json:"end"`
+	Families []string `json:"families"`
+}
+type record struct {
+	Language       string  `json:"language"`
+	Text           string  `json:"text"`
+	ForestOutcome  string  `json:"forest_outcome"`
+	RootCount      int     `json:"root_count"`
+	Roots          []root  `json:"roots"`
+	UnmatchedCount int     `json:"unmatched_count"`
+	UnknownTokens  []token `json:"unknown_tokens"`
+	Diagnostics    []any   `json:"diagnostics"`
+}
+
+func main() {
+	if len(os.Args) != 3 {
+		panic("usage: probe runtime-config.json en|pl")
+	}
+	lang := os.Args[2]
+	eng, err := runtime.LoadEngineFile(os.Args[1], options())
+	if err != nil {
+		panic(err)
+	}
+	adapter, ok := eng.SourceAnalyzerFor(features.LanguageID(lang))
+	if !ok {
+		panic("source adapter missing")
+	}
+	pipe, ok := adapter.(*runtime.SourcePipeline)
+	if !ok {
+		panic("unexpected source adapter")
+	}
+    texts := []string{"The teacher sees the dog.", "The teacher sees the dog, and the dog sees the teacher.", "The teacher sees the dog and the dog sees the teacher.", "The teacher sees the dog and.", "And the dog sees the teacher.", "The teacher sees the dog and the dog sees the teacher and the dog sees the teacher.", "Who sees the dog and the dog sees the teacher?", "The teacher does not see the dog and the dog sees the teacher."}
+    if lang == "pl" { texts=[]string{"Nauczyciel widzi psa.", "Nauczyciel widzi psa i pies widzi nauczyciela.", "Nauczyciel widzi psa, i pies widzi nauczyciela.", "Nauczyciel widzi psa i.", "I pies widzi nauczyciela.", "Nauczyciel widzi psa i pies widzi nauczyciela i pies widzi nauczyciela.", "Kto widzi psa i pies widzi nauczyciela?", "Nauczyciel nie widzi psa i pies widzi nauczyciela."} }
+
+	for _, text := range texts {
+		syntax, err := pipe.AnalyzeSyntax(context.Background(), text)
+		if err != nil {
+			panic(err)
+		}
+        data,_:=json.Marshal(map[string]any{"text":text,"syntax":syntax}); fmt.Println(string(data))
+	}
+}

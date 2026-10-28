@@ -1,0 +1,8 @@
+{
+  "source_sha": "9f25acbf27b11d88257e73e1903eb2128ef3a069",
+  "binary": "/tmp/golingua398-coordination",
+  "binary_sha256": "bf689c1ef54696049c7961454ca0a749e33ad76a44505f206684fb068128e3d7",
+  "go_version": "go version go1.27.0 linux/amd64",
+  "runtime_config": "docs/work/dse/evidence/08-03/current/runtime-config-wh-subject.json",
+  "note": "Final-prefixed observations use committed source code. Earlier draft observations retain their recorded dirty-tree fingerprints and are not final receipts."
+}
