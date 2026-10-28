@@ -6,6 +6,8 @@ import "github.com/clickbytes/golingua/internal/core"
 func natureDeclarations() []declaration {
 	return []declaration{
 		{"physical_substance", "entity", "Matter regarded as a material rather than as an individually bounded object.", core.KindEntity, nil},
+		{"precipitation", "entity", "Water or ice falling from the atmosphere to the ground.", core.KindEntity, nil},
+		{"rain", "precipitation", "Liquid water falling from clouds as precipitation.", core.KindEntity, nil},
 		{"air", "physical_substance", "The mixture of gases forming the ambient atmosphere near Earth's surface.", core.KindEntity, nil},
 		{"oxygen", "physical_substance", "The chemical element oxygen in a material form such as gas.", core.KindEntity, nil},
 		{"steam", "water", "Water in gaseous form, distinguished from liquid water and suspended droplets.", core.KindEntity, nil},

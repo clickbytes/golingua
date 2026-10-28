@@ -907,10 +907,11 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 	if (candidate.Sense.ID.String() == "sense:en.read.text" || candidate.Sense.ID.String() == "sense:en.see.visual") && !englishPastTargetFamilyMatches(source, candidate, familyID, transitiveFamily, transitivePastFamily) {
 		return false
 	}
-	negativeRoute, isNegativeFamily := englishPresentNegationRouteForFamily(candidate.Family.Family.ID)
+	negativeRoute, isNegativeSense := englishPresentNegationRouteForSense(candidate.Sense.ID)
+	isNegativeFamily := candidate.Family.Family.ID.String() == "construction:en.transitive_negative" || candidate.Family.Family.ID.String() == "construction:en.oblique_negative"
 	if isNegativeFamily {
 		_, event, sourceRoute, negated := englishNegatedPresent(source)
-		if !negated || event.ID != candidate.NodeID || sourceRoute.family != negativeRoute.family || sourceRoute.sense != candidate.Sense.ID.String() {
+		if !isNegativeSense || !negated || event.ID != candidate.NodeID || sourceRoute.family != negativeRoute.family || sourceRoute.sense != candidate.Sense.ID.String() {
 			return false
 		}
 		number, known := englishPresentNegationNumber(source, candidate, sourceRoute, candidates)
@@ -918,7 +919,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 			return false
 		}
 	}
-	if candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || familyID != intransitiveFamily && familyID != transitiveFamily && familyID != transitivePastFamily && familyID != obliqueFamily && familyID != attributedFamily && familyID != "construction:en.transitive_personal" && !isNegativeFamily {
+	if candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || familyID != intransitiveFamily && familyID != transitiveFamily && familyID != transitivePastFamily && familyID != obliqueFamily && familyID != "construction:en.to_oblique" && familyID != attributedFamily && familyID != "construction:en.transitive_personal" && !isNegativeFamily {
 		return true
 	}
 	variant, knownVariant := englishDeterminersForCandidate(candidate)
@@ -1113,6 +1114,8 @@ func englishGivingTargetCandidateAllowed(source semantic.MeaningCandidate, candi
 		roleSlots = map[meaning.Role]string{"buyer": "subject", "seller": "recipient", "goods": "theme"}
 	case candidate.Sense.ID.String() == "sense:en.selling.event" && candidate.Frame.ID == "en.selling.event.commerce" && strings.HasPrefix(candidate.CompiledVariant.Variant.ID.String(), "construction:en.give.transfer.to_pp."):
 		roleSlots = map[meaning.Role]string{"seller": "subject", "buyer": "recipient", "goods": "theme"}
+	case candidate.Sense.ID.String() == "sense:en.writing_message.event" && candidate.Frame.ID == "en.writing_message.full" && strings.HasPrefix(candidate.CompiledVariant.Variant.ID.String(), "construction:en.give.transfer.to_pp."):
+		roleSlots = map[meaning.Role]string{"writer": "subject", "message": "theme", "recipient": "recipient"}
 	default:
 		return false
 	}
@@ -1414,6 +1417,15 @@ var englishDeterminerVariants = map[string]englishDeterminers{
 	"construction:en.oblique.svo.indefinite_subject_a_target_an":           {subject: "a", target: "an"},
 	"construction:en.oblique.svo.indefinite_subject_an_target_a":           {subject: "an", target: "a"},
 	"construction:en.oblique.svo.indefinite_subject_an_target_an":          {subject: "an", target: "an"},
+	"construction:en.to_oblique.svo":                                       {subject: "the", target: "the"},
+	"construction:en.to_oblique.svo.indefinite_target":                     {subject: "the", target: "a"},
+	"construction:en.to_oblique.svo.indefinite_target_an":                  {subject: "the", target: "an"},
+	"construction:en.to_oblique.svo.indefinite_subject":                    {subject: "a", target: "the"},
+	"construction:en.to_oblique.svo.indefinite_subject_an":                 {subject: "an", target: "the"},
+	"construction:en.to_oblique.svo.indefinite_subject_target":             {subject: "a", target: "a"},
+	"construction:en.to_oblique.svo.indefinite_subject_a_target_an":        {subject: "a", target: "an"},
+	"construction:en.to_oblique.svo.indefinite_subject_an_target_a":        {subject: "an", target: "a"},
+	"construction:en.to_oblique.svo.indefinite_subject_an_target_an":       {subject: "an", target: "an"},
 	"construction:en.oblique_negative.svo":                                 {subject: "the", target: "the"},
 	"construction:en.oblique_negative.svo.plural":                          {subject: "the", target: "the"},
 }
@@ -1452,6 +1464,8 @@ func englishStandardDeterminerVariant(familyID string) string {
 		return "construction:en.transitive_negative.svo"
 	case "construction:en.oblique":
 		return "construction:en.oblique.svo"
+	case "construction:en.to_oblique":
+		return "construction:en.to_oblique.svo"
 	case "construction:en.oblique_negative":
 		return "construction:en.oblique_negative.svo"
 	case "construction:en.attributed_seeing":
@@ -1483,7 +1497,7 @@ func englishDeterminerForRole(candidate realizer.TargetCandidate, role meaning.R
 		}
 		return "", false
 	}
-	if familyID != "construction:en.intransitive" && familyID != "construction:en.transitive" && familyID != "construction:en.transitive_past" && familyID != "construction:en.transitive_negative" && familyID != "construction:en.oblique" && familyID != "construction:en.oblique_negative" && familyID != "construction:en.attributed_seeing" && familyID != "construction:en.transitive_personal" {
+	if familyID != "construction:en.intransitive" && familyID != "construction:en.transitive" && familyID != "construction:en.transitive_past" && familyID != "construction:en.transitive_negative" && familyID != "construction:en.oblique" && familyID != "construction:en.to_oblique" && familyID != "construction:en.oblique_negative" && familyID != "construction:en.attributed_seeing" && familyID != "construction:en.transitive_personal" {
 		return "", false
 	}
 	variant, exists := englishDeterminersForCandidate(candidate)

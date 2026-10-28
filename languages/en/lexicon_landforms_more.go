@@ -35,6 +35,7 @@ var englishLandformMoreEntries = []lexicalEntry{
 	{"en.sky_region.n", "sky", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.sky_region.direct", "the apparent overhead region containing atmospheric and celestial phenomena", "sky_region"}}},
 	{"en.cloud.n", "cloud", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.cloud.direct", "a visible mass of suspended water droplets or ice crystals in the atmosphere", "cloud"}}},
 	{"en.rain_drop.n", "raindrop", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.rain_drop.direct", "a bounded droplet of liquid water falling from atmospheric condensation", "rain_drop"}}},
+	{"en.rain.n", "rain", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.rain.direct", "liquid water falling from clouds as precipitation", "rain"}}},
 	{"en.snowflake.n", "snowflake", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.snowflake.direct", "a small aggregate or crystal of atmospheric ice falling as snow", "snowflake"}}},
 	{"en.hailstone.n", "hailstone", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.hailstone.direct", "a pellet of layered ice formed inside a convective storm", "hailstone"}}},
 	{"en.fog.n", "fog", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.fog.direct", "a near-surface suspension of water droplets that reduces visibility", "fog"}}},

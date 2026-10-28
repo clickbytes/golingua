@@ -21,6 +21,8 @@ var polishCommerceOmissionFrames = []frameDeclaration{
 var polishCommerceOmittedRoles = map[string][]meaning.Role{
 	"pl.kupowac.buy.omit_seller":    {"seller"},
 	"pl.sprzedawac.sell.omit_buyer": {"buyer"},
+	"pl.pisac.write.message_only":   {"recipient"},
+	"pl.pisac.write.recipient_only": {"message"},
 }
 
 func polishCommerceOmissionBindings() []constructionBindingDeclaration {

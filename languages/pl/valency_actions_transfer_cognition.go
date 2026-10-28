@@ -6,6 +6,10 @@ import (
 )
 
 var transferCognitionFrames = []frameDeclaration{
+	{"pl.ogladac.view.action", "pl.ogladac.view", "pl.transitive", []meaning.Role{"viewer", "target"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "viewer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "target", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+	}},
 	{"pl.ogladac_ekran.watch.action", "pl.ogladac_ekran.watch", "pl.transitive", []meaning.Role{"viewer", "display"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "viewer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "object", Role: "display", Required: true, GrammaticalFunction: "object", Case: "accusative"},

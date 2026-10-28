@@ -8,6 +8,21 @@ import (
 // cognitionActionFrames conservatively licenses named CORE participants and Polish
 // syntactic arguments. Template existence is NOT construction approval.
 var cognitionActionFrames = []frameDeclaration{
+	{"pl.pisac.write.message_only", "pl.pisac.write", "pl.transitive", []meaning.Role{"writer", "message", "recipient"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "writer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "message", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+		{ID: "oblique", Role: "recipient", Required: false, GrammaticalFunction: "oblique", Case: "genitive", Adposition: "do"},
+	}},
+	{"pl.pisac.write.recipient_only", "pl.pisac.write", "pl.to_oblique", []meaning.Role{"writer", "message", "recipient"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "writer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "oblique", Role: "recipient", Required: true, GrammaticalFunction: "oblique", Case: "genitive", Adposition: "do"},
+		{ID: "object", Role: "message", Required: false, GrammaticalFunction: "object", Case: "accusative"},
+	}},
+	{"pl.pisac.write.full", "pl.pisac.write", "pl.transitive_to", []meaning.Role{"writer", "message", "recipient"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "writer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "message", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+		{ID: "oblique", Role: "recipient", Required: true, GrammaticalFunction: "oblique", Case: "genitive", Adposition: "do"},
+	}},
 	{"pl.plynac.swim.reviewed", "pl.plynac.swim", "pl.intransitive", []meaning.Role{"swimmer"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "swimmer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 	}},

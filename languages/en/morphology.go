@@ -120,6 +120,12 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 			principalParts = finiteEnglishPrincipalParts(lexeme, "buy", "buys", "bought", "bought", "buying")
 		case "lexeme:en.selling.v":
 			principalParts = finiteEnglishPrincipalParts(lexeme, "sell", "sells", "sold", "sold", "selling")
+		case "lexeme:en.liking.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "like", "likes", "liked", "liked", "liking")
+		case "lexeme:en.watching.v", "lexeme:en.watching_screen.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "watch", "watches", "watched", "watched", "watching")
+		case "lexeme:en.writing_document.v", "lexeme:en.writing_message.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "write", "writes", "wrote", "written", "writing")
 		}
 		if lexeme.ParadigmID == "en_noun_principal_parts" {
 			principalParts = englishNounPrincipalParts(lexeme)

@@ -172,6 +172,8 @@ func actionFrameForSense(sense string) (string, bool) {
 		return "pl.kochac.love.action", true
 	case "pl.lubic.like":
 		return "pl.lubic.like.action", true
+	case "pl.ogladac.view":
+		return "pl.ogladac.view.action", true
 	case "pl.bac_sie.fear":
 		return "pl.bac_sie.fear.action", true
 	case "pl.martwic_sie.worry":

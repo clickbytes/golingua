@@ -20,13 +20,17 @@ var attestedNounSource = provenance.SourceRef{
 }
 
 var attestedNounExternalSources = map[string]provenance.SourceRef{
-	"pl.chleb.n":   {ID: "wsjp-pl-chleb", URI: "https://wsjp.pl/haslo/podglad/20808/chleb/4804753/pieczywo", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
-	"pl.jajko.n":   {ID: "wsjp-pl-jajko", URI: "https://wsjp.pl/haslo/podglad/20747/jajko/4843860/do-jedzenia", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
-	"pl.zupa.n":    {ID: "wsjp-pl-zupa", URI: "https://wsjp.pl/haslo/podglad/2007/zupa/2126917/potrawa", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
-	"pl.mleko.n":   {ID: "wsjp-pl-mleko", URI: "https://wsjp.pl/haslo/podglad/1993/mleko", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
-	"pl.herbata.n": {ID: "wsjp-pl-herbata", URI: "https://wsjp.pl/haslo/podglad/15163/herbata/1949148/napoj", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
-	"pl.kawa.n":    {ID: "wsjp-pl-kawa", URI: "https://wsjp.pl/haslo/podglad/22171/kawa/4843824/napoj", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
-	"pl.papier.n":  {ID: "wsjp-pl-papier", URI: "https://wsjp.pl/haslo/podglad/35381/papier/3873750/do-pisania", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.gazeta.n":   {ID: "wsjp-pl-gazeta", URI: "https://wsjp.pl/index.php/haslo/podglad/1844/gazeta/4785722/czasopismo", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.deszcz.n":   {ID: "wsjp-pl-deszcz", URI: "https://wsjp.pl/haslo/podglad/11500/deszcz/1079560/opady", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.ksiezyc.n":  {ID: "wsjp-pl-ksiezyc", URI: "https://wsjp.pl/haslo/podglad/11137/ksiezyc/4461839/na-niebie-w-nocy", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.dokument.n": {ID: "wsjp-pl-dokument", URI: "https://wsjp.pl/haslo/podglad/3667/dokument/2431628/urzedowy", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.chleb.n":    {ID: "wsjp-pl-chleb", URI: "https://wsjp.pl/haslo/podglad/20808/chleb/4804753/pieczywo", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.jajko.n":    {ID: "wsjp-pl-jajko", URI: "https://wsjp.pl/haslo/podglad/20747/jajko/4843860/do-jedzenia", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.zupa.n":     {ID: "wsjp-pl-zupa", URI: "https://wsjp.pl/haslo/podglad/2007/zupa/2126917/potrawa", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.mleko.n":    {ID: "wsjp-pl-mleko", URI: "https://wsjp.pl/haslo/podglad/1993/mleko", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.herbata.n":  {ID: "wsjp-pl-herbata", URI: "https://wsjp.pl/haslo/podglad/15163/herbata/1949148/napoj", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.kawa.n":     {ID: "wsjp-pl-kawa", URI: "https://wsjp.pl/haslo/podglad/22171/kawa/4843824/napoj", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.papier.n":   {ID: "wsjp-pl-papier", URI: "https://wsjp.pl/haslo/podglad/35381/papier/3873750/do-pisania", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
 	"pl.krzeslo.n": {
 		ID: "wsjp-pl-krzeslo-n", URI: "https://wsjp.pl/haslo/podglad/6705/krzeslo/4734420/mebel",
 		Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
@@ -105,6 +109,10 @@ var feminineAPartialSuffixByCell = map[string]string{
 }
 
 var attestedNounForms = []attestedNounEntry{
+	{"pl.gazeta.n", "gazeta", "feminine", [7]string{"gazeta", "gazety", "gazecie", "gazetę", "gazetą", "gazecie", "gazeto"}, [7]string{"gazety", "gazet", "gazetom", "gazety", "gazetami", "gazetach", "gazety"}},
+	{"pl.deszcz.n", "deszcz", "masculine_inanimate", [7]string{"deszcz", "deszczu", "deszczowi", "deszcz", "deszczem", "deszczu", "deszczu"}, [7]string{"deszcze", "deszczów", "deszczom", "deszcze", "deszczami", "deszczach", "deszcze"}},
+	{"pl.ksiezyc.n", "księżyc", "masculine_inanimate", [7]string{"księżyc", "księżyca", "księżycowi", "księżyc", "księżycem", "księżycu", "księżycu"}, [7]string{"księżyce", "księżyców", "księżycom", "księżyce", "księżycami", "księżycach", "księżyce"}},
+	{"pl.dokument.n", "dokument", "masculine_inanimate", [7]string{"dokument", "dokumentu", "dokumentowi", "dokument", "dokumentem", "dokumencie", "dokumencie"}, [7]string{"dokumenty", "dokumentów", "dokumentom", "dokumenty", "dokumentami", "dokumentach", "dokumenty"}},
 	{"pl.chleb.n", "chleb", "masculine_inanimate", [7]string{"chleb", "chleba", "chlebowi", "chleb", "chlebem", "chlebie", "chlebie"}, [7]string{"chleby", "chlebów", "chlebom", "chleby", "chlebami", "chlebach", "chleby"}},
 	{"pl.jajko.n", "jajko", "neuter", [7]string{"jajko", "jajka", "jajku", "jajko", "jajkiem", "jajku", "jajko"}, [7]string{"jajka", "jajek", "jajkom", "jajka", "jajkami", "jajkach", "jajka"}},
 	{"pl.zupa.n", "zupa", "feminine", [7]string{"zupa", "zupy", "zupie", "zupę", "zupą", "zupie", "zupo"}, [7]string{"zupy", "zup", "zupom", "zupy", "zupami", "zupach", "zupy"}},
@@ -159,7 +167,9 @@ func attestedNounGender(lexemeID string) (string, bool) {
 		return "neuter", true
 	case "pl.rzeka.n", "pl.siostra.n", "pl.mewa.n", "pl.torba.n", "pl.zupa.n", "pl.herbata.n", "pl.kawa.n":
 		return "feminine", true
-	case "pl.klucz.n", "pl.chleb.n", "pl.papier.n":
+	case "pl.gazeta.n":
+		return "feminine", true
+	case "pl.klucz.n", "pl.chleb.n", "pl.papier.n", "pl.deszcz.n", "pl.ksiezyc.n", "pl.dokument.n":
 		return "masculine_inanimate", true
 	case "pl.matka.n":
 		return "feminine", true

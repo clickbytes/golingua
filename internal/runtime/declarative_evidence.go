@@ -180,7 +180,7 @@ func (builder BareDeclarativeEvidenceBuilder) Build(ctx context.Context, lattice
 		return CompositionEvidence{}, err
 	}
 	evidence := CompositionEvidence{RequestContextID: stableRequestContextID(lattice)}
-	if forest.Outcome != status.OutcomeOK && forest.Outcome != status.OutcomeAmbiguous || len(forest.Roots) == 0 || len(forest.Unmatched) != 0 {
+	if len(forest.Roots) == 0 || !completeParseForOperatorCoverage(forest, candidates) {
 		return evidence, nil
 	}
 	rootRanges := make([][2]int, 0, len(forest.Roots))
@@ -265,6 +265,60 @@ func (builder BareDeclarativeEvidenceBuilder) Build(ctx context.Context, lattice
 	}
 	evidence.OperatorCoverageComplete = true
 	return evidence, nil
+}
+
+// completeParseForOperatorCoverage accepts an otherwise complete retained
+// parse when its only incompleteness is an overlapping predicate candidate
+// whose sense is not licensed by that parse. The parser keeps that candidate
+// and its diagnostic; this check only attests that it cannot add an operator
+// to the retained, explicitly supported predicate reading.
+func completeParseForOperatorCoverage(forest parser.Forest, candidates []parser.PhraseCandidate) bool {
+	if len(forest.Unmatched) == 0 {
+		return forest.Outcome == status.OutcomeOK || forest.Outcome == status.OutcomeAmbiguous
+	}
+	if forest.Outcome != status.OutcomeIncomplete || len(forest.Diagnostics) != 1 ||
+		forest.Diagnostics[0].Code != "UNSUPPORTED_COMPETING_HEAD" || forest.Diagnostics[0].Path != "parser" ||
+		forest.Diagnostics[0].Severity != status.SeverityWarning ||
+		forest.Diagnostics[0].Message != "overlapping predicate evidence lacks an authorized plan sense" {
+		return false
+	}
+	byID := make(map[string]parser.PhraseCandidate, len(candidates))
+	for _, candidate := range candidates {
+		byID[candidate.ID] = candidate
+	}
+	for _, unmatched := range forest.Unmatched {
+		candidate, exists := byID[unmatched.CandidateID]
+		if !exists || !candidate.Category.IsPredicate() || unmatched.Reason != "candidate lacks the plan's licensed predicate sense" ||
+			candidate.TokenStart != unmatched.TokenStart || candidate.TokenEnd != unmatched.TokenEnd {
+			return false
+		}
+		matchedSameSpan := false
+		for _, node := range forest.Nodes {
+			if node.Category != "clause" {
+				continue
+			}
+			for _, alternative := range node.Alternatives {
+				if candidateHasSense(candidate.SenseIDs, alternative.Permission.SenseID) {
+					continue
+				}
+				for _, slot := range alternative.Slots {
+					if slot.Role != "" {
+						continue
+					}
+					for _, candidateID := range slot.CandidateIDs {
+						matched, found := byID[candidateID]
+						if found && matched.Category.IsPredicate() && matched.TokenStart == candidate.TokenStart && matched.TokenEnd == candidate.TokenEnd && candidateHasSense(matched.SenseIDs, alternative.Permission.SenseID) {
+							matchedSameSpan = true
+						}
+					}
+				}
+			}
+		}
+		if !matchedSameSpan {
+			return false
+		}
+	}
+	return true
 }
 
 func candidateHasSense(senses []ids.SenseID, wanted ids.SenseID) bool {

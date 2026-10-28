@@ -35,6 +35,8 @@ var englishPresentNegationRoutes = []englishPresentNegationRoute{
 	{concept: "concept:seeing", sense: "sense:en.see.visual", verb: "see", lexeme: "lexeme:en.see.v", family: "construction:en.transitive_negative", singularVariant: "construction:en.transitive_negative.svo", pluralVariant: "construction:en.transitive_negative.svo.plural", subjectRole: "experiencer"},
 	{concept: "concept:hearing", sense: "sense:en.hear.auditory", verb: "hear", lexeme: "lexeme:en.hear.v", family: "construction:en.transitive_negative", singularVariant: "construction:en.transitive_negative.svo", pluralVariant: "construction:en.transitive_negative.svo.plural", subjectRole: "experiencer"},
 	{concept: "concept:looking", sense: "sense:en.look.directed", verb: "look", lexeme: "lexeme:en.look.v", family: "construction:en.oblique_negative", singularVariant: "construction:en.oblique_negative.svo", pluralVariant: "construction:en.oblique_negative.svo.plural", subjectRole: "agent", requiresAt: true},
+	{concept: "concept:liking", sense: "sense:en.liking.event", verb: "like", lexeme: "lexeme:en.liking.v", family: "construction:en.transitive_negative", singularVariant: "construction:en.transitive_negative.svo", pluralVariant: "construction:en.transitive_negative.svo.plural", subjectRole: "experiencer"},
+	{concept: "concept:watching", sense: "sense:en.watching.event", verb: "watch", lexeme: "lexeme:en.watching.v", family: "construction:en.transitive_negative", singularVariant: "construction:en.transitive_negative.svo", pluralVariant: "construction:en.transitive_negative.svo.plural", subjectRole: "viewer"},
 }
 
 func englishPresentNegationRouteForVerb(verb string) (englishPresentNegationRoute, bool) {

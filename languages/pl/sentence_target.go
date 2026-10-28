@@ -543,7 +543,8 @@ func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.Meaning
 		}
 		return false
 	}
-	route, negativeFamily := polishPresentNegationRouteForFamily(candidate.Family.Family.ID)
+	route, negativeSense := polishPresentNegationRouteForSense(candidate.Sense.ID)
+	negativeFamily := candidate.Family.Family.ID.String() == "construction:pl.transitive_negative" || candidate.Family.Family.ID.String() == "construction:pl.oblique_negative"
 	if !negativeFamily {
 		if polishNegatedPredicateTarget(source, candidate.NodeID) {
 			return false
@@ -551,7 +552,7 @@ func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.Meaning
 		return true
 	}
 	_, event, sourceRoute, negated := polishNegatedPresent(source)
-	if !negated || event.ID != candidate.NodeID || sourceRoute.sense != candidate.Sense.ID.String() || sourceRoute.family != route.family ||
+	if !negativeSense || !negated || event.ID != candidate.NodeID || sourceRoute.sense != candidate.Sense.ID.String() || sourceRoute.family != route.family ||
 		event.TemporalFrame == meaning.TemporalFramePast || !polishFrameEvidenceConsistent(source, event.ID, candidate.TransferBinding.CoreRef) {
 		return false
 	}

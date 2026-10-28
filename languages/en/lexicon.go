@@ -163,13 +163,21 @@ var englishChildKinshipReviewSource = provenance.SourceRef{
 	URI:     "https://github.com/clickbytes/golingua/issues/360",
 	Version: "2026-10-25", License: "unknown", Author: "Codex by owner delegation",
 }
+var englishIssue434LexicalBindingSource = provenance.SourceRef{
+	ID: "golingua-en-concept-binding-434", URI: "https://github.com/clickbytes/golingua/issues/434",
+	Version: "2026-10-28", License: "internal", Author: "Codex by owner delegation",
+}
 var englishPendingAuditSource = provenance.SourceRef{
 	ID:      "golingua-en-delegated-pending-audit",
 	URI:     "https://github.com/clickbytes/golingua/issues/192#issuecomment-6353300680",
 	Version: "2026-10-23-pending-audit", License: "unknown", Author: "codex-owner-delegated",
 }
 var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
-	"en.go.spatial_movement": englishLexicalReviewBatch11Source,
+	"en.newspaper.direct":      englishIssue434LexicalBindingSource,
+	"en.rain.direct":           englishIssue434LexicalBindingSource,
+	"en.watching.event":        englishIssue434LexicalBindingSource,
+	"en.writing_message.event": englishLexicalReviewBatch14Source,
+	"en.go.spatial_movement":   englishLexicalReviewBatch11Source,
 
 	"en.working.activity":                          englishLexicalReviewBatch15Source,
 	"en.eating.event":                              englishLexicalReviewBatch1Source,
@@ -858,7 +866,6 @@ var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
 	"en.joking.event":                              englishLexicalReviewBatch14Source,
 	"en.whispering.event":                          englishLexicalReviewBatch14Source,
 	"en.shouting.event":                            englishLexicalReviewBatch14Source,
-	"en.writing_message.event":                     englishLexicalReviewBatch14Source,
 	"en.sending_message.event":                     englishLexicalReviewBatch14Source,
 	"en.receiving_message.event":                   englishLexicalReviewBatch14Source,
 	"en.calling_by_phone.event":                    englishLexicalReviewBatch14Source,
@@ -1179,69 +1186,81 @@ var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
 }
 
 var englishFrameBySense = map[string]lexicon.ValencyID{
-	"en.give.transfer":        "en.give.transfer",
-	"en.working.activity":     "en.working_activity.intransitive",
-	"en.be.class_membership":  "en.be.class_membership.frame",
-	"en.black.color":          "en.black.color.frame",
-	"en.see.visual":           "en.see.visual.transitive",
-	"en.look.directed":        "en.look.directed.at",
-	"en.hear.auditory":        "en.hear.auditory.transitive",
-	"en.get.receive":          "en.get.receive.transitive",
-	"en.read.text":            "en.read.text.transitive",
-	"en.eating.event":         "en.eating.transitive",
-	"en.drinking.event":       "en.drinking.transitive",
-	"en.opening_object.event": "en.opening_object.transitive",
-	"en.closing_object.event": "en.closing_object.transitive",
-	"en.carrying.event":       "en.carrying.transitive",
-	"en.holding_object.event": "en.holding_object.transitive",
-	"en.pulling_object.event": "en.pulling_object.transitive",
-	"en.pushing_object.event": "en.pushing_object.transitive",
-	"en.cutting_object.event": "en.cutting_object.transitive",
-	"en.folding_object.event": "en.folding_object.transitive",
-	"en.tearing_object.event": "en.tearing_object.transitive",
+	"en.writing_document.event": "en.writing_document.transitive",
+	"en.liking.event":           "en.liking.transitive",
+	"en.watching.event":         "en.watching.transitive",
+	"en.give.transfer":          "en.give.transfer",
+	"en.working.activity":       "en.working_activity.intransitive",
+	"en.be.class_membership":    "en.be.class_membership.frame",
+	"en.black.color":            "en.black.color.frame",
+	"en.see.visual":             "en.see.visual.transitive",
+	"en.look.directed":          "en.look.directed.at",
+	"en.hear.auditory":          "en.hear.auditory.transitive",
+	"en.get.receive":            "en.get.receive.transitive",
+	"en.read.text":              "en.read.text.transitive",
+	"en.eating.event":           "en.eating.transitive",
+	"en.drinking.event":         "en.drinking.transitive",
+	"en.opening_object.event":   "en.opening_object.transitive",
+	"en.closing_object.event":   "en.closing_object.transitive",
+	"en.carrying.event":         "en.carrying.transitive",
+	"en.holding_object.event":   "en.holding_object.transitive",
+	"en.pulling_object.event":   "en.pulling_object.transitive",
+	"en.pushing_object.event":   "en.pushing_object.transitive",
+	"en.cutting_object.event":   "en.cutting_object.transitive",
+	"en.folding_object.event":   "en.folding_object.transitive",
+	"en.tearing_object.event":   "en.tearing_object.transitive",
+}
+
+var englishAdditionalFramesBySense = map[string][]lexicon.ValencyID{
+	"en.writing_message.event": {"en.writing_message.message_only", "en.writing_message.recipient_only", "en.writing_message.full"},
 }
 
 var englishParadigmByLexeme = map[string]string{
-	"en.be.v":             "en_identification_be_present_3sg",
-	"en.black.adj":        "en_identification_black_positive",
-	"en.the.det":          "en_determiner_definite",
-	"en.a.det":            "en_determiner_indefinite",
-	"en.an.det":           "en_determiner_indefinite",
-	"en.i.pron":           "en_personal_pronoun_i",
-	"en.we.pron":          "en_personal_pronoun_we",
-	"en.you.pron":         "en_personal_pronoun_you",
-	"en.see.v":            "en_verb_finite_principal_parts",
-	"en.hear.v":           "en_verb_finite_principal_parts",
-	"en.look.v":           "en_verb_finite_regular",
-	"en.get.v":            "en_verb_finite_principal_parts",
-	"en.read.v":           "en_verb_finite_principal_parts",
-	"en.eating.v":         "en_verb_finite_principal_parts",
-	"en.drinking.v":       "en_verb_finite_principal_parts",
-	"en.opening_object.v": "en_verb_finite_principal_parts",
-	"en.closing_object.v": "en_verb_finite_principal_parts",
-	"en.carrying.v":       "en_verb_finite_principal_parts",
-	"en.holding_object.v": "en_verb_finite_principal_parts",
-	"en.pulling_object.v": "en_verb_finite_principal_parts",
-	"en.pushing_object.v": "en_verb_finite_principal_parts",
-	"en.cutting_object.v": "en_verb_finite_principal_parts",
-	"en.folding_object.v": "en_verb_finite_principal_parts",
-	"en.tearing_object.v": "en_verb_finite_principal_parts",
-	"en.sleep.v":          "en_verb_finite_principal_parts",
-	"en.breathing.v":      "en_verb_finite_principal_parts",
-	"en.sneezing.v":       "en_verb_finite_principal_parts",
-	"en.running.v":        "en_verb_finite_principal_parts",
-	"en.coughing.v":       "en_verb_finite_principal_parts",
-	"en.waking_up.v":      "en_verb_finite_principal_parts",
-	"en.walking.v":        "en_verb_finite_principal_parts",
-	"en.falling.v":        "en_verb_finite_principal_parts",
-	"en.falling_asleep.v": "en_verb_finite_principal_parts",
-	"en.living.v":         "en_verb_finite_principal_parts",
-	"en.working.v":        "en_verb_finite_principal_parts",
-	"en.flying_motion.v":  "en_verb_finite_principal_parts",
-	"en.go.v":             "en_verb_finite_principal_parts",
-	"en.give.v":           "en_verb_finite_principal_parts",
-	"en.buying.v":         "en_verb_finite_principal_parts",
-	"en.selling.v":        "en_verb_finite_principal_parts",
+	"en.be.v":               "en_identification_be_present_3sg",
+	"en.black.adj":          "en_identification_black_positive",
+	"en.the.det":            "en_determiner_definite",
+	"en.a.det":              "en_determiner_indefinite",
+	"en.an.det":             "en_determiner_indefinite",
+	"en.i.pron":             "en_personal_pronoun_i",
+	"en.we.pron":            "en_personal_pronoun_we",
+	"en.you.pron":           "en_personal_pronoun_you",
+	"en.see.v":              "en_verb_finite_principal_parts",
+	"en.hear.v":             "en_verb_finite_principal_parts",
+	"en.look.v":             "en_verb_finite_regular",
+	"en.get.v":              "en_verb_finite_principal_parts",
+	"en.read.v":             "en_verb_finite_principal_parts",
+	"en.eating.v":           "en_verb_finite_principal_parts",
+	"en.drinking.v":         "en_verb_finite_principal_parts",
+	"en.opening_object.v":   "en_verb_finite_principal_parts",
+	"en.closing_object.v":   "en_verb_finite_principal_parts",
+	"en.carrying.v":         "en_verb_finite_principal_parts",
+	"en.holding_object.v":   "en_verb_finite_principal_parts",
+	"en.pulling_object.v":   "en_verb_finite_principal_parts",
+	"en.pushing_object.v":   "en_verb_finite_principal_parts",
+	"en.cutting_object.v":   "en_verb_finite_principal_parts",
+	"en.folding_object.v":   "en_verb_finite_principal_parts",
+	"en.tearing_object.v":   "en_verb_finite_principal_parts",
+	"en.sleep.v":            "en_verb_finite_principal_parts",
+	"en.breathing.v":        "en_verb_finite_principal_parts",
+	"en.sneezing.v":         "en_verb_finite_principal_parts",
+	"en.running.v":          "en_verb_finite_principal_parts",
+	"en.coughing.v":         "en_verb_finite_principal_parts",
+	"en.waking_up.v":        "en_verb_finite_principal_parts",
+	"en.walking.v":          "en_verb_finite_principal_parts",
+	"en.falling.v":          "en_verb_finite_principal_parts",
+	"en.falling_asleep.v":   "en_verb_finite_principal_parts",
+	"en.living.v":           "en_verb_finite_principal_parts",
+	"en.working.v":          "en_verb_finite_principal_parts",
+	"en.flying_motion.v":    "en_verb_finite_principal_parts",
+	"en.go.v":               "en_verb_finite_principal_parts",
+	"en.give.v":             "en_verb_finite_principal_parts",
+	"en.buying.v":           "en_verb_finite_principal_parts",
+	"en.selling.v":          "en_verb_finite_principal_parts",
+	"en.liking.v":           "en_verb_finite_principal_parts",
+	"en.watching.v":         "en_verb_finite_principal_parts",
+	"en.watching_screen.v":  "en_verb_finite_principal_parts",
+	"en.writing_document.v": "en_verb_finite_principal_parts",
+	"en.writing_message.v":  "en_verb_finite_principal_parts",
 	// Count nouns use only a spelling class that matches their declared lemma;
 	// mass nouns stay on the explicit singular-only class below.
 	"en.mother.n": "en_noun_regular", "en.father.n": "en_noun_regular",
@@ -1267,7 +1286,8 @@ var englishParadigmByLexeme = map[string]string{
 	"en.message.n": "en_noun_regular", "en.letter_document.n": "en_noun_regular",
 	"en.map_document.n": "en_noun_regular", "en.website.n": "en_noun_regular",
 	"en.coin.n": "en_noun_regular", "en.ticket.n": "en_noun_regular",
-	"en.passport.n": "en_noun_regular",
+	"en.passport.n":  "en_noun_regular",
+	"en.newspaper.n": "en_noun_regular", "en.moon_earth.n": "en_noun_regular",
 	"en.horse.n":    "en_noun_regular",
 	"en.key_tool.n": "en_noun_regular", "en.bag.n": "en_noun_regular",
 	"en.class_group.n": "en_noun_sibilant", "en.bus.n": "en_noun_sibilant",
@@ -1311,6 +1331,7 @@ var englishParadigmByLexeme = map[string]string{
 	"en.food.n":        "en_noun_singular_attested",
 	"en.money.n":       "en_noun_singular_attested", "en.water.n": "en_noun_singular_attested",
 	"en.fish_meat.n": "en_noun_singular_attested",
+	"en.rain.n":      "en_noun_singular_attested",
 	"en.bread.n":     "en_noun_singular_attested", "en.soup_food.n": "en_noun_singular_attested",
 	"en.milk_food.n": "en_noun_singular_attested", "en.tea_beverage.n": "en_noun_singular_attested",
 	"en.coffee_beverage.n": "en_noun_singular_attested",
@@ -1324,7 +1345,8 @@ var englishAArticleLexemes = map[string]struct{}{
 	"en.mother.n": {}, "en.father.n": {}, "en.cat.n": {}, "en.book.n": {},
 	"en.house.n": {}, "en.household.n": {}, "en.car.n": {}, "en.bird.n": {}, "en.neighbor.n": {},
 	"en.customer.n": {}, "en.dog.n": {}, "en.teacher.n": {}, "en.doctor.n": {},
-	"en.tree.n": {}, "en.child.n": {}, "en.message.n": {}, "en.letter_document.n": {},
+	"en.newspaper.n": {}, "en.moon_earth.n": {},
+	"en.tree.n": {}, "en.child.n": {}, "en.message.n": {}, "en.letter_document.n": {}, "en.document.n": {},
 	"en.window.n": {},
 	"en.table.n":  {}, "en.fish_animal.n": {}, "en.horse.n": {},
 	"en.chair.n": {}, "en.key_tool.n": {}, "en.bag.n": {},
@@ -1345,6 +1367,7 @@ var englishCountNounLexemes = map[string]struct{}{
 	"en.chair.n": {}, "en.key_tool.n": {}, "en.bag.n": {},
 	"en.hospital_institution.n": {}, "en.pizza_food.n": {}, "en.neighbor.n": {},
 	"en.customer.n": {}, "en.message.n": {}, "en.cat.n": {}, "en.bird.n": {},
+	"en.newspaper.n": {}, "en.moon_earth.n": {}, "en.document.n": {},
 	"en.egg_food.n": {},
 	"en.horse.n":    {}, "en.city.n": {}, "en.apartment.n": {}, "en.river.n": {},
 	"en.sister.n": {}, "en.tree.n": {}, "en.window.n": {}, "en.apple_fruit.n": {}, "en.letter_document.n": {},
@@ -1353,6 +1376,9 @@ var englishCountNounLexemes = map[string]struct{}{
 // LexicalDocument builds the English lexical records from Go declarations.
 // It keeps polysemous senses distinct and leaves unmapped meanings unresolved.
 func LexicalDocument() (lexicon.Document, error) {
+	if err := englishIssue434LexicalBindingSource.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("English issue 434 lexical binding source: %w", err)
+	}
 	document := lexicon.Document{SchemaVersion: lexicon.SchemaVersion}
 	groups := append(englishLexiconGroups(), lexicalGroup{source: englishIdentificationSource, entries: identificationEntries})
 	for _, group := range groups {
@@ -1375,7 +1401,7 @@ func LexicalDocument() (lexicon.Document, error) {
 				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "indefinite_article", Value: "an"})
 			}
 			switch entry.id {
-			case "en.food.n", "en.money.n", "en.water.n", "en.fish_meat.n", "en.bread.n", "en.soup_food.n", "en.milk_food.n", "en.tea_beverage.n", "en.coffee_beverage.n", "en.paper_material.n":
+			case "en.food.n", "en.money.n", "en.water.n", "en.fish_meat.n", "en.bread.n", "en.soup_food.n", "en.milk_food.n", "en.tea_beverage.n", "en.coffee_beverage.n", "en.paper_material.n", "en.rain.n":
 				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "number_behavior", Value: "mass"})
 			}
 			if _, countable := englishCountNounLexemes[entry.id]; countable {
@@ -1391,6 +1417,7 @@ func LexicalDocument() (lexicon.Document, error) {
 				if frameID, ok := englishFrameBySense[meaning.id]; ok {
 					sense.ValencyIDs = []lexicon.ValencyID{frameID}
 				}
+				sense.ValencyIDs = append(sense.ValencyIDs, englishAdditionalFramesBySense[meaning.id]...)
 				document.Senses = append(document.Senses, sense)
 				if meaning.candidateCore == "" {
 					continue

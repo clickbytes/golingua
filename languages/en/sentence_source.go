@@ -127,6 +127,20 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	for sense := range manipulationSenses {
 		supportedSenses[sense] = true
 	}
+	affectiveSenses := map[ids.SenseID]bool{}
+	for _, name := range []string{"en.liking.event", "en.watching.event", "en.writing_document.event"} {
+		sense, senseErr := ids.NewSenseID(name)
+		if senseErr != nil {
+			return nil, senseErr
+		}
+		affectiveSenses[sense] = true
+		supportedSenses[sense] = true
+	}
+	writingMessageSense, err := ids.NewSenseID("en.writing_message.event")
+	if err != nil {
+		return nil, err
+	}
+	supportedSenses[writingMessageSense] = true
 	intransitiveSenses := map[ids.SenseID]bool{}
 	for _, name := range []string{"en.sleep.physiological", "en.breathing.event", "en.sneezing.event", "en.running.event", "en.coughing.event", "en.walking.event", "en.living.event", "en.flying_motion.event", "en.waking_up.event", "en.falling_asleep.event", "en.working.activity", "en.go.spatial_movement"} {
 		sense, senseErr := ids.NewSenseID(name)
@@ -192,6 +206,16 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
 			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
 		}
+	}
+	for sense := range affectiveSenses {
+		predicateAlternatives[sense] = []map[features.FeatureID]features.FeatureValueID{
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
+		}
+	}
+	predicateAlternatives[writingMessageSense] = []map[features.FeatureID]features.FeatureValueID{
+		{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
+		{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
 	}
 	for sense := range intransitiveSenses {
 		predicateAlternatives[sense] = []map[features.FeatureID]features.FeatureValueID{
@@ -429,7 +453,11 @@ func englishGivingSequenceArticle(variantID, slotID string) (string, bool) {
 		return "", false
 	}
 	articles := strings.Split(parts[len(parts)-1], "_")
-	position := map[string]int{"subject": 0, "recipient": 1, "theme": 2}[slotID]
+	// Variant IDs encode the articles in subject_recipient_theme order for
+	// both layouts. The to_pp surface sequence places the theme before the
+	// recipient, but that does not change the suffix order.
+	positions := map[string]int{"subject": 0, "recipient": 1, "theme": 2}
+	position := positions[slotID]
 	if len(articles) != 3 || position >= len(articles) {
 		return "", false
 	}

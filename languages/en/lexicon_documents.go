@@ -12,6 +12,7 @@ var englishDocumentSource = provenance.SourceRef{
 
 // These pending candidates distinguish information-bearing objects and media.
 var englishDocumentEntries = []lexicalEntry{
+	{"en.newspaper.n", "newspaper", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.newspaper.direct", "a regularly issued publication containing news and related articles", "newspaper"}}},
 	{"en.document.n", "document", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.document.direct", "an intentionally recorded information artifact with continuing content and form", "document"}}},
 	{"en.message.n", "message", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.message.direct", "a discrete communicated or recorded unit intended to convey information to a recipient", "message"}}},
 	{"en.letter_document.n", "letter", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.letter_document.direct", "a written document composed as correspondence to a specific recipient", "letter_document"}}},

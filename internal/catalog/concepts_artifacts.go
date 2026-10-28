@@ -85,6 +85,7 @@ func artifactsDeclarations() []declaration {
 		{"electric_cable", "artifact", "A flexible assembly of conductors transmitting electrical power or signals.", core.KindEntity, nil},
 		{"plug_electric", "artifact", "A connector inserted into a corresponding socket to make an electrical connection.", core.KindEntity, nil},
 		{"document", "artifact", "An intentionally recorded information artifact with an identifiable continuing content and form.", core.KindEntity, nil},
+		{"newspaper", "document", "A periodically issued printed publication containing news, commentary, or other articles.", core.KindEntity, nil},
 		{"message", "entity", "A discrete communicated or recorded unit intended to convey information to a recipient.", core.KindEntity, nil},
 		{"letter_document", "document", "A written document composed as correspondence to a specific recipient.", core.KindEntity, nil},
 		{"email_message", "message", "An electronically transmitted message addressed through an email system.", core.KindEntity, nil},
