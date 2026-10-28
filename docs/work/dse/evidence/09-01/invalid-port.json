@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"UNKNOWN_RELATION_ROLE","message":"role is not declared by the relation","path":"constraints[0].from_role","severity":"error"}]}

@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "id": "independence.route.neutral",
+  "version": "2",
+  "profile": "positive-facts-v1",
+  "provenance": [
+    {
+      "id": "dse399-neutral-proposal",
+      "uri": "https://github.com/clickbytes/golingua/issues/399",
+      "version": "2026-10-28.1",
+      "license": "internal-neutral-example",
+      "author": "Codex by owner delegation"
+    }
+  ],
+  "sorts": [
+    {
+      "id": "route_node"
+    }
+  ],
+  "symbols": [
+    {
+      "id": "route",
+      "kind": "primitive",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "dse399-neutral-proposal",
+          "uri": "https://github.com/clickbytes/golingua/issues/399",
+          "version": "2026-10-28.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "start",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "route_node"
+          }
+        },
+        {
+          "role": "finish",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "route_node"
+          }
+        }
+      ]
+    },
+    {
+      "id": "marked",
+      "kind": "primitive",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "dse399-neutral-proposal",
+          "uri": "https://github.com/clickbytes/golingua/issues/399",
+          "version": "2026-10-28.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "item",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "route_node"
+          }
+        }
+      ]
+    }
+  ],
+  "dependencies": [],
+  "typical_edges": [],
+  "axioms": []
+}

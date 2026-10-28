@@ -1,0 +1,186 @@
+{
+  "context_dependencies": [],
+  "context_id": "transfer-context-renamed",
+  "document": {
+    "expression": {
+      "body": {
+        "body": {
+          "kind": "And",
+          "operands": [
+            {
+              "body": {
+                "kind": "And",
+                "operands": [
+                  {
+                    "body": {
+                      "kind": "And",
+                      "operands": [
+                        {
+                          "args": [
+                            {
+                              "role": "a2",
+                              "value": {
+                                "id": "rel_r2_a2_1_fresh_1_fresh_1",
+                                "kind": "Var"
+                              }
+                            },
+                            {
+                              "role": "b2",
+                              "value": {
+                                "id": "join_0_1_fresh_1",
+                                "kind": "Var"
+                              }
+                            }
+                          ],
+                          "kind": "Atom",
+                          "symbol": "r2"
+                        },
+                        {
+                          "args": [
+                            {
+                              "role": "a2",
+                              "value": {
+                                "id": "join_0_1_fresh_1",
+                                "kind": "Var"
+                              }
+                            },
+                            {
+                              "role": "b2",
+                              "value": {
+                                "id": "join_0_1",
+                                "kind": "Var"
+                              }
+                            }
+                          ],
+                          "kind": "Atom",
+                          "symbol": "r2"
+                        }
+                      ]
+                    },
+                    "id": "join_0_1_fresh_1",
+                    "kind": "Exists",
+                    "type": {
+                      "kind": "Nominal",
+                      "sort_id": "unit_x"
+                    }
+                  },
+                  {
+                    "args": [
+                      {
+                        "role": "a2",
+                        "value": {
+                          "id": "join_0_1",
+                          "kind": "Var"
+                        }
+                      },
+                      {
+                        "role": "b2",
+                        "value": {
+                          "id": "rel_r2_b2_1_fresh_1",
+                          "kind": "Var"
+                        }
+                      }
+                    ],
+                    "kind": "Atom",
+                    "symbol": "r2"
+                  }
+                ]
+              },
+              "id": "join_0_1",
+              "kind": "Exists",
+              "type": {
+                "kind": "Nominal",
+                "sort_id": "unit_x"
+              }
+            },
+            {
+              "args": [
+                {
+                  "role": "v2",
+                  "value": {
+                    "id": "rel_r2_b2_1_fresh_1",
+                    "kind": "Var"
+                  }
+                }
+              ],
+              "kind": "Atom",
+              "symbol": "u2"
+            }
+          ]
+        },
+        "id": "rel_r2_b2_1_fresh_1",
+        "kind": "Lambda",
+        "type": {
+          "kind": "Nominal",
+          "sort_id": "unit_x"
+        }
+      },
+      "id": "rel_r2_a2_1_fresh_1_fresh_1",
+      "kind": "Lambda",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "unit_x"
+      }
+    },
+    "limits": {
+      "max_nodes": 4096,
+      "max_depth": 64,
+      "max_type_depth": 32,
+      "max_symbols": 512,
+      "max_ports": 16
+    },
+    "schema_version": 1,
+    "signatures": [
+      {
+        "id": "r2",
+        "ports": [
+          {
+            "role": "a2",
+            "type": {
+              "kind": "Nominal",
+              "sort_id": "unit_x"
+            }
+          },
+          {
+            "role": "b2",
+            "type": {
+              "kind": "Nominal",
+              "sort_id": "unit_x"
+            }
+          }
+        ]
+      },
+      {
+        "id": "u2",
+        "ports": [
+          {
+            "role": "v2",
+            "type": {
+              "kind": "Nominal",
+              "sort_id": "unit_x"
+            }
+          }
+        ]
+      }
+    ],
+    "sorts": [
+      {
+        "id": "unit_x"
+      }
+    ]
+  },
+  "profile": {
+    "id": "dse-construct-artifact-v1",
+    "rules": []
+  },
+  "provenance": [
+    {
+      "id": "dse399-neutral-proposal",
+      "uri": "https://github.com/clickbytes/golingua/issues/399",
+      "version": "2026-10-28.1",
+      "license": "internal-neutral-example",
+      "author": "Codex by owner delegation"
+    }
+  ],
+  "schema_version": 1
+}

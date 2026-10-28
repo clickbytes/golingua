@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "context_id": "independence-transfer-context",
+  "referents": [
+    {
+      "id": "transfer-origin",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "transfer_unit"
+      }
+    },
+    {
+      "id": "transfer-node-a",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "transfer_unit"
+      }
+    },
+    {
+      "id": "transfer-node-b",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "transfer_unit"
+      }
+    },
+    {
+      "id": "transfer-node-c",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "transfer_unit"
+      }
+    },
+    {
+      "id": "transfer-destination",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "transfer_unit"
+      }
+    }
+  ],
+  "facts": [
+    {
+      "id": "transfer-a-1",
+      "atom": {
+        "symbol": "transfer",
+        "args": [
+          {
+            "role": "from",
+            "value": {
+              "kind": "Ref",
+              "id": "transfer-origin"
+            }
+          },
+          {
+            "role": "to",
+            "value": {
+              "kind": "Ref",
+              "id": "transfer-node-a"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "dse399-neutral-facts"
+      },
+      "assertion_scope": "asserted"
+    },
+    {
+      "id": "transfer-a-2",
+      "atom": {
+        "symbol": "transfer",
+        "args": [
+          {
+            "role": "from",
+            "value": {
+              "kind": "Ref",
+              "id": "transfer-node-a"
+            }
+          },
+          {
+            "role": "to",
+            "value": {
+              "kind": "Ref",
+              "id": "transfer-destination"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "dse399-neutral-facts"
+      },
+      "assertion_scope": "asserted"
+    },
+    {
+      "id": "transfer-b-1",
+      "atom": {
+        "symbol": "transfer",
+        "args": [
+          {
+            "role": "from",
+            "value": {
+              "kind": "Ref",
+              "id": "transfer-origin"
+            }
+          },
+          {
+            "role": "to",
+            "value": {
+              "kind": "Ref",
+              "id": "transfer-node-b"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "dse399-neutral-facts"
+      },
+      "assertion_scope": "asserted"
+    },
+    {
+      "id": "transfer-b-2",
+      "atom": {
+        "symbol": "transfer",
+        "args": [
+          {
+            "role": "from",
+            "value": {
+              "kind": "Ref",
+              "id": "transfer-node-b"
+            }
+          },
+          {
+            "role": "to",
+            "value": {
+              "kind": "Ref",
+              "id": "transfer-node-c"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "dse399-neutral-facts"
+      },
+      "assertion_scope": "asserted"
+    },
+    {
+      "id": "transfer-b-3",
+      "atom": {
+        "symbol": "transfer",
+        "args": [
+          {
+            "role": "from",
+            "value": {
+              "kind": "Ref",
+              "id": "transfer-node-c"
+            }
+          },
+          {
+            "role": "to",
+            "value": {
+              "kind": "Ref",
+              "id": "transfer-destination"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "dse399-neutral-facts"
+      },
+      "assertion_scope": "asserted"
+    },
+    {
+      "id": "transfer-destination-tagged",
+      "atom": {
+        "symbol": "tagged",
+        "args": [
+          {
+            "role": "object",
+            "value": {
+              "kind": "Ref",
+              "id": "transfer-destination"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "dse399-neutral-facts"
+      },
+      "assertion_scope": "asserted"
+    }
+  ]
+}
