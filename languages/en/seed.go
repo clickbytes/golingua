@@ -72,6 +72,13 @@ type Seed struct {
 // Load strictly decodes the bundled profiles, paradigms and lexical records,
 // then builds the finite relation table used by Analyze.
 func Load() (*Seed, error) {
+	return LoadWithExceptions(nil)
+}
+
+// LoadWithExceptions builds the bundled English seed with additional explicit
+// morphology exceptions. The supplied rules are copied into the compiled
+// exception set and are not used to mutate the bundled source data.
+func LoadWithExceptions(extra []morph.ExceptionRule) (*Seed, error) {
 	var packageManifest manifest
 	manifestDecoder := json.NewDecoder(bytes.NewReader(manifestJSON))
 	manifestDecoder.DisallowUnknownFields()
@@ -135,17 +142,22 @@ func Load() (*Seed, error) {
 	if err != nil {
 		return nil, fmt.Errorf("compile English lexemes: %w", err)
 	}
-	exceptions, err := morph.CompileExceptions([]morph.ExceptionRule{}, profile)
+	exceptionRules := make([]morph.ExceptionRule, 0, len(extra))
+	exceptionRules = append(exceptionRules, extra...)
+	exceptions, err := morph.CompileExceptions(exceptionRules, profile)
 	if err != nil {
 		return nil, fmt.Errorf("compile English exceptions: %w", err)
 	}
-	provenanceRecords := make([]provenance.RecordRef, 0)
+	provenanceRecords := make([]provenance.RecordRef, 0, len(exceptionRules))
 	for _, paradigm := range paradigms {
 		for _, rule := range paradigm.Rules {
 			if rule.ProcedureID != "" && rule.Provenance.ID != "" {
 				provenanceRecords = append(provenanceRecords, provenance.RecordRef{Kind: provenance.RecordProcedure, ID: rule.ProcedureID, Source: rule.Provenance})
 			}
 		}
+	}
+	for _, rule := range exceptionRules {
+		provenanceRecords = append(provenanceRecords, provenance.RecordRef{Kind: provenance.RecordException, ID: string(rule.ID), Source: rule.Provenance})
 	}
 	provenanceIndex, err := provenance.BuildIndex(provenanceRecords)
 	if err != nil {

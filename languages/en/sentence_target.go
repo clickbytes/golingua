@@ -25,7 +25,19 @@ func NewSentenceExecutionBuilder() (runtime.MorphologyExecutionBuilder, error) {
 	if err != nil {
 		return runtime.MorphologyExecutionBuilder{}, err
 	}
+	return NewSentenceExecutionBuilderWithSeed(seed)
+}
+
+// NewSentenceExecutionBuilderWithSeed compiles target morphology from the
+// caller's exact English seed.
+func NewSentenceExecutionBuilderWithSeed(seed *Seed) (runtime.MorphologyExecutionBuilder, error) {
+	if seed == nil {
+		return runtime.MorphologyExecutionBuilder{}, fmt.Errorf("English execution builder requires an English morphology seed")
+	}
 	profile, _, paradigms, exceptions := seed.RuntimeMorphology()
+	if profile == nil || profile.Language() != "en" || paradigms == nil || exceptions == nil {
+		return runtime.MorphologyExecutionBuilder{}, fmt.Errorf("English execution builder requires an English morphology seed")
+	}
 	return runtime.MorphologyExecutionBuilder{
 		Profile: profile, Paradigms: paradigms, Exceptions: exceptions,
 		Parts: seed.PrincipalParts, FeaturePlan: englishSentenceFeatures{},
@@ -42,7 +54,22 @@ func NewSentenceTarget(snapshot *pack.Pack, registry *language.Registry) (*runti
 	if err != nil {
 		return nil, err
 	}
+	return NewSentenceTargetWithSeed(snapshot, registry, seed)
+}
+
+// NewSentenceTargetWithSeed builds all English target generators from one
+// caller-supplied morphology seed.
+func NewSentenceTargetWithSeed(snapshot *pack.Pack, registry *language.Registry, seed *Seed) (*runtime.TargetPipeline, error) {
+	if snapshot == nil || registry == nil {
+		return nil, fmt.Errorf("English target pipeline requires a snapshot and verified language registry")
+	}
+	if seed == nil {
+		return nil, fmt.Errorf("English target pipeline requires an English morphology seed")
+	}
 	profile, _, _, _ := seed.RuntimeMorphology()
+	if profile == nil || profile.Language() != "en" {
+		return nil, fmt.Errorf("English target pipeline requires an English morphology seed")
+	}
 	valencyIndex, err := CompileValency()
 	if err != nil {
 		return nil, err
@@ -55,7 +82,7 @@ func NewSentenceTarget(snapshot *pack.Pack, registry *language.Registry) (*runti
 	if err != nil {
 		return nil, err
 	}
-	execution, err := NewSentenceExecutionBuilder()
+	execution, err := NewSentenceExecutionBuilderWithSeed(seed)
 	if err != nil {
 		return nil, err
 	}
