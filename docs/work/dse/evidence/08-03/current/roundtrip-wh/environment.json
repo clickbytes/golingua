@@ -1,0 +1,177 @@
+{
+  "job_base_sha": "e6937cc",
+  "source_revision_embedded": "e6937cc1b716af5cd3c71d2db4b06360fd358d36",
+  "source_revision_matches_base": true,
+  "working_tree_modified_at_build": true,
+  "binary": {
+    "path": "/tmp/golingua-dse/398-roundtrip-wh/golingua",
+    "sha256": "c56c86f40d9b10288e7e3726e2cdf85218a151443b21fb17f782169c491e17cc",
+    "go_build_info": "/tmp/golingua-dse/398-roundtrip-wh/golingua: go1.27.0\n\tpath\tgithub.com/clickbytes/golingua/cmd/golingua\n\tmod\tgithub.com/clickbytes/golingua\tv0.1.0-alpha.1.0.20261028104733-e6937cc1b716+dirty\t\n\tdep\tcharm.land/bubbletea/v2\tv2.0.10\th1:oolvo20VBpI0PfqE7iFjkZ1bx0WpmXGfnKz5Yldjq5o=\n\tdep\tgithub.com/charmbracelet/colorprofile\tv0.4.3\th1:QPa1IWkYI+AOB+fE+mg/5/4HRMZcaXex9t5KX76i20Q=\n\tdep\tgithub.com/charmbracelet/ultraviolet\tv0.0.0-20260703014108-f5a850f9c2b7\th1:3FmWoGNWK4STvqg0O0Aeav2T7rodWJAPeF0QpH+8gFw=\n\tdep\tgithub.com/charmbracelet/x/ansi\tv0.11.7\th1:kzv1kJvjg2S3r9KHo8hDdHFQLEqn4RBCb39dAYC84jI=\n\tdep\tgithub.com/charmbracelet/x/term\tv0.2.2\th1:xVRT/S2ZcKdhhOuSP4t5cLi5o+JxklsoEObBSgfgZRk=\n\tdep\tgithub.com/charmbracelet/x/termios\tv0.1.1\th1:o3Q2bT8eqzGnGPOYheoYS8eEleT5ZVNYNy8JawjaNZY=\n\tdep\tgithub.com/charmbracelet/x/windows\tv0.2.2\th1:IofanmuvaxnKHuV04sC0eBy/smG6kIKrWG2/jYn2GuM=\n\tdep\tgithub.com/clipperhouse/displaywidth\tv0.11.0\th1:lBc6kY44VFw+TDx4I8opi/EtL9m20WSEFgwIwO+UVM8=\n\tdep\tgithub.com/clipperhouse/uax29/v2\tv2.7.0\th1:+gs4oBZ2gPfVrKPthwbMzWZDaAFPGYK72F0NJv2v7Vk=\n\tdep\tgithub.com/lucasb-eyer/go-colorful\tv1.4.0\th1:UtrWVfLdarDgc44HcS7pYloGHJUjHV/4FwW4TvVgFr4=\n\tdep\tgithub.com/mattn/go-runewidth\tv0.0.23\th1:7ykA0T0jkPpzSvMS5i9uoNn2Xy3R383f9HDx3RybWcw=\n\tdep\tgithub.com/muesli/cancelreader\tv0.2.2\th1:3I4Kt4BQjOR54NavqnDogx/MIoWBFa0StPA8ELUXHmA=\n\tdep\tgithub.com/rivo/uniseg\tv0.4.7\th1:WUdvkW8uEhrYfLC4ZzdpI2ztxP1I582+49Oc5Mq64VQ=\n\tdep\tgithub.com/xo/terminfo\tv0.0.0-20220910002029-abceb7e1c41e\th1:JVG44RsyaB9T2KIHavMF/ppJZNG9ZpyihvCd0w101no=\n\tdep\tgolang.org/x/sync\tv0.24.0\th1:iqiDrGoDgyuvAKrhLQthUEzU/R378N78gXbBjxed7oA=\n\tdep\tgolang.org/x/sys\tv0.46.0\th1:noSf2Fq6F8DBgS+LysIkx7rIExoNHJsxOAtPp4rthXw=\n\tdep\tgolang.org/x/term\tv0.42.0\th1:UiKe+zDFmJobeJ5ggPwOshJIVt6/Ft0rcfrXZDLWAWY=\n\tdep\tgolang.org/x/text\tv0.43.0\th1:1QivrlhwAsnMOcqgOdl9my7s9OyZl8O5/UGUTJVXoWc=\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\tCGO_ENABLED=1\n\tbuild\tCGO_CFLAGS=\n\tbuild\tCGO_CPPFLAGS=\n\tbuild\tCGO_CXXFLAGS=\n\tbuild\tCGO_LDFLAGS=\n\tbuild\tGOARCH=amd64\n\tbuild\tGOOS=linux\n\tbuild\tGOAMD64=v1\n\tbuild\tvcs=git\n\tbuild\tvcs.revision=e6937cc1b716af5cd3c71d2db4b06360fd358d36\n\tbuild\tvcs.time=2026-10-28T10:47:33Z\n\tbuild\tvcs.modified=true\n"
+  },
+  "build": {
+    "argv": [
+      "go",
+      "build",
+      "-o",
+      "/tmp/golingua-dse/398-roundtrip-wh/golingua",
+      "./cmd/golingua"
+    ],
+    "cwd": "/home/ppotepa/git/work/golingua",
+    "started_utc": "2026-10-28T10:50:39Z",
+    "exit_code": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "runtime_profiles": {
+    "subject": {
+      "runtime_config": "/home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/runtime-config-wh-subject.json",
+      "id": "dse397.runtime.integration.pilot",
+      "version": "2026-10-27.1",
+      "registry_fingerprint": "dse-registry-set-v1:0d7ea618816a36e40aac0d86db6b2b2c4cab02b0ccc2d4f7287987030a787f86",
+      "registries": [
+        {
+          "path": "metadata.json",
+          "id": "dse395.independent.probe",
+          "version": "2026-10-26.1",
+          "fingerprint": "sha256:ad5be13b6bda00502a4c259e18b44e6b353c134362d86b760c7f971c89d8b67e"
+        }
+      ],
+      "languages": {
+        "en": {
+          "source_package": {
+            "path": "en/source.json",
+            "id": "golingua.language.en.source-395",
+            "version": "2026-10-26.1",
+            "fingerprint": "sha256:13c84536eb3820afcf88906276901bd007791ccc8e5f1379b45e21293d25acb1"
+          },
+          "target_package": {
+            "path": "en/pilot.json",
+            "id": "golingua.language.en.semantic-pilot",
+            "version": "2026-10-26.1",
+            "fingerprint": "sha256:3eabf59392c0235f22d21f4a9a856b9da52e8e6348a981477dba1f3d5571da0f"
+          },
+          "source_plan": {
+            "path": "en/dse-translation-plan.json",
+            "id": "golingua.language.en.dse-translation-plan",
+            "version": "2026-10-27.1",
+            "fingerprint": "sha256:54a93977fa4dbfc115570128116a399f9efad49b33f68d99366107ba9ca80fb0"
+          },
+          "source_context": {
+            "path": "wh-subject-source-context.json",
+            "id": "dse398.wh-subject-source",
+            "version": "1",
+            "fingerprint": "sha256:c645148b470c2be6be4101ab798d523708f8386da0bc7482a5bbbd2f45d7d9c5"
+          }
+        },
+        "pl": {
+          "source_package": {
+            "path": "pl/source.json",
+            "id": "golingua.language.pl.source-395",
+            "version": "2026-10-26.1",
+            "fingerprint": "sha256:b0063e76f80f3bb9f6e2905f842c2d62981ab1becdb886ff14467b69880091c5"
+          },
+          "target_package": {
+            "path": "pl/pilot.json",
+            "id": "golingua.language.pl.semantic-pilot",
+            "version": "2026-10-26.1",
+            "fingerprint": "sha256:84e4885f76eed641007e4d15106f36f0af6d9c220235d4cd544b2f584a4d08b0"
+          },
+          "source_plan": {
+            "path": "pl/dse-translation-plan.json",
+            "id": "golingua.language.pl.dse-translation-plan",
+            "version": "2026-10-27.1",
+            "fingerprint": "sha256:f004a2a5496a0f3b48211a16a750f7acf997700dd6c3c570501106dae27f1692"
+          },
+          "source_context": {
+            "path": "wh-subject-source-context.json",
+            "id": "dse398.wh-subject-source",
+            "version": "1",
+            "fingerprint": "sha256:c645148b470c2be6be4101ab798d523708f8386da0bc7482a5bbbd2f45d7d9c5"
+          }
+        }
+      },
+      "dataset_store": "snapshot-store",
+      "dataset_id": "golingua-authored"
+    },
+    "object": {
+      "runtime_config": "/home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/runtime-config-wh-object.json",
+      "id": "dse397.runtime.integration.pilot",
+      "version": "2026-10-27.1",
+      "registry_fingerprint": "dse-registry-set-v1:0d7ea618816a36e40aac0d86db6b2b2c4cab02b0ccc2d4f7287987030a787f86",
+      "registries": [
+        {
+          "path": "metadata.json",
+          "id": "dse395.independent.probe",
+          "version": "2026-10-26.1",
+          "fingerprint": "sha256:ad5be13b6bda00502a4c259e18b44e6b353c134362d86b760c7f971c89d8b67e"
+        }
+      ],
+      "languages": {
+        "en": {
+          "source_package": {
+            "path": "en/source.json",
+            "id": "golingua.language.en.source-395",
+            "version": "2026-10-26.1",
+            "fingerprint": "sha256:13c84536eb3820afcf88906276901bd007791ccc8e5f1379b45e21293d25acb1"
+          },
+          "target_package": {
+            "path": "en/pilot.json",
+            "id": "golingua.language.en.semantic-pilot",
+            "version": "2026-10-26.1",
+            "fingerprint": "sha256:3eabf59392c0235f22d21f4a9a856b9da52e8e6348a981477dba1f3d5571da0f"
+          },
+          "source_plan": {
+            "path": "en/dse-translation-plan.json",
+            "id": "golingua.language.en.dse-translation-plan",
+            "version": "2026-10-27.1",
+            "fingerprint": "sha256:54a93977fa4dbfc115570128116a399f9efad49b33f68d99366107ba9ca80fb0"
+          },
+          "source_context": {
+            "path": "wh-object-source-context.json",
+            "id": "dse398.wh-object-source",
+            "version": "1",
+            "fingerprint": "sha256:7b57c377ec1787d25e817b6a09ca952978e63f1c0d45f70834807f6ae6861d80"
+          }
+        },
+        "pl": {
+          "source_package": {
+            "path": "pl/source.json",
+            "id": "golingua.language.pl.source-395",
+            "version": "2026-10-26.1",
+            "fingerprint": "sha256:b0063e76f80f3bb9f6e2905f842c2d62981ab1becdb886ff14467b69880091c5"
+          },
+          "target_package": {
+            "path": "pl/pilot.json",
+            "id": "golingua.language.pl.semantic-pilot",
+            "version": "2026-10-26.1",
+            "fingerprint": "sha256:84e4885f76eed641007e4d15106f36f0af6d9c220235d4cd544b2f584a4d08b0"
+          },
+          "source_plan": {
+            "path": "pl/dse-translation-plan.json",
+            "id": "golingua.language.pl.dse-translation-plan",
+            "version": "2026-10-27.1",
+            "fingerprint": "sha256:f004a2a5496a0f3b48211a16a750f7acf997700dd6c3c570501106dae27f1692"
+          },
+          "source_context": {
+            "path": "wh-object-source-context.json",
+            "id": "dse398.wh-object-source",
+            "version": "1",
+            "fingerprint": "sha256:7b57c377ec1787d25e817b6a09ca952978e63f1c0d45f70834807f6ae6861d80"
+          }
+        }
+      },
+      "dataset_store": "snapshot-store",
+      "dataset_id": "golingua-authored"
+    }
+  },
+  "snapshot": {
+    "copy": "/home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/snapshot-store",
+    "active_identity": {
+      "schema_version": 1,
+      "dataset_id": "golingua-authored",
+      "digest": "e62fdf8903c59fd27690aa46e58b00d199a10a0e1108869e3aa8d47a8f7196f0"
+    },
+    "active_manifest_sha256": "d33959e4dc0eaa0316125200c64fc9eef924da7c46916e6f6669176328e69f21"
+  },
+  "do_variant_policy": "Used the neutral English does-analyze variant authorized by the already-pinned dse-translation-plan; no do variant or source-plan changes."
+}

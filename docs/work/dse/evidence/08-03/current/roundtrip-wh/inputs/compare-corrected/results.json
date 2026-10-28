@@ -1,0 +1,269 @@
+{
+  "invocations": 24,
+  "results": [
+    {
+      "name": "subject-en-pl-en-source-corrected-full",
+      "flow_id": "subject",
+      "mode": "full",
+      "exit_code": 2,
+      "status": "invalid",
+      "verdict": null,
+      "context_id": null,
+      "diagnostics": [
+        "CONTEXT_REFERENCE_MISSING"
+      ]
+    },
+    {
+      "name": "subject-en-pl-en-source-corrected-projected",
+      "flow_id": "subject",
+      "mode": "request_context-projected",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse398-wh-roundtrip-projected",
+      "diagnostics": []
+    },
+    {
+      "name": "subject-en-pl-en-target-corrected-full",
+      "flow_id": "subject",
+      "mode": "full",
+      "exit_code": 2,
+      "status": "invalid",
+      "verdict": null,
+      "context_id": null,
+      "diagnostics": [
+        "CONTEXT_REFERENCE_MISSING"
+      ]
+    },
+    {
+      "name": "subject-en-pl-en-target-corrected-projected",
+      "flow_id": "subject",
+      "mode": "request_context-projected",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse398-wh-roundtrip-projected",
+      "diagnostics": []
+    },
+    {
+      "name": "subject-en-pl-en-final-corrected-full",
+      "flow_id": "subject",
+      "mode": "full",
+      "exit_code": 2,
+      "status": "invalid",
+      "verdict": null,
+      "context_id": null,
+      "diagnostics": [
+        "CONTEXT_REFERENCE_MISSING"
+      ]
+    },
+    {
+      "name": "subject-en-pl-en-final-corrected-projected",
+      "flow_id": "subject",
+      "mode": "request_context-projected",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse398-wh-roundtrip-projected",
+      "diagnostics": []
+    },
+    {
+      "name": "subject-pl-en-pl-source-corrected-full",
+      "flow_id": "subject",
+      "mode": "full",
+      "exit_code": 2,
+      "status": "invalid",
+      "verdict": null,
+      "context_id": null,
+      "diagnostics": [
+        "CONTEXT_REFERENCE_MISSING"
+      ]
+    },
+    {
+      "name": "subject-pl-en-pl-source-corrected-projected",
+      "flow_id": "subject",
+      "mode": "request_context-projected",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse398-wh-roundtrip-projected",
+      "diagnostics": []
+    },
+    {
+      "name": "subject-pl-en-pl-target-corrected-full",
+      "flow_id": "subject",
+      "mode": "full",
+      "exit_code": 2,
+      "status": "invalid",
+      "verdict": null,
+      "context_id": null,
+      "diagnostics": [
+        "CONTEXT_REFERENCE_MISSING"
+      ]
+    },
+    {
+      "name": "subject-pl-en-pl-target-corrected-projected",
+      "flow_id": "subject",
+      "mode": "request_context-projected",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse398-wh-roundtrip-projected",
+      "diagnostics": []
+    },
+    {
+      "name": "subject-pl-en-pl-final-corrected-full",
+      "flow_id": "subject",
+      "mode": "full",
+      "exit_code": 2,
+      "status": "invalid",
+      "verdict": null,
+      "context_id": null,
+      "diagnostics": [
+        "CONTEXT_REFERENCE_MISSING"
+      ]
+    },
+    {
+      "name": "subject-pl-en-pl-final-corrected-projected",
+      "flow_id": "subject",
+      "mode": "request_context-projected",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse398-wh-roundtrip-projected",
+      "diagnostics": []
+    },
+    {
+      "name": "object-en-pl-en-source-corrected-full",
+      "flow_id": "object",
+      "mode": "full",
+      "exit_code": 2,
+      "status": "invalid",
+      "verdict": null,
+      "context_id": null,
+      "diagnostics": [
+        "CONTEXT_REFERENCE_MISSING"
+      ]
+    },
+    {
+      "name": "object-en-pl-en-source-corrected-projected",
+      "flow_id": "object",
+      "mode": "request_context-projected",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse398-wh-roundtrip-projected",
+      "diagnostics": []
+    },
+    {
+      "name": "object-en-pl-en-target-corrected-full",
+      "flow_id": "object",
+      "mode": "full",
+      "exit_code": 2,
+      "status": "invalid",
+      "verdict": null,
+      "context_id": null,
+      "diagnostics": [
+        "CONTEXT_REFERENCE_MISSING"
+      ]
+    },
+    {
+      "name": "object-en-pl-en-target-corrected-projected",
+      "flow_id": "object",
+      "mode": "request_context-projected",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse398-wh-roundtrip-projected",
+      "diagnostics": []
+    },
+    {
+      "name": "object-en-pl-en-final-corrected-full",
+      "flow_id": "object",
+      "mode": "full",
+      "exit_code": 2,
+      "status": "invalid",
+      "verdict": null,
+      "context_id": null,
+      "diagnostics": [
+        "CONTEXT_REFERENCE_MISSING"
+      ]
+    },
+    {
+      "name": "object-en-pl-en-final-corrected-projected",
+      "flow_id": "object",
+      "mode": "request_context-projected",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse398-wh-roundtrip-projected",
+      "diagnostics": []
+    },
+    {
+      "name": "object-pl-en-pl-source-corrected-full",
+      "flow_id": "object",
+      "mode": "full",
+      "exit_code": 2,
+      "status": "invalid",
+      "verdict": null,
+      "context_id": null,
+      "diagnostics": [
+        "CONTEXT_REFERENCE_MISSING"
+      ]
+    },
+    {
+      "name": "object-pl-en-pl-source-corrected-projected",
+      "flow_id": "object",
+      "mode": "request_context-projected",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse398-wh-roundtrip-projected",
+      "diagnostics": []
+    },
+    {
+      "name": "object-pl-en-pl-target-corrected-full",
+      "flow_id": "object",
+      "mode": "full",
+      "exit_code": 2,
+      "status": "invalid",
+      "verdict": null,
+      "context_id": null,
+      "diagnostics": [
+        "CONTEXT_REFERENCE_MISSING"
+      ]
+    },
+    {
+      "name": "object-pl-en-pl-target-corrected-projected",
+      "flow_id": "object",
+      "mode": "request_context-projected",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse398-wh-roundtrip-projected",
+      "diagnostics": []
+    },
+    {
+      "name": "object-pl-en-pl-final-corrected-full",
+      "flow_id": "object",
+      "mode": "full",
+      "exit_code": 2,
+      "status": "invalid",
+      "verdict": null,
+      "context_id": null,
+      "diagnostics": [
+        "CONTEXT_REFERENCE_MISSING"
+      ]
+    },
+    {
+      "name": "object-pl-en-pl-final-corrected-projected",
+      "flow_id": "object",
+      "mode": "request_context-projected",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse398-wh-roundtrip-projected",
+      "diagnostics": []
+    }
+  ]
+}

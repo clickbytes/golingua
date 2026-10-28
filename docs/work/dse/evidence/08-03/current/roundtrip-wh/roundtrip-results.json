@@ -1,0 +1,936 @@
+{
+  "flows": [
+    {
+      "id": "subject-en-pl-en",
+      "question_kind": "subject",
+      "languages": [
+        "en",
+        "pl",
+        "en"
+      ],
+      "original_input_path": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/subject-en.txt",
+      "original_text": "Who sees the dog?",
+      "independent_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-subject-independent-ir.json",
+      "steps": {
+        "source_analyze": {
+          "command": "subject-en-pl-en-01-analyze-source",
+          "status": "ok",
+          "selection": {
+            "aggregate_status": "ok",
+            "complete": true,
+            "candidates": [
+              {
+                "id": "dse:5b5b40b3bb79307e7a055ed7",
+                "status": "ok",
+                "diagnostics": [],
+                "residuals": [],
+                "assumptions": null,
+                "answer_bindings": [
+                  {
+                    "answer_id": "answer_en_subject_0_3",
+                    "role": "experiencer"
+                  }
+                ]
+              }
+            ],
+            "selected_candidate_id": "dse:5b5b40b3bb79307e7a055ed7",
+            "selection_count": 1
+          }
+        },
+        "source_compare": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "CONTEXT_REFERENCE_MISSING"
+            ]
+          },
+          "projected_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "expected_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-subject-independent-ir.json",
+          "full_command": "subject-en-pl-en-02-compare-source-full",
+          "projected_command": "subject-en-pl-en-02-compare-source-context-projected",
+          "projection": "request_context removed from both comparison copies only; references/expressions/answer roles preserved"
+        },
+        "translate_to_target": {
+          "command": "subject-en-pl-en-03-translate-to-target",
+          "selection": {
+            "aggregate_status": "incomplete",
+            "candidates": [
+              {
+                "id": "translation:2766383594fde816d41917824dc6e7f6ebd6d491b405c3f9180cf2a94d17de4a",
+                "source_candidate_id": "dse:5b5b40b3bb79307e7a055ed7",
+                "outcome": "incomplete",
+                "text_bearing": true,
+                "diagnostics": [
+                  "REALIZATION_RESIDUALS_REMAIN"
+                ],
+                "residuals": null,
+                "assumptions": null
+              }
+            ],
+            "selected_candidate_id": "translation:2766383594fde816d41917824dc6e7f6ebd6d491b405c3f9180cf2a94d17de4a",
+            "selected_outcome": "incomplete",
+            "selection_count": 1,
+            "selection_rule": "unique candidate with nonempty text; aggregate/candidate incomplete is retained"
+          }
+        },
+        "selected_target_text": {
+          "text": "Kto widzi psa?",
+          "candidate_id": "translation:2766383594fde816d41917824dc6e7f6ebd6d491b405c3f9180cf2a94d17de4a",
+          "candidate_outcome": "incomplete",
+          "aggregate_status": "incomplete",
+          "conditional": true
+        },
+        "target_analyze": {
+          "command": "subject-en-pl-en-04-analyze-target",
+          "status": "ok",
+          "selection": {
+            "aggregate_status": "ok",
+            "complete": true,
+            "candidates": [
+              {
+                "id": "dse:1bbcb31a90885417edd3815c",
+                "status": "ok",
+                "diagnostics": [],
+                "residuals": [],
+                "assumptions": null,
+                "answer_bindings": [
+                  {
+                    "answer_id": "answer_pl_subject_0_3",
+                    "role": "experiencer"
+                  }
+                ]
+              }
+            ],
+            "selected_candidate_id": "dse:1bbcb31a90885417edd3815c",
+            "selection_count": 1
+          }
+        },
+        "target_compare": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "CONTEXT_REFERENCE_MISSING"
+            ]
+          },
+          "projected_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "expected_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-subject-independent-ir.json",
+          "full_command": "subject-en-pl-en-05-compare-target-full",
+          "projected_command": "subject-en-pl-en-05-compare-target-context-projected",
+          "projection": "request_context removed from both comparison copies only; references/expressions/answer roles preserved"
+        },
+        "translate_back": {
+          "command": "subject-en-pl-en-06-translate-back",
+          "selection": {
+            "aggregate_status": "incomplete",
+            "candidates": [
+              {
+                "id": "translation:6478f73d38914cb559a464bb626f893ccbd4c4bdb3f4559b372af6b69e561b2a",
+                "source_candidate_id": "dse:1bbcb31a90885417edd3815c",
+                "outcome": "incomplete",
+                "text_bearing": true,
+                "diagnostics": [
+                  "EXPLICIT_REALIZATION_ASSUMPTION"
+                ],
+                "residuals": null,
+                "assumptions": [
+                  {
+                    "path": [
+                      "dse_discourse_0",
+                      "dse_question_0",
+                      "dse_event_0"
+                    ],
+                    "field": "number",
+                    "value": "singular",
+                    "reason": "WH subject answer carries no number evidence; this target candidate uses singular agreement"
+                  },
+                  {
+                    "path": [
+                      "dse_discourse_0",
+                      "dse_question_0",
+                      "dse_event_0"
+                    ],
+                    "field": "person",
+                    "value": "third",
+                    "reason": "Meaning carries no grammatical person; this response uses the approved third-person form"
+                  },
+                  {
+                    "path": [
+                      "dse_discourse_0",
+                      "dse_question_0",
+                      "dse_event_0",
+                      "dse_ref_0"
+                    ],
+                    "field": "determiner",
+                    "value": "definite",
+                    "reason": "the source does not encode English definiteness; this candidate selects the definite article"
+                  }
+                ]
+              }
+            ],
+            "selected_candidate_id": "translation:6478f73d38914cb559a464bb626f893ccbd4c4bdb3f4559b372af6b69e561b2a",
+            "selected_outcome": "incomplete",
+            "selection_count": 1,
+            "selection_rule": "unique candidate with nonempty text; aggregate/candidate incomplete is retained"
+          }
+        },
+        "selected_return_text": {
+          "text": "Who sees the dog?",
+          "candidate_id": "translation:6478f73d38914cb559a464bb626f893ccbd4c4bdb3f4559b372af6b69e561b2a",
+          "candidate_outcome": "incomplete",
+          "aggregate_status": "incomplete",
+          "conditional": true
+        },
+        "final_analyze": {
+          "command": "subject-en-pl-en-07-analyze-final",
+          "status": "ok",
+          "selection": {
+            "aggregate_status": "ok",
+            "complete": true,
+            "candidates": [
+              {
+                "id": "dse:5b5b40b3bb79307e7a055ed7",
+                "status": "ok",
+                "diagnostics": [],
+                "residuals": [],
+                "assumptions": null,
+                "answer_bindings": [
+                  {
+                    "answer_id": "answer_en_subject_0_3",
+                    "role": "experiencer"
+                  }
+                ]
+              }
+            ],
+            "selected_candidate_id": "dse:5b5b40b3bb79307e7a055ed7",
+            "selection_count": 1
+          }
+        },
+        "final_compare": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "CONTEXT_REFERENCE_MISSING"
+            ]
+          },
+          "projected_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "expected_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-subject-independent-ir.json",
+          "full_command": "subject-en-pl-en-08-compare-final-full",
+          "projected_command": "subject-en-pl-en-08-compare-final-context-projected",
+          "projection": "request_context removed from both comparison copies only; references/expressions/answer roles preserved"
+        }
+      },
+      "limitations": [],
+      "roundtrip_status": "incomplete"
+    },
+    {
+      "id": "subject-pl-en-pl",
+      "question_kind": "subject",
+      "languages": [
+        "pl",
+        "en",
+        "pl"
+      ],
+      "original_input_path": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/subject-pl.txt",
+      "original_text": "Kto widzi psa?",
+      "independent_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-subject-independent-ir.json",
+      "steps": {
+        "source_analyze": {
+          "command": "subject-pl-en-pl-01-analyze-source",
+          "status": "ok",
+          "selection": {
+            "aggregate_status": "ok",
+            "complete": true,
+            "candidates": [
+              {
+                "id": "dse:1bbcb31a90885417edd3815c",
+                "status": "ok",
+                "diagnostics": [],
+                "residuals": [],
+                "assumptions": null,
+                "answer_bindings": [
+                  {
+                    "answer_id": "answer_pl_subject_0_3",
+                    "role": "experiencer"
+                  }
+                ]
+              }
+            ],
+            "selected_candidate_id": "dse:1bbcb31a90885417edd3815c",
+            "selection_count": 1
+          }
+        },
+        "source_compare": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "CONTEXT_REFERENCE_MISSING"
+            ]
+          },
+          "projected_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "expected_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-subject-independent-ir.json",
+          "full_command": "subject-pl-en-pl-02-compare-source-full",
+          "projected_command": "subject-pl-en-pl-02-compare-source-context-projected",
+          "projection": "request_context removed from both comparison copies only; references/expressions/answer roles preserved"
+        },
+        "translate_to_target": {
+          "command": "subject-pl-en-pl-03-translate-to-target",
+          "selection": {
+            "aggregate_status": "incomplete",
+            "candidates": [
+              {
+                "id": "translation:6478f73d38914cb559a464bb626f893ccbd4c4bdb3f4559b372af6b69e561b2a",
+                "source_candidate_id": "dse:1bbcb31a90885417edd3815c",
+                "outcome": "incomplete",
+                "text_bearing": true,
+                "diagnostics": [
+                  "EXPLICIT_REALIZATION_ASSUMPTION"
+                ],
+                "residuals": null,
+                "assumptions": [
+                  {
+                    "path": [
+                      "dse_discourse_0",
+                      "dse_question_0",
+                      "dse_event_0"
+                    ],
+                    "field": "number",
+                    "value": "singular",
+                    "reason": "WH subject answer carries no number evidence; this target candidate uses singular agreement"
+                  },
+                  {
+                    "path": [
+                      "dse_discourse_0",
+                      "dse_question_0",
+                      "dse_event_0"
+                    ],
+                    "field": "person",
+                    "value": "third",
+                    "reason": "Meaning carries no grammatical person; this response uses the approved third-person form"
+                  },
+                  {
+                    "path": [
+                      "dse_discourse_0",
+                      "dse_question_0",
+                      "dse_event_0",
+                      "dse_ref_0"
+                    ],
+                    "field": "determiner",
+                    "value": "definite",
+                    "reason": "the source does not encode English definiteness; this candidate selects the definite article"
+                  }
+                ]
+              }
+            ],
+            "selected_candidate_id": "translation:6478f73d38914cb559a464bb626f893ccbd4c4bdb3f4559b372af6b69e561b2a",
+            "selected_outcome": "incomplete",
+            "selection_count": 1,
+            "selection_rule": "unique candidate with nonempty text; aggregate/candidate incomplete is retained"
+          }
+        },
+        "selected_target_text": {
+          "text": "Who sees the dog?",
+          "candidate_id": "translation:6478f73d38914cb559a464bb626f893ccbd4c4bdb3f4559b372af6b69e561b2a",
+          "candidate_outcome": "incomplete",
+          "aggregate_status": "incomplete",
+          "conditional": true
+        },
+        "target_analyze": {
+          "command": "subject-pl-en-pl-04-analyze-target",
+          "status": "ok",
+          "selection": {
+            "aggregate_status": "ok",
+            "complete": true,
+            "candidates": [
+              {
+                "id": "dse:5b5b40b3bb79307e7a055ed7",
+                "status": "ok",
+                "diagnostics": [],
+                "residuals": [],
+                "assumptions": null,
+                "answer_bindings": [
+                  {
+                    "answer_id": "answer_en_subject_0_3",
+                    "role": "experiencer"
+                  }
+                ]
+              }
+            ],
+            "selected_candidate_id": "dse:5b5b40b3bb79307e7a055ed7",
+            "selection_count": 1
+          }
+        },
+        "target_compare": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "CONTEXT_REFERENCE_MISSING"
+            ]
+          },
+          "projected_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "expected_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-subject-independent-ir.json",
+          "full_command": "subject-pl-en-pl-05-compare-target-full",
+          "projected_command": "subject-pl-en-pl-05-compare-target-context-projected",
+          "projection": "request_context removed from both comparison copies only; references/expressions/answer roles preserved"
+        },
+        "translate_back": {
+          "command": "subject-pl-en-pl-06-translate-back",
+          "selection": {
+            "aggregate_status": "incomplete",
+            "candidates": [
+              {
+                "id": "translation:2766383594fde816d41917824dc6e7f6ebd6d491b405c3f9180cf2a94d17de4a",
+                "source_candidate_id": "dse:5b5b40b3bb79307e7a055ed7",
+                "outcome": "incomplete",
+                "text_bearing": true,
+                "diagnostics": [
+                  "REALIZATION_RESIDUALS_REMAIN"
+                ],
+                "residuals": null,
+                "assumptions": null
+              }
+            ],
+            "selected_candidate_id": "translation:2766383594fde816d41917824dc6e7f6ebd6d491b405c3f9180cf2a94d17de4a",
+            "selected_outcome": "incomplete",
+            "selection_count": 1,
+            "selection_rule": "unique candidate with nonempty text; aggregate/candidate incomplete is retained"
+          }
+        },
+        "selected_return_text": {
+          "text": "Kto widzi psa?",
+          "candidate_id": "translation:2766383594fde816d41917824dc6e7f6ebd6d491b405c3f9180cf2a94d17de4a",
+          "candidate_outcome": "incomplete",
+          "aggregate_status": "incomplete",
+          "conditional": true
+        },
+        "final_analyze": {
+          "command": "subject-pl-en-pl-07-analyze-final",
+          "status": "ok",
+          "selection": {
+            "aggregate_status": "ok",
+            "complete": true,
+            "candidates": [
+              {
+                "id": "dse:1bbcb31a90885417edd3815c",
+                "status": "ok",
+                "diagnostics": [],
+                "residuals": [],
+                "assumptions": null,
+                "answer_bindings": [
+                  {
+                    "answer_id": "answer_pl_subject_0_3",
+                    "role": "experiencer"
+                  }
+                ]
+              }
+            ],
+            "selected_candidate_id": "dse:1bbcb31a90885417edd3815c",
+            "selection_count": 1
+          }
+        },
+        "final_compare": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "CONTEXT_REFERENCE_MISSING"
+            ]
+          },
+          "projected_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "expected_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-subject-independent-ir.json",
+          "full_command": "subject-pl-en-pl-08-compare-final-full",
+          "projected_command": "subject-pl-en-pl-08-compare-final-context-projected",
+          "projection": "request_context removed from both comparison copies only; references/expressions/answer roles preserved"
+        }
+      },
+      "limitations": [],
+      "roundtrip_status": "incomplete"
+    },
+    {
+      "id": "object-en-pl-en",
+      "question_kind": "object",
+      "languages": [
+        "en",
+        "pl",
+        "en"
+      ],
+      "original_input_path": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/object-en.txt",
+      "original_text": "Whom does the teacher see?",
+      "independent_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-object-independent-ir.json",
+      "steps": {
+        "source_analyze": {
+          "command": "object-en-pl-en-01-analyze-source",
+          "status": "ok",
+          "selection": {
+            "aggregate_status": "ok",
+            "complete": true,
+            "candidates": [
+              {
+                "id": "dse:9baa7708f2f0893dd53ba406",
+                "status": "ok",
+                "diagnostics": [],
+                "residuals": [],
+                "assumptions": null,
+                "answer_bindings": [
+                  {
+                    "answer_id": "answer_en_object_0_4",
+                    "role": "stimulus"
+                  }
+                ]
+              }
+            ],
+            "selected_candidate_id": "dse:9baa7708f2f0893dd53ba406",
+            "selection_count": 1
+          }
+        },
+        "source_compare": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "CONTEXT_REFERENCE_MISSING"
+            ]
+          },
+          "projected_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "expected_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-object-independent-ir.json",
+          "full_command": "object-en-pl-en-02-compare-source-full",
+          "projected_command": "object-en-pl-en-02-compare-source-context-projected",
+          "projection": "request_context removed from both comparison copies only; references/expressions/answer roles preserved"
+        },
+        "translate_to_target": {
+          "command": "object-en-pl-en-03-translate-to-target",
+          "selection": {
+            "aggregate_status": "incomplete",
+            "candidates": [
+              {
+                "id": "translation:9209db2040003e9c61ab4dfea88a3c47ff2ff37dba282961b700fb6406106445",
+                "source_candidate_id": "dse:9baa7708f2f0893dd53ba406",
+                "outcome": "incomplete",
+                "text_bearing": true,
+                "diagnostics": [
+                  "REALIZATION_RESIDUALS_REMAIN"
+                ],
+                "residuals": null,
+                "assumptions": null
+              }
+            ],
+            "selected_candidate_id": "translation:9209db2040003e9c61ab4dfea88a3c47ff2ff37dba282961b700fb6406106445",
+            "selected_outcome": "incomplete",
+            "selection_count": 1,
+            "selection_rule": "unique candidate with nonempty text; aggregate/candidate incomplete is retained"
+          }
+        },
+        "selected_target_text": {
+          "text": "Kogo widzi nauczyciel?",
+          "candidate_id": "translation:9209db2040003e9c61ab4dfea88a3c47ff2ff37dba282961b700fb6406106445",
+          "candidate_outcome": "incomplete",
+          "aggregate_status": "incomplete",
+          "conditional": true
+        },
+        "target_analyze": {
+          "command": "object-en-pl-en-04-analyze-target",
+          "status": "ok",
+          "selection": {
+            "aggregate_status": "ok",
+            "complete": true,
+            "candidates": [
+              {
+                "id": "dse:b76cc68e26c7f8170e92f8ba",
+                "status": "ok",
+                "diagnostics": [],
+                "residuals": [],
+                "assumptions": null,
+                "answer_bindings": [
+                  {
+                    "answer_id": "answer_pl_object_0_4",
+                    "role": "stimulus"
+                  }
+                ]
+              }
+            ],
+            "selected_candidate_id": "dse:b76cc68e26c7f8170e92f8ba",
+            "selection_count": 1
+          }
+        },
+        "target_compare": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "CONTEXT_REFERENCE_MISSING"
+            ]
+          },
+          "projected_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "expected_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-object-independent-ir.json",
+          "full_command": "object-en-pl-en-05-compare-target-full",
+          "projected_command": "object-en-pl-en-05-compare-target-context-projected",
+          "projection": "request_context removed from both comparison copies only; references/expressions/answer roles preserved"
+        },
+        "translate_back": {
+          "command": "object-en-pl-en-06-translate-back",
+          "selection": {
+            "aggregate_status": "incomplete",
+            "candidates": [
+              {
+                "id": "translation:a3c44e756a123d200dc87f22523ad8b83bbcfec3ebe777c59fc7f0baa3f596ac",
+                "source_candidate_id": "dse:b76cc68e26c7f8170e92f8ba",
+                "outcome": "incomplete",
+                "text_bearing": true,
+                "diagnostics": [
+                  "EXPLICIT_REALIZATION_ASSUMPTION"
+                ],
+                "residuals": null,
+                "assumptions": [
+                  {
+                    "path": [
+                      "dse_discourse_0",
+                      "dse_question_0",
+                      "dse_event_0",
+                      "dse_ref_0"
+                    ],
+                    "field": "determiner",
+                    "value": "definite",
+                    "reason": "the source does not encode English definiteness; this candidate selects the definite article"
+                  }
+                ]
+              }
+            ],
+            "selected_candidate_id": "translation:a3c44e756a123d200dc87f22523ad8b83bbcfec3ebe777c59fc7f0baa3f596ac",
+            "selected_outcome": "incomplete",
+            "selection_count": 1,
+            "selection_rule": "unique candidate with nonempty text; aggregate/candidate incomplete is retained"
+          }
+        },
+        "selected_return_text": {
+          "text": "Whom does the teacher see?",
+          "candidate_id": "translation:a3c44e756a123d200dc87f22523ad8b83bbcfec3ebe777c59fc7f0baa3f596ac",
+          "candidate_outcome": "incomplete",
+          "aggregate_status": "incomplete",
+          "conditional": true
+        },
+        "final_analyze": {
+          "command": "object-en-pl-en-07-analyze-final",
+          "status": "ok",
+          "selection": {
+            "aggregate_status": "ok",
+            "complete": true,
+            "candidates": [
+              {
+                "id": "dse:9baa7708f2f0893dd53ba406",
+                "status": "ok",
+                "diagnostics": [],
+                "residuals": [],
+                "assumptions": null,
+                "answer_bindings": [
+                  {
+                    "answer_id": "answer_en_object_0_4",
+                    "role": "stimulus"
+                  }
+                ]
+              }
+            ],
+            "selected_candidate_id": "dse:9baa7708f2f0893dd53ba406",
+            "selection_count": 1
+          }
+        },
+        "final_compare": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "CONTEXT_REFERENCE_MISSING"
+            ]
+          },
+          "projected_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "expected_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-object-independent-ir.json",
+          "full_command": "object-en-pl-en-08-compare-final-full",
+          "projected_command": "object-en-pl-en-08-compare-final-context-projected",
+          "projection": "request_context removed from both comparison copies only; references/expressions/answer roles preserved"
+        }
+      },
+      "limitations": [],
+      "roundtrip_status": "incomplete"
+    },
+    {
+      "id": "object-pl-en-pl",
+      "question_kind": "object",
+      "languages": [
+        "pl",
+        "en",
+        "pl"
+      ],
+      "original_input_path": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/object-pl.txt",
+      "original_text": "Kogo widzi nauczyciel?",
+      "independent_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-object-independent-ir.json",
+      "steps": {
+        "source_analyze": {
+          "command": "object-pl-en-pl-01-analyze-source",
+          "status": "ok",
+          "selection": {
+            "aggregate_status": "ok",
+            "complete": true,
+            "candidates": [
+              {
+                "id": "dse:b76cc68e26c7f8170e92f8ba",
+                "status": "ok",
+                "diagnostics": [],
+                "residuals": [],
+                "assumptions": null,
+                "answer_bindings": [
+                  {
+                    "answer_id": "answer_pl_object_0_4",
+                    "role": "stimulus"
+                  }
+                ]
+              }
+            ],
+            "selected_candidate_id": "dse:b76cc68e26c7f8170e92f8ba",
+            "selection_count": 1
+          }
+        },
+        "source_compare": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "CONTEXT_REFERENCE_MISSING"
+            ]
+          },
+          "projected_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "expected_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-object-independent-ir.json",
+          "full_command": "object-pl-en-pl-02-compare-source-full",
+          "projected_command": "object-pl-en-pl-02-compare-source-context-projected",
+          "projection": "request_context removed from both comparison copies only; references/expressions/answer roles preserved"
+        },
+        "translate_to_target": {
+          "command": "object-pl-en-pl-03-translate-to-target",
+          "selection": {
+            "aggregate_status": "incomplete",
+            "candidates": [
+              {
+                "id": "translation:a3c44e756a123d200dc87f22523ad8b83bbcfec3ebe777c59fc7f0baa3f596ac",
+                "source_candidate_id": "dse:b76cc68e26c7f8170e92f8ba",
+                "outcome": "incomplete",
+                "text_bearing": true,
+                "diagnostics": [
+                  "EXPLICIT_REALIZATION_ASSUMPTION"
+                ],
+                "residuals": null,
+                "assumptions": [
+                  {
+                    "path": [
+                      "dse_discourse_0",
+                      "dse_question_0",
+                      "dse_event_0",
+                      "dse_ref_0"
+                    ],
+                    "field": "determiner",
+                    "value": "definite",
+                    "reason": "the source does not encode English definiteness; this candidate selects the definite article"
+                  }
+                ]
+              }
+            ],
+            "selected_candidate_id": "translation:a3c44e756a123d200dc87f22523ad8b83bbcfec3ebe777c59fc7f0baa3f596ac",
+            "selected_outcome": "incomplete",
+            "selection_count": 1,
+            "selection_rule": "unique candidate with nonempty text; aggregate/candidate incomplete is retained"
+          }
+        },
+        "selected_target_text": {
+          "text": "Whom does the teacher see?",
+          "candidate_id": "translation:a3c44e756a123d200dc87f22523ad8b83bbcfec3ebe777c59fc7f0baa3f596ac",
+          "candidate_outcome": "incomplete",
+          "aggregate_status": "incomplete",
+          "conditional": true
+        },
+        "target_analyze": {
+          "command": "object-pl-en-pl-04-analyze-target",
+          "status": "ok",
+          "selection": {
+            "aggregate_status": "ok",
+            "complete": true,
+            "candidates": [
+              {
+                "id": "dse:9baa7708f2f0893dd53ba406",
+                "status": "ok",
+                "diagnostics": [],
+                "residuals": [],
+                "assumptions": null,
+                "answer_bindings": [
+                  {
+                    "answer_id": "answer_en_object_0_4",
+                    "role": "stimulus"
+                  }
+                ]
+              }
+            ],
+            "selected_candidate_id": "dse:9baa7708f2f0893dd53ba406",
+            "selection_count": 1
+          }
+        },
+        "target_compare": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "CONTEXT_REFERENCE_MISSING"
+            ]
+          },
+          "projected_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "expected_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-object-independent-ir.json",
+          "full_command": "object-pl-en-pl-05-compare-target-full",
+          "projected_command": "object-pl-en-pl-05-compare-target-context-projected",
+          "projection": "request_context removed from both comparison copies only; references/expressions/answer roles preserved"
+        },
+        "translate_back": {
+          "command": "object-pl-en-pl-06-translate-back",
+          "selection": {
+            "aggregate_status": "incomplete",
+            "candidates": [
+              {
+                "id": "translation:9209db2040003e9c61ab4dfea88a3c47ff2ff37dba282961b700fb6406106445",
+                "source_candidate_id": "dse:9baa7708f2f0893dd53ba406",
+                "outcome": "incomplete",
+                "text_bearing": true,
+                "diagnostics": [
+                  "REALIZATION_RESIDUALS_REMAIN"
+                ],
+                "residuals": null,
+                "assumptions": null
+              }
+            ],
+            "selected_candidate_id": "translation:9209db2040003e9c61ab4dfea88a3c47ff2ff37dba282961b700fb6406106445",
+            "selected_outcome": "incomplete",
+            "selection_count": 1,
+            "selection_rule": "unique candidate with nonempty text; aggregate/candidate incomplete is retained"
+          }
+        },
+        "selected_return_text": {
+          "text": "Kogo widzi nauczyciel?",
+          "candidate_id": "translation:9209db2040003e9c61ab4dfea88a3c47ff2ff37dba282961b700fb6406106445",
+          "candidate_outcome": "incomplete",
+          "aggregate_status": "incomplete",
+          "conditional": true
+        },
+        "final_analyze": {
+          "command": "object-pl-en-pl-07-analyze-final",
+          "status": "ok",
+          "selection": {
+            "aggregate_status": "ok",
+            "complete": true,
+            "candidates": [
+              {
+                "id": "dse:b76cc68e26c7f8170e92f8ba",
+                "status": "ok",
+                "diagnostics": [],
+                "residuals": [],
+                "assumptions": null,
+                "answer_bindings": [
+                  {
+                    "answer_id": "answer_pl_object_0_4",
+                    "role": "stimulus"
+                  }
+                ]
+              }
+            ],
+            "selected_candidate_id": "dse:b76cc68e26c7f8170e92f8ba",
+            "selection_count": 1
+          }
+        },
+        "final_compare": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "CONTEXT_REFERENCE_MISSING"
+            ]
+          },
+          "projected_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "expected_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-object-independent-ir.json",
+          "full_command": "object-pl-en-pl-08-compare-final-full",
+          "projected_command": "object-pl-en-pl-08-compare-final-context-projected",
+          "projection": "request_context removed from both comparison copies only; references/expressions/answer roles preserved"
+        }
+      },
+      "limitations": [],
+      "roundtrip_status": "incomplete"
+    }
+  ]
+}

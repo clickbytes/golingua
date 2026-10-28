@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "context_id": "dse398.wh-subject-source",
+  "references": [
+    {
+      "id": "E1",
+      "type": { "kind": "Event" },
+      "temporal_frame": "present"
+    },
+    {
+      "id": "B",
+      "type": { "kind": "Entity" },
+      "multiplicity": "one"
+    }
+  ],
+  "request_context": {
+    "schema_version": 1,
+    "id": "dse398.wh-subject-source",
+    "referents": [
+      {
+        "id": "E1",
+        "type": { "kind": "Event" },
+        "temporal_frame": "present"
+      },
+      {
+        "id": "B",
+        "type": { "kind": "Entity" },
+        "multiplicity": "one"
+      }
+    ],
+    "mentions": [],
+    "resolution_evidence": [],
+    "conditions": []
+  },
+  "role_references": [
+    { "role": "stimulus", "reference_id": "B" }
+  ],
+  "port_references": [
+    { "port_id": "event", "reference_id": "E1" }
+  ]
+}
