@@ -103,6 +103,18 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	if err != nil {
 		return nil, err
 	}
+	buyingSense, err := ids.NewSenseID("en.buying.event")
+	if err != nil {
+		return nil, err
+	}
+	sellingSense, err := ids.NewSenseID("en.selling.event")
+	if err != nil {
+		return nil, err
+	}
+	givingSense, err := ids.NewSenseID("en.give.transfer")
+	if err != nil {
+		return nil, err
+	}
 	manipulationSenses := map[ids.SenseID]bool{}
 	for _, name := range []string{"en.opening_object.event", "en.closing_object.event", "en.carrying.event", "en.holding_object.event", "en.pulling_object.event", "en.pushing_object.event", "en.cutting_object.event", "en.folding_object.event", "en.tearing_object.event"} {
 		sense, senseErr := ids.NewSenseID(name)
@@ -111,7 +123,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		}
 		manipulationSenses[sense] = true
 	}
-	supportedSenses := map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true, eatingSense: true, drinkingSense: true}
+	supportedSenses := map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true, eatingSense: true, drinkingSense: true, givingSense: true, buyingSense: true, sellingSense: true}
 	for sense := range manipulationSenses {
 		supportedSenses[sense] = true
 	}
@@ -125,6 +137,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		supportedSenses[sense] = true
 	}
 	predicateAlternatives := map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
+		givingSense: {{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"}, {"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"}},
 		seeingSense: {
 			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "singular", "number": "singular"},
 			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "plural", "number": "plural"},
@@ -168,6 +181,12 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		// The new manipulation routes are restricted to third-person present.
 		// They are filled below through a precomputed list.
 	}
+	commerceFeatures := []map[features.FeatureID]features.FeatureValueID{
+		{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
+		{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
+	}
+	predicateAlternatives[buyingSense] = commerceFeatures
+	predicateAlternatives[sellingSense] = commerceFeatures
 	for sense := range manipulationSenses {
 		predicateAlternatives[sense] = []map[features.FeatureID]features.FeatureValueID{
 			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
@@ -184,7 +203,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		Language: "en", ClauseConnector: "and", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}}, AllowFinalPeriod: false,
 		ScopedSourcePlan: scopedPlan, ScopedReadingPolicy: ScopedSourceReadingPolicy,
 		RelationPathPlan: relationPathPlan, RelationSourceReadingPolicy: RelationSourceReadingPolicy,
-		AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "do": true, "does": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true, "who": true, "whom": true, "and": true, "up": true, "asleep": true},
+		AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "to": true, "from": true, "do": true, "does": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true, "who": true, "whom": true, "and": true, "up": true, "asleep": true},
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
@@ -196,7 +215,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		EvidenceBuilder: englishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), base: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses:                     supportedSenses,
 			PredicateFeatureAlternativesBySense: predicateAlternatives,
-			AllowedUnlexicalizedTerminals:       map[string]bool{"at": true, "do": true, "does": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true, "up": true, "asleep": true},
+			AllowedUnlexicalizedTerminals:       map[string]bool{"at": true, "to": true, "from": true, "do": true, "does": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true, "up": true, "asleep": true},
 		}},
 	}, nil
 }
@@ -253,6 +272,7 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 		}
 	}
 	if !hasNot {
+		forest = filterEnglishGivingArticleAlternatives(forest, candidates, builder.lexicon)
 		evidence, err := builder.base.Build(ctx, lattice, candidates, forest)
 		if err != nil {
 			return evidence, err
@@ -341,6 +361,80 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 	}
 	evidence.OperatorCoverageComplete = operatorCount > 0
 	return evidence, nil
+}
+
+func filterEnglishGivingArticleAlternatives(forest parser.Forest, candidates []parser.PhraseCandidate, lexical *lexicon.Index) parser.Forest {
+	byID := make(map[string]parser.PhraseCandidate, len(candidates))
+	for _, candidate := range candidates {
+		byID[candidate.ID] = candidate
+	}
+	for nodeIndex := range forest.Nodes {
+		node := &forest.Nodes[nodeIndex]
+		if node.Category != "clause" {
+			continue
+		}
+		kept := node.Alternatives[:0]
+		for _, alternative := range node.Alternatives {
+			if alternative.FamilyID.String() == "construction:en.give.transfer" && !englishGivingSourceAlternativeAllowed(alternative, byID, lexical) {
+				continue
+			}
+			kept = append(kept, alternative)
+		}
+		node.Alternatives = kept
+	}
+	return forest
+}
+
+func englishGivingSourceAlternativeAllowed(alternative parser.ParseAlternative, candidates map[string]parser.PhraseCandidate, lexical *lexicon.Index) bool {
+	for _, slotID := range []string{"subject", "recipient", "theme"} {
+		article, found := englishGivingSequenceArticle(alternative.VariantID.String(), slotID)
+		if !found {
+			return false
+		}
+		var binding *parser.SlotBinding
+		for index := range alternative.Slots {
+			if alternative.Slots[index].SlotID == slotID {
+				binding = &alternative.Slots[index]
+				break
+			}
+		}
+		if binding == nil || len(binding.CandidateIDs) == 0 {
+			return false
+		}
+		for _, candidateID := range binding.CandidateIDs {
+			phrase, exists := candidates[candidateID]
+			if !exists || phrase.LexemeID.String() == "" {
+				return false
+			}
+			lexeme, exists := lexical.ByLexemeID(phrase.LexemeID)
+			if !exists {
+				return false
+			}
+			if article == "a" || article == "an" {
+				articleForm, knownArticle := englishIndefiniteArticle(lexeme.Properties)
+				mass, pluralOnly := englishNumberClass(lexeme.Properties, lexeme.ParadigmID)
+				number := string(phrase.Features["noun_number"])
+				if !knownArticle || articleForm != article || mass || pluralOnly || number != "singular" {
+					return false
+				}
+			}
+		}
+	}
+	return true
+}
+
+func englishGivingSequenceArticle(variantID, slotID string) (string, bool) {
+	parts := strings.Split(variantID, ".")
+	if len(parts) == 0 {
+		return "", false
+	}
+	articles := strings.Split(parts[len(parts)-1], "_")
+	position := map[string]int{"subject": 0, "recipient": 1, "theme": 2}[slotID]
+	if len(articles) != 3 || position >= len(articles) {
+		return "", false
+	}
+	article := articles[position]
+	return article, article == "the" || article == "a" || article == "an"
 }
 
 func englishWHQuestionCoverage(lattice analyzer.LexicalLattice, candidates []parser.PhraseCandidate, forest parser.Forest) bool {

@@ -91,6 +91,7 @@ type TargetCandidate struct {
 	CompiledVariant      construction.CompiledVariant
 	ConstructionPlan     construction.ConstructionPlan
 	SoftConstraintMisses []valency.SoftConstraintMiss
+	MissingOmittedRoles  []meaning.Role
 }
 
 // Result preserves every retained target alternative and the combined status.
@@ -583,7 +584,12 @@ func SelectTargets(input Input) (Result, error) {
 								answerCopy := *source.QuestionAnswer
 								questionAnswer = &answerCopy
 							}
-							result.Candidates = append(result.Candidates, TargetCandidate{SourceCandidateID: source.ID, SemanticID: source.SemanticID, NodeID: node.ID, Kind: node.Kind, QuestionAnswer: questionAnswer, Roles: roles, Outcome: nodeOutcome, Diagnostics: append([]status.Diagnostic(nil), nodeDiagnostics...), Lexeme: lexeme, Sense: sense, TransferBinding: transfer, Frame: frame, ConstructionBinding: binding, Family: family, CompiledVariant: compiledVariant, ConstructionPlan: plan, SoftConstraintMisses: append([]valency.SoftConstraintMiss(nil), validation.SoftConstraintMisses...)})
+							if len(validation.MissingOmittedRoles) > 0 {
+								nodeOutcome = mergeOutcome(nodeOutcome, status.OutcomeIncomplete)
+								result.Outcome = mergeOutcome(result.Outcome, status.OutcomeIncomplete)
+								nodeDiagnostics = appendDiagnostic(nodeDiagnostics, "TARGET_ROLE_ABSENT_BY_FRAME_LICENSE", "source Meaning omits a role explicitly permitted by this exact frame", "meaning."+string(node.ID)+".participants")
+							}
+							result.Candidates = append(result.Candidates, TargetCandidate{SourceCandidateID: source.ID, SemanticID: source.SemanticID, NodeID: node.ID, Kind: node.Kind, QuestionAnswer: questionAnswer, Roles: roles, Outcome: nodeOutcome, Diagnostics: append([]status.Diagnostic(nil), nodeDiagnostics...), Lexeme: lexeme, Sense: sense, TransferBinding: transfer, Frame: frame, ConstructionBinding: binding, Family: family, CompiledVariant: compiledVariant, ConstructionPlan: plan, SoftConstraintMisses: append([]valency.SoftConstraintMiss(nil), validation.SoftConstraintMisses...), MissingOmittedRoles: append([]meaning.Role(nil), validation.MissingOmittedRoles...)})
 							nodeCounts[nodeKey]++
 						}
 					}

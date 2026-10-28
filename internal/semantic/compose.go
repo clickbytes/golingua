@@ -710,6 +710,21 @@ func composeAlternative(result *ComposeResult, input CompositionInput, alternati
 			}
 			candidate.Evidence.Outcome = outcome
 			candidate.Evidence.Records = append(candidate.Evidence.Records, unresolvedRoleRecords...)
+			if candidate.Meaning != nil {
+				// Missing roles are derived from the exact frame validation below;
+				// they remain absent from the Meaning graph.
+				for _, role := range candidate.MissingSurfaceOmittedRoles {
+					candidate.Evidence.Records = append(candidate.Evidence.Records, EvidenceRecord{
+						SourceSpan: predicate.Span, CandidateID: predicate.ID, PhraseNodeID: phraseNodes[predicate.ID],
+						ReadingID: firstString(predicate.ReadingIDs), SenseID: predicateMapping.sense,
+						CoreConceptID: predicateMapping.binding.CoreRef, BindingKey: BindingKeyFor(predicateMapping.sense, predicateMapping.binding.CoreRef),
+						PlanID: alternative.PlanID, FamilyID: alternative.FamilyID, VariantID: alternative.VariantID,
+						FrameID: alternative.Permission.FrameID, Role: role, Outcome: status.OutcomeIncomplete,
+						Reason:     "frame explicitly permits this semantic role to be absent from the source Meaning",
+						Provenance: predicateMapping.binding.Provenance,
+					})
+				}
+			}
 			if unresolvedReason == UnresolvedRoleSenseReason && len(unresolvedRoleRecords) > 0 {
 				candidate.Evidence.Diagnostics = appendDiagnostic(candidate.Evidence.Diagnostics, semanticDiagnostic(DiagnosticUnresolvedRoleSense, unresolvedReason, "roles"))
 			}
@@ -897,6 +912,11 @@ func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlter
 	diagnostics := []status.Diagnostic{}
 	if frameErr != nil {
 		outcome, diagnostics = errorOutcome(frameErr)
+	} else if len(validation.MissingOmittedRoles) > 0 {
+		outcome = status.OutcomeIncomplete
+		for _, role := range validation.MissingOmittedRoles {
+			diagnostics = appendDiagnostic(diagnostics, semanticDiagnostic("SURFACE_OMITTED_ROLE", "licensed semantic role is absent from the source Meaning; no participant was inferred", "meaning_node.participants."+string(role)))
+		}
 	}
 	if partialStatus != "" && partialStatus != status.OutcomeOK {
 		outcome = mergeSemanticOutcome(outcome, partialStatus)
@@ -931,7 +951,7 @@ func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlter
 		outcome = mergeSemanticOutcome(outcome, identityOutcome)
 		diagnostics = appendDiagnostics(diagnostics, identityDiagnostics...)
 	}
-	candidate := MeaningCandidate{ID: id, SemanticID: semanticID, Meaning: &graph, Contexts: []MeaningContext{{Meaning: graph, Context: refs}}, Status: outcome, Evidence: EvidenceTrace{AlternativeID: id, Outcome: outcome, Records: append([]EvidenceRecord(nil), records...), Diagnostics: append([]status.Diagnostic(nil), diagnostics...)}, SoftConstraintMisses: append([]valency.SoftConstraintMiss(nil), validation.SoftConstraintMisses...), DerivationIDs: []string{alternative.DerivationID}}
+	candidate := MeaningCandidate{ID: id, SemanticID: semanticID, Meaning: &graph, Contexts: []MeaningContext{{Meaning: graph, Context: refs}}, Status: outcome, Evidence: EvidenceTrace{AlternativeID: id, Outcome: outcome, Records: append([]EvidenceRecord(nil), records...), Diagnostics: append([]status.Diagnostic(nil), diagnostics...)}, SoftConstraintMisses: append([]valency.SoftConstraintMiss(nil), validation.SoftConstraintMisses...), MissingSurfaceOmittedRoles: append([]meaning.Role(nil), validation.MissingOmittedRoles...), DerivationIDs: []string{alternative.DerivationID}}
 	if err := candidate.Evidence.ValidateWithBudget(budget.Evidence); err != nil {
 		return MeaningCandidate{}, nil, nil, "", nil, err
 	}

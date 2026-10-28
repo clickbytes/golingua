@@ -728,6 +728,9 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 		attributedFamily     = "construction:en.attributed_seeing"
 	)
 	familyID := candidate.Family.Family.ID.String()
+	if familyID == "construction:en.give.transfer" && candidate.Kind == meaning.KindEvent {
+		return englishGivingTargetCandidateAllowed(source, candidate, candidates)
+	}
 	if (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState) && !englishPredicateEvidenceConsistent(source, candidate) {
 		return false
 	}
@@ -1096,6 +1099,105 @@ func englishIdentificationVariantArticleAllowed(identification englishIdentifica
 		}
 	}
 	return false
+}
+
+func englishGivingTargetCandidateAllowed(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) bool {
+	if candidate.CompiledVariant.Variant.DirectionPolicy == construction.DirectionAnalyze || !englishPredicateEvidenceConsistent(source, candidate) {
+		return false
+	}
+	var roleSlots map[meaning.Role]string
+	switch {
+	case candidate.Sense.ID.String() == "sense:en.give.transfer":
+		roleSlots = map[meaning.Role]string{"giver": "subject", "recipient": "recipient", "theme": "theme"}
+	case candidate.Sense.ID.String() == "sense:en.buying.event" && candidate.Frame.ID == "en.buying.event.commerce" && strings.HasPrefix(candidate.CompiledVariant.Variant.ID.String(), "construction:en.give.transfer.from_pp."):
+		roleSlots = map[meaning.Role]string{"buyer": "subject", "seller": "recipient", "goods": "theme"}
+	case candidate.Sense.ID.String() == "sense:en.selling.event" && candidate.Frame.ID == "en.selling.event.commerce" && strings.HasPrefix(candidate.CompiledVariant.Variant.ID.String(), "construction:en.give.transfer.to_pp."):
+		roleSlots = map[meaning.Role]string{"seller": "subject", "buyer": "recipient", "goods": "theme"}
+	default:
+		return false
+	}
+	predicate, ok := englishMeaningNode(source, candidate.NodeID)
+	if !ok || predicate.Kind != meaning.KindEvent {
+		return false
+	}
+	for role, slotID := range roleSlots {
+		var referent meaning.Node
+		for _, participant := range predicate.Participants {
+			if participant.Role == role {
+				referent = findMeaningNode(*source.Meaning, participant.Target)
+				break
+			}
+		}
+		if referent.ID == "" {
+			return false
+		}
+		article, foundArticle := englishGivingVariantArticle(candidate, slotID)
+		if !foundArticle {
+			return false
+		}
+		lexical := make([]realizer.TargetCandidate, 0, 2)
+		for _, available := range candidates {
+			if available.NodeID == referent.ID && available.Kind == meaning.KindReferent && available.Lexeme.ID.String() != "" &&
+				available.TransferBinding.CoreRef.String() == string(referent.Concept) && !englishChildKinshipTargetCandidate(available) {
+				lexical = append(lexical, available)
+			}
+		}
+		if len(lexical) == 0 {
+			return false
+		}
+		number, numberSet := "", false
+		mass, pluralOnly, articleForm := true, true, ""
+		for _, item := range lexical {
+			itemNumber, _, known := englishTargetNumber(source, referent.ID, item.Lexeme.Properties, item.Lexeme.ParadigmID)
+			if !known || numberSet && itemNumber != number {
+				return false
+			}
+			number, numberSet = itemNumber, true
+			itemMass, itemPluralOnly := englishNumberClass(item.Lexeme.Properties, item.Lexeme.ParadigmID)
+			mass, pluralOnly = mass && itemMass, pluralOnly && itemPluralOnly
+			if itemArticle, known := englishIndefiniteArticle(item.Lexeme.Properties); known {
+				if articleForm != "" && articleForm != itemArticle {
+					return false
+				}
+				articleForm = itemArticle
+			} else if article == "a" || article == "an" {
+				return false
+			}
+		}
+		if !numberSet || !englishVariantRequiresNPNumber(candidate, slotID, number) {
+			return false
+		}
+		actual := englishDeterminerFeature(article)
+		if actual == "indefinite" && (mass || pluralOnly || number != "singular" || articleForm != article) {
+			return false
+		}
+		if actual == "bare" && !mass && !pluralOnly && number != "plural" {
+			return false
+		}
+		if values, found := runtime.SourceFeatures(source, role, coreConcept(referent)); found && values["determiner"] != "" && string(values["determiner"]) != actual {
+			return false
+		}
+	}
+	return true
+}
+
+func englishGivingVariantArticle(candidate realizer.TargetCandidate, slotID string) (string, bool) {
+	for index, token := range candidate.CompiledVariant.Variant.Sequence {
+		if token.Kind != construction.TokenSlot || token.SlotID != slotID {
+			continue
+		}
+		for prior := index - 1; prior >= 0; prior-- {
+			previous := candidate.CompiledVariant.Variant.Sequence[prior]
+			if previous.Kind == construction.TokenSlot {
+				break
+			}
+			if previous.Kind == construction.TokenTerminal && isEnglishDeterminerToken(previous.Terminal) {
+				return previous.Terminal, true
+			}
+		}
+		return "", false
+	}
+	return "", false
 }
 
 // englishWHQuestionTargetCandidate selects a neutral target variant by its

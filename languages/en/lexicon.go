@@ -1179,6 +1179,7 @@ var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
 }
 
 var englishFrameBySense = map[string]lexicon.ValencyID{
+	"en.give.transfer":        "en.give.transfer",
 	"en.working.activity":     "en.working_activity.intransitive",
 	"en.be.class_membership":  "en.be.class_membership.frame",
 	"en.black.color":          "en.black.color.frame",
@@ -1238,6 +1239,9 @@ var englishParadigmByLexeme = map[string]string{
 	"en.working.v":        "en_verb_finite_principal_parts",
 	"en.flying_motion.v":  "en_verb_finite_principal_parts",
 	"en.go.v":             "en_verb_finite_principal_parts",
+	"en.give.v":           "en_verb_finite_principal_parts",
+	"en.buying.v":         "en_verb_finite_principal_parts",
+	"en.selling.v":        "en_verb_finite_principal_parts",
 	// Count nouns use only a spelling class that matches their declared lemma;
 	// mass nouns stay on the explicit singular-only class below.
 	"en.mother.n": "en_noun_regular", "en.father.n": "en_noun_regular",

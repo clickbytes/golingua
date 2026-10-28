@@ -12,22 +12,26 @@ import (
 )
 
 const (
-	sentenceSeeingCapabilityEvidenceID      = "sentence.seeing.present.singular.v1"
-	sentenceSeeingNegationEvidenceID        = "sentence.seeing.negation.present.singular.v1"
-	sentencePresentNegationEvidenceID       = "sentence.present.negation.transitive_oblique.singular_plural.v1"
-	sentenceHearingCapabilityEvidenceID     = "sentence.hearing.present.singular.v1"
-	sentenceReceivingCapabilityEvidenceID   = "sentence.receiving.past.singular.v1"
-	sentenceLookingCapabilityEvidenceID     = "sentence.looking.present.singular.v1"
-	sentenceReadingCapabilityEvidenceID     = "sentence.reading.present.singular_plural.v1"
-	sentenceReadingPastCapabilityEvidenceID = "sentence.reading.past.third_person.v1"
-	sentenceIdentificationClassEvidenceID   = "A1-ID-002-PL-EN"
-	sentenceIdentificationBlackEvidenceID   = "A1-ID-004-PL-EN"
-	englishIdentificationClassEvidenceID    = "A1-ID-001-EN-PL"
-	englishIdentificationBlackEvidenceID    = "A1-ID-003-EN-PL"
-	sentencePolishNegativeClassEvidenceID   = "A1-NEG-002-PL-EN"
-	sentencePolishNegativeSeeingEvidenceID  = "A1-NEG-004-PL-EN"
-	sentenceEnglishNegativeClassEvidenceID  = "A1-NEG-001-EN-PL"
-	sentenceEnglishNegativeSeeingEvidenceID = "A1-NEG-003-EN-PL"
+	sentenceSeeingCapabilityEvidenceID       = "sentence.seeing.present.singular.v1"
+	sentenceSeeingNegationEvidenceID         = "sentence.seeing.negation.present.singular.v1"
+	sentencePresentNegationEvidenceID        = "sentence.present.negation.transitive_oblique.singular_plural.v1"
+	sentenceHearingCapabilityEvidenceID      = "sentence.hearing.present.singular.v1"
+	sentenceReceivingCapabilityEvidenceID    = "sentence.receiving.past.singular.v1"
+	sentenceLookingCapabilityEvidenceID      = "sentence.looking.present.singular.v1"
+	sentenceReadingCapabilityEvidenceID      = "sentence.reading.present.singular_plural.v1"
+	sentenceReadingPastCapabilityEvidenceID  = "sentence.reading.past.third_person.v1"
+	sentenceIdentificationClassEvidenceID    = "A1-ID-002-PL-EN"
+	sentenceIdentificationBlackEvidenceID    = "A1-ID-004-PL-EN"
+	englishIdentificationClassEvidenceID     = "A1-ID-001-EN-PL"
+	englishIdentificationBlackEvidenceID     = "A1-ID-003-EN-PL"
+	sentencePolishNegativeClassEvidenceID    = "A1-NEG-002-PL-EN"
+	sentencePolishNegativeSeeingEvidenceID   = "A1-NEG-004-PL-EN"
+	sentenceEnglishNegativeClassEvidenceID   = "A1-NEG-001-EN-PL"
+	sentenceEnglishNegativeSeeingEvidenceID  = "A1-NEG-003-EN-PL"
+	sentencePolishBuyingOmissionEvidenceID   = "A1.4-AC-472-PL-EN:analyze"
+	sentencePolishSellingOmissionEvidenceID  = "A1.4-AC-476-PL-EN:analyze"
+	sentenceEnglishBuyingOmissionEvidenceID  = "A1.4-AC-471-EN-PL:analyze"
+	sentenceEnglishSellingOmissionEvidenceID = "A1.4-AC-475-EN-PL:analyze"
 )
 
 // BuildSentenceLanguagePackage exposes only requested exact approved sentence
@@ -121,9 +125,9 @@ func SentenceCapabilityEvidence(languageID features.LanguageID) []language.Capab
 func sentenceCapabilityEvidenceIDs(languageID features.LanguageID) []string {
 	caseIDs := []string{sentenceSeeingCapabilityEvidenceID, sentenceSeeingNegationEvidenceID, sentencePresentNegationEvidenceID, sentenceHearingCapabilityEvidenceID, sentenceReceivingCapabilityEvidenceID, sentenceLookingCapabilityEvidenceID, sentenceReadingCapabilityEvidenceID, sentenceReadingPastCapabilityEvidenceID}
 	if languageID == "pl" {
-		caseIDs = append(caseIDs, sentenceIdentificationClassEvidenceID, sentenceIdentificationBlackEvidenceID, sentencePolishNegativeClassEvidenceID, sentencePolishNegativeSeeingEvidenceID)
+		caseIDs = append(caseIDs, sentenceIdentificationClassEvidenceID, sentenceIdentificationBlackEvidenceID, sentencePolishNegativeClassEvidenceID, sentencePolishNegativeSeeingEvidenceID, sentencePolishBuyingOmissionEvidenceID, sentencePolishSellingOmissionEvidenceID)
 	} else if languageID == "en" {
-		caseIDs = append(caseIDs, englishIdentificationClassEvidenceID, englishIdentificationBlackEvidenceID, sentenceEnglishNegativeClassEvidenceID, sentenceEnglishNegativeSeeingEvidenceID)
+		caseIDs = append(caseIDs, englishIdentificationClassEvidenceID, englishIdentificationBlackEvidenceID, sentenceEnglishNegativeClassEvidenceID, sentenceEnglishNegativeSeeingEvidenceID, sentenceEnglishBuyingOmissionEvidenceID, sentenceEnglishSellingOmissionEvidenceID)
 	}
 	return caseIDs
 }
@@ -131,9 +135,9 @@ func sentenceCapabilityEvidenceIDs(languageID features.LanguageID) []string {
 func currentSentenceSenseNames(languageID features.LanguageID) ([]string, bool) {
 	switch languageID {
 	case "en":
-		return []string{"en.see.visual", "en.hear.auditory", "en.get.receive", "en.look.directed", "en.read.text", "en.be.class_membership", "en.black.color", "en.eating.event", "en.drinking.event", "en.opening_object.event", "en.closing_object.event", "en.carrying.event", "en.holding_object.event", "en.pulling_object.event", "en.pushing_object.event", "en.cutting_object.event", "en.folding_object.event", "en.tearing_object.event", "en.sleep.physiological", "en.breathing.event", "en.sneezing.event", "en.running.event", "en.coughing.event", "en.walking.event", "en.living.event", "en.flying_motion.event", "en.waking_up.event", "en.falling_asleep.event", "en.working.activity", "en.go.spatial_movement"}, true
+		return []string{"en.see.visual", "en.hear.auditory", "en.get.receive", "en.look.directed", "en.read.text", "en.be.class_membership", "en.black.color", "en.eating.event", "en.drinking.event", "en.buying.event", "en.selling.event", "en.opening_object.event", "en.closing_object.event", "en.carrying.event", "en.holding_object.event", "en.pulling_object.event", "en.pushing_object.event", "en.cutting_object.event", "en.folding_object.event", "en.tearing_object.event", "en.sleep.physiological", "en.breathing.event", "en.sneezing.event", "en.running.event", "en.coughing.event", "en.walking.event", "en.living.event", "en.flying_motion.event", "en.waking_up.event", "en.falling_asleep.event", "en.working.activity", "en.go.spatial_movement", "en.give.transfer"}, true
 	case "pl":
-		return []string{"pl.widziec.visual", "pl.slyszec.auditory", "pl.dostac.receive", "pl.patrzec.directed", "pl.czytac.interpret", "pl.byc.class_membership", "pl.czarny.black", "pl.jesc.eat", "pl.pic.drink", "pl.otwierac_obiekt.open", "pl.zamykac_obiekt.close", "pl.niesc.carry", "pl.trzymac.hold", "pl.ciagnac.pull", "pl.pchac.push", "pl.ciac.cut", "pl.skladac.fold", "pl.rozdzierac.tear", "pl.spac.sleep", "pl.oddychac.breathe", "pl.kichac.sneeze", "pl.biec.run", "pl.kaszlec.cough", "pl.chodzic.walk", "pl.zyc.live", "pl.latac.fly", "pl.zasypiac.sleep", "pl.budzic_sie.wake", "pl.pracowac.activity", "pl.isc.move"}, true
+		return []string{"pl.widziec.visual", "pl.slyszec.auditory", "pl.dostac.receive", "pl.patrzec.directed", "pl.czytac.interpret", "pl.byc.class_membership", "pl.czarny.black", "pl.jesc.eat", "pl.pic.drink", "pl.kupowac.buy", "pl.sprzedawac.sell", "pl.otwierac_obiekt.open", "pl.zamykac_obiekt.close", "pl.niesc.carry", "pl.trzymac.hold", "pl.ciagnac.pull", "pl.pchac.push", "pl.ciac.cut", "pl.skladac.fold", "pl.rozdzierac.tear", "pl.spac.sleep", "pl.oddychac.breathe", "pl.kichac.sneeze", "pl.biec.run", "pl.kaszlec.cough", "pl.chodzic.walk", "pl.zyc.live", "pl.latac.fly", "pl.zasypiac.sleep", "pl.budzic_sie.wake", "pl.pracowac.activity", "pl.isc.move", "pl.dawac.transfer"}, true
 	default:
 		return nil, false
 	}

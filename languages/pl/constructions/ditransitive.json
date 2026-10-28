@@ -84,6 +84,239 @@
         "version": "1",
         "license": "internal"
       }
+    },
+    {
+      "id": "construction:pl.ditransitive.svo.period",
+      "family_id": "construction:pl.ditransitive",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/pl/constructions/ditransitive.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:pl.ditransitive.recipient_front",
+      "family_id": "construction:pl.ditransitive",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "analyze",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/pl/constructions/ditransitive.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:pl.ditransitive.recipient_front.period",
+      "family_id": "construction:pl.ditransitive",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "analyze",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/pl/constructions/ditransitive.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:pl.ditransitive.object_front",
+      "family_id": "construction:pl.ditransitive",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "analyze",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/pl/constructions/ditransitive.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:pl.ditransitive.object_front.period",
+      "family_id": "construction:pl.ditransitive",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "analyze",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/pl/constructions/ditransitive.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:pl.ditransitive.object_before_recipient",
+      "family_id": "construction:pl.ditransitive",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/pl/constructions/ditransitive.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:pl.ditransitive.object_before_recipient.period",
+      "family_id": "construction:pl.ditransitive",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/pl/constructions/ditransitive.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
     }
   ]
 }

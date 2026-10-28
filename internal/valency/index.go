@@ -47,7 +47,7 @@ func BuildIndexWithCandidates(frames []ValencyFrame, bindings []ConstructionBind
 		if err := frame.Validate(); err != nil {
 			return nil, err
 		}
-		indexItems += len(frame.SemanticRoles) + len(frame.Arguments) + len(frame.SelectionalConstraints) + len(frame.AllowedFamilyIDs)
+		indexItems += len(frame.SemanticRoles) + len(frame.Arguments) + len(frame.SurfaceOmittedRoles) + len(frame.SelectionalConstraints) + len(frame.AllowedFamilyIDs)
 		for _, constraint := range frame.SelectionalConstraints {
 			indexItems += len(constraint.AllowedConceptIDs) + len(constraint.ExcludedConceptIDs) + len(constraint.AllowedKinds)
 		}
