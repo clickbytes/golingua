@@ -32,7 +32,22 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if err != nil {
 		return nil, err
 	}
+	return NewSentenceSourceWithSeed(snapshot, seed)
+}
+
+// NewSentenceSourceWithSeed builds source analysis using the caller's exact
+// compiled morphology seed.
+func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.SourcePipeline, error) {
+	if snapshot == nil {
+		return nil, fmt.Errorf("Polish sentence source requires a snapshot")
+	}
+	if seed == nil {
+		return nil, fmt.Errorf("Polish sentence source requires a Polish morphology seed")
+	}
 	profile, inverse, _, _ := seed.RuntimeMorphology()
+	if profile == nil || profile.Language() != "pl" || inverse == nil {
+		return nil, fmt.Errorf("Polish sentence source requires a Polish morphology seed")
+	}
 	valencyIndex, err := CompileValency()
 	if err != nil {
 		return nil, err

@@ -32,11 +32,27 @@ func NewSentenceProvider(snapshot *pack.Pack) (language.Package, language.Langua
 	if snapshot == nil {
 		return language.Package{}, nil, fmt.Errorf("English sentence provider requires a validated snapshot")
 	}
-	source, err := NewSentenceSource(snapshot)
+	seed, err := Load()
 	if err != nil {
 		return language.Package{}, nil, err
 	}
-	realizer, valencyIndex, err := newSentencePlanRealizer(snapshot)
+	return NewSentenceProviderWithSeed(snapshot, seed)
+}
+
+// NewSentenceProviderWithSeed builds analysis and realization over the same
+// caller-supplied English morphology seed.
+func NewSentenceProviderWithSeed(snapshot *pack.Pack, seed *Seed) (language.Package, language.LanguageProvider, error) {
+	if snapshot == nil {
+		return language.Package{}, nil, fmt.Errorf("English sentence provider requires a validated snapshot")
+	}
+	if seed == nil {
+		return language.Package{}, nil, fmt.Errorf("English sentence provider requires an English morphology seed")
+	}
+	source, err := NewSentenceSourceWithSeed(snapshot, seed)
+	if err != nil {
+		return language.Package{}, nil, err
+	}
+	realizer, valencyIndex, err := newSentencePlanRealizerWithSeed(snapshot, seed)
 	if err != nil {
 		return language.Package{}, nil, err
 	}
@@ -91,12 +107,14 @@ func (provider *sentenceProvider) Realize(ctx context.Context, graph meaning.Mea
 	return provider.realizer.Realize(ctx, graph, targetID, plan)
 }
 
-func newSentencePlanRealizer(snapshot *pack.Pack) (*runtime.ConstructionPlanRealizer, *valency.Index, error) {
-	seed, err := Load()
-	if err != nil {
-		return nil, nil, err
+func newSentencePlanRealizerWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.ConstructionPlanRealizer, *valency.Index, error) {
+	if snapshot == nil || seed == nil {
+		return nil, nil, fmt.Errorf("English sentence realizer requires a snapshot and English morphology seed")
 	}
 	profile, _, _, _ := seed.RuntimeMorphology()
+	if profile == nil || profile.Language() != "en" {
+		return nil, nil, fmt.Errorf("English sentence realizer requires an English morphology seed")
+	}
 	valencyIndex, err := CompileValency()
 	if err != nil {
 		return nil, nil, err
@@ -109,7 +127,7 @@ func newSentencePlanRealizer(snapshot *pack.Pack) (*runtime.ConstructionPlanReal
 	if err != nil {
 		return nil, nil, err
 	}
-	execution, err := NewSentenceExecutionBuilder()
+	execution, err := NewSentenceExecutionBuilderWithSeed(seed)
 	if err != nil {
 		return nil, nil, err
 	}
