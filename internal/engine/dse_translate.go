@@ -183,6 +183,12 @@ func (engine *Engine) translateDSE(ctx context.Context, request Request) (Transl
 			// realizer retains those details as residuals and returns an incomplete
 			// result; it does not let them become a complete translation.
 			realized, realizeErr = engine.realizeAlgebra(requestContext, request.To, targetDocument, targetResources.TargetPackage, profile.SelectedMetadata, false)
+		} else if dseCoordinationDefinitePreview(targetDocument, candidate) {
+			// A checked source definite presupposition may remain unexpressed in
+			// the target language. Permit text as an explicitly incomplete preview
+			// only for this narrow coordinated shape; the target residual remains
+			// attached and no condition is consumed here.
+			realized, realizeErr = engine.realizeAlgebra(requestContext, request.To, targetDocument, targetResources.TargetPackage, profile.SelectedMetadata, false)
 		} else {
 			realized, realizeErr = engine.RealizeDSEAlgebra(requestContext, request.To, targetDocument, targetResources.TargetPackage, profile.SelectedMetadata)
 		}
@@ -257,6 +263,91 @@ func (engine *Engine) translateDSE(ctx context.Context, request Request) (Transl
 		return dseOutputLimitResult(request, profile, trace.PackIdentity), nil
 	}
 	return finalizeResult(result)
+}
+
+func dseCoordinationDefinitePreview(document algebra.Document, candidate semantic.DSECandidate) bool {
+	root := document.Expression
+	if root == nil || root.Kind != algebra.TermAnd || len(root.Operands) != 2 || root.Operands[0] == nil || root.Operands[0].Kind != algebra.TermAtom || root.Operands[1] == nil || root.Operands[1].Kind != algebra.TermAtom || document.RequestContext == nil || len(document.RequestContext.Conditions) == 0 {
+		return false
+	}
+	requestContext := document.RequestContext
+	if requestContext.SpeakerReferentID != "" || requestContext.AddresseeReferentID != "" || len(requestContext.Mentions) != 0 || len(requestContext.ResolutionEvidence) != 0 {
+		return false
+	}
+	roleReferences := map[string]map[string]bool{}
+	eventReferences := map[string]bool{}
+	for _, operand := range root.Operands {
+		for _, argument := range operand.Args {
+			if argument.Role == "" || argument.Value == nil || argument.Value.Kind != algebra.TermRef || argument.Value.Type == nil {
+				return false
+			}
+			if argument.Value.Type.Kind == algebra.TypeEvent {
+				if argument.Role != "event" {
+					return false
+				}
+				eventReferences[argument.Value.ID] = true
+				continue
+			}
+			if argument.Value.Type.Kind != algebra.TypeEntity || argument.Role == "event" {
+				return false
+			}
+			if roleReferences[argument.Value.ID] == nil {
+				roleReferences[argument.Value.ID] = map[string]bool{}
+			}
+			roleReferences[argument.Value.ID][argument.Role] = true
+		}
+	}
+	for _, referent := range requestContext.Referents {
+		switch referent.Type.Kind {
+		case algebra.TypeEvent:
+			if referent.ReferenceTimeID != "" || referent.Multiplicity != "" || !eventReferences[referent.ID] {
+				return false
+			}
+		case algebra.TypeEntity:
+			if referent.TemporalFrame != "" || referent.ReferenceTimeID != "" || len(roleReferences[referent.ID]) == 0 {
+				return false
+			}
+		default:
+			return false
+		}
+	}
+	for _, condition := range document.RequestContext.Conditions {
+		if condition.Kind != algebra.ContextPresupposition || condition.Code != "definite_reference" || condition.Expression == nil || condition.Expression.Kind != algebra.TermAtom || len(condition.Expression.Args) != 1 || condition.Expression.Args[0].Role == "" {
+			return false
+		}
+		argument := condition.Expression.Args[0]
+		if argument.Value == nil || argument.Value.Kind != algebra.TermRef || argument.Value.Type == nil || argument.Value.Type.Kind != algebra.TypeEntity || len(condition.TargetReferentIDs) != 1 || condition.TargetReferentIDs[0] != argument.Value.ID {
+			return false
+		}
+		roles, referenced := roleReferences[argument.Value.ID]
+		if !referenced || len(roles) == 0 {
+			return false
+		}
+		covered := false
+		for _, roleSource := range candidate.RoleSources {
+			if roleSource.ReferenceID == argument.Value.ID && roleSource.WHGap == nil && roles[roleSource.Role] {
+				covered = true
+				break
+			}
+		}
+		if !covered {
+			return false
+		}
+		coverageCount := 0
+		for _, coverage := range candidate.ConditionCoverage {
+			if coverage.ConditionID != condition.ID {
+				continue
+			}
+			if coverage.Kind != "presupposition" || coverage.Code != condition.Code || len(coverage.TargetReferenceIDs) != 1 || coverage.TargetReferenceIDs[0] != argument.Value.ID {
+				return false
+			}
+			coverageCount++
+		}
+		if coverageCount == 0 {
+			return false
+		}
+	}
+	return true
 }
 
 func consumeDSELexicalConditions(sourcePackage *language.SemanticLanguagePackage, candidate semantic.DSECandidate, document algebra.Document, mappings []DSEReferenceConceptMapping) (algebra.Document, []DSEConditionConsumption) {
