@@ -103,6 +103,68 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	if err != nil {
 		return nil, err
 	}
+	manipulationSenses := map[ids.SenseID]bool{}
+	for _, name := range []string{"en.opening_object.event", "en.closing_object.event", "en.carrying.event", "en.holding_object.event", "en.pulling_object.event", "en.pushing_object.event", "en.cutting_object.event", "en.folding_object.event", "en.tearing_object.event"} {
+		sense, senseErr := ids.NewSenseID(name)
+		if senseErr != nil {
+			return nil, senseErr
+		}
+		manipulationSenses[sense] = true
+	}
+	supportedSenses := map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true, eatingSense: true, drinkingSense: true}
+	for sense := range manipulationSenses {
+		supportedSenses[sense] = true
+	}
+	predicateAlternatives := map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
+		seeingSense: {
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "singular", "number": "singular"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "plural", "number": "plural"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "second", "verb_number": "singular", "number": "singular"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "second", "verb_number": "plural", "number": "plural"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
+			{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"},
+		},
+		hearingSense: {
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "singular", "number": "singular"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "plural", "number": "plural"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "second", "verb_number": "singular", "number": "singular"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "second", "verb_number": "plural", "number": "plural"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
+		},
+		lookingSense: {
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
+		},
+		readingSense: {
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "singular", "number": "singular"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "plural", "number": "plural"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "second", "verb_number": "singular", "number": "singular"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "second", "verb_number": "plural", "number": "plural"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
+			{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"},
+		},
+		// English simple past is finite but has one form for all persons
+		// and numbers, so no agreement feature is required for this cell.
+		receivingSense: {{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"}},
+		classificationSense: {
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "number": "singular", "verb_number": "singular"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "number": "plural", "verb_number": "plural"},
+		},
+		attributionSense: {{"adjective_degree": "positive"}},
+		eatingSense:      {{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"}, {"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"}},
+		drinkingSense:    {{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"}, {"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"}},
+		// The new manipulation routes are restricted to third-person present.
+		// They are filled below through a precomputed list.
+	}
+	for sense := range manipulationSenses {
+		predicateAlternatives[sense] = []map[features.FeatureID]features.FeatureValueID{
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
+		}
+	}
 	return &runtime.SourcePipeline{
 		Language: "en", ClauseConnector: "and", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}}, AllowFinalPeriod: false,
 		ScopedSourcePlan: scopedPlan, ScopedReadingPolicy: ScopedSourceReadingPolicy,
@@ -117,50 +179,9 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 			},
 		}}, lexicon: snapshot.Lexicon()}, lexicon: snapshot.Lexicon()}},
 		EvidenceBuilder: englishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), base: runtime.BareDeclarativeEvidenceBuilder{
-			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true, eatingSense: true, drinkingSense: true},
-			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
-				seeingSense: {
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "singular", "number": "singular"},
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "plural", "number": "plural"},
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "second", "verb_number": "singular", "number": "singular"},
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "second", "verb_number": "plural", "number": "plural"},
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
-					{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"},
-				},
-				hearingSense: {
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "singular", "number": "singular"},
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "plural", "number": "plural"},
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "second", "verb_number": "singular", "number": "singular"},
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "second", "verb_number": "plural", "number": "plural"},
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
-				},
-				lookingSense: {
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
-				},
-				readingSense: {
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "singular", "number": "singular"},
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "plural", "number": "plural"},
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "second", "verb_number": "singular", "number": "singular"},
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "second", "verb_number": "plural", "number": "plural"},
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
-					{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"},
-				},
-				// English simple past is finite but has one form for all persons
-				// and numbers, so no agreement feature is required for this cell.
-				receivingSense: {{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"}},
-				classificationSense: {
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "number": "singular", "verb_number": "singular"},
-					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "number": "plural", "verb_number": "plural"},
-				},
-				attributionSense: {{"adjective_degree": "positive"}},
-				eatingSense:      {{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"}, {"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"}},
-				drinkingSense:    {{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"}, {"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"}},
-			},
-			AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "do": true, "does": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true},
+			SupportedSenses:                     supportedSenses,
+			PredicateFeatureAlternativesBySense: predicateAlternatives,
+			AllowedUnlexicalizedTerminals:       map[string]bool{"at": true, "do": true, "does": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true},
 		}},
 	}, nil
 }

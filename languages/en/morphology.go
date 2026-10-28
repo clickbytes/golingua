@@ -70,6 +70,24 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 			principalParts = finiteEnglishPrincipalParts(lexeme, "eat", "eats", "ate", "eaten", "eating")
 		case "lexeme:en.drinking.v":
 			principalParts = finiteEnglishPrincipalParts(lexeme, "drink", "drinks", "drank", "drunk", "drinking")
+		case "lexeme:en.opening_object.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "open", "opens", "opened", "opened", "opening")
+		case "lexeme:en.closing_object.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "close", "closes", "closed", "closed", "closing")
+		case "lexeme:en.carrying.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "carry", "carries", "carried", "carried", "carrying")
+		case "lexeme:en.holding_object.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "hold", "holds", "held", "held", "holding")
+		case "lexeme:en.pulling_object.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "pull", "pulls", "pulled", "pulled", "pulling")
+		case "lexeme:en.pushing_object.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "push", "pushes", "pushed", "pushed", "pushing")
+		case "lexeme:en.cutting_object.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "cut", "cuts", "cut", "cut", "cutting")
+		case "lexeme:en.folding_object.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "fold", "folds", "folded", "folded", "folding")
+		case "lexeme:en.tearing_object.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "tear", "tears", "tore", "torn", "tearing")
 		}
 		if lexeme.ParadigmID == "en_noun_principal_parts" {
 			principalParts = englishNounPrincipalParts(lexeme)
