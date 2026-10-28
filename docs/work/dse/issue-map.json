@@ -747,14 +747,18 @@
         385
       ],
       "branch_name": "dse/08-03-pl-en-vertical-slices",
-      "status": "ACTIVE",
+      "status": "BLOCKED",
       "actual_base_sha": "dab9d23b48fe429ca4221c5efdf8e081bc6405b3",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/08-03-pl-en-vertical-slices",
       "pr_url": "https://github.com/clickbytes/golingua/pull/422",
       "merge_sha": null,
       "evidence_paths": [
         "docs/work/dse/vertical-slices.md",
-        "docs/work/dse/evidence/08-03/"
+        "docs/work/dse/evidence/08-03/",
+        "docs/work/dse/evidence/08-03/current/source-coordination/README.md",
+        "docs/work/dse/evidence/08-03/current/target-coordination/README.md",
+        "docs/work/dse/evidence/08-03/current/coordination-translation/README.md",
+        "docs/work/dse/evidence/08-03/current/scope-contract/README.md"
       ]
     },
     {

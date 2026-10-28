@@ -1,6 +1,6 @@
 # DSE-08-03: niezależne specyfikacje wycinków PL↔IR↔EN
 
-Status: wymagane sześć ścieżek dla każdego z trzech wycinków nie jest domknięte. WH źródła i round-trip powierzchni są teraz wykonywalne, ale niezależna realizacja i tłumaczenia zwracają `incomplete`; źródłowa koordynacja dwóch dodatnich klauzul EN/PL jest wykonywalna z jawnymi mapowaniami kandydatów, natomiast target relacji i obie ścieżki scope pozostają nieobsłużone. Cały #398 jest **PARTIAL**, a akceptacja językowa właściciela **NOT EVALUATED**. To nie są goldy ani twierdzenia o zatwierdzonej jakości językowej. Oczekiwania IR poniżej wynikają z formuł i ról, nie z outputu parsera lub generatora.
+Status 2026-10-28: **PARTIAL / BLOCKED na kontrakcie scope**. Źródłowa koordynacja EN/PL, niezależny target dwóch bezpośrednich atomów i skonfigurowane PL→EN są wykonywalne. EN→PL zachowuje odmowę dla warunków określoności; pełny anonimowy cel relacyjny, oba scope i pełne pokrycie kontekstu WH pozostają niedomknięte. PR #422 pozostaje draftem, bez merge. Owner language acceptance: **NOT EVALUATED**. Oczekiwania formalne poniżej nie zostały zmienione pod output silnika.
 
 ## Wspólny kontrakt wykonania
 
@@ -95,7 +95,7 @@ Każdy z sześciu kierunków ma zachować exact binder `x`, restryktor `Teacher(
 
 Istniejące neutralne przepisy `data/semantic/examples/scopes/build/not-all.json` i `build/all-not.json` oraz odpowiadające dokumenty `query/` pokazują struktury `Not(All(...))` i `All(Not(...))`, lecz używają nieinterpretowanych symboli, nie leksyki PL/EN. Obecne DSE plany nie mają mapowania kwantyfikatorów; zwykłe source plany mapują jedynie operator negacji. To granica danych/konstrukcji wymagająca osobnej obsługi, nie podstawa do zmiany oczekiwanych drzew.
 
-## Stan dowodów
+## Historyczny stan dowodów — 2026-10-27
 
 | Wycinek | Niezależne wymaganie | CLI PL→IR / EN→IR | IR→PL / IR→EN | Oba round-tripy | Dodatkowy evaluator | Akceptacja właściciela |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -143,3 +143,9 @@ Dodatkowa obserwacja źródłowa z 2026-10-28 używa jednego jawnie podanego kon
 Commit `a9df534` realizuje niezależny root `And` dwóch bezpośrednich dodatnich atomów zdarzeń przez dwa istniejące plany klauzul i lokalny plan koordynacji. Obserwowane EN: `The teacher sees the dog and the dog sees the teacher.` (16 jawnych wariantów/assumptions, `ambiguous`); PL: `Nauczyciel widzi psa i pies widzi nauczyciela.` (`incomplete` z zachowaną odmową innej trasy). Każdy wynik zachowuje oba event IDs, role i wspólny referent, a dowody targetu są weryfikowane oddzielnie dla obu klauzul. Nieobsługiwany drugi człon i zlanie zdarzeń nie dają częściowego tekstu. Zamiana ról zmienia powierzchnię; długie oryginalne ID nie łamią lokalnych limitów Meaning. Kontrole singleton i WH zachowują tekst i jawne reszty.
 
 [Pełny zapis targetu](evidence/08-03/current/target-coordination/README.md) obejmuje także wykrytą i naprawioną regresję WH. DSE translate nadal wymaga osobnej integracji kontekstu/provenance dwóch klauzul. Nie dowodzimy tu realizacji lambda/alias/kwantyfikatorów ani ukończenia sześciu przepływów całego wycinka. #398 pozostaje PARTIAL, owner acceptance NOT EVALUATED.
+
+## Odbiór bieżącego wznowienia — 2026-10-28
+
+Źródła i niezależny target koordynacji są opisane wyżej. [Skonfigurowany bridge](evidence/08-03/current/coordination-translation/README.md) dodaje PL→EN i diagnostyczną ponowną analizę jednego jawnie wybranego wariantu. Porównanie wyrażenia jest dodatnie, ale pełny kontekst nie jest równoważny bez uwzględnienia dodanych założeń określoności. EN→PL odmawia z zachowanymi warunkami określoności, więc odwrotny round-trip pozostaje NOT RUN. Cztery WH translate nadal dają tekst jako incomplete; meaningful residuals nie zostały usunięte.
+
+[Audyt kontraktu scope](evidence/08-03/current/scope-contract/README.md) odtworzył poprawność obu niezależnych AST, cztery odmowy realizacji i cztery odmowy analizy. Próba jawnego zapisu czasu na związanym Event e jest odrzucana jako UNKNOWN_FIELD. Aktualny Meaning v1 nie przenosi binderów/restryktorów. Wymagany jest zamknięty kontrakt scoped adaptera oraz reprezentacji czasu związanych zdarzeń przed implementacją; nie wolno zastąpić zmiennych referentami ani utracić czasu dla uzyskania tekstu. To bloker specyfikacji pełnego odbioru #398, a nie brak owner language acceptance. Pozostałe zadania planu zachowują kolejkę.

@@ -1,0 +1,453 @@
+{
+  "closed": true,
+  "expression": {
+    "kind": "And",
+    "operands": [
+      {
+        "args": [
+          {
+            "role": "event",
+            "value": {
+              "id": "E1",
+              "kind": "Ref",
+              "type": {
+                "kind": "Event"
+              }
+            }
+          },
+          {
+            "role": "experiencer",
+            "value": {
+              "id": "A",
+              "kind": "Ref",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          },
+          {
+            "role": "stimulus",
+            "value": {
+              "id": "B",
+              "kind": "Ref",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          }
+        ],
+        "kind": "Atom",
+        "symbol": "pilot.vision_event"
+      },
+      {
+        "args": [
+          {
+            "role": "event",
+            "value": {
+              "id": "E2",
+              "kind": "Ref",
+              "type": {
+                "kind": "Event"
+              }
+            }
+          },
+          {
+            "role": "experiencer",
+            "value": {
+              "id": "B",
+              "kind": "Ref",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          },
+          {
+            "role": "stimulus",
+            "value": {
+              "id": "A",
+              "kind": "Ref",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          }
+        ],
+        "kind": "Atom",
+        "symbol": "pilot.vision_event"
+      }
+    ]
+  },
+  "references": [
+    {
+      "id": "E1",
+      "type": {
+        "kind": "Event"
+      },
+      "temporal_frame": "present"
+    },
+    {
+      "id": "E2",
+      "type": {
+        "kind": "Event"
+      },
+      "temporal_frame": "present"
+    },
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      },
+      "multiplicity": "one"
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      },
+      "multiplicity": "one"
+    }
+  ],
+  "request_context": {
+    "conditions": [
+      {
+        "code": "lexical_descriptor",
+        "expression": {
+          "args": [
+            {
+              "role": "entity",
+              "value": {
+                "id": "A",
+                "kind": "Ref",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ],
+          "kind": "Atom",
+          "symbol": "probe.teacher"
+        },
+        "id": "condition:eddb97404ac9777ae62341fd",
+        "kind": "presupposition",
+        "target_referent_ids": [
+          "A"
+        ]
+      },
+      {
+        "code": "lexical_descriptor",
+        "expression": {
+          "args": [
+            {
+              "role": "entity",
+              "value": {
+                "id": "B",
+                "kind": "Ref",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ],
+          "kind": "Atom",
+          "symbol": "probe.dog"
+        },
+        "id": "condition:d40670d5ccd3fdefa85c4053",
+        "kind": "presupposition",
+        "target_referent_ids": [
+          "B"
+        ]
+      },
+      {
+        "code": "definite_reference",
+        "expression": {
+          "args": [
+            {
+              "role": "entity",
+              "value": {
+                "id": "A",
+                "kind": "Ref",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ],
+          "kind": "Atom",
+          "symbol": "probe.definite"
+        },
+        "id": "condition:df4e10a14032a5e1c092a84f",
+        "kind": "presupposition",
+        "target_referent_ids": [
+          "A"
+        ]
+      },
+      {
+        "code": "definite_reference",
+        "expression": {
+          "args": [
+            {
+              "role": "entity",
+              "value": {
+                "id": "B",
+                "kind": "Ref",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ],
+          "kind": "Atom",
+          "symbol": "probe.definite"
+        },
+        "id": "condition:0d0cdf2ba8c26e8982926b15",
+        "kind": "presupposition",
+        "target_referent_ids": [
+          "B"
+        ]
+      }
+    ],
+    "id": "dse398.roundtrip.en",
+    "mentions": [
+      {
+        "context_id": "dse398.roundtrip.en",
+        "id": "phrase:46e3ee33edfa4065b029b88033b961256a5a4a56066759feb4daa1a22991a747",
+        "referent_id": "B"
+      },
+      {
+        "context_id": "dse398.roundtrip.en",
+        "id": "phrase:35d829293eaff672b1ae61cf63c5a853d24fee522f669e78840079fcaac52990",
+        "referent_id": "A"
+      },
+      {
+        "context_id": "dse398.roundtrip.en",
+        "id": "phrase:fcada03f0cdca3d15c1ffad569ab603933947b45aa557e7b616eade63f242cbb",
+        "referent_id": "E1"
+      },
+      {
+        "context_id": "dse398.roundtrip.en",
+        "id": "phrase:76101ef6919270db5b1fb3a044e3cb80af2c25a2c99ae63143d28ee43487d73d",
+        "referent_id": "A"
+      },
+      {
+        "context_id": "dse398.roundtrip.en",
+        "id": "phrase:b209aaa6e390e4b84c799866cd4524dc209286a123001fee1aca20adf67d2ced",
+        "referent_id": "B"
+      },
+      {
+        "context_id": "dse398.roundtrip.en",
+        "id": "phrase:c9634cffd095f0fc223d83390d0b6fa25faf2adef2db5369ec5f6a21e87a7ffd",
+        "referent_id": "E2"
+      }
+    ],
+    "referents": [
+      {
+        "id": "E1",
+        "temporal_frame": "present",
+        "type": {
+          "kind": "Event"
+        }
+      },
+      {
+        "id": "E2",
+        "temporal_frame": "present",
+        "type": {
+          "kind": "Event"
+        }
+      },
+      {
+        "id": "A",
+        "multiplicity": "one",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "id": "B",
+        "multiplicity": "one",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ],
+    "resolution_evidence": [
+      {
+        "id": "explicit-1",
+        "mention_id": "phrase:46e3ee33edfa4065b029b88033b961256a5a4a56066759feb4daa1a22991a747",
+        "referent_id": "B",
+        "source": {
+          "id": "dse398.roundtrip.explicit.identities",
+          "uri": "https://github.com/clickbytes/golingua/issues/398",
+          "version": "2026-10-28",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "explicit-2",
+        "mention_id": "phrase:35d829293eaff672b1ae61cf63c5a853d24fee522f669e78840079fcaac52990",
+        "referent_id": "A",
+        "source": {
+          "id": "dse398.roundtrip.explicit.identities",
+          "uri": "https://github.com/clickbytes/golingua/issues/398",
+          "version": "2026-10-28",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "explicit-3",
+        "mention_id": "phrase:fcada03f0cdca3d15c1ffad569ab603933947b45aa557e7b616eade63f242cbb",
+        "referent_id": "E1",
+        "source": {
+          "id": "dse398.roundtrip.explicit.identities",
+          "uri": "https://github.com/clickbytes/golingua/issues/398",
+          "version": "2026-10-28",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "explicit-4",
+        "mention_id": "phrase:76101ef6919270db5b1fb3a044e3cb80af2c25a2c99ae63143d28ee43487d73d",
+        "referent_id": "A",
+        "source": {
+          "id": "dse398.roundtrip.explicit.identities",
+          "uri": "https://github.com/clickbytes/golingua/issues/398",
+          "version": "2026-10-28",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "explicit-5",
+        "mention_id": "phrase:b209aaa6e390e4b84c799866cd4524dc209286a123001fee1aca20adf67d2ced",
+        "referent_id": "B",
+        "source": {
+          "id": "dse398.roundtrip.explicit.identities",
+          "uri": "https://github.com/clickbytes/golingua/issues/398",
+          "version": "2026-10-28",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      },
+      {
+        "id": "explicit-6",
+        "mention_id": "phrase:c9634cffd095f0fc223d83390d0b6fa25faf2adef2db5369ec5f6a21e87a7ffd",
+        "referent_id": "E2",
+        "source": {
+          "id": "dse398.roundtrip.explicit.identities",
+          "uri": "https://github.com/clickbytes/golingua/issues/398",
+          "version": "2026-10-28",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      }
+    ],
+    "schema_version": 1
+  },
+  "schema_version": 1,
+  "signatures": [
+    {
+      "id": "pilot.auditory_event",
+      "label": "pilot auditory-perception event relation",
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.r",
+      "label": "neutral ordered relation",
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.vision_event",
+      "label": "pilot visual-perception event relation",
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.definite",
+      "label": "explicit probe convention probe.definite",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.dog",
+      "label": "explicit probe convention probe.dog",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.teacher",
+      "label": "explicit probe convention probe.teacher",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    }
+  ]
+}

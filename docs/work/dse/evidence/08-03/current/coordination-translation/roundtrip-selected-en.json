@@ -1,0 +1,47 @@
+{
+  "candidate_id": "translation:1954ccd7bc7d0fef0a11a648a2327ea5a344bb383f002caf572491f260711b56",
+  "text": "The teacher sees the dog and the dog sees the teacher.",
+  "assumptions": [
+    {
+      "path": [
+        "dse_discourse_0",
+        "dse_event_0",
+        "dse_ref_0"
+      ],
+      "field": "determiner",
+      "value": "definite",
+      "reason": "the source does not encode English definiteness; this candidate selects the definite article"
+    },
+    {
+      "path": [
+        "dse_discourse_0",
+        "dse_event_0",
+        "dse_ref_1"
+      ],
+      "field": "determiner",
+      "value": "definite",
+      "reason": "the source does not encode English definiteness; this candidate selects the definite article"
+    },
+    {
+      "path": [
+        "dse_discourse_0",
+        "dse_event_1",
+        "dse_ref_1"
+      ],
+      "field": "determiner",
+      "value": "definite",
+      "reason": "the source does not encode English definiteness; this candidate selects the definite article"
+    },
+    {
+      "path": [
+        "dse_discourse_0",
+        "dse_event_1",
+        "dse_ref_0"
+      ],
+      "field": "determiner",
+      "value": "definite",
+      "reason": "the source does not encode English definiteness; this candidate selects the definite article"
+    }
+  ],
+  "selection": "agent diagnostic selection of the first all-definite variant; all 16 alternatives remain recorded, no owner selection or acceptance"
+}

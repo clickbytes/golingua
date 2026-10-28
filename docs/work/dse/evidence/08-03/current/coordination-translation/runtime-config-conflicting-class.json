@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "dataset_store": "/tmp/golingua-dse/395-doc-flow/store",
+  "dataset_id": "golingua-authored",
+  "semantic_profile": "dse",
+  "dse_profile": {
+    "id": "dse397.runtime.integration.pilot",
+    "version": "2026-10-27.1",
+    "registry_fingerprint": "dse-registry-set-v1:0d7ea618816a36e40aac0d86db6b2b2c4cab02b0ccc2d4f7287987030a787f86",
+    "registries": [
+      {
+        "path": "../../../../../../../data/semantic/examples/source-composition/metadata.json",
+        "id": "dse395.independent.probe",
+        "version": "2026-10-26.1",
+        "fingerprint": "sha256:ad5be13b6bda00502a4c259e18b44e6b353c134362d86b760c7f971c89d8b67e"
+      }
+    ],
+    "languages": {
+      "en": {
+        "source_package": {
+          "path": "../../../../../../../data/semantic/languages/en/source.json",
+          "id": "golingua.language.en.source-395",
+          "version": "2026-10-26.1",
+          "fingerprint": "sha256:13c84536eb3820afcf88906276901bd007791ccc8e5f1379b45e21293d25acb1"
+        },
+        "target_package": {
+          "path": "../../../../../../../data/semantic/languages/en/pilot.json",
+          "id": "golingua.language.en.semantic-pilot",
+          "version": "2026-10-26.1",
+          "fingerprint": "sha256:3eabf59392c0235f22d21f4a9a856b9da52e8e6348a981477dba1f3d5571da0f"
+        },
+        "source_plan": {
+          "path": "../../../../../../../data/semantic/languages/en/dse-translation-plan.json",
+          "id": "golingua.language.en.dse-translation-plan",
+          "version": "2026-10-27.1",
+          "fingerprint": "sha256:54a93977fa4dbfc115570128116a399f9efad49b33f68d99366107ba9ca80fb0"
+        },
+        "source_context": {
+          "path": "../source-coordination/context-en.json",
+          "id": "dse398.coordination.en",
+          "version": "1",
+          "fingerprint": "sha256:5ef60a845989c7642a302ebf28f3ef2daf3ec60871be4a5f91a2d3da0476f712"
+        }
+      },
+      "pl": {
+        "source_package": {
+          "path": "../../../../../../../data/semantic/languages/pl/source.json",
+          "id": "golingua.language.pl.source-395",
+          "version": "2026-10-26.1",
+          "fingerprint": "sha256:b0063e76f80f3bb9f6e2905f842c2d62981ab1becdb886ff14467b69880091c5"
+        },
+        "target_package": {
+          "path": "../../../../../../../data/semantic/languages/pl/pilot.json",
+          "id": "golingua.language.pl.semantic-pilot",
+          "version": "2026-10-26.1",
+          "fingerprint": "sha256:84e4885f76eed641007e4d15106f36f0af6d9c220235d4cd544b2f584a4d08b0"
+        },
+        "source_plan": {
+          "path": "../../../../../../../data/semantic/languages/pl/dse-translation-plan.json",
+          "id": "golingua.language.pl.dse-translation-plan",
+          "version": "2026-10-27.1",
+          "fingerprint": "sha256:f004a2a5496a0f3b48211a16a750f7acf997700dd6c3c570501106dae27f1692"
+        },
+        "source_context": {
+          "path": "context-conflicting-class.json",
+          "id": "dse398.coordination.pl",
+          "version": "1",
+          "fingerprint": "sha256:4f634479b7b1e58f775bc5476b8e73dffc69ce5701b202fb485ac08836207c93"
+        }
+      }
+    }
+  }
+}
