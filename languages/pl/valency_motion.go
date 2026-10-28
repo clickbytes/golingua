@@ -9,6 +9,12 @@ import (
 // for each selected motion sense. A missing destination/adjunct has NOT been
 // silently inserted as a CORE semantic role.
 var polishMotionFrames = []frameDeclaration{
+	{"pl.isc.move.motion", "pl.isc.move", "pl.intransitive", []meaning.Role{"mover"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "mover", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+	}},
+	{"pl.latac.fly.motion", "pl.latac.fly", "pl.intransitive", []meaning.Role{"mover"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "mover", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+	}},
 	{"pl.chodzic.walk.motion", "pl.chodzic.walk", "pl.intransitive", []meaning.Role{"walker"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "walker", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 	}},

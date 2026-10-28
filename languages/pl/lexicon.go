@@ -310,8 +310,9 @@ var polishLexicalReviewBatch11Source = provenance.SourceRef{
 }
 
 var polishApprovedLexicalBatch11Senses = map[string]struct{}{
+	"pl.isc.move":          {},
 	"pl.czolgac_sie.crawl": {}, "pl.skakac.jump": {}, "pl.wspinac_sie.climb": {},
-	"pl.leiec.fly": {}, "pl.spadac.fall": {}, "pl.podnosic_sie.rise": {},
+	"pl.leiec.fly": {}, "pl.latac.fly": {}, "pl.chodzic.walk": {}, "pl.spadac.fall": {}, "pl.podnosic_sie.rise": {},
 	"pl.wchodzic.enter": {}, "pl.wychodzic.exit": {}, "pl.przechodzic.cross": {},
 	"pl.zblizac_sie.approach": {}, "pl.oddalac_sie.recede": {}, "pl.wracac.return": {},
 	"pl.podazac.follow": {}, "pl.gonic.chase": {}, "pl.skrecac.turn": {},
@@ -407,6 +408,7 @@ var polishApprovedLexicalBatch15Senses = map[string]struct{}{
 	"pl.umierac.die": {}, "pl.ranic.injure": {}, "pl.leczyc.treat": {},
 	"pl.diagnozowac.diagnose": {}, "pl.dochodzic_do_siebie.recover": {},
 	"pl.pracowac.work": {}, "pl.produkowac.manufacture": {},
+	"pl.pracowac.activity":  {},
 	"pl.projektowac.design": {}, "pl.rysowac.draw": {},
 	"pl.fotografowac.photograph": {}, "pl.edytowac.edit": {},
 	"pl.smazyc.fry": {}, "pl.sprzatac.clean": {}, "pl.ubierac_sie.dress": {},
@@ -568,9 +570,14 @@ var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.jesc.eat":             "pl.jesc.eat.frame",
 	"pl.pic.drink":            "pl.pic.drink.action",
 	"pl.spac.sleep":           "pl.spac.sleep.frame",
+	"pl.pracowac.activity":    "pl.pracowac.activity.frame",
 }
 
 var polishParadigmByLexeme = map[string]string{
+	"pl.budzic_sie.v":      "pl_verb_budzic_sie_present_3sg_3pl",
+	"pl.isc.v":             "pl_verb_isc_present_3sg_3pl",
+	"pl.zasypiac.v":        "pl_verb_zasypiac_present_3sg_3pl",
+	"pl.pracowac.v":        "pl_verb_pracowac_present_3sg_3pl",
 	"pl.byc.v":             "pl_identification_byc_present_3sg",
 	"pl.czarny.adj":        "pl_identification_czarny_masculine_animal_nominative",
 	"pl.sasiad.n":          "pl_noun_attested_masculine_personal",
@@ -592,6 +599,14 @@ var polishParadigmByLexeme = map[string]string{
 	"pl.skladac.v":         "pl_verb_skladac_present_3sg_3pl",
 	"pl.drzec.v":           "pl_verb_drzec_present_3sg_3pl",
 	"pl.rozdzierac.v":      "pl_verb_rozdzierac_present_3sg_3pl",
+	"pl.spac.v":            "pl_verb_spac_present_3sg_3pl",
+	"pl.oddychac.v":        "pl_verb_oddychac_present_3sg_3pl",
+	"pl.kichac.v":          "pl_verb_kichac_present_3sg_3pl",
+	"pl.biec.v":            "pl_verb_biec_present_3sg_3pl",
+	"pl.kaszlec.v":         "pl_verb_kaszlec_present_3sg_3pl",
+	"pl.chodzic.v":         "pl_verb_chodzic_present_3sg_3pl",
+	"pl.zyc.v":             "pl_verb_zyc_present_3sg_3pl",
+	"pl.latac.v":           "pl_verb_latac_present_3sg_3pl",
 	"pl.dorosly.adj":       "pl_adjective_dorosly_attested",
 	"pl.drzewo.n":          "pl_noun_drzewo_attested",
 	"pl.dostac.v":          "pl_verb_perfective_finite",

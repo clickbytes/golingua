@@ -50,5 +50,5 @@ var cognitionActionEntries = []lexicalEntry{
 	{"pl.kapac_sie.v", "kąpać się", "verb_reflexive", []lexicalMeaning{{"pl.kapac_sie.bathe", "An independently authored Polish candidate for Washing the body by immersion in water or a bath-like vessel.", "bathing"}}},
 	{"pl.zmieniac_sie.v", "zmieniać się", "verb_reflexive", []lexicalMeaning{{"pl.zmieniac_sie.change", "An independently authored Polish candidate for An entity acquiring a condition different from its preceding condition.", "changing_state"}}},
 	{"pl.grac.v", "grać", "verb", []lexicalMeaning{{"pl.grac.play_game", "An independently authored Polish candidate for Taking part in a rule-governed activity primarily for recreation or competition.", "playing_game"}}},
-	{"pl.pracowac.v", "pracować", "verb", []lexicalMeaning{{"pl.pracowac.work", "An independently authored Polish candidate for Applying effort to perform an assigned or productive task.", "working"}}},
+	{"pl.pracowac.v", "pracować", "verb", []lexicalMeaning{{"pl.pracowac.work", "An independently authored Polish candidate for Applying effort to perform an assigned or productive task.", "working"}, {"pl.pracowac.activity", "An independently authored Polish sense for performing work without asserting a particular task.", "working_activity"}}},
 }

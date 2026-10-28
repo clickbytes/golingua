@@ -89,8 +89,8 @@ func (provider *sentenceProvider) Analyze(ctx context.Context, surface string) (
 }
 
 func sentenceSenseIDs() ([]ids.SenseID, error) {
-	senseIDs := make([]ids.SenseID, 0, 18)
-	for _, value := range []string{"en.see.visual", "en.hear.auditory", "en.get.receive", "en.look.directed", "en.read.text", "en.be.class_membership", "en.black.color", "en.eating.event", "en.drinking.event", "en.opening_object.event", "en.closing_object.event", "en.carrying.event", "en.holding_object.event", "en.pulling_object.event", "en.pushing_object.event", "en.cutting_object.event", "en.folding_object.event", "en.tearing_object.event"} {
+	senseIDs := make([]ids.SenseID, 0, 28)
+	for _, value := range []string{"en.see.visual", "en.hear.auditory", "en.get.receive", "en.look.directed", "en.read.text", "en.be.class_membership", "en.black.color", "en.eating.event", "en.drinking.event", "en.opening_object.event", "en.closing_object.event", "en.carrying.event", "en.holding_object.event", "en.pulling_object.event", "en.pushing_object.event", "en.cutting_object.event", "en.folding_object.event", "en.tearing_object.event", "en.sleep.physiological", "en.breathing.event", "en.sneezing.event", "en.running.event", "en.coughing.event", "en.walking.event", "en.living.event", "en.flying_motion.event", "en.waking_up.event", "en.falling_asleep.event", "en.working.activity", "en.go.spatial_movement"} {
 		senseID, err := ids.NewSenseID(value)
 		if err != nil {
 			return nil, err

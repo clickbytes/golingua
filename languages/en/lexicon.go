@@ -44,6 +44,7 @@ var englishEntries = []lexicalEntry{
 	{"en.read.v", "read", "verb", []lexicalMeaning{{"en.read.text", "interpret written symbolic content", "reading"}}},
 	{"en.learn.v", "learn", "verb", []lexicalMeaning{{"en.learn.knowledge", "acquire knowledge or skill", "learning"}}},
 	{"en.sleep.v", "sleep", "verb", []lexicalMeaning{{"en.sleep.physiological", "undergo physiological sleep", "sleeping"}}},
+	{"en.go.v", "go", "verb", []lexicalMeaning{{"en.go.spatial_movement", "move from one spatial position to another without specifying a particular path or destination", "movement"}}},
 }
 
 var englishLexicalSource = provenance.SourceRef{
@@ -168,6 +169,9 @@ var englishPendingAuditSource = provenance.SourceRef{
 	Version: "2026-10-23-pending-audit", License: "unknown", Author: "codex-owner-delegated",
 }
 var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
+	"en.go.spatial_movement": englishLexicalReviewBatch11Source,
+
+	"en.working.activity":                          englishLexicalReviewBatch15Source,
 	"en.eating.event":                              englishLexicalReviewBatch1Source,
 	"en.drinking.event":                            englishLexicalReviewBatch14Source,
 	"en.i.speaker":                                 englishPersonalPronounSource,
@@ -1175,6 +1179,7 @@ var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
 }
 
 var englishFrameBySense = map[string]lexicon.ValencyID{
+	"en.working.activity":     "en.working_activity.intransitive",
 	"en.be.class_membership":  "en.be.class_membership.frame",
 	"en.black.color":          "en.black.color.frame",
 	"en.see.visual":           "en.see.visual.transitive",
@@ -1220,6 +1225,19 @@ var englishParadigmByLexeme = map[string]string{
 	"en.cutting_object.v": "en_verb_finite_principal_parts",
 	"en.folding_object.v": "en_verb_finite_principal_parts",
 	"en.tearing_object.v": "en_verb_finite_principal_parts",
+	"en.sleep.v":          "en_verb_finite_principal_parts",
+	"en.breathing.v":      "en_verb_finite_principal_parts",
+	"en.sneezing.v":       "en_verb_finite_principal_parts",
+	"en.running.v":        "en_verb_finite_principal_parts",
+	"en.coughing.v":       "en_verb_finite_principal_parts",
+	"en.waking_up.v":      "en_verb_finite_principal_parts",
+	"en.walking.v":        "en_verb_finite_principal_parts",
+	"en.falling.v":        "en_verb_finite_principal_parts",
+	"en.falling_asleep.v": "en_verb_finite_principal_parts",
+	"en.living.v":         "en_verb_finite_principal_parts",
+	"en.working.v":        "en_verb_finite_principal_parts",
+	"en.flying_motion.v":  "en_verb_finite_principal_parts",
+	"en.go.v":             "en_verb_finite_principal_parts",
 	// Count nouns use only a spelling class that matches their declared lemma;
 	// mass nouns stay on the explicit singular-only class below.
 	"en.mother.n": "en_noun_regular", "en.father.n": "en_noun_regular",

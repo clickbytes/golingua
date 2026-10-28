@@ -16,7 +16,7 @@ import (
 	"github.com/clickbytes/golingua/internal/provenance"
 )
 
-const maxCompiledMorphologyLexemes = 160
+const maxCompiledMorphologyLexemes = 256
 
 //go:embed features.json
 var profileJSON []byte

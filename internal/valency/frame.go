@@ -59,11 +59,12 @@ const (
 // Concept IDs match exact concepts or their CORE descendants; AllowedKinds
 // are checked against the target's declared CORE kind.
 type SelectionalConstraint struct {
-	ID                string             `json:"id"`
-	Role              meaning.Role       `json:"role"`
-	Strength          ConstraintStrength `json:"strength"`
-	AllowedConceptIDs []ids.ConceptID    `json:"allowed_concept_ids,omitempty"`
-	AllowedKinds      []core.ConceptKind `json:"allowed_kinds,omitempty"`
+	ID                 string             `json:"id"`
+	Role               meaning.Role       `json:"role"`
+	Strength           ConstraintStrength `json:"strength"`
+	AllowedConceptIDs  []ids.ConceptID    `json:"allowed_concept_ids,omitempty"`
+	ExcludedConceptIDs []ids.ConceptID    `json:"excluded_concept_ids,omitempty"`
+	AllowedKinds       []core.ConceptKind `json:"allowed_kinds,omitempty"`
 }
 
 // ValencyFrame licenses semantic argument roles for one lexical sense. It
@@ -196,8 +197,21 @@ func (frame ValencyFrame) Validate() error {
 		if constraint.Strength != ConstraintHard && constraint.Strength != ConstraintSoft {
 			return invalid("INVALID_CONSTRAINT_STRENGTH", path+".strength", "constraint strength must be hard or soft")
 		}
-		if len(constraint.AllowedConceptIDs) == 0 && len(constraint.AllowedKinds) == 0 {
+		if len(constraint.AllowedConceptIDs) == 0 && len(constraint.AllowedKinds) == 0 && len(constraint.ExcludedConceptIDs) == 0 {
 			return invalid("EMPTY_SELECTIONAL_CONSTRAINT", path, "constraint must name allowed concept IDs or concept kinds")
+		}
+		if len(constraint.ExcludedConceptIDs) > MaxConceptsPerConstraint {
+			return resourceLimit("constraint_excluded_concepts", len(constraint.ExcludedConceptIDs), MaxConceptsPerConstraint)
+		}
+		seenExcluded := make(map[string]struct{}, len(constraint.ExcludedConceptIDs))
+		for conceptIndex, conceptID := range constraint.ExcludedConceptIDs {
+			if !validConceptID(conceptID) {
+				return invalid("INVALID_CONSTRAINT_CONCEPT_ID", fmt.Sprintf("%s.excluded_concept_ids[%d]", path, conceptIndex), "excluded concept ID must be canonical")
+			}
+			if _, exists := seenExcluded[conceptID.String()]; exists {
+				return invalid("DUPLICATE_EXCLUDED_CONSTRAINT_CONCEPT", path+".excluded_concept_ids", "excluded concept ID is duplicated")
+			}
+			seenExcluded[conceptID.String()] = struct{}{}
 		}
 		if len(constraint.AllowedConceptIDs) > MaxConceptsPerConstraint {
 			return resourceLimit("constraint_concepts", len(constraint.AllowedConceptIDs), MaxConceptsPerConstraint)
@@ -288,6 +302,9 @@ func canonicalFrame(frame ValencyFrame) ValencyFrame {
 		sort.Slice(constraint.AllowedConceptIDs, func(i, j int) bool {
 			return constraint.AllowedConceptIDs[i].String() < constraint.AllowedConceptIDs[j].String()
 		})
+		sort.Slice(constraint.ExcludedConceptIDs, func(i, j int) bool {
+			return constraint.ExcludedConceptIDs[i].String() < constraint.ExcludedConceptIDs[j].String()
+		})
 		sort.Slice(constraint.AllowedKinds, func(i, j int) bool { return constraint.AllowedKinds[i] < constraint.AllowedKinds[j] })
 	}
 	sort.Slice(result.SelectionalConstraints, func(i, j int) bool { return result.SelectionalConstraints[i].ID < result.SelectionalConstraints[j].ID })
@@ -303,6 +320,7 @@ func cloneFrame(frame ValencyFrame) ValencyFrame {
 	for index, constraint := range frame.SelectionalConstraints {
 		result.SelectionalConstraints[index] = constraint
 		result.SelectionalConstraints[index].AllowedConceptIDs = append([]ids.ConceptID(nil), constraint.AllowedConceptIDs...)
+		result.SelectionalConstraints[index].ExcludedConceptIDs = append([]ids.ConceptID(nil), constraint.ExcludedConceptIDs...)
 		result.SelectionalConstraints[index].AllowedKinds = append([]core.ConceptKind(nil), constraint.AllowedKinds...)
 	}
 	result.AllowedFamilyIDs = append([]ids.ConstructionID(nil), frame.AllowedFamilyIDs...)

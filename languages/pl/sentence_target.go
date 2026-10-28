@@ -163,6 +163,9 @@ func (polishSentencePlanAnnotations) Annotations(_ context.Context, source seman
 		return nil, nil, nil, fmt.Errorf("Polish target realization has Meaning attributes that conflict with explicit source evidence")
 	}
 	assumptions := []realizer.FieldAssumption{}
+	if selected.TransferBinding.SenseID.String() == "sense:pl.isc.move" {
+		assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "manner", Value: "on_foot", Reason: "Polish iść specifies movement on foot; the source meaning does not specify manner"})
+	}
 	if predicate.TemporalFrame == "" {
 		assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning carries no temporal frame; this response uses the approved present-tense route"})
 	}

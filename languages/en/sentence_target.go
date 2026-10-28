@@ -553,6 +553,20 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 	if predicate.ID == "" {
 		return nil, nil, nil, nil
 	}
+	if selected.TransferBinding.SenseID.String() == "sense:en.go.spatial_movement" {
+		path, found := runtime.MeaningPath(*source.Meaning, predicate.ID)
+		if !found {
+			return nil, nil, nil, fmt.Errorf("English go target is missing its Meaning path")
+		}
+		// If the source was Polish iść, the walking sense contributes manner
+		// not encoded by English go. Preserve that information loss explicitly.
+		for _, record := range source.Evidence.Records {
+			if (record.SenseID.String() == "sense:pl.isc.go" || record.SenseID.String() == "sense:pl.isc.move") && record.Origin != semantic.EvidenceOriginGenerated {
+				loss := realizer.FieldLoss{Path: path, Field: "manner", Outcome: status.OutcomeIncomplete, Reason: "Polish iść specifies on-foot movement; English go does not encode that manner"}
+				return nil, nil, []realizer.FieldLoss{loss}, nil
+			}
+		}
+	}
 	if identification, recognized := englishNegativeIdentificationState(source); recognized && identification.stateID == predicate.ID {
 		if !identification.valid || !englishIdentificationAttributesAllowed(source, predicate.ID, identification.role, identification.referent, selected.TransferBinding.CoreRef) {
 			return nil, nil, nil, fmt.Errorf("English negative identification cannot realize the supplied Meaning attributes")
@@ -707,6 +721,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 		return englishWHQuestionTargetCandidate(source, candidate, candidates)
 	}
 	const (
+		intransitiveFamily   = "construction:en.intransitive"
 		transitiveFamily     = "construction:en.transitive"
 		transitivePastFamily = "construction:en.transitive_past"
 		obliqueFamily        = "construction:en.oblique"
@@ -900,7 +915,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 			return false
 		}
 	}
-	if candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || familyID != transitiveFamily && familyID != transitivePastFamily && familyID != obliqueFamily && familyID != attributedFamily && familyID != "construction:en.transitive_personal" && !isNegativeFamily {
+	if candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || familyID != intransitiveFamily && familyID != transitiveFamily && familyID != transitivePastFamily && familyID != obliqueFamily && familyID != attributedFamily && familyID != "construction:en.transitive_personal" && !isNegativeFamily {
 		return true
 	}
 	variant, knownVariant := englishDeterminersForCandidate(candidate)
@@ -913,6 +928,16 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 	predicate := findMeaningNode(*source.Meaning, candidate.NodeID)
 	if predicate.ID == "" {
 		return candidate.CompiledVariant.Variant.ID.String() == englishStandardDeterminerVariant(familyID)
+	}
+	switch string(predicate.Concept) {
+	case "concept:waking_up":
+		if !strings.HasPrefix(candidate.CompiledVariant.Variant.ID.String(), "construction:en.intransitive.sv.wake_up") {
+			return false
+		}
+	case "concept:falling_asleep":
+		if !strings.HasPrefix(candidate.CompiledVariant.Variant.ID.String(), "construction:en.intransitive.sv.fall_asleep") {
+			return false
+		}
 	}
 	for _, slot := range candidate.Family.Family.SlotSpecs {
 		if familyID == "construction:en.transitive_personal" && slot.ID == "subject" {
@@ -1246,6 +1271,18 @@ func englishNegativeDeterminerVariant(id, prefix string, variants map[string]eng
 }
 
 var englishDeterminerVariants = map[string]englishDeterminers{
+	"construction:en.intransitive.sv.wake_up":                              {subject: "the"},
+	"construction:en.intransitive.sv.wake_up.indefinite_subject":           {subject: "a"},
+	"construction:en.intransitive.sv.wake_up.indefinite_subject_an":        {subject: "an"},
+	"construction:en.intransitive.sv.wake_up.bare_subject_plural":          {subject: "bare"},
+	"construction:en.intransitive.sv.fall_asleep":                          {subject: "the"},
+	"construction:en.intransitive.sv.fall_asleep.indefinite_subject":       {subject: "a"},
+	"construction:en.intransitive.sv.fall_asleep.indefinite_subject_an":    {subject: "an"},
+	"construction:en.intransitive.sv.fall_asleep.bare_subject_plural":      {subject: "bare"},
+	"construction:en.intransitive.sv":                                      {subject: "the"},
+	"construction:en.intransitive.sv.indefinite_subject":                   {subject: "a"},
+	"construction:en.intransitive.sv.indefinite_subject_an":                {subject: "an"},
+	"construction:en.intransitive.sv.bare_subject_plural":                  {subject: "bare"},
 	"construction:en.attributed_seeing.svo":                                {subject: "the", object: "the"},
 	"construction:en.attributed_seeing.svo.indefinite_object":              {subject: "the", object: "a"},
 	"construction:en.attributed_seeing.svo.indefinite_object_an":           {subject: "the", object: "an"},
@@ -1303,6 +1340,8 @@ var englishNegativeObliqueDeterminerVariants = map[string]englishDeterminers{
 
 func englishStandardDeterminerVariant(familyID string) string {
 	switch familyID {
+	case "construction:en.intransitive":
+		return "construction:en.intransitive.sv"
 	case "construction:en.transitive":
 		return "construction:en.transitive.svo"
 	case "construction:en.transitive_past":
@@ -1342,7 +1381,7 @@ func englishDeterminerForRole(candidate realizer.TargetCandidate, role meaning.R
 		}
 		return "", false
 	}
-	if familyID != "construction:en.transitive" && familyID != "construction:en.transitive_past" && familyID != "construction:en.transitive_negative" && familyID != "construction:en.oblique" && familyID != "construction:en.oblique_negative" && familyID != "construction:en.attributed_seeing" && familyID != "construction:en.transitive_personal" {
+	if familyID != "construction:en.intransitive" && familyID != "construction:en.transitive" && familyID != "construction:en.transitive_past" && familyID != "construction:en.transitive_negative" && familyID != "construction:en.oblique" && familyID != "construction:en.oblique_negative" && familyID != "construction:en.attributed_seeing" && familyID != "construction:en.transitive_personal" {
 		return "", false
 	}
 	variant, exists := englishDeterminersForCandidate(candidate)
