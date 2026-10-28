@@ -557,6 +557,7 @@ var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.uczyc.instruct":       "pl.uczyc.instruct.frame",
 	"pl.uczyc_sie.acquire":    "pl.uczyc_sie.acquire.frame",
 	"pl.jesc.eat":             "pl.jesc.eat.frame",
+	"pl.pic.drink":            "pl.pic.drink.action",
 	"pl.spac.sleep":           "pl.spac.sleep.frame",
 }
 
@@ -569,6 +570,8 @@ var polishParadigmByLexeme = map[string]string{
 	"pl.slyszec.v":   "pl_verb_present_y",
 	"pl.patrzec.v":   "pl_verb_present_y",
 	"pl.czytac.v":    "pl_verb_czytac_finite",
+	"pl.jesc.v":      "pl_verb_jesc_present_3sg_3pl",
+	"pl.pic.v":       "pl_verb_pic_present_3sg_3pl",
 	"pl.dorosly.adj": "pl_adjective_dorosly_attested",
 	"pl.drzewo.n":    "pl_noun_drzewo_attested",
 	"pl.dostac.v":    "pl_verb_perfective_finite",

@@ -20,6 +20,12 @@ var attestedNounSource = provenance.SourceRef{
 }
 
 var attestedNounExternalSources = map[string]provenance.SourceRef{
+	"pl.chleb.n":   {ID: "wsjp-pl-chleb", URI: "https://wsjp.pl/haslo/podglad/20808/chleb/4804753/pieczywo", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.jajko.n":   {ID: "wsjp-pl-jajko", URI: "https://wsjp.pl/haslo/podglad/20747/jajko/4843860/do-jedzenia", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.zupa.n":    {ID: "wsjp-pl-zupa", URI: "https://wsjp.pl/haslo/podglad/2007/zupa/2126917/potrawa", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.mleko.n":   {ID: "wsjp-pl-mleko", URI: "https://wsjp.pl/haslo/podglad/1993/mleko", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.herbata.n": {ID: "wsjp-pl-herbata", URI: "https://wsjp.pl/haslo/podglad/15163/herbata/1949148/napoj", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.kawa.n":    {ID: "wsjp-pl-kawa", URI: "https://wsjp.pl/haslo/podglad/22171/kawa/4843824/napoj", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
 	"pl.krzeslo.n": {
 		ID: "wsjp-pl-krzeslo-n", URI: "https://wsjp.pl/haslo/podglad/6705/krzeslo/4734420/mebel",
 		Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
@@ -98,6 +104,12 @@ var feminineAPartialSuffixByCell = map[string]string{
 }
 
 var attestedNounForms = []attestedNounEntry{
+	{"pl.chleb.n", "chleb", "masculine_inanimate", [7]string{"chleb", "chleba", "chlebowi", "chleb", "chlebem", "chlebie", "chlebie"}, [7]string{"chleby", "chlebów", "chlebom", "chleby", "chlebami", "chlebach", "chleby"}},
+	{"pl.jajko.n", "jajko", "neuter", [7]string{"jajko", "jajka", "jajku", "jajko", "jajkiem", "jajku", "jajko"}, [7]string{"jajka", "jajek", "jajkom", "jajka", "jajkami", "jajkach", "jajka"}},
+	{"pl.zupa.n", "zupa", "feminine", [7]string{"zupa", "zupy", "zupie", "zupę", "zupą", "zupie", "zupo"}, [7]string{"zupy", "zup", "zupom", "zupy", "zupami", "zupach", "zupy"}},
+	{"pl.mleko.n", "mleko", "neuter", [7]string{"mleko", "mleka", "mleku", "mleko", "mlekiem", "mleku", "mleko"}, [7]string{"mleka", "mlek", "mlekom", "mleka", "mlekami", "mlekach", "mleka"}},
+	{"pl.herbata.n", "herbata", "feminine", [7]string{"herbata", "herbaty", "herbacie", "herbatę", "herbatą", "herbacie", "herbato"}, [7]string{"herbaty", "herbat", "herbatom", "herbaty", "herbatami", "herbatach", "herbaty"}},
+	{"pl.kawa.n", "kawa", "feminine", [7]string{"kawa", "kawy", "kawie", "kawę", "kawą", "kawie", "kawo"}, [7]string{"kawy", "kaw", "kawom", "kawy", "kawami", "kawach", "kawy"}},
 	{"pl.matka.n", "matka", "feminine", [7]string{"matka", "matki", "matce", "matkę", "matką", "matce", "matko"}, [7]string{"matki", "matek", "matkom", "matki", "matkami", "matkach", "matki"}},
 	{"pl.ojciec.n", "ojciec", "masculine_personal", [7]string{"ojciec", "ojca", "ojcu", "ojca", "ojcem", "ojcu", "ojcze"}, [7]string{"ojcowie", "ojców", "ojcom", "ojców", "ojcami", "ojcach", "ojcowie"}},
 	{"pl.pies.n", "pies", "masculine_animal", [7]string{"pies", "psa", "psu", "psa", "psem", "psie", "psie"}, [7]string{"psy", "psów", "psom", "psy", "psami", "psach", "psy"}},
@@ -141,11 +153,11 @@ func attestedNounGender(lexemeID string) (string, bool) {
 	switch lexemeID {
 	case "pl.kot.n", "pl.ptak.n", "pl.kon.n":
 		return "masculine_animal", true
-	case "pl.miasto.n", "pl.mieszkanie.n", "pl.okno.n", "pl.jablko.n", "pl.krzeslo.n":
+	case "pl.miasto.n", "pl.mieszkanie.n", "pl.okno.n", "pl.jablko.n", "pl.krzeslo.n", "pl.jajko.n", "pl.mleko.n":
 		return "neuter", true
-	case "pl.rzeka.n", "pl.siostra.n", "pl.mewa.n", "pl.torba.n":
+	case "pl.rzeka.n", "pl.siostra.n", "pl.mewa.n", "pl.torba.n", "pl.zupa.n", "pl.herbata.n", "pl.kawa.n":
 		return "feminine", true
-	case "pl.klucz.n":
+	case "pl.klucz.n", "pl.chleb.n":
 		return "masculine_inanimate", true
 	case "pl.matka.n":
 		return "feminine", true

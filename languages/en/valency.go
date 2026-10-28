@@ -102,6 +102,22 @@ type constructionBindingDeclaration struct {
 }
 
 var englishConstructionBindingDeclarations = append(append(append([]constructionBindingDeclaration{
+	{"en.eating.event", "en.eating.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.eating.event", "en.eating.transitive", "en.transitive", "en.transitive.svo.mass_object"},
+	{"en.eating.event", "en.eating.transitive", "en.transitive", "en.transitive.svo.indefinite_object"},
+	{"en.eating.event", "en.eating.transitive", "en.transitive", "en.transitive.svo.indefinite_object_an"},
+	{"en.eating.event", "en.eating.transitive", "en.transitive", "en.transitive.svo.indefinite_subject"},
+	{"en.eating.event", "en.eating.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an"},
+	{"en.eating.event", "en.eating.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_mass_object"},
+	{"en.eating.event", "en.eating.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_mass_object"},
+	{"en.drinking.event", "en.drinking.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.drinking.event", "en.drinking.transitive", "en.transitive", "en.transitive.svo.mass_object"},
+	{"en.drinking.event", "en.drinking.transitive", "en.transitive", "en.transitive.svo.indefinite_object"},
+	{"en.drinking.event", "en.drinking.transitive", "en.transitive", "en.transitive.svo.indefinite_object_an"},
+	{"en.drinking.event", "en.drinking.transitive", "en.transitive", "en.transitive.svo.indefinite_subject"},
+	{"en.drinking.event", "en.drinking.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an"},
+	{"en.drinking.event", "en.drinking.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_mass_object"},
+	{"en.drinking.event", "en.drinking.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_mass_object"},
 	{"en.see.visual", "en.see.visual.transitive", "en.question.wh", "en.question.wh.subject"},
 	{"en.see.visual", "en.see.visual.transitive", "en.question.wh", "en.question.wh.object.echo"},
 	{"en.see.visual", "en.see.visual.transitive", "en.question.wh", "en.question.wh.subject.realize"},
@@ -348,6 +364,14 @@ func englishNegativeArticleBindingDeclarations() []constructionBindingDeclaratio
 }
 
 var englishFrames = []frameDeclaration{
+	{"en.eating.transitive", "en.eating.event", "en.transitive", []meaning.Role{"eater", "food"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "eater", Required: true, GrammaticalFunction: "subject"},
+		{ID: "object", Role: "food", Required: true, GrammaticalFunction: "object"},
+	}},
+	{"en.drinking.transitive", "en.drinking.event", "en.transitive", []meaning.Role{"drinker", "liquid"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "drinker", Required: true, GrammaticalFunction: "subject"},
+		{ID: "object", Role: "liquid", Required: true, GrammaticalFunction: "object"},
+	}},
 	{"en.be.class_membership.frame", "en.be.class_membership", "en.identification", []meaning.Role{"member"}, []valency.ArgumentSlot{
 		{ID: "member", Role: "member", Required: true, GrammaticalFunction: "complement"},
 	}},

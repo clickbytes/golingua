@@ -96,6 +96,14 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	if err != nil {
 		return nil, err
 	}
+	eatingSense, err := ids.NewSenseID("pl.jesc.eat")
+	if err != nil {
+		return nil, err
+	}
+	drinkingSense, err := ids.NewSenseID("pl.pic.drink")
+	if err != nil {
+		return nil, err
+	}
 	caseValues := map[features.FeatureValueID]string{}
 	for _, value := range []string{"nominative", "genitive", "dative", "accusative", "instrumental", "locative", "vocative"} {
 		caseValues[features.FeatureValueID(value)] = value
@@ -115,7 +123,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 			CaseFeature: "case", CaseValues: caseValues,
 		}}}}},
 		EvidenceBuilder: polishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), valency: valencyIndex, constructions: registry, base: runtime.BareDeclarativeEvidenceBuilder{
-			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true},
+			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true, eatingSense: true, drinkingSense: true},
 			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
 				seeingSense: append([]map[features.FeatureID]features.FeatureValueID{
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
@@ -156,6 +164,8 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 					{"degree": "positive", "number": "singular", "gender": "masculine_animal", "case": "nominative"},
 					{"degree": "positive", "number": "singular", "gender": "neuter", "case": "nominative"},
 				},
+				eatingSense:   {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}, {"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"}},
+				drinkingSense: {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}, {"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"}},
 			},
 			AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "nie": true, "to": true, "ten": true, "jest": true},
 		}},

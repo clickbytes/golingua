@@ -168,6 +168,8 @@ var englishPendingAuditSource = provenance.SourceRef{
 	Version: "2026-10-23-pending-audit", License: "unknown", Author: "codex-owner-delegated",
 }
 var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
+	"en.eating.event":                              englishLexicalReviewBatch1Source,
+	"en.drinking.event":                            englishLexicalReviewBatch14Source,
 	"en.i.speaker":                                 englishPersonalPronounSource,
 	"en.we.speaker_group":                          englishPersonalPronounSource,
 	"en.you.addressee":                             englishPersonalPronounSource,
@@ -865,7 +867,6 @@ var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
 	"en.coughing.event":                            englishLexicalReviewBatch14Source,
 	"en.sneezing.event":                            englishLexicalReviewBatch14Source,
 	"en.swallowing.event":                          englishLexicalReviewBatch14Source,
-	"en.drinking.event":                            englishLexicalReviewBatch14Source,
 	"en.chewing.event":                             englishLexicalReviewBatch14Source,
 	"en.digesting.event":                           englishLexicalReviewBatch14Source,
 	"en.sweating.event":                            englishLexicalReviewBatch14Source,
@@ -1181,22 +1182,26 @@ var englishFrameBySense = map[string]lexicon.ValencyID{
 	"en.hear.auditory":       "en.hear.auditory.transitive",
 	"en.get.receive":         "en.get.receive.transitive",
 	"en.read.text":           "en.read.text.transitive",
+	"en.eating.event":        "en.eating.transitive",
+	"en.drinking.event":      "en.drinking.transitive",
 }
 
 var englishParadigmByLexeme = map[string]string{
-	"en.be.v":      "en_identification_be_present_3sg",
-	"en.black.adj": "en_identification_black_positive",
-	"en.the.det":   "en_determiner_definite",
-	"en.a.det":     "en_determiner_indefinite",
-	"en.an.det":    "en_determiner_indefinite",
-	"en.i.pron":    "en_personal_pronoun_i",
-	"en.we.pron":   "en_personal_pronoun_we",
-	"en.you.pron":  "en_personal_pronoun_you",
-	"en.see.v":     "en_verb_finite_principal_parts",
-	"en.hear.v":    "en_verb_finite_principal_parts",
-	"en.look.v":    "en_verb_finite_regular",
-	"en.get.v":     "en_verb_finite_principal_parts",
-	"en.read.v":    "en_verb_finite_principal_parts",
+	"en.be.v":       "en_identification_be_present_3sg",
+	"en.black.adj":  "en_identification_black_positive",
+	"en.the.det":    "en_determiner_definite",
+	"en.a.det":      "en_determiner_indefinite",
+	"en.an.det":     "en_determiner_indefinite",
+	"en.i.pron":     "en_personal_pronoun_i",
+	"en.we.pron":    "en_personal_pronoun_we",
+	"en.you.pron":   "en_personal_pronoun_you",
+	"en.see.v":      "en_verb_finite_principal_parts",
+	"en.hear.v":     "en_verb_finite_principal_parts",
+	"en.look.v":     "en_verb_finite_regular",
+	"en.get.v":      "en_verb_finite_principal_parts",
+	"en.read.v":     "en_verb_finite_principal_parts",
+	"en.eating.v":   "en_verb_finite_principal_parts",
+	"en.drinking.v": "en_verb_finite_principal_parts",
 	// Count nouns use only a spelling class that matches their declared lemma;
 	// mass nouns stay on the explicit singular-only class below.
 	"en.mother.n": "en_noun_regular", "en.father.n": "en_noun_regular",
@@ -1267,6 +1272,9 @@ var englishParadigmByLexeme = map[string]string{
 	"en.food.n":        "en_noun_singular_attested",
 	"en.money.n":       "en_noun_singular_attested", "en.water.n": "en_noun_singular_attested",
 	"en.fish_meat.n": "en_noun_singular_attested",
+	"en.bread.n":     "en_noun_singular_attested", "en.soup_food.n": "en_noun_singular_attested",
+	"en.milk_food.n": "en_noun_singular_attested", "en.tea_beverage.n": "en_noun_singular_attested",
+	"en.coffee_beverage.n": "en_noun_singular_attested",
 }
 
 // englishAArticleLexemes are sentence-facing count nouns whose indefinite
@@ -1285,6 +1293,7 @@ var englishAArticleLexemes = map[string]struct{}{
 var englishAnArticleLexemes = map[string]struct{}{
 	"en.offspring.n":   {},
 	"en.apple_fruit.n": {},
+	"en.egg_food.n":    {},
 }
 
 var englishCountNounLexemes = map[string]struct{}{
@@ -1296,7 +1305,8 @@ var englishCountNounLexemes = map[string]struct{}{
 	"en.chair.n": {}, "en.key_tool.n": {}, "en.bag.n": {},
 	"en.hospital_institution.n": {}, "en.pizza_food.n": {}, "en.neighbor.n": {},
 	"en.customer.n": {}, "en.message.n": {}, "en.cat.n": {}, "en.bird.n": {},
-	"en.horse.n": {}, "en.city.n": {}, "en.apartment.n": {}, "en.river.n": {},
+	"en.egg_food.n": {},
+	"en.horse.n":    {}, "en.city.n": {}, "en.apartment.n": {}, "en.river.n": {},
 	"en.sister.n": {}, "en.tree.n": {}, "en.window.n": {}, "en.apple_fruit.n": {}, "en.letter_document.n": {},
 }
 
@@ -1325,7 +1335,7 @@ func LexicalDocument() (lexicon.Document, error) {
 				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "indefinite_article", Value: "an"})
 			}
 			switch entry.id {
-			case "en.food.n", "en.money.n", "en.water.n", "en.fish_meat.n":
+			case "en.food.n", "en.money.n", "en.water.n", "en.fish_meat.n", "en.bread.n", "en.soup_food.n", "en.milk_food.n", "en.tea_beverage.n", "en.coffee_beverage.n":
 				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "number_behavior", Value: "mass"})
 			}
 			if _, countable := englishCountNounLexemes[entry.id]; countable {

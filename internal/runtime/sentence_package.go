@@ -131,9 +131,9 @@ func sentenceCapabilityEvidenceIDs(languageID features.LanguageID) []string {
 func currentSentenceSenseNames(languageID features.LanguageID) ([]string, bool) {
 	switch languageID {
 	case "en":
-		return []string{"en.see.visual", "en.hear.auditory", "en.get.receive", "en.look.directed", "en.read.text", "en.be.class_membership", "en.black.color"}, true
+		return []string{"en.see.visual", "en.hear.auditory", "en.get.receive", "en.look.directed", "en.read.text", "en.be.class_membership", "en.black.color", "en.eating.event", "en.drinking.event"}, true
 	case "pl":
-		return []string{"pl.widziec.visual", "pl.slyszec.auditory", "pl.dostac.receive", "pl.patrzec.directed", "pl.czytac.interpret", "pl.byc.class_membership", "pl.czarny.black"}, true
+		return []string{"pl.widziec.visual", "pl.slyszec.auditory", "pl.dostac.receive", "pl.patrzec.directed", "pl.czytac.interpret", "pl.byc.class_membership", "pl.czarny.black", "pl.jesc.eat", "pl.pic.drink"}, true
 	default:
 		return nil, false
 	}
