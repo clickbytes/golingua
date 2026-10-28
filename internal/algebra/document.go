@@ -696,6 +696,9 @@ func artifactNodeWire(node Node, includeNodeID bool) (map[string]any, error) {
 		wire["operands"] = operands
 	case TermExists, TermLambda:
 		wire["identity"], wire["type"], wire["body"] = node.Identity, node.Type, node.Body
+		if node.Kind == TermExists && node.TemporalFrame != "" {
+			wire["temporal_frame"] = node.TemporalFrame
+		}
 	case TermNot:
 		wire["body"] = node.Body
 	case TermModal:
@@ -836,6 +839,9 @@ func artifactMeaningTerm(term *Term, depth int, active map[*Term]bool) (map[stri
 			return nil, err
 		}
 		wire["id"], wire["type"], wire["body"] = term.ID, term.Type, body
+		if term.Kind == TermExists && term.TemporalFrame != "" {
+			wire["temporal_frame"] = term.TemporalFrame
+		}
 	case TermNot:
 		body, err := artifactMeaningTerm(term.Body, depth+1, active)
 		if err != nil {

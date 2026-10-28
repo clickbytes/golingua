@@ -894,6 +894,9 @@ func termWire(term *Term) (map[string]any, error) {
 			return nil, err
 		}
 		wire["id"], wire["type"], wire["body"] = term.ID, term.Type, body
+		if term.Kind == TermExists && term.TemporalFrame != "" {
+			wire["temporal_frame"] = term.TemporalFrame
+		}
 	case TermNot:
 		body, err := termWire(term.Body)
 		if err != nil {
@@ -1286,7 +1289,7 @@ func validateDataTypeJSON(data json.RawMessage, path string) error {
 }
 
 func validateTermJSON(data json.RawMessage, path string) error {
-	base, err := strictObjectNullable(data, path, []string{"kind", "id", "label", "type", "symbol", "args", "operands", "body", "function", "argument", "quantifier", "count", "restrictor", "answers", "modality", "modal_profile"}, []string{"kind"}, []string{"restrictor"})
+	base, err := strictObjectNullable(data, path, []string{"kind", "id", "label", "type", "symbol", "args", "operands", "body", "function", "argument", "quantifier", "count", "restrictor", "temporal_frame", "answers", "modality", "modal_profile"}, []string{"kind"}, []string{"restrictor"})
 	if err != nil {
 		return err
 	}
@@ -1306,6 +1309,9 @@ func validateTermJSON(data json.RawMessage, path string) error {
 		allowed, required = []string{"kind", "label", "operands"}, []string{"kind", "operands"}
 	case TermExists, TermLambda:
 		allowed, required = []string{"kind", "id", "label", "type", "body"}, []string{"kind", "id", "type", "body"}
+		if kind == TermExists {
+			allowed = append(allowed, "temporal_frame")
+		}
 	case TermApply:
 		allowed, required = []string{"kind", "label", "function", "argument"}, []string{"kind", "function", "argument"}
 	case TermNot:
@@ -1356,6 +1362,24 @@ func validateTermJSON(data json.RawMessage, path string) error {
 			}
 		}
 	case TermExists, TermLambda:
+		if kind == TermExists {
+			if raw, ok := fields["temporal_frame"]; ok {
+				value, err := rewriteJSONString(raw, path+".temporal_frame", 32, false)
+				if err != nil {
+					return err
+				}
+				if value != "past" && value != "present" {
+					return invalid("INVALID_BINDER_TEMPORAL_FRAME", path+".temporal_frame", "temporal_frame must be past or present")
+				}
+				typ, err := DecodeTypeJSON(fields["type"], path+".type")
+				if err != nil {
+					return err
+				}
+				if typ.Kind != TypeEvent {
+					return invalid("INVALID_BINDER_TEMPORAL_FRAME", path+".temporal_frame", "temporal_frame is only allowed on an Event Exists binder")
+				}
+			}
+		}
 		return validateTermJSON(fields["body"], path+".body")
 	case TermNot:
 		return validateTermJSON(fields["body"], path+".body")
@@ -1889,7 +1913,7 @@ func decodeArtifactNodes(data []byte) ([]Node, error) {
 	result := make([]Node, len(items))
 	for i, raw := range items {
 		path := fmt.Sprintf("artifact.nodes[%d]", i)
-		base, err := strictObject(raw, path, []string{"node_id", "kind", "label", "identity", "type", "symbol", "args", "operands", "body", "function", "argument", "quantifier", "count", "restrictor", "answers", "modality", "modal_profile"}, []string{"node_id", "kind"})
+		base, err := strictObject(raw, path, []string{"node_id", "kind", "label", "identity", "type", "symbol", "args", "operands", "body", "function", "argument", "quantifier", "count", "restrictor", "temporal_frame", "answers", "modality", "modal_profile"}, []string{"node_id", "kind"})
 		if err != nil {
 			return nil, err
 		}
@@ -1917,7 +1941,9 @@ func decodeArtifactNodes(data []byte) ([]Node, error) {
 			allowed, required = []string{"node_id", "kind", "label", "symbol", "args"}, []string{"node_id", "kind", "symbol", "args"}
 		case TermAnd:
 			allowed, required = []string{"node_id", "kind", "label", "operands"}, []string{"node_id", "kind", "operands"}
-		case TermExists, TermLambda:
+		case TermExists:
+			allowed, required = []string{"node_id", "kind", "label", "identity", "type", "temporal_frame", "body"}, []string{"node_id", "kind", "identity", "type", "body"}
+		case TermLambda:
 			allowed, required = []string{"node_id", "kind", "label", "identity", "type", "body"}, []string{"node_id", "kind", "identity", "type", "body"}
 		case TermNot:
 			allowed, required = []string{"node_id", "kind", "label", "body"}, []string{"node_id", "kind", "body"}
@@ -1988,7 +2014,22 @@ func decodeArtifactNodes(data []byte) ([]Node, error) {
 					return nil, err
 				}
 			}
-		case TermExists, TermLambda, TermNot:
+		case TermExists:
+			if raw, ok := fields["temporal_frame"]; ok {
+				if node.TemporalFrame, err = rewriteJSONString(raw, path+".temporal_frame", 16, false); err != nil {
+					return nil, err
+				}
+				if node.TemporalFrame != "past" && node.TemporalFrame != "present" {
+					return nil, invalid("INVALID_BINDER_TEMPORAL_FRAME", path+".temporal_frame", "temporal frame must be past or present")
+				}
+				if node.Type == nil || node.Type.Kind != TypeEvent {
+					return nil, invalid("INVALID_BINDER_TEMPORAL_FRAME", path+".temporal_frame", "temporal frame is only valid for Event Exists binders")
+				}
+			}
+			if node.Body, err = decodeNodeID(fields["body"], path+".body"); err != nil {
+				return nil, err
+			}
+		case TermLambda, TermNot:
 			if node.Body, err = decodeNodeID(fields["body"], path+".body"); err != nil {
 				return nil, err
 			}

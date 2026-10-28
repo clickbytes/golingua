@@ -430,6 +430,9 @@ func (compiler *planCompiler) compileTree(term *algebra.Term, path string, depth
 		}
 		compiler.nodes[idx] = node
 	case algebra.TermExists:
+		if term.TemporalFrame != "" {
+			return "", planUnsupported("TEMPORAL_EXISTS_UNSUPPORTED", path+".temporal_frame", "positive fact evaluation does not interpret temporal frames on bound Event binders")
+		}
 		key := AlgebraVariableKey{Kind: "exists", ID: term.ID}
 		if err := compiler.addVariable(key, *term.Type, path+".id"); err != nil {
 			return "", err

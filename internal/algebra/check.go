@@ -383,6 +383,14 @@ func (c *checker) visit(term *Term, path string, depth int) (Type, error) {
 		if err := c.validateType(term.Type, path+".type", 1, make(map[*Type]bool)); err != nil {
 			return Type{}, err
 		}
+		if term.TemporalFrame != "" {
+			if term.Kind != TermExists || term.Type.Kind != TypeEvent {
+				return Type{}, invalid("INVALID_BINDER_TEMPORAL_FRAME", path+".temporal_frame", "temporal_frame is only allowed on an Event Exists binder")
+			}
+			if term.TemporalFrame != "past" && term.TemporalFrame != "present" {
+				return Type{}, invalid("INVALID_BINDER_TEMPORAL_FRAME", path+".temporal_frame", "temporal_frame must be past or present")
+			}
+		}
 		if err := c.scope.bind(term.ID, *term.Type, path+".id"); err != nil {
 			return Type{}, err
 		}
@@ -476,6 +484,9 @@ func validateTermShape(term *Term, path string) error {
 	bad := func(field string) error {
 		return invalid("MALFORMED_TERM", path+"."+field, "field is not allowed for this term kind")
 	}
+	if term.Kind != TermExists && term.TemporalFrame != "" {
+		return bad("temporal_frame")
+	}
 	usesType := term.Kind == TermParam || term.Kind == TermRef || term.Kind == TermHole || term.Kind == TermLambda || term.Kind == TermExists || term.Kind == TermQuantifier
 	if !usesType && term.Type != nil {
 		return bad("type")
@@ -532,6 +543,9 @@ func validateTermShape(term *Term, path string) error {
 	case TermExists, TermLambda:
 		if term.ID == "" || term.Type == nil || term.Body == nil {
 			return invalid("MALFORMED_TERM", path, "binder term requires id, type, and body")
+		}
+		if term.TemporalFrame != "" && (term.Type.Kind != TypeEvent || term.TemporalFrame != "past" && term.TemporalFrame != "present") {
+			return invalid("INVALID_BINDER_TEMPORAL_FRAME", path+".temporal_frame", "temporal_frame is allowed only as past or present on an Event Exists binder")
 		}
 	case TermNot:
 		if term.Body == nil {

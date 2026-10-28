@@ -367,7 +367,7 @@ func RewriteTermEqual(left, right *Term, limits Limits) (bool, error) {
 		if termNodes > limits.MaxNodes {
 			return false, resourceLimit("term", "term equality exceeds configured node bound")
 		}
-		if a.Kind != b.Kind || a.ID != b.ID || a.Symbol != b.Symbol || a.Quantifier != b.Quantifier || a.Modality != b.Modality || a.ModalProfile != b.ModalProfile ||
+		if a.Kind != b.Kind || a.ID != b.ID || a.Symbol != b.Symbol || a.Quantifier != b.Quantifier || a.TemporalFrame != b.TemporalFrame || a.Modality != b.Modality || a.ModalProfile != b.ModalProfile ||
 			len(a.Args) != len(b.Args) || len(a.Operands) != len(b.Operands) || len(a.Answers) != len(b.Answers) ||
 			(a.Count == nil) != (b.Count == nil) || (a.Count != nil && *a.Count != *b.Count) {
 			return false, nil
@@ -890,6 +890,10 @@ func rewriteOrderKey(term *Term, outer map[string]int, limits Limits) (string, e
 		case TermExists, TermLambda:
 			if err := rewriteTypeKey(&b, t.Type, 1, limits); err != nil {
 				return err
+			}
+			if t.Kind == TermExists && t.TemporalFrame != "" {
+				token("temporal_frame")
+				token(t.TemporalFrame)
 			}
 			restores := bindLocals([]string{t.ID})
 			err := walk(t.Body, depth+1)
