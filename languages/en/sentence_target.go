@@ -63,12 +63,17 @@ func NewSentenceTarget(snapshot *pack.Pack, registry *language.Registry) (*runti
 	if err != nil {
 		return nil, err
 	}
+	scopePlan, err := SentenceScopedClauses()
+	if err != nil {
+		return nil, err
+	}
 	return &runtime.TargetPipeline{
 		Language: "en", LanguageRegistry: registry, Lexicon: snapshot.Lexicon(), Valency: valencyIndex,
 		Constructions: constructions, Variants: variants, Core: snapshot.CoreGraph(),
 		OperatorBuilder: englishSentenceOperatorBuilder{}, ExecutionBuilder: execution,
 		PlanBuilder: englishSentencePlanAnnotations{}, CandidatePolicy: englishDeterminerCandidatePolicy{},
 		ClauseCoordination: &coordination,
+		ScopedRealizer:     &runtime.ScopedClauseRealizer{Language: "en", Plan: scopePlan, Valency: valencyIndex, Morphology: seed, Features: englishScopedFeaturePlanner{}},
 	}, nil
 }
 

@@ -52,6 +52,45 @@ type AlgebraRealizationCoverage struct {
 	AnswerRole        string                    `json:"answer_role,omitempty"`
 }
 
+// AlgebraScopeCoverage preserves the scope evidence and the bounded checks
+// recorded for each scoped surface; it is not an independent linguistic proof.
+type AlgebraScopeCoverage struct {
+	Verified          bool                              `json:"verified"`
+	VerificationScope string                            `json:"verification_scope"`
+	PlanProvenance    string                            `json:"plan_provenance,omitempty"`
+	Paths             ScopedTargetPaths                 `json:"paths"`
+	BinderX           string                            `json:"binder_x"`
+	BinderY           string                            `json:"binder_y"`
+	BinderEvent       string                            `json:"binder_event"`
+	Negation          ScopedNegationLocation            `json:"negation_location"`
+	TemporalFrame     string                            `json:"temporal_frame,omitempty"`
+	RequestContext    *AlgebraScopeContextEvidence      `json:"request_context,omitempty"`
+	Selections        []AlgebraScopeSelectionEvidence   `json:"selections"`
+	Alternatives      []AlgebraScopeAlternativeEvidence `json:"alternatives"`
+}
+
+type AlgebraScopeContextEvidence struct {
+	SchemaVersion int    `json:"schema_version"`
+	ID            string `json:"id"`
+}
+
+type AlgebraScopeSelectionEvidence struct {
+	BinderID      string `json:"binder_id"`
+	Role          string `json:"role"`
+	Port          string `json:"port"`
+	ReferencePort string `json:"reference_port,omitempty"`
+	SenseID       string `json:"sense_id"`
+	LexemeID      string `json:"lexeme_id"`
+	Symbol        string `json:"symbol"`
+	ProvenanceID  string `json:"provenance_id"`
+}
+
+type AlgebraScopeAlternativeEvidence struct {
+	ID             string              `json:"id"`
+	ConstructionID string              `json:"construction_id"`
+	Parts          []ScopedSurfacePart `json:"parts"`
+}
+
 // AlgebraRealizationResidual retains input meaning that this bounded route did
 // not realize. The source object is included when the residual originated in
 // the typed expression or request context.
@@ -79,6 +118,7 @@ type AlgebraRealizationResult struct {
 	Alternatives    []SurfaceAlternative         `json:"alternatives"`
 	Diagnostics     []status.Diagnostic          `json:"diagnostics"`
 	Scope           string                       `json:"scope"`
+	ScopeCoverage   *AlgebraScopeCoverage        `json:"scope_coverage,omitempty"`
 }
 
 type algebraAtomMatch struct {
@@ -181,6 +221,9 @@ func (engine *Engine) realizeAlgebra(
 		return algebraRealizationFailure(result, status.OutcomeResourceLimit, "RESOURCE_LIMIT", "language_package.bindings", "semantic language package exceeds the realization binding limit"), nil
 	}
 	validatedSignatures := signaturesByID(selectedMetadata.Signatures)
+	if plan, matched := matchAlgebraScope(input.Expression, validatedSignatures); matched {
+		return engine.realizeAlgebraScope(ctx, result, input, languageID, languagePackage, validations, validatedSignatures, plan)
+	}
 	if input.Expression == nil {
 		return algebraRealizationFailure(result, status.OutcomeInvalid, "MISSING_EXPRESSION", "input.expression", "an expression is required for realization"), nil
 	}

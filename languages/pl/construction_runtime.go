@@ -8,8 +8,17 @@ import (
 	"github.com/clickbytes/golingua/internal/valency"
 )
 
-//go:embed constructions/transitive_personal.json constructions/transitive_personal_explicit.json constructions/transitive.json constructions/transitive_negative.json constructions/oblique.json constructions/oblique_negative.json constructions/intransitive.json constructions/ditransitive.json constructions/double_np.json constructions/transitive_oblique.json constructions/question.json constructions/wh_question.json constructions/identification.json constructions/identification_negative.json constructions/attribution.json constructions/attributed_seeing.json constructions/coordination.json
+//go:embed constructions/transitive_personal.json constructions/transitive_personal_explicit.json constructions/transitive.json constructions/transitive_negative.json constructions/oblique.json constructions/oblique_negative.json constructions/intransitive.json constructions/ditransitive.json constructions/double_np.json constructions/transitive_oblique.json constructions/question.json constructions/wh_question.json constructions/identification.json constructions/identification_negative.json constructions/attribution.json constructions/attributed_seeing.json constructions/coordination.json constructions/scoped_clause.json
 var sentenceConstructions embed.FS
+
+// SentenceScopedClauses compiles the language-local bounded scope patterns.
+func SentenceScopedClauses() (construction.ScopedClausePlan, error) {
+	data, err := sentenceConstructions.ReadFile("constructions/scoped_clause.json")
+	if err != nil {
+		return construction.ScopedClausePlan{}, err
+	}
+	return construction.DecodeScopedClausePlan(data, "pl")
+}
 
 // SentenceCoordination compiles the explicit language-local clause join plan.
 func SentenceCoordination() (construction.ClauseCoordinationPlan, error) {

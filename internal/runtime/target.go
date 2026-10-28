@@ -59,9 +59,47 @@ type TargetPipeline struct {
 	ExecutionBuilder   TargetExecutionBuilder
 	CandidatePolicy    realizer.TargetCandidatePolicy
 	ClauseCoordination *construction.ClauseCoordinationPlan
+	ScopedRealizer     engine.ScopedTargetRealizer
 }
 
 var _ engine.TargetRealizer = (*TargetPipeline)(nil)
+var _ engine.ScopedTargetRealizer = (*TargetPipeline)(nil)
+var _ engine.ScopedTargetVerifier = (*TargetPipeline)(nil)
+
+// RealizeScope delegates quantified scope realization to an optional
+// language-specific implementation. Ordinary Meaning realization remains
+// independent of this capability.
+func (pipeline *TargetPipeline) RealizeScope(ctx context.Context, request engine.ScopedTargetRequest) (engine.ScopedTargetResult, error) {
+	if pipeline == nil || pipeline.ScopedRealizer == nil {
+		return engine.ScopedTargetResult{}, targetPipelineError(status.OutcomeUnsupported, "SCOPED_TARGET_UNAVAILABLE", "target.scope", "target runtime has no scope-preserving realization capability")
+	}
+	return pipeline.ScopedRealizer.RealizeScope(ctx, request)
+}
+
+// ScopedPlan returns an independently decoded copy of the active scope plan.
+func (pipeline *TargetPipeline) ScopedPlan() (construction.ScopedClausePlan, error) {
+	if pipeline == nil || pipeline.ScopedRealizer == nil {
+		return construction.ScopedClausePlan{}, targetPipelineError(status.OutcomeUnsupported, "SCOPED_TARGET_UNAVAILABLE", "target.scope", "target runtime has no scope-preserving realization capability")
+	}
+	verifier, ok := pipeline.ScopedRealizer.(engine.ScopedTargetVerifier)
+	if !ok {
+		return construction.ScopedClausePlan{}, targetPipelineError(status.OutcomeUnsupported, "SCOPED_TARGET_VERIFICATION_UNAVAILABLE", "target.scope", "target runtime does not expose a verified scope plan")
+	}
+	return verifier.ScopedPlan()
+}
+
+// VerifyScope delegates proof of a candidate to the exact configured scope
+// realizer. The pipeline does not accept unverifiable target alternatives.
+func (pipeline *TargetPipeline) VerifyScope(ctx context.Context, request engine.ScopedTargetRequest, alternative engine.ScopedTargetAlternative) error {
+	if pipeline == nil || pipeline.ScopedRealizer == nil {
+		return targetPipelineError(status.OutcomeUnsupported, "SCOPED_TARGET_UNAVAILABLE", "target.scope", "target runtime has no scope-preserving realization capability")
+	}
+	verifier, ok := pipeline.ScopedRealizer.(engine.ScopedTargetVerifier)
+	if !ok {
+		return targetPipelineError(status.OutcomeUnsupported, "SCOPED_TARGET_VERIFICATION_UNAVAILABLE", "target.scope", "target runtime cannot independently verify a scope alternative")
+	}
+	return verifier.VerifyScope(ctx, request, alternative)
+}
 
 // Realize retains each licensed target candidate and returns its exact
 // binding evidence with the corresponding linearized surface form.

@@ -1,0 +1,279 @@
+{
+  "schema_version": 1,
+  "id": "golingua.language.pl.scope-398",
+  "version": "2026-10-28.1",
+  "language": "pl",
+  "provenance": {
+    "id": "golingua-pl-scope-398",
+    "uri": "https://github.com/clickbytes/golingua/issues/398",
+    "version": "2026-10-28.1",
+    "license": "internal-neutral-example",
+    "author": "Codex by owner delegation"
+  },
+  "lexicon": {
+    "schema_version": 1,
+    "lexemes": [
+      {
+        "id": "lexeme:pl.widziec.v",
+        "language": "pl",
+        "lemma": "widzieć",
+        "pos": "verb"
+      },
+      {
+        "id": "lexeme:pl.slyszec.v",
+        "language": "pl",
+        "lemma": "słyszeć",
+        "pos": "verb"
+      },
+      {
+        "id": "lexeme:pl.nauczyciel.n",
+        "language": "pl",
+        "lemma": "nauczyciel",
+        "pos": "noun"
+      },
+      {
+        "id": "lexeme:pl.pies.n",
+        "language": "pl",
+        "lemma": "pies",
+        "pos": "noun"
+      }
+    ],
+    "senses": [
+      {
+        "id": "sense:pl.widziec.visual",
+        "lexeme_id": "lexeme:pl.widziec.v",
+        "usage": [
+          "perceive visually"
+        ],
+        "valency_ids": [
+          "pl.widziec.visual.transitive"
+        ]
+      },
+      {
+        "id": "sense:pl.slyszec.auditory",
+        "lexeme_id": "lexeme:pl.slyszec.v",
+        "usage": [
+          "perceive through hearing"
+        ],
+        "valency_ids": [
+          "pl.slyszec.auditory.transitive"
+        ]
+      },
+      {
+        "id": "sense:pl.nauczyciel.role",
+        "lexeme_id": "lexeme:pl.nauczyciel.n",
+        "usage": [
+          "person in a teaching role"
+        ],
+        "valency_ids": []
+      },
+      {
+        "id": "sense:pl.pies.animal",
+        "lexeme_id": "lexeme:pl.pies.n",
+        "usage": [
+          "dog"
+        ],
+        "valency_ids": []
+      }
+    ],
+    "bindings": [
+      {
+        "sense_id": "sense:pl.widziec.visual",
+        "mapping_kind": "equivalent",
+        "status": "approved",
+        "provenance": {
+          "id": "dse394-formal-target-review",
+          "uri": "https://github.com/clickbytes/golingua/issues/394",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        },
+        "target": {
+          "schema_version": 1,
+          "kind": "symbol",
+          "profile": "positive-facts-v1",
+          "symbol_ref": "pilot.vision_event",
+          "role_ports": [
+            {
+              "frame_id": "pl.widziec.visual.transitive",
+              "role": "experiencer",
+              "port_id": "experiencer",
+              "type": {
+                "kind": "Entity"
+              }
+            },
+            {
+              "frame_id": "pl.widziec.visual.transitive",
+              "role": "stimulus",
+              "port_id": "stimulus",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "sense_id": "sense:pl.slyszec.auditory",
+        "mapping_kind": "equivalent",
+        "status": "approved",
+        "provenance": {
+          "id": "dse394-formal-target-review",
+          "uri": "https://github.com/clickbytes/golingua/issues/394",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        },
+        "target": {
+          "schema_version": 1,
+          "kind": "symbol",
+          "profile": "positive-facts-v1",
+          "symbol_ref": "pilot.auditory_event",
+          "role_ports": [
+            {
+              "frame_id": "pl.slyszec.auditory.transitive",
+              "role": "experiencer",
+              "port_id": "experiencer",
+              "type": {
+                "kind": "Entity"
+              }
+            },
+            {
+              "frame_id": "pl.slyszec.auditory.transitive",
+              "role": "stimulus",
+              "port_id": "stimulus",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "sense_id": "sense:pl.nauczyciel.role",
+        "mapping_kind": "equivalent",
+        "status": "approved",
+        "provenance": {
+          "id": "golingua-dse-authored-395",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        },
+        "target": {
+          "schema_version": 1,
+          "kind": "reference_predicate",
+          "profile": "positive-facts-v1",
+          "symbol_ref": "probe.teacher",
+          "role_ports": [],
+          "reference_port": {
+            "port_id": "entity",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      },
+      {
+        "sense_id": "sense:pl.pies.animal",
+        "mapping_kind": "equivalent",
+        "status": "approved",
+        "provenance": {
+          "id": "golingua-dse-authored-395",
+          "uri": "https://github.com/clickbytes/golingua/issues/395",
+          "version": "2026-10-26.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        },
+        "target": {
+          "schema_version": 1,
+          "kind": "reference_predicate",
+          "profile": "positive-facts-v1",
+          "symbol_ref": "probe.dog",
+          "role_ports": [],
+          "reference_port": {
+            "port_id": "entity",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "frames": [
+    {
+      "id": "pl.widziec.visual.transitive",
+      "sense_id": "sense:pl.widziec.visual",
+      "semantic_roles": [
+        "experiencer",
+        "stimulus"
+      ],
+      "arguments": [
+        {
+          "id": "subject",
+          "role": "experiencer",
+          "required": true,
+          "grammatical_function": "subject",
+          "case": "nominative"
+        },
+        {
+          "id": "object",
+          "role": "stimulus",
+          "required": true,
+          "grammatical_function": "object",
+          "case": "accusative"
+        }
+      ],
+      "allowed_family_ids": [
+        "construction:pl.transitive",
+        "construction:pl.transitive_personal",
+        "construction:pl.transitive_personal_explicit",
+        "construction:pl.attributed_seeing"
+      ],
+      "provenance": {
+        "id": "golingua-pl-valency-authored",
+        "path": "languages/pl/valency.go",
+        "version": "2026-10-21-initial",
+        "license": "unknown",
+        "author": "golingua contributors"
+      }
+    },
+    {
+      "id": "pl.slyszec.auditory.transitive",
+      "sense_id": "sense:pl.slyszec.auditory",
+      "semantic_roles": [
+        "experiencer",
+        "stimulus"
+      ],
+      "arguments": [
+        {
+          "id": "subject",
+          "role": "experiencer",
+          "required": true,
+          "grammatical_function": "subject",
+          "case": "nominative"
+        },
+        {
+          "id": "object",
+          "role": "stimulus",
+          "required": true,
+          "grammatical_function": "object",
+          "case": "accusative"
+        }
+      ],
+      "allowed_family_ids": [
+        "construction:pl.transitive",
+        "construction:pl.transitive_personal",
+        "construction:pl.transitive_personal_explicit"
+      ],
+      "provenance": {
+        "id": "golingua-pl-valency-authored",
+        "path": "languages/pl/valency.go",
+        "version": "2026-10-21-initial",
+        "license": "unknown",
+        "author": "golingua contributors"
+      }
+    }
+  ]
+}
