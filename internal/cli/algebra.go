@@ -22,6 +22,7 @@ import (
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/language"
 	"github.com/clickbytes/golingua/internal/metamodel"
+	"github.com/clickbytes/golingua/internal/parser"
 	"github.com/clickbytes/golingua/internal/provenance"
 	"github.com/clickbytes/golingua/internal/reason"
 	"github.com/clickbytes/golingua/internal/runtime"
@@ -1182,7 +1183,7 @@ func runAlgebra(args []string, input io.Reader, stdout, stderr io.Writer, loader
 			"modal":         {CanRepresent: true, CanEvaluate: false, Condition: "opaque possible/necessary/likely wrapper; no modal fact semantics"},
 			"quantifier":    {CanRepresent: true, CanEvaluate: false},
 			"ask":           {CanRepresent: true, CanEvaluate: true, Condition: "root Ask with a positive Atom/And/Exists body after beta lowering; answer projection is embedded in Ask"},
-			"relative_time": {CanRepresent: true, CanEvaluate: false, Condition: "past/present are explicit reference attributes; no mapping to the query instant"},
+			"relative_time": {CanRepresent: true, CanEvaluate: true, Condition: "present Event references only, with an explicit UTC query instant; past and reference-time links are unsupported"},
 			"multiplicity":  {CanRepresent: true, CanEvaluate: false, Condition: "one is accepted only in the atomic reference profile; many has no grouping semantics"},
 		}, QuestionType: string(algebra.TypeQuestion), Evaluation: algebraScopeCapability{CanRepresent: true, CanEvaluate: true, Condition: "only the bounded positive Ask profile; not arbitrary Question values"}, Scope: "representation and evaluation capability only; missing attributes remain unknown; no world-truth or quantifier-completeness claim"}
 		if err := writeJSON(stdout, output); err != nil {
@@ -2698,18 +2699,7 @@ func sourceSyntaxWire(syntax runtime.SourceSyntax) map[string]any {
 	for _, c := range syntax.PhraseCandidates {
 		phrases = append(phrases, map[string]any{"id": c.ID, "category": c.Category, "token_start": c.TokenStart, "token_end": c.TokenEnd, "span": c.Span, "head_token_index": c.HeadTokenIndex, "reading_ids": c.ReadingIDs, "lexeme_id": c.LexemeID.String(), "sense_ids": idStrings(c.SenseIDs), "features": featureMap(c.Features), "case": c.Case, "case_known": c.CaseKnown})
 	}
-	nodes := make([]map[string]any, 0, len(syntax.Forest.Nodes))
-	for _, n := range syntax.Forest.Nodes {
-		alts := make([]map[string]any, 0, len(n.Alternatives))
-		for _, a := range n.Alternatives {
-			slots := make([]map[string]any, 0, len(a.Slots))
-			for _, slot := range a.Slots {
-				slots = append(slots, map[string]any{"slot_id": slot.SlotID, "role": string(slot.Role), "candidate_ids": slot.CandidateIDs, "node_ids": slot.NodeIDs, "unresolved_gap": slot.WHGap != nil})
-			}
-			alts = append(alts, map[string]any{"plan_id": string(a.PlanID), "family_id": a.FamilyID.String(), "variant_id": string(a.VariantID), "sense_id": a.Permission.SenseID.String(), "frame_id": string(a.Permission.FrameID), "derivation_id": a.DerivationID, "slots": slots, "unresolved": a.Unresolved})
-		}
-		nodes = append(nodes, map[string]any{"id": string(n.ID), "span": n.Span, "category": n.Category, "candidate_ids": n.CandidateIDs, "alternatives": alts})
-	}
+	forestWire := sourceForestWire(syntax.Forest)
 	operators := make([]map[string]any, 0, len(syntax.CompositionEvidence.Operators))
 	for _, op := range syntax.CompositionEvidence.Operators {
 		operators = append(operators, map[string]any{"target_candidate_id": op.TargetCandidateID, "kind": op.Operator.Kind, "value": op.Operator.Value, "span": op.Span})
@@ -2734,13 +2724,70 @@ func sourceSyntaxWire(syntax runtime.SourceSyntax) map[string]any {
 	for role, value := range syntax.ParseContext.InformationStructure {
 		info[string(role)] = string(value)
 	}
-	return map[string]any{
+	wire := map[string]any{
 		"lattice":           map[string]any{"language": syntax.Lattice.Language, "outcome": syntax.Lattice.Outcome, "tokens": tokens, "mwe_edges": mwes, "diagnostics": syntax.Lattice.Diagnostics},
 		"phrase_candidates": phrases,
 		"parse_context":     map[string]any{"wh_gaps": whGaps, "information_structure": info},
-		"forest":            map[string]any{"language": syntax.Forest.Language, "outcome": syntax.Forest.Outcome, "roots": syntax.Forest.Roots, "nodes": nodes, "unmatched": syntax.Forest.Unmatched, "diagnostics": syntax.Forest.Diagnostics},
+		"forest":            forestWire,
 		"references":        refs, "implicit_roles": implicit, "operators": operators, "node_attributes": attrs, "operator_coverage_complete": syntax.CompositionEvidence.OperatorCoverageComplete, "request_context_id": syntax.CompositionEvidence.RequestContextID,
 	}
+	if coordination := syntax.Coordination; coordination != nil {
+		clauses := make([]map[string]any, 0, len(coordination.Clauses))
+		for _, clause := range coordination.Clauses {
+			clauses = append(clauses, map[string]any{
+				"token_start": clause.TokenStart, "token_end": clause.TokenEnd,
+				"forest": sourceForestWire(clause.Forest), "evidence": sourceCompositionEvidenceWire(clause.Evidence),
+			})
+		}
+		wire["coordination"] = map[string]any{"connector": coordination.Connector, "span": coordination.Span, "clauses": clauses}
+	}
+	return wire
+}
+
+func sourceForestWire(forest parser.Forest) map[string]any {
+	nodes := make([]map[string]any, 0, len(forest.Nodes))
+	for _, node := range forest.Nodes {
+		alternatives := make([]map[string]any, 0, len(node.Alternatives))
+		for _, alternative := range node.Alternatives {
+			slots := make([]map[string]any, 0, len(alternative.Slots))
+			for _, slot := range alternative.Slots {
+				candidateIDs := append([]string{}, slot.CandidateIDs...)
+				nodeIDs := make([]string, 0, len(slot.NodeIDs))
+				for _, id := range slot.NodeIDs {
+					nodeIDs = append(nodeIDs, string(id))
+				}
+				slots = append(slots, map[string]any{"slot_id": slot.SlotID, "role": string(slot.Role), "candidate_ids": candidateIDs, "node_ids": nodeIDs, "unresolved_gap": slot.WHGap != nil})
+			}
+			alternatives = append(alternatives, map[string]any{"plan_id": string(alternative.PlanID), "family_id": alternative.FamilyID.String(), "variant_id": string(alternative.VariantID), "sense_id": alternative.Permission.SenseID.String(), "frame_id": string(alternative.Permission.FrameID), "derivation_id": alternative.DerivationID, "slots": slots, "unresolved": alternative.Unresolved})
+		}
+		candidateIDs := append([]string{}, node.CandidateIDs...)
+		nodes = append(nodes, map[string]any{"id": string(node.ID), "span": node.Span, "category": string(node.Category), "candidate_ids": candidateIDs, "alternatives": alternatives})
+	}
+	roots := make([]string, 0, len(forest.Roots))
+	for _, root := range forest.Roots {
+		roots = append(roots, string(root))
+	}
+	return map[string]any{"language": forest.Language, "outcome": forest.Outcome, "roots": roots, "nodes": nodes, "unmatched": forest.Unmatched, "diagnostics": forest.Diagnostics}
+}
+
+func sourceCompositionEvidenceWire(evidence runtime.CompositionEvidence) map[string]any {
+	refs := make([]map[string]any, 0, len(evidence.References))
+	for _, ref := range evidence.References {
+		refs = append(refs, map[string]any{"candidate_id": ref.CandidateID, "referent_id": string(ref.ReferentID), "evidence_id": ref.EvidenceID, "anchored": ref.Anchor != nil})
+	}
+	operators := make([]map[string]any, 0, len(evidence.Operators))
+	for _, operator := range evidence.Operators {
+		operators = append(operators, map[string]any{"target_candidate_id": operator.TargetCandidateID, "kind": operator.Operator.Kind, "value": operator.Operator.Value, "span": operator.Span})
+	}
+	attributes := make([]map[string]any, 0, len(evidence.NodeAttributes))
+	for _, attribute := range evidence.NodeAttributes {
+		attributes = append(attributes, map[string]any{"candidate_id": attribute.CandidateID, "temporal_frame": attribute.TemporalFrame, "multiplicity": attribute.Multiplicity})
+	}
+	implicit := make([]map[string]any, 0, len(evidence.ImplicitRoles))
+	for _, role := range evidence.ImplicitRoles {
+		implicit = append(implicit, map[string]any{"derivation_id": role.DerivationID, "slot_id": role.SlotID, "predicate_candidate_id": role.PredicateCandidateID, "role": string(role.Role), "core_concept_id": role.CoreConceptID.String(), "multiplicity": role.Multiplicity, "source_span": role.SourceSpan})
+	}
+	return map[string]any{"references": refs, "operators": operators, "node_attributes": attributes, "implicit_roles": implicit, "operator_coverage_complete": evidence.OperatorCoverageComplete, "request_context_id": evidence.RequestContextID}
 }
 
 func featureMap(values map[features.FeatureID]features.FeatureValueID) map[string]string {

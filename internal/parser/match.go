@@ -23,6 +23,39 @@ const parserMaxTokens = 256
 // Parse matches the supplied phrase evidence against every analysis-capable
 // compiled plan for the lattice language. It retains all bounded derivations.
 func Parse(lattice analyzer.LexicalLattice, candidates []PhraseCandidate, context ParseContext, index *Index, budget Budget) (Forest, error) {
+	return parseRange(lattice, candidates, context, index, budget, 0, len(lattice.Tokens), true, false)
+}
+
+// ParseRange matches plans over one non-empty half-open token range in the
+// original lattice. Candidate IDs, spans, and token indexes remain global.
+// Evidence crossing the requested boundary is rejected rather than truncated.
+func ParseRange(lattice analyzer.LexicalLattice, candidates []PhraseCandidate, context ParseContext, index *Index, budget Budget, start, end int) (Forest, error) {
+	return parseRange(lattice, candidates, context, index, budget, start, end, false, false)
+}
+
+// ParseClauseRange parses one source clause before an explicitly recognized
+// coordinator. It may omit only the plan's final period terminal at that
+// boundary; no token, candidate, or source span is synthesized.
+func ParseClauseRange(lattice analyzer.LexicalLattice, candidates []PhraseCandidate, context ParseContext, index *Index, budget Budget, start, end int, omitFinalPeriod bool) (Forest, error) {
+	if start < 0 || end <= start || end > len(lattice.Tokens) {
+		return Forest{}, newParserError("range", "token range must be non-empty and within the lattice")
+	}
+	if omitFinalPeriod {
+		if end >= len(lattice.Tokens) {
+			return Forest{}, newParserError("range.boundary", "omitted final period requires a following clause boundary token")
+		}
+		boundary := lattice.Tokens[end].Token
+		if !(boundary.Kind == text.TokenPunctuation && boundary.Normalized == ",") && boundary.Kind != text.TokenWord {
+			return Forest{}, newParserError("range.boundary", "omitted final period requires a connector or comma at the clause boundary")
+		}
+	}
+	return parseRange(lattice, candidates, context, index, budget, start, end, false, omitFinalPeriod)
+}
+
+func parseRange(lattice analyzer.LexicalLattice, candidates []PhraseCandidate, context ParseContext, index *Index, budget Budget, start, end int, allowEmpty, omitFinalPeriod bool) (Forest, error) {
+	if start < 0 || end < start || end > len(lattice.Tokens) || (start == end && !allowEmpty) {
+		return Forest{}, newParserError("range", "token range must be non-empty and within the lattice")
+	}
 	if err := budget.Validate(); err != nil {
 		return Forest{}, err
 	}
@@ -51,6 +84,7 @@ func Parse(lattice analyzer.LexicalLattice, candidates []PhraseCandidate, contex
 	readingIndex := indexLatticeReadings(lattice)
 	byID := make(map[string]int, len(candidates))
 	headSenses := make(map[string]map[ids.SenseID]bool)
+	rangeCandidates := make([]PhraseCandidate, 0, len(candidates))
 	evidenceItems := 0
 	for i := range candidates {
 		evidenceItems += len(candidates[i].ReadingIDs) + len(candidates[i].SenseIDs) + len(candidates[i].Features)
@@ -61,9 +95,20 @@ func Parse(lattice analyzer.LexicalLattice, candidates []PhraseCandidate, contex
 			return Forest{}, err
 		}
 		byID[candidates[i].ID] = i
+		candidate := candidates[i]
+		if candidate.TokenStart < end && candidate.TokenEnd > start {
+			if candidate.TokenStart < start || candidate.TokenEnd > end {
+				return Forest{}, newParserError(fmt.Sprintf("candidates[%d].token_range", i), "phrase candidate crosses the requested token range")
+			}
+			rangeCandidates = append(rangeCandidates, candidate)
+		}
 		if candidates[i].Category.IsPredicate() {
 			headSenses[candidates[i].ID] = candidateHeadSenseSet(candidates[i], lattice)
 		}
+	}
+	rangeByID := make(map[string]int, len(rangeCandidates))
+	for i := range rangeCandidates {
+		rangeByID[rangeCandidates[i].ID] = i
 	}
 	if len(lattice.Tokens) == 0 {
 		if forest.Outcome == status.OutcomeOK {
@@ -75,17 +120,17 @@ func Parse(lattice analyzer.LexicalLattice, candidates []PhraseCandidate, contex
 	if len(index.byLanguage[lattice.Language]) == 0 {
 		forest.Outcome = status.OutcomeUnsupported
 		forest.Diagnostics = appendDiagnosticOnce(forest.Diagnostics, diag("NO_LANGUAGE_PLANS", "no compiled parser plans for lattice language", string(lattice.Language)))
-		forest.Unmatched = unmatchedCandidates(candidates, "no compiled plans for lattice language")
+		forest.Unmatched = unmatchedCandidates(rangeCandidates, "no compiled plans for lattice language")
 		return forest, nil
 	}
-	planIDs := plansStartingAtZero(index, lattice, candidates)
+	planIDs := plansStartingAt(index, lattice, rangeCandidates, start)
 	if len(planIDs) == 0 {
 		forest.Outcome = status.OutcomeUnknown
-		forest.Diagnostics = appendDiagnosticOnce(forest.Diagnostics, diag("NO_START_PLAN", "no compiled plan can begin with token zero evidence", string(lattice.Language)))
-		forest.Unmatched = unmatchedCandidates(candidates, "no compiled plan starts with this token evidence")
+		forest.Diagnostics = appendDiagnosticOnce(forest.Diagnostics, diag("NO_START_PLAN", fmt.Sprintf("no compiled plan can begin with token %d evidence", start), string(lattice.Language)))
+		forest.Unmatched = unmatchedCandidates(rangeCandidates, "no compiled plan starts with this token evidence")
 		return forest, nil
 	}
-	state := matcher{forest: &forest, lattice: lattice, candidates: candidates, byID: byID, headSenses: headSenses, context: context, budget: budget, semantic: map[string]bool{}, used: map[string]bool{}, rootByKey: map[string]int{}, phraseByKey: map[string]int{}, unsupportedHeads: map[string]bool{}, matchedHeadRanges: map[[2]int]bool{}}
+	state := matcher{forest: &forest, lattice: lattice, candidates: rangeCandidates, byID: rangeByID, headSenses: headSenses, context: context, budget: budget, start: start, end: end, omitFinalPeriod: omitFinalPeriod, semantic: map[string]bool{}, used: map[string]bool{}, rootByKey: map[string]int{}, phraseByKey: map[string]int{}, unsupportedHeads: map[string]bool{}, matchedHeadRanges: map[[2]int]bool{}}
 	for _, pi := range planIDs {
 		if !state.expand() {
 			break
@@ -128,6 +173,9 @@ type matcher struct {
 	headSenses           map[string]map[ids.SenseID]bool
 	context              ParseContext
 	budget               Budget
+	start                int
+	end                  int
+	omitFinalPeriod      bool
 	expansions           int
 	retainedAlternatives int
 	exhausted            bool
@@ -407,17 +455,17 @@ func (m *matcher) matchPlan(p compiledPlan) {
 		return
 	}
 	initial := partial{slots: map[string]assignment{}, unresolved: nil, used: map[string]bool{}}
-	m.walk(p, 0, 0, initial)
+	m.walk(p, 0, m.start, initial)
 }
 
-func plansStartingAtZero(index *Index, lattice analyzer.LexicalLattice, candidates []PhraseCandidate) []int {
-	if len(lattice.Tokens) == 0 {
+func plansStartingAt(index *Index, lattice analyzer.LexicalLattice, candidates []PhraseCandidate, start int) []int {
+	if start < 0 || start >= len(lattice.Tokens) {
 		return nil
 	}
 	seen := make(map[int]bool)
 	seenCategories := map[construction.SlotCategory]bool{}
 	for _, c := range candidates {
-		if c.TokenStart != 0 {
+		if c.TokenStart != start {
 			continue
 		}
 		if seenCategories[c.Category] {
@@ -428,7 +476,7 @@ func plansStartingAtZero(index *Index, lattice analyzer.LexicalLattice, candidat
 			seen[pi] = true
 		}
 	}
-	terminal := canonicalTerminal(lattice.Tokens[0].Token)
+	terminal := canonicalTerminal(lattice.Tokens[start].Token)
 	for _, pi := range index.byFirstSymbol[planLookupKey{Language: lattice.Language, Terminal: terminal}] {
 		seen[pi] = true
 	}
@@ -445,7 +493,7 @@ func (m *matcher) walk(p compiledPlan, si, ti int, part partial) {
 		return
 	}
 	if si == len(p.sequence) {
-		if ti != len(m.lattice.Tokens) {
+		if ti != m.end {
 			return
 		}
 		if !m.checkPlan(p, &part) {
@@ -456,7 +504,10 @@ func (m *matcher) walk(p compiledPlan, si, ti int, part partial) {
 	}
 	symbol := p.sequence[si]
 	if symbol.Slot == nil {
-		if ti < len(m.lattice.Tokens) && symbolMatchesInput(symbol, canonicalTerminal(m.lattice.Tokens[ti].Token)) {
+		if m.omitFinalPeriod && si == len(p.sequence)-1 && ti == m.end && symbol.Terminal == "." {
+			m.walk(p, si+1, ti, clonePartial(part))
+		}
+		if ti < m.end && symbolMatchesInput(symbol, canonicalTerminal(m.lattice.Tokens[ti].Token)) {
 			m.walk(p, si+1, ti+1, clonePartial(part))
 		}
 		if symbol.Optional {
@@ -473,7 +524,7 @@ func (m *matcher) walk(p compiledPlan, si, ti int, part partial) {
 		if c.TokenStart != ti || c.Category != slot.Category {
 			continue
 		}
-		if c.TokenEnd > len(m.lattice.Tokens) {
+		if c.TokenEnd > m.end {
 			continue
 		}
 		if slot.ID == p.headSlotID && (!containsSense(c.SenseIDs, p.permission.SenseID) || !m.headSenses[c.ID][p.permission.SenseID]) {
@@ -549,6 +600,9 @@ func (m *matcher) walkMulti(p compiledPlan, si, ti int, slot construction.SlotSp
 			if c.TokenStart != cursor || c.Category != slot.Category {
 				continue
 			}
+			if c.TokenEnd > m.end {
+				continue
+			}
 			already := false
 			for _, prior := range ids {
 				if prior == c.ID {
@@ -606,6 +660,16 @@ func (m *matcher) findGap(slot string, role meaning.Role) *WHGapEvidence {
 	for i := range m.context.WHGaps {
 		g := &m.context.WHGaps[i]
 		if g.SlotID == slot && role != "" && g.Role == role && g.ScopeNodeID != "" {
+			withinRange := false
+			for tokenIndex := m.start; tokenIndex < m.end; tokenIndex++ {
+				if m.lattice.Tokens[tokenIndex].Token.Span == g.Span {
+					withinRange = true
+					break
+				}
+			}
+			if !withinRange {
+				continue
+			}
 			copy := *g
 			return &copy
 		}
@@ -707,7 +771,7 @@ func (m *matcher) retain(p compiledPlan, part partial) {
 		m.exhausted = true
 		return
 	}
-	rootKey := fmt.Sprintf("%d:%d", 0, len(m.lattice.Tokens))
+	rootKey := fmt.Sprintf("%d:%d", m.start, m.end)
 	neededNodes := 0
 	if _, exists := m.rootByKey[rootKey]; !exists {
 		neededNodes++
@@ -732,8 +796,8 @@ func (m *matcher) retain(p compiledPlan, part partial) {
 	rootIndex, ok := m.rootByKey[rootKey]
 	if !ok {
 		span := text.Span{}
-		if len(m.lattice.Tokens) > 0 {
-			span = text.Span{Start: m.lattice.Tokens[0].Token.Span.Start, End: m.lattice.Tokens[len(m.lattice.Tokens)-1].Token.Span.End}
+		if m.start < m.end {
+			span = text.Span{Start: m.lattice.Tokens[m.start].Token.Span.Start, End: m.lattice.Tokens[m.end-1].Token.Span.End}
 		}
 		if len(m.forest.Nodes) >= m.budget.MaxNodes {
 			m.exhausted = true
@@ -741,7 +805,7 @@ func (m *matcher) retain(p compiledPlan, part partial) {
 		}
 		rootIndex = len(m.forest.Nodes)
 		m.rootByKey[rootKey] = rootIndex
-		m.forest.Nodes = append(m.forest.Nodes, PackedNode{ID: NodeID("root:" + rootKey), Start: 0, End: len(m.lattice.Tokens), Span: span, Category: parseRootCategory})
+		m.forest.Nodes = append(m.forest.Nodes, PackedNode{ID: NodeID("root:" + rootKey), Start: m.start, End: m.end, Span: span, Category: parseRootCategory})
 		m.forest.Roots = append(m.forest.Roots, NodeID("root:"+rootKey))
 	}
 	bindings := make([]SlotBinding, 0, len(part.slots))

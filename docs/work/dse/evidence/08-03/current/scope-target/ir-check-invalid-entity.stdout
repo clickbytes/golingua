@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_BINDER_TEMPORAL_FRAME","message":"temporal_frame is only allowed on an Event Exists binder","path":"expression.body.body.temporal_frame","severity":"error"}]}

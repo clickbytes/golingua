@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "id": "golingua.language.pl.scope-source-plan",
+  "version": "2026-10-28.1",
+  "language": "pl",
+  "profile": "typed-source-fragments-v1",
+  "provenance": {
+    "id": "golingua-pl-scope-source-plan-398",
+    "uri": "https://github.com/clickbytes/golingua/issues/398",
+    "version": "2026-10-28.1",
+    "license": "internal-neutral-example",
+    "author": "Codex by owner delegation"
+  },
+  "predicate_category": "VP",
+  "reference_category": "NP",
+  "predicate_mappings": [
+    {
+      "sense_id": "sense:pl.widziec.visual",
+      "frame_id": "pl.widziec.visual.transitive",
+      "head_port_id": "event",
+      "allowed_family_ids": [
+        "construction:pl.transitive",
+        "construction:pl.question.wh"
+      ],
+      "allowed_variant_ids": [
+        "construction:pl.scoped_clause.outer_negation",
+        "construction:pl.scoped_clause.inner_negation"
+      ]
+    }
+  ],
+  "operator_mappings": [],
+  "feature_conditions": [],
+  "required_feature_ids": [],
+  "reference_non_head_pos_allowlist": []
+}

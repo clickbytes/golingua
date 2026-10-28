@@ -1,0 +1,1403 @@
+{
+  "flows": [
+    {
+      "id": "outer-pl-en-pl",
+      "scenario": "outer",
+      "languages": [
+        "pl",
+        "en",
+        "pl"
+      ],
+      "input_text": "Nie jest tak, że każdy nauczyciel widzi przynajmniej jednego psa.",
+      "input_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/scope-outer-pl.txt",
+      "expected_ir_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/not-all.json",
+      "steps": {
+        "source_analysis": {
+          "command": "outer-pl-en-pl-01-source-analyze",
+          "cli_status": "ok"
+        },
+        "source_candidate_selection": {
+          "aggregate_status": "ok",
+          "candidate_ids": [
+            {
+              "id": "scoped:0",
+              "status": "ok",
+              "diagnostics": []
+            }
+          ],
+          "selected_ok_candidate_id": "scoped:0",
+          "selection_count": 1
+        },
+        "translate_out": {
+          "aggregate_status": "ok",
+          "candidate_ids": [
+            {
+              "id": "translation:33b2a9fddb4b754ed6160cba406f72ef81e439296fe41557ae90d50285efda72",
+              "source_candidate_id": "scoped:0",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_candidate_id": "translation:33b2a9fddb4b754ed6160cba406f72ef81e439296fe41557ae90d50285efda72",
+          "selected_source_candidate_id": "scoped:0",
+          "selection_count": 1,
+          "conditional_selection": false,
+          "command": "outer-pl-en-pl-02-translate-out"
+        },
+        "target_surface_retrieval": {
+          "aggregate_status": "ok",
+          "alternatives": [
+            {
+              "id": "scoped-a97b0b8b4f9cd94bd9ad91ef",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_alternative_id": "scoped-a97b0b8b4f9cd94bd9ad91ef",
+          "selection_count": 1,
+          "command": "outer-pl-en-pl-03-target-surface-realize",
+          "text": "It is not the case that every teacher sees at least one dog."
+        },
+        "selected_target_text": {
+          "text": "It is not the case that every teacher sees at least one dog.",
+          "from_translation_candidate_id": "translation:33b2a9fddb4b754ed6160cba406f72ef81e439296fe41557ae90d50285efda72",
+          "aggregate_status": "ok",
+          "conditional": false
+        },
+        "target_analysis": {
+          "command": "outer-pl-en-pl-04-target-analyze",
+          "cli_status": "incomplete"
+        },
+        "target_candidate_selection": {
+          "aggregate_status": "incomplete",
+          "candidate_ids": [
+            {
+              "id": "scoped:0",
+              "status": "unsupported",
+              "diagnostics": []
+            },
+            {
+              "id": "scoped:1",
+              "status": "ok",
+              "diagnostics": []
+            }
+          ],
+          "selected_ok_candidate_id": "scoped:1",
+          "selection_count": 1
+        },
+        "compare_target": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+            ]
+          },
+          "context_projected": {
+            "status": "ok",
+            "verdict": "proved_equivalent",
+            "diagnostics": [],
+            "right_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/compare-not-all.json",
+            "left_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/outer-pl-en-pl-05-target-compare-left-context-projected.json",
+            "projection": "request_context removed; inline declarations supplied from existing independent acceptance compare document, expression unchanged"
+          },
+          "expected_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/not-all.json",
+          "projection": "request_context removed only from both documents; declarations/signatures/expressions retained",
+          "context_projected_without_acceptance_declarations": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "full_context_expected_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/not-all.json"
+        },
+        "translate_back": {
+          "aggregate_status": "incomplete",
+          "candidate_ids": [
+            {
+              "id": "translation:b79a4dc98471273bd1adbe2728c94cab0a3255558dc2cde0e6afb4ff6494bfc6",
+              "source_candidate_id": "scoped:0",
+              "outcome": "unsupported",
+              "text_bearing": false,
+              "diagnostics": [
+                "DSE_SOURCE_CANDIDATE_NOT_COMPLETE"
+              ]
+            },
+            {
+              "id": "translation:f8fdcfffbe32598d6916360996b075b3a498cef9f4ea768dd518946cf90b5de3",
+              "source_candidate_id": "scoped:1",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_candidate_id": "translation:f8fdcfffbe32598d6916360996b075b3a498cef9f4ea768dd518946cf90b5de3",
+          "selected_source_candidate_id": "scoped:1",
+          "selection_count": 1,
+          "conditional_selection": true,
+          "command": "outer-pl-en-pl-06-translate-back"
+        },
+        "return_surface_retrieval": {
+          "aggregate_status": "ok",
+          "alternatives": [
+            {
+              "id": "scoped-a8ae552e8cf039a1346023be",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_alternative_id": "scoped-a8ae552e8cf039a1346023be",
+          "selection_count": 1,
+          "command": "outer-pl-en-pl-07-return-surface-realize",
+          "text": "Nie jest tak, że każdy nauczyciel widzi przynajmniej jednego psa."
+        },
+        "selected_return_text": {
+          "text": "Nie jest tak, że każdy nauczyciel widzi przynajmniej jednego psa.",
+          "candidate_id": "translation:f8fdcfffbe32598d6916360996b075b3a498cef9f4ea768dd518946cf90b5de3",
+          "aggregate_status": "incomplete",
+          "conditional": true
+        },
+        "return_analysis": {
+          "command": "outer-pl-en-pl-08-return-analyze",
+          "cli_status": "ok"
+        },
+        "return_candidate_selection": {
+          "aggregate_status": "ok",
+          "candidate_ids": [
+            {
+              "id": "scoped:0",
+              "status": "ok",
+              "diagnostics": []
+            }
+          ],
+          "selected_ok_candidate_id": "scoped:0",
+          "selection_count": 1
+        },
+        "compare_return": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+            ]
+          },
+          "context_projected": {
+            "status": "ok",
+            "verdict": "proved_equivalent",
+            "diagnostics": [],
+            "right_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/compare-not-all.json",
+            "left_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/outer-pl-en-pl-09-return-compare-left-context-projected.json",
+            "projection": "request_context removed; inline declarations supplied from existing independent acceptance compare document, expression unchanged"
+          },
+          "expected_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/not-all.json",
+          "projection": "request_context removed only from both documents; declarations/signatures/expressions retained",
+          "context_projected_without_acceptance_declarations": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "full_context_expected_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/not-all.json"
+        },
+        "compare_target_initial_attempt": {
+          "expected_source": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/upstream-untimed-scope/not-all.json",
+          "result": {
+            "full_context": {
+              "status": "invalid",
+              "diagnostics": [
+                "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+              ]
+            },
+            "context_projected": {
+              "status": "ok",
+              "diagnostics": []
+            }
+          }
+        },
+        "compare_return_initial_attempt": {
+          "expected_source": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/upstream-untimed-scope/not-all.json",
+          "result": {
+            "full_context": {
+              "status": "invalid",
+              "diagnostics": [
+                "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+              ]
+            },
+            "context_projected": {
+              "status": "ok",
+              "diagnostics": []
+            }
+          }
+        }
+      },
+      "limitations": [],
+      "roundtrip_status": "incomplete"
+    },
+    {
+      "id": "outer-en-pl-en",
+      "scenario": "outer",
+      "languages": [
+        "en",
+        "pl",
+        "en"
+      ],
+      "input_text": "It is not the case that every teacher sees at least one dog.",
+      "input_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/scope-outer-en.txt",
+      "expected_ir_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/not-all.json",
+      "steps": {
+        "source_analysis": {
+          "command": "outer-en-pl-en-01-source-analyze",
+          "cli_status": "incomplete"
+        },
+        "source_candidate_selection": {
+          "aggregate_status": "incomplete",
+          "candidate_ids": [
+            {
+              "id": "scoped:0",
+              "status": "unsupported",
+              "diagnostics": []
+            },
+            {
+              "id": "scoped:1",
+              "status": "ok",
+              "diagnostics": []
+            }
+          ],
+          "selected_ok_candidate_id": "scoped:1",
+          "selection_count": 1
+        },
+        "translate_out": {
+          "aggregate_status": "incomplete",
+          "candidate_ids": [
+            {
+              "id": "translation:b79a4dc98471273bd1adbe2728c94cab0a3255558dc2cde0e6afb4ff6494bfc6",
+              "source_candidate_id": "scoped:0",
+              "outcome": "unsupported",
+              "text_bearing": false,
+              "diagnostics": [
+                "DSE_SOURCE_CANDIDATE_NOT_COMPLETE"
+              ]
+            },
+            {
+              "id": "translation:f8fdcfffbe32598d6916360996b075b3a498cef9f4ea768dd518946cf90b5de3",
+              "source_candidate_id": "scoped:1",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_candidate_id": "translation:f8fdcfffbe32598d6916360996b075b3a498cef9f4ea768dd518946cf90b5de3",
+          "selected_source_candidate_id": "scoped:1",
+          "selection_count": 1,
+          "conditional_selection": true,
+          "command": "outer-en-pl-en-02-translate-out"
+        },
+        "target_surface_retrieval": {
+          "aggregate_status": "ok",
+          "alternatives": [
+            {
+              "id": "scoped-a8ae552e8cf039a1346023be",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_alternative_id": "scoped-a8ae552e8cf039a1346023be",
+          "selection_count": 1,
+          "command": "outer-en-pl-en-03-target-surface-realize",
+          "text": "Nie jest tak, że każdy nauczyciel widzi przynajmniej jednego psa."
+        },
+        "selected_target_text": {
+          "text": "Nie jest tak, że każdy nauczyciel widzi przynajmniej jednego psa.",
+          "from_translation_candidate_id": "translation:f8fdcfffbe32598d6916360996b075b3a498cef9f4ea768dd518946cf90b5de3",
+          "aggregate_status": "incomplete",
+          "conditional": true
+        },
+        "target_analysis": {
+          "command": "outer-en-pl-en-04-target-analyze",
+          "cli_status": "ok"
+        },
+        "target_candidate_selection": {
+          "aggregate_status": "ok",
+          "candidate_ids": [
+            {
+              "id": "scoped:0",
+              "status": "ok",
+              "diagnostics": []
+            }
+          ],
+          "selected_ok_candidate_id": "scoped:0",
+          "selection_count": 1
+        },
+        "compare_target": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+            ]
+          },
+          "context_projected": {
+            "status": "ok",
+            "verdict": "proved_equivalent",
+            "diagnostics": [],
+            "right_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/compare-not-all.json",
+            "left_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/outer-en-pl-en-05-target-compare-left-context-projected.json",
+            "projection": "request_context removed; inline declarations supplied from existing independent acceptance compare document, expression unchanged"
+          },
+          "expected_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/not-all.json",
+          "projection": "request_context removed only from both documents; declarations/signatures/expressions retained",
+          "context_projected_without_acceptance_declarations": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "full_context_expected_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/not-all.json"
+        },
+        "translate_back": {
+          "aggregate_status": "ok",
+          "candidate_ids": [
+            {
+              "id": "translation:33b2a9fddb4b754ed6160cba406f72ef81e439296fe41557ae90d50285efda72",
+              "source_candidate_id": "scoped:0",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_candidate_id": "translation:33b2a9fddb4b754ed6160cba406f72ef81e439296fe41557ae90d50285efda72",
+          "selected_source_candidate_id": "scoped:0",
+          "selection_count": 1,
+          "conditional_selection": false,
+          "command": "outer-en-pl-en-06-translate-back"
+        },
+        "return_surface_retrieval": {
+          "aggregate_status": "ok",
+          "alternatives": [
+            {
+              "id": "scoped-a97b0b8b4f9cd94bd9ad91ef",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_alternative_id": "scoped-a97b0b8b4f9cd94bd9ad91ef",
+          "selection_count": 1,
+          "command": "outer-en-pl-en-07-return-surface-realize",
+          "text": "It is not the case that every teacher sees at least one dog."
+        },
+        "selected_return_text": {
+          "text": "It is not the case that every teacher sees at least one dog.",
+          "candidate_id": "translation:33b2a9fddb4b754ed6160cba406f72ef81e439296fe41557ae90d50285efda72",
+          "aggregate_status": "ok",
+          "conditional": false
+        },
+        "return_analysis": {
+          "command": "outer-en-pl-en-08-return-analyze",
+          "cli_status": "incomplete"
+        },
+        "return_candidate_selection": {
+          "aggregate_status": "incomplete",
+          "candidate_ids": [
+            {
+              "id": "scoped:0",
+              "status": "unsupported",
+              "diagnostics": []
+            },
+            {
+              "id": "scoped:1",
+              "status": "ok",
+              "diagnostics": []
+            }
+          ],
+          "selected_ok_candidate_id": "scoped:1",
+          "selection_count": 1
+        },
+        "compare_return": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+            ]
+          },
+          "context_projected": {
+            "status": "ok",
+            "verdict": "proved_equivalent",
+            "diagnostics": [],
+            "right_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/compare-not-all.json",
+            "left_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/outer-en-pl-en-09-return-compare-left-context-projected.json",
+            "projection": "request_context removed; inline declarations supplied from existing independent acceptance compare document, expression unchanged"
+          },
+          "expected_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/not-all.json",
+          "projection": "request_context removed only from both documents; declarations/signatures/expressions retained",
+          "context_projected_without_acceptance_declarations": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "full_context_expected_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/not-all.json"
+        },
+        "compare_target_initial_attempt": {
+          "expected_source": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/upstream-untimed-scope/not-all.json",
+          "result": {
+            "full_context": {
+              "status": "invalid",
+              "diagnostics": [
+                "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+              ]
+            },
+            "context_projected": {
+              "status": "ok",
+              "diagnostics": []
+            }
+          }
+        },
+        "compare_return_initial_attempt": {
+          "expected_source": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/upstream-untimed-scope/not-all.json",
+          "result": {
+            "full_context": {
+              "status": "invalid",
+              "diagnostics": [
+                "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+              ]
+            },
+            "context_projected": {
+              "status": "ok",
+              "diagnostics": []
+            }
+          }
+        }
+      },
+      "limitations": [],
+      "roundtrip_status": "incomplete"
+    },
+    {
+      "id": "inner-pl-en-pl",
+      "scenario": "inner",
+      "languages": [
+        "pl",
+        "en",
+        "pl"
+      ],
+      "input_text": "Dla każdego nauczyciela nie istnieje pies, którego ten nauczyciel widzi.",
+      "input_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/scope-inner-pl.txt",
+      "expected_ir_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/all-not.json",
+      "steps": {
+        "source_analysis": {
+          "command": "inner-pl-en-pl-01-source-analyze",
+          "cli_status": "ok"
+        },
+        "source_candidate_selection": {
+          "aggregate_status": "ok",
+          "candidate_ids": [
+            {
+              "id": "scoped:0",
+              "status": "ok",
+              "diagnostics": []
+            }
+          ],
+          "selected_ok_candidate_id": "scoped:0",
+          "selection_count": 1
+        },
+        "translate_out": {
+          "aggregate_status": "ok",
+          "candidate_ids": [
+            {
+              "id": "translation:e5e80c91260513b9121d2204da877477b3126e1b481142edd3587e0172e1cd30",
+              "source_candidate_id": "scoped:0",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_candidate_id": "translation:e5e80c91260513b9121d2204da877477b3126e1b481142edd3587e0172e1cd30",
+          "selected_source_candidate_id": "scoped:0",
+          "selection_count": 1,
+          "conditional_selection": false,
+          "command": "inner-pl-en-pl-02-translate-out"
+        },
+        "target_surface_retrieval": {
+          "aggregate_status": "ok",
+          "alternatives": [
+            {
+              "id": "scoped-fbceee254e92767d3a7127d0",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_alternative_id": "scoped-fbceee254e92767d3a7127d0",
+          "selection_count": 1,
+          "command": "inner-pl-en-pl-03-target-surface-realize",
+          "text": "For every teacher, there is no dog that the teacher sees."
+        },
+        "selected_target_text": {
+          "text": "For every teacher, there is no dog that the teacher sees.",
+          "from_translation_candidate_id": "translation:e5e80c91260513b9121d2204da877477b3126e1b481142edd3587e0172e1cd30",
+          "aggregate_status": "ok",
+          "conditional": false
+        },
+        "target_analysis": {
+          "command": "inner-pl-en-pl-04-target-analyze",
+          "cli_status": "incomplete"
+        },
+        "target_candidate_selection": {
+          "aggregate_status": "incomplete",
+          "candidate_ids": [
+            {
+              "id": "scoped:0",
+              "status": "unsupported",
+              "diagnostics": []
+            },
+            {
+              "id": "scoped:1",
+              "status": "ok",
+              "diagnostics": []
+            }
+          ],
+          "selected_ok_candidate_id": "scoped:1",
+          "selection_count": 1
+        },
+        "compare_target": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+            ]
+          },
+          "context_projected": {
+            "status": "ok",
+            "verdict": "proved_equivalent",
+            "diagnostics": [],
+            "right_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/compare-all-not.json",
+            "left_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/inner-pl-en-pl-05-target-compare-left-context-projected.json",
+            "projection": "request_context removed; inline declarations supplied from existing independent acceptance compare document, expression unchanged"
+          },
+          "expected_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/all-not.json",
+          "projection": "request_context removed only from both documents; declarations/signatures/expressions retained",
+          "context_projected_without_acceptance_declarations": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "full_context_expected_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/all-not.json"
+        },
+        "translate_back": {
+          "aggregate_status": "incomplete",
+          "candidate_ids": [
+            {
+              "id": "translation:b79a4dc98471273bd1adbe2728c94cab0a3255558dc2cde0e6afb4ff6494bfc6",
+              "source_candidate_id": "scoped:0",
+              "outcome": "unsupported",
+              "text_bearing": false,
+              "diagnostics": [
+                "DSE_SOURCE_CANDIDATE_NOT_COMPLETE"
+              ]
+            },
+            {
+              "id": "translation:95371dd0d665ffe4d26a76223c64e34935ced27d701e9effa4f60565b991988b",
+              "source_candidate_id": "scoped:1",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_candidate_id": "translation:95371dd0d665ffe4d26a76223c64e34935ced27d701e9effa4f60565b991988b",
+          "selected_source_candidate_id": "scoped:1",
+          "selection_count": 1,
+          "conditional_selection": true,
+          "command": "inner-pl-en-pl-06-translate-back"
+        },
+        "return_surface_retrieval": {
+          "aggregate_status": "ok",
+          "alternatives": [
+            {
+              "id": "scoped-592c18641affad4fff1e08fd",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_alternative_id": "scoped-592c18641affad4fff1e08fd",
+          "selection_count": 1,
+          "command": "inner-pl-en-pl-07-return-surface-realize",
+          "text": "Dla każdego nauczyciela nie istnieje pies, którego ten nauczyciel widzi."
+        },
+        "selected_return_text": {
+          "text": "Dla każdego nauczyciela nie istnieje pies, którego ten nauczyciel widzi.",
+          "candidate_id": "translation:95371dd0d665ffe4d26a76223c64e34935ced27d701e9effa4f60565b991988b",
+          "aggregate_status": "incomplete",
+          "conditional": true
+        },
+        "return_analysis": {
+          "command": "inner-pl-en-pl-08-return-analyze",
+          "cli_status": "ok"
+        },
+        "return_candidate_selection": {
+          "aggregate_status": "ok",
+          "candidate_ids": [
+            {
+              "id": "scoped:0",
+              "status": "ok",
+              "diagnostics": []
+            }
+          ],
+          "selected_ok_candidate_id": "scoped:0",
+          "selection_count": 1
+        },
+        "compare_return": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+            ]
+          },
+          "context_projected": {
+            "status": "ok",
+            "verdict": "proved_equivalent",
+            "diagnostics": [],
+            "right_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/compare-all-not.json",
+            "left_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/inner-pl-en-pl-09-return-compare-left-context-projected.json",
+            "projection": "request_context removed; inline declarations supplied from existing independent acceptance compare document, expression unchanged"
+          },
+          "expected_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/all-not.json",
+          "projection": "request_context removed only from both documents; declarations/signatures/expressions retained",
+          "context_projected_without_acceptance_declarations": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "full_context_expected_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/all-not.json"
+        },
+        "compare_target_initial_attempt": {
+          "expected_source": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/upstream-untimed-scope/all-not.json",
+          "result": {
+            "full_context": {
+              "status": "invalid",
+              "diagnostics": [
+                "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+              ]
+            },
+            "context_projected": {
+              "status": "ok",
+              "diagnostics": []
+            }
+          }
+        },
+        "compare_return_initial_attempt": {
+          "expected_source": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/upstream-untimed-scope/all-not.json",
+          "result": {
+            "full_context": {
+              "status": "invalid",
+              "diagnostics": [
+                "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+              ]
+            },
+            "context_projected": {
+              "status": "ok",
+              "diagnostics": []
+            }
+          }
+        }
+      },
+      "limitations": [],
+      "roundtrip_status": "incomplete"
+    },
+    {
+      "id": "inner-en-pl-en",
+      "scenario": "inner",
+      "languages": [
+        "en",
+        "pl",
+        "en"
+      ],
+      "input_text": "For every teacher, there is no dog that the teacher sees.",
+      "input_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/scope-inner-en.txt",
+      "expected_ir_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/all-not.json",
+      "steps": {
+        "source_analysis": {
+          "command": "inner-en-pl-en-01-source-analyze",
+          "cli_status": "incomplete"
+        },
+        "source_candidate_selection": {
+          "aggregate_status": "incomplete",
+          "candidate_ids": [
+            {
+              "id": "scoped:0",
+              "status": "unsupported",
+              "diagnostics": []
+            },
+            {
+              "id": "scoped:1",
+              "status": "ok",
+              "diagnostics": []
+            }
+          ],
+          "selected_ok_candidate_id": "scoped:1",
+          "selection_count": 1
+        },
+        "translate_out": {
+          "aggregate_status": "incomplete",
+          "candidate_ids": [
+            {
+              "id": "translation:b79a4dc98471273bd1adbe2728c94cab0a3255558dc2cde0e6afb4ff6494bfc6",
+              "source_candidate_id": "scoped:0",
+              "outcome": "unsupported",
+              "text_bearing": false,
+              "diagnostics": [
+                "DSE_SOURCE_CANDIDATE_NOT_COMPLETE"
+              ]
+            },
+            {
+              "id": "translation:95371dd0d665ffe4d26a76223c64e34935ced27d701e9effa4f60565b991988b",
+              "source_candidate_id": "scoped:1",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_candidate_id": "translation:95371dd0d665ffe4d26a76223c64e34935ced27d701e9effa4f60565b991988b",
+          "selected_source_candidate_id": "scoped:1",
+          "selection_count": 1,
+          "conditional_selection": true,
+          "command": "inner-en-pl-en-02-translate-out"
+        },
+        "target_surface_retrieval": {
+          "aggregate_status": "ok",
+          "alternatives": [
+            {
+              "id": "scoped-592c18641affad4fff1e08fd",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_alternative_id": "scoped-592c18641affad4fff1e08fd",
+          "selection_count": 1,
+          "command": "inner-en-pl-en-03-target-surface-realize",
+          "text": "Dla każdego nauczyciela nie istnieje pies, którego ten nauczyciel widzi."
+        },
+        "selected_target_text": {
+          "text": "Dla każdego nauczyciela nie istnieje pies, którego ten nauczyciel widzi.",
+          "from_translation_candidate_id": "translation:95371dd0d665ffe4d26a76223c64e34935ced27d701e9effa4f60565b991988b",
+          "aggregate_status": "incomplete",
+          "conditional": true
+        },
+        "target_analysis": {
+          "command": "inner-en-pl-en-04-target-analyze",
+          "cli_status": "ok"
+        },
+        "target_candidate_selection": {
+          "aggregate_status": "ok",
+          "candidate_ids": [
+            {
+              "id": "scoped:0",
+              "status": "ok",
+              "diagnostics": []
+            }
+          ],
+          "selected_ok_candidate_id": "scoped:0",
+          "selection_count": 1
+        },
+        "compare_target": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+            ]
+          },
+          "context_projected": {
+            "status": "ok",
+            "verdict": "proved_equivalent",
+            "diagnostics": [],
+            "right_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/compare-all-not.json",
+            "left_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/inner-en-pl-en-05-target-compare-left-context-projected.json",
+            "projection": "request_context removed; inline declarations supplied from existing independent acceptance compare document, expression unchanged"
+          },
+          "expected_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/all-not.json",
+          "projection": "request_context removed only from both documents; declarations/signatures/expressions retained",
+          "context_projected_without_acceptance_declarations": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "full_context_expected_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/all-not.json"
+        },
+        "translate_back": {
+          "aggregate_status": "ok",
+          "candidate_ids": [
+            {
+              "id": "translation:e5e80c91260513b9121d2204da877477b3126e1b481142edd3587e0172e1cd30",
+              "source_candidate_id": "scoped:0",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_candidate_id": "translation:e5e80c91260513b9121d2204da877477b3126e1b481142edd3587e0172e1cd30",
+          "selected_source_candidate_id": "scoped:0",
+          "selection_count": 1,
+          "conditional_selection": false,
+          "command": "inner-en-pl-en-06-translate-back"
+        },
+        "return_surface_retrieval": {
+          "aggregate_status": "ok",
+          "alternatives": [
+            {
+              "id": "scoped-fbceee254e92767d3a7127d0",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_alternative_id": "scoped-fbceee254e92767d3a7127d0",
+          "selection_count": 1,
+          "command": "inner-en-pl-en-07-return-surface-realize",
+          "text": "For every teacher, there is no dog that the teacher sees."
+        },
+        "selected_return_text": {
+          "text": "For every teacher, there is no dog that the teacher sees.",
+          "candidate_id": "translation:e5e80c91260513b9121d2204da877477b3126e1b481142edd3587e0172e1cd30",
+          "aggregate_status": "ok",
+          "conditional": false
+        },
+        "return_analysis": {
+          "command": "inner-en-pl-en-08-return-analyze",
+          "cli_status": "incomplete"
+        },
+        "return_candidate_selection": {
+          "aggregate_status": "incomplete",
+          "candidate_ids": [
+            {
+              "id": "scoped:0",
+              "status": "unsupported",
+              "diagnostics": []
+            },
+            {
+              "id": "scoped:1",
+              "status": "ok",
+              "diagnostics": []
+            }
+          ],
+          "selected_ok_candidate_id": "scoped:1",
+          "selection_count": 1
+        },
+        "compare_return": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+            ]
+          },
+          "context_projected": {
+            "status": "ok",
+            "verdict": "proved_equivalent",
+            "diagnostics": [],
+            "right_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/compare-all-not.json",
+            "left_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/inner-en-pl-en-09-return-compare-left-context-projected.json",
+            "projection": "request_context removed; inline declarations supplied from existing independent acceptance compare document, expression unchanged"
+          },
+          "expected_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/all-not.json",
+          "projection": "request_context removed only from both documents; declarations/signatures/expressions retained",
+          "context_projected_without_acceptance_declarations": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "UNKNOWN_SYMBOL"
+            ]
+          },
+          "full_context_expected_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/all-not.json"
+        },
+        "compare_target_initial_attempt": {
+          "expected_source": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/upstream-untimed-scope/all-not.json",
+          "result": {
+            "full_context": {
+              "status": "invalid",
+              "diagnostics": [
+                "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+              ]
+            },
+            "context_projected": {
+              "status": "ok",
+              "diagnostics": []
+            }
+          }
+        },
+        "compare_return_initial_attempt": {
+          "expected_source": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/upstream-untimed-scope/all-not.json",
+          "result": {
+            "full_context": {
+              "status": "invalid",
+              "diagnostics": [
+                "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+              ]
+            },
+            "context_projected": {
+              "status": "ok",
+              "diagnostics": []
+            }
+          }
+        }
+      },
+      "limitations": [],
+      "roundtrip_status": "incomplete"
+    },
+    {
+      "id": "relation-pl-en-pl",
+      "scenario": "relation",
+      "languages": [
+        "pl",
+        "en",
+        "pl"
+      ],
+      "input_text": "Relacja od x do y zachodzi wtedy i tylko wtedy, gdy istnieje taki element z, że x widzi z i z widzi y.",
+      "input_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-pl.txt",
+      "expected_ir_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-two-hop-see-present-independent.json",
+      "steps": {
+        "source_analysis": {
+          "command": "relation-pl-en-pl-01-source-analyze",
+          "cli_status": "ok"
+        },
+        "source_candidate_selection": {
+          "aggregate_status": "ok",
+          "candidate_ids": [
+            {
+              "id": "relation-source:0:construction:pl.relation_path.subject_first",
+              "status": "ok",
+              "diagnostics": []
+            }
+          ],
+          "selected_ok_candidate_id": "relation-source:0:construction:pl.relation_path.subject_first",
+          "selection_count": 1
+        },
+        "translate_out": {
+          "aggregate_status": "ok",
+          "candidate_ids": [
+            {
+              "id": "translation:771e4bbc9d62dd91a09b5a04eefe39efe87138fb12ec7b3380aac931cf65dbbc",
+              "source_candidate_id": "relation-source:0:construction:pl.relation_path.subject_first",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_candidate_id": "translation:771e4bbc9d62dd91a09b5a04eefe39efe87138fb12ec7b3380aac931cf65dbbc",
+          "selected_source_candidate_id": "relation-source:0:construction:pl.relation_path.subject_first",
+          "selection_count": 1,
+          "conditional_selection": false,
+          "command": "relation-pl-en-pl-02-translate-out"
+        },
+        "target_surface_retrieval": {
+          "aggregate_status": "ok",
+          "alternatives": [
+            {
+              "id": "relation-path:7627b1126fdb790d7bc1fec2b1b2eb0500aa75c35e2ec5f62e44b1ee59a14133",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_alternative_id": "relation-path:7627b1126fdb790d7bc1fec2b1b2eb0500aa75c35e2ec5f62e44b1ee59a14133",
+          "selection_count": 1,
+          "command": "relation-pl-en-pl-03-target-surface-realize",
+          "text": "The relation from x to y holds exactly when there is an entity z such that x sees z and z sees y."
+        },
+        "selected_target_text": {
+          "text": "The relation from x to y holds exactly when there is an entity z such that x sees z and z sees y.",
+          "from_translation_candidate_id": "translation:771e4bbc9d62dd91a09b5a04eefe39efe87138fb12ec7b3380aac931cf65dbbc",
+          "aggregate_status": "ok",
+          "conditional": false
+        },
+        "target_analysis": {
+          "command": "relation-pl-en-pl-04-target-analyze",
+          "cli_status": "incomplete"
+        },
+        "target_candidate_selection": {
+          "aggregate_status": "incomplete",
+          "candidate_ids": [
+            {
+              "id": "relation-source:0:construction:en.relation_path.subject_first",
+              "status": "unsupported",
+              "diagnostics": []
+            },
+            {
+              "id": "relation-source:1:construction:en.relation_path.subject_first",
+              "status": "ok",
+              "diagnostics": []
+            }
+          ],
+          "selected_ok_candidate_id": "relation-source:1:construction:en.relation_path.subject_first",
+          "selection_count": 1
+        },
+        "compare_target": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+            ]
+          },
+          "context_projected": {
+            "status": "ok",
+            "verdict": "proved_equivalent",
+            "diagnostics": []
+          },
+          "expected_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-two-hop-see-present-independent.json",
+          "projection": "request_context removed only from both documents; declarations/signatures/expressions retained"
+        },
+        "translate_back": {
+          "aggregate_status": "incomplete",
+          "candidate_ids": [
+            {
+              "id": "translation:f6aa4adfc7ade27f29ebac21cac9b5170a9f4f63d2151b6a1d48532e8cf5164f",
+              "source_candidate_id": "relation-source:0:construction:en.relation_path.subject_first",
+              "outcome": "unsupported",
+              "text_bearing": false,
+              "diagnostics": [
+                "DSE_SOURCE_CANDIDATE_NOT_COMPLETE"
+              ]
+            },
+            {
+              "id": "translation:de8aa4dcceba59b572b69ce8d4ec88c29f9eea9e753a3515bfbb2fd319c2d563",
+              "source_candidate_id": "relation-source:1:construction:en.relation_path.subject_first",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_candidate_id": "translation:de8aa4dcceba59b572b69ce8d4ec88c29f9eea9e753a3515bfbb2fd319c2d563",
+          "selected_source_candidate_id": "relation-source:1:construction:en.relation_path.subject_first",
+          "selection_count": 1,
+          "conditional_selection": true,
+          "command": "relation-pl-en-pl-06-translate-back"
+        },
+        "return_surface_retrieval": {
+          "aggregate_status": "ok",
+          "alternatives": [
+            {
+              "id": "relation-path:fe0053153a323639956ec85b83d81382c553177163d773c871e0e22cb44a3fb3",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_alternative_id": "relation-path:fe0053153a323639956ec85b83d81382c553177163d773c871e0e22cb44a3fb3",
+          "selection_count": 1,
+          "command": "relation-pl-en-pl-07-return-surface-realize",
+          "text": "Relacja od x do y zachodzi wtedy i tylko wtedy, gdy istnieje taki element z, że x widzi z i z widzi y."
+        },
+        "selected_return_text": {
+          "text": "Relacja od x do y zachodzi wtedy i tylko wtedy, gdy istnieje taki element z, że x widzi z i z widzi y.",
+          "candidate_id": "translation:de8aa4dcceba59b572b69ce8d4ec88c29f9eea9e753a3515bfbb2fd319c2d563",
+          "aggregate_status": "incomplete",
+          "conditional": true
+        },
+        "return_analysis": {
+          "command": "relation-pl-en-pl-08-return-analyze",
+          "cli_status": "ok"
+        },
+        "return_candidate_selection": {
+          "aggregate_status": "ok",
+          "candidate_ids": [
+            {
+              "id": "relation-source:0:construction:pl.relation_path.subject_first",
+              "status": "ok",
+              "diagnostics": []
+            }
+          ],
+          "selected_ok_candidate_id": "relation-source:0:construction:pl.relation_path.subject_first",
+          "selection_count": 1
+        },
+        "compare_return": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+            ]
+          },
+          "context_projected": {
+            "status": "ok",
+            "verdict": "proved_equivalent",
+            "diagnostics": []
+          },
+          "expected_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-two-hop-see-present-independent.json",
+          "projection": "request_context removed only from both documents; declarations/signatures/expressions retained"
+        },
+        "compare_target_initial_attempt": {
+          "expected_source": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-two-hop-see-present-independent.json",
+          "result": {
+            "full_context": {
+              "status": "invalid",
+              "diagnostics": [
+                "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+              ]
+            },
+            "context_projected": {
+              "status": "ok",
+              "diagnostics": []
+            }
+          }
+        },
+        "compare_return_initial_attempt": {
+          "expected_source": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-two-hop-see-present-independent.json",
+          "result": {
+            "full_context": {
+              "status": "invalid",
+              "diagnostics": [
+                "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+              ]
+            },
+            "context_projected": {
+              "status": "ok",
+              "diagnostics": []
+            }
+          }
+        }
+      },
+      "limitations": [],
+      "roundtrip_status": "incomplete"
+    },
+    {
+      "id": "relation-en-pl-en",
+      "scenario": "relation",
+      "languages": [
+        "en",
+        "pl",
+        "en"
+      ],
+      "input_text": "The relation from x to y holds exactly when there is an entity z such that x sees z and z sees y.",
+      "input_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-en.txt",
+      "expected_ir_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-two-hop-see-present-independent.json",
+      "steps": {
+        "source_analysis": {
+          "command": "relation-en-pl-en-01-source-analyze",
+          "cli_status": "incomplete"
+        },
+        "source_candidate_selection": {
+          "aggregate_status": "incomplete",
+          "candidate_ids": [
+            {
+              "id": "relation-source:0:construction:en.relation_path.subject_first",
+              "status": "unsupported",
+              "diagnostics": []
+            },
+            {
+              "id": "relation-source:1:construction:en.relation_path.subject_first",
+              "status": "ok",
+              "diagnostics": []
+            }
+          ],
+          "selected_ok_candidate_id": "relation-source:1:construction:en.relation_path.subject_first",
+          "selection_count": 1
+        },
+        "translate_out": {
+          "aggregate_status": "incomplete",
+          "candidate_ids": [
+            {
+              "id": "translation:f6aa4adfc7ade27f29ebac21cac9b5170a9f4f63d2151b6a1d48532e8cf5164f",
+              "source_candidate_id": "relation-source:0:construction:en.relation_path.subject_first",
+              "outcome": "unsupported",
+              "text_bearing": false,
+              "diagnostics": [
+                "DSE_SOURCE_CANDIDATE_NOT_COMPLETE"
+              ]
+            },
+            {
+              "id": "translation:de8aa4dcceba59b572b69ce8d4ec88c29f9eea9e753a3515bfbb2fd319c2d563",
+              "source_candidate_id": "relation-source:1:construction:en.relation_path.subject_first",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_candidate_id": "translation:de8aa4dcceba59b572b69ce8d4ec88c29f9eea9e753a3515bfbb2fd319c2d563",
+          "selected_source_candidate_id": "relation-source:1:construction:en.relation_path.subject_first",
+          "selection_count": 1,
+          "conditional_selection": true,
+          "command": "relation-en-pl-en-02-translate-out"
+        },
+        "target_surface_retrieval": {
+          "aggregate_status": "ok",
+          "alternatives": [
+            {
+              "id": "relation-path:fe0053153a323639956ec85b83d81382c553177163d773c871e0e22cb44a3fb3",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_alternative_id": "relation-path:fe0053153a323639956ec85b83d81382c553177163d773c871e0e22cb44a3fb3",
+          "selection_count": 1,
+          "command": "relation-en-pl-en-03-target-surface-realize",
+          "text": "Relacja od x do y zachodzi wtedy i tylko wtedy, gdy istnieje taki element z, że x widzi z i z widzi y."
+        },
+        "selected_target_text": {
+          "text": "Relacja od x do y zachodzi wtedy i tylko wtedy, gdy istnieje taki element z, że x widzi z i z widzi y.",
+          "from_translation_candidate_id": "translation:de8aa4dcceba59b572b69ce8d4ec88c29f9eea9e753a3515bfbb2fd319c2d563",
+          "aggregate_status": "incomplete",
+          "conditional": true
+        },
+        "target_analysis": {
+          "command": "relation-en-pl-en-04-target-analyze",
+          "cli_status": "ok"
+        },
+        "target_candidate_selection": {
+          "aggregate_status": "ok",
+          "candidate_ids": [
+            {
+              "id": "relation-source:0:construction:pl.relation_path.subject_first",
+              "status": "ok",
+              "diagnostics": []
+            }
+          ],
+          "selected_ok_candidate_id": "relation-source:0:construction:pl.relation_path.subject_first",
+          "selection_count": 1
+        },
+        "compare_target": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+            ]
+          },
+          "context_projected": {
+            "status": "ok",
+            "verdict": "proved_equivalent",
+            "diagnostics": []
+          },
+          "expected_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-two-hop-see-present-independent.json",
+          "projection": "request_context removed only from both documents; declarations/signatures/expressions retained"
+        },
+        "translate_back": {
+          "aggregate_status": "ok",
+          "candidate_ids": [
+            {
+              "id": "translation:771e4bbc9d62dd91a09b5a04eefe39efe87138fb12ec7b3380aac931cf65dbbc",
+              "source_candidate_id": "relation-source:0:construction:pl.relation_path.subject_first",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_candidate_id": "translation:771e4bbc9d62dd91a09b5a04eefe39efe87138fb12ec7b3380aac931cf65dbbc",
+          "selected_source_candidate_id": "relation-source:0:construction:pl.relation_path.subject_first",
+          "selection_count": 1,
+          "conditional_selection": false,
+          "command": "relation-en-pl-en-06-translate-back"
+        },
+        "return_surface_retrieval": {
+          "aggregate_status": "ok",
+          "alternatives": [
+            {
+              "id": "relation-path:7627b1126fdb790d7bc1fec2b1b2eb0500aa75c35e2ec5f62e44b1ee59a14133",
+              "outcome": "ok",
+              "text_bearing": true,
+              "diagnostics": []
+            }
+          ],
+          "selected_alternative_id": "relation-path:7627b1126fdb790d7bc1fec2b1b2eb0500aa75c35e2ec5f62e44b1ee59a14133",
+          "selection_count": 1,
+          "command": "relation-en-pl-en-07-return-surface-realize",
+          "text": "The relation from x to y holds exactly when there is an entity z such that x sees z and z sees y."
+        },
+        "selected_return_text": {
+          "text": "The relation from x to y holds exactly when there is an entity z such that x sees z and z sees y.",
+          "candidate_id": "translation:771e4bbc9d62dd91a09b5a04eefe39efe87138fb12ec7b3380aac931cf65dbbc",
+          "aggregate_status": "ok",
+          "conditional": false
+        },
+        "return_analysis": {
+          "command": "relation-en-pl-en-08-return-analyze",
+          "cli_status": "incomplete"
+        },
+        "return_candidate_selection": {
+          "aggregate_status": "incomplete",
+          "candidate_ids": [
+            {
+              "id": "relation-source:0:construction:en.relation_path.subject_first",
+              "status": "unsupported",
+              "diagnostics": []
+            },
+            {
+              "id": "relation-source:1:construction:en.relation_path.subject_first",
+              "status": "ok",
+              "diagnostics": []
+            }
+          ],
+          "selected_ok_candidate_id": "relation-source:1:construction:en.relation_path.subject_first",
+          "selection_count": 1
+        },
+        "compare_return": {
+          "full_context": {
+            "status": "invalid",
+            "verdict": null,
+            "diagnostics": [
+              "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+            ]
+          },
+          "context_projected": {
+            "status": "ok",
+            "verdict": "proved_equivalent",
+            "diagnostics": []
+          },
+          "expected_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-two-hop-see-present-independent.json",
+          "projection": "request_context removed only from both documents; declarations/signatures/expressions retained"
+        },
+        "compare_target_initial_attempt": {
+          "expected_source": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-two-hop-see-present-independent.json",
+          "result": {
+            "full_context": {
+              "status": "invalid",
+              "diagnostics": [
+                "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+              ]
+            },
+            "context_projected": {
+              "status": "ok",
+              "diagnostics": []
+            }
+          }
+        },
+        "compare_return_initial_attempt": {
+          "expected_source": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-two-hop-see-present-independent.json",
+          "result": {
+            "full_context": {
+              "status": "invalid",
+              "diagnostics": [
+                "EQUIVALENCE_REQUEST_CONTEXT_MISMATCH"
+              ]
+            },
+            "context_projected": {
+              "status": "ok",
+              "diagnostics": []
+            }
+          }
+        }
+      },
+      "limitations": [],
+      "roundtrip_status": "incomplete"
+    }
+  ]
+}

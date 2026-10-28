@@ -171,7 +171,7 @@ func BuildArena(document Document, useInterning bool) (*Arena, error) {
 		candidate := Node{
 			Kind: term.Kind, Identity: term.ID, Label: term.Label,
 			Type: term.Type, Symbol: term.Symbol, Quantifier: term.Quantifier,
-			Modality: term.Modality, ModalProfile: term.ModalProfile,
+			TemporalFrame: term.TemporalFrame, Modality: term.Modality, ModalProfile: term.ModalProfile,
 		}
 		if term.Count != nil {
 			count := *term.Count
@@ -272,7 +272,7 @@ func arenaNodeFingerprint(node Node) ([sha256.Size]byte, error) {
 func equalArenaNode(left, right Node) bool {
 	if left.Kind != right.Kind || left.Identity != right.Identity || left.Label != right.Label || left.Symbol != right.Symbol ||
 		left.Body != right.Body || left.Function != right.Function || left.Argument != right.Argument ||
-		left.Quantifier != right.Quantifier || left.Restrictor != right.Restrictor || left.Modality != right.Modality || left.ModalProfile != right.ModalProfile ||
+		left.Quantifier != right.Quantifier || left.Restrictor != right.Restrictor || left.TemporalFrame != right.TemporalFrame || left.Modality != right.Modality || left.ModalProfile != right.ModalProfile ||
 		len(left.Args) != len(right.Args) || len(left.Operands) != len(right.Operands) {
 		return false
 	}

@@ -104,6 +104,12 @@ type constructionBindingDeclaration struct {
 var englishConstructionBindingDeclarations = append(append(append([]constructionBindingDeclaration{
 	{"en.see.visual", "en.see.visual.transitive", "en.question.wh", "en.question.wh.subject"},
 	{"en.see.visual", "en.see.visual.transitive", "en.question.wh", "en.question.wh.object.echo"},
+	{"en.see.visual", "en.see.visual.transitive", "en.question.wh", "en.question.wh.subject.realize"},
+	{"en.see.visual", "en.see.visual.transitive", "en.question.wh", "en.question.wh.subject.realize.plural"},
+	{"en.see.visual", "en.see.visual.transitive", "en.question.wh", "en.question.wh.object.neutral"},
+	{"en.see.visual", "en.see.visual.transitive", "en.question.wh", "en.question.wh.object.neutral.do"},
+	{"en.see.visual", "en.see.visual.transitive", "en.question.wh", "en.question.wh.object.neutral.analyze"},
+	{"en.see.visual", "en.see.visual.transitive", "en.question.wh", "en.question.wh.object.neutral.do.analyze"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_object"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_object_an"},

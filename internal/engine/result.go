@@ -52,18 +52,20 @@ type TranslationAlternative struct {
 // offered to the configured target route. It retains all target coverage and
 // residuals without storing a second, projected Meaning graph.
 type DSETranslationRealization struct {
-	CandidateID        string                       `json:"candidate_id"`
-	Status             status.OutcomeKind           `json:"status"`
-	Coverage           []AlgebraRealizationCoverage `json:"coverage"`
-	Residuals          []AlgebraRealizationResidual `json:"residuals"`
-	SourceResiduals    []semantic.DSEResidual       `json:"source_residuals"`
-	Diagnostics        []status.Diagnostic          `json:"diagnostics"`
-	Source             DSEResourceReceipt           `json:"source"`
-	SourcePlan         DSEResourceReceipt           `json:"source_plan"`
-	SourceContext      DSEResourceReceipt           `json:"source_context"`
-	Target             DSEResourceReceipt           `json:"target"`
-	Mappings           []DSEReferenceConceptMapping `json:"reference_mappings"`
-	ConsumedConditions []DSEConditionConsumption    `json:"consumed_conditions"`
+	CandidateID          string                       `json:"candidate_id"`
+	Status               status.OutcomeKind           `json:"status"`
+	Coverage             []AlgebraRealizationCoverage `json:"coverage"`
+	ScopeCoverage        *AlgebraScopeCoverage        `json:"scope_coverage,omitempty"`
+	RelationPathCoverage *AlgebraRelationPathCoverage `json:"relation_path_coverage,omitempty"`
+	Residuals            []AlgebraRealizationResidual `json:"residuals"`
+	SourceResiduals      []semantic.DSEResidual       `json:"source_residuals"`
+	Diagnostics          []status.Diagnostic          `json:"diagnostics"`
+	Source               DSEResourceReceipt           `json:"source"`
+	SourcePlan           DSEResourceReceipt           `json:"source_plan"`
+	SourceContext        DSEResourceReceipt           `json:"source_context"`
+	Target               DSEResourceReceipt           `json:"target"`
+	Mappings             []DSEReferenceConceptMapping `json:"reference_mappings"`
+	ConsumedConditions   []DSEConditionConsumption    `json:"consumed_conditions"`
 }
 
 // DSEReferenceConceptMapping records the exact approved source sense transfer
@@ -300,6 +302,11 @@ func (result TranslationResult) Validate() error {
 			}
 			if len(realization.Diagnostics) > status.MaxDiagnostics {
 				return invalid(fmt.Sprintf("dse_trace.realizations[%d].diagnostics", i), "diagnostic count exceeds limit")
+			}
+			if coverage := realization.ScopeCoverage; coverage != nil {
+				if !coverage.Verified || coverage.VerificationScope == "" || !validID(coverage.BinderX) || !validID(coverage.BinderY) || !validID(coverage.BinderEvent) || coverage.BinderX == coverage.BinderY || coverage.BinderX == coverage.BinderEvent || coverage.BinderY == coverage.BinderEvent || len(coverage.Selections) != 3 || len(coverage.Alternatives) == 0 || coverage.PlanProvenance == "" || coverage.Negation != ScopedNegationOuter && coverage.Negation != ScopedNegationInner {
+					return invalid(fmt.Sprintf("dse_trace.realizations[%d].scope_coverage", i), "scope coverage must retain verified binders, negation, plan provenance, selections, and alternatives")
+				}
 			}
 			for j, mapping := range realization.Mappings {
 				if mapping.Role == "" || mapping.ReferenceID == "" || mapping.SourceSenseID == "" || mapping.CoreConceptID == "" || mapping.MappingKind != "equivalent" || mapping.ApprovalStatus != "approved" || mapping.ProvenanceID == "" {

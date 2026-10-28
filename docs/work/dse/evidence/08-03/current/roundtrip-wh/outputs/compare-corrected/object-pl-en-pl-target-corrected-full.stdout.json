@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"CONTEXT_REFERENCE_MISSING","message":"every document reference must exist as a typed context referent","path":"document.references[1]","severity":"error"}]}

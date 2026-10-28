@@ -11,6 +11,7 @@ import (
 	"github.com/clickbytes/golingua/internal/language"
 	"github.com/clickbytes/golingua/internal/lexicon"
 	"github.com/clickbytes/golingua/internal/pack"
+	"github.com/clickbytes/golingua/internal/provenance"
 	"github.com/clickbytes/golingua/internal/realizer"
 	"github.com/clickbytes/golingua/internal/semantic"
 	"github.com/clickbytes/golingua/internal/status"
@@ -122,8 +123,137 @@ func (engine *Engine) translateDSE(ctx context.Context, request Request) (Transl
 			result.Candidates = append(result.Candidates, dseUnresolvedAlternative(candidate, status.OutcomeInvalid, []status.Diagnostic{refusal}))
 			continue
 		}
-		if document.Expression == nil || document.Expression.Kind != algebra.TermAtom {
-			refusal := diagnostic("DSE_EXPRESSION_PROFILE_UNSUPPORTED", "composition.candidates."+candidate.ID, "this configured translation profile realizes only one direct positive Atom")
+		scopePlan, scoped := matchAlgebraScope(document.Expression, signaturesByID(document.Signatures))
+		if scoped {
+			if code, message := validateDSEScopedSourceEvidence(candidate, document, scopePlan, sourceResources.SourcePackage); code != "" {
+				refusal := diagnostic(code, "composition.candidates."+candidate.ID+".scoped_evidence", message)
+				realizationReceipt.Status = status.OutcomeInvalid
+				realizationReceipt.Diagnostics = []status.Diagnostic{refusal}
+				trace.Realizations = append(trace.Realizations, realizationReceipt)
+				result.Status = mergeEngineOutcome(result.Status, status.OutcomeInvalid)
+				result.Candidates = append(result.Candidates, dseUnresolvedAlternative(candidate, status.OutcomeInvalid, []status.Diagnostic{refusal}))
+				continue
+			}
+			// Keep all canonical source declarations, references and request-local
+			// context. The target verifier owns scope matching; this bridge removes
+			// only inline sorts/signatures so the separately pinned metadata is the
+			// sole declaration authority.
+			targetDocument := document
+			targetDocument.Sorts = nil
+			targetDocument.Signatures = nil
+			realized, realizeErr := engine.RealizeDSEAlgebra(requestContext, request.To, targetDocument, targetResources.TargetPackage, profile.SelectedMetadata)
+			if realizeErr != nil {
+				failed := stageFailure(request, realizeErr, "DSE_TARGET_REALIZATION_FAILED")
+				realizationReceipt.Status = failed.Status
+				realizationReceipt.Diagnostics = append([]status.Diagnostic(nil), failed.Diagnostics...)
+				trace.Realizations = append(trace.Realizations, realizationReceipt)
+				result.Status = mergeEngineOutcome(result.Status, failed.Status)
+				result.Candidates = append(result.Candidates, dseUnresolvedAlternative(candidate, failed.Status, failed.Diagnostics))
+				continue
+			}
+			realizationReceipt.Status = realized.Status
+			realizationReceipt.Coverage = append([]AlgebraRealizationCoverage(nil), realized.Coverage...)
+			realizationReceipt.ScopeCoverage = realized.ScopeCoverage
+			realizationReceipt.Residuals = append([]AlgebraRealizationResidual(nil), realized.Residuals...)
+			realizationReceipt.Diagnostics = append([]status.Diagnostic(nil), realized.Diagnostics...)
+			trace.Realizations = append(trace.Realizations, realizationReceipt)
+			result.Status = mergeDSEOutcomes(result.Status, realized.Status, candidate.Status)
+			if len(realized.Alternatives) == 0 {
+				diagnostics := append([]status.Diagnostic(nil), realized.Diagnostics...)
+				if len(diagnostics) == 0 {
+					diagnostics = []status.Diagnostic{diagnostic("DSE_TARGET_NO_ALTERNATIVE", "target.alternatives", "target adapter returned no surface alternative")}
+				}
+				result.Candidates = append(result.Candidates, dseUnresolvedAlternative(candidate, mergeDSEOutcomes(realized.Status, candidate.Status), diagnostics))
+				continue
+			}
+			for _, surface := range realized.Alternatives {
+				if len(result.Candidates) >= MaxTranslationAlternatives {
+					result.Status = status.OutcomeResourceLimit
+					result.Diagnostics = appendDiagnostic(result.Diagnostics, diagnostic("RESOURCE_LIMIT", "target.alternatives", "DSE target alternatives exceed the translation alternative limit"))
+					break
+				}
+				outcome := mergeDSEOutcomes(candidate.Status, surface.Outcome)
+				if len(realized.Residuals) > 0 {
+					outcome = mergeDSEOutcomes(outcome, status.OutcomeIncomplete)
+				}
+				diagnostics := append([]status.Diagnostic(nil), surface.Diagnostics...)
+				if outcome != status.OutcomeOK && len(diagnostics) == 0 {
+					diagnostics = append([]status.Diagnostic(nil), realized.Diagnostics...)
+				}
+				if outcome != status.OutcomeOK && len(diagnostics) == 0 {
+					diagnostics = []status.Diagnostic{diagnostic("DSE_TRANSLATION_INCOMPLETE", "target", "DSE candidate did not produce a complete supported realization")}
+				}
+				result.Candidates = append(result.Candidates, TranslationAlternative{
+					ID: translationAlternativeID(candidate.ID, surface.ID), SourceCandidateID: candidate.ID, SemanticID: candidate.ID,
+					Outcome: outcome, Text: surface.Text, Evidence: []semantic.EvidenceTrace{surface.Evidence.Clone()},
+					Assumptions: cloneFieldAssumptions(surface.Assumptions), Losses: append([]realizer.FieldLoss(nil), surface.Losses...), Diagnostics: diagnostics,
+				})
+			}
+			continue
+		}
+		if eventPlan, isEventRelation := matchAlgebraEventRelationPath(document.Expression, signaturesByID(document.Signatures)); isEventRelation {
+			_, code, message := validateDSERelationSourceEvidence(candidate, document, eventPlan, sourceResources.SourcePackage, profile.SelectedMetadata, request.Text)
+			if code != "" {
+				refusal := diagnostic(code, "composition.candidates."+candidate.ID+".relation_source_evidence", message)
+				realizationReceipt.Status = status.OutcomeInvalid
+				realizationReceipt.Diagnostics = []status.Diagnostic{refusal}
+				trace.Realizations = append(trace.Realizations, realizationReceipt)
+				result.Status = mergeEngineOutcome(result.Status, status.OutcomeInvalid)
+				result.Candidates = append(result.Candidates, dseUnresolvedAlternative(candidate, status.OutcomeInvalid, []status.Diagnostic{refusal}))
+				continue
+			}
+			targetDocument := document
+			targetDocument.Sorts = nil
+			targetDocument.Signatures = nil
+			realized, realizeErr := engine.RealizeDSEAlgebra(requestContext, request.To, targetDocument, targetResources.TargetPackage, profile.SelectedMetadata)
+			if realizeErr != nil {
+				failed := stageFailure(request, realizeErr, "DSE_TARGET_REALIZATION_FAILED")
+				realizationReceipt.Status = failed.Status
+				realizationReceipt.Diagnostics = append([]status.Diagnostic(nil), failed.Diagnostics...)
+				trace.Realizations = append(trace.Realizations, realizationReceipt)
+				result.Status = mergeEngineOutcome(result.Status, failed.Status)
+				result.Candidates = append(result.Candidates, dseUnresolvedAlternative(candidate, failed.Status, failed.Diagnostics))
+				continue
+			}
+			realizationReceipt.Status = realized.Status
+			realizationReceipt.RelationPathCoverage = realized.RelationPathCoverage
+			realizationReceipt.Coverage = append([]AlgebraRealizationCoverage(nil), realized.Coverage...)
+			realizationReceipt.Residuals = append([]AlgebraRealizationResidual(nil), realized.Residuals...)
+			realizationReceipt.Diagnostics = append([]status.Diagnostic(nil), realized.Diagnostics...)
+			trace.Realizations = append(trace.Realizations, realizationReceipt)
+			result.Status = mergeDSEOutcomes(result.Status, realized.Status, candidate.Status)
+			if len(realized.Alternatives) == 0 {
+				diagnostics := append([]status.Diagnostic(nil), realized.Diagnostics...)
+				if len(diagnostics) == 0 {
+					diagnostics = []status.Diagnostic{diagnostic("DSE_TARGET_NO_ALTERNATIVE", "target.alternatives", "target adapter returned no surface alternative")}
+				}
+				result.Candidates = append(result.Candidates, dseUnresolvedAlternative(candidate, mergeDSEOutcomes(realized.Status, candidate.Status), diagnostics))
+				continue
+			}
+			for _, surface := range realized.Alternatives {
+				if len(result.Candidates) >= MaxTranslationAlternatives {
+					result.Status = status.OutcomeResourceLimit
+					result.Diagnostics = appendDiagnostic(result.Diagnostics, diagnostic("RESOURCE_LIMIT", "target.alternatives", "DSE target alternatives exceed the translation alternative limit"))
+					break
+				}
+				outcome := mergeDSEOutcomes(candidate.Status, surface.Outcome)
+				if len(realized.Residuals) > 0 {
+					outcome = mergeDSEOutcomes(outcome, status.OutcomeIncomplete)
+				}
+				diagnostics := append([]status.Diagnostic(nil), surface.Diagnostics...)
+				if outcome != status.OutcomeOK && len(diagnostics) == 0 {
+					diagnostics = append([]status.Diagnostic(nil), realized.Diagnostics...)
+				}
+				result.Candidates = append(result.Candidates, TranslationAlternative{
+					ID: translationAlternativeID(candidate.ID, surface.ID), SourceCandidateID: candidate.ID, SemanticID: candidate.ID,
+					Outcome: outcome, Text: surface.Text, Evidence: []semantic.EvidenceTrace{surface.Evidence.Clone()},
+					Assumptions: cloneFieldAssumptions(surface.Assumptions), Losses: append([]realizer.FieldLoss(nil), surface.Losses...), Diagnostics: diagnostics,
+				})
+			}
+			continue
+		}
+		if !dseTranslationExpressionSupported(document.Expression) {
+			refusal := diagnostic("DSE_EXPRESSION_PROFILE_UNSUPPORTED", "composition.candidates."+candidate.ID, "this configured translation profile realizes one direct positive Atom or one Entity WH Ask over a direct Atom")
 			realizationReceipt.Status = status.OutcomeUnsupported
 			realizationReceipt.Diagnostics = []status.Diagnostic{refusal}
 			trace.Realizations = append(trace.Realizations, realizationReceipt)
@@ -131,7 +261,15 @@ func (engine *Engine) translateDSE(ctx context.Context, request Request) (Transl
 			result.Candidates = append(result.Candidates, dseUnresolvedAlternative(candidate, status.OutcomeUnsupported, []status.Diagnostic{refusal}))
 			continue
 		}
-		enriched, mappings, mapStatus, mapCode, mapMessage := enrichDSEContext(engine, document, candidate)
+		var enriched algebra.Document
+		var mappings []DSEReferenceConceptMapping
+		var mapStatus status.OutcomeKind
+		var mapCode, mapMessage string
+		if document.Expression != nil && document.Expression.Kind == algebra.TermAnd {
+			enriched, mappings, mapStatus, mapCode, mapMessage = enrichDSECoordination(engine, sourceResources.SourcePackage, document, candidate)
+		} else {
+			enriched, mappings, mapStatus, mapCode, mapMessage = enrichDSEContext(engine, document, candidate)
+		}
 		if mapStatus != status.OutcomeOK {
 			refusal := diagnostic(mapCode, "composition.candidates."+candidate.ID, mapMessage)
 			realizationReceipt.Status = mapStatus
@@ -167,7 +305,23 @@ func (engine *Engine) translateDSE(ctx context.Context, request Request) (Transl
 		// The target checker revalidates this projection against the separately
 		// pinned metadata. Inline declarations from the source candidate are not
 		// allowed to become a second target-side authority.
-		realized, realizeErr := engine.RealizeDSEAlgebra(requestContext, request.To, targetDocument, targetResources.TargetPackage, profile.SelectedMetadata)
+		var realized AlgebraRealizationResult
+		var realizeErr error
+		if targetDocument.Expression != nil && targetDocument.Expression.Kind == algebra.TermAsk {
+			// A bounded WH Ask can still produce a verified surface candidate when
+			// unrelated or unsupported request-context details remain. The ordinary
+			// realizer retains those details as residuals and returns an incomplete
+			// result; it does not let them become a complete translation.
+			realized, realizeErr = engine.realizeAlgebra(requestContext, request.To, targetDocument, targetResources.TargetPackage, profile.SelectedMetadata, false)
+		} else if dseCoordinationDefinitePreview(targetDocument, candidate) {
+			// A checked source definite presupposition may remain unexpressed in
+			// the target language. Permit text as an explicitly incomplete preview
+			// only for this narrow coordinated shape; the target residual remains
+			// attached and no condition is consumed here.
+			realized, realizeErr = engine.realizeAlgebra(requestContext, request.To, targetDocument, targetResources.TargetPackage, profile.SelectedMetadata, false)
+		} else {
+			realized, realizeErr = engine.RealizeDSEAlgebra(requestContext, request.To, targetDocument, targetResources.TargetPackage, profile.SelectedMetadata)
+		}
 		if realizeErr != nil {
 			failed := stageFailure(request, realizeErr, "DSE_TARGET_REALIZATION_FAILED")
 			realizationReceipt.Status = failed.Status
@@ -201,6 +355,9 @@ func (engine *Engine) translateDSE(ctx context.Context, request Request) (Transl
 			// only its own surface outcome so an explicit preview can select it
 			// without erasing ambiguity among sibling alternatives.
 			outcome := mergeDSEOutcomes(candidate.Status, surface.Outcome)
+			if len(realized.Residuals) > 0 {
+				outcome = mergeDSEOutcomes(outcome, status.OutcomeIncomplete)
+			}
 			diagnostics := append([]status.Diagnostic(nil), surface.Diagnostics...)
 			if outcome != status.OutcomeOK && len(diagnostics) == 0 {
 				diagnostics = append([]status.Diagnostic(nil), realized.Diagnostics...)
@@ -217,6 +374,9 @@ func (engine *Engine) translateDSE(ctx context.Context, request Request) (Transl
 	}
 	if result.Status != status.OutcomeOK && len(result.Diagnostics) == 0 {
 		result.Diagnostics = []status.Diagnostic{diagnostic("DSE_TRANSLATION_NOT_OK", "composition", "DSE did not establish one complete supported translation")}
+	}
+	if result.Status == status.OutcomeOK && request.PreviewID == "" && len(result.Candidates) == 1 && result.Candidates[0].Outcome == status.OutcomeOK {
+		result.Text = result.Candidates[0].Text
 	}
 	if request.PreviewID != "" {
 		var selected *TranslationAlternative
@@ -236,6 +396,88 @@ func (engine *Engine) translateDSE(ctx context.Context, request Request) (Transl
 		return dseOutputLimitResult(request, profile, trace.PackIdentity), nil
 	}
 	return finalizeResult(result)
+}
+
+func dseCoordinationDefinitePreview(document algebra.Document, candidate semantic.DSECandidate) bool {
+	root := document.Expression
+	if root == nil || root.Kind != algebra.TermAnd || len(root.Operands) != 2 || root.Operands[0] == nil || root.Operands[0].Kind != algebra.TermAtom || root.Operands[1] == nil || root.Operands[1].Kind != algebra.TermAtom || document.RequestContext == nil || len(document.RequestContext.Conditions) == 0 {
+		return false
+	}
+	requestContext := document.RequestContext
+	if requestContext.SpeakerReferentID != "" || requestContext.AddresseeReferentID != "" || len(requestContext.Mentions) != 0 || len(requestContext.ResolutionEvidence) != 0 {
+		return false
+	}
+	roleReferences := map[string]map[string]bool{}
+	eventReferences := map[string]bool{}
+	for _, operand := range root.Operands {
+		for _, argument := range operand.Args {
+			if argument.Role == "" || argument.Value == nil || argument.Value.Kind != algebra.TermRef || argument.Value.Type == nil {
+				return false
+			}
+			if argument.Value.Type.Kind == algebra.TypeEvent {
+				eventReferences[argument.Value.ID] = true
+				continue
+			}
+			if argument.Value.Type.Kind != algebra.TypeEntity {
+				return false
+			}
+			if roleReferences[argument.Value.ID] == nil {
+				roleReferences[argument.Value.ID] = map[string]bool{}
+			}
+			roleReferences[argument.Value.ID][argument.Role] = true
+		}
+	}
+	for _, referent := range requestContext.Referents {
+		switch referent.Type.Kind {
+		case algebra.TypeEvent:
+			if referent.ReferenceTimeID != "" || referent.Multiplicity != "" || !eventReferences[referent.ID] {
+				return false
+			}
+		case algebra.TypeEntity:
+			if referent.TemporalFrame != "" || referent.ReferenceTimeID != "" || len(roleReferences[referent.ID]) == 0 {
+				return false
+			}
+		default:
+			return false
+		}
+	}
+	for _, condition := range document.RequestContext.Conditions {
+		if condition.Kind != algebra.ContextPresupposition || condition.Code != "definite_reference" || condition.Expression == nil || condition.Expression.Kind != algebra.TermAtom || len(condition.Expression.Args) != 1 || condition.Expression.Args[0].Role == "" {
+			return false
+		}
+		argument := condition.Expression.Args[0]
+		if argument.Value == nil || argument.Value.Kind != algebra.TermRef || argument.Value.Type == nil || argument.Value.Type.Kind != algebra.TypeEntity || len(condition.TargetReferentIDs) != 1 || condition.TargetReferentIDs[0] != argument.Value.ID {
+			return false
+		}
+		roles, referenced := roleReferences[argument.Value.ID]
+		if !referenced || len(roles) == 0 {
+			return false
+		}
+		covered := false
+		for _, roleSource := range candidate.RoleSources {
+			if roleSource.ReferenceID == argument.Value.ID && roleSource.WHGap == nil && roles[roleSource.Role] {
+				covered = true
+				break
+			}
+		}
+		if !covered {
+			return false
+		}
+		coverageCount := 0
+		for _, coverage := range candidate.ConditionCoverage {
+			if coverage.ConditionID != condition.ID {
+				continue
+			}
+			if coverage.Kind != "presupposition" || coverage.Code != condition.Code || len(coverage.TargetReferenceIDs) != 1 || coverage.TargetReferenceIDs[0] != argument.Value.ID {
+				return false
+			}
+			coverageCount++
+		}
+		if coverageCount == 0 {
+			return false
+		}
+	}
+	return true
 }
 
 func consumeDSELexicalConditions(sourcePackage *language.SemanticLanguagePackage, candidate semantic.DSECandidate, document algebra.Document, mappings []DSEReferenceConceptMapping) (algebra.Document, []DSEConditionConsumption) {
@@ -270,12 +512,19 @@ func dseLexicalConditionReceipt(sourcePackage *language.SemanticLanguagePackage,
 		return DSEConditionConsumption{}, false
 	}
 	var mapping *DSEReferenceConceptMapping
+	coordinated := len(candidate.ClauseSources) == 2
 	for index := range mappings {
 		if mappings[index].ReferenceID != argument.Value.ID {
 			continue
 		}
-		if mapping != nil || mappings[index].MappingKind != string(lexicon.MappingEquivalent) || mappings[index].ApprovalStatus != string(lexicon.BindingApproved) {
+		if mappings[index].MappingKind != string(lexicon.MappingEquivalent) || mappings[index].ApprovalStatus != string(lexicon.BindingApproved) {
 			return DSEConditionConsumption{}, false
+		}
+		if mapping != nil {
+			if !coordinated || mapping.SourceSenseID != mappings[index].SourceSenseID || mapping.CoreConceptID != mappings[index].CoreConceptID || mapping.MappingKind != mappings[index].MappingKind || mapping.ApprovalStatus != mappings[index].ApprovalStatus || mapping.ProvenanceID != mappings[index].ProvenanceID {
+				return DSEConditionConsumption{}, false
+			}
+			continue
 		}
 		mapping = &mappings[index]
 	}
@@ -288,16 +537,23 @@ func dseLexicalConditionReceipt(sourcePackage *language.SemanticLanguagePackage,
 			roleSources++
 		}
 	}
-	if roleSources != 1 {
+	if roleSources < 1 || (roleSources != 1 && !coordinated) {
 		return DSEConditionConsumption{}, false
 	}
 	coverage := 0
 	for _, row := range candidate.ConditionCoverage {
-		if row.ConditionID == condition.ID && row.Code == condition.Code && string(row.Kind) == string(condition.Kind) && len(row.TargetReferenceIDs) == 1 && row.TargetReferenceIDs[0] == mapping.ReferenceID {
-			coverage++
+		if row.ConditionID != condition.ID {
+			continue
 		}
+		if row.Code != condition.Code || string(row.Kind) != string(condition.Kind) || len(row.TargetReferenceIDs) != 1 || row.TargetReferenceIDs[0] != mapping.ReferenceID {
+			return DSEConditionConsumption{}, false
+		}
+		if !coordinated && coverage != 0 {
+			return DSEConditionConsumption{}, false
+		}
+		coverage++
 	}
-	if coverage != 1 {
+	if coverage < 1 || (coverage != 1 && !coordinated) {
 		return DSEConditionConsumption{}, false
 	}
 	sense, err := ids.ParseSenseID(mapping.SourceSenseID)
@@ -317,7 +573,7 @@ func dseLexicalConditionReceipt(sourcePackage *language.SemanticLanguagePackage,
 		}
 		selected = binding
 	}
-	if selected == nil || !hasDSEReferenceFragment(candidate.FragmentChecks, selected.Target) {
+	if selected == nil || !hasDSEReferenceFragment(candidate.FragmentChecks, selected.Target, coordinated) {
 		return DSEConditionConsumption{}, false
 	}
 	return DSEConditionConsumption{
@@ -328,7 +584,7 @@ func dseLexicalConditionReceipt(sourcePackage *language.SemanticLanguagePackage,
 	}, true
 }
 
-func hasDSEReferenceFragment(checks []semantic.DSEFragmentCheck, expected *lexicon.SemanticTarget) bool {
+func hasDSEReferenceFragment(checks []semantic.DSEFragmentCheck, expected *lexicon.SemanticTarget, allowRepeated bool) bool {
 	if expected == nil {
 		return false
 	}
@@ -345,7 +601,7 @@ func hasDSEReferenceFragment(checks []semantic.DSEFragmentCheck, expected *lexic
 			matches++
 		}
 	}
-	return matches == 1
+	return matches == 1 || (allowRepeated && matches > 1)
 }
 
 func dseSourceRefusal(candidate semantic.DSECandidate) (status.OutcomeKind, string, string) {
@@ -414,7 +670,256 @@ func dseFailure(result TranslationResult, outcome status.OutcomeKind, code, path
 	return finalized
 }
 
+func dseTranslationAsk(expression *algebra.Term) (answerID, answerRole string, isAsk, supported bool) {
+	if expression == nil {
+		return "", "", false, false
+	}
+	if expression.Kind == algebra.TermAtom {
+		return "", "", false, true
+	}
+	if expression.Kind != algebra.TermAsk || len(expression.Answers) != 1 || expression.Restrictor != nil || expression.Body == nil || expression.Body.Kind != algebra.TermAtom {
+		return "", "", false, false
+	}
+	answer := expression.Answers[0]
+	if answer.ID == "" || answer.Type.Kind != algebra.TypeEntity {
+		return "", "", false, false
+	}
+	occurrences := 0
+	for _, argument := range expression.Body.Args {
+		if argument.Value != nil && argument.Value.Kind == algebra.TermVar && argument.Value.ID == answer.ID {
+			occurrences++
+			answerRole = argument.Role
+		}
+	}
+	if occurrences != 1 || answerRole == "" {
+		return "", "", false, false
+	}
+	return answer.ID, answerRole, true, true
+}
+
+func dseTranslationExpressionSupported(expression *algebra.Term) bool {
+	if expression != nil && expression.Kind == algebra.TermAnd && len(expression.Operands) == 2 && expression.Operands[0] != nil && expression.Operands[0].Kind == algebra.TermAtom && expression.Operands[1] != nil && expression.Operands[1].Kind == algebra.TermAtom {
+		return true
+	}
+	_, _, _, supported := dseTranslationAsk(expression)
+	return supported
+}
+
+func validateDSEScopedSourceEvidence(candidate semantic.DSECandidate, document algebra.Document, plan algebraScopePlan, sourcePackage *language.SemanticLanguagePackage) (string, string) {
+	evidence := candidate.ScopedEvidence
+	if evidence == nil || sourcePackage == nil || sourcePackage.LexiconIndex() == nil || sourcePackage.ValencyIndex() == nil {
+		return "DSE_SCOPE_EVIDENCE_REQUIRED", "checked scoped expression requires retained scoped lexical evidence and its selected source package"
+	}
+	if plan.OuterBinderID != "x" || plan.InnerBinderID != "y" || plan.EventBinderID != "e" || evidence.Variant.ID == "" || evidence.Variant.ID != candidate.Source.VariantID || evidence.SubjectBinder != evidence.Variant.SubjectBinder || evidence.ObjectBinder == evidence.SubjectBinder || evidence.SubjectBinder != "x" && evidence.SubjectBinder != "y" || evidence.ObjectBinder != "x" && evidence.ObjectBinder != "y" {
+		return "DSE_SCOPE_EVIDENCE_MISMATCH", "source variant and binder evidence do not agree with the independently matched x/y/e scope"
+	}
+	if evidence.Variant.Negation == "outer" && (!plan.OuterNegated || plan.InnerNegated) || evidence.Variant.Negation == "inner" && (!plan.InnerNegated || plan.OuterNegated) || evidence.Variant.Negation != "outer" && evidence.Variant.Negation != "inner" {
+		return "DSE_SCOPE_NEGATION_MISMATCH", "source variant negation placement differs from the checked algebra expression"
+	}
+	if candidate.Source.FrameID != string(evidence.Frame.ID) || evidence.Frame.ID == "" || evidence.Frame.SenseID.String() == "" {
+		return "DSE_SCOPE_FRAME_MISMATCH", "source frame evidence does not identify the event frame in the candidate"
+	}
+	if plan.EventFrame != scopedReadingTemporal(evidence.Bindings) {
+		return "DSE_SCOPE_TEMPORAL_MISMATCH", "event temporal_frame differs from the retained finite morphology reading"
+	}
+	if !sameScopedDeclarations(evidence.SourceReferences.References, document.References) || !reflect.DeepEqual(evidence.SourceReferences.RequestContext, document.RequestContext) {
+		return "DSE_SCOPE_CONTEXT_EVIDENCE_MISMATCH", "canonical references or request context differ from retained scoped source context evidence"
+	}
+	if document.RequestContext != nil && (evidence.SourceReferences.ContextID == "" || evidence.SourceReferences.ContextID != document.RequestContext.ID) {
+		return "DSE_SCOPE_CONTEXT_ID_MISMATCH", "retained source context ID does not match the canonical request context"
+	}
+
+	byBinder := map[string]semantic.DSEScopedBindingEvidence{}
+	eventCount := 0
+	for _, binding := range evidence.Bindings {
+		if binding.Binder != "x" && binding.Binder != "y" && binding.Binder != "event" || binding.TokenIndex < 0 || binding.Span.Start < 0 || binding.Span.End <= binding.Span.Start || binding.Reading.ID == "" || binding.Lexeme.ID.String() == "" || binding.Sense.ID.String() == "" || binding.Sense.LexemeID != binding.Lexeme.ID || binding.Reading.LexemeID != binding.Lexeme.ID.String() {
+			return "DSE_SCOPE_BINDING_EVIDENCE_INVALID", "scoped binder evidence has malformed token, span, reading, lexeme or sense identity"
+		}
+		if binding.Binder == "event" {
+			eventCount++
+			if eventCount > 1 {
+				return "DSE_SCOPE_EVENT_EVIDENCE_AMBIGUOUS", "scoped evidence must contain exactly one event reading"
+			}
+		}
+		if previous, exists := byBinder[binding.Binder]; exists {
+			if previous.Sense.ID != binding.Sense.ID || previous.Lexeme.ID != binding.Lexeme.ID {
+				return "DSE_SCOPE_REPEATED_BINDER_MISMATCH", "repeated binder readings do not retain one exact lexical sense and lexeme"
+			}
+		} else {
+			byBinder[binding.Binder] = binding
+		}
+	}
+	if byBinder["x"].Sense.ID.String() == "" || byBinder["y"].Sense.ID.String() == "" || byBinder["event"].Sense.ID.String() == "" || eventCount != 1 || byBinder["event"].Sense.ID.String() != candidate.Source.SenseID || byBinder["event"].Reading.ID != candidate.Source.ReadingID || byBinder["event"].Sense.ID != evidence.Frame.SenseID {
+		return "DSE_SCOPE_BINDER_EVIDENCE_INCOMPLETE", "x, y and event evidence must match the source candidate and selected frame"
+	}
+	frameFound := false
+	for _, frame := range sourcePackage.ValencyIndex().FramesBySenseID(evidence.Frame.SenseID) {
+		if frame.ID == evidence.Frame.ID && reflect.DeepEqual(frame, evidence.Frame) {
+			frameFound = true
+			break
+		}
+	}
+	if !frameFound {
+		return "DSE_SCOPE_FRAME_NOT_SELECTED", "retained frame is not the exact frame in the selected source package"
+	}
+
+	subjectRoles, objectRoles := 0, 0
+	for _, argument := range evidence.Frame.Arguments {
+		if string(argument.Role) == evidence.SubjectRole && argument.GrammaticalFunction == "subject" {
+			subjectRoles++
+		}
+		if string(argument.Role) == evidence.ObjectRole && argument.GrammaticalFunction == "object" && (evidence.Variant.FrameObjectCase == "" || argument.Case == evidence.Variant.FrameObjectCase) {
+			objectRoles++
+		}
+	}
+	if subjectRoles != 1 || objectRoles != 1 || evidence.SubjectRole == "" || evidence.ObjectRole == "" || evidence.SubjectRole == evidence.ObjectRole {
+		return "DSE_SCOPE_ROLE_EVIDENCE_MISMATCH", "retained subject/object roles do not match the selected valency frame and variant case"
+	}
+	rolePorts := map[string]semantic.DSEScopedRoleEvidence{}
+	for _, role := range evidence.RolePorts {
+		if role.FrameID != string(evidence.Frame.ID) || role.Role == "" || role.PortID == "" || role.Type.Kind != algebra.TypeEntity {
+			return "DSE_SCOPE_ROLE_PORT_INVALID", "retained role port is malformed or belongs to another frame"
+		}
+		if _, duplicate := rolePorts[role.Role]; duplicate {
+			return "DSE_SCOPE_ROLE_PORT_AMBIGUOUS", "retained frame role has multiple target ports"
+		}
+		rolePorts[role.Role] = role
+	}
+	if len(rolePorts) != 2 || rolePorts[evidence.SubjectRole].PortID == "" || rolePorts[evidence.ObjectRole].PortID == "" || rolePorts[evidence.SubjectRole].PortID == rolePorts[evidence.ObjectRole].PortID {
+		return "DSE_SCOPE_ROLE_PORT_MISMATCH", "exactly two distinct selected Entity role ports must map subject and object roles"
+	}
+	roleForBinder := map[string]string{evidence.SubjectBinder: evidence.SubjectRole, evidence.ObjectBinder: evidence.ObjectRole}
+	if rolePorts[roleForBinder["x"]].PortID != plan.EventOuterPort || rolePorts[roleForBinder["y"]].PortID != plan.EventInnerPort {
+		return "DSE_SCOPE_IR_ROLE_MISMATCH", "event atom binder ports do not match retained source role and binder evidence"
+	}
+	for _, binding := range byBinder {
+		selectedSense, senseOK := sourcePackage.LexiconIndex().BySenseID(binding.Sense.ID)
+		selectedLexeme, lexemeOK := sourcePackage.LexiconIndex().ByLexemeID(binding.Lexeme.ID)
+		if !senseOK || !lexemeOK || selectedSense.ID != binding.Sense.ID || selectedSense.LexemeID != binding.Sense.LexemeID || selectedSense.LexemeID != binding.Lexeme.ID || selectedLexeme.ID != binding.Lexeme.ID || selectedLexeme.Language != binding.Lexeme.Language || selectedLexeme.Lemma != binding.Lexeme.Lemma || selectedLexeme.POS != binding.Lexeme.POS || binding.Reading.LexemeID != selectedLexeme.ID.String() {
+			return "DSE_SCOPE_LEXICAL_IDENTITY_NOT_SELECTED", "retained sense ID, sense-to-lexeme link, or lexeme language/lemma/POS differs from the selected source package"
+		}
+		if binding.Reading.Provenance != nil && !containsScopedProvenance(evidence.Provenance, *binding.Reading.Provenance) {
+			return "DSE_SCOPE_READING_PROVENANCE_MISSING", "retained reading provenance is absent from scoped evidence"
+		}
+	}
+	if !containsScopedProvenance(evidence.Provenance, evidence.Frame.Provenance) {
+		return "DSE_SCOPE_FRAME_PROVENANCE_MISSING", "selected frame provenance is absent from scoped evidence"
+	}
+	if !hasScopedReferenceTarget(sourcePackage, byBinder["x"], plan.Restrictor, evidence.Provenance) || !hasScopedReferenceTarget(sourcePackage, byBinder["y"], plan.Predicate, evidence.Provenance) {
+		return "DSE_SCOPE_REFERENCE_TARGET_MISMATCH", "scoped noun atoms do not match their exact approved source reference targets"
+	}
+	if !hasScopedEventTarget(sourcePackage, byBinder["event"], evidence, plan) {
+		return "DSE_SCOPE_EVENT_TARGET_MISMATCH", "scoped event atom does not match its exact approved source symbol target and frame role ports"
+	}
+	for _, source := range evidence.Provenance {
+		if source.Validate() != nil {
+			return "DSE_SCOPE_PROVENANCE_INVALID", "scoped source evidence contains invalid provenance"
+		}
+	}
+	return "", ""
+}
+
+func hasScopedReferenceTarget(sourcePackage *language.SemanticLanguagePackage, binding semantic.DSEScopedBindingEvidence, atom *algebra.Term, proof []provenance.SourceRef) bool {
+	if atom == nil || atom.Kind != algebra.TermAtom || len(atom.Args) != 1 || atom.Args[0].Value == nil || atom.Args[0].Value.Kind != algebra.TermVar || atom.Args[0].Value.ID != binding.Binder {
+		return false
+	}
+	matches := 0
+	for _, target := range sourcePackage.LexiconIndex().TargetBindingsForSense(binding.Sense.ID) {
+		if target.Target != nil && target.Target.Kind == lexicon.SemanticTargetReferencePredicate && target.Target.SymbolRef == lexicon.SymbolRef(atom.Symbol) && target.Target.ReferencePort != nil && target.Target.ReferencePort.PortID == atom.Args[0].Role && target.Mapping == lexicon.MappingEquivalent && target.Status == lexicon.BindingApproved && target.TargetExecutionAuthorized() && containsScopedProvenance(proof, target.Provenance) {
+			matches++
+		}
+	}
+	return matches == 1
+}
+
+func hasScopedEventTarget(sourcePackage *language.SemanticLanguagePackage, binding semantic.DSEScopedBindingEvidence, evidence *semantic.DSEScopedEvidence, plan algebraScopePlan) bool {
+	if plan.EventAtom == nil || plan.EventAtom.Symbol == "" {
+		return false
+	}
+	roles := make(map[string]string, len(evidence.RolePorts))
+	for _, role := range evidence.RolePorts {
+		roles[role.Role] = role.PortID
+	}
+	matching := 0
+	for _, target := range sourcePackage.LexiconIndex().TargetBindingsForSense(binding.Sense.ID) {
+		if target.Target == nil || target.Target.Kind != lexicon.SemanticTargetSymbol || target.Target.SymbolRef != lexicon.SymbolRef(plan.EventAtom.Symbol) || target.Mapping != lexicon.MappingEquivalent || target.Status != lexicon.BindingApproved || !target.TargetExecutionAuthorized() {
+			continue
+		}
+		mapped := map[string]string{}
+		for _, role := range target.Target.RolePorts {
+			if role.FrameID == string(evidence.Frame.ID) {
+				if _, duplicate := mapped[role.Role]; duplicate {
+					mapped[role.Role] = "!duplicate!"
+				} else {
+					mapped[role.Role] = role.PortID
+				}
+			}
+		}
+		if len(mapped) != len(roles) {
+			continue
+		}
+		equal := true
+		for role, port := range roles {
+			if mapped[role] != port {
+				equal = false
+				break
+			}
+		}
+		if equal && containsScopedProvenance(evidence.Provenance, target.Provenance) {
+			matching++
+		}
+	}
+	return matching == 1
+}
+
+func containsScopedProvenance(rows []provenance.SourceRef, expected provenance.SourceRef) bool {
+	for _, row := range rows {
+		if reflect.DeepEqual(row, expected) {
+			return true
+		}
+	}
+	return false
+}
+
+func sameScopedDeclarations(left, right []algebra.Declaration) bool {
+	if len(left) != len(right) {
+		return false
+	}
+	for i := range left {
+		if !reflect.DeepEqual(left[i], right[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func scopedReadingTemporal(bindings []semantic.DSEScopedBindingEvidence) string {
+	for _, binding := range bindings {
+		if binding.Binder != "event" {
+			continue
+		}
+		finite, tense := false, ""
+		for _, feature := range binding.Reading.Features.Values {
+			if string(feature.Feature) == "verb_form" && string(feature.State) == "known" && string(feature.Value) == "finite" {
+				finite = true
+			}
+			if string(feature.Feature) == "tense" && string(feature.State) == "known" {
+				tense = string(feature.Value)
+			}
+		}
+		if finite && (tense == "past" || tense == "present") {
+			return tense
+		}
+		return ""
+	}
+	return ""
+}
+
 func enrichDSEContext(engine *Engine, document algebra.Document, candidate semantic.DSECandidate) (algebra.Document, []DSEReferenceConceptMapping, status.OutcomeKind, string, string) {
+	answerID, answerRole, isAsk, supported := dseTranslationAsk(document.Expression)
+	if !supported {
+		return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_EXPRESSION_PROFILE_UNSUPPORTED", "translation accepts one direct positive Atom or one Entity WH Ask without a restrictor over a direct Atom"
+	}
 	if document.RequestContext == nil {
 		return algebra.Document{}, nil, status.OutcomeInvalid, "DSE_REQUEST_CONTEXT_REQUIRED", "canonical document has no explicit request context"
 	}
@@ -429,8 +934,19 @@ func enrichDSEContext(engine *Engine, document algebra.Document, candidate seman
 	sourceReferences = append(sourceReferences, sourceReference{role: "event", referenceID: candidate.HeadEventReferenceID, senseID: candidate.Source.SenseID})
 	bindingsByReference := make(map[string]string, len(candidate.RoleSources)+1)
 	bindingsByReference[candidate.HeadEventReferenceID] = candidate.Source.SenseID
+	whGapCount := 0
 	for _, role := range candidate.RoleSources {
-		if role.WHGap != nil || role.ReferenceID == "" || role.Source.SenseID == "" {
+		if role.WHGap != nil {
+			whGapCount++
+			if !isAsk || role.WHGap.Role != role.Role || role.Role != answerRole {
+				return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_WH_GAP_MISMATCH", "the typed WH answer must match exactly one source gap in the same semantic role"
+			}
+			continue
+		}
+		if isAsk && role.Role == answerRole {
+			return algebra.Document{}, nil, status.OutcomeInvalid, "DSE_WH_ROLE_DUPLICATED", "the answer role cannot also be mapped to an explicit source reference"
+		}
+		if role.ReferenceID == "" || role.Source.SenseID == "" {
 			return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_ROLE_REFERENCE_UNRESOLVED", "every realized role requires an exact source sense and explicit reference"
 		}
 		if prior, exists := bindingsByReference[role.ReferenceID]; exists && prior != role.Source.SenseID {
@@ -438,6 +954,12 @@ func enrichDSEContext(engine *Engine, document algebra.Document, candidate seman
 		}
 		bindingsByReference[role.ReferenceID] = role.Source.SenseID
 		sourceReferences = append(sourceReferences, sourceReference{role: role.Role, referenceID: role.ReferenceID, senseID: role.Source.SenseID})
+	}
+	if (isAsk && whGapCount != 1) || (!isAsk && whGapCount != 0) {
+		return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_WH_GAP_CARDINALITY", "the typed WH Ask requires exactly one matching source gap and a direct Atom permits none"
+	}
+	if isAsk && !dseQuestionSourcesMatch(document.Expression.Body, candidate, answerID) {
+		return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_WH_ARGUMENT_MAPPING_MISMATCH", "the Ask atom arguments must match the event reference, explicit role references, and one typed source WH gap"
 	}
 	knownDeclarations := make(map[string]algebra.Declaration, len(document.References))
 	for _, declaration := range document.References {
@@ -490,4 +1012,52 @@ func enrichDSEContext(engine *Engine, document algebra.Document, candidate seman
 	}
 	document.RequestContext = &context
 	return document, mappings, status.OutcomeOK, "", ""
+}
+
+func dseQuestionSourcesMatch(atom *algebra.Term, candidate semantic.DSECandidate, answerID string) bool {
+	if atom == nil || atom.Kind != algebra.TermAtom || answerID == "" || candidate.HeadEventReferenceID == "" {
+		return false
+	}
+	roles := make(map[string]semantic.DSERoleSource, len(candidate.RoleSources))
+	for _, role := range candidate.RoleSources {
+		if role.Role == "" {
+			return false
+		}
+		if _, duplicate := roles[role.Role]; duplicate {
+			return false
+		}
+		roles[role.Role] = role
+	}
+	seenEvent := false
+	seenRoles := make(map[string]struct{}, len(roles))
+	for _, argument := range atom.Args {
+		if argument.Value == nil || argument.Role == "" {
+			return false
+		}
+		if argument.Role == "event" {
+			if seenEvent || argument.Value.Kind != algebra.TermRef || argument.Value.ID != candidate.HeadEventReferenceID {
+				return false
+			}
+			seenEvent = true
+			continue
+		}
+		role, exists := roles[argument.Role]
+		if !exists {
+			return false
+		}
+		if _, duplicate := seenRoles[argument.Role]; duplicate {
+			return false
+		}
+		seenRoles[argument.Role] = struct{}{}
+		if role.WHGap != nil {
+			if role.WHGap.Role != role.Role || role.Role != argument.Role || argument.Value.Kind != algebra.TermVar || argument.Value.ID != answerID {
+				return false
+			}
+			continue
+		}
+		if role.ReferenceID == "" || argument.Value.Kind != algebra.TermRef || argument.Value.ID != role.ReferenceID {
+			return false
+		}
+	}
+	return seenEvent && len(seenRoles) == len(roles)
 }

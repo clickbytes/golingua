@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "source_head": "165045d66b4b2d364aece956fac93309e895f20c",
+  "probe_source": {
+    "path": "source-syntax-probe.go.txt",
+    "sha256": "5dc915b5cc2ef062c820d13de7261b9a6412adf058de09e365d38644c79ed368"
+  },
+  "environment": {
+    "go_version": "go1.27.0 linux/amd64",
+    "runtime_config": "docs/work/dse/evidence/08-03/current/runtime-config-positive.json"
+  },
+  "outputs": {
+    "en_syntax_stdout": {"path": "outputs/en.stdout.jsonl", "sha256": "12ed39d201334c1e422a7b8ec7a5a70fa703b6c6c7b62178ab2b9303b30e75f5"},
+    "en_syntax_stderr": {"path": "outputs/en.stderr.txt", "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},
+    "pl_syntax_stdout": {"path": "outputs/pl.stdout.jsonl", "sha256": "1261ba9ce309e66baf78308fa4f705e906060216416ae39a7d781808a0e2187d"},
+    "pl_syntax_stderr": {"path": "outputs/pl.stderr.txt", "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},
+    "public_cli_stdout_sha256": "f41b9a522c3b7b3c9a44d6ae4854e2ec99526c3c8f830d525d3ee748761fa3bb",
+    "public_cli_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "public_cli_binary": {
+    "sha256": "46758c5a47a3c031697b0ebdc0ccc5be6cded475b8eb2d99b1a7a43a141f545e",
+    "go_source_build_commit": "943a8acd9cdcdc3b1cc6c77a09a6bb9dc8186140"
+  },
+  "interpretation": "All four proposals are unverified language data. The syntax probe localizes refusal before semantic composition; unsupported output is not evidence that the intended scope is represented or that the phrasing is linguistically accepted."
+}

@@ -1,0 +1,168 @@
+{
+  "closed": true,
+  "expression": {
+    "answers": [
+      {
+        "id": "answer_pl_subject_0_3",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ],
+    "body": {
+      "args": [
+        {
+          "role": "event",
+          "value": {
+            "id": "E1",
+            "kind": "Ref",
+            "type": {
+              "kind": "Event"
+            }
+          }
+        },
+        {
+          "role": "experiencer",
+          "value": {
+            "id": "answer_pl_subject_0_3",
+            "kind": "Var"
+          }
+        },
+        {
+          "role": "stimulus",
+          "value": {
+            "id": "B",
+            "kind": "Ref",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      ],
+      "kind": "Atom",
+      "symbol": "pilot.vision_event"
+    },
+    "kind": "Ask"
+  },
+  "references": [
+    {
+      "id": "E1",
+      "type": {
+        "kind": "Event"
+      },
+      "temporal_frame": "present"
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      },
+      "multiplicity": "one"
+    }
+  ],
+  "schema_version": 1,
+  "signatures": [
+    {
+      "id": "pilot.auditory_event",
+      "label": "pilot auditory-perception event relation",
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.r",
+      "label": "neutral ordered relation",
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.vision_event",
+      "label": "pilot visual-perception event relation",
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.definite",
+      "label": "explicit probe convention probe.definite",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.dog",
+      "label": "explicit probe convention probe.dog",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.teacher",
+      "label": "explicit probe convention probe.teacher",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    }
+  ]
+}

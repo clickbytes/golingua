@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "parameters": [],
+  "limits": {},
+  "closed": true,
+  "references": [
+    {
+      "id": "E1",
+      "type": {
+        "kind": "Event"
+      },
+      "temporal_frame": "present"
+    },
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      },
+      "multiplicity": "one"
+    }
+  ],
+  "expression": {
+    "kind": "Ask",
+    "answers": [
+      {
+        "id": "x",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ],
+    "body": {
+      "kind": "Atom",
+      "symbol": "pilot.vision_event",
+      "args": [
+        {
+          "role": "event",
+          "value": {
+            "kind": "Ref",
+            "id": "E1",
+            "type": {
+              "kind": "Event"
+            }
+          }
+        },
+        {
+          "role": "experiencer",
+          "value": {
+            "kind": "Var",
+            "id": "x"
+          }
+        },
+        {
+          "role": "stimulus",
+          "value": {
+            "kind": "Ref",
+            "id": "B",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

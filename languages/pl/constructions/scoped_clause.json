@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "language": "pl",
+  "provenance": {
+    "id": "golingua-pl-scoped-clause",
+    "path": "languages/pl/constructions/scoped_clause.json",
+    "version": "1",
+    "license": "internal",
+    "author": "Codex by owner delegation"
+  },
+  "variants": [
+    {
+      "id": "construction:pl.scoped_clause.outer_negation",
+      "negation": "outer",
+      "subject_binder": "x",
+      "case_policy": "marked",
+      "frame_object_case": "accusative",
+      "parts": [
+        {
+          "literal": "Nie jest tak, że każdy"
+        },
+        {
+          "slot": "x",
+          "case": "nominative"
+        },
+        {
+          "slot": "event"
+        },
+        {
+          "literal": "przynajmniej jednego"
+        },
+        {
+          "slot": "y",
+          "case": "genitive"
+        },
+        {
+          "literal": "."
+        }
+      ],
+      "constraints": [
+        {
+          "binder": "event",
+          "feature": "temporal_frame",
+          "values": [
+            "present"
+          ]
+        },
+        {
+          "binder": "x",
+          "feature": "gender",
+          "values": [
+            "masculine_personal",
+            "masculine_animal"
+          ]
+        },
+        {
+          "binder": "y",
+          "feature": "gender",
+          "values": [
+            "masculine_personal",
+            "masculine_animal"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "construction:pl.scoped_clause.inner_negation",
+      "negation": "inner",
+      "subject_binder": "x",
+      "case_policy": "marked",
+      "frame_object_case": "accusative",
+      "parts": [
+        {
+          "literal": "Dla każdego"
+        },
+        {
+          "slot": "x",
+          "case": "genitive"
+        },
+        {
+          "literal": "nie istnieje"
+        },
+        {
+          "slot": "y",
+          "case": "nominative"
+        },
+        {
+          "literal": ","
+        },
+        {
+          "literal": "którego ten"
+        },
+        {
+          "slot": "x",
+          "case": "nominative"
+        },
+        {
+          "slot": "event"
+        },
+        {
+          "literal": "."
+        }
+      ],
+      "constraints": [
+        {
+          "binder": "event",
+          "feature": "temporal_frame",
+          "values": [
+            "present"
+          ]
+        },
+        {
+          "binder": "x",
+          "feature": "gender",
+          "values": [
+            "masculine_personal",
+            "masculine_animal"
+          ]
+        },
+        {
+          "binder": "y",
+          "feature": "gender",
+          "values": [
+            "masculine_personal",
+            "masculine_animal"
+          ]
+        }
+      ]
+    }
+  ]
+}

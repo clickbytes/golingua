@@ -7,12 +7,15 @@
     "title": "Algebra i synteza znaczeń w runtime — koncepty wyłącznie jako metadane",
     "url": "https://github.com/clickbytes/golingua/issues/367",
     "status": "IN_PROGRESS",
-    "branch_name": null,
-    "actual_base_sha": null,
-    "branch_url": null,
+    "branch_name": "dse/08-03-pl-en-vertical-slices",
+    "actual_base_sha": "dab9d23b48fe429ca4221c5efdf8e081bc6405b3",
+    "branch_url": "https://github.com/clickbytes/golingua/tree/dse/08-03-pl-en-vertical-slices",
     "pr_url": null,
     "merge_sha": null,
-    "evidence_paths": [],
+    "evidence_paths": [
+      "docs/work/dse/vertical-slices.md",
+      "docs/work/dse/evidence/08-03/"
+    ],
     "parent_issue": null,
     "dependencies": []
   },
@@ -717,11 +720,11 @@
         383
       ],
       "branch_name": "dse/08-02-runtime-integration",
-      "status": "ACTIVE",
+      "status": "DONE",
       "actual_base_sha": "ce8c0653b3d98d9929663eddbf74a60683d735f6",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/08-02-runtime-integration",
       "pr_url": "https://github.com/clickbytes/golingua/pull/421",
-      "merge_sha": null,
+      "merge_sha": "6366a167ca445382aba6baef65b376eb9b469579",
       "evidence_paths": [
         "docs/work/dse/evidence/08-02/README.md",
         "docs/work/dse/evidence/08-02/environment.json",
@@ -744,12 +747,19 @@
         385
       ],
       "branch_name": "dse/08-03-pl-en-vertical-slices",
-      "status": "QUEUED",
-      "actual_base_sha": null,
-      "branch_url": null,
-      "pr_url": null,
+      "status": "BLOCKED",
+      "actual_base_sha": "dab9d23b48fe429ca4221c5efdf8e081bc6405b3",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/08-03-pl-en-vertical-slices",
+      "pr_url": "https://github.com/clickbytes/golingua/pull/422",
       "merge_sha": null,
-      "evidence_paths": []
+      "evidence_paths": [
+        "docs/work/dse/vertical-slices.md",
+        "docs/work/dse/evidence/08-03/",
+        "docs/work/dse/evidence/08-03/current/source-coordination/README.md",
+        "docs/work/dse/evidence/08-03/current/target-coordination/README.md",
+        "docs/work/dse/evidence/08-03/current/coordination-translation/README.md",
+        "docs/work/dse/evidence/08-03/current/scope-contract/README.md"
+      ]
     },
     {
       "issue_number": 399,

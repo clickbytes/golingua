@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "parameters": [],
+  "limits": {},
+  "closed": true,
+  "references": [],
+  "expression": {
+    "kind": "Lambda",
+    "id": "x",
+    "type": {
+      "kind": "Entity"
+    },
+    "body": {
+      "kind": "Lambda",
+      "id": "y",
+      "type": {
+        "kind": "Entity"
+      },
+      "body": {
+        "kind": "Exists",
+        "id": "z",
+        "type": {
+          "kind": "Entity"
+        },
+        "body": {
+          "kind": "And",
+          "operands": [
+            {
+              "kind": "Atom",
+              "symbol": "pilot.r",
+              "args": [
+                {
+                  "role": "a",
+                  "value": {
+                    "kind": "Var",
+                    "id": "x"
+                  }
+                },
+                {
+                  "role": "b",
+                  "value": {
+                    "kind": "Var",
+                    "id": "z"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "Atom",
+              "symbol": "pilot.r",
+              "args": [
+                {
+                  "role": "a",
+                  "value": {
+                    "kind": "Var",
+                    "id": "z"
+                  }
+                },
+                {
+                  "role": "b",
+                  "value": {
+                    "kind": "Var",
+                    "id": "y"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

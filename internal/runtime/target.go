@@ -43,24 +43,95 @@ type TargetOperatorBuilder interface {
 // linearization to engine.TargetRealizer. Slot feature planning is language
 // local and therefore required as an explicit compiled dependency.
 type TargetPipeline struct {
-	Language         features.LanguageID
-	LanguageRegistry *language.Registry
-	Lexicon          *lexicon.Index
-	Valency          *valency.Index
-	Constructions    *construction.Registry
-	Variants         map[ids.ConstructionID]*construction.VariantIndex
-	Core             *core.ConceptGraph
-	OperatorBuilder  TargetOperatorBuilder
-	SelectionBudget  realizer.Budget
-	PlanBudget       realizer.PlanBudget
-	ExecuteBudget    realizer.ExecuteBudget
-	LinearizeBudget  realizer.LinearizeBudget
-	PlanBuilder      TargetPlanBuilder
-	ExecutionBuilder TargetExecutionBuilder
-	CandidatePolicy  realizer.TargetCandidatePolicy
+	Language             features.LanguageID
+	LanguageRegistry     *language.Registry
+	Lexicon              *lexicon.Index
+	Valency              *valency.Index
+	Constructions        *construction.Registry
+	Variants             map[ids.ConstructionID]*construction.VariantIndex
+	Core                 *core.ConceptGraph
+	OperatorBuilder      TargetOperatorBuilder
+	SelectionBudget      realizer.Budget
+	PlanBudget           realizer.PlanBudget
+	ExecuteBudget        realizer.ExecuteBudget
+	LinearizeBudget      realizer.LinearizeBudget
+	PlanBuilder          TargetPlanBuilder
+	ExecutionBuilder     TargetExecutionBuilder
+	CandidatePolicy      realizer.TargetCandidatePolicy
+	ClauseCoordination   *construction.ClauseCoordinationPlan
+	ScopedRealizer       engine.ScopedTargetRealizer
+	RelationPathRealizer engine.RelationPathTargetRealizer
 }
 
 var _ engine.TargetRealizer = (*TargetPipeline)(nil)
+var _ engine.ScopedTargetRealizer = (*TargetPipeline)(nil)
+var _ engine.ScopedTargetVerifier = (*TargetPipeline)(nil)
+var _ engine.RelationPathTargetRealizer = (*TargetPipeline)(nil)
+var _ engine.RelationPathTargetVerifier = (*TargetPipeline)(nil)
+
+func (pipeline *TargetPipeline) RealizeRelationPath(ctx context.Context, request engine.RelationPathRequest) (engine.RelationPathResult, error) {
+	if pipeline == nil || pipeline.RelationPathRealizer == nil {
+		return engine.RelationPathResult{Status: status.OutcomeUnsupported, Diagnostics: []status.Diagnostic{{Code: "RELATION_PATH_TARGET_UNAVAILABLE", Path: "target.relation_path", Message: "target pipeline has no relation path realizer", Severity: status.SeverityError}}}, nil
+	}
+	return pipeline.RelationPathRealizer.RealizeRelationPath(ctx, request)
+}
+
+func (pipeline *TargetPipeline) RelationPathPlan() (engine.RelationPathPlan, error) {
+	if pipeline == nil || pipeline.RelationPathRealizer == nil {
+		return engine.RelationPathPlan{}, targetPipelineError(status.OutcomeUnsupported, "RELATION_PATH_TARGET_UNAVAILABLE", "target.relation_path", "target pipeline has no relation path realizer")
+	}
+	verifier, ok := pipeline.RelationPathRealizer.(engine.RelationPathTargetVerifier)
+	if !ok {
+		return engine.RelationPathPlan{}, targetPipelineError(status.OutcomeUnsupported, "RELATION_PATH_VERIFICATION_UNAVAILABLE", "target.relation_path", "target relation path realizer does not expose a verified plan")
+	}
+	return verifier.RelationPathPlan()
+}
+
+func (pipeline *TargetPipeline) VerifyRelationPath(ctx context.Context, request engine.RelationPathRequest, alternative engine.RelationPathAlternative) error {
+	if pipeline == nil || pipeline.RelationPathRealizer == nil {
+		return targetPipelineError(status.OutcomeUnsupported, "RELATION_PATH_TARGET_UNAVAILABLE", "target.relation_path", "target pipeline has no relation path realizer")
+	}
+	verifier, ok := pipeline.RelationPathRealizer.(engine.RelationPathTargetVerifier)
+	if !ok {
+		return targetPipelineError(status.OutcomeUnsupported, "RELATION_PATH_VERIFICATION_UNAVAILABLE", "target.relation_path", "target pipeline cannot independently verify a relation path alternative")
+	}
+	return verifier.VerifyRelationPath(ctx, request, alternative)
+}
+
+// RealizeScope delegates quantified scope realization to an optional
+// language-specific implementation. Ordinary Meaning realization remains
+// independent of this capability.
+func (pipeline *TargetPipeline) RealizeScope(ctx context.Context, request engine.ScopedTargetRequest) (engine.ScopedTargetResult, error) {
+	if pipeline == nil || pipeline.ScopedRealizer == nil {
+		return engine.ScopedTargetResult{}, targetPipelineError(status.OutcomeUnsupported, "SCOPED_TARGET_UNAVAILABLE", "target.scope", "target runtime has no scope-preserving realization capability")
+	}
+	return pipeline.ScopedRealizer.RealizeScope(ctx, request)
+}
+
+// ScopedPlan returns an independently decoded copy of the active scope plan.
+func (pipeline *TargetPipeline) ScopedPlan() (construction.ScopedClausePlan, error) {
+	if pipeline == nil || pipeline.ScopedRealizer == nil {
+		return construction.ScopedClausePlan{}, targetPipelineError(status.OutcomeUnsupported, "SCOPED_TARGET_UNAVAILABLE", "target.scope", "target runtime has no scope-preserving realization capability")
+	}
+	verifier, ok := pipeline.ScopedRealizer.(engine.ScopedTargetVerifier)
+	if !ok {
+		return construction.ScopedClausePlan{}, targetPipelineError(status.OutcomeUnsupported, "SCOPED_TARGET_VERIFICATION_UNAVAILABLE", "target.scope", "target runtime does not expose a verified scope plan")
+	}
+	return verifier.ScopedPlan()
+}
+
+// VerifyScope delegates proof of a candidate to the exact configured scope
+// realizer. The pipeline does not accept unverifiable target alternatives.
+func (pipeline *TargetPipeline) VerifyScope(ctx context.Context, request engine.ScopedTargetRequest, alternative engine.ScopedTargetAlternative) error {
+	if pipeline == nil || pipeline.ScopedRealizer == nil {
+		return targetPipelineError(status.OutcomeUnsupported, "SCOPED_TARGET_UNAVAILABLE", "target.scope", "target runtime has no scope-preserving realization capability")
+	}
+	verifier, ok := pipeline.ScopedRealizer.(engine.ScopedTargetVerifier)
+	if !ok {
+		return targetPipelineError(status.OutcomeUnsupported, "SCOPED_TARGET_VERIFICATION_UNAVAILABLE", "target.scope", "target runtime cannot independently verify a scope alternative")
+	}
+	return verifier.VerifyScope(ctx, request, alternative)
+}
 
 // Realize retains each licensed target candidate and returns its exact
 // binding evidence with the corresponding linearized surface form.
@@ -73,6 +144,9 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 	}
 	if err := ctx.Err(); err != nil {
 		return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
+	}
+	if coordinated, matched, coordErr := pipeline.realizeCoordinated(ctx, source); matched {
+		return coordinated, coordErr
 	}
 	var operators []construction.Operator
 	operatorCoverageComplete := source.Meaning != nil && meaningHasNoExplicitOperators(*source.Meaning)
@@ -118,7 +192,7 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 	// Surface candidates are the top-level predicates or noun phrases. Role
 	// referents are passed to slot execution as supporting candidates, but are
 	// never realized as independent alternatives for a sentence response.
-	surfaceIDs := topLevelTargetNodeIDs(*source.Meaning)
+	surfaceIDs := topLevelTargetNodeIDs(*source.Meaning, source.QuestionAnswer != nil)
 	neededIDs := targetExecutionNodeIDs(*source.Meaning, surfaceIDs)
 	candidates := make([]realizer.TargetCandidate, 0, len(selection.Candidates))
 	surfaceCandidates := make([]realizer.TargetCandidate, 0, len(selection.Candidates))
@@ -263,7 +337,7 @@ func cloneFieldAssumptions(values []realizer.FieldAssumption) []realizer.FieldAs
 func meaningHasNoExplicitOperators(graph meaning.Meaning) bool {
 	for _, node := range graph.Nodes {
 		switch node.Kind {
-		case meaning.KindScope, meaning.KindModality, meaning.KindQuantifier:
+		case meaning.KindScope, meaning.KindModality, meaning.KindQuantifier, meaning.KindQuestion:
 			return false
 		}
 	}
@@ -293,7 +367,7 @@ func targetExecutionNodeIDs(graph meaning.Meaning, surfaceIDs map[meaning.NodeID
 	return result
 }
 
-func topLevelTargetNodeIDs(graph meaning.Meaning) map[meaning.NodeID]bool {
+func topLevelTargetNodeIDs(graph meaning.Meaning, allowTypedQuestion bool) map[meaning.NodeID]bool {
 	nodes := make(map[meaning.NodeID]meaning.Node, len(graph.Nodes))
 	for _, node := range graph.Nodes {
 		nodes[node.ID] = node
@@ -310,8 +384,12 @@ func topLevelTargetNodeIDs(graph meaning.Meaning) map[meaning.NodeID]bool {
 		}
 		switch node.Kind {
 		case meaning.KindDiscourse:
-			if node.Act == meaning.ActStatement && len(node.Content) == 1 {
+			if (node.Act == meaning.ActStatement || allowTypedQuestion && node.Act == meaning.ActQuestion) && len(node.Content) == 1 {
 				visit(node.Content[0], depth+1)
+			}
+		case meaning.KindQuestion:
+			if allowTypedQuestion {
+				visit(node.Target, depth+1)
 			}
 		case meaning.KindScope:
 			if node.Operator == meaning.OperatorNegation {

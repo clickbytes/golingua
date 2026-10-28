@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "parameters": [],
+  "limits": {},
+  "closed": true,
+  "references": [
+    {
+      "id": "E1",
+      "type": {
+        "kind": "Event"
+      },
+      "temporal_frame": "present"
+    },
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      },
+      "multiplicity": "one"
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      }
+    }
+  ],
+  "expression": {
+    "kind": "Ask",
+    "answers": [
+      {
+        "id": "y",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ],
+    "body": {
+      "kind": "Atom",
+      "symbol": "pilot.vision_event",
+      "args": [
+        {
+          "role": "event",
+          "value": {
+            "kind": "Ref",
+            "id": "E1",
+            "type": {
+              "kind": "Event"
+            }
+          }
+        },
+        {
+          "role": "experiencer",
+          "value": {
+            "kind": "Ref",
+            "id": "A",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        },
+        {
+          "role": "stimulus",
+          "value": {
+            "kind": "Var",
+            "id": "y"
+          }
+        }
+      ]
+    }
+  },
+  "request_context": {
+    "schema_version": 1,
+    "id": "source-independent",
+    "referents": [
+      {
+        "id": "E1",
+        "type": {
+          "kind": "Event"
+        }
+      },
+      {
+        "id": "A",
+        "type": {
+          "kind": "Entity"
+        },
+        "concept_id": "concept:teacher"
+      },
+      {
+        "id": "B",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ],
+    "mentions": [],
+    "resolution_evidence": [],
+    "conditions": [
+      {
+        "id": "given-def-A",
+        "kind": "presupposition",
+        "code": "definite_reference",
+        "target_referent_ids": [
+          "A"
+        ],
+        "expression": {
+          "kind": "Atom",
+          "symbol": "probe.definite",
+          "args": [
+            {
+              "role": "entity",
+              "value": {
+                "kind": "Ref",
+                "id": "A",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "given-def-B",
+        "kind": "presupposition",
+        "code": "definite_reference",
+        "target_referent_ids": [
+          "B"
+        ],
+        "expression": {
+          "kind": "Atom",
+          "symbol": "probe.definite",
+          "args": [
+            {
+              "role": "entity",
+              "value": {
+                "kind": "Ref",
+                "id": "B",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "condition:eddb97404ac9777ae62341fd",
+        "kind": "presupposition",
+        "code": "lexical_descriptor",
+        "target_referent_ids": [
+          "A"
+        ],
+        "expression": {
+          "kind": "Atom",
+          "symbol": "probe.teacher",
+          "args": [
+            {
+              "role": "entity",
+              "value": {
+                "kind": "Ref",
+                "id": "A",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

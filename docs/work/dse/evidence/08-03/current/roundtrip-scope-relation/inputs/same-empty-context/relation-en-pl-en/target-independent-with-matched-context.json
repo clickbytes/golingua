@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "signatures": [
+    {
+      "id": "pilot.vision_event",
+      "label": "pilot visual-perception event relation",
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.auditory_event",
+      "label": "pilot auditory-perception event relation",
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.r",
+      "label": "neutral ordered relation",
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.teacher",
+      "label": "explicit probe convention probe.teacher",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.dog",
+      "label": "explicit probe convention probe.dog",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.definite",
+      "label": "explicit probe convention probe.definite",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    }
+  ],
+  "parameters": [],
+  "limits": {},
+  "closed": true,
+  "references": [],
+  "expression": {
+    "kind": "Lambda",
+    "id": "x",
+    "type": {
+      "kind": "Entity"
+    },
+    "body": {
+      "kind": "Lambda",
+      "id": "y",
+      "type": {
+        "kind": "Entity"
+      },
+      "body": {
+        "kind": "Exists",
+        "id": "z",
+        "type": {
+          "kind": "Entity"
+        },
+        "body": {
+          "kind": "And",
+          "operands": [
+            {
+              "kind": "Exists",
+              "id": "event_xy",
+              "type": {
+                "kind": "Event"
+              },
+              "body": {
+                "kind": "Atom",
+                "symbol": "pilot.vision_event",
+                "args": [
+                  {
+                    "role": "event",
+                    "value": {
+                      "kind": "Var",
+                      "id": "event_xy"
+                    }
+                  },
+                  {
+                    "role": "experiencer",
+                    "value": {
+                      "kind": "Var",
+                      "id": "x"
+                    }
+                  },
+                  {
+                    "role": "stimulus",
+                    "value": {
+                      "kind": "Var",
+                      "id": "z"
+                    }
+                  }
+                ]
+              },
+              "temporal_frame": "present"
+            },
+            {
+              "kind": "Exists",
+              "id": "event_zy",
+              "type": {
+                "kind": "Event"
+              },
+              "body": {
+                "kind": "Atom",
+                "symbol": "pilot.vision_event",
+                "args": [
+                  {
+                    "role": "event",
+                    "value": {
+                      "kind": "Var",
+                      "id": "event_zy"
+                    }
+                  },
+                  {
+                    "role": "experiencer",
+                    "value": {
+                      "kind": "Var",
+                      "id": "z"
+                    }
+                  },
+                  {
+                    "role": "stimulus",
+                    "value": {
+                      "kind": "Var",
+                      "id": "y"
+                    }
+                  }
+                ]
+              },
+              "temporal_frame": "present"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "request_context": {
+    "conditions": [],
+    "id": "dse-398-empty",
+    "mentions": [],
+    "referents": [],
+    "resolution_evidence": [],
+    "schema_version": 1
+  }
+}

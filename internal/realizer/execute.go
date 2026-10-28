@@ -188,7 +188,29 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 	if input.Family.ID != plan.FamilyID || plan.CompiledVariant.FamilyID != plan.FamilyID || plan.CompiledVariant.PlanID != plan.FamilyPlanID {
 		return ExecuteResult{}, executeError(status.OutcomeInvalid, "PLAN_FAMILY_MISMATCH", "family", "supplied family identity or plan version differs from the selected plan")
 	}
-	compiled, err := construction.ValidateVariantForFrame(plan.CompiledVariant.Variant, input.Family, input.Frame)
+	var compiled construction.CompiledVariant
+	var err error
+	if plan.QuestionAnswer != nil {
+		answer := *plan.QuestionAnswer
+		if plan.NodeID != answer.TargetNodeID {
+			return ExecuteResult{}, executeError(status.OutcomeInvalid, "QUESTION_ANSWER_TARGET_MISMATCH", "plan.question_answer.target_node_id", "typed WH answer must target the selected realization node")
+		}
+		if err := answer.Validate(input.SourceMeaning, input.Core); err != nil {
+			return ExecuteResult{}, executeError(status.OutcomeInvalid, "INVALID_QUESTION_ANSWER", "plan.question_answer", err.Error())
+		}
+		if err := validateQuestionDiscourse(input.SourceMeaning, answer); err != nil || !hasExactQuestionOperator(input.SourceMeaning, plan.Construction.Steps, answer) {
+			return ExecuteResult{}, executeError(status.OutcomeUnsupported, "QUESTION_OPERATOR_MISMATCH", "plan.construction.steps", "typed WH answer requires the exact question discourse and operator")
+		}
+		compiled, err = construction.ValidateVariantForQuestionGap(plan.CompiledVariant.Variant, input.Family, input.Frame, answer.Role)
+		if err == nil && !questionGapVariantHasOnlyOmittedRequiredRole(plan.CompiledVariant.Variant, input.Family, input.Frame, answer.Role) {
+			return ExecuteResult{}, executeError(status.OutcomeUnsupported, "QUESTION_GAP_ADDITIONAL_ROLE_OMITTED", "plan.compiled_variant", "all required roles except the typed WH answer role must have explicit target slots")
+		}
+	} else {
+		if hasQuestionAct(input.SourceMeaning.Nodes) {
+			return ExecuteResult{}, executeError(status.OutcomeUnsupported, "QUESTION_ANSWER_UNAVAILABLE", "plan.question_answer", "question realization requires an explicit typed answer role")
+		}
+		compiled, err = construction.ValidateVariantForFrame(plan.CompiledVariant.Variant, input.Family, input.Frame)
+	}
 	if err != nil {
 		return ExecuteResult{}, executeWrapError(err)
 	}
@@ -420,7 +442,7 @@ func validateConstructionPlanForSurface(plan RealizationPlan, family constructio
 		if !composition.ID.Valid() {
 			return executeError(status.OutcomeInvalid, "CONSTRUCTION_PLAN_ID_MISMATCH", "plan.construction.id", "operator construction plan requires a canonical identity")
 		}
-		if explicitSurfaceNegation(plan, family) {
+		if explicitSurfaceNegation(plan, family) || explicitSurfaceQuestion(plan, family) {
 			return nil
 		}
 		return executeError(status.OutcomeUnsupported, "CONSTRUCTION_OPERATOR_NOT_EXECUTABLE", "plan.construction.steps", "only an explicitly declared identity negation has a compiled surface realization")

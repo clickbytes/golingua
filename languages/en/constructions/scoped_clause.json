@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "provenance": {
+    "id": "golingua-en-scoped-clause",
+    "path": "languages/en/constructions/scoped_clause.json",
+    "version": "1",
+    "license": "internal",
+    "author": "Codex by owner delegation"
+  },
+  "variants": [
+    {
+      "id": "construction:en.scoped_clause.outer_negation",
+      "negation": "outer",
+      "subject_binder": "x",
+      "case_policy": "unmarked",
+      "parts": [
+        {
+          "literal": "It is not the case that every"
+        },
+        {
+          "slot": "x",
+          "case": "nominative"
+        },
+        {
+          "slot": "event"
+        },
+        {
+          "literal": "at least one"
+        },
+        {
+          "slot": "y",
+          "case": "accusative"
+        },
+        {
+          "literal": "."
+        }
+      ],
+      "constraints": [
+        {
+          "binder": "event",
+          "feature": "temporal_frame",
+          "values": [
+            "present"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "construction:en.scoped_clause.inner_negation",
+      "negation": "inner",
+      "subject_binder": "x",
+      "case_policy": "unmarked",
+      "parts": [
+        {
+          "literal": "For every"
+        },
+        {
+          "slot": "x",
+          "case": "accusative"
+        },
+        {
+          "literal": ","
+        },
+        {
+          "literal": "there is no"
+        },
+        {
+          "slot": "y",
+          "case": "nominative"
+        },
+        {
+          "literal": "that the"
+        },
+        {
+          "slot": "x",
+          "case": "nominative"
+        },
+        {
+          "slot": "event"
+        },
+        {
+          "literal": "."
+        }
+      ],
+      "constraints": [
+        {
+          "binder": "event",
+          "feature": "temporal_frame",
+          "values": [
+            "present"
+          ]
+        }
+      ]
+    }
+  ]
+}

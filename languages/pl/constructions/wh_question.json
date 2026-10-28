@@ -5,10 +5,12 @@
     "id": "construction:pl.question.wh",
     "language": "pl",
     "slot_specs": [
-      {"id":"subject","position":0,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"},
+      {"id":"subject","position":0,"category":"NP","cardinality":{"minimum":0,"maximum":1},"optionality":"optional","argument_binding":{"semantic_role":"experiencer"}},
       {"id":"verb","position":1,"category":"VP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"},
-      {"id":"object","position":2,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"}
+      {"id":"object","position":2,"category":"NP","cardinality":{"minimum":0,"maximum":1},"optionality":"optional","argument_binding":{"semantic_role":"stimulus"}}
     ],
+    "operators":["question-wh"],
+    "capabilities":["question-wh"],
     "provenance":{"id":"golingua-dse-wh-395","path":"languages/pl/constructions/wh_question.json","version":"2026-10-27","license":"internal","author":"Codex by owner delegation"}
   },
   "variants": [
@@ -22,6 +24,18 @@
       "id":"construction:pl.question.wh.object.fronted","family_id":"construction:pl.question.wh",
       "sequence":[{"kind":"terminal","terminal":"kogo"},{"kind":"slot","slot_id":"verb"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"?"}],
       "markedness":"neutral","priority":0,"direction_policy":"analyze",
+      "provenance":{"id":"golingua-dse-wh-395","path":"languages/pl/constructions/wh_question.json","version":"2026-10-27","license":"internal","author":"Codex by owner delegation"}
+    },
+    {
+      "id":"construction:pl.question.wh.subject.realize","family_id":"construction:pl.question.wh",
+      "sequence":[{"kind":"terminal","terminal":"kto"},{"kind":"slot","slot_id":"verb"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"?"}],
+      "markedness":"neutral","priority":0,"direction_policy":"realize",
+      "provenance":{"id":"golingua-dse-wh-395","path":"languages/pl/constructions/wh_question.json","version":"2026-10-27","license":"internal","author":"Codex by owner delegation"}
+    },
+    {
+      "id":"construction:pl.question.wh.object.realize","family_id":"construction:pl.question.wh",
+      "sequence":[{"kind":"terminal","terminal":"kogo"},{"kind":"slot","slot_id":"verb"},{"kind":"slot","slot_id":"subject"},{"kind":"terminal","terminal":"?"}],
+      "markedness":"neutral","priority":0,"direction_policy":"realize",
       "provenance":{"id":"golingua-dse-wh-395","path":"languages/pl/constructions/wh_question.json","version":"2026-10-27","license":"internal","author":"Codex by owner delegation"}
     }
   ]

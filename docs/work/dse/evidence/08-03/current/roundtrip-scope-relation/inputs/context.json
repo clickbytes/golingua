@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "context_id": "dse-398-empty",
+  "references": [],
+  "request_context": {
+    "schema_version": 1,
+    "id": "dse-398-empty",
+    "referents": [],
+    "mentions": [],
+    "resolution_evidence": [],
+    "conditions": []
+  },
+  "role_references": [],
+  "port_references": []
+}

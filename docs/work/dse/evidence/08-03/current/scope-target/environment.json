@@ -1,0 +1,7 @@
+{
+  "source_head": "465473b6937f3a40eecc847625daa48863bcd934",
+  "binary": "/tmp/golingua398-scope-commit",
+  "binary_sha256": "112e374fd6d328a0346b2674cd1fb332fbb7228e78c0352001fc40d1e9537338",
+  "go_version": "go version go1.27.0 linux/amd64",
+  "cwd": "/home/ppotepa/git/work/golingua"
+}

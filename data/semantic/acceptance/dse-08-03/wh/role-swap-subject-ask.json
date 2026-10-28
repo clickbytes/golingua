@@ -1,0 +1,301 @@
+{
+  "schema_version": 1,
+  "signatures": [
+    {
+      "id": "pilot.vision_event",
+      "label": "pilot visual-perception event relation",
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.auditory_event",
+      "label": "pilot auditory-perception event relation",
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.r",
+      "label": "neutral ordered relation",
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.teacher",
+      "label": "explicit probe convention probe.teacher",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.dog",
+      "label": "explicit probe convention probe.dog",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.definite",
+      "label": "explicit probe convention probe.definite",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    }
+  ],
+  "parameters": [],
+  "limits": {},
+  "closed": true,
+  "references": [
+    {
+      "id": "E1",
+      "type": {
+        "kind": "Event"
+      },
+      "temporal_frame": "present"
+    },
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      },
+      "multiplicity": "one"
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      },
+      "multiplicity": "one"
+    }
+  ],
+  "expression": {
+    "kind": "Ask",
+    "answers": [
+      {
+        "id": "x",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ],
+    "body": {
+      "kind": "Atom",
+      "symbol": "pilot.vision_event",
+      "args": [
+        {
+          "role": "event",
+          "value": {
+            "kind": "Ref",
+            "id": "E1",
+            "type": {
+              "kind": "Event"
+            }
+          }
+        },
+        {
+          "role": "experiencer",
+          "value": {
+            "kind": "Var",
+            "id": "x"
+          }
+        },
+        {
+          "role": "stimulus",
+          "value": {
+            "kind": "Ref",
+            "id": "B",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "request_context": {
+    "schema_version": 1,
+    "id": "role-swap-context",
+    "referents": [
+      {
+        "id": "E1",
+        "type": {
+          "kind": "Event"
+        }
+      },
+      {
+        "id": "A",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      {
+        "id": "B",
+        "type": {
+          "kind": "Entity"
+        }
+      }
+    ],
+    "mentions": [],
+    "resolution_evidence": [],
+    "conditions": [
+      {
+        "id": "given-def-A",
+        "kind": "presupposition",
+        "code": "definite_reference",
+        "target_referent_ids": [
+          "A"
+        ],
+        "expression": {
+          "kind": "Atom",
+          "symbol": "probe.definite",
+          "args": [
+            {
+              "role": "entity",
+              "value": {
+                "kind": "Ref",
+                "id": "A",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "given-def-B",
+        "kind": "presupposition",
+        "code": "definite_reference",
+        "target_referent_ids": [
+          "B"
+        ],
+        "expression": {
+          "kind": "Atom",
+          "symbol": "probe.definite",
+          "args": [
+            {
+              "role": "entity",
+              "value": {
+                "kind": "Ref",
+                "id": "B",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "given-teacher-A",
+        "kind": "presupposition",
+        "code": "lexical_descriptor",
+        "target_referent_ids": [
+          "A"
+        ],
+        "expression": {
+          "kind": "Atom",
+          "symbol": "probe.teacher",
+          "args": [
+            {
+              "role": "entity",
+              "value": {
+                "kind": "Ref",
+                "id": "A",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "given-dog-B",
+        "kind": "presupposition",
+        "code": "lexical_descriptor",
+        "target_referent_ids": [
+          "B"
+        ],
+        "expression": {
+          "kind": "Atom",
+          "symbol": "probe.dog",
+          "args": [
+            {
+              "role": "entity",
+              "value": {
+                "kind": "Ref",
+                "id": "B",
+                "type": {
+                  "kind": "Entity"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

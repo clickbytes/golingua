@@ -1,0 +1,8 @@
+{
+  "draft_base_sha": "f2c656016fb95658f3f27a8d99aaa47274c7a7c6",
+  "draft_patch_sha256": "ae20f985b5988c509c4c85cc79e1558e5181e11e2da6054bbf0c07e81b303f77",
+  "review_binary_sha256": "de523b13f88c4c59387e4a58f81deac8e3f6bd7a488509688985343d70572245",
+  "note": "Historical draft. Apply the included pre-integration patch to the recorded base for the code that exposed the WH regression. It is not the final delivered implementation.",
+  "pre-integration-draft_patch_uncompressed_sha256": "ae20f985b5988c509c4c85cc79e1558e5181e11e2da6054bbf0c07e81b303f77",
+  "supplied-integration_patch_uncompressed_sha256": "5d8557e75e8335d83ca3f3640c558ff699ef4962d72454dd7f9064aa33c7dabb"
+}

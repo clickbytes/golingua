@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"COORDINATION_EVENT_IDENTITY_COLLAPSED","message":"the two source clauses must retain distinct explicit Event references","path":"clauses","severity":"error"}]}

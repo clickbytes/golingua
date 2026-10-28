@@ -18,23 +18,24 @@ type NodeArgument struct {
 // ParameterID, ReferenceID, or HoleID according to Kind; NodeID is never a
 // substitute for that semantic identity.
 type Node struct {
-	NodeID       NodeID         `json:"node_id"`
-	Kind         TermKind       `json:"kind"`
-	Identity     string         `json:"identity,omitempty"`
-	Label        string         `json:"label,omitempty"`
-	Type         *Type          `json:"type,omitempty"`
-	Symbol       string         `json:"symbol,omitempty"`
-	Args         []NodeArgument `json:"args,omitempty"`
-	Operands     []NodeID       `json:"operands,omitempty"`
-	Body         NodeID         `json:"body,omitempty"`
-	Function     NodeID         `json:"function,omitempty"`
-	Argument     NodeID         `json:"argument,omitempty"`
-	Quantifier   string         `json:"quantifier,omitempty"`
-	Count        *int           `json:"count,omitempty"`
-	Restrictor   NodeID         `json:"restrictor,omitempty"`
-	Answers      []Declaration  `json:"answers,omitempty"`
-	Modality     string         `json:"modality,omitempty"`
-	ModalProfile string         `json:"modal_profile,omitempty"`
+	NodeID        NodeID         `json:"node_id"`
+	Kind          TermKind       `json:"kind"`
+	Identity      string         `json:"identity,omitempty"`
+	Label         string         `json:"label,omitempty"`
+	Type          *Type          `json:"type,omitempty"`
+	Symbol        string         `json:"symbol,omitempty"`
+	Args          []NodeArgument `json:"args,omitempty"`
+	Operands      []NodeID       `json:"operands,omitempty"`
+	Body          NodeID         `json:"body,omitempty"`
+	Function      NodeID         `json:"function,omitempty"`
+	Argument      NodeID         `json:"argument,omitempty"`
+	Quantifier    string         `json:"quantifier,omitempty"`
+	Count         *int           `json:"count,omitempty"`
+	Restrictor    NodeID         `json:"restrictor,omitempty"`
+	TemporalFrame string         `json:"temporal_frame,omitempty"`
+	Answers       []Declaration  `json:"answers,omitempty"`
+	Modality      string         `json:"modality,omitempty"`
+	ModalProfile  string         `json:"modal_profile,omitempty"`
 }
 
 // Arena is an immutable, checked, artifact-local DAG. Its fields remain
@@ -304,6 +305,12 @@ func (arena *Arena) Document() (Document, error) {
 }
 
 func validateArenaNodeShape(node Node, path string) error {
+	if node.Kind != TermExists && node.TemporalFrame != "" {
+		return invalid("MALFORMED_ARENA_NODE", path+".temporal_frame", "temporal_frame is only allowed on an Event Exists binder")
+	}
+	if node.TemporalFrame != "" && (node.Type == nil || node.Type.Kind != TypeEvent || node.TemporalFrame != "past" && node.TemporalFrame != "present") {
+		return invalid("INVALID_BINDER_TEMPORAL_FRAME", path+".temporal_frame", "temporal_frame is allowed only as past or present on an Event Exists binder")
+	}
 	identityKind := node.Kind == TermVar || node.Kind == TermParam || node.Kind == TermRef || node.Kind == TermHole || node.Kind == TermExists || node.Kind == TermLambda || node.Kind == TermQuantifier
 	if !identityKind && node.Identity != "" {
 		return invalid("MALFORMED_ARENA_NODE", path+".identity", "identity is not allowed for this node kind")
@@ -368,7 +375,7 @@ func arenaTerm(root NodeID, nodes []Node, limits Limits) (*Term, error) {
 			return cache[id], nil
 		}
 		node := nodes[id-1]
-		term := &Term{Kind: node.Kind, ID: node.Identity, Label: node.Label, Symbol: node.Symbol, Quantifier: node.Quantifier, Modality: node.Modality, ModalProfile: node.ModalProfile}
+		term := &Term{Kind: node.Kind, ID: node.Identity, Label: node.Label, Symbol: node.Symbol, Quantifier: node.Quantifier, TemporalFrame: node.TemporalFrame, Modality: node.Modality, ModalProfile: node.ModalProfile}
 		if node.Count != nil {
 			count := *node.Count
 			term.Count = &count

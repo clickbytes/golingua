@@ -660,6 +660,19 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 		referenceByCandidate[selected.candidate.ID] = refID
 	}
 	headRef, ok := sourcePortReference(input.ReferenceContext, mapping.HeadPortID)
+	if input.RequireCandidateHeadReference {
+		resolvedHead, resolved, anchoredHead, _, resolveErr := resolveDSEReference(vp.ID, "", false, refsByCandidate, mentionRefs)
+		if resolveErr != nil {
+			return DSECandidate{}, false, resolveErr
+		}
+		if anchoredHead || !resolved {
+			return incompleteDSE(vp, alternative, "MISSING_CANDIDATE_EVENT_REFERENCE", "the predicate candidate has no explicit, resolved Event identity in this request")
+		}
+		if ok && headRef != resolvedHead {
+			return DSECandidate{}, false, dseError(status.OutcomeInvalid, "CANDIDATE_EVENT_REFERENCE_CONFLICT", "reference_context.port_references", "the candidate Event identity conflicts with the supplied Event port mapping")
+		}
+		headRef, ok = resolvedHead, true
+	}
 	if !ok {
 		return incompleteDSE(vp, alternative, "MISSING_HEAD_EVENT_REFERENCE", "caller must explicitly bind the mapped Event head port")
 	}

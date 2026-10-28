@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/clickbytes/golingua/internal/ids"
+	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/valency"
 )
 
@@ -78,6 +79,21 @@ func CompileVariant(variant Variant, family ConstructionFamily) (CompiledVariant
 // sense-specific frame. A generic family/variant pair can be checked against
 // each approved frame binding without copying either structure.
 func ValidateVariantForFrame(variant Variant, family ConstructionFamily, frame valency.ValencyFrame) (CompiledVariant, error) {
+	return validateVariantForFrame(variant, family, frame, "")
+}
+
+// ValidateVariantForQuestionGap validates one target question variant whose
+// sequence leaves exactly the explicitly queried required Entity-role NP slot
+// unfilled. All other required frame roles remain subject to the ordinary
+// realization and implicit-participant checks.
+func ValidateVariantForQuestionGap(variant Variant, family ConstructionFamily, frame valency.ValencyFrame, answerRole meaning.Role) (CompiledVariant, error) {
+	if answerRole == "" {
+		return CompiledVariant{}, incomplete("MISSING_QUESTION_GAP_ROLE", "question_gap.answer_role", "question-gap validation requires an explicit semantic role")
+	}
+	return validateVariantForFrame(variant, family, frame, string(answerRole))
+}
+
+func validateVariantForFrame(variant Variant, family ConstructionFamily, frame valency.ValencyFrame, questionGapRole string) (CompiledVariant, error) {
 	compiled, err := CompileVariant(variant, family)
 	if err != nil {
 		return CompiledVariant{}, err
@@ -111,6 +127,22 @@ func ValidateVariantForFrame(variant Variant, family ConstructionFamily, frame v
 			return CompiledVariant{}, unsupported("FAMILY_ROLE_NOT_LICENSED_BY_FRAME", "frame.arguments", "family binds a semantic role not licensed by this sense frame")
 		}
 	}
+	if questionGapRole != "" {
+		argument, exists := frameArguments[questionGapRole]
+		if !exists || !argument.Required {
+			return CompiledVariant{}, unsupported("QUESTION_GAP_ROLE_NOT_REQUIRED", "question_gap.answer_role", "question gap must name a required role in the selected frame")
+		}
+		slot, exists := roleSlots[questionGapRole]
+		if !exists {
+			return CompiledVariant{}, unsupported("QUESTION_GAP_ROLE_UNBOUND", "family.slot_specs", "question gap role has no language-local family slot")
+		}
+		if slot.Category != CategoryNP || slot.Optionality != SlotOptional || slot.Cardinality.Minimum != 0 || slot.Cardinality.Maximum != 1 {
+			return CompiledVariant{}, unsupported("QUESTION_GAP_SLOT_UNSUPPORTED", "family.slot_specs."+slot.ID, "question gap requires one optional zero-or-one NP role slot")
+		}
+		if _, included := sequenceSlots[slot.ID]; included {
+			return CompiledVariant{}, unsupported("QUESTION_GAP_SLOT_FILLED", "variant.sequence", "the queried answer role must be omitted from the question target sequence")
+		}
+	}
 	for role, argument := range frameArguments {
 		if !argument.Required {
 			continue
@@ -120,6 +152,12 @@ func ValidateVariantForFrame(variant Variant, family ConstructionFamily, frame v
 			return CompiledVariant{}, unsupported("REQUIRED_FRAME_ROLE_UNBOUND", "family.slot_specs", "required frame role has no family argument slot")
 		}
 		if _, exists := sequenceSlots[slot.ID]; !exists {
+			if role == questionGapRole {
+				continue
+			}
+			if questionGapRole != "" {
+				return CompiledVariant{}, unsupported("QUESTION_GAP_ADDITIONAL_ROLE_OMITTED", "variant.sequence", "all required roles other than the typed question gap must have explicit target slots")
+			}
 			if _, licensed := ImplicitParticipantSlot(family, variant, slot.ID); licensed {
 				continue
 			}

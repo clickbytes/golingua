@@ -292,6 +292,7 @@
     "pos": "verb",
     "principal_part_requirements": [{"stem_id":"base","part_id":"base","required":true}, {"stem_id":"third","part_id":"third_person_singular","required":true}, {"stem_id":"past","part_id":"past","required":true}, {"stem_id":"participle","part_id":"past_participle","required":true}, {"stem_id":"present_participle","part_id":"present_participle","required":true}],
     "cells": [
+      {"id":"base","features":[{"feature":"verb_form","state":"known","value":"base"}]},
       {"id":"present_first_singular","features":[{"feature":"verb_form","state":"known","value":"finite"},{"feature":"tense","state":"known","value":"present"},{"feature":"mood","state":"known","value":"indicative"},{"feature":"voice","state":"known","value":"active"},{"feature":"person","state":"known","value":"first"},{"feature":"verb_number","state":"known","value":"singular"}]},
       {"id":"present_first_plural","features":[{"feature":"verb_form","state":"known","value":"finite"},{"feature":"tense","state":"known","value":"present"},{"feature":"mood","state":"known","value":"indicative"},{"feature":"voice","state":"known","value":"active"},{"feature":"person","state":"known","value":"first"},{"feature":"verb_number","state":"known","value":"plural"}]},
       {"id":"present_second_singular","features":[{"feature":"verb_form","state":"known","value":"finite"},{"feature":"tense","state":"known","value":"present"},{"feature":"mood","state":"known","value":"indicative"},{"feature":"voice","state":"known","value":"active"},{"feature":"person","state":"known","value":"second"},{"feature":"verb_number","state":"known","value":"singular"}]},
@@ -304,6 +305,7 @@
       {"id":"present_participle","features":[{"feature":"verb_form","state":"known","value":"present_participle"}]}
     ],
     "rules": [
+      {"cell_id":"base","procedure_id":"procedure:en_verb_finite_principal_parts.base","provenance":{"id":"golingua-en-morphology-seed","path":"languages/en/morphology/paradigms.json","version":"2026-10-23-g10-01","license":"internal"},"steps":[{"kind":"select_stem","stem_id":"base"}]},
       {"cell_id":"present_first_singular","procedure_id":"procedure:en_verb_finite_principal_parts.present_first_singular","provenance":{"id":"golingua-en-morphology-seed","path":"languages/en/morphology/paradigms.json","version":"2026-10-23-g10-01","license":"internal"},"steps":[{"kind":"select_stem","stem_id":"base"}]},
       {"cell_id":"present_first_plural","procedure_id":"procedure:en_verb_finite_principal_parts.present_first_plural","provenance":{"id":"golingua-en-morphology-seed","path":"languages/en/morphology/paradigms.json","version":"2026-10-23-g10-01","license":"internal"},"steps":[{"kind":"select_stem","stem_id":"base"}]},
       {"cell_id":"present_second_singular","procedure_id":"procedure:en_verb_finite_principal_parts.present_second_singular","provenance":{"id":"golingua-en-morphology-seed","path":"languages/en/morphology/paradigms.json","version":"2026-10-23-g10-01","license":"internal"},"steps":[{"kind":"select_stem","stem_id":"base"}]},

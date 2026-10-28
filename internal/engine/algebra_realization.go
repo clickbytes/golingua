@@ -16,6 +16,7 @@ import (
 	"github.com/clickbytes/golingua/internal/language"
 	"github.com/clickbytes/golingua/internal/lexicon"
 	"github.com/clickbytes/golingua/internal/meaning"
+	"github.com/clickbytes/golingua/internal/provenance"
 	"github.com/clickbytes/golingua/internal/semantic"
 	"github.com/clickbytes/golingua/internal/status"
 )
@@ -47,6 +48,99 @@ type AlgebraRealizationCoverage struct {
 	EventReferenceID  string                    `json:"event_reference_id"`
 	EventMeaningNode  meaning.NodeID            `json:"event_meaning_node_id"`
 	RoleSubstitutions []AlgebraRoleSubstitution `json:"role_substitutions"`
+	AnswerVariableID  string                    `json:"answer_variable_id,omitempty"`
+	AnswerSort        string                    `json:"answer_sort,omitempty"`
+	AnswerRole        string                    `json:"answer_role,omitempty"`
+}
+
+// AlgebraScopeCoverage preserves the scope evidence and the bounded checks
+// recorded for each scoped surface; it is not an independent linguistic proof.
+type AlgebraScopeCoverage struct {
+	Verified          bool                              `json:"verified"`
+	VerificationScope string                            `json:"verification_scope"`
+	PlanProvenance    string                            `json:"plan_provenance,omitempty"`
+	Paths             ScopedTargetPaths                 `json:"paths"`
+	BinderX           string                            `json:"binder_x"`
+	BinderY           string                            `json:"binder_y"`
+	BinderEvent       string                            `json:"binder_event"`
+	Negation          ScopedNegationLocation            `json:"negation_location"`
+	TemporalFrame     string                            `json:"temporal_frame,omitempty"`
+	RequestContext    *AlgebraScopeContextEvidence      `json:"request_context,omitempty"`
+	Selections        []AlgebraScopeSelectionEvidence   `json:"selections"`
+	Alternatives      []AlgebraScopeAlternativeEvidence `json:"alternatives"`
+}
+
+type AlgebraScopeContextEvidence struct {
+	SchemaVersion int    `json:"schema_version"`
+	ID            string `json:"id"`
+}
+
+type AlgebraScopeSelectionEvidence struct {
+	BinderID      string `json:"binder_id"`
+	Role          string `json:"role"`
+	Port          string `json:"port"`
+	ReferencePort string `json:"reference_port,omitempty"`
+	SenseID       string `json:"sense_id"`
+	LexemeID      string `json:"lexeme_id"`
+	Symbol        string `json:"symbol"`
+	ProvenanceID  string `json:"provenance_id"`
+}
+
+type AlgebraScopeAlternativeEvidence struct {
+	ID             string              `json:"id"`
+	ConstructionID string              `json:"construction_id"`
+	Parts          []ScopedSurfacePart `json:"parts"`
+}
+
+type AlgebraRelationPathAlternativeEvidence struct {
+	ID        string                    `json:"id"`
+	VariantID string                    `json:"variant_id"`
+	Parts     []RelationPathSurfacePart `json:"parts"`
+}
+
+type AlgebraRelationPathCoverage struct {
+	Verified                    bool                                     `json:"verified"`
+	VerificationScope           string                                   `json:"verification_scope"`
+	GrammaticalTenseInterpreted bool                                     `json:"grammatical_tense_interpreted"`
+	Paths                       RelationPathPaths                        `json:"paths"`
+	BinderX                     string                                   `json:"binder_x"`
+	BinderY                     string                                   `json:"binder_y"`
+	BinderZ                     string                                   `json:"binder_z"`
+	Symbol                      string                                   `json:"symbol"`
+	SenseID                     string                                   `json:"sense_id"`
+	LexemeID                    string                                   `json:"lexeme_id"`
+	Lemma                       string                                   `json:"lemma"`
+	POS                         string                                   `json:"pos"`
+	FrameID                     string                                   `json:"frame_id"`
+	FrameProvenance             provenance.SourceRef                     `json:"frame_provenance"`
+	BindingProvenance           provenance.SourceRef                     `json:"binding_provenance"`
+	TargetValidation            language.TargetValidation                `json:"target_validation"`
+	SubjectRole                 string                                   `json:"subject_role"`
+	ObjectRole                  string                                   `json:"object_role"`
+	PortRoles                   map[string]string                        `json:"port_roles"`
+	Events                      []AlgebraRelationEventCoverage           `json:"events,omitempty"`
+	RequestContext              *AlgebraScopeContextEvidence             `json:"request_context,omitempty"`
+	PlanProvenance              provenance.SourceRef                     `json:"plan_provenance"`
+	Alternatives                []AlgebraRelationPathAlternativeEvidence `json:"alternatives"`
+}
+
+// AlgebraRelationEventCoverage keeps the two event witnesses separate from
+// their shared predicate and preserves only temporal features explicit in IR.
+type AlgebraRelationEventCoverage struct {
+	BinderID      string `json:"binder_id"`
+	EventPortID   string `json:"event_port_id"`
+	Path          string `json:"path"`
+	AtomPath      string `json:"atom_path"`
+	TemporalFrame string `json:"temporal_frame,omitempty"`
+}
+
+type RelationPathPaths struct {
+	FirstLambda  string `json:"first_lambda"`
+	SecondLambda string `json:"second_lambda"`
+	Witness      string `json:"witness"`
+	Conjunction  string `json:"conjunction"`
+	FirstAtom    string `json:"first_atom"`
+	SecondAtom   string `json:"second_atom"`
 }
 
 // AlgebraRealizationResidual retains input meaning that this bounded route did
@@ -62,31 +156,38 @@ type AlgebraRealizationResidual struct {
 	ResolutionEvidence *algebra.ResolutionEvidence `json:"resolution_evidence,omitempty"`
 	ContextCondition   *algebra.ContextCondition   `json:"context_condition,omitempty"`
 	ReferenceID        string                      `json:"reference_id,omitempty"`
+	ContextID          string                      `json:"context_id,omitempty"`
+	Declaration        *algebra.Declaration        `json:"declaration,omitempty"`
 }
 
 // AlgebraRealizationResult reports coverage, surface alternatives and all
 // retained residuals for one independent typed-IR realization request.
 type AlgebraRealizationResult struct {
-	Status          status.OutcomeKind           `json:"status"`
-	Language        string                       `json:"language"`
-	LanguagePackage string                       `json:"language_package,omitempty"`
-	PackageVersion  string                       `json:"package_version,omitempty"`
-	Coverage        []AlgebraRealizationCoverage `json:"coverage"`
-	Residuals       []AlgebraRealizationResidual `json:"residuals"`
-	Alternatives    []SurfaceAlternative         `json:"alternatives"`
-	Diagnostics     []status.Diagnostic          `json:"diagnostics"`
-	Scope           string                       `json:"scope"`
+	Status               status.OutcomeKind           `json:"status"`
+	Language             string                       `json:"language"`
+	LanguagePackage      string                       `json:"language_package,omitempty"`
+	PackageVersion       string                       `json:"package_version,omitempty"`
+	Coverage             []AlgebraRealizationCoverage `json:"coverage"`
+	Residuals            []AlgebraRealizationResidual `json:"residuals"`
+	Alternatives         []SurfaceAlternative         `json:"alternatives"`
+	Diagnostics          []status.Diagnostic          `json:"diagnostics"`
+	Scope                string                       `json:"scope"`
+	ScopeCoverage        *AlgebraScopeCoverage        `json:"scope_coverage,omitempty"`
+	RelationPathCoverage *AlgebraRelationPathCoverage `json:"relation_path_coverage,omitempty"`
 }
 
 type algebraAtomMatch struct {
-	path       string
-	atom       *algebra.Term
-	signature  algebra.Signature
-	binding    lexicon.SemanticBinding
-	eventPort  string
-	rolePorts  []lexicon.SemanticRolePort
-	arguments  map[string]*algebra.Term
-	validation language.TargetValidation
+	path             string
+	atom             *algebra.Term
+	signature        algebra.Signature
+	binding          lexicon.SemanticBinding
+	eventPort        string
+	rolePorts        []lexicon.SemanticRolePort
+	arguments        map[string]*algebra.Term
+	answerVariableID string
+	answerSort       string
+	answerRole       string
+	validation       language.TargetValidation
 }
 
 // RealizeAlgebra selects one approved, exact symbol binding from an explicitly
@@ -130,7 +231,7 @@ func (engine *Engine) realizeAlgebra(
 		Status: status.OutcomeInvalid, Language: string(languageID),
 		Coverage: []AlgebraRealizationCoverage{}, Residuals: []AlgebraRealizationResidual{},
 		Alternatives: []SurfaceAlternative{}, Diagnostics: []status.Diagnostic{},
-		Scope: "exact approved symbol target; one positive Atom; language adapter output is not a truth claim",
+		Scope: "exact approved symbol target; one positive Atom or one typed Entity WH Ask over a direct Atom; language adapter output is not a truth claim",
 	}
 	if ctx == nil {
 		return algebraRealizationFailure(result, status.OutcomeInvalid, "MISSING_REQUEST_CONTEXT", "context", "algebra realization requires a caller context"), nil
@@ -175,10 +276,37 @@ func (engine *Engine) realizeAlgebra(
 		return algebraRealizationFailure(result, status.OutcomeResourceLimit, "RESOURCE_LIMIT", "language_package.bindings", "semantic language package exceeds the realization binding limit"), nil
 	}
 	validatedSignatures := signaturesByID(selectedMetadata.Signatures)
+	if plan, matched := matchAlgebraScope(input.Expression, validatedSignatures); matched {
+		return engine.realizeAlgebraScope(ctx, result, input, languageID, languagePackage, validations, validatedSignatures, plan)
+	}
+	if plan, matched := matchAlgebraEventRelationPath(input.Expression, validatedSignatures); matched {
+		return engine.realizeAlgebraEventRelationPath(ctx, result, merged, languageID, languagePackage, selectedMetadata, plan)
+	}
+	if plan, matched := matchAlgebraRelationPath(input.Expression, validatedSignatures); matched {
+		return engine.realizeAlgebraRelationPath(ctx, result, merged, languageID, languagePackage, selectedMetadata, plan)
+	}
 	if input.Expression == nil {
 		return algebraRealizationFailure(result, status.OutcomeInvalid, "MISSING_EXPRESSION", "input.expression", "an expression is required for realization"), nil
 	}
-	parts, partPaths := realizationParts(input.Expression)
+	queryAnswer := (*algebra.Declaration)(nil)
+	expression := input.Expression
+	if expression.Kind == algebra.TermAsk {
+		if expression.Restrictor != nil || len(expression.Answers) != 1 || expression.Body == nil || expression.Body.Kind != algebra.TermAtom {
+			result.Residuals = append(result.Residuals, AlgebraRealizationResidual{Path: "input.expression", Code: "UNSUPPORTED_ASK_SHAPE", Message: "this route supports only one Entity answer bound in the role of one direct Atom, without a restrictor", Term: cloneAlgebraTerm(expression)})
+			return algebraRealizationFailure(result, status.OutcomeUnsupported, "UNSUPPORTED_ASK_SHAPE", "input.expression", "only a single typed WH answer over one direct Atom is supported"), nil
+		}
+		if expression.Answers[0].Type.Kind != algebra.TypeEntity {
+			result.Residuals = append(result.Residuals, AlgebraRealizationResidual{Path: "input.expression.answers[0]", Code: "UNSUPPORTED_ANSWER_SORT", Message: "target WH realization currently supports Entity answer variables only", Term: cloneAlgebraTerm(expression)})
+			return algebraRealizationFailure(result, status.OutcomeUnsupported, "UNSUPPORTED_ANSWER_SORT", "input.expression.answers[0]", "target WH realization currently supports Entity answer variables only"), nil
+		}
+		answer := expression.Answers[0]
+		queryAnswer = &answer
+		expression = expression.Body
+	}
+	parts, partPaths := realizationParts(expression)
+	if queryAnswer != nil {
+		partPaths = []string{"input.expression.body"}
+	}
 	if len(parts) > maxAlgebraRealizationParts {
 		result.Residuals = append(result.Residuals, AlgebraRealizationResidual{Path: "input.expression", Code: "EXPRESSION_PART_LIMIT", Message: "entire expression was retained because its top-level part count exceeds the realization limit", Term: cloneAlgebraTerm(input.Expression)})
 		return algebraRealizationFailure(result, status.OutcomeResourceLimit, "RESOURCE_LIMIT", "input.expression", "expression has too many top-level parts for realization"), nil
@@ -188,10 +316,10 @@ func (engine *Engine) realizeAlgebra(
 	refusalStatus := status.OutcomeUnsupported
 	for index, part := range parts {
 		if part == nil || part.Kind != algebra.TermAtom {
-			unresolved = append(unresolved, AlgebraRealizationResidual{Path: partPaths[index], Code: "UNSUPPORTED_EXPRESSION_PART", Message: "only a directly matched positive Atom is realized by this route", Term: cloneAlgebraTerm(part)})
+			unresolved = append(unresolved, AlgebraRealizationResidual{Path: partPaths[index], Code: "UNSUPPORTED_EXPRESSION_PART", Message: "only a directly matched positive Atom, or one direct Atom inside a bounded WH Ask, is realized by this route", Term: cloneAlgebraTerm(part)})
 			continue
 		}
-		match, matchStatus, matchCode, matchMessage := findAlgebraAtomMatch(part, partPaths[index], languagePackage, validations, validatedSignatures)
+		match, matchStatus, matchCode, matchMessage := findAlgebraAtomMatch(part, partPaths[index], languagePackage, validations, validatedSignatures, queryAnswer)
 		if match != nil {
 			matches = append(matches, *match)
 			continue
@@ -205,6 +333,15 @@ func (engine *Engine) realizeAlgebra(
 		if matchStatus == status.OutcomeInvalid || matchStatus == status.OutcomeResourceLimit {
 			result.Residuals = append(result.Residuals, unresolved...)
 			return algebraRealizationFailure(result, matchStatus, matchCode, partPaths[index], matchMessage), nil
+		}
+	}
+	if queryAnswer == nil && input.Expression != nil && input.Expression.Kind == algebra.TermAnd && len(input.Expression.Operands) == 2 {
+		coordinated, coordErr := engine.realizeTwoAtomAnd(ctx, input, languageID, languagePackage, matches, unresolved, refuseContextResiduals)
+		if coordErr != nil {
+			return result, coordErr
+		}
+		if coordinated != nil {
+			return *coordinated, nil
 		}
 	}
 	if len(matches) == 0 {
@@ -265,6 +402,13 @@ func (engine *Engine) realizeAlgebra(
 	if realizeErr != nil {
 		return algebraRealizationError(result, realizeErr, "TARGET_REALIZATION_FAILED", "target")
 	}
+	return validateAlgebraTargetSurface(result, surface, []algebraAtomMatch{match}, candidate.Meaning, targetLanguage, budget)
+}
+
+// validateAlgebraTargetSurface preserves the strict target-output contract for
+// singleton and coordinated algebra realization. Each match consumes a distinct
+// exact generated binding record, including when senses are identical.
+func validateAlgebraTargetSurface(result AlgebraRealizationResult, surface SurfaceResult, matches []algebraAtomMatch, candidateGraph *meaning.Meaning, targetLanguage language.Language, budget Budget) (AlgebraRealizationResult, error) {
 	if !surface.Outcome.Valid() || len(surface.Diagnostics) > status.MaxDiagnostics {
 		return algebraRealizationFailure(result, status.OutcomeError, "INVALID_TARGET_OUTCOME", "target.outcome", "target adapter returned an unsupported realization status"), nil
 	}
@@ -283,10 +427,6 @@ func (engine *Engine) realizeAlgebra(
 	textBytes := 0
 	usableSurface := false
 	completeSurface := false
-	selectedCoreRef, parseCoreErr := ids.ParseConceptID(result.Coverage[0].CoreRef)
-	if parseCoreErr != nil {
-		return algebraRealizationFailure(result, status.OutcomeInvalid, "INVALID_SELECTED_CORE_REF", "coverage.core_ref", "selected target coverage contains a malformed CORE concept ID"), nil
-	}
 	for index, alternative := range surface.Alternatives {
 		path := fmt.Sprintf("target.alternatives[%d]", index)
 		if !alternative.Outcome.Valid() || !validID(alternative.ID) || len(alternative.Diagnostics) > status.MaxDiagnostics || len(alternative.Assumptions) > MaxTranslationAssumptions || len(alternative.Losses) > MaxTranslationLosses {
@@ -319,8 +459,27 @@ func (engine *Engine) realizeAlgebra(
 			if textBytes > budget.MaxCandidateTextBytes {
 				return algebraRealizationFailure(result, status.OutcomeResourceLimit, "RESOURCE_LIMIT", "target.text", "surface alternatives exceed the aggregate text byte limit"), nil
 			}
-			if !hasExactGeneratedAlgebraBindingEvidence(targetLanguage, alternative.Evidence, match.binding.SenseID, selectedCoreRef, candidate.Meaning) {
-				return algebraRealizationFailure(result, status.OutcomeUnsupported, "TARGET_BINDING_EVIDENCE_UNAVAILABLE", path+".evidence", "text was rejected because no exact verified generated binding evidence supports the selected sense and CORE concept"), nil
+			usedEvidence := make(map[int]bool)
+			for matchIndex, matched := range matches {
+				coreRef, parseCoreErr := ids.ParseConceptID(result.Coverage[matchIndex].CoreRef)
+				if parseCoreErr != nil {
+					return algebraRealizationFailure(result, status.OutcomeInvalid, "INVALID_SELECTED_CORE_REF", "coverage.core_ref", "selected target coverage contains a malformed CORE concept ID"), nil
+				}
+				found := false
+				for evidenceIndex, record := range alternative.Evidence.Records {
+					if usedEvidence[evidenceIndex] {
+						continue
+					}
+					one := semantic.EvidenceTrace{AlternativeID: alternative.Evidence.AlternativeID, Outcome: alternative.Evidence.Outcome, Records: []semantic.EvidenceRecord{record}, Diagnostics: alternative.Evidence.Diagnostics}
+					if hasExactGeneratedAlgebraBindingEvidence(targetLanguage, one, matched.binding.SenseID, coreRef, candidateGraph) {
+						usedEvidence[evidenceIndex] = true
+						found = true
+						break
+					}
+				}
+				if !found {
+					return algebraRealizationFailure(result, status.OutcomeUnsupported, "TARGET_BINDING_EVIDENCE_UNAVAILABLE", path+".evidence", "text was rejected because every exact selected clause requires its own verified generated binding record"), nil
+				}
 			}
 			if alternative.Outcome == status.OutcomeOK || alternative.Outcome == status.OutcomeIncomplete {
 				usableSurface = true
@@ -401,6 +560,7 @@ func findAlgebraAtomMatch(
 	languagePackage *language.SemanticLanguagePackage,
 	validations []language.TargetValidation,
 	signatures map[string]algebra.Signature,
+	answer *algebra.Declaration,
 ) (*algebraAtomMatch, status.OutcomeKind, string, string) {
 	var signature algebra.Signature
 	var hasSignature bool
@@ -455,6 +615,7 @@ func findAlgebraAtomMatch(
 		roleNames[rolePort.Role] = true
 	}
 	args := make(map[string]*algebra.Term, len(atom.Args))
+	answerRole := ""
 	for _, argument := range atom.Args {
 		if _, duplicate := args[argument.Role]; duplicate {
 			return nil, status.OutcomeInvalid, "DUPLICATE_ATOM_ARGUMENT", "atom argument role is duplicated"
@@ -472,6 +633,14 @@ func findAlgebraAtomMatch(
 			if !algebra.TypeEqual(port.Type, rolePort.Type) || port.Type.Kind != algebra.TypeEntity {
 				return nil, status.OutcomeUnsupported, "TARGET_PORT_TYPE_MISMATCH", "mapped role port does not exactly match an Entity-valued metadata port"
 			}
+			if answer != nil && argument.Kind == algebra.TermVar && argument.ID == answer.ID {
+				if answerRole != "" {
+					return nil, status.OutcomeUnsupported, "ANSWER_VARIABLE_ROLE_AMBIGUOUS", "one answer variable cannot fill more than one event role in this route"
+				}
+				answerRole = rolePort.Role
+			} else if argument.Kind != algebra.TermRef {
+				return nil, status.OutcomeUnsupported, "ROLE_ARGUMENT_NOT_REFERENCE", "every non-answer Entity role must be bound to an explicit reference"
+			}
 			continue
 		}
 		if port.Type.Kind != algebra.TypeEvent || eventPort != "" {
@@ -482,11 +651,18 @@ func findAlgebraAtomMatch(
 	if eventPort == "" || len(args) != len(signature.Ports) {
 		return nil, status.OutcomeUnsupported, "TARGET_PORT_SHAPE_UNSUPPORTED", "target does not cover the signature with participant roles and one Event identity"
 	}
+	if answer != nil && answerRole == "" {
+		return nil, status.OutcomeUnsupported, "ANSWER_VARIABLE_ROLE_NOT_FOUND", "the declared answer variable must fill exactly one mapped Entity role of the target event"
+	}
 	validation, found := findTargetValidation(validations, binding)
 	if !found || !validation.Authorized || len(validation.Unresolved) != 0 {
 		return nil, status.OutcomeUnsupported, "UNRESOLVED_TARGET_METADATA", "matching target ports did not validate against the selected metadata"
 	}
-	return &algebraAtomMatch{path: path, atom: atom, signature: signature, binding: binding, eventPort: eventPort, rolePorts: append([]lexicon.SemanticRolePort{}, binding.Target.RolePorts...), arguments: args, validation: validation}, status.OutcomeOK, "", ""
+	answerVariableID, answerSort := "", ""
+	if answer != nil {
+		answerVariableID, answerSort = answer.ID, string(answer.Type.Kind)
+	}
+	return &algebraAtomMatch{path: path, atom: atom, signature: signature, binding: binding, eventPort: eventPort, rolePorts: append([]lexicon.SemanticRolePort{}, binding.Target.RolePorts...), arguments: args, answerVariableID: answerVariableID, answerSort: answerSort, answerRole: answerRole, validation: validation}, status.OutcomeOK, "", ""
 }
 
 func targetValidationAuthorized(validations []language.TargetValidation, binding lexicon.SemanticBinding) bool {
@@ -591,6 +767,12 @@ func buildAlgebraMeaningCandidate(
 	sort.Slice(rolePorts, func(i, j int) bool { return rolePorts[i].PortID < rolePorts[j].PortID })
 	for _, rolePort := range rolePorts {
 		argument := args[rolePort.PortID]
+		if argument != nil && argument.Kind == algebra.TermVar && argument.ID == match.answerVariableID {
+			if match.answerRole == "" || rolePort.Role != match.answerRole || match.answerSort != string(algebra.TypeEntity) {
+				return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "INVALID_QUESTION_ANSWER_MAPPING", match.path + ".args." + rolePort.PortID, "typed answer variable does not match the selected Entity role mapping"
+			}
+			continue
+		}
 		if argument == nil || argument.Kind != algebra.TermRef {
 			return nil, emptyCoverage, noResiduals, status.OutcomeUnsupported, "ROLE_ARGUMENT_NOT_REFERENCE", match.path + ".args." + rolePort.PortID, "every mapped Entity role must be bound to an explicit reference"
 		}
@@ -684,7 +866,7 @@ func buildAlgebraMeaningCandidate(
 	if eventFrame != "" && !event.TemporalFrame.Valid() {
 		return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "INVALID_EVENT_TEMPORAL_FRAME", "input.request_context.referents." + eventReferenceID + ".temporal_frame", "event temporal frame is unsupported"
 	}
-	nodes := make([]meaning.Node, 0, len(participantNodes)+2)
+	nodes := make([]meaning.Node, 0, len(participantNodes)+3)
 	nodes = append(nodes, event)
 	referenceIDs := make([]string, 0, len(participantNodes))
 	for referenceID := range participantNodes {
@@ -710,8 +892,25 @@ func buildAlgebraMeaningCandidate(
 			EvidenceID: algebraReferenceEvidenceID(referenceID),
 		})
 	}
+	contentID := eventNodeID
+	discourseAct := meaning.ActStatement
+	var queryAnswer *semantic.QuestionAnswer
+	if match.answerVariableID != "" {
+		questionID := meaning.NodeID("dse_question_0")
+		question, questionErr := meaning.NewQuestion(questionID, eventNodeID)
+		if questionErr != nil {
+			return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "MEANING_BUILD_FAILED", "meaning.question", questionErr.Error()
+		}
+		nodes = append(nodes, question)
+		contentID = questionID
+		discourseAct = meaning.ActQuestion
+		queryAnswer = &semantic.QuestionAnswer{
+			VariableID: match.answerVariableID, Sort: match.answerSort,
+			Role: meaning.Role(match.answerRole), TargetNodeID: eventNodeID,
+		}
+	}
 	discourseID := meaning.NodeID("dse_discourse_0")
-	discourse, err := meaning.NewDiscourse(discourseID, meaning.ActStatement, []meaning.NodeID{eventNodeID})
+	discourse, err := meaning.NewDiscourse(discourseID, discourseAct, []meaning.NodeID{contentID})
 	if err != nil {
 		return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "MEANING_BUILD_FAILED", "meaning.discourse", err.Error()
 	}
@@ -726,9 +925,14 @@ func buildAlgebraMeaningCandidate(
 	if err := meaning.ValidateReferences(graph, meaningContext, meaning.DefaultBudget()); err != nil {
 		return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "MEANING_CONTEXT_VALIDATION_FAILED", "meaning.context", err.Error()
 	}
+	if queryAnswer != nil {
+		if err := queryAnswer.Validate(graph, engine.core); err != nil {
+			return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "INVALID_QUESTION_ANSWER", "meaning.question_answer", err.Error()
+		}
+	}
 	candidateID := algebraCandidateID(input, languagePackage.ID(), match.binding.SenseID.String())
 	candidate := &semantic.MeaningCandidate{
-		ID: candidateID, SemanticID: candidateID, Meaning: &graph,
+		ID: candidateID, SemanticID: candidateID, Meaning: &graph, QuestionAnswer: queryAnswer,
 		Contexts: []semantic.MeaningContext{{Meaning: graph, Context: meaningContext}}, Status: status.OutcomeOK,
 		Evidence: semantic.EvidenceTrace{AlternativeID: candidateID, Outcome: status.OutcomeOK, Records: []semantic.EvidenceRecord{}},
 	}
@@ -737,6 +941,11 @@ func buildAlgebraMeaningCandidate(
 		Path: match.path, Symbol: match.atom.Symbol, SenseID: match.binding.SenseID.String(), CoreRef: coreRef.String(),
 		EventPortID: match.eventPort, EventReferenceID: eventReferenceID, EventMeaningNode: eventNodeID,
 		RoleSubstitutions: roleSubstitutions,
+	}
+	if queryAnswer != nil {
+		coverage.AnswerVariableID = queryAnswer.VariableID
+		coverage.AnswerSort = queryAnswer.Sort
+		coverage.AnswerRole = string(queryAnswer.Role)
 	}
 	return candidate, coverage, noResiduals, status.OutcomeOK, "", "", ""
 }

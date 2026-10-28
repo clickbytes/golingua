@@ -1,0 +1,6 @@
+{
+  "source_sha": "56ddff966b6c1ac25d6f7c7db43e52ace0f21698",
+  "binary": "/tmp/golingua398-bridge-final",
+  "binary_sha256": "ae640778b2b13c60a40f03f998cd5f662752631305342bfeb968795fcc44ddb8",
+  "go_version": "go version go1.27.0 linux/amd64"
+}

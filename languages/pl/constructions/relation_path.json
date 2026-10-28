@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "language": "pl",
+  "provenance": {
+    "id": "golingua-pl-relation-path-plan-398",
+    "path": "languages/pl/constructions/relation_path.json",
+    "version": "1",
+    "license": "internal",
+    "author": "Codex by owner delegation"
+  },
+  "variants": [
+    {
+      "id": "construction:pl.relation_path.subject_first",
+      "parts": [
+        {"step":"connective", "literal":"Relacja od x do y zachodzi wtedy i tylko wtedy, gdy istnieje taki element z, że"},
+        {"step":"first_atom", "slot":"x", "literal":"x", "port":"first", "grammatical_function":"subject"},
+        {"step":"first_atom", "slot":"verb"},
+        {"step":"first_atom", "slot":"z", "literal":"z", "port":"second", "grammatical_function":"object"},
+        {"step":"connective", "literal":"i"},
+        {"step":"second_atom", "slot":"z", "literal":"z", "port":"first", "grammatical_function":"subject"},
+        {"step":"second_atom", "slot":"verb"},
+        {"step":"second_atom", "slot":"y", "literal":"y", "port":"second", "grammatical_function":"object"},
+        {"step":"connective", "literal":"."}
+      ]
+    },
+    {
+      "id": "construction:pl.relation_path.subject_second",
+      "parts": [
+        {"step":"connective", "literal":"Relacja od x do y zachodzi wtedy i tylko wtedy, gdy istnieje taki element z, że"},
+        {"step":"first_atom", "slot":"z", "literal":"z", "port":"second", "grammatical_function":"subject"},
+        {"step":"first_atom", "slot":"verb"},
+        {"step":"first_atom", "slot":"x", "literal":"x", "port":"first", "grammatical_function":"object"},
+        {"step":"connective", "literal":"i"},
+        {"step":"second_atom", "slot":"y", "literal":"y", "port":"second", "grammatical_function":"subject"},
+        {"step":"second_atom", "slot":"verb"},
+        {"step":"second_atom", "slot":"z", "literal":"z", "port":"first", "grammatical_function":"object"},
+        {"step":"connective", "literal":"."}
+      ]
+    }
+  ]
+}

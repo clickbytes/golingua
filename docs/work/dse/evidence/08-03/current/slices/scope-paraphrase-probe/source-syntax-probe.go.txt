@@ -1,0 +1,146 @@
+// Temporary diagnostic helper for DSE-08-03 source-stage evidence.
+// Copy this file to cmd/dseprobe/main.go in an isolated worktree and run:
+//
+//	go run ./cmd/dseprobe <runtime-config.json> en|pl
+//
+// It calls SourcePipeline.AnalyzeSyntax only; it does not compose or realize meaning.
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"os"
+
+	"github.com/clickbytes/golingua/internal/engine"
+	"github.com/clickbytes/golingua/internal/features"
+	"github.com/clickbytes/golingua/internal/language"
+	"github.com/clickbytes/golingua/internal/pack"
+	"github.com/clickbytes/golingua/internal/runtime"
+	"github.com/clickbytes/golingua/languages/en"
+	"github.com/clickbytes/golingua/languages/pl"
+)
+
+func options() runtime.Options {
+	return runtime.Options{
+		LanguageFactory: func(snapshot *pack.Pack) ([]language.Package, []language.LanguageProvider, error) {
+			pp, pprov, err := pl.NewSentenceProvider(snapshot)
+			if err != nil {
+				return nil, nil, err
+			}
+			ep, eprov, err := en.NewSentenceProvider(snapshot)
+			if err != nil {
+				return nil, nil, err
+			}
+			return []language.Package{pp, ep}, []language.LanguageProvider{pprov, eprov}, nil
+		},
+		StageFactory: func(snapshot *pack.Pack, registry *language.Registry) (runtime.StageAdapters, error) {
+			ps, err := pl.NewSentenceSource(snapshot)
+			if err != nil {
+				return runtime.StageAdapters{}, err
+			}
+			es, err := en.NewSentenceSource(snapshot)
+			if err != nil {
+				return runtime.StageAdapters{}, err
+			}
+			pt, err := pl.NewSentenceTarget(snapshot, registry)
+			if err != nil {
+				return runtime.StageAdapters{}, err
+			}
+			et, err := en.NewSentenceTarget(snapshot, registry)
+			if err != nil {
+				return runtime.StageAdapters{}, err
+			}
+			return runtime.StageAdapters{
+				Analyzers: map[features.LanguageID]engine.SourceAnalyzer{"pl": ps, "en": es},
+				Realizers: map[features.LanguageID]engine.TargetRealizer{"pl": pt, "en": et},
+			}, nil
+		},
+	}
+}
+
+type token struct {
+	Index    int    `json:"index"`
+	Surface  string `json:"surface"`
+	Outcome  string `json:"outcome"`
+	Start    int    `json:"start"`
+	End      int    `json:"end"`
+	Readings int    `json:"readings"`
+}
+type root struct {
+	ID       string   `json:"id"`
+	Category string   `json:"category"`
+	Start    int      `json:"start"`
+	End      int      `json:"end"`
+	Families []string `json:"families"`
+}
+type record struct {
+	Language       string  `json:"language"`
+	Text           string  `json:"text"`
+	ForestOutcome  string  `json:"forest_outcome"`
+	RootCount      int     `json:"root_count"`
+	Roots          []root  `json:"roots"`
+	UnmatchedCount int     `json:"unmatched_count"`
+	UnknownTokens  []token `json:"unknown_tokens"`
+	Diagnostics    []any   `json:"diagnostics"`
+}
+
+func main() {
+	if len(os.Args) != 3 {
+		panic("usage: probe runtime-config.json en|pl")
+	}
+	lang := os.Args[2]
+	eng, err := runtime.LoadEngineFile(os.Args[1], options())
+	if err != nil {
+		panic(err)
+	}
+	adapter, ok := eng.SourceAnalyzerFor(features.LanguageID(lang))
+	if !ok {
+		panic("source adapter missing")
+	}
+	pipe, ok := adapter.(*runtime.SourcePipeline)
+	if !ok {
+		panic("unexpected source adapter")
+	}
+	texts := []string{"The teacher sees the dog.", "There is at least one teacher who sees no dogs.", "For every teacher, there is no dog that teacher sees."}
+	if lang == "pl" {
+		texts = []string{"Nauczyciel widzi psa.", "Istnieje co najmniej jeden nauczyciel, który nie widzi żadnego psa.", "Dla każdego nauczyciela nie istnieje pies, którego ten nauczyciel widzi."}
+	}
+	for _, text := range texts {
+		syntax, err := pipe.AnalyzeSyntax(context.Background(), text)
+		if err != nil {
+			panic(err)
+		}
+		r := record{Language: lang, Text: text, ForestOutcome: string(syntax.Forest.Outcome), RootCount: len(syntax.Forest.Roots), Roots: []root{}, UnmatchedCount: len(syntax.Forest.Unmatched), UnknownTokens: []token{}, Diagnostics: []any{}}
+		byID := make(map[string]struct {
+			category   string
+			start, end int
+			families   []string
+		}, len(syntax.Forest.Nodes))
+		for _, n := range syntax.Forest.Nodes {
+			families := make([]string, 0, len(n.Alternatives))
+			for _, a := range n.Alternatives {
+				families = append(families, a.FamilyID.String())
+			}
+			byID[string(n.ID)] = struct {
+				category   string
+				start, end int
+				families   []string
+			}{string(n.Category), n.Span.Start, n.Span.End, families}
+		}
+		for _, id := range syntax.Forest.Roots {
+			n := byID[string(id)]
+			r.Roots = append(r.Roots, root{string(id), n.category, n.start, n.end, n.families})
+		}
+		for _, t := range syntax.Lattice.Tokens {
+			if string(t.Outcome) == "unknown" || string(t.Outcome) == "incomplete" {
+				r.UnknownTokens = append(r.UnknownTokens, token{t.Index, t.Token.Surface, string(t.Outcome), t.Token.Span.Start, t.Token.Span.End, len(t.Readings)})
+			}
+		}
+		for _, d := range syntax.Forest.Diagnostics {
+			r.Diagnostics = append(r.Diagnostics, map[string]any{"code": d.Code, "path": d.Path, "message": d.Message, "severity": d.Severity})
+		}
+		data, _ := json.Marshal(r)
+		fmt.Println(string(data))
+	}
+}

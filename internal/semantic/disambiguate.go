@@ -7,6 +7,7 @@ import (
 	"sort"
 
 	"github.com/clickbytes/golingua/internal/core"
+	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/status"
 	"github.com/clickbytes/golingua/internal/valency"
@@ -18,11 +19,22 @@ type MeaningCandidate struct {
 	ID                   string                       `json:"id"`
 	SemanticID           string                       `json:"semantic_id"`
 	Meaning              *meaning.Meaning             `json:"meaning,omitempty"`
+	QuestionAnswer       *QuestionAnswer              `json:"question_answer,omitempty"`
 	Contexts             []MeaningContext             `json:"request_contexts,omitempty"`
 	Status               status.OutcomeKind           `json:"status"`
 	Evidence             EvidenceTrace                `json:"evidence"`
 	SoftConstraintMisses []valency.SoftConstraintMiss `json:"soft_constraint_misses,omitempty"`
 	DerivationIDs        []string                     `json:"derivation_ids,omitempty"`
+}
+
+// QuestionAnswer carries the typed gap that an Algebra Ask binds. It is
+// request-scoped target information and deliberately does not turn the gap
+// into a concrete referent in Meaning v1.
+type QuestionAnswer struct {
+	VariableID   string         `json:"variable_id"`
+	Sort         string         `json:"sort"`
+	Role         meaning.Role   `json:"role"`
+	TargetNodeID meaning.NodeID `json:"target_node_id"`
 }
 
 // MeaningContext keeps each derivation's request context beside the exact
@@ -110,6 +122,14 @@ func Disambiguate(candidates []MeaningCandidate, inputOutcome status.OutcomeKind
 		}
 		if candidate.Status == status.OutcomeOK && candidate.Meaning == nil {
 			return Result{}, disambiguationError("MISSING_MEANING_GRAPH", fmt.Sprintf("candidates[%d].meaning", i), "an OK candidate requires a validated meaning graph")
+		}
+		if candidate.QuestionAnswer != nil {
+			if candidate.Meaning == nil {
+				return Result{}, disambiguationError("QUESTION_WITHOUT_MEANING", fmt.Sprintf("candidates[%d].question_answer", i), "a typed question answer requires its target Meaning graph")
+			}
+			if err := validateQuestionAnswer(*candidate.QuestionAnswer, *candidate.Meaning, ontology, fmt.Sprintf("candidates[%d].question_answer", i)); err != nil {
+				return Result{}, err
+			}
 		}
 		if candidate.Meaning != nil {
 			if err := meaning.ValidateMeaning(*candidate.Meaning, ontology, meaning.DefaultBudget()); err != nil {
@@ -231,6 +251,9 @@ func Disambiguate(candidates []MeaningCandidate, inputOutcome status.OutcomeKind
 		position := -1
 		for _, possible := range bySemantic[candidate.SemanticID] {
 			current := merged[possible]
+			if !reflect.DeepEqual(current.QuestionAnswer, candidate.QuestionAnswer) {
+				return Result{}, disambiguationError("QUESTION_SEMANTIC_ID_MISMATCH", "candidates.question_answer", "candidates with one SemanticID must carry the same typed question answer")
+			}
 			if current.Meaning == nil || candidate.Meaning == nil {
 				continue
 			}
@@ -281,6 +304,10 @@ func Disambiguate(candidates []MeaningCandidate, inputOutcome status.OutcomeKind
 func cloneMeaningCandidate(source MeaningCandidate) MeaningCandidate {
 	copy := source
 	copy.Meaning = cloneMeaning(source.Meaning)
+	if source.QuestionAnswer != nil {
+		questionAnswer := *source.QuestionAnswer
+		copy.QuestionAnswer = &questionAnswer
+	}
 	copy.Evidence = source.Evidence.Clone()
 	copy.Contexts = make([]MeaningContext, len(source.Contexts))
 	for index, context := range source.Contexts {
@@ -453,6 +480,9 @@ func mergeOutcome(left, right status.OutcomeKind) status.OutcomeKind {
 
 func candidateTextBytes(candidate MeaningCandidate) int {
 	count := len(candidate.ID) + len(candidate.SemanticID) + len(candidate.Evidence.AlternativeID)
+	if candidate.QuestionAnswer != nil {
+		count += len(candidate.QuestionAnswer.VariableID) + len(candidate.QuestionAnswer.Sort) + len(candidate.QuestionAnswer.Role) + len(candidate.QuestionAnswer.TargetNodeID)
+	}
 	for _, id := range candidate.DerivationIDs {
 		count += len(id)
 	}
@@ -466,6 +496,91 @@ func candidateTextBytes(candidate MeaningCandidate) int {
 	}
 	count += diagnosticTextBytes(candidate.Evidence.Diagnostics)
 	return count
+}
+
+// Validate checks that the answer variable targets the unique explicit
+// question, has the supported sort, and names one omitted CORE event role.
+func (answer QuestionAnswer) Validate(graph meaning.Meaning, ontology *core.ConceptGraph) error {
+	return validateQuestionAnswer(answer, graph, ontology, "question_answer")
+}
+
+func validateQuestionAnswer(answer QuestionAnswer, graph meaning.Meaning, ontology *core.ConceptGraph, path string) error {
+	if !boundedID(answer.VariableID, 256) || answer.Sort != "Entity" || !validEvidenceRole(string(answer.Role)) || !boundedID(string(answer.TargetNodeID), 256) {
+		return disambiguationError("INVALID_QUESTION_ANSWER", path, "question answer requires a bounded variable ID, Entity sort, semantic role, and target node ID")
+	}
+	var questionCount int
+	var questionNodeID meaning.NodeID
+	var questionDiscourseID meaning.NodeID
+	var questionDiscourseCount int
+	nodes := make(map[meaning.NodeID]meaning.Node, len(graph.Nodes))
+	for _, node := range graph.Nodes {
+		nodes[node.ID] = node
+		if node.Kind == meaning.KindQuestion {
+			questionCount++
+			questionNodeID = node.ID
+			if node.Target != answer.TargetNodeID {
+				return disambiguationError("QUESTION_TARGET_MISMATCH", path+".target_node_id", "the answer target must be the unique question's scoped Meaning node")
+			}
+		}
+		if node.Kind == meaning.KindDiscourse {
+			if node.Act != meaning.ActQuestion {
+				return disambiguationError("QUESTION_DISCOURSE_ACT_MISMATCH", path, "a typed question answer cannot be attached to statement or other discourse content")
+			}
+			questionDiscourseCount++
+			questionDiscourseID = node.ID
+		}
+	}
+	if questionCount != 1 || questionDiscourseCount != 1 || questionNodeID == "" || questionDiscourseID == "" {
+		return disambiguationError("QUESTION_TARGET_MISMATCH", path+".target_node_id", "typed answer requires exactly one question wrapper in the Meaning graph")
+	}
+	discourse := nodes[questionDiscourseID]
+	if len(graph.Roots) != 1 || graph.Roots[0] != questionDiscourseID || len(discourse.Content) != 1 || discourse.Content[0] != questionNodeID {
+		return disambiguationError("QUESTION_DISCOURSE_SHAPE_MISMATCH", path, "typed question answer requires one question discourse root around the unique question wrapper")
+	}
+	target, exists := nodes[answer.TargetNodeID]
+	if !exists || target.Kind != meaning.KindEvent {
+		return disambiguationError("QUESTION_TARGET_UNSUPPORTED", path+".target_node_id", "typed WH answers currently target one event node")
+	}
+	presentRoles := make(map[string]struct{}, len(target.Participants))
+	for _, participant := range target.Participants {
+		if participant.Role == answer.Role {
+			return disambiguationError("QUESTION_ROLE_NOT_GAPPED", path+".role", "the answer role must be omitted from the target event participants")
+		}
+		presentRoles[string(participant.Role)] = struct{}{}
+	}
+	conceptID, err := ids.ParseConceptID(string(target.Concept))
+	if err != nil {
+		return disambiguationError("QUESTION_TARGET_UNSUPPORTED", path+".target_node_id", "target event concept ID is invalid")
+	}
+	concept, exists := ontology.Lookup(conceptID)
+	if !exists || concept.Kind != core.KindEvent {
+		return disambiguationError("QUESTION_TARGET_UNSUPPORTED", path+".target_node_id", "target event concept is absent from CORE")
+	}
+	answerRoleDeclared := false
+	for _, role := range concept.RoleTypes {
+		if role.Name == string(answer.Role) {
+			answerRoleDeclared = true
+			// CORE treats an empty allowed-kinds list as unconstrained.
+			entityAllowed := len(role.AllowedKinds) == 0
+			for _, kind := range role.AllowedKinds {
+				if kind == core.KindEntity {
+					entityAllowed = true
+					break
+				}
+			}
+			if !entityAllowed {
+				return disambiguationError("QUESTION_ROLE_TYPE_UNSUPPORTED", path+".role", "answer role does not allow Entity targets in CORE")
+			}
+			continue
+		}
+		if _, present := presentRoles[role.Name]; !present {
+			return disambiguationError("QUESTION_ADDITIONAL_ROLE_GAP", path+".role", "every declared target event role other than the answer role must have a participant")
+		}
+	}
+	if answerRoleDeclared {
+		return nil
+	}
+	return disambiguationError("QUESTION_ROLE_UNDECLARED", path+".role", "answer role is not declared by the target event concept")
 }
 
 func meaningSize(graph meaning.Meaning, limit int) (items, textBytes int, exceeds bool) {

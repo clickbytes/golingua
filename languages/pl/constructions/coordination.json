@@ -1,0 +1,15 @@
+{
+  "id": "construction:pl.statement.and",
+  "language": "pl",
+  "connector": "i",
+  "lower_second_initial": true,
+  "final_period": ".",
+  "provenance": {
+    "id": "golingua-pl-coordination",
+    "path": "languages/pl/constructions/coordination.json",
+    "version": "1",
+    "license": "internal",
+    "author": "Codex by owner delegation"
+  },
+  "schema_version": 1
+}

@@ -8,8 +8,26 @@ import (
 	"github.com/clickbytes/golingua/internal/valency"
 )
 
-//go:embed constructions/transitive_personal.json constructions/transitive.json constructions/transitive_past.json constructions/transitive_negative.json constructions/oblique.json constructions/oblique_negative.json constructions/question.json constructions/wh_question.json constructions/identification.json constructions/identification_negative.json constructions/attribution.json constructions/attributed_seeing.json
+//go:embed constructions/transitive_personal.json constructions/transitive.json constructions/transitive_past.json constructions/transitive_negative.json constructions/oblique.json constructions/oblique_negative.json constructions/question.json constructions/wh_question.json constructions/identification.json constructions/identification_negative.json constructions/attribution.json constructions/attributed_seeing.json constructions/coordination.json constructions/scoped_clause.json
 var sentenceConstructions embed.FS
+
+// SentenceScopedClauses compiles the language-local bounded scope patterns.
+func SentenceScopedClauses() (construction.ScopedClausePlan, error) {
+	data, err := sentenceConstructions.ReadFile("constructions/scoped_clause.json")
+	if err != nil {
+		return construction.ScopedClausePlan{}, err
+	}
+	return construction.DecodeScopedClausePlan(data, "en")
+}
+
+// SentenceCoordination compiles the explicit language-local clause join plan.
+func SentenceCoordination() (construction.ClauseCoordinationPlan, error) {
+	data, err := sentenceConstructions.ReadFile("constructions/coordination.json")
+	if err != nil {
+		return construction.ClauseCoordinationPlan{}, err
+	}
+	return construction.DecodeClauseCoordinationPlan(data, "en")
+}
 
 // SentenceConstructions compiles the language-local templates against the
 // authored valency index. Only exact approved bindings in that index license

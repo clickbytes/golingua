@@ -437,6 +437,9 @@ func walkGoalConstraintTerm(term *algebra.Term, path string, depth int, inventor
 			}
 		}
 	case algebra.TermExists:
+		if term.TemporalFrame != "" {
+			return goalCheckUnsupported("TEMPORAL_EXISTS_UNSUPPORTED", path+".temporal_frame", "the positive structural goal profile does not interpret temporal frames on bound Event binders")
+		}
 		if term.Type == nil {
 			return goalCheckInvalid("MISSING_EXISTS_TYPE", path+".type", "existential binder type is missing")
 		}

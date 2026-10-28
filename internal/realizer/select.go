@@ -78,6 +78,7 @@ type TargetCandidate struct {
 	SemanticID           string
 	NodeID               meaning.NodeID
 	Kind                 meaning.NodeKind
+	QuestionAnswer       *semantic.QuestionAnswer `json:"question_answer,omitempty"`
 	Roles                []meaning.Role
 	Outcome              status.OutcomeKind
 	Diagnostics          []status.Diagnostic
@@ -252,6 +253,22 @@ func SelectTargets(input Input) (Result, error) {
 		if err := meaning.ValidateMeaning(*source.Meaning, input.Core, meaning.DefaultBudget()); err != nil {
 			return Result{}, selectionError(status.OutcomeInvalid, "INVALID_MEANING_GRAPH", fmt.Sprintf("candidates[%d].meaning", candidateIndex), err.Error())
 		}
+		if source.QuestionAnswer != nil {
+			if err := source.QuestionAnswer.Validate(*source.Meaning, input.Core); err != nil {
+				return Result{}, selectionError(status.OutcomeInvalid, "INVALID_QUESTION_ANSWER", fmt.Sprintf("candidates[%d].question_answer", candidateIndex), err.Error())
+			}
+			if err := validateQuestionDiscourse(*source.Meaning, *source.QuestionAnswer); err != nil {
+				return Result{}, selectionError(status.OutcomeUnsupported, "UNSUPPORTED_QUESTION_SCOPE", fmt.Sprintf("candidates[%d].question_answer", candidateIndex), err.Error())
+			}
+			if !hasExactQuestionOperator(*source.Meaning, input.Operators, *source.QuestionAnswer) {
+				return Result{}, selectionError(status.OutcomeUnsupported, "QUESTION_OPERATOR_MISMATCH", fmt.Sprintf("candidates[%d].question_answer", candidateIndex), "typed WH answer requires exactly one matching WH construction operator")
+			}
+		} else if hasQuestionAct(source.Meaning.Nodes) {
+			// Meaning v1 questions without an explicit typed answer are not
+			// silently treated as the one-gap WH route.
+			result.Outcome = mergeOutcome(result.Outcome, status.OutcomeUnsupported)
+			result.Diagnostics = appendDiagnostic(result.Diagnostics, "QUESTION_ANSWER_UNAVAILABLE", "Meaning question has no explicit typed answer role for this realization route", "meaning.discourse")
+		}
 		nodes := append([]meaning.Node(nil), source.Meaning.Nodes...)
 		sort.Slice(nodes, func(i, j int) bool { return nodes[i].ID < nodes[j].ID })
 		conceptCount := 0
@@ -291,13 +308,14 @@ func SelectTargets(input Input) (Result, error) {
 				}
 			}
 		}
-		unsupportedDiscourse := hasUnsupportedDiscourseAct(nodes)
+		unsupportedDiscourse := hasUnsupportedDiscourseAct(nodes, input.Operators) || source.QuestionAnswer == nil && hasQuestionAct(nodes)
 		for _, node := range nodes {
 			if node.Concept == "" {
 				continue
 			}
 			nodeKey := source.ID + "\x00" + string(node.ID)
 			nodeCounts[nodeKey] = 0
+			alternateQuestionGapRejected := false
 			if len(input.Operators) > budget.MaxExpansions-work {
 				result.Outcome = status.OutcomeResourceLimit
 				result.Diagnostics = appendDiagnostic(result.Diagnostics, "RESOURCE_LIMIT", "operator target lookup reached its configured bound", "budget.expansions")
@@ -491,11 +509,26 @@ func SelectTargets(input Input) (Result, error) {
 							if compiledVariant.Variant.DirectionPolicy != construction.DirectionBoth && compiledVariant.Variant.DirectionPolicy != construction.DirectionRealize {
 								continue
 							}
-							validatedVariant, err := construction.ValidateVariantForFrame(compiledVariant.Variant, family.Family, frame)
+							var validatedVariant construction.CompiledVariant
+							if source.QuestionAnswer != nil && node.ID == source.QuestionAnswer.TargetNodeID {
+								validatedVariant, err = construction.ValidateVariantForQuestionGap(compiledVariant.Variant, family.Family, frame, source.QuestionAnswer.Role)
+							} else {
+								validatedVariant, err = construction.ValidateVariantForFrame(compiledVariant.Variant, family.Family, frame)
+							}
 							if err != nil {
 								licensed = true
+								if source.QuestionAnswer != nil && node.ID == source.QuestionAnswer.TargetNodeID && isAlternateQuestionGapVariantError(err, compiledVariant.Variant, family.Family, frame, source.QuestionAnswer.Role) {
+									alternateQuestionGapRejected = true
+									continue
+								}
 								result.Outcome = mergeOutcome(result.Outcome, outcomeFromError(err))
 								result.Diagnostics = appendDiagnostic(result.Diagnostics, "TARGET_FRAME_VARIANT_MISMATCH", err.Error(), "constructions."+familyID.String())
+								continue
+							}
+							if source.QuestionAnswer != nil && node.ID == source.QuestionAnswer.TargetNodeID && !questionGapVariantHasOnlyOmittedRequiredRole(validatedVariant.Variant, family.Family, frame, source.QuestionAnswer.Role) {
+								licensed = true
+								result.Outcome = mergeOutcome(result.Outcome, status.OutcomeUnsupported)
+								result.Diagnostics = appendDiagnostic(result.Diagnostics, "QUESTION_GAP_ADDITIONAL_ROLE_OMITTED", "all required roles except the typed WH answer role must have explicit target slots", "constructions."+familyID.String())
 								continue
 							}
 							compiledVariant = validatedVariant
@@ -506,7 +539,18 @@ func SelectTargets(input Input) (Result, error) {
 								result.Diagnostics = appendDiagnostic(result.Diagnostics, "TARGET_OPERATOR_COMPOSITION_REJECTED", err.Error(), "meaning."+string(node.ID))
 								continue
 							}
-							validation, err := valency.ValidateFrame(frame, valency.ValidationRequest{Meaning: *source.Meaning, NodeID: node.ID, SemanticBinding: transfer, ConstructionBinding: binding}, input.Core)
+							validationFrame := frame
+							if source.QuestionAnswer != nil && node.ID == source.QuestionAnswer.TargetNodeID {
+								var gapOK bool
+								validationFrame, gapOK = frameForQuestionGapValidation(frame, source.QuestionAnswer.Role)
+								if !gapOK {
+									licensed = true
+									result.Outcome = mergeOutcome(result.Outcome, status.OutcomeUnsupported)
+									result.Diagnostics = appendDiagnostic(result.Diagnostics, "QUESTION_GAP_FRAME_ROLE_MISMATCH", "typed WH answer role is not required by the selected valency frame", "frame.arguments")
+									continue
+								}
+							}
+							validation, err := valency.ValidateFrame(validationFrame, valency.ValidationRequest{Meaning: *source.Meaning, NodeID: node.ID, SemanticBinding: transfer, ConstructionBinding: binding}, input.Core)
 							if err != nil {
 								licensed = true
 								result.Outcome = mergeOutcome(result.Outcome, outcomeFromError(err))
@@ -527,14 +571,22 @@ func SelectTargets(input Input) (Result, error) {
 								}
 							}
 							sort.Slice(roles, func(i, j int) bool { return roles[i] < roles[j] })
-							result.Candidates = append(result.Candidates, TargetCandidate{SourceCandidateID: source.ID, SemanticID: source.SemanticID, NodeID: node.ID, Kind: node.Kind, Roles: roles, Outcome: nodeOutcome, Diagnostics: append([]status.Diagnostic(nil), nodeDiagnostics...), Lexeme: lexeme, Sense: sense, TransferBinding: transfer, Frame: frame, ConstructionBinding: binding, Family: family, CompiledVariant: compiledVariant, ConstructionPlan: plan, SoftConstraintMisses: append([]valency.SoftConstraintMiss(nil), validation.SoftConstraintMisses...)})
+							var questionAnswer *semantic.QuestionAnswer
+							if source.QuestionAnswer != nil && source.QuestionAnswer.TargetNodeID == node.ID {
+								answerCopy := *source.QuestionAnswer
+								questionAnswer = &answerCopy
+							}
+							result.Candidates = append(result.Candidates, TargetCandidate{SourceCandidateID: source.ID, SemanticID: source.SemanticID, NodeID: node.ID, Kind: node.Kind, QuestionAnswer: questionAnswer, Roles: roles, Outcome: nodeOutcome, Diagnostics: append([]status.Diagnostic(nil), nodeDiagnostics...), Lexeme: lexeme, Sense: sense, TransferBinding: transfer, Frame: frame, ConstructionBinding: binding, Family: family, CompiledVariant: compiledVariant, ConstructionPlan: plan, SoftConstraintMisses: append([]valency.SoftConstraintMiss(nil), validation.SoftConstraintMisses...)})
 							nodeCounts[nodeKey]++
 						}
 					}
 				}
 			}
 			if nodeCounts[nodeKey] == 0 {
-				if !licensed {
+				if source.QuestionAnswer != nil && node.ID == source.QuestionAnswer.TargetNodeID && alternateQuestionGapRejected {
+					result.Outcome = mergeOutcome(result.Outcome, status.OutcomeUnsupported)
+					result.Diagnostics = appendDiagnostic(result.Diagnostics, "NO_MATCHING_QUESTION_GAP_VARIANT", "no licensed realization variant omits the explicitly queried semantic role", "constructions."+string(node.ID))
+				} else if !licensed {
 					result.Outcome = mergeOutcome(result.Outcome, status.OutcomeUnsupported)
 					result.Diagnostics = appendDiagnostic(result.Diagnostics, "NO_LICENSED_TARGET", "no approved target transfer and exact construction license was found", "meaning."+string(node.ID))
 				}
@@ -685,9 +737,16 @@ func meaningAncestors(nodes []meaning.Node, target meaning.NodeID) []meaning.Nod
 	return result
 }
 
-func hasUnsupportedDiscourseAct(nodes []meaning.Node) bool {
+func hasUnsupportedDiscourseAct(nodes []meaning.Node, operators []construction.Operator) bool {
 	for _, node := range nodes {
 		if node.Kind != meaning.KindDiscourse {
+			continue
+		}
+		if node.Act == meaning.ActQuestion && len(node.Content) == 1 {
+			question, found := meaningNodeIDInNodes(nodes, node.Content[0])
+			if !found || question.Kind != meaning.KindQuestion || !hasQuestionWrapperOperator(operators, question) {
+				return true
+			}
 			continue
 		}
 		if node.Act != meaning.ActStatement {
@@ -698,6 +757,224 @@ func hasUnsupportedDiscourseAct(nodes []meaning.Node) bool {
 		}
 	}
 	return false
+}
+
+func validateQuestionDiscourse(graph meaning.Meaning, answer semantic.QuestionAnswer) error {
+	questionCount, questionID := 0, meaning.NodeID("")
+	discourseCount := 0
+	discourseID := meaning.NodeID("")
+	predicateCount := 0
+	for _, node := range graph.Nodes {
+		if node.Kind == meaning.KindQuestion {
+			questionCount++
+			questionID = node.ID
+			if node.Target != answer.TargetNodeID {
+				return fmt.Errorf("question wrapper target does not match the typed answer target")
+			}
+		}
+		if node.Kind == meaning.KindEvent || node.Kind == meaning.KindState {
+			predicateCount++
+			if node.ID != answer.TargetNodeID || node.Kind != meaning.KindEvent {
+				return fmt.Errorf("WH realization supports only one queried event predicate")
+			}
+		}
+		if node.Kind == meaning.KindScope || node.Kind == meaning.KindModality || node.Kind == meaning.KindQuantifier {
+			return fmt.Errorf("WH realization does not support additional scoped operators")
+		}
+		if node.Kind == meaning.KindDiscourse && node.Act == meaning.ActQuestion {
+			discourseCount++
+			discourseID = node.ID
+		} else if node.Kind == meaning.KindDiscourse {
+			return fmt.Errorf("WH realization does not support additional discourse acts")
+		}
+	}
+	if questionCount != 1 || discourseCount != 1 || predicateCount != 1 || questionID == "" || discourseID == "" {
+		return fmt.Errorf("WH realization requires exactly one question wrapper and one question discourse node")
+	}
+	for _, node := range graph.Nodes {
+		if node.ID == discourseID && (len(node.Content) != 1 || node.Content[0] != questionID) {
+			return fmt.Errorf("question discourse must directly contain the unique question wrapper")
+		}
+	}
+	if len(graph.Roots) != 1 || graph.Roots[0] != discourseID {
+		return fmt.Errorf("WH realization requires the question discourse node to be the sole root")
+	}
+	return nil
+}
+
+func hasQuestionAct(nodes []meaning.Node) bool {
+	for _, node := range nodes {
+		if node.Kind == meaning.KindQuestion || node.Kind == meaning.KindDiscourse && node.Act == meaning.ActQuestion {
+			return true
+		}
+	}
+	return false
+}
+
+func questionGapVariantHasOnlyOmittedRequiredRole(variant construction.Variant, family construction.ConstructionFamily, frame valency.ValencyFrame, answerRole meaning.Role) bool {
+	roleSlots := make(map[string]string, len(family.SlotSpecs))
+	for _, slot := range family.SlotSpecs {
+		if slot.ArgumentBinding != nil {
+			roleSlots[string(slot.ArgumentBinding.SemanticRole)] = slot.ID
+		}
+	}
+	sequenceSlots := make(map[string]struct{}, len(variant.Sequence))
+	for _, token := range variant.Sequence {
+		if token.Kind == construction.TokenSlot {
+			sequenceSlots[token.SlotID] = struct{}{}
+		}
+	}
+	answerSlot, exists := roleSlots[string(answerRole)]
+	if !exists {
+		return false
+	}
+	if _, included := sequenceSlots[answerSlot]; included {
+		return false
+	}
+	for _, argument := range frame.Arguments {
+		if !argument.Required || string(argument.Role) == string(answerRole) {
+			continue
+		}
+		slotID, bound := roleSlots[string(argument.Role)]
+		if !bound {
+			return false
+		}
+		if _, included := sequenceSlots[slotID]; !included {
+			return false
+		}
+	}
+	return true
+}
+
+func isAlternateQuestionGapVariantError(err error, variant construction.Variant, family construction.ConstructionFamily, frame valency.ValencyFrame, answerRole meaning.Role) bool {
+	var resultError interface{ Result() status.Result }
+	if !errors.As(err, &resultError) {
+		return false
+	}
+	result := resultError.Result()
+	filledGap := false
+	for _, diagnostic := range result.Diagnostics {
+		if diagnostic.Code == "QUESTION_GAP_SLOT_FILLED" {
+			filledGap = true
+			break
+		}
+	}
+	if !filledGap {
+		return false
+	}
+	hasQuestionOperator, hasQuestionCapability := false, false
+	for _, operator := range family.Operators {
+		if operator == "question-wh" {
+			hasQuestionOperator = true
+			break
+		}
+	}
+	for _, capability := range family.Capabilities {
+		if capability == "question-wh" {
+			hasQuestionCapability = true
+			break
+		}
+	}
+	if !hasQuestionOperator || !hasQuestionCapability {
+		return false
+	}
+	roleSlots := make(map[string]construction.SlotSpec, len(family.SlotSpecs))
+	for _, slot := range family.SlotSpecs {
+		if slot.ArgumentBinding != nil {
+			roleSlots[string(slot.ArgumentBinding.SemanticRole)] = slot
+		}
+	}
+	answerSlot, exists := roleSlots[string(answerRole)]
+	if !exists || answerSlot.Category != construction.CategoryNP || answerSlot.Optionality != construction.SlotOptional || answerSlot.Cardinality.Minimum != 0 || answerSlot.Cardinality.Maximum != 1 {
+		return false
+	}
+	sequenceSlots := make(map[string]struct{}, len(variant.Sequence))
+	for _, token := range variant.Sequence {
+		if token.Kind == construction.TokenSlot {
+			sequenceSlots[token.SlotID] = struct{}{}
+		}
+	}
+	if _, answerIncluded := sequenceSlots[answerSlot.ID]; !answerIncluded {
+		return false
+	}
+	omittedRole := ""
+	for _, argument := range frame.Arguments {
+		if !argument.Required {
+			continue
+		}
+		slot, bound := roleSlots[string(argument.Role)]
+		if !bound {
+			return false
+		}
+		if _, included := sequenceSlots[slot.ID]; included {
+			continue
+		}
+		if omittedRole != "" || argument.Role == answerRole || slot.Category != construction.CategoryNP || slot.Optionality != construction.SlotOptional || slot.Cardinality.Minimum != 0 || slot.Cardinality.Maximum != 1 {
+			return false
+		}
+		omittedRole = string(argument.Role)
+	}
+	return omittedRole != ""
+}
+
+// frameForQuestionGapValidation adapts only the validation view of one frame:
+// the explicit typed answer supplies its otherwise-required event role. The
+// approved frame stored on the selected target candidate remains unchanged.
+func frameForQuestionGapValidation(frame valency.ValencyFrame, answerRole meaning.Role) (valency.ValencyFrame, bool) {
+	copy := frame
+	copy.Arguments = append([]valency.ArgumentSlot(nil), frame.Arguments...)
+	for index := range copy.Arguments {
+		if copy.Arguments[index].Role != answerRole {
+			continue
+		}
+		if !copy.Arguments[index].Required {
+			return valency.ValencyFrame{}, false
+		}
+		copy.Arguments[index].Required = false
+		return copy, true
+	}
+	return valency.ValencyFrame{}, false
+}
+
+func hasExactQuestionOperator(graph meaning.Meaning, operators []construction.Operator, answer semantic.QuestionAnswer) bool {
+	var question meaning.Node
+	questionCount := 0
+	for _, node := range graph.Nodes {
+		if node.Kind == meaning.KindQuestion {
+			question = node
+			questionCount++
+		}
+	}
+	if questionCount != 1 || question.Target != answer.TargetNodeID || len(operators) != 1 {
+		return false
+	}
+	return hasQuestionWrapperOperator(operators, question)
+}
+
+func hasQuestionWrapperOperator(operators []construction.Operator, question meaning.Node) bool {
+	if question.Kind != meaning.KindQuestion {
+		return false
+	}
+	matched := 0
+	for _, operator := range operators {
+		if operator.SemanticScope.ScopeNodeID != question.ID {
+			continue
+		}
+		if operator.Kind != construction.OperatorQuestion || operator.Value != construction.ValueWH || operator.SemanticScope.TargetNodeID != question.Target || !operatorMatchesWrapper(operator, question, question.Target) {
+			return false
+		}
+		matched++
+	}
+	return matched == 1
+}
+
+func meaningNodeIDInNodes(nodes []meaning.Node, id meaning.NodeID) (meaning.Node, bool) {
+	for _, node := range nodes {
+		if node.ID == id {
+			return node, true
+		}
+	}
+	return meaning.Node{}, false
 }
 
 func boundedDiagnostics(first, second []status.Diagnostic) []status.Diagnostic {

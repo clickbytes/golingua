@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "provenance": {
+    "id": "golingua-en-relation-path-plan-398",
+    "path": "languages/en/constructions/relation_path.json",
+    "version": "1",
+    "license": "internal",
+    "author": "Codex by owner delegation"
+  },
+  "variants": [
+    {
+      "id": "construction:en.relation_path.subject_first",
+      "parts": [
+        {"step":"connective", "literal":"The relation from x to y holds exactly when there is an entity z such that"},
+        {"step":"first_atom", "slot":"x", "literal":"x", "port":"first", "grammatical_function":"subject"},
+        {"step":"first_atom", "slot":"verb"},
+        {"step":"first_atom", "slot":"z", "literal":"z", "port":"second", "grammatical_function":"object"},
+        {"step":"connective", "literal":"and"},
+        {"step":"second_atom", "slot":"z", "literal":"z", "port":"first", "grammatical_function":"subject"},
+        {"step":"second_atom", "slot":"verb"},
+        {"step":"second_atom", "slot":"y", "literal":"y", "port":"second", "grammatical_function":"object"},
+        {"step":"connective", "literal":"."}
+      ]
+    },
+    {
+      "id": "construction:en.relation_path.subject_second",
+      "parts": [
+        {"step":"connective", "literal":"The relation from x to y holds exactly when there is an entity z such that"},
+        {"step":"first_atom", "slot":"z", "literal":"z", "port":"second", "grammatical_function":"subject"},
+        {"step":"first_atom", "slot":"verb"},
+        {"step":"first_atom", "slot":"x", "literal":"x", "port":"first", "grammatical_function":"object"},
+        {"step":"connective", "literal":"and"},
+        {"step":"second_atom", "slot":"y", "literal":"y", "port":"second", "grammatical_function":"subject"},
+        {"step":"second_atom", "slot":"verb"},
+        {"step":"second_atom", "slot":"z", "literal":"z", "port":"first", "grammatical_function":"object"},
+        {"step":"connective", "literal":"."}
+      ]
+    }
+  ]
+}

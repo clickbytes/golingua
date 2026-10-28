@@ -1,0 +1,412 @@
+{
+  "records": [
+    {
+      "flow_id": "subject-en-pl-en",
+      "stage": "source",
+      "original_independent_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-subject-independent-ir.json",
+      "analyzed_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/generated/subject-en-pl-en-02-compare-source-left-full.json",
+      "full_compare_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/subject-en-pl-en-source-right-full-with-left-signatures.json",
+      "projected_compare_left": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/subject-en-pl-en-source-left-projected.json",
+      "projected_compare_right": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/subject-en-pl-en-source-right-projected.json",
+      "signature_source": "exact signatures array copied from analyzed source candidate into compare-only independent copy",
+      "before_after_hashes": {
+        "expression": {
+          "before": "27eced95a3310bfff02da98e648c7318cff5f99c9c5f38e2d596383273f80c5b",
+          "after": "27eced95a3310bfff02da98e648c7318cff5f99c9c5f38e2d596383273f80c5b",
+          "unchanged": true
+        },
+        "references": {
+          "before": "783fd4cea792c29b8bd0c4b2173c6ca0a83272fcf87af58cd4f7796a37bbd2c8",
+          "after": "783fd4cea792c29b8bd0c4b2173c6ca0a83272fcf87af58cd4f7796a37bbd2c8",
+          "unchanged": true
+        },
+        "request_context": {
+          "before": "7f2ed8f370a7e18b974e114708d60a7b07a35abd2820f2e501b8a45ce62e500a",
+          "after": "7f2ed8f370a7e18b974e114708d60a7b07a35abd2820f2e501b8a45ce62e500a",
+          "unchanged": true
+        },
+        "signatures": {
+          "before": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c",
+          "after": "4965774063455da4dec418267b6a9a9296ed4a4f08d27c695851abf4f89ae841",
+          "added_for_declaration_resolution": true
+        }
+      },
+      "full_context_preserved": true,
+      "projection_removes_only_request_context": true
+    },
+    {
+      "flow_id": "subject-en-pl-en",
+      "stage": "target",
+      "original_independent_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-subject-independent-ir.json",
+      "analyzed_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/generated/subject-en-pl-en-05-compare-target-left-full.json",
+      "full_compare_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/subject-en-pl-en-target-right-full-with-left-signatures.json",
+      "projected_compare_left": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/subject-en-pl-en-target-left-projected.json",
+      "projected_compare_right": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/subject-en-pl-en-target-right-projected.json",
+      "signature_source": "exact signatures array copied from analyzed source candidate into compare-only independent copy",
+      "before_after_hashes": {
+        "expression": {
+          "before": "27eced95a3310bfff02da98e648c7318cff5f99c9c5f38e2d596383273f80c5b",
+          "after": "27eced95a3310bfff02da98e648c7318cff5f99c9c5f38e2d596383273f80c5b",
+          "unchanged": true
+        },
+        "references": {
+          "before": "783fd4cea792c29b8bd0c4b2173c6ca0a83272fcf87af58cd4f7796a37bbd2c8",
+          "after": "783fd4cea792c29b8bd0c4b2173c6ca0a83272fcf87af58cd4f7796a37bbd2c8",
+          "unchanged": true
+        },
+        "request_context": {
+          "before": "7f2ed8f370a7e18b974e114708d60a7b07a35abd2820f2e501b8a45ce62e500a",
+          "after": "7f2ed8f370a7e18b974e114708d60a7b07a35abd2820f2e501b8a45ce62e500a",
+          "unchanged": true
+        },
+        "signatures": {
+          "before": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c",
+          "after": "4965774063455da4dec418267b6a9a9296ed4a4f08d27c695851abf4f89ae841",
+          "added_for_declaration_resolution": true
+        }
+      },
+      "full_context_preserved": true,
+      "projection_removes_only_request_context": true
+    },
+    {
+      "flow_id": "subject-en-pl-en",
+      "stage": "final",
+      "original_independent_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-subject-independent-ir.json",
+      "analyzed_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/generated/subject-en-pl-en-08-compare-final-left-full.json",
+      "full_compare_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/subject-en-pl-en-final-right-full-with-left-signatures.json",
+      "projected_compare_left": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/subject-en-pl-en-final-left-projected.json",
+      "projected_compare_right": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/subject-en-pl-en-final-right-projected.json",
+      "signature_source": "exact signatures array copied from analyzed source candidate into compare-only independent copy",
+      "before_after_hashes": {
+        "expression": {
+          "before": "27eced95a3310bfff02da98e648c7318cff5f99c9c5f38e2d596383273f80c5b",
+          "after": "27eced95a3310bfff02da98e648c7318cff5f99c9c5f38e2d596383273f80c5b",
+          "unchanged": true
+        },
+        "references": {
+          "before": "783fd4cea792c29b8bd0c4b2173c6ca0a83272fcf87af58cd4f7796a37bbd2c8",
+          "after": "783fd4cea792c29b8bd0c4b2173c6ca0a83272fcf87af58cd4f7796a37bbd2c8",
+          "unchanged": true
+        },
+        "request_context": {
+          "before": "7f2ed8f370a7e18b974e114708d60a7b07a35abd2820f2e501b8a45ce62e500a",
+          "after": "7f2ed8f370a7e18b974e114708d60a7b07a35abd2820f2e501b8a45ce62e500a",
+          "unchanged": true
+        },
+        "signatures": {
+          "before": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c",
+          "after": "4965774063455da4dec418267b6a9a9296ed4a4f08d27c695851abf4f89ae841",
+          "added_for_declaration_resolution": true
+        }
+      },
+      "full_context_preserved": true,
+      "projection_removes_only_request_context": true
+    },
+    {
+      "flow_id": "subject-pl-en-pl",
+      "stage": "source",
+      "original_independent_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-subject-independent-ir.json",
+      "analyzed_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/generated/subject-pl-en-pl-02-compare-source-left-full.json",
+      "full_compare_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/subject-pl-en-pl-source-right-full-with-left-signatures.json",
+      "projected_compare_left": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/subject-pl-en-pl-source-left-projected.json",
+      "projected_compare_right": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/subject-pl-en-pl-source-right-projected.json",
+      "signature_source": "exact signatures array copied from analyzed source candidate into compare-only independent copy",
+      "before_after_hashes": {
+        "expression": {
+          "before": "27eced95a3310bfff02da98e648c7318cff5f99c9c5f38e2d596383273f80c5b",
+          "after": "27eced95a3310bfff02da98e648c7318cff5f99c9c5f38e2d596383273f80c5b",
+          "unchanged": true
+        },
+        "references": {
+          "before": "783fd4cea792c29b8bd0c4b2173c6ca0a83272fcf87af58cd4f7796a37bbd2c8",
+          "after": "783fd4cea792c29b8bd0c4b2173c6ca0a83272fcf87af58cd4f7796a37bbd2c8",
+          "unchanged": true
+        },
+        "request_context": {
+          "before": "7f2ed8f370a7e18b974e114708d60a7b07a35abd2820f2e501b8a45ce62e500a",
+          "after": "7f2ed8f370a7e18b974e114708d60a7b07a35abd2820f2e501b8a45ce62e500a",
+          "unchanged": true
+        },
+        "signatures": {
+          "before": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c",
+          "after": "4965774063455da4dec418267b6a9a9296ed4a4f08d27c695851abf4f89ae841",
+          "added_for_declaration_resolution": true
+        }
+      },
+      "full_context_preserved": true,
+      "projection_removes_only_request_context": true
+    },
+    {
+      "flow_id": "subject-pl-en-pl",
+      "stage": "target",
+      "original_independent_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-subject-independent-ir.json",
+      "analyzed_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/generated/subject-pl-en-pl-05-compare-target-left-full.json",
+      "full_compare_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/subject-pl-en-pl-target-right-full-with-left-signatures.json",
+      "projected_compare_left": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/subject-pl-en-pl-target-left-projected.json",
+      "projected_compare_right": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/subject-pl-en-pl-target-right-projected.json",
+      "signature_source": "exact signatures array copied from analyzed source candidate into compare-only independent copy",
+      "before_after_hashes": {
+        "expression": {
+          "before": "27eced95a3310bfff02da98e648c7318cff5f99c9c5f38e2d596383273f80c5b",
+          "after": "27eced95a3310bfff02da98e648c7318cff5f99c9c5f38e2d596383273f80c5b",
+          "unchanged": true
+        },
+        "references": {
+          "before": "783fd4cea792c29b8bd0c4b2173c6ca0a83272fcf87af58cd4f7796a37bbd2c8",
+          "after": "783fd4cea792c29b8bd0c4b2173c6ca0a83272fcf87af58cd4f7796a37bbd2c8",
+          "unchanged": true
+        },
+        "request_context": {
+          "before": "7f2ed8f370a7e18b974e114708d60a7b07a35abd2820f2e501b8a45ce62e500a",
+          "after": "7f2ed8f370a7e18b974e114708d60a7b07a35abd2820f2e501b8a45ce62e500a",
+          "unchanged": true
+        },
+        "signatures": {
+          "before": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c",
+          "after": "4965774063455da4dec418267b6a9a9296ed4a4f08d27c695851abf4f89ae841",
+          "added_for_declaration_resolution": true
+        }
+      },
+      "full_context_preserved": true,
+      "projection_removes_only_request_context": true
+    },
+    {
+      "flow_id": "subject-pl-en-pl",
+      "stage": "final",
+      "original_independent_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-subject-independent-ir.json",
+      "analyzed_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/generated/subject-pl-en-pl-08-compare-final-left-full.json",
+      "full_compare_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/subject-pl-en-pl-final-right-full-with-left-signatures.json",
+      "projected_compare_left": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/subject-pl-en-pl-final-left-projected.json",
+      "projected_compare_right": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/subject-pl-en-pl-final-right-projected.json",
+      "signature_source": "exact signatures array copied from analyzed source candidate into compare-only independent copy",
+      "before_after_hashes": {
+        "expression": {
+          "before": "27eced95a3310bfff02da98e648c7318cff5f99c9c5f38e2d596383273f80c5b",
+          "after": "27eced95a3310bfff02da98e648c7318cff5f99c9c5f38e2d596383273f80c5b",
+          "unchanged": true
+        },
+        "references": {
+          "before": "783fd4cea792c29b8bd0c4b2173c6ca0a83272fcf87af58cd4f7796a37bbd2c8",
+          "after": "783fd4cea792c29b8bd0c4b2173c6ca0a83272fcf87af58cd4f7796a37bbd2c8",
+          "unchanged": true
+        },
+        "request_context": {
+          "before": "7f2ed8f370a7e18b974e114708d60a7b07a35abd2820f2e501b8a45ce62e500a",
+          "after": "7f2ed8f370a7e18b974e114708d60a7b07a35abd2820f2e501b8a45ce62e500a",
+          "unchanged": true
+        },
+        "signatures": {
+          "before": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c",
+          "after": "4965774063455da4dec418267b6a9a9296ed4a4f08d27c695851abf4f89ae841",
+          "added_for_declaration_resolution": true
+        }
+      },
+      "full_context_preserved": true,
+      "projection_removes_only_request_context": true
+    },
+    {
+      "flow_id": "object-en-pl-en",
+      "stage": "source",
+      "original_independent_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-object-independent-ir.json",
+      "analyzed_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/generated/object-en-pl-en-02-compare-source-left-full.json",
+      "full_compare_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/object-en-pl-en-source-right-full-with-left-signatures.json",
+      "projected_compare_left": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/object-en-pl-en-source-left-projected.json",
+      "projected_compare_right": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/object-en-pl-en-source-right-projected.json",
+      "signature_source": "exact signatures array copied from analyzed source candidate into compare-only independent copy",
+      "before_after_hashes": {
+        "expression": {
+          "before": "9d82e61e03142ab509c126538702a94dfc5a8f447731bedd24614fa50a1fcc01",
+          "after": "9d82e61e03142ab509c126538702a94dfc5a8f447731bedd24614fa50a1fcc01",
+          "unchanged": true
+        },
+        "references": {
+          "before": "ccccbf0d6cdff9d6cd0d496ca2997c6be1dc46a2614045d77bd67767721e6efa",
+          "after": "ccccbf0d6cdff9d6cd0d496ca2997c6be1dc46a2614045d77bd67767721e6efa",
+          "unchanged": true
+        },
+        "request_context": {
+          "before": "90446a169734c9f9a9a2110a6511f7c335c56055641981b84e27810eb466dd7a",
+          "after": "90446a169734c9f9a9a2110a6511f7c335c56055641981b84e27810eb466dd7a",
+          "unchanged": true
+        },
+        "signatures": {
+          "before": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c",
+          "after": "4965774063455da4dec418267b6a9a9296ed4a4f08d27c695851abf4f89ae841",
+          "added_for_declaration_resolution": true
+        }
+      },
+      "full_context_preserved": true,
+      "projection_removes_only_request_context": true
+    },
+    {
+      "flow_id": "object-en-pl-en",
+      "stage": "target",
+      "original_independent_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-object-independent-ir.json",
+      "analyzed_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/generated/object-en-pl-en-05-compare-target-left-full.json",
+      "full_compare_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/object-en-pl-en-target-right-full-with-left-signatures.json",
+      "projected_compare_left": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/object-en-pl-en-target-left-projected.json",
+      "projected_compare_right": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/object-en-pl-en-target-right-projected.json",
+      "signature_source": "exact signatures array copied from analyzed source candidate into compare-only independent copy",
+      "before_after_hashes": {
+        "expression": {
+          "before": "9d82e61e03142ab509c126538702a94dfc5a8f447731bedd24614fa50a1fcc01",
+          "after": "9d82e61e03142ab509c126538702a94dfc5a8f447731bedd24614fa50a1fcc01",
+          "unchanged": true
+        },
+        "references": {
+          "before": "ccccbf0d6cdff9d6cd0d496ca2997c6be1dc46a2614045d77bd67767721e6efa",
+          "after": "ccccbf0d6cdff9d6cd0d496ca2997c6be1dc46a2614045d77bd67767721e6efa",
+          "unchanged": true
+        },
+        "request_context": {
+          "before": "90446a169734c9f9a9a2110a6511f7c335c56055641981b84e27810eb466dd7a",
+          "after": "90446a169734c9f9a9a2110a6511f7c335c56055641981b84e27810eb466dd7a",
+          "unchanged": true
+        },
+        "signatures": {
+          "before": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c",
+          "after": "4965774063455da4dec418267b6a9a9296ed4a4f08d27c695851abf4f89ae841",
+          "added_for_declaration_resolution": true
+        }
+      },
+      "full_context_preserved": true,
+      "projection_removes_only_request_context": true
+    },
+    {
+      "flow_id": "object-en-pl-en",
+      "stage": "final",
+      "original_independent_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-object-independent-ir.json",
+      "analyzed_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/generated/object-en-pl-en-08-compare-final-left-full.json",
+      "full_compare_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/object-en-pl-en-final-right-full-with-left-signatures.json",
+      "projected_compare_left": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/object-en-pl-en-final-left-projected.json",
+      "projected_compare_right": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/object-en-pl-en-final-right-projected.json",
+      "signature_source": "exact signatures array copied from analyzed source candidate into compare-only independent copy",
+      "before_after_hashes": {
+        "expression": {
+          "before": "9d82e61e03142ab509c126538702a94dfc5a8f447731bedd24614fa50a1fcc01",
+          "after": "9d82e61e03142ab509c126538702a94dfc5a8f447731bedd24614fa50a1fcc01",
+          "unchanged": true
+        },
+        "references": {
+          "before": "ccccbf0d6cdff9d6cd0d496ca2997c6be1dc46a2614045d77bd67767721e6efa",
+          "after": "ccccbf0d6cdff9d6cd0d496ca2997c6be1dc46a2614045d77bd67767721e6efa",
+          "unchanged": true
+        },
+        "request_context": {
+          "before": "90446a169734c9f9a9a2110a6511f7c335c56055641981b84e27810eb466dd7a",
+          "after": "90446a169734c9f9a9a2110a6511f7c335c56055641981b84e27810eb466dd7a",
+          "unchanged": true
+        },
+        "signatures": {
+          "before": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c",
+          "after": "4965774063455da4dec418267b6a9a9296ed4a4f08d27c695851abf4f89ae841",
+          "added_for_declaration_resolution": true
+        }
+      },
+      "full_context_preserved": true,
+      "projection_removes_only_request_context": true
+    },
+    {
+      "flow_id": "object-pl-en-pl",
+      "stage": "source",
+      "original_independent_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-object-independent-ir.json",
+      "analyzed_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/generated/object-pl-en-pl-02-compare-source-left-full.json",
+      "full_compare_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/object-pl-en-pl-source-right-full-with-left-signatures.json",
+      "projected_compare_left": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/object-pl-en-pl-source-left-projected.json",
+      "projected_compare_right": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/object-pl-en-pl-source-right-projected.json",
+      "signature_source": "exact signatures array copied from analyzed source candidate into compare-only independent copy",
+      "before_after_hashes": {
+        "expression": {
+          "before": "9d82e61e03142ab509c126538702a94dfc5a8f447731bedd24614fa50a1fcc01",
+          "after": "9d82e61e03142ab509c126538702a94dfc5a8f447731bedd24614fa50a1fcc01",
+          "unchanged": true
+        },
+        "references": {
+          "before": "ccccbf0d6cdff9d6cd0d496ca2997c6be1dc46a2614045d77bd67767721e6efa",
+          "after": "ccccbf0d6cdff9d6cd0d496ca2997c6be1dc46a2614045d77bd67767721e6efa",
+          "unchanged": true
+        },
+        "request_context": {
+          "before": "90446a169734c9f9a9a2110a6511f7c335c56055641981b84e27810eb466dd7a",
+          "after": "90446a169734c9f9a9a2110a6511f7c335c56055641981b84e27810eb466dd7a",
+          "unchanged": true
+        },
+        "signatures": {
+          "before": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c",
+          "after": "4965774063455da4dec418267b6a9a9296ed4a4f08d27c695851abf4f89ae841",
+          "added_for_declaration_resolution": true
+        }
+      },
+      "full_context_preserved": true,
+      "projection_removes_only_request_context": true
+    },
+    {
+      "flow_id": "object-pl-en-pl",
+      "stage": "target",
+      "original_independent_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-object-independent-ir.json",
+      "analyzed_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/generated/object-pl-en-pl-05-compare-target-left-full.json",
+      "full_compare_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/object-pl-en-pl-target-right-full-with-left-signatures.json",
+      "projected_compare_left": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/object-pl-en-pl-target-left-projected.json",
+      "projected_compare_right": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/object-pl-en-pl-target-right-projected.json",
+      "signature_source": "exact signatures array copied from analyzed source candidate into compare-only independent copy",
+      "before_after_hashes": {
+        "expression": {
+          "before": "9d82e61e03142ab509c126538702a94dfc5a8f447731bedd24614fa50a1fcc01",
+          "after": "9d82e61e03142ab509c126538702a94dfc5a8f447731bedd24614fa50a1fcc01",
+          "unchanged": true
+        },
+        "references": {
+          "before": "ccccbf0d6cdff9d6cd0d496ca2997c6be1dc46a2614045d77bd67767721e6efa",
+          "after": "ccccbf0d6cdff9d6cd0d496ca2997c6be1dc46a2614045d77bd67767721e6efa",
+          "unchanged": true
+        },
+        "request_context": {
+          "before": "90446a169734c9f9a9a2110a6511f7c335c56055641981b84e27810eb466dd7a",
+          "after": "90446a169734c9f9a9a2110a6511f7c335c56055641981b84e27810eb466dd7a",
+          "unchanged": true
+        },
+        "signatures": {
+          "before": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c",
+          "after": "4965774063455da4dec418267b6a9a9296ed4a4f08d27c695851abf4f89ae841",
+          "added_for_declaration_resolution": true
+        }
+      },
+      "full_context_preserved": true,
+      "projection_removes_only_request_context": true
+    },
+    {
+      "flow_id": "object-pl-en-pl",
+      "stage": "final",
+      "original_independent_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/wh-object-independent-ir.json",
+      "analyzed_ir": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/generated/object-pl-en-pl-08-compare-final-left-full.json",
+      "full_compare_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/object-pl-en-pl-final-right-full-with-left-signatures.json",
+      "projected_compare_left": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/object-pl-en-pl-final-left-projected.json",
+      "projected_compare_right": "docs/work/dse/evidence/08-03/current/roundtrip-wh/inputs/compare-corrected/object-pl-en-pl-final-right-projected.json",
+      "signature_source": "exact signatures array copied from analyzed source candidate into compare-only independent copy",
+      "before_after_hashes": {
+        "expression": {
+          "before": "9d82e61e03142ab509c126538702a94dfc5a8f447731bedd24614fa50a1fcc01",
+          "after": "9d82e61e03142ab509c126538702a94dfc5a8f447731bedd24614fa50a1fcc01",
+          "unchanged": true
+        },
+        "references": {
+          "before": "ccccbf0d6cdff9d6cd0d496ca2997c6be1dc46a2614045d77bd67767721e6efa",
+          "after": "ccccbf0d6cdff9d6cd0d496ca2997c6be1dc46a2614045d77bd67767721e6efa",
+          "unchanged": true
+        },
+        "request_context": {
+          "before": "90446a169734c9f9a9a2110a6511f7c335c56055641981b84e27810eb466dd7a",
+          "after": "90446a169734c9f9a9a2110a6511f7c335c56055641981b84e27810eb466dd7a",
+          "unchanged": true
+        },
+        "signatures": {
+          "before": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c",
+          "after": "4965774063455da4dec418267b6a9a9296ed4a4f08d27c695851abf4f89ae841",
+          "added_for_declaration_resolution": true
+        }
+      },
+      "full_context_preserved": true,
+      "projection_removes_only_request_context": true
+    }
+  ]
+}

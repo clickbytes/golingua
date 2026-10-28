@@ -45,7 +45,10 @@ type CompositionEvidenceBuilder interface {
 // SourcePipeline adapts the existing bounded source stages to engine.SourceAnalyzer.
 // Language-specific phrase analysis remains an explicit compiled dependency.
 type SourcePipeline struct {
-	Language         features.LanguageID
+	Language features.LanguageID
+	// ClauseConnector is one exact, language-local source terminal that may
+	// join two bounded declarative clauses in DSE syntax analysis.
+	ClauseConnector  string
 	Tokenize         text.TokenizeOptions
 	AllowFinalPeriod bool
 	Morphology       *morph.InverseIndex
@@ -60,6 +63,14 @@ type SourcePipeline struct {
 	Constructions    *construction.Registry
 	SemanticBudget   semantic.Budget
 	EvidenceBuilder  CompositionEvidenceBuilder
+	// ScopedSourcePlan and ScopedReadingPolicy are explicit language-local
+	// dependencies for the bounded scoped clause source path.
+	ScopedSourcePlan    construction.ScopedClausePlan
+	ScopedReadingPolicy ScopedSourceReadingPolicy
+	// RelationPathPlan and RelationSourceReadingPolicy are explicit compiled
+	// dependencies for the bounded anonymous relation-path source route.
+	RelationPathPlan            engine.RelationPathPlan
+	RelationSourceReadingPolicy RelationSourceReadingPolicy
 	// AllowedUnlexicalizedTerminals names exact function words whose evidence
 	// comes from a matched construction terminal rather than a lexical reading.
 	AllowedUnlexicalizedTerminals map[string]bool

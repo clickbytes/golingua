@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"UNKNOWN_FIELD","message":"field is not allowed in this object variant","path":"expression.body.body.body.operands[1].temporal_frame","severity":"error"}]}

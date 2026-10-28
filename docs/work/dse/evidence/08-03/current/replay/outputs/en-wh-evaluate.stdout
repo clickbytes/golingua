@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"UNKNOWN_SYMBOL","message":"symbol has no declared signature","path":"expression.body.symbol","severity":"error"}]}

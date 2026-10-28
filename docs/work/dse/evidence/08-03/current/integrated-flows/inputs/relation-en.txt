@@ -1,0 +1,1 @@
+The relation from x to y holds exactly when there is an entity z such that x sees z and z sees y.

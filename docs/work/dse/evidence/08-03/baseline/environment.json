@@ -1,0 +1,14 @@
+{
+  "observed_at_utc": "2026-10-27T11:05:01Z",
+  "base_sha": "dab9d23b48fe429ca4221c5efdf8e081bc6405b3",
+  "branch": "dse/08-03-pl-en-vertical-slices",
+  "binary_source_sha": "dab9d23b48fe429ca4221c5efdf8e081bc6405b3",
+  "binary_path_at_run": "/tmp/golingua-dse/08-03-baseline/golingua",
+  "binary_sha256": "2890fe56ea260a43213b6e2e65de0056f00d53213f5d85a2099fa51a4cbdd5b5",
+  "build_command": "go build -o /tmp/golingua-dse/08-03-baseline/golingua ./cmd/golingua",
+  "version": "0.1.0-alpha.1",
+  "workspace": "/home/ppotepa/git/work/golingua",
+  "scope": "baseline diagnostic probes only; not acceptance of any #398 slice",
+  "go_test": "NOT RUN",
+  "owner_language_acceptance": "NOT EVALUATED"
+}
