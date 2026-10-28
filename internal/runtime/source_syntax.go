@@ -7,6 +7,7 @@ import (
 	"github.com/clickbytes/golingua/internal/analyzer"
 	"github.com/clickbytes/golingua/internal/parser"
 	"github.com/clickbytes/golingua/internal/status"
+	"github.com/clickbytes/golingua/internal/text"
 )
 
 // SourceSyntax is the output of lexical analysis and bounded phrase parsing.
@@ -18,7 +19,23 @@ type SourceSyntax struct {
 	ParseContext        parser.ParseContext
 	Forest              parser.Forest
 	CompositionEvidence CompositionEvidence
+	Coordination        *SourceCoordination
 	OriginalSourceBytes int
+}
+
+// SourceCoordination keeps the two independently parsed source clauses and
+// their evidence in original-input token coordinates.
+type SourceCoordination struct {
+	Connector string               `json:"connector"`
+	Span      text.Span            `json:"span"`
+	Clauses   []SourceClauseSyntax `json:"clauses"`
+}
+
+type SourceClauseSyntax struct {
+	TokenStart int                 `json:"token_start"`
+	TokenEnd   int                 `json:"token_end"`
+	Forest     parser.Forest       `json:"forest"`
+	Evidence   CompositionEvidence `json:"composition_evidence"`
 }
 
 // AnalyzeSyntax runs the shared lexical, phrase, parser, and evidence stages
@@ -48,6 +65,9 @@ func (pipeline *SourcePipeline) AnalyzeSyntax(ctx context.Context, input string)
 		return SourceSyntax{}, err
 	}
 	attestConstructionTerminals(&lattice, pipeline.AllowedUnlexicalizedTerminals)
+	if pipeline.ClauseConnector != "" {
+		attestConstructionTerminals(&lattice, map[string]bool{pipeline.ClauseConnector: true})
+	}
 	if err := ctx.Err(); err != nil {
 		return SourceSyntax{}, pipelineError(status.OutcomeResourceLimit, "SOURCE_ANALYSIS_CANCELED", "context", "source analysis was canceled or timed out")
 	}
@@ -79,8 +99,108 @@ func (pipeline *SourcePipeline) AnalyzeSyntax(ctx context.Context, input string)
 			return SourceSyntax{}, pipelineError(status.OutcomeResourceLimit, "SOURCE_ANALYSIS_CANCELED", "context", "source analysis was canceled or timed out")
 		}
 	}
+	var coordination *SourceCoordination
+	if pipeline.ClauseConnector != "" {
+		coordination, err = pipeline.analyzeTwoClauseCoordination(ctx, lattice, phraseCandidates, parseContext, parseBudget)
+		if err != nil {
+			return SourceSyntax{}, err
+		}
+	}
 	return SourceSyntax{
 		Lattice: lattice, PhraseCandidates: phraseCandidates, ParseContext: parseContext,
-		Forest: forest, CompositionEvidence: compositionEvidence, OriginalSourceBytes: len(input),
+		Forest: forest, CompositionEvidence: compositionEvidence, Coordination: coordination, OriginalSourceBytes: len(input),
 	}, nil
+}
+
+func (pipeline *SourcePipeline) analyzeTwoClauseCoordination(ctx context.Context, lattice analyzer.LexicalLattice, candidates []parser.PhraseCandidate, parseContext parser.ParseContext, budget parser.Budget) (*SourceCoordination, error) {
+	connectorIndexes := make([]int, 0, 2)
+	for index, token := range lattice.Tokens {
+		if token.Token.Folded == pipeline.ClauseConnector {
+			connectorIndexes = append(connectorIndexes, index)
+		}
+	}
+	if len(connectorIndexes) != 1 {
+		return nil, nil
+	}
+	connectorIndex := connectorIndexes[0]
+	leftEnd := connectorIndex
+	if connectorIndex > 0 && lattice.Tokens[connectorIndex-1].Token.Kind == text.TokenPunctuation && lattice.Tokens[connectorIndex-1].Token.Normalized == "," {
+		leftEnd--
+	}
+	rightStart := connectorIndex + 1
+	if leftEnd == 0 || rightStart >= len(lattice.Tokens) {
+		return nil, nil
+	}
+	left, err := parser.ParseClauseRange(lattice, candidates, parseContext, pipeline.ParserIndex, budget, 0, leftEnd, true)
+	if err != nil {
+		return nil, err
+	}
+	right, err := parser.ParseClauseRange(lattice, candidates, parseContext, pipeline.ParserIndex, budget, rightStart, len(lattice.Tokens), false)
+	if err != nil {
+		return nil, err
+	}
+	if !oneCompleteDeclarativeRoot(left) || !oneCompleteDeclarativeRoot(right) {
+		return nil, nil
+	}
+	leftEvidence, err := pipeline.clauseEvidence(ctx, lattice, candidates, parseContext, left)
+	if err != nil {
+		return nil, err
+	}
+	rightEvidence, err := pipeline.clauseEvidence(ctx, lattice, candidates, parseContext, right)
+	if err != nil {
+		return nil, err
+	}
+	if !leftEvidence.OperatorCoverageComplete || !rightEvidence.OperatorCoverageComplete || len(leftEvidence.Operators) != 0 || len(rightEvidence.Operators) != 0 {
+		return nil, nil
+	}
+	return &SourceCoordination{Connector: pipeline.ClauseConnector, Span: lattice.Tokens[connectorIndex].Token.Span, Clauses: []SourceClauseSyntax{
+		{TokenStart: 0, TokenEnd: leftEnd, Forest: left, Evidence: leftEvidence},
+		{TokenStart: rightStart, TokenEnd: len(lattice.Tokens), Forest: right, Evidence: rightEvidence},
+	}}, nil
+}
+
+func (pipeline *SourcePipeline) clauseEvidence(ctx context.Context, lattice analyzer.LexicalLattice, candidates []parser.PhraseCandidate, parseContext parser.ParseContext, forest parser.Forest) (CompositionEvidence, error) {
+	if pipeline.EvidenceBuilder == nil || len(forest.Roots) != 1 {
+		return CompositionEvidence{}, nil
+	}
+	rootStart, rootEnd := -1, -1
+	for _, node := range forest.Nodes {
+		if node.ID == forest.Roots[0] {
+			rootStart, rootEnd = node.Start, node.End
+			break
+		}
+	}
+	if rootStart < 0 || rootEnd <= rootStart {
+		return CompositionEvidence{}, nil
+	}
+	clauseCandidates := make([]parser.PhraseCandidate, 0, len(candidates))
+	for _, candidate := range candidates {
+		if candidate.TokenStart >= rootStart && candidate.TokenEnd <= rootEnd {
+			clauseCandidates = append(clauseCandidates, candidate)
+		}
+	}
+	return pipeline.EvidenceBuilder.Build(ctx, lattice, clauseCandidates, forest)
+}
+
+func oneCompleteDeclarativeRoot(forest parser.Forest) bool {
+	if forest.Outcome != status.OutcomeOK || len(forest.Roots) != 1 || len(forest.Unmatched) != 0 {
+		return false
+	}
+	rootID := forest.Roots[0]
+	for _, node := range forest.Nodes {
+		if node.ID != rootID || string(node.Category) != "clause" || len(node.Alternatives) != 1 {
+			continue
+		}
+		alternative := node.Alternatives[0]
+		if len(alternative.Unresolved) != 0 || alternative.VariantID == "" {
+			return false
+		}
+		for _, slot := range alternative.Slots {
+			if slot.WHGap != nil {
+				return false
+			}
+		}
+		return true
+	}
+	return false
 }

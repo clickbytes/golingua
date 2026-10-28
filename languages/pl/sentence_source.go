@@ -78,8 +78,8 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 		caseValues[features.FeatureValueID(value)] = value
 	}
 	return &runtime.SourcePipeline{
-		Language: "pl", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}},
-		AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "nie": true, "to": true, "ten": true, "jest": true, "kto": true, "kogo": true},
+		Language: "pl", ClauseConnector: "i", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}},
+		AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "nie": true, "to": true, "ten": true, "jest": true, "kto": true, "kogo": true, "i": true},
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,

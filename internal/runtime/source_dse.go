@@ -34,6 +34,9 @@ func (pipeline *SourcePipeline) AnalyzeDSE(ctx context.Context, source string, o
 	if err != nil {
 		return DSEAnalysis{}, err
 	}
+	if syntax.Coordination != nil {
+		return pipeline.analyzeDSECoordination(ctx, syntax, options)
+	}
 	composition, err := semantic.ComposeDSE(semantic.DSEInput{
 		Context:                  ctx,
 		Forest:                   syntax.Forest,

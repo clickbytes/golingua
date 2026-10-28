@@ -45,7 +45,10 @@ type CompositionEvidenceBuilder interface {
 // SourcePipeline adapts the existing bounded source stages to engine.SourceAnalyzer.
 // Language-specific phrase analysis remains an explicit compiled dependency.
 type SourcePipeline struct {
-	Language         features.LanguageID
+	Language features.LanguageID
+	// ClauseConnector is one exact, language-local source terminal that may
+	// join two bounded declarative clauses in DSE syntax analysis.
+	ClauseConnector  string
 	Tokenize         text.TokenizeOptions
 	AllowFinalPeriod bool
 	Morphology       *morph.InverseIndex

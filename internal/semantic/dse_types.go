@@ -64,6 +64,10 @@ type DSEInput struct {
 	ReferenceContext         language.SourceReferenceContext
 	Language                 features.LanguageID
 	Budget                   DSEBudget
+	// RequireCandidateHeadReference prevents an Event port mapping from being
+	// reused across coordinated clauses. The source predicate candidate must
+	// carry its own corroborated request-context identity.
+	RequireCandidateHeadReference bool
 }
 
 // DSESourceRecord is provenance carried beside, never substituted for, the
@@ -114,6 +118,7 @@ type DSECandidate struct {
 	Status               status.OutcomeKind         `json:"status"`
 	Source               DSESourceRecord            `json:"source"`
 	HeadEventReferenceID string                     `json:"head_event_reference_id,omitempty"`
+	ClauseSources        []DSEClauseSource          `json:"clause_sources,omitempty"`
 	RoleSources          []DSERoleSource            `json:"role_sources"`
 	CanonicalDocument    json.RawMessage            `json:"canonical_document,omitempty"`
 	Checked              *algebra.CheckedExpression `json:"checked,omitempty"`
@@ -122,6 +127,14 @@ type DSECandidate struct {
 	ConditionCoverage    []DSEConditionCoverage     `json:"condition_coverage"`
 	Residuals            []DSEResidual              `json:"residuals"`
 	Scope                string                     `json:"scope"`
+}
+
+// DSEClauseSource preserves the independently analyzed source provenance for
+// one clause of a composed source coordination.
+type DSEClauseSource struct {
+	Source               DSESourceRecord `json:"source"`
+	HeadEventReferenceID string          `json:"head_event_reference_id"`
+	RoleSources          []DSERoleSource `json:"role_sources"`
 }
 
 // DSEFragmentCheck is only a structural check of an instantiated target.

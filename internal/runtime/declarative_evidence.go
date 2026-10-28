@@ -180,23 +180,45 @@ func (builder BareDeclarativeEvidenceBuilder) Build(ctx context.Context, lattice
 		return CompositionEvidence{}, err
 	}
 	evidence := CompositionEvidence{RequestContextID: stableRequestContextID(lattice)}
-	if forest.Outcome != status.OutcomeOK && forest.Outcome != status.OutcomeAmbiguous || len(forest.Roots) == 0 || len(forest.Unmatched) != 0 || len(lattice.MWEs) != 0 {
+	if forest.Outcome != status.OutcomeOK && forest.Outcome != status.OutcomeAmbiguous || len(forest.Roots) == 0 || len(forest.Unmatched) != 0 {
 		return evidence, nil
 	}
-	for index, token := range lattice.Tokens {
-		if token.Token.Kind == text.TokenPunctuation && token.Token.Normalized == "." && index == len(lattice.Tokens)-1 {
-			continue
-		}
-		if token.Token.Kind != text.TokenWord {
+	rootRanges := make([][2]int, 0, len(forest.Roots))
+	rootByID := make(map[parser.NodeID]parser.PackedNode, len(forest.Nodes))
+	for _, node := range forest.Nodes {
+		rootByID[node.ID] = node
+	}
+	for _, rootID := range forest.Roots {
+		root, exists := rootByID[rootID]
+		if !exists || root.Start < 0 || root.End > len(lattice.Tokens) || root.Start >= root.End {
 			return evidence, nil
 		}
-		if len(token.Readings) == 0 {
-			terminal := token.Token.Folded
-			if terminal == "" {
-				terminal = token.Token.Normalized
-			}
-			if !builder.AllowedUnlexicalizedTerminals[terminal] {
+		rootRanges = append(rootRanges, [2]int{root.Start, root.End})
+	}
+	for _, mwe := range lattice.MWEs {
+		for _, tokenRange := range rootRanges {
+			if mwe.TokenStart < tokenRange[1] && mwe.TokenEnd > tokenRange[0] {
 				return evidence, nil
+			}
+		}
+	}
+	for _, tokenRange := range rootRanges {
+		for index := tokenRange[0]; index < tokenRange[1]; index++ {
+			token := lattice.Tokens[index]
+			if token.Token.Kind == text.TokenPunctuation && token.Token.Normalized == "." && index == tokenRange[1]-1 {
+				continue
+			}
+			if token.Token.Kind != text.TokenWord {
+				return evidence, nil
+			}
+			if len(token.Readings) == 0 {
+				terminal := token.Token.Folded
+				if terminal == "" {
+					terminal = token.Token.Normalized
+				}
+				if !builder.AllowedUnlexicalizedTerminals[terminal] {
+					return evidence, nil
+				}
 			}
 		}
 	}
