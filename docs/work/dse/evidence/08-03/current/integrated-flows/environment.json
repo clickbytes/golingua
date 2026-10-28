@@ -1,0 +1,134 @@
+{
+  "source_head": "9db4f5b7d561deeb51aca3426ceef7bdc5583b17",
+  "source_head_expected": "9db4f5b7d561deeb51aca3426ceef7bdc5583b17",
+  "source_worktree_note": "Only pre-existing M .gitignore was present; this task did not modify it. Tracked diff excluding .gitignore was empty at capture.",
+  "tracked_diff_sha256_excluding_gitignore": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "go_version": "go version go1.27.0 linux/amd64",
+  "build": {
+    "argv": [
+      "go",
+      "build",
+      "-o",
+      "/tmp/golingua-dse/398-integrated-flows/golingua",
+      "./cmd/golingua"
+    ],
+    "cwd": "/home/ppotepa/git/work/golingua",
+    "exit_code": 0,
+    "binary_path": "/tmp/golingua-dse/398-integrated-flows/golingua",
+    "binary_sha256": "8a8142b3502d71bcd664a41ba06bc67b0144815fb3765fd9c5fdb75a843301f9",
+    "built_utc": "2026-10-28T10:08:12.698081Z"
+  },
+  "runtime_config_paths_used": {
+    "scope": "/tmp/golingua-dse/398-scope-relation-config/scope.json",
+    "relation": "/tmp/golingua-dse/398-scope-relation-config/relation.json",
+    "source_context": "/tmp/golingua-dse/398-scope-relation-config/context.json"
+  },
+  "copied_config_paths": "inputs/scope.json, inputs/relation.json, inputs/context.json",
+  "snapshot": {
+    "dataset_id": "golingua-authored",
+    "dataset_version": "2026-10-23",
+    "digest": "e62fdf8903c59fd27690aa46e58b00d199a10a0e1108869e3aa8d47a8f7196f0",
+    "format_version": 1
+  },
+  "metadata_registry": [
+    {
+      "id": "dse395.independent.probe",
+      "version": "2026-10-26.1",
+      "resource_fingerprint": "sha256:ad5be13b6bda00502a4c259e18b44e6b353c134362d86b760c7f971c89d8b67e"
+    }
+  ],
+  "snapshot_store": "/tmp/golingua-dse/395-doc-flow/store",
+  "runtime_config_sha256": {
+    "scope.json": "95ab730c4343a96984fae8274922eb19c90ea39058bd549cc7b2f8bc8453479d",
+    "relation.json": "9d08298550ba41ceeba9e2304650af7417f35b8be96ab9bc7bd2c2b8d97c93d2",
+    "context.json": "1f13d36c187532945be956237c3c178bebd4b611852b8d7643a8cf1b9dac3c40"
+  },
+  "language_resources": {
+    "source_packages": {
+      "en": {
+        "id": "golingua.language.en.source-395",
+        "input_fingerprint": "sha256:13c84536eb3820afcf88906276901bd007791ccc8e5f1379b45e21293d25acb1",
+        "language": "en",
+        "version": "2026-10-26.1"
+      },
+      "pl": {
+        "id": "golingua.language.pl.source-395",
+        "input_fingerprint": "sha256:b0063e76f80f3bb9f6e2905f842c2d62981ab1becdb886ff14467b69880091c5",
+        "language": "pl",
+        "version": "2026-10-26.1"
+      }
+    },
+    "source_plans": {
+      "en": {
+        "scope": {
+          "id": "golingua.language.en.scope-source-plan",
+          "input_fingerprint": "sha256:41c3b375a3cabefd5ac8cd8da53ec66f83ccfba161159859ce9d385f8c905b12",
+          "language": "en",
+          "version": "2026-10-28.1"
+        },
+        "relation": {
+          "id": "golingua.language.en.relation-source-plan",
+          "input_fingerprint": "sha256:600db9c0e4cdd3ee64ba2cb3009d0df6846785c0d758bc40609dcb977c9cb208",
+          "language": "en",
+          "version": "2026-10-28.1"
+        }
+      },
+      "pl": {
+        "scope": {
+          "id": "golingua.language.pl.scope-source-plan",
+          "input_fingerprint": "sha256:ee0a42cebf096ed149fea2ad78489444533225f36c42867bc5e3888eb28d5db1",
+          "language": "pl",
+          "version": "2026-10-28.1"
+        },
+        "relation": {
+          "id": "golingua.language.pl.relation-source-plan",
+          "input_fingerprint": "sha256:dc580f38be49a106ee178ec721c13efe8a95259cb512a740998f19274e335478",
+          "language": "pl",
+          "version": "2026-10-28.1"
+        }
+      }
+    },
+    "target_packages": {
+      "en": {
+        "id": "golingua.language.en.relation-event-target-398",
+        "version": "2026-10-28.1"
+      },
+      "pl": {
+        "id": "golingua.language.pl.relation-event-target-398",
+        "version": "2026-10-28.1"
+      }
+    }
+  },
+  "dse_profiles": {
+    "scope": {
+      "id": "dse398.scope.runtime",
+      "version": "2026-10-27.1",
+      "registry_fingerprint": "dse-registry-set-v1:0d7ea618816a36e40aac0d86db6b2b2c4cab02b0ccc2d4f7287987030a787f86"
+    },
+    "relation": {
+      "id": "dse398.relation.runtime",
+      "version": "2026-10-27.1",
+      "registry_fingerprint": "dse-registry-set-v1:0d7ea618816a36e40aac0d86db6b2b2c4cab02b0ccc2d4f7287987030a787f86"
+    }
+  },
+  "cli_invocations": {
+    "initial_group": {
+      "analyses": 6,
+      "independent_realizations": 6,
+      "translations": 6,
+      "selected_ir_comparisons": 6,
+      "negative_comparisons": 2,
+      "preserved_diagnostic_probe": 1,
+      "total": 27
+    },
+    "timed_existing_scope_correction": {
+      "realizations": 4,
+      "comparisons": 4,
+      "preserved_invalid_compare_probe": 1,
+      "total": 9
+    },
+    "total": 36,
+    "tests": "NOT RUN",
+    "round_trips": "NOT RUN"
+  }
+}

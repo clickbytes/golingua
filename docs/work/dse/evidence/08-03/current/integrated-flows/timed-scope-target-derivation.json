@@ -1,0 +1,18 @@
+{
+  "timed_sources": {
+    "not-all": {
+      "path": "docs/work/dse/evidence/08-03/current/scope-target/not-all.json",
+      "sha256": "bf95fab0690ca2dc313764093b921d7f4964ea6a54163b820557cf2663ac40f9"
+    },
+    "all-not": {
+      "path": "docs/work/dse/evidence/08-03/current/scope-target/all-not.json",
+      "sha256": "3efb17293d993d4b342b5fa426937d8ad6a5938053967ba520aa8af38740704d"
+    }
+  },
+  "comparison_projection": "remove request_context only, then supply the unchanged signature declarations from the corresponding independent acceptance document because timed scope-target files omit inline declarations required to type-check their free symbols",
+  "signature_sources": {
+    "not-all": "data/semantic/acceptance/dse-08-03/scope/not-all.json",
+    "all-not": "data/semantic/acceptance/dse-08-03/scope/all-not.json"
+  },
+  "expression_and_temporal_fields": "copied from the timed scope-target documents without changes"
+}
