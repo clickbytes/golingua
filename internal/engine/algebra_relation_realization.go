@@ -56,13 +56,14 @@ func (engine *Engine) realizeAlgebraRelationPathCore(ctx context.Context, result
 	if checked.RequestContext != nil {
 		coverage.RequestContext = &AlgebraScopeContextEvidence{SchemaVersion: checked.RequestContext.SchemaVersion, ID: checked.RequestContext.ID}
 	}
+	missingTime := false
+	var missingTimeDiagnostic *status.Diagnostic
 	if eventPlan != nil {
 		coverage.Events = []AlgebraRelationEventCoverage{
 			{BinderID: eventPlan.FirstEventBinder, EventPortID: eventPlan.EventPort, Path: eventPlan.FirstEventPath, AtomPath: eventPlan.FirstAtomPath, TemporalFrame: eventPlan.FirstEventTemporalFrame},
 			{BinderID: eventPlan.SecondEventBinder, EventPortID: eventPlan.EventPort, Path: eventPlan.SecondEventPath, AtomPath: eventPlan.SecondAtomPath, TemporalFrame: eventPlan.SecondEventTemporalFrame},
 		}
 		result.RelationPathCoverage = &coverage
-		missingTime := false
 		unsupportedTime := false
 		for _, event := range coverage.Events {
 			switch event.TemporalFrame {
@@ -79,7 +80,8 @@ func (engine *Engine) realizeAlgebraRelationPathCore(ctx context.Context, result
 			return algebraRealizationFailure(result, status.OutcomeUnsupported, "EVENT_TEMPORAL_FRAME_UNSUPPORTED", "input.expression", "explicit event time is unsupported; no target text was generated"), nil
 		}
 		if missingTime {
-			return algebraRealizationFailure(result, status.OutcomeIncomplete, "EVENT_TEMPORAL_FRAME_UNSPECIFIED", "input.expression", "event time is unspecified; no target text was generated"), nil
+			diagnostic := status.Diagnostic{Code: "EVENT_TEMPORAL_FRAME_UNSPECIFIED", Path: "input.expression", Message: "target grammar uses present form, but the checked events have no explicit time; generated text is an incomplete preview", Severity: status.SeverityWarning}
+			missingTimeDiagnostic = &diagnostic
 		}
 	} else {
 		result.RelationPathCoverage = &coverage
@@ -183,12 +185,26 @@ func (engine *Engine) realizeAlgebraRelationPathCore(ctx context.Context, result
 		if textBytes > budget.MaxCandidateTextBytes {
 			return algebraRealizationFailure(result, status.OutcomeResourceLimit, "RESOURCE_LIMIT", "target.text", "relation path alternatives exceed the candidate text limit"), nil
 		}
-		result.Alternatives = append(result.Alternatives, SurfaceAlternative{ID: alternative.ID, Outcome: status.OutcomeOK, Text: text, Evidence: semantic.EvidenceTrace{AlternativeID: alternative.ID, Outcome: status.OutcomeOK}})
+		outcome := status.OutcomeOK
+		var alternativeDiagnostics []status.Diagnostic
+		if missingTime {
+			outcome = status.OutcomeIncomplete
+			alternativeDiagnostics = []status.Diagnostic{*missingTimeDiagnostic}
+		}
+		result.Alternatives = append(result.Alternatives, SurfaceAlternative{
+			ID: alternative.ID, Outcome: outcome, Text: text,
+			Evidence:    semantic.EvidenceTrace{AlternativeID: alternative.ID, Outcome: outcome, Diagnostics: append([]status.Diagnostic(nil), alternativeDiagnostics...)},
+			Diagnostics: append([]status.Diagnostic(nil), alternativeDiagnostics...),
+		})
 		coverage.Alternatives = append(coverage.Alternatives, AlgebraRelationPathAlternativeEvidence{ID: alternative.ID, VariantID: alternative.VariantID, Parts: append([]RelationPathSurfacePart(nil), alternative.Parts...)})
 	}
 	coverage.Verified = true
 	result.Diagnostics = appendDiagnostics(result.Diagnostics, surface.Diagnostics)
 	result.Status = surface.Status
+	if missingTimeDiagnostic != nil {
+		result.Status = status.OutcomeIncomplete
+		result.Diagnostics = appendDiagnostic(result.Diagnostics, *missingTimeDiagnostic)
+	}
 	if surface.Status == status.OutcomeIncomplete {
 		result.Residuals = append(result.Residuals, AlgebraRealizationResidual{Path: "target.relation_path", Code: "RELATION_PATH_PARTIAL_COVERAGE", Message: "some licensed plan variants or forms remain unresolved; emitted alternatives are individually complete", Term: cloneAlgebraTerm(checked.Expression)})
 	}
