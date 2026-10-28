@@ -1,0 +1,12 @@
+{
+  "source_sha": "386f0d98ca12bde7e53880109db4f634958321c6",
+  "binary_sha256": "c7311b463b6969d9013800bc7a8319b1cd9fac6217e6fe3ad0202dd6a515a500",
+  "inputs_sha256": {
+    "data/semantic/acceptance/independence/route/metadata.json": "e08ad2ed294eb43af40e44fce091525b610bd6fa8c8d7c32ac85de1083db3d6e",
+    "data/semantic/acceptance/independence/route/goal-two-step.json": "2cc4f42120ffd8b126248c616250555ef378b145a8b1264c54c1a370a25ea0be",
+    "data/semantic/acceptance/independence/route/facts.json": "f97c9d05af8c1c0875ae3dfe10a78260e9a46dabf2561464d6241f2201782f9e",
+    "data/semantic/acceptance/dse-08-03/relation/vision-event-present-binary-proposal.json": "3d018ca665ee35cf12f1dd7956eb85a7aae0cdd6878f4fbb469365b021056366",
+    "docs/work/dse/evidence/09-02/runtime-config.json": "ad69087a1b22ea8fedcf37b53596ef5bddba428535a0c0394c971a0dfafccd5b",
+    "docs/work/dse/evidence/09-02/runtime-config-wh.json": "2b912a43977b17cc254e098a410246164776cdea877edeeb24672cde9614a47e"
+  }
+}

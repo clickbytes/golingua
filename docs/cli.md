@@ -592,7 +592,7 @@ schematu i SHA-256. Ścieżki względne są liczone względem pliku runtime. Bł
 pin lub brak wymaganej zdolności odrzuca aktywację. DSE nie wraca automatycznie
 do Meaning v1.
 
-W tej iteracji runtime DSE obsługuje wyłącznie jeden dodatni, bezpośredni Atom.
+Runtime DSE obsługuje ograniczone wycinki, w tym pojedynczy dodatni Atom i wybrane pytania WH. Zakresy negacji i kwantyfikacji można reprezentować w algebrze; profil dodatnich faktów ich nie ewaluuje. Realizacja i analiza zależą od przypiętych danych i planów; konkretne próby, reszty i ograniczenia opisuje [odbiór DSE](work/dse/acceptance.md).
 Kontekst i warunki, których target nie zużywa, pozostają w DSE trace/residualach;
 nieobsłużony warunek kończy się jawnym `unsupported` przed wywołaniem generatora.
 Warunek `lexical_descriptor` może zostać zużyty tylko dla dokładnego źródłowego
@@ -605,6 +605,8 @@ składaniem, GoalSpec/certyfikatami, canonical document, pinami i pokryciem
 realizatora; alternatywy nie zawierają konkurencyjnego grafu Meaning. Jawne
 `--preview-id` może pokazać wybrany przez wywołującego wariant, ale zbiorczy
 `ambiguous` oraz pozostałe warianty i ich założenia zostają zachowane.
+
+Odtworzony na `main` przykład pełnego przepływu syntezy, weryfikacji, ewaluacji oraz realizacji i tłumaczenia PL/EN wraz z dokładnymi argumentami i wynikami jest w [dowodach odbioru DSE](work/dse/evidence/09-02/README.md).
 
 Przykładowe sprawdzenie skonfigurowanego profilu:
 

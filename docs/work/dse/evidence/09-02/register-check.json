@@ -1,0 +1,346 @@
+{
+  "source": "gh pr list --state merged --limit 200 --json number,mergeCommit,mergedAt",
+  "rows": [
+    {
+      "issue": 377,
+      "pr": 401,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/architecture/semantic-algebra/README.md",
+        "docs/architecture/semantic-algebra/formal-contract.md",
+        "docs/architecture/semantic-algebra/compatibility.md"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 378,
+      "pr": 402,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/work/dse/README.md",
+        "docs/work/dse/execution.md",
+        "docs/work/dse/issue-map.json"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 379,
+      "pr": 403,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/architecture/semantic-algebra/ir.md",
+        "docs/work/dse/evidence/03-01/README.md",
+        "docs/work/dse/evidence/03-01/observations.jsonl",
+        "docs/work/dse/evidence/03-01/environment.json"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 380,
+      "pr": 404,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/architecture/semantic-algebra/metadata.md",
+        "docs/work/dse/evidence/02-01/README.md",
+        "docs/work/dse/evidence/02-01/observations.jsonl",
+        "docs/work/dse/evidence/02-01/environment.json",
+        "docs/work/dse/evidence/02-01/invariants.json"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 381,
+      "pr": 405,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/architecture/semantic-algebra/composition.md",
+        "docs/work/dse/evidence/03-02/README.md",
+        "docs/work/dse/evidence/03-02/observations.jsonl",
+        "docs/work/dse/evidence/03-02/environment.json"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 382,
+      "pr": 406,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/architecture/semantic-algebra/normalization.md",
+        "docs/work/dse/evidence/05-01/README.md",
+        "docs/work/dse/evidence/05-01/observations.jsonl",
+        "docs/work/dse/evidence/05-01/environment.json"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 383,
+      "pr": 407,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/architecture/semantic-algebra/runtime-storage.md",
+        "docs/work/dse/evidence/03-03/README.md",
+        "docs/work/dse/evidence/03-03/observations.jsonl",
+        "docs/work/dse/evidence/03-03/cache-api-observation.json",
+        "docs/work/dse/evidence/03-03/environment.json"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 384,
+      "pr": 408,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/work/dse/evidence/02-02/README.md",
+        "docs/work/dse/evidence/02-02/environment.json",
+        "docs/work/dse/evidence/02-02/observations.jsonl",
+        "docs/work/dse/evidence/02-02/view-api-observation.json"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 385,
+      "pr": 409,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/work/dse/evidence/02-03/README.md",
+        "docs/work/dse/evidence/02-03/environment.json",
+        "docs/work/dse/evidence/02-03/invariants.json",
+        "docs/work/dse/evidence/02-03/observations.jsonl"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 386,
+      "pr": 410,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/work/dse/evidence/04-01/README.md",
+        "docs/work/dse/evidence/04-01/observations.jsonl",
+        "docs/work/dse/evidence/04-01/environment.json",
+        "docs/work/dse/evidence/04-01/invariants.json"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 387,
+      "pr": 411,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/work/dse/evidence/04-02/README.md",
+        "docs/work/dse/evidence/04-02/observations.jsonl",
+        "docs/work/dse/evidence/04-02/environment.json",
+        "docs/work/dse/evidence/04-02/invariants.json",
+        "docs/work/dse/evidence/04-02/inputs/wire-boundary/goal-500-256.json",
+        "docs/work/dse/evidence/04-02/inputs/wire-boundary/summary.json",
+        "docs/work/dse/evidence/04-02/inputs/wire-boundary/binary-hash.txt",
+        "docs/work/dse/evidence/04-02/doc-flow-observation.json"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 388,
+      "pr": 412,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/work/dse/evidence/04-03/README.md",
+        "docs/work/dse/evidence/04-03/observations.jsonl",
+        "docs/work/dse/evidence/04-03/extra-observations.jsonl",
+        "docs/work/dse/evidence/04-03/environment.json",
+        "docs/work/dse/evidence/04-03/agent-assessment.json",
+        "docs/work/dse/evidence/04-03/schema-observation.json"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 389,
+      "pr": 413,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/work/dse/evidence/05-02/README.md",
+        "docs/work/dse/evidence/05-02/observations.jsonl",
+        "docs/work/dse/evidence/05-02/environment.json",
+        "docs/work/dse/evidence/05-02/proof-observation.json",
+        "docs/work/dse/evidence/05-02/inputs/",
+        "docs/work/dse/evidence/05-02/cli-outputs/"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 390,
+      "pr": 414,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/work/dse/evidence/05-03/README.md",
+        "docs/work/dse/evidence/05-03/observations.jsonl",
+        "docs/work/dse/evidence/05-03/extra-observations.jsonl",
+        "docs/work/dse/evidence/05-03/doc-flow-observation.json",
+        "docs/work/dse/evidence/05-03/environment.json",
+        "docs/work/dse/evidence/05-03/source-hashes.json",
+        "docs/work/dse/evidence/05-03/schema-observation.json",
+        "docs/work/dse/evidence/05-03/inputs/",
+        "docs/work/dse/evidence/05-03/cli-outputs/"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 391,
+      "pr": 415,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/work/dse/evidence/06-01/README.md",
+        "docs/work/dse/evidence/06-01/cli-observations-67.jsonl",
+        "docs/work/dse/evidence/06-01/build-observations-18.jsonl",
+        "docs/work/dse/evidence/06-01/extra-observations-7.jsonl",
+        "docs/work/dse/evidence/06-01/documentation-flow-observation.json"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 392,
+      "pr": 416,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/work/dse/evidence/06-02/README.md",
+        "docs/work/dse/evidence/06-02/392-cli-observations.jsonl",
+        "docs/work/dse/evidence/06-02/392-extra-cli-observations.jsonl",
+        "docs/work/dse/evidence/06-02/392-final-controls.jsonl",
+        "docs/work/dse/evidence/06-02/392-final-nil-observation.json",
+        "docs/work/dse/evidence/06-02/392-technical-observation.json",
+        "docs/work/dse/evidence/06-02/392-source-hashes.json",
+        "docs/work/dse/evidence/06-02/392-schema-observation.json",
+        "docs/work/dse/evidence/06-02/392-semantic-observation.json",
+        "docs/work/dse/evidence/06-02/392-docflow-observation.json"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 393,
+      "pr": 417,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/work/dse/evidence/06-03/README.md",
+        "docs/work/dse/evidence/06-03/observations/393-cli-observations.jsonl",
+        "docs/work/dse/evidence/06-03/observations/393-extra-cli-observations.jsonl",
+        "docs/work/dse/evidence/06-03/observations/393-context-controls.jsonl",
+        "docs/work/dse/evidence/06-03/observations/393-adapter-observations.jsonl",
+        "docs/work/dse/evidence/06-03/observations/393-technical-observation.json",
+        "docs/work/dse/evidence/06-03/observations/393-semantic-observation.json",
+        "docs/work/dse/evidence/06-03/observations/393-schema-observation.json",
+        "docs/work/dse/evidence/06-03/observations/393-source-hashes.json",
+        "docs/work/dse/evidence/06-03/observations/393-final-legacy-observation.json",
+        "docs/work/dse/evidence/06-03/observations/393-final-legacy-export.json",
+        "docs/work/dse/evidence/06-03/observations/393-baseline392-old-export.json",
+        "docs/work/dse/evidence/06-03/observations-file-manifest.json"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 394,
+      "pr": 418,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/work/dse/evidence/07-01/README.md",
+        "docs/work/dse/evidence/07-01/outputs/main/observations.jsonl",
+        "docs/work/dse/evidence/07-01/outputs/pilot/observations.jsonl",
+        "docs/work/dse/evidence/07-01/reports/394-technical-observation.json",
+        "docs/work/dse/evidence/07-01/reports/394-source-hashes.json",
+        "docs/work/dse/evidence/07-01/reports/394-schema-observation.json",
+        "docs/work/dse/evidence/07-01/root-docflow/observation.json"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 395,
+      "pr": 419,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/work/dse/evidence/07-02/README.md",
+        "docs/work/dse/evidence/07-02/outputs/main/observations.jsonl",
+        "docs/work/dse/evidence/07-02/outputs/extra/observations.jsonl",
+        "docs/work/dse/evidence/07-02/reports/source-hashes.json",
+        "docs/work/dse/evidence/07-02/reports/technical-observation.json",
+        "docs/work/dse/evidence/07-02/reports/schema-observation.json",
+        "docs/work/dse/evidence/07-02/root-docflow/observation.json"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 396,
+      "pr": 420,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/work/dse/evidence/08-01/README.md",
+        "docs/work/dse/evidence/08-01/outputs/"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 397,
+      "pr": 421,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/work/dse/evidence/08-02/README.md",
+        "docs/work/dse/evidence/08-02/environment.json",
+        "docs/work/dse/evidence/08-02/runtime-config-positive.json",
+        "docs/work/dse/evidence/08-02/runtime-config-unsupported.json",
+        "docs/work/dse/evidence/08-02/outputs/"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 398,
+      "pr": 422,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "docs/work/dse/vertical-slices.md",
+        "docs/work/dse/evidence/08-03/",
+        "docs/work/dse/evidence/08-03/current/source-coordination/README.md",
+        "docs/work/dse/evidence/08-03/current/target-coordination/README.md",
+        "docs/work/dse/evidence/08-03/current/coordination-translation/README.md",
+        "docs/work/dse/evidence/08-03/current/scope-contract/README.md"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 399,
+      "pr": 423,
+      "merge_matches": true,
+      "evidence_paths_exist": true,
+      "evidence_paths": [
+        "data/semantic/acceptance/independence/"
+      ],
+      "issue_state": "CLOSED"
+    },
+    {
+      "issue": 400,
+      "pr": null,
+      "merge_matches": null,
+      "evidence_paths_exist": true,
+      "evidence_paths": [],
+      "issue_state": "OPEN"
+    }
+  ],
+  "issue_source": "gh issue list --state all --limit 500 --json number,state"
+}

@@ -1,6 +1,6 @@
 # Semantic algebra and DSE
 
-This directory holds the design contracts for the proposed Dynamic Semantic Expressions (DSE) work. The RFCs define future behavior; they do not describe capabilities already present in the runtime.
+This directory holds the DSE contracts. The runtime implements bounded portions of those contracts; actual capabilities and evidence are described in the [DSE results](../../work/dse/results.md) and [acceptance](../../work/dse/acceptance.md).
 
 For the issue record and work procedure, see the [DSE work index](../../work/dse/README.md), [issue map](../../work/dse/issue-map.json), and [execution runbook](../../work/dse/execution.md).
 
@@ -17,7 +17,7 @@ The formal contract's initial executable profile allows structural alpha/beta re
 
 ## Issue hierarchy and planned order
 
-DSE is tracked under [epic #367](https://github.com/clickbytes/golingua/issues/367). Its chapters are #368–#376, with executable leaves #377–#400. The current leaf, [#377](https://github.com/clickbytes/golingua/issues/377), establishes these RFCs; [#378](https://github.com/clickbytes/golingua/issues/378) is the execution runbook. Later planned chapters cover metadata and facts (#369), typed IR and operators (#370), synthesis (#371), evaluation and evidence (#372), scope and context (#373), lexical analysis (#374), realization and integration (#375), and domain-independence/acceptance (#376).
+DSE is tracked under [epic #367](https://github.com/clickbytes/golingua/issues/367). Its chapters are #368–#376, with executable leaves #377–#400. The final acceptance leaf is [#400](https://github.com/clickbytes/golingua/issues/400); the [issue map](../../work/dse/issue-map.json) records verified predecessor results.
 
 The epic's recommended serial leaf order is:
 
@@ -28,10 +28,8 @@ The epic's recommended serial leaf order is:
 5. #394–#398: lexical goals, source composition, target coverage, runtime integration, and PL/EN slices.
 6. #399–#400: data-independence review and final acceptance.
 
-This is planned work, not evidence that the leaves have started or that their proposed paths, commands, schemas, or runtime behavior exist. Start each leaf only after checking its current issue, dependencies, main SHA, and repository instructions.
+The list describes the serial order, not a claim of general linguistic completeness.
 
 ## Status and evidence
 
-The checked typed IR, metadata registry, explicit construction, normalization and rewrite verification, and artifact export/replay components are implemented. The #384 facts CLI has recorded local branch observations; its PR/main CI status is still pending. Broader planned synthesis, evaluation, and language integration are not yet verified; consult the [issue map](../../work/dse/issue-map.json) for current leaf status. Formal review, implementation status, agent assessment, and owner acceptance are separate outcomes. Owner language acceptance remains **NOT_EVALUATED**.
-
-Future implementation must proceed through the serial issue hierarchy and report observable CLI results and limits for its active leaf. The initial facts-only profile does not authorize language-specific assumptions, domain axioms, or a closed-world inference. See the RFCs for detailed refusal and evidence requirements.
+Typed IR, explicit metadata and facts, bounded construction and search, verification, positive-fact evaluation, and limited PL/EN integration are implemented. See [final observations](../../work/dse/evidence/09-02/README.md) and the [independence audit](../../work/dse/independence-audit.md) for actual results and limits. Representation of an operator does not imply it can be evaluated. Formal review, technical verification, agent assessment, and owner language acceptance are distinct; owner acceptance remains **NOT EVALUATED**.

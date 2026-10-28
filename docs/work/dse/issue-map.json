@@ -7,15 +7,12 @@
     "title": "Algebra i synteza znaczeń w runtime — koncepty wyłącznie jako metadane",
     "url": "https://github.com/clickbytes/golingua/issues/367",
     "status": "IN_PROGRESS",
-    "branch_name": "dse/08-03-pl-en-vertical-slices",
-    "actual_base_sha": "dab9d23b48fe429ca4221c5efdf8e081bc6405b3",
-    "branch_url": "https://github.com/clickbytes/golingua/tree/dse/08-03-pl-en-vertical-slices",
+    "branch_name": null,
+    "actual_base_sha": null,
+    "branch_url": null,
     "pr_url": null,
     "merge_sha": null,
-    "evidence_paths": [
-      "docs/work/dse/vertical-slices.md",
-      "docs/work/dse/evidence/08-03/"
-    ],
+    "evidence_paths": [],
     "parent_issue": null,
     "dependencies": []
   },
@@ -169,7 +166,7 @@
         397,
         398
       ],
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "branch_name": null,
       "actual_base_sha": null,
       "branch_url": null,
@@ -188,7 +185,7 @@
         399,
         400
       ],
-      "status": "QUEUED",
+      "status": "IN_PROGRESS",
       "branch_name": null,
       "actual_base_sha": null,
       "branch_url": null,
@@ -747,11 +744,11 @@
         385
       ],
       "branch_name": "dse/08-03-pl-en-vertical-slices",
-      "status": "BLOCKED",
+      "status": "DONE",
       "actual_base_sha": "dab9d23b48fe429ca4221c5efdf8e081bc6405b3",
       "branch_url": "https://github.com/clickbytes/golingua/tree/dse/08-03-pl-en-vertical-slices",
       "pr_url": "https://github.com/clickbytes/golingua/pull/422",
-      "merge_sha": null,
+      "merge_sha": "3643bdcd69298f85fff2826431502743ad4c3024",
       "evidence_paths": [
         "docs/work/dse/vertical-slices.md",
         "docs/work/dse/evidence/08-03/",
@@ -774,12 +771,16 @@
         390
       ],
       "branch_name": "dse/09-01-data-independence",
-      "status": "QUEUED",
-      "actual_base_sha": null,
-      "branch_url": null,
-      "pr_url": null,
-      "merge_sha": null,
-      "evidence_paths": []
+      "status": "DONE",
+      "actual_base_sha": "3643bdcd69298f85fff2826431502743ad4c3024",
+      "branch_url": "https://github.com/clickbytes/golingua/tree/dse/09-01-data-independence",
+      "pr_url": "https://github.com/clickbytes/golingua/pull/423",
+      "merge_sha": "386f0d98ca12bde7e53880109db4f634958321c6",
+      "evidence_paths": [
+        "docs/work/dse/independence-audit.md",
+        "docs/work/dse/evidence/09-01/",
+        "data/semantic/acceptance/independence/"
+      ]
     },
     {
       "issue_number": 400,
@@ -813,12 +814,16 @@
         398
       ],
       "branch_name": "dse/09-02-final-acceptance",
-      "status": "QUEUED",
-      "actual_base_sha": null,
+      "status": "IN_PROGRESS",
+      "actual_base_sha": "386f0d98ca12bde7e53880109db4f634958321c6",
       "branch_url": null,
       "pr_url": null,
       "merge_sha": null,
-      "evidence_paths": []
+      "evidence_paths": [
+        "docs/work/dse/evidence/09-02/",
+        "docs/work/dse/results.md",
+        "docs/work/dse/acceptance.md"
+      ]
     }
   ]
 }
