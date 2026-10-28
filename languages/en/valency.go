@@ -102,6 +102,54 @@ type constructionBindingDeclaration struct {
 }
 
 var englishConstructionBindingDeclarations = append(append(append(append([]constructionBindingDeclaration{
+	{"en.go.spatial_movement", "en.go.spatial_movement.intransitive", "en.intransitive", "en.intransitive.sv"},
+	{"en.go.spatial_movement", "en.go.spatial_movement.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject"},
+	{"en.go.spatial_movement", "en.go.spatial_movement.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject_an"},
+	{"en.go.spatial_movement", "en.go.spatial_movement.intransitive", "en.intransitive", "en.intransitive.sv.bare_subject_plural"},
+	{"en.waking_up.event", "en.waking_up.intransitive", "en.intransitive", "en.intransitive.sv.wake_up.indefinite_subject"},
+	{"en.waking_up.event", "en.waking_up.intransitive", "en.intransitive", "en.intransitive.sv.wake_up.indefinite_subject_an"},
+	{"en.waking_up.event", "en.waking_up.intransitive", "en.intransitive", "en.intransitive.sv.wake_up.bare_subject_plural"},
+	{"en.falling_asleep.event", "en.falling_asleep.intransitive", "en.intransitive", "en.intransitive.sv.fall_asleep.indefinite_subject"},
+	{"en.falling_asleep.event", "en.falling_asleep.intransitive", "en.intransitive", "en.intransitive.sv.fall_asleep.indefinite_subject_an"},
+	{"en.falling_asleep.event", "en.falling_asleep.intransitive", "en.intransitive", "en.intransitive.sv.fall_asleep.bare_subject_plural"},
+	{"en.waking_up.event", "en.waking_up.intransitive", "en.intransitive", "en.intransitive.sv.wake_up"},
+	{"en.falling_asleep.event", "en.falling_asleep.intransitive", "en.intransitive", "en.intransitive.sv.fall_asleep"},
+	{"en.sleep.physiological", "en.sleep.physiological.intransitive", "en.intransitive", "en.intransitive.sv"},
+	{"en.sleep.physiological", "en.sleep.physiological.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject"},
+	{"en.sleep.physiological", "en.sleep.physiological.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject_an"},
+	{"en.sleep.physiological", "en.sleep.physiological.intransitive", "en.intransitive", "en.intransitive.sv.bare_subject_plural"},
+	{"en.breathing.event", "en.breathing.intransitive", "en.intransitive", "en.intransitive.sv"},
+	{"en.breathing.event", "en.breathing.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject"},
+	{"en.breathing.event", "en.breathing.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject_an"},
+	{"en.breathing.event", "en.breathing.intransitive", "en.intransitive", "en.intransitive.sv.bare_subject_plural"},
+	{"en.sneezing.event", "en.sneezing.intransitive", "en.intransitive", "en.intransitive.sv"},
+	{"en.sneezing.event", "en.sneezing.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject"},
+	{"en.sneezing.event", "en.sneezing.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject_an"},
+	{"en.sneezing.event", "en.sneezing.intransitive", "en.intransitive", "en.intransitive.sv.bare_subject_plural"},
+	{"en.running.event", "en.running.intransitive", "en.intransitive", "en.intransitive.sv"},
+	{"en.running.event", "en.running.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject"},
+	{"en.running.event", "en.running.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject_an"},
+	{"en.running.event", "en.running.intransitive", "en.intransitive", "en.intransitive.sv.bare_subject_plural"},
+	{"en.coughing.event", "en.coughing.intransitive", "en.intransitive", "en.intransitive.sv"},
+	{"en.coughing.event", "en.coughing.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject"},
+	{"en.coughing.event", "en.coughing.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject_an"},
+	{"en.coughing.event", "en.coughing.intransitive", "en.intransitive", "en.intransitive.sv.bare_subject_plural"},
+	{"en.walking.event", "en.walking.intransitive", "en.intransitive", "en.intransitive.sv"},
+	{"en.walking.event", "en.walking.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject"},
+	{"en.walking.event", "en.walking.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject_an"},
+	{"en.walking.event", "en.walking.intransitive", "en.intransitive", "en.intransitive.sv.bare_subject_plural"},
+	{"en.living.event", "en.living.intransitive", "en.intransitive", "en.intransitive.sv"},
+	{"en.living.event", "en.living.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject"},
+	{"en.living.event", "en.living.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject_an"},
+	{"en.living.event", "en.living.intransitive", "en.intransitive", "en.intransitive.sv.bare_subject_plural"},
+	{"en.flying_motion.event", "en.flying_motion.intransitive", "en.intransitive", "en.intransitive.sv"},
+	{"en.flying_motion.event", "en.flying_motion.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject"},
+	{"en.flying_motion.event", "en.flying_motion.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject_an"},
+	{"en.flying_motion.event", "en.flying_motion.intransitive", "en.intransitive", "en.intransitive.sv.bare_subject_plural"},
+	{"en.working.activity", "en.working_activity.intransitive", "en.intransitive", "en.intransitive.sv"},
+	{"en.working.activity", "en.working_activity.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject"},
+	{"en.working.activity", "en.working_activity.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject_an"},
+	{"en.working.activity", "en.working_activity.intransitive", "en.intransitive", "en.intransitive.sv.bare_subject_plural"},
 	{"en.eating.event", "en.eating.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.eating.event", "en.eating.transitive", "en.transitive", "en.transitive.svo.mass_object"},
 	{"en.eating.event", "en.eating.transitive", "en.transitive", "en.transitive.svo.indefinite_object"},
@@ -395,6 +443,18 @@ func englishManipulationBindingDeclarations() []constructionBindingDeclaration {
 }
 
 var englishFrames = []frameDeclaration{
+	{"en.go.spatial_movement.intransitive", "en.go.spatial_movement", "en.intransitive", []meaning.Role{"mover"}, []valency.ArgumentSlot{{ID: "subject", Role: "mover", Required: true, GrammaticalFunction: "subject"}}},
+	{"en.working_activity.intransitive", "en.working.activity", "en.intransitive", []meaning.Role{"worker"}, []valency.ArgumentSlot{{ID: "subject", Role: "worker", Required: true, GrammaticalFunction: "subject"}}},
+	{"en.waking_up.intransitive", "en.waking_up.event", "en.intransitive", []meaning.Role{"person"}, []valency.ArgumentSlot{{ID: "subject", Role: "person", Required: true, GrammaticalFunction: "subject"}}},
+	{"en.falling_asleep.intransitive", "en.falling_asleep.event", "en.intransitive", []meaning.Role{"sleeper"}, []valency.ArgumentSlot{{ID: "subject", Role: "sleeper", Required: true, GrammaticalFunction: "subject"}}},
+	{"en.sleep.physiological.intransitive", "en.sleep.physiological", "en.intransitive", []meaning.Role{"sleeper"}, []valency.ArgumentSlot{{ID: "subject", Role: "sleeper", Required: true, GrammaticalFunction: "subject"}}},
+	{"en.breathing.intransitive", "en.breathing.event", "en.intransitive", []meaning.Role{"organism"}, []valency.ArgumentSlot{{ID: "subject", Role: "organism", Required: true, GrammaticalFunction: "subject"}}},
+	{"en.sneezing.intransitive", "en.sneezing.event", "en.intransitive", []meaning.Role{"organism"}, []valency.ArgumentSlot{{ID: "subject", Role: "organism", Required: true, GrammaticalFunction: "subject"}}},
+	{"en.running.intransitive", "en.running.event", "en.intransitive", []meaning.Role{"runner"}, []valency.ArgumentSlot{{ID: "subject", Role: "runner", Required: true, GrammaticalFunction: "subject"}}},
+	{"en.coughing.intransitive", "en.coughing.event", "en.intransitive", []meaning.Role{"organism"}, []valency.ArgumentSlot{{ID: "subject", Role: "organism", Required: true, GrammaticalFunction: "subject"}}},
+	{"en.walking.intransitive", "en.walking.event", "en.intransitive", []meaning.Role{"walker"}, []valency.ArgumentSlot{{ID: "subject", Role: "walker", Required: true, GrammaticalFunction: "subject"}}},
+	{"en.living.intransitive", "en.living.event", "en.intransitive", []meaning.Role{"organism"}, []valency.ArgumentSlot{{ID: "subject", Role: "organism", Required: true, GrammaticalFunction: "subject"}}},
+	{"en.flying_motion.intransitive", "en.flying_motion.event", "en.intransitive", []meaning.Role{"mover"}, []valency.ArgumentSlot{{ID: "subject", Role: "mover", Required: true, GrammaticalFunction: "subject"}}},
 	{"en.opening_object.transitive", "en.opening_object.event", "en.transitive", []meaning.Role{"agent", "object"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject"}, {ID: "object", Role: "object", Required: true, GrammaticalFunction: "object"},
 	}},
@@ -491,6 +551,13 @@ func CompileValency() (*valency.Index, error) {
 			SemanticRoles:    append([]meaning.Role(nil), item.roles...),
 			Arguments:        append([]valency.ArgumentSlot(nil), item.arguments...),
 			AllowedFamilyIDs: []ids.ConstructionID{familyID}, Provenance: englishValencySource,
+		}
+		if item.id == "en.living.intransitive" {
+			meat, err := ids.NewConceptID("meat_food")
+			if err != nil {
+				return nil, fmt.Errorf("English living exclusion concept: %w", err)
+			}
+			frame.SelectionalConstraints = []valency.SelectionalConstraint{{ID: "living_organism_excludes_meat", Role: "organism", Strength: valency.ConstraintHard, ExcludedConceptIDs: []ids.ConceptID{meat}}}
 		}
 		if item.id == "en.be.class_membership.frame" || item.id == "en.black.color.frame" {
 			frame.Provenance = englishIdentificationSource
@@ -631,7 +698,8 @@ func englishConstructionBindingProvenance(item constructionBindingDeclaration) p
 
 func englishIndefiniteAllomorphVariant(variant string) bool {
 	switch variant {
-	case "en.transitive.svo.indefinite_object_an",
+	case "en.intransitive.sv.indefinite_subject_an",
+		"en.transitive.svo.indefinite_object_an",
 		"en.transitive.svo.indefinite_subject_an",
 		"en.transitive.svo.indefinite_subject_a_object_an",
 		"en.transitive.svo.indefinite_subject_an_object_a",
@@ -650,7 +718,8 @@ func englishIndefiniteAllomorphVariant(variant string) bool {
 
 func englishDeterminerAlternativeVariant(variant string) bool {
 	switch variant {
-	case "en.transitive.svo.indefinite_object",
+	case "en.intransitive.sv.indefinite_subject",
+		"en.transitive.svo.indefinite_object",
 		"en.transitive.svo.indefinite_subject",
 		"en.transitive.svo.indefinite_subject_object",
 		"en.transitive.svo.indefinite_subject_mass_object",

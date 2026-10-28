@@ -88,6 +88,32 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 			principalParts = finiteEnglishPrincipalParts(lexeme, "fold", "folds", "folded", "folded", "folding")
 		case "lexeme:en.tearing_object.v":
 			principalParts = finiteEnglishPrincipalParts(lexeme, "tear", "tears", "tore", "torn", "tearing")
+		case "lexeme:en.sleep.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "sleep", "sleeps", "slept", "slept", "sleeping")
+		case "lexeme:en.breathing.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "breathe", "breathes", "breathed", "breathed", "breathing")
+		case "lexeme:en.sneezing.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "sneeze", "sneezes", "sneezed", "sneezed", "sneezing")
+		case "lexeme:en.running.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "run", "runs", "ran", "run", "running")
+		case "lexeme:en.coughing.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "cough", "coughs", "coughed", "coughed", "coughing")
+		case "lexeme:en.waking_up.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "wake", "wakes", "woke", "woken", "waking")
+		case "lexeme:en.walking.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "walk", "walks", "walked", "walked", "walking")
+		case "lexeme:en.falling.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "fall", "falls", "fell", "fallen", "falling")
+		case "lexeme:en.falling_asleep.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "fall", "falls", "fell", "fallen", "falling")
+		case "lexeme:en.living.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "live", "lives", "lived", "lived", "living")
+		case "lexeme:en.working.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "work", "works", "worked", "worked", "working")
+		case "lexeme:en.flying_motion.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "fly", "flies", "flew", "flown", "flying")
+		case "lexeme:en.go.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "go", "goes", "went", "gone", "going")
 		}
 		if lexeme.ParadigmID == "en_noun_principal_parts" {
 			principalParts = englishNounPrincipalParts(lexeme)

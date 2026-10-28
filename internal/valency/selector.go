@@ -112,6 +112,11 @@ func ValidateFrame(frame ValencyFrame, request ValidationRequest, ontology *core
 				return ValidationResult{}, unknown("UNKNOWN_SELECTIONAL_CONCEPT", "frame.selectional_constraints."+constraint.ID, "selectional constraint refers to a CORE concept that does not exist")
 			}
 		}
+		for _, excludedID := range constraint.ExcludedConceptIDs {
+			if _, exists := ontology.Lookup(excludedID); !exists {
+				return ValidationResult{}, unknown("UNKNOWN_SELECTIONAL_CONCEPT", "frame.selectional_constraints."+constraint.ID, "selectional exclusion refers to a CORE concept that does not exist")
+			}
+		}
 		targetID, err := ids.ParseConceptID(string(target.Concept))
 		if err != nil {
 			return ValidationResult{}, invalid("INVALID_ROLE_TARGET_CONCEPT", "meaning_node.participants."+string(constraint.Role), "role target has a malformed CORE concept ID")
@@ -152,6 +157,19 @@ func containsConstruction(values []ids.ConstructionID, candidate ids.Constructio
 }
 
 func constraintMatches(constraint SelectionalConstraint, actual ids.ConceptID, actualKind core.ConceptKind, ontology *core.ConceptGraph) bool {
+	if len(constraint.ExcludedConceptIDs) > 0 {
+		for _, excluded := range constraint.ExcludedConceptIDs {
+			if isSubtypeOrSame(ontology, actual, excluded) {
+				return false
+			}
+		}
+		// An exclusion-only constraint permits all other known targets,
+		// including concepts absent from positive membership lists. When
+		// positive constraints are also present, continue to their usual checks.
+		if len(constraint.AllowedConceptIDs) == 0 && len(constraint.AllowedKinds) == 0 {
+			return true
+		}
+	}
 	for _, kind := range constraint.AllowedKinds {
 		if kind == actualKind {
 			return true

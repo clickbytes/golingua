@@ -49,7 +49,7 @@ func BuildIndexWithCandidates(frames []ValencyFrame, bindings []ConstructionBind
 		}
 		indexItems += len(frame.SemanticRoles) + len(frame.Arguments) + len(frame.SelectionalConstraints) + len(frame.AllowedFamilyIDs)
 		for _, constraint := range frame.SelectionalConstraints {
-			indexItems += len(constraint.AllowedConceptIDs) + len(constraint.AllowedKinds)
+			indexItems += len(constraint.AllowedConceptIDs) + len(constraint.ExcludedConceptIDs) + len(constraint.AllowedKinds)
 		}
 		if indexItems > MaxIndexItems {
 			return nil, resourceLimit("index_items", indexItems, MaxIndexItems)

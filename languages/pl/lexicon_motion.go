@@ -5,7 +5,9 @@ package pl
 // or sentence generation capability.
 var motionEntries = []lexicalEntry{
 	{"pl.chodzic.v", "chodzić", "verb", []lexicalMeaning{{"pl.chodzic.walk", "Locomotion on foot by alternating steps while maintaining ground contact.", "walking"}}},
+	{"pl.isc.v", "iść", "verb", []lexicalMeaning{{"pl.isc.go", "Movement on foot in a direction or toward a destination, with no speed or manner specified.", "walking"}, {"pl.isc.move", "An entity changes spatial position without specifying the means or manner of movement.", "movement"}}},
 	{"pl.biec.v", "biec", "verb", []lexicalMeaning{{"pl.biec.run", "Rapid locomotion on foot involving intervals without ground contact.", "running"}}},
+	{"pl.latac.v", "latać", "verb", []lexicalMeaning{{"pl.latac.fly", "Repeated or habitual movement through the air while supported by aerodynamic or powered lift.", "flying_motion"}}},
 	{"pl.czolgac_sie.v", "czołgać się", "verb_reflexive", []lexicalMeaning{{"pl.czolgac_sie.crawl", "Locomotion supported by hands, knees, or the body close to a surface.", "crawling"}}},
 	{"pl.skakac.v", "skakać", "verb", []lexicalMeaning{{"pl.skakac.jump", "Propelled movement in which a body temporarily leaves its support surface.", "jumping"}}},
 	{"pl.spadac.v", "spadać", "verb", []lexicalMeaning{{"pl.spadac.fall", "Predominantly downward movement under gravity without sustained support.", "falling"}, {"pl.spadac.reduce", "A measurable magnitude becoming smaller between two observations.", "reducing_quantity"}}},
@@ -36,6 +38,10 @@ func motionFrameForSense(senseID string) (string, bool) {
 	switch senseID {
 	case "pl.chodzic.walk":
 		return "pl.chodzic.walk.motion", true
+	case "pl.isc.move":
+		return "pl.isc.move.motion", true
+	case "pl.latac.fly":
+		return "pl.latac.fly.motion", true
 	case "pl.biec.run":
 		return "pl.biec.run.motion", true
 	case "pl.czolgac_sie.crawl":

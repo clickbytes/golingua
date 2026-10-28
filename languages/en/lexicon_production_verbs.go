@@ -12,7 +12,7 @@ var englishProductionVerbSource = provenance.SourceRef{
 
 // These pending verbs name work, creation, recording and document editing.
 var englishProductionVerbEntries = []lexicalEntry{
-	{"en.working.v", "work", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.working.event", "apply effort to perform an assigned or productive task", "working"}}},
+	{"en.working.v", "work", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.working.event", "apply effort to perform an assigned or productive task", "working"}, {"en.working.activity", "perform work without asserting a particular task", "working_activity"}}},
 	{"en.making_object.v", "make", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.making_object.event", "bring a new artifact or object into existence by action", "making_object"}}},
 	{"en.manufacturing.v", "manufacture", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.manufacturing.event", "produce goods by organized processes using equipment or labor", "manufacturing"}}},
 	{"en.designing_object.v", "design", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.designing_object.event", "form a specification of how a new object or system should function or appear", "designing_object"}}},

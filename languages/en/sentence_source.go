@@ -115,6 +115,15 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	for sense := range manipulationSenses {
 		supportedSenses[sense] = true
 	}
+	intransitiveSenses := map[ids.SenseID]bool{}
+	for _, name := range []string{"en.sleep.physiological", "en.breathing.event", "en.sneezing.event", "en.running.event", "en.coughing.event", "en.walking.event", "en.living.event", "en.flying_motion.event", "en.waking_up.event", "en.falling_asleep.event", "en.working.activity", "en.go.spatial_movement"} {
+		sense, senseErr := ids.NewSenseID(name)
+		if senseErr != nil {
+			return nil, senseErr
+		}
+		intransitiveSenses[sense] = true
+		supportedSenses[sense] = true
+	}
 	predicateAlternatives := map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
 		seeingSense: {
 			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "first", "verb_number": "singular", "number": "singular"},
@@ -165,11 +174,17 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
 		}
 	}
+	for sense := range intransitiveSenses {
+		predicateAlternatives[sense] = []map[features.FeatureID]features.FeatureValueID{
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
+		}
+	}
 	return &runtime.SourcePipeline{
 		Language: "en", ClauseConnector: "and", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}}, AllowFinalPeriod: false,
 		ScopedSourcePlan: scopedPlan, ScopedReadingPolicy: ScopedSourceReadingPolicy,
 		RelationPathPlan: relationPathPlan, RelationSourceReadingPolicy: RelationSourceReadingPolicy,
-		AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "do": true, "does": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true, "who": true, "whom": true, "and": true},
+		AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "do": true, "does": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true, "who": true, "whom": true, "and": true, "up": true, "asleep": true},
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
@@ -181,7 +196,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		EvidenceBuilder: englishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), base: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses:                     supportedSenses,
 			PredicateFeatureAlternativesBySense: predicateAlternatives,
-			AllowedUnlexicalizedTerminals:       map[string]bool{"at": true, "do": true, "does": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true},
+			AllowedUnlexicalizedTerminals:       map[string]bool{"at": true, "do": true, "does": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true, "up": true, "asleep": true},
 		}},
 	}, nil
 }
@@ -576,6 +591,9 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 			candidate.Features = make(map[features.FeatureID]features.FeatureValueID)
 		}
 		if candidate.Category == construction.CategoryVP {
+			if candidate.LexemeID.String() == "lexeme:en.falling.v" && candidate.TokenEnd < len(lattice.Tokens) && lattice.Tokens[candidate.TokenEnd].Token.Folded == "asleep" {
+				continue
+			}
 			if number := candidate.Features["verb_number"]; number != "" {
 				candidate.Features["number"] = number
 			}

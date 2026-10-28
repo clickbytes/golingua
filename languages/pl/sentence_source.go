@@ -120,6 +120,15 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	for sense := range manipulationSenses {
 		supportedSenses[sense] = true
 	}
+	intransitiveSenses := map[ids.SenseID]bool{}
+	for _, name := range []string{"pl.spac.sleep", "pl.oddychac.breathe", "pl.kichac.sneeze", "pl.biec.run", "pl.kaszlec.cough", "pl.chodzic.walk", "pl.isc.move", "pl.zyc.live", "pl.latac.fly", "pl.zasypiac.sleep", "pl.budzic_sie.wake", "pl.pracowac.activity"} {
+		sense, senseErr := ids.NewSenseID(name)
+		if senseErr != nil {
+			return nil, senseErr
+		}
+		intransitiveSenses[sense] = true
+		supportedSenses[sense] = true
+	}
 	predicateAlternatives := map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
 		seeingSense: append([]map[features.FeatureID]features.FeatureValueID{
 			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
@@ -173,24 +182,30 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
 		}
 	}
+	for sense := range intransitiveSenses {
+		predicateAlternatives[sense] = []map[features.FeatureID]features.FeatureValueID{
+			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
+			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
+		}
+	}
 	return &runtime.SourcePipeline{
 		Language: "pl", ClauseConnector: "i", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}}, AllowFinalPeriod: false,
 		ScopedSourcePlan: scopedPlan, ScopedReadingPolicy: ScopedSourceReadingPolicy,
 		RelationPathPlan: relationPathPlan, RelationSourceReadingPolicy: RelationSourceReadingPolicy,
-		AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "nie": true, "to": true, "ten": true, "jest": true, "są": true, "kto": true, "kogo": true, "i": true},
+		AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "nie": true, "to": true, "ten": true, "jest": true, "są": true, "kto": true, "kogo": true, "i": true, "się": true},
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
 		PhraseBuilder: polishWHGapPhraseBuilder{inner: polishPastSeeingPhraseBuilder{inner: polishIdentificationPhraseBuilder{inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
 			Categories: map[lexicon.PartOfSpeech][]construction.SlotCategory{
-				"noun": {construction.CategoryNP}, "pronoun": {construction.CategoryNP}, "verb": {construction.CategoryVP}, "adjective": {construction.CategoryAP},
+				"noun": {construction.CategoryNP}, "pronoun": {construction.CategoryNP}, "verb": {construction.CategoryVP}, "verb_reflexive": {construction.CategoryVP}, "adjective": {construction.CategoryAP},
 			},
 			CaseFeature: "case", CaseValues: caseValues,
 		}}}}},
 		EvidenceBuilder: polishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), valency: valencyIndex, constructions: registry, base: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses:                     supportedSenses,
 			PredicateFeatureAlternativesBySense: predicateAlternatives,
-			AllowedUnlexicalizedTerminals:       map[string]bool{"na": true, "nie": true, "to": true, "ten": true, "jest": true},
+			AllowedUnlexicalizedTerminals:       map[string]bool{"na": true, "nie": true, "to": true, "ten": true, "jest": true, "się": true},
 		}},
 	}, nil
 }

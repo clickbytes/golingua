@@ -66,6 +66,27 @@ type constructionBindingDeclaration struct {
 }
 
 var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
+	{"pl.zasypiac.sleep", "pl.zasypiac.sleep.action", "pl.intransitive", "pl.intransitive.sv.period"},
+	{"pl.budzic_sie.wake", "pl.budzic_sie.wake.action", "pl.intransitive", "pl.intransitive.sv.reflexive.period"},
+	{"pl.spac.sleep", "pl.spac.sleep.frame", "pl.intransitive", "pl.intransitive.sv"},
+	{"pl.spac.sleep", "pl.spac.sleep.frame", "pl.intransitive", "pl.intransitive.sv.period"},
+	{"pl.oddychac.breathe", "pl.oddychac.breathe.action", "pl.intransitive", "pl.intransitive.sv"},
+	{"pl.oddychac.breathe", "pl.oddychac.breathe.action", "pl.intransitive", "pl.intransitive.sv.period"},
+	{"pl.kichac.sneeze", "pl.kichac.sneeze.action", "pl.intransitive", "pl.intransitive.sv"},
+	{"pl.kichac.sneeze", "pl.kichac.sneeze.action", "pl.intransitive", "pl.intransitive.sv.period"},
+	{"pl.biec.run", "pl.biec.run.motion", "pl.intransitive", "pl.intransitive.sv"},
+	{"pl.biec.run", "pl.biec.run.motion", "pl.intransitive", "pl.intransitive.sv.period"},
+	{"pl.kaszlec.cough", "pl.kaszlec.cough.action", "pl.intransitive", "pl.intransitive.sv"},
+	{"pl.kaszlec.cough", "pl.kaszlec.cough.action", "pl.intransitive", "pl.intransitive.sv.period"},
+	{"pl.chodzic.walk", "pl.chodzic.walk.motion", "pl.intransitive", "pl.intransitive.sv"},
+	{"pl.chodzic.walk", "pl.chodzic.walk.motion", "pl.intransitive", "pl.intransitive.sv.period"},
+	{"pl.isc.move", "pl.isc.move.motion", "pl.intransitive", "pl.intransitive.sv.period"},
+	{"pl.zyc.live", "pl.zyc.live.action", "pl.intransitive", "pl.intransitive.sv"},
+	{"pl.zyc.live", "pl.zyc.live.action", "pl.intransitive", "pl.intransitive.sv.period"},
+	{"pl.latac.fly", "pl.latac.fly.motion", "pl.intransitive", "pl.intransitive.sv"},
+	{"pl.latac.fly", "pl.latac.fly.motion", "pl.intransitive", "pl.intransitive.sv.period"},
+	{"pl.pracowac.activity", "pl.pracowac.activity.frame", "pl.intransitive", "pl.intransitive.sv"},
+	{"pl.pracowac.activity", "pl.pracowac.activity.frame", "pl.intransitive", "pl.intransitive.sv.period"},
 	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.question.wh", "pl.question.wh.subject"},
 	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.question.wh", "pl.question.wh.object.fronted"},
 	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.question.wh", "pl.question.wh.subject.realize"},
@@ -160,6 +181,9 @@ var polishFrames = []frameDeclaration{
 	{"pl.spac.sleep.frame", "pl.spac.sleep", "pl.intransitive", []meaning.Role{"sleeper"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "sleeper", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 	}},
+	{"pl.pracowac.activity.frame", "pl.pracowac.activity", "pl.intransitive", []meaning.Role{"worker"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "worker", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+	}},
 }
 
 // CompileValency compiles sense-specific Polish frames and the construction
@@ -215,6 +239,13 @@ func CompileValency() (*valency.Index, error) {
 			SemanticRoles:    append([]meaning.Role(nil), item.roles...),
 			Arguments:        append([]valency.ArgumentSlot(nil), item.arguments...),
 			AllowedFamilyIDs: []ids.ConstructionID{familyID}, Provenance: polishValencySource,
+		}
+		if item.id == "pl.zyc.live.action" {
+			meat, err := ids.NewConceptID("meat_food")
+			if err != nil {
+				return nil, fmt.Errorf("Polish living exclusion concept: %w", err)
+			}
+			frame.SelectionalConstraints = []valency.SelectionalConstraint{{ID: "living_organism_excludes_meat", Role: "organism", Strength: valency.ConstraintHard, ExcludedConceptIDs: []ids.ConceptID{meat}}}
 		}
 		if item.id == "pl.widziec.visual.transitive" || item.id == "pl.slyszec.auditory.transitive" || item.id == "pl.czytac.interpret.frame" {
 			for _, family := range []string{"pl.transitive_personal", "pl.transitive_personal_explicit"} {
