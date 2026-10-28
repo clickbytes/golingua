@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"INVALID_BINDER_TEMPORAL_FRAME","message":"temporal_frame must be past or present","path":"expression.body.body.body.operands[1].temporal_frame","severity":"error"}]}
