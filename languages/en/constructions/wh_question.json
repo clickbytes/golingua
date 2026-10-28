@@ -34,8 +34,22 @@
       "conditions":[{"kind":"feature_equals","slot_id":"verb","feature":"person","value":"third"},{"kind":"feature_equals","slot_id":"verb","feature":"verb_number","value":"singular"}]
     },
     {
+      "id":"construction:en.question.wh.subject.realize.plural","family_id":"construction:en.question.wh",
+      "sequence":[{"kind":"terminal","terminal":"who"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"the"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"?"}],
+      "markedness":"neutral","priority":0,"direction_policy":"realize",
+      "provenance":{"id":"golingua-dse-wh-395","path":"languages/en/constructions/wh_question.json","version":"2026-10-27","license":"internal","author":"Codex by owner delegation"},
+      "conditions":[{"kind":"feature_equals","slot_id":"verb","feature":"person","value":"third"},{"kind":"feature_equals","slot_id":"verb","feature":"verb_number","value":"plural"}]
+    },
+    {
       "id":"construction:en.question.wh.object.neutral","family_id":"construction:en.question.wh",
       "sequence":[{"kind":"terminal","terminal":"whom"},{"kind":"terminal","terminal":"does"},{"kind":"terminal","terminal":"the"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"?"}],
+      "markedness":"neutral","priority":0,"direction_policy":"realize",
+      "provenance":{"id":"golingua-dse-wh-395","path":"languages/en/constructions/wh_question.json","version":"2026-10-27","license":"internal","author":"Codex by owner delegation"},
+      "conditions":[{"kind":"feature_equals","slot_id":"verb","feature":"verb_form","value":"base"},{"kind":"feature_equals","slot_id":"verb","feature":"person","value":"third"},{"kind":"feature_equals","slot_id":"verb","feature":"verb_number","value":"singular"}]
+    },
+    {
+      "id":"construction:en.question.wh.object.neutral.do","family_id":"construction:en.question.wh",
+      "sequence":[{"kind":"terminal","terminal":"whom"},{"kind":"terminal","terminal":"do"},{"kind":"terminal","terminal":"the"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"?"}],
       "markedness":"neutral","priority":0,"direction_policy":"realize",
       "provenance":{"id":"golingua-dse-wh-395","path":"languages/en/constructions/wh_question.json","version":"2026-10-27","license":"internal","author":"Codex by owner delegation"},
       "conditions":[{"kind":"feature_equals","slot_id":"verb","feature":"verb_form","value":"base"}]
@@ -45,6 +59,13 @@
       "sequence":[{"kind":"terminal","terminal":"whom"},{"kind":"terminal","terminal":"does"},{"kind":"terminal","terminal":"the"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"?"}],
       "markedness":"neutral","priority":0,"direction_policy":"analyze",
       "provenance":{"id":"golingua-dse-wh-395","path":"languages/en/constructions/wh_question.json","version":"2026-10-27","license":"internal","author":"Codex by owner delegation"},
+      "conditions":[{"kind":"feature_equals","slot_id":"verb","feature":"verb_form","value":"base"}]
+    },
+    {
+      "id":"construction:en.question.wh.object.neutral.do.analyze","family_id":"construction:en.question.wh",
+      "sequence":[{"kind":"terminal","terminal":"whom"},{"kind":"terminal","terminal":"do"},{"kind":"terminal","terminal":"the"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"?"}],
+      "markedness":"neutral","priority":0,"direction_policy":"analyze",
+      "provenance":{"id":"golingua-dse-wh-398-agreement-source","path":"languages/en/constructions/wh_question.json","version":"2026-10-28","license":"internal","author":"Codex by owner delegation"},
       "conditions":[{"kind":"feature_equals","slot_id":"verb","feature":"verb_form","value":"base"}]
     }
   ]

@@ -94,12 +94,27 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 	if predicate.QuestionAnswer != nil && predicate.QuestionAnswer.TargetNodeID == predicate.NodeID && slot.Category == construction.CategoryVP {
 		switch predicate.QuestionAnswer.Role {
 		case "experiencer":
-			// English subject WH uses the ordinary finite third-person singular form.
-			return englishFiniteVerbFeatures("present", "third", "singular"), nil
+			person, number, _, _, ok := englishWHSubjectAgreement(source, predicate, candidates)
+			if !ok {
+				return nil, fmt.Errorf("English subject WH cannot preserve the supplied person and number evidence")
+			}
+			return englishFiniteVerbFeatures("present", person, number), nil
 		case "stimulus":
-			// The fronted object question has overt do-support in the construction;
-			// its lexical verb therefore selects the base cell.
-			return []features.FeatureValue{{Feature: "verb_form", State: features.StateKnown, Value: "base"}}, nil
+			person, number, _, _, ok := englishWHSubjectAgreement(source, predicate, candidates)
+			if !ok {
+				return nil, fmt.Errorf("English object WH cannot preserve the supplied subject agreement evidence")
+			}
+			values := []features.FeatureValue{{Feature: "verb_form", State: features.StateKnown, Value: "base"}}
+			if person != "" {
+				values = append(values, features.FeatureValue{Feature: "person", State: features.StateKnown, Value: features.FeatureValueID(person)})
+			}
+			if number != "" {
+				values = append(values,
+					features.FeatureValue{Feature: "number", State: features.StateKnown, Value: features.FeatureValueID(number)},
+					features.FeatureValue{Feature: "verb_number", State: features.StateKnown, Value: features.FeatureValueID(number)},
+				)
+			}
+			return values, nil
 		default:
 			return nil, fmt.Errorf("English WH target does not support answer role %q", predicate.QuestionAnswer.Role)
 		}
@@ -330,6 +345,162 @@ func englishFiniteVerbFeatures(tense, person, number string) []features.FeatureV
 	return values
 }
 
+// englishWHSubjectAgreement keeps question agreement tied to the explicit
+// subject participant and its selected target number. A target-local default
+// may guide the licensed surface only when the realization plan records it as
+// an assumption.
+func englishWHSubjectAgreement(source semantic.MeaningCandidate, predicate realizer.TargetCandidate, candidates []realizer.TargetCandidate) (person, number string, personKnown, numberKnown, ok bool) {
+	referent, exists := englishReferentForRole(source, predicate.NodeID, "experiencer")
+	if !exists {
+		if source.QuestionAnswer == nil || source.QuestionAnswer.TargetNodeID != predicate.NodeID || source.QuestionAnswer.Role != "experiencer" {
+			return "", "", false, false, false
+		}
+		values, found := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)
+		person, number := "", ""
+		if found {
+			person = string(values["person"])
+			number = string(values["verb_number"])
+			if number == "" {
+				number = string(values["number"])
+			}
+		}
+		if person != "" && person != "first" && person != "second" && person != "third" ||
+			number != "" && number != "singular" && number != "plural" {
+			return "", "", false, false, false
+		}
+		if person != "" && person != "third" {
+			return "", "", false, false, false
+		}
+		personKnown, numberKnown = person != "", number != ""
+		person = "third"
+		if number == "" {
+			number = "singular"
+		}
+		return person, number, personKnown, numberKnown, true
+	}
+	personFeature, numberFeature := "", ""
+	mergeFeatures := func(values map[features.FeatureID]features.FeatureValueID, found bool) bool {
+		if !found {
+			return true
+		}
+		if value := string(values[features.FeatureID("person")]); value != "" {
+			if value != "first" && value != "second" && value != "third" || personFeature != "" && personFeature != value {
+				return false
+			}
+			personFeature = value
+		}
+		for _, key := range []features.FeatureID{"number", "verb_number"} {
+			value := string(values[key])
+			if value == "" {
+				continue
+			}
+			if value != "singular" && value != "plural" || numberFeature != "" && numberFeature != value {
+				return false
+			}
+			numberFeature = value
+		}
+		return true
+	}
+	if !mergeFeatures(runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)) ||
+		!mergeFeatures(runtime.SourceFeatures(source, "experiencer", coreConcept(referent))) {
+		return "", "", false, false, false
+	}
+
+	localNumber, semanticNumber, numberOK := englishPredicateNumber(source, predicate, candidates)
+	if !numberOK {
+		return "", "", false, false, false
+	}
+	if multiplicity := englishMultiplicityNumber(referent.Multiplicity); multiplicity != "" && numberFeature != "" && multiplicity != numberFeature {
+		return "", "", false, false, false
+	}
+	if numberFeature != "" {
+		if localNumber != numberFeature {
+			return "", "", false, false, false
+		}
+		localNumber = numberFeature
+	}
+	person, personKnown = personFeature, personFeature != ""
+	number, numberKnown = localNumber, semanticNumber || numberFeature != ""
+
+	if englishParticipantAnchorIntent(source, referent.ID) {
+		anchor, anchored := englishParticipantAnchor(source, referent.ID)
+		if !anchored || anchor.Kind != "participant" {
+			return "", "", false, false, false
+		}
+		anchorPerson, anchorNumber := "", ""
+		switch anchor.Value {
+		case "speaker":
+			anchorPerson, anchorNumber = "first", "singular"
+		case "speaker_inclusive_group":
+			anchorPerson, anchorNumber = "first", "plural"
+		case "addressee":
+			anchorPerson = "second"
+		default:
+			return "", "", false, false, false
+		}
+		if personFeature != "" && personFeature != anchorPerson ||
+			anchorNumber != "" && numberKnown && number != anchorNumber {
+			return "", "", false, false, false
+		}
+		person, personKnown = anchorPerson, true
+		if anchorNumber != "" {
+			number, numberKnown = anchorNumber, true
+		}
+	} else if person != "" && person != "third" {
+		// Non-deictic noun phrases take third-person agreement. First- and
+		// second-person subjects require their explicit participant anchor.
+		return "", "", false, false, false
+	}
+	if person == "" {
+		// A non-deictic nominal subject has third-person agreement. The target
+		// lexical class does not determine whether an unknown referent is a
+		// speaker or addressee.
+		person, personKnown = "third", referent.Concept != ""
+	}
+	if number == "" {
+		number = "singular"
+	}
+	if source.QuestionAnswer != nil && source.QuestionAnswer.Role == "stimulus" &&
+		!numberKnown && englishParticipantAnchorIntent(source, referent.ID) {
+		anchor, anchored := englishParticipantAnchor(source, referent.ID)
+		if anchored && anchor.Value == "addressee" {
+			// Do-support is invariant across the addressee's unresolved number.
+			number = ""
+		}
+	}
+	return person, number, personKnown, numberKnown, true
+}
+
+func englishWHQuestionNumberKnown(source semantic.MeaningCandidate, predicate realizer.TargetCandidate, role meaning.Role) bool {
+	values, found := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)
+	if found && (string(values["number"]) == "singular" || string(values["number"]) == "plural" ||
+		string(values["verb_number"]) == "singular" || string(values["verb_number"]) == "plural") {
+		return true
+	}
+	referent, exists := englishReferentForRole(source, predicate.NodeID, role)
+	if !exists {
+		return false
+	}
+	if englishMultiplicityNumber(referent.Multiplicity) != "" {
+		return true
+	}
+	for _, request := range []struct {
+		role    meaning.Role
+		concept ids.ConceptID
+	}{{"", predicate.TransferBinding.CoreRef}, {role, coreConcept(referent)}} {
+		values, found := runtime.SourceFeatures(source, request.role, request.concept)
+		if found && (string(values["number"]) == "singular" || string(values["number"]) == "plural" ||
+			string(values["verb_number"]) == "singular" || string(values["verb_number"]) == "plural") {
+			return true
+		}
+	}
+	if englishParticipantAnchorIntent(source, referent.ID) {
+		anchor, anchored := englishParticipantAnchor(source, referent.ID)
+		return anchored && anchor.Kind == "participant" && (anchor.Value == "speaker" || anchor.Value == "speaker_inclusive_group")
+	}
+	return false
+}
+
 type englishSentencePlanAnnotations struct{}
 
 func (englishSentencePlanAnnotations) Annotations(_ context.Context, source semantic.MeaningCandidate, selected realizer.TargetCandidate) ([]realizer.FeatureConstraint, []realizer.FieldAssumption, []realizer.FieldLoss, error) {
@@ -390,6 +561,15 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 	if !pathFound {
 		return nil, nil, nil, nil
 	}
+	whSubjectAnswer := source.QuestionAnswer != nil && source.QuestionAnswer.TargetNodeID == selected.NodeID && source.QuestionAnswer.Role == "experiencer"
+	whSubjectNumberKnown := whSubjectAnswer && englishWHQuestionNumberKnown(source, selected, "experiencer")
+	whSubjectNumberAssumptionAdded := false
+	if whSubjectAnswer && !whSubjectNumberKnown {
+		if _, hasSubjectReferent := englishReferentForRole(source, selected.NodeID, "experiencer"); !hasSubjectReferent {
+			assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "number", Value: "singular", Reason: "WH subject answer carries no number evidence; this target candidate uses singular agreement"})
+			whSubjectNumberAssumptionAdded = true
+		}
+	}
 	if predicate.TemporalFrame == "" {
 		assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning carries no temporal frame; this response uses the approved present-tense route"})
 	}
@@ -401,7 +581,7 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 		assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning carries no grammatical person; this response uses the approved third-person form"})
 	}
 	if role := englishPredicateSubjectRoleForTarget(selected); role != "" {
-		if referent, found := englishReferentForRole(source, selected.NodeID, role); found && referent.Multiplicity == "" {
+		if referent, found := englishReferentForRole(source, selected.NodeID, role); found && referent.Multiplicity == "" && !whSubjectAnswer {
 			nodeID := englishSubjectNode(source, selected.NodeID)
 			anchor, anchored := englishParticipantAnchor(source, nodeID)
 			if !anchored || anchor.Value != "addressee" {
@@ -420,7 +600,12 @@ func (englishSentencePlanAnnotations) Annotations(_ context.Context, source sema
 		}
 		participantAnchor, participantAnchored := englishParticipantAnchor(source, referent.ID)
 		if referent.Multiplicity == "" && !(participantAnchored && participantAnchor.Value == "addressee") {
-			assumptions = append(assumptions, realizer.FieldAssumption{Path: referentPath, Field: "number", Value: "lexeme_default", Reason: "Meaning carries no referent multiplicity; the target uses its local number class"})
+			value, reason := "lexeme_default", "Meaning carries no referent multiplicity; the target uses its local number class"
+			if whSubjectAnswer && participant.Role == "experiencer" && !whSubjectNumberKnown && !whSubjectNumberAssumptionAdded {
+				value, reason = "singular", "WH subject answer carries no number evidence; this target candidate uses singular agreement"
+				whSubjectNumberAssumptionAdded = true
+			}
+			assumptions = append(assumptions, realizer.FieldAssumption{Path: referentPath, Field: "number", Value: value, Reason: reason})
 		}
 		if participantAnchored && participantAnchor.Value == "addressee" && referent.Multiplicity != "" {
 			losses = append(losses, realizer.FieldLoss{Path: referentPath, Field: "number", Outcome: status.OutcomeIncomplete, Reason: "English you does not encode the source addressee number"})
@@ -477,7 +662,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 		return false
 	}
 	if source.QuestionAnswer != nil && (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState) && candidate.NodeID == source.QuestionAnswer.TargetNodeID {
-		return englishWHQuestionTargetCandidate(source, candidate)
+		return englishWHQuestionTargetCandidate(source, candidate, candidates)
 	}
 	const (
 		transitiveFamily     = "construction:en.transitive"
@@ -792,7 +977,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 // englishWHQuestionTargetCandidate selects a neutral target variant by its
 // actual missing role slot and licensed WH terminals. Variant IDs remain data
 // identifiers; they do not decide the answer role.
-func englishWHQuestionTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate) bool {
+func englishWHQuestionTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) bool {
 	answer := source.QuestionAnswer
 	if answer == nil || candidate.QuestionAnswer == nil || *candidate.QuestionAnswer != *answer ||
 		candidate.Family.Family.ID.String() != "construction:en.question.wh" ||
@@ -845,12 +1030,42 @@ func englishWHQuestionTargetCandidate(source semantic.MeaningCandidate, candidat
 		_, who := terminals["who"]
 		_, whom := terminals["whom"]
 		_, does := terminals["does"]
-		return who && !whom && !does
+		_, do := terminals["do"]
+		if !who || whom || does || do {
+			return false
+		}
+		person, number, _, _, agreementKnown := englishWHSubjectAgreement(source, candidate, candidates)
+		if !agreementKnown || person != "third" {
+			return false
+		}
+		variantNumber := ""
+		for _, condition := range candidate.CompiledVariant.Variant.Conditions {
+			if condition.Kind != construction.ConditionFeatureEquals || condition.SlotID != "verb" || condition.Feature != "verb_number" {
+				continue
+			}
+			value := string(condition.Value)
+			if value != "singular" && value != "plural" || variantNumber != "" && variantNumber != value {
+				return false
+			}
+			variantNumber = value
+		}
+		return variantNumber != "" && variantNumber == number
 	case "stimulus":
 		_, whom := terminals["whom"]
 		_, does := terminals["does"]
+		_, do := terminals["do"]
 		_, who := terminals["who"]
-		return whom && does && !who
+		if !whom || who || does == do {
+			return false
+		}
+		person, number, _, _, agreementKnown := englishWHSubjectAgreement(source, candidate, candidates)
+		if !agreementKnown {
+			return false
+		}
+		if does {
+			return person == "third" && number == "singular"
+		}
+		return person != "third" || number != "singular"
 	default:
 		return false
 	}
