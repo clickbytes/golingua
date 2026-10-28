@@ -223,7 +223,7 @@ func mustPolishReferent(source semantic.MeaningCandidate, referentID meaning.Nod
 func polishIdentificationAttributesAllowed(source semantic.MeaningCandidate, predicateID meaning.NodeID, role meaning.Role, referentID meaning.NodeID, coreID ids.ConceptID) bool {
 	predicate, predicateExists := polishMeaningNode(source, predicateID)
 	referent, referentExists := polishMeaningNode(source, referentID)
-	if !predicateExists || !referentExists || referent.Kind != meaning.KindReferent || predicate.TemporalFrame == meaning.TemporalFramePast || referent.Multiplicity == meaning.MultiplicityMany {
+	if !predicateExists || !referentExists || referent.Kind != meaning.KindReferent || predicate.TemporalFrame == meaning.TemporalFramePast {
 		return false
 	}
 	return polishFrameEvidenceConsistent(source, predicateID, coreID) &&

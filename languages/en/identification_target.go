@@ -64,7 +64,7 @@ func englishIdentificationState(source semantic.MeaningCandidate) (englishIdenti
 				id.mode = mode
 			}
 		}
-		if id.mode != "proximal" && id.mode != "unresolved" && id.mode != "demonstrative" {
+		if id.mode != "proximal" && id.mode != "distal" && id.mode != "unresolved" && id.mode != "demonstrative" {
 			id.valid = false
 		}
 		return id, true
@@ -208,10 +208,11 @@ func englishIdentificationMemberCountSupported(source semantic.MeaningCandidate,
 				break
 			}
 		}
-		article, articleKnown := englishIndefiniteArticle(candidate.Lexeme.Properties)
-		// The current classification variants emit a fixed "a". A different
-		// or undeclared article is not licensed by these constructions.
-		if explicitCount && !mass && !pluralOnly && articleKnown && article == "a" {
+		_, articleKnown := englishIndefiniteArticle(candidate.Lexeme.Properties)
+		if mass && !pluralOnly && !explicitCount {
+			return true
+		}
+		if explicitCount && !mass && !pluralOnly && articleKnown {
 			return true
 		}
 	}
@@ -247,7 +248,7 @@ func englishIdentificationContext(context semantic.MeaningContext, expected engl
 		return "", false
 	}
 	mode := mention.Anchor.Value
-	if mode != "proximal" && mode != "unresolved" && mode != "demonstrative" {
+	if mode != "proximal" && mode != "distal" && mode != "unresolved" && mode != "demonstrative" {
 		return "", false
 	}
 	return mode, true
@@ -265,11 +266,15 @@ func englishIdentificationConcept(senseID string) string {
 
 func englishIdentificationReferenceChoice(variant, family string) (string, bool) {
 	switch variant {
-	case family + ".this":
+	case family + ".these":
+		return "these", true
+	case family + ".those":
+		return "those", true
+	case family + ".this", family + ".this.an", family + ".this.mass":
 		return "this", true
-	case family + ".that":
+	case family + ".that", family + ".that.an", family + ".that.mass":
 		return "that", true
-	case "construction:en.identification.it", "construction:en.identification_negative.it":
+	case "construction:en.identification.it", "construction:en.identification.it.an", "construction:en.identification.it.mass", "construction:en.identification_negative.it", "construction:en.identification_negative.it.an", "construction:en.identification_negative.it.mass":
 		if family == "construction:en.identification" || family == "construction:en.identification_negative" {
 			return "it", true
 		}

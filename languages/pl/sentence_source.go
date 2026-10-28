@@ -104,7 +104,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		Language: "pl", ClauseConnector: "i", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}}, AllowFinalPeriod: false,
 		ScopedSourcePlan: scopedPlan, ScopedReadingPolicy: ScopedSourceReadingPolicy,
 		RelationPathPlan: relationPathPlan, RelationSourceReadingPolicy: RelationSourceReadingPolicy,
-		AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "nie": true, "to": true, "ten": true, "jest": true, "kto": true, "kogo": true, "i": true},
+		AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "nie": true, "to": true, "ten": true, "jest": true, "są": true, "kto": true, "kogo": true, "i": true},
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
@@ -150,6 +150,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 				},
 				classificationSense: {
 					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
+					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
 				},
 				attributionSense: {
 					{"degree": "positive", "number": "singular", "gender": "masculine_animal", "case": "nominative"},

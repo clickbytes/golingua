@@ -238,7 +238,7 @@ func englishPredicateEvidenceConsistent(source semantic.MeaningCandidate, predic
 func englishIdentificationAttributesAllowed(source semantic.MeaningCandidate, predicateID meaning.NodeID, role string, referentID meaning.NodeID, coreID ids.ConceptID) bool {
 	predicate, predicateExists := englishMeaningNode(source, predicateID)
 	referent, referentExists := englishMeaningNode(source, referentID)
-	if !predicateExists || !referentExists || referent.Kind != meaning.KindReferent || predicate.TemporalFrame == meaning.TemporalFramePast || referent.Multiplicity == meaning.MultiplicityMany {
+	if !predicateExists || !referentExists || referent.Kind != meaning.KindReferent || predicate.TemporalFrame == meaning.TemporalFramePast {
 		return false
 	}
 	return englishFrameEvidenceConsistent(source, predicateID, coreID) &&

@@ -130,8 +130,8 @@ func (polishSentencePlanAnnotations) Annotations(_ context.Context, source seman
 		}
 		assumptions := polishIdentificationDefaults(predicatePath, referentPath, predicate, source.Meaning.Nodes, referentID, "negative identification")
 		var losses []realizer.FieldLoss
-		if mode == "proximal" {
-			losses = append(losses, realizer.FieldLoss{Path: referentPath, Field: "deixis", Outcome: status.OutcomeIncomplete, Reason: "Polish to nie preserves demonstrative reference but does not encode the source's explicit proximal distance"})
+		if mode == "proximal" || mode == "distal" {
+			losses = append(losses, realizer.FieldLoss{Path: referentPath, Field: "deixis", Outcome: status.OutcomeIncomplete, Reason: "Polish to nie preserves demonstrative reference but does not encode the source's explicit distance"})
 		}
 		return nil, assumptions, losses, nil
 	}
@@ -146,8 +146,8 @@ func (polishSentencePlanAnnotations) Annotations(_ context.Context, source seman
 		}
 		assumptions := polishIdentificationDefaults(predicatePath, referentPath, predicate, source.Meaning.Nodes, referentID, "identification")
 		var losses []realizer.FieldLoss
-		if mode == "proximal" {
-			losses = append(losses, realizer.FieldLoss{Path: referentPath, Field: "deixis", Outcome: status.OutcomeIncomplete, Reason: "Polish to/ten preserves demonstrative reference but does not encode the source's explicit proximal distance"})
+		if mode == "proximal" || mode == "distal" {
+			losses = append(losses, realizer.FieldLoss{Path: referentPath, Field: "deixis", Outcome: status.OutcomeIncomplete, Reason: "Polish to/ten preserves demonstrative reference but does not encode the source's explicit distance"})
 		}
 		return nil, assumptions, losses, nil
 	}
@@ -497,7 +497,7 @@ func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.Meaning
 			if sourceHasScope(source) {
 				scopeID, referentID, validGraph := polishNegatedClassificationState(source, candidate.NodeID)
 				mode, validContext := polishNegatedClassificationReferenceMode(source, candidate.NodeID)
-				return validGraph && validContext && (mode == "unresolved" || mode == "proximal") && scopeID != "" &&
+				return validGraph && validContext && (mode == "unresolved" || mode == "proximal" || mode == "distal") && scopeID != "" &&
 					polishIdentificationAttributesAllowed(source, candidate.NodeID, "member", referentID, candidate.TransferBinding.CoreRef) &&
 					candidate.Sense.ID.String() == "sense:pl.byc.class_membership" &&
 					string(candidate.Frame.ID) == "pl.byc.class_membership.frame" &&
@@ -509,7 +509,7 @@ func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.Meaning
 				return false
 			}
 			mode, valid := polishIdentificationReferenceMode(source, candidate.NodeID)
-			return valid && (mode == "proximal" || mode == "unresolved") &&
+			return valid && (mode == "proximal" || mode == "distal" || mode == "unresolved") &&
 				candidate.Sense.ID.String() == "sense:pl.byc.class_membership" &&
 				string(candidate.Frame.ID) == "pl.byc.class_membership.frame" &&
 				candidate.Family.Family.ID.String() == "construction:pl.identification" &&
@@ -522,7 +522,7 @@ func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.Meaning
 		}
 		switch concept {
 		case "concept:class_membership":
-			return mode == "proximal" || mode == "unresolved"
+			return mode == "proximal" || mode == "distal" || mode == "unresolved"
 		case "concept:black":
 			gender, _, knownFeatures := polishIdentificationReferentFeatures(source, referentID, all)
 			if !knownFeatures {
