@@ -1,0 +1,398 @@
+{
+  "schema_version": 1,
+  "format": "finite-goal-certificate-v1",
+  "producer_status": "constructed_unverified",
+  "goal_verified": false,
+  "origin": "construct",
+  "goal_fingerprint": "tampered",
+  "snapshot_id": "rewrite-formal-v1:e072ac59241608aadb39229ca541d0c1f8e9e3fb5a945b4d6299a196547cf86e",
+  "context_id": "independence-route-context",
+  "profile": "positive-facts-v1",
+  "concrete_goal": {
+    "schema_version": 1,
+    "profile": "positive-facts-v1",
+    "context_id": "independence-route-context",
+    "expected_type": {
+      "kind": "Arrow",
+      "from": {
+        "kind": "Nominal",
+        "sort_id": "route_node"
+      },
+      "to": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Nominal",
+          "sort_id": "route_node"
+        },
+        "to": {
+          "kind": "Prop"
+        }
+      }
+    },
+    "ports": [
+      {
+        "id": "x",
+        "type": {
+          "kind": "Nominal",
+          "sort_id": "route_node"
+        }
+      },
+      {
+        "id": "y",
+        "type": {
+          "kind": "Nominal",
+          "sort_id": "route_node"
+        }
+      }
+    ],
+    "references": [],
+    "allowed_operators": [
+      "relation",
+      "join",
+      "restrict",
+      "bind",
+      "permute"
+    ],
+    "constraints": [
+      {
+        "id": "route-path",
+        "kind": "path",
+        "symbol": "route",
+        "from_port": "x",
+        "to_port": "y",
+        "from_role": "start",
+        "to_role": "finish",
+        "allowed_atom_counts": [
+          2
+        ]
+      },
+      {
+        "id": "endpoint-marker",
+        "kind": "unary",
+        "symbol": "marked",
+        "port": "y"
+      }
+    ],
+    "provenance": [
+      {
+        "id": "dse399-neutral-proposal",
+        "uri": "https://github.com/clickbytes/golingua/issues/399",
+        "version": "2026-10-28.1",
+        "license": "internal-neutral-example",
+        "author": "Codex by owner delegation"
+      }
+    ],
+    "limits": {
+      "max_atoms": 16,
+      "max_steps": 64,
+      "term_limits": {
+        "max_nodes": 4096,
+        "max_depth": 64,
+        "max_type_depth": 32,
+        "max_symbols": 512,
+        "max_ports": 16
+      }
+    }
+  },
+  "choices": [],
+  "candidate_fingerprint": "sha256:06c71231d597df35b928b1c52e52e828ccb072a2545c605a2de795a3b8ee7ba6",
+  "interface": [
+    {
+      "port": "x",
+      "binder": "rel_route_start_1_fresh_1"
+    },
+    {
+      "port": "y",
+      "binder": "rel_route_finish_1_fresh_2"
+    }
+  ],
+  "operations": [
+    {
+      "id": "s1",
+      "rule_id": "algebra.relation.v1",
+      "op": "relation",
+      "inputs": [],
+      "symbol": "route",
+      "mapping": [],
+      "outputs": [],
+      "ports": [
+        "start",
+        "finish"
+      ],
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Nominal",
+          "sort_id": "route_node"
+        },
+        "to": {
+          "kind": "Arrow",
+          "from": {
+            "kind": "Nominal",
+            "sort_id": "route_node"
+          },
+          "to": {
+            "kind": "Prop"
+          }
+        }
+      },
+      "interface": [
+        {
+          "port": "start",
+          "binder": "rel_route_start_1"
+        },
+        {
+          "port": "finish",
+          "binder": "rel_route_finish_1"
+        }
+      ],
+      "substitutions": []
+    },
+    {
+      "id": "s2",
+      "rule_id": "algebra.relation.v1",
+      "op": "relation",
+      "inputs": [],
+      "symbol": "route",
+      "mapping": [],
+      "outputs": [],
+      "ports": [
+        "start",
+        "finish"
+      ],
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Nominal",
+          "sort_id": "route_node"
+        },
+        "to": {
+          "kind": "Arrow",
+          "from": {
+            "kind": "Nominal",
+            "sort_id": "route_node"
+          },
+          "to": {
+            "kind": "Prop"
+          }
+        }
+      },
+      "interface": [
+        {
+          "port": "start",
+          "binder": "rel_route_start_1"
+        },
+        {
+          "port": "finish",
+          "binder": "rel_route_finish_1"
+        }
+      ],
+      "substitutions": []
+    },
+    {
+      "id": "s3",
+      "rule_id": "algebra.join.v1",
+      "op": "join",
+      "inputs": [
+        "s1",
+        "s2"
+      ],
+      "mapping": [
+        {
+          "left_port": "finish",
+          "right_port": "start"
+        }
+      ],
+      "outputs": [
+        {
+          "side": "left",
+          "port": "start",
+          "as": "x"
+        },
+        {
+          "side": "right",
+          "port": "finish",
+          "as": "y"
+        }
+      ],
+      "ports": [
+        "x",
+        "y"
+      ],
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Nominal",
+          "sort_id": "route_node"
+        },
+        "to": {
+          "kind": "Arrow",
+          "from": {
+            "kind": "Nominal",
+            "sort_id": "route_node"
+          },
+          "to": {
+            "kind": "Prop"
+          }
+        }
+      },
+      "interface": [
+        {
+          "port": "x",
+          "binder": "rel_route_start_1_fresh_1"
+        },
+        {
+          "port": "y",
+          "binder": "rel_route_finish_1_fresh_2"
+        }
+      ],
+      "substitutions": []
+    },
+    {
+      "id": "s4",
+      "rule_id": "algebra.relation.v1",
+      "op": "relation",
+      "inputs": [],
+      "symbol": "marked",
+      "mapping": [],
+      "outputs": [],
+      "ports": [
+        "item"
+      ],
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Nominal",
+          "sort_id": "route_node"
+        },
+        "to": {
+          "kind": "Prop"
+        }
+      },
+      "interface": [
+        {
+          "port": "item",
+          "binder": "rel_marked_item_1"
+        }
+      ],
+      "substitutions": []
+    },
+    {
+      "id": "s5",
+      "rule_id": "algebra.restrict.v1",
+      "op": "restrict",
+      "inputs": [
+        "s3",
+        "s4"
+      ],
+      "symbol": "marked",
+      "mapping": [],
+      "outputs": [],
+      "port": "y",
+      "ports": [
+        "x",
+        "y"
+      ],
+      "goal_port_id": "y",
+      "claimed_status": "ok",
+      "checked_type": {
+        "kind": "Arrow",
+        "from": {
+          "kind": "Nominal",
+          "sort_id": "route_node"
+        },
+        "to": {
+          "kind": "Arrow",
+          "from": {
+            "kind": "Nominal",
+            "sort_id": "route_node"
+          },
+          "to": {
+            "kind": "Prop"
+          }
+        }
+      },
+      "interface": [
+        {
+          "port": "x",
+          "binder": "rel_route_start_1_fresh_1"
+        },
+        {
+          "port": "y",
+          "binder": "rel_route_finish_1_fresh_2"
+        }
+      ],
+      "substitutions": []
+    }
+  ],
+  "scopes": [
+    {
+      "binder_id": "rel_route_start_1_fresh_1",
+      "kind": "Lambda",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "route_node"
+      },
+      "path": "expression"
+    },
+    {
+      "binder_id": "rel_route_finish_1_fresh_2",
+      "kind": "Lambda",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "route_node"
+      },
+      "path": "expression.body",
+      "parent_binder_id": "rel_route_start_1_fresh_1"
+    },
+    {
+      "binder_id": "join_0_1",
+      "kind": "Exists",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "route_node"
+      },
+      "path": "expression.body.body.operands[0]",
+      "parent_binder_id": "rel_route_finish_1_fresh_2"
+    }
+  ],
+  "obligations": [
+    {
+      "constraint_id": "route-path",
+      "kind": "path",
+      "status": "structural_claim",
+      "step_ids": [],
+      "fragments": [
+        "candidate.expression.body.body.operands[0].body.operands[0]",
+        "candidate.expression.body.body.operands[0].body.operands[1]"
+      ]
+    },
+    {
+      "constraint_id": "endpoint-marker",
+      "kind": "unary",
+      "status": "structural_claim",
+      "step_ids": [],
+      "fragments": [
+        "candidate.expression.body.body.operands[1]"
+      ]
+    }
+  ],
+  "assumptions": [
+    {
+      "kind": "typed_registry_snapshot",
+      "value": "rewrite-formal-v1:e072ac59241608aadb39229ca541d0c1f8e9e3fb5a945b4d6299a196547cf86e"
+    },
+    {
+      "kind": "request_reference_boundary",
+      "value": "sha256:8693bf410db4f31f1fb22c3c183c7019bdf717a0a4e959d5311cd5ac38956f93"
+    },
+    {
+      "kind": "positive_structural_profile",
+      "value": "positive-facts-v1"
+    }
+  ]
+}

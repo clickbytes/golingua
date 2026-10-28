@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "sorts": [
+    {
+      "id": "transfer_unit"
+    }
+  ],
+  "signatures": [
+    {
+      "id": "tagged",
+      "ports": [
+        {
+          "role": "object",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "transfer_unit"
+          }
+        }
+      ]
+    },
+    {
+      "id": "transfer",
+      "ports": [
+        {
+          "role": "from",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "transfer_unit"
+          }
+        },
+        {
+          "role": "to",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "transfer_unit"
+          }
+        }
+      ]
+    }
+  ],
+  "expression": {
+    "kind": "Lambda",
+    "id": "rel_transfer_from_1_fresh_1",
+    "type": {
+      "kind": "Nominal",
+      "sort_id": "transfer_unit"
+    },
+    "body": {
+      "kind": "Lambda",
+      "id": "rel_transfer_to_1_fresh_2",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "transfer_unit"
+      },
+      "body": {
+        "kind": "And",
+        "operands": [
+          {
+            "kind": "Exists",
+            "id": "join_0_1",
+            "type": {
+              "kind": "Nominal",
+              "sort_id": "transfer_unit"
+            },
+            "body": {
+              "kind": "And",
+              "operands": [
+                {
+                  "kind": "Atom",
+                  "symbol": "transfer",
+                  "args": [
+                    {
+                      "role": "from",
+                      "value": {
+                        "kind": "Var",
+                        "id": "rel_transfer_from_1_fresh_1"
+                      }
+                    },
+                    {
+                      "role": "to",
+                      "value": {
+                        "kind": "Var",
+                        "id": "join_0_1"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "kind": "Atom",
+                  "symbol": "transfer",
+                  "args": [
+                    {
+                      "role": "from",
+                      "value": {
+                        "kind": "Var",
+                        "id": "join_0_1"
+                      }
+                    },
+                    {
+                      "role": "to",
+                      "value": {
+                        "kind": "Var",
+                        "id": "rel_transfer_to_1_fresh_2"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "Atom",
+            "symbol": "tagged",
+            "args": [
+              {
+                "role": "object",
+                "value": {
+                  "kind": "Var",
+                  "id": "rel_transfer_to_1_fresh_2"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "limits": {
+    "max_nodes": 4096,
+    "max_depth": 64,
+    "max_type_depth": 32,
+    "max_symbols": 512,
+    "max_ports": 16
+  }
+}

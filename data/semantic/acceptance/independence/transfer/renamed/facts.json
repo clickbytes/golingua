@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "context_id": "transfer-context-renamed",
+  "referents": [
+    {
+      "id": "d0",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "unit_x"
+      }
+    },
+    {
+      "id": "d1",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "unit_x"
+      }
+    },
+    {
+      "id": "d2",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "unit_x"
+      }
+    },
+    {
+      "id": "d3",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "unit_x"
+      }
+    },
+    {
+      "id": "d4",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "unit_x"
+      }
+    }
+  ],
+  "facts": [
+    {
+      "id": "g01",
+      "atom": {
+        "symbol": "r2",
+        "args": [
+          {
+            "role": "a2",
+            "value": {
+              "kind": "Ref",
+              "id": "d0"
+            }
+          },
+          {
+            "role": "b2",
+            "value": {
+              "kind": "Ref",
+              "id": "d1"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "source_transfer"
+      },
+      "assertion_scope": "asserted"
+    },
+    {
+      "id": "g02",
+      "atom": {
+        "symbol": "r2",
+        "args": [
+          {
+            "role": "a2",
+            "value": {
+              "kind": "Ref",
+              "id": "d1"
+            }
+          },
+          {
+            "role": "b2",
+            "value": {
+              "kind": "Ref",
+              "id": "d4"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "source_transfer"
+      },
+      "assertion_scope": "asserted"
+    },
+    {
+      "id": "g03",
+      "atom": {
+        "symbol": "r2",
+        "args": [
+          {
+            "role": "a2",
+            "value": {
+              "kind": "Ref",
+              "id": "d0"
+            }
+          },
+          {
+            "role": "b2",
+            "value": {
+              "kind": "Ref",
+              "id": "d2"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "source_transfer"
+      },
+      "assertion_scope": "asserted"
+    },
+    {
+      "id": "g04",
+      "atom": {
+        "symbol": "r2",
+        "args": [
+          {
+            "role": "a2",
+            "value": {
+              "kind": "Ref",
+              "id": "d2"
+            }
+          },
+          {
+            "role": "b2",
+            "value": {
+              "kind": "Ref",
+              "id": "d3"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "source_transfer"
+      },
+      "assertion_scope": "asserted"
+    },
+    {
+      "id": "g05",
+      "atom": {
+        "symbol": "r2",
+        "args": [
+          {
+            "role": "a2",
+            "value": {
+              "kind": "Ref",
+              "id": "d3"
+            }
+          },
+          {
+            "role": "b2",
+            "value": {
+              "kind": "Ref",
+              "id": "d4"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "source_transfer"
+      },
+      "assertion_scope": "asserted"
+    },
+    {
+      "id": "g06",
+      "atom": {
+        "symbol": "u2",
+        "args": [
+          {
+            "role": "v2",
+            "value": {
+              "kind": "Ref",
+              "id": "d4"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "source_transfer"
+      },
+      "assertion_scope": "asserted"
+    }
+  ]
+}

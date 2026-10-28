@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "context_id": "independence-route-context",
+  "referents": [
+    {
+      "id": "route-origin",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "route_node"
+      }
+    },
+    {
+      "id": "route-hub-a",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "route_node"
+      }
+    },
+    {
+      "id": "route-hub-b",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "route_node"
+      }
+    },
+    {
+      "id": "route-hub-c",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "route_node"
+      }
+    },
+    {
+      "id": "route-terminal",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "route_node"
+      }
+    }
+  ],
+  "facts": [
+    {
+      "id": "route-a-1",
+      "atom": {
+        "symbol": "route",
+        "args": [
+          {
+            "role": "start",
+            "value": {
+              "kind": "Ref",
+              "id": "route-origin"
+            }
+          },
+          {
+            "role": "finish",
+            "value": {
+              "kind": "Ref",
+              "id": "route-hub-a"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "dse399-neutral-facts"
+      },
+      "assertion_scope": "asserted"
+    },
+    {
+      "id": "route-a-2",
+      "atom": {
+        "symbol": "route",
+        "args": [
+          {
+            "role": "start",
+            "value": {
+              "kind": "Ref",
+              "id": "route-hub-a"
+            }
+          },
+          {
+            "role": "finish",
+            "value": {
+              "kind": "Ref",
+              "id": "route-terminal"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "dse399-neutral-facts"
+      },
+      "assertion_scope": "asserted"
+    },
+    {
+      "id": "route-b-1",
+      "atom": {
+        "symbol": "route",
+        "args": [
+          {
+            "role": "start",
+            "value": {
+              "kind": "Ref",
+              "id": "route-origin"
+            }
+          },
+          {
+            "role": "finish",
+            "value": {
+              "kind": "Ref",
+              "id": "route-hub-b"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "dse399-neutral-facts"
+      },
+      "assertion_scope": "asserted"
+    },
+    {
+      "id": "route-b-2",
+      "atom": {
+        "symbol": "route",
+        "args": [
+          {
+            "role": "start",
+            "value": {
+              "kind": "Ref",
+              "id": "route-hub-b"
+            }
+          },
+          {
+            "role": "finish",
+            "value": {
+              "kind": "Ref",
+              "id": "route-hub-c"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "dse399-neutral-facts"
+      },
+      "assertion_scope": "asserted"
+    },
+    {
+      "id": "route-b-3",
+      "atom": {
+        "symbol": "route",
+        "args": [
+          {
+            "role": "start",
+            "value": {
+              "kind": "Ref",
+              "id": "route-hub-c"
+            }
+          },
+          {
+            "role": "finish",
+            "value": {
+              "kind": "Ref",
+              "id": "route-terminal"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "dse399-neutral-facts"
+      },
+      "assertion_scope": "asserted"
+    },
+    {
+      "id": "route-terminal-marked",
+      "atom": {
+        "symbol": "marked",
+        "args": [
+          {
+            "role": "item",
+            "value": {
+              "kind": "Ref",
+              "id": "route-terminal"
+            }
+          }
+        ]
+      },
+      "polarity": "positive",
+      "valid_time": {},
+      "source": {
+        "kind": "user",
+        "id": "dse399-neutral-facts"
+      },
+      "assertion_scope": "asserted"
+    }
+  ]
+}

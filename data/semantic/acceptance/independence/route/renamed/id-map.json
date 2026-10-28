@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "source_package_id": "independence.route.neutral",
+  "renamed_package_id": "independence.route.renamed",
+  "mapping": {
+    "symbols": {
+      "route": "r1",
+      "marked": "u1"
+    },
+    "roles_by_symbol": {
+      "route": {
+        "start": "a1",
+        "finish": "b1"
+      },
+      "marked": {
+        "item": "v1"
+      }
+    },
+    "sort_ids": {
+      "route_node": "node_x"
+    },
+    "goal_ports": {
+      "x": "arg_a",
+      "y": "arg_b"
+    },
+    "constraint_ids": {
+      "route-path": "c_path",
+      "endpoint-marker": "c_property"
+    },
+    "context_id": {
+      "old": "independence-route-context",
+      "new": "route-context-renamed"
+    },
+    "referent_ids": {
+      "route-origin": "c0",
+      "route-hub-a": "c1",
+      "route-hub-b": "c2",
+      "route-hub-c": "c3",
+      "route-terminal": "c4"
+    },
+    "fact_ids": {
+      "route-a-1": "f01",
+      "route-a-2": "f02",
+      "route-b-1": "f03",
+      "route-b-2": "f04",
+      "route-b-3": "f05",
+      "route-terminal-marked": "f06"
+    },
+    "fact_source_id": {
+      "old": "dse399-neutral-facts",
+      "new": "source_route"
+    },
+    "package_id": {
+      "old": "independence.route.neutral",
+      "new": "independence.route.renamed"
+    }
+  },
+  "preserved_attribution_id": "dse399-neutral-proposal",
+  "labels": "removed"
+}

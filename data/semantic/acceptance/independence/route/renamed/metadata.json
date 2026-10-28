@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "id": "independence.route.renamed",
+  "version": "2",
+  "profile": "positive-facts-v1",
+  "provenance": [
+    {
+      "id": "dse399-neutral-proposal",
+      "uri": "https://github.com/clickbytes/golingua/issues/399",
+      "version": "2026-10-28.1",
+      "license": "internal-neutral-example",
+      "author": "Codex by owner delegation"
+    }
+  ],
+  "sorts": [
+    {
+      "id": "node_x"
+    }
+  ],
+  "symbols": [
+    {
+      "id": "r1",
+      "kind": "primitive",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "dse399-neutral-proposal",
+          "uri": "https://github.com/clickbytes/golingua/issues/399",
+          "version": "2026-10-28.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "a1",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "node_x"
+          }
+        },
+        {
+          "role": "b1",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "node_x"
+          }
+        }
+      ]
+    },
+    {
+      "id": "u1",
+      "kind": "primitive",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "dse399-neutral-proposal",
+          "uri": "https://github.com/clickbytes/golingua/issues/399",
+          "version": "2026-10-28.1",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "v1",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "node_x"
+          }
+        }
+      ]
+    }
+  ],
+  "dependencies": [],
+  "typical_edges": [],
+  "axioms": []
+}

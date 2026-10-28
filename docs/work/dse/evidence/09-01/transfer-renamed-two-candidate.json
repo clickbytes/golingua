@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "sorts": [
+    {
+      "id": "unit_x"
+    }
+  ],
+  "signatures": [
+    {
+      "id": "r2",
+      "ports": [
+        {
+          "role": "a2",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "unit_x"
+          }
+        },
+        {
+          "role": "b2",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "unit_x"
+          }
+        }
+      ]
+    },
+    {
+      "id": "u2",
+      "ports": [
+        {
+          "role": "v2",
+          "type": {
+            "kind": "Nominal",
+            "sort_id": "unit_x"
+          }
+        }
+      ]
+    }
+  ],
+  "expression": {
+    "kind": "Lambda",
+    "id": "rel_r2_a2_1_fresh_1",
+    "type": {
+      "kind": "Nominal",
+      "sort_id": "unit_x"
+    },
+    "body": {
+      "kind": "Lambda",
+      "id": "rel_r2_b2_1_fresh_2",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "unit_x"
+      },
+      "body": {
+        "kind": "And",
+        "operands": [
+          {
+            "kind": "Exists",
+            "id": "join_0_1",
+            "type": {
+              "kind": "Nominal",
+              "sort_id": "unit_x"
+            },
+            "body": {
+              "kind": "And",
+              "operands": [
+                {
+                  "kind": "Atom",
+                  "symbol": "r2",
+                  "args": [
+                    {
+                      "role": "a2",
+                      "value": {
+                        "kind": "Var",
+                        "id": "rel_r2_a2_1_fresh_1"
+                      }
+                    },
+                    {
+                      "role": "b2",
+                      "value": {
+                        "kind": "Var",
+                        "id": "join_0_1"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "kind": "Atom",
+                  "symbol": "r2",
+                  "args": [
+                    {
+                      "role": "a2",
+                      "value": {
+                        "kind": "Var",
+                        "id": "join_0_1"
+                      }
+                    },
+                    {
+                      "role": "b2",
+                      "value": {
+                        "kind": "Var",
+                        "id": "rel_r2_b2_1_fresh_2"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "Atom",
+            "symbol": "u2",
+            "args": [
+              {
+                "role": "v2",
+                "value": {
+                  "kind": "Var",
+                  "id": "rel_r2_b2_1_fresh_2"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "limits": {
+    "max_nodes": 4096,
+    "max_depth": 64,
+    "max_type_depth": 32,
+    "max_symbols": 512,
+    "max_ports": 16
+  }
+}

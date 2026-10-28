@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "profile": "positive-facts-v1",
+  "context_id": "independence-route-context",
+  "expected_type": {
+    "kind": "Arrow",
+    "from": {
+      "kind": "Nominal",
+      "sort_id": "route_node"
+    },
+    "to": {
+      "kind": "Arrow",
+      "from": {
+        "kind": "Nominal",
+        "sort_id": "route_node"
+      },
+      "to": {
+        "kind": "Prop"
+      }
+    }
+  },
+  "ports": [
+    {
+      "id": "x",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "route_node"
+      }
+    },
+    {
+      "id": "y",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "route_node"
+      }
+    }
+  ],
+  "references": [],
+  "allowed_operators": [
+    "relation",
+    "join",
+    "restrict",
+    "bind",
+    "permute"
+  ],
+  "constraints": [
+    {
+      "id": "route-path",
+      "kind": "path",
+      "symbol": "route",
+      "from_port": "x",
+      "to_port": "y",
+      "from_role": "start",
+      "to_role": "finish",
+      "allowed_atom_counts": [
+        3
+      ]
+    },
+    {
+      "id": "endpoint-marker",
+      "kind": "unary",
+      "symbol": "marked",
+      "port": "y"
+    }
+  ],
+  "provenance": [
+    {
+      "id": "dse399-neutral-proposal",
+      "uri": "https://github.com/clickbytes/golingua/issues/399",
+      "version": "2026-10-28.1",
+      "license": "internal-neutral-example",
+      "author": "Codex by owner delegation"
+    }
+  ],
+  "limits": {}
+}

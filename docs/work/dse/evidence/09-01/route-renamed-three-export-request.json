@@ -1,0 +1,186 @@
+{
+  "context_dependencies": [],
+  "context_id": "route-context-renamed",
+  "document": {
+    "expression": {
+      "body": {
+        "body": {
+          "kind": "And",
+          "operands": [
+            {
+              "body": {
+                "kind": "And",
+                "operands": [
+                  {
+                    "body": {
+                      "kind": "And",
+                      "operands": [
+                        {
+                          "args": [
+                            {
+                              "role": "a1",
+                              "value": {
+                                "id": "rel_r1_a1_1_fresh_1_fresh_1",
+                                "kind": "Var"
+                              }
+                            },
+                            {
+                              "role": "b1",
+                              "value": {
+                                "id": "join_0_1_fresh_1",
+                                "kind": "Var"
+                              }
+                            }
+                          ],
+                          "kind": "Atom",
+                          "symbol": "r1"
+                        },
+                        {
+                          "args": [
+                            {
+                              "role": "a1",
+                              "value": {
+                                "id": "join_0_1_fresh_1",
+                                "kind": "Var"
+                              }
+                            },
+                            {
+                              "role": "b1",
+                              "value": {
+                                "id": "join_0_1",
+                                "kind": "Var"
+                              }
+                            }
+                          ],
+                          "kind": "Atom",
+                          "symbol": "r1"
+                        }
+                      ]
+                    },
+                    "id": "join_0_1_fresh_1",
+                    "kind": "Exists",
+                    "type": {
+                      "kind": "Nominal",
+                      "sort_id": "node_x"
+                    }
+                  },
+                  {
+                    "args": [
+                      {
+                        "role": "a1",
+                        "value": {
+                          "id": "join_0_1",
+                          "kind": "Var"
+                        }
+                      },
+                      {
+                        "role": "b1",
+                        "value": {
+                          "id": "rel_r1_b1_1_fresh_1",
+                          "kind": "Var"
+                        }
+                      }
+                    ],
+                    "kind": "Atom",
+                    "symbol": "r1"
+                  }
+                ]
+              },
+              "id": "join_0_1",
+              "kind": "Exists",
+              "type": {
+                "kind": "Nominal",
+                "sort_id": "node_x"
+              }
+            },
+            {
+              "args": [
+                {
+                  "role": "v1",
+                  "value": {
+                    "id": "rel_r1_b1_1_fresh_1",
+                    "kind": "Var"
+                  }
+                }
+              ],
+              "kind": "Atom",
+              "symbol": "u1"
+            }
+          ]
+        },
+        "id": "rel_r1_b1_1_fresh_1",
+        "kind": "Lambda",
+        "type": {
+          "kind": "Nominal",
+          "sort_id": "node_x"
+        }
+      },
+      "id": "rel_r1_a1_1_fresh_1_fresh_1",
+      "kind": "Lambda",
+      "type": {
+        "kind": "Nominal",
+        "sort_id": "node_x"
+      }
+    },
+    "limits": {
+      "max_nodes": 4096,
+      "max_depth": 64,
+      "max_type_depth": 32,
+      "max_symbols": 512,
+      "max_ports": 16
+    },
+    "schema_version": 1,
+    "signatures": [
+      {
+        "id": "r1",
+        "ports": [
+          {
+            "role": "a1",
+            "type": {
+              "kind": "Nominal",
+              "sort_id": "node_x"
+            }
+          },
+          {
+            "role": "b1",
+            "type": {
+              "kind": "Nominal",
+              "sort_id": "node_x"
+            }
+          }
+        ]
+      },
+      {
+        "id": "u1",
+        "ports": [
+          {
+            "role": "v1",
+            "type": {
+              "kind": "Nominal",
+              "sort_id": "node_x"
+            }
+          }
+        ]
+      }
+    ],
+    "sorts": [
+      {
+        "id": "node_x"
+      }
+    ]
+  },
+  "profile": {
+    "id": "dse-construct-artifact-v1",
+    "rules": []
+  },
+  "provenance": [
+    {
+      "id": "dse399-neutral-proposal",
+      "uri": "https://github.com/clickbytes/golingua/issues/399",
+      "version": "2026-10-28.1",
+      "license": "internal-neutral-example",
+      "author": "Codex by owner delegation"
+    }
+  ],
+  "schema_version": 1
+}

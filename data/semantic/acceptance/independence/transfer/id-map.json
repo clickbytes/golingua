@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "source_package_id": "independence.transfer.neutral",
+  "renamed_package_id": "independence.transfer.renamed",
+  "mapping": {
+    "symbols": {
+      "transfer": "r2",
+      "tagged": "u2"
+    },
+    "roles_by_symbol": {
+      "transfer": {
+        "from": "a2",
+        "to": "b2"
+      },
+      "tagged": {
+        "object": "v2"
+      }
+    },
+    "sort_ids": {
+      "transfer_unit": "unit_x"
+    },
+    "goal_ports": {
+      "origin": "arg_c",
+      "destination": "arg_d"
+    },
+    "constraint_ids": {
+      "transfer-chain": "d_path",
+      "destination-tag": "d_property"
+    },
+    "context_id": {
+      "old": "independence-transfer-context",
+      "new": "transfer-context-renamed"
+    },
+    "referent_ids": {
+      "transfer-origin": "d0",
+      "transfer-node-a": "d1",
+      "transfer-node-b": "d2",
+      "transfer-node-c": "d3",
+      "transfer-destination": "d4"
+    },
+    "fact_ids": {
+      "transfer-a-1": "g01",
+      "transfer-a-2": "g02",
+      "transfer-b-1": "g03",
+      "transfer-b-2": "g04",
+      "transfer-b-3": "g05",
+      "transfer-destination-tagged": "g06"
+    },
+    "fact_source_id": {
+      "old": "dse399-neutral-facts",
+      "new": "source_transfer"
+    },
+    "package_id": {
+      "old": "independence.transfer.neutral",
+      "new": "independence.transfer.renamed"
+    }
+  },
+  "preserved_attribution_id": "dse399-neutral-proposal",
+  "labels": "removed"
+}
