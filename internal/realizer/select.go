@@ -482,6 +482,13 @@ func SelectTargets(input Input) (Result, error) {
 							if err != nil {
 								continue
 							}
+							// WH-only families are not applicable to a Meaning with no
+							// question act. Do not let their required answer-gap roles
+							// become failures of an otherwise complete declarative target.
+							// Typed questions still pass through full validation below.
+							if source.QuestionAnswer == nil && !hasQuestionAct(nodes) && familySupportsWHQuestion(family.Family) {
+								continue
+							}
 							variantIndex := input.Variants[familyID]
 							if variantIndex == nil {
 								result.Outcome = mergeOutcome(result.Outcome, status.OutcomeIncomplete)
@@ -809,6 +816,23 @@ func hasQuestionAct(nodes []meaning.Node) bool {
 		}
 	}
 	return false
+}
+
+func familySupportsWHQuestion(family construction.ConstructionFamily) bool {
+	hasQuestionOperator, hasQuestionCapability := false, false
+	for _, operator := range family.Operators {
+		if operator == "question-wh" {
+			hasQuestionOperator = true
+			break
+		}
+	}
+	for _, capability := range family.Capabilities {
+		if capability == "question-wh" {
+			hasQuestionCapability = true
+			break
+		}
+	}
+	return hasQuestionOperator && hasQuestionCapability
 }
 
 func questionGapVariantHasOnlyOmittedRequiredRole(variant construction.Variant, family construction.ConstructionFamily, frame valency.ValencyFrame, answerRole meaning.Role) bool {
