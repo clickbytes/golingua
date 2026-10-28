@@ -99,11 +99,19 @@ var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"pl.widziec.visual", "pl.widziec.visual.transitive_negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
 	{"pl.slyszec.auditory", "pl.slyszec.auditory.transitive_negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
 	{"pl.patrzec.directed", "pl.patrzec.directed.na", "pl.oblique_negative", "pl.oblique_negative.svo"},
+	{"pl.lubic.like", "pl.lubic.like.negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
+	{"pl.ogladac.view", "pl.ogladac.view.negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
 	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.transitive", "pl.transitive.svo"},
 	{"pl.slyszec.auditory", "pl.slyszec.auditory.transitive", "pl.transitive", "pl.transitive.svo"},
 	{"pl.dostac.receive", "pl.dostac.receive.transitive", "pl.transitive", "pl.transitive.svo"},
 	{"pl.czytac.interpret", "pl.czytac.interpret.frame", "pl.transitive", "pl.transitive.svo"},
 	{"pl.jesc.eat", "pl.jesc.eat.frame", "pl.transitive", "pl.transitive.svo"},
+	{"pl.lubic.like", "pl.lubic.like.action", "pl.transitive", "pl.transitive.svo"},
+	{"pl.ogladac.view", "pl.ogladac.view.action", "pl.transitive", "pl.transitive.svo"},
+	{"pl.pisac.document", "pl.pisac.document.action", "pl.transitive", "pl.transitive.svo"},
+	{"pl.pisac.write", "pl.pisac.write.message_only", "pl.transitive", "pl.transitive.svo"},
+	{"pl.pisac.write", "pl.pisac.write.recipient_only", "pl.to_oblique", "pl.to_oblique.svo"},
+	{"pl.pisac.write", "pl.pisac.write.full", "pl.transitive_to", "pl.transitive_to.svoc"},
 	{"pl.pic.drink", "pl.pic.drink.action", "pl.transitive", "pl.transitive.svo"},
 	{"pl.patrzec.directed", "pl.patrzec.directed.na", "pl.oblique", "pl.oblique.svo"},
 	{"pl.otwierac_obiekt.open", "pl.otwierac_obiekt.open.action", "pl.transitive", "pl.transitive.svo"},
@@ -153,6 +161,14 @@ var polishFrames = []frameDeclaration{
 	{"pl.slyszec.auditory.transitive_negative", "pl.slyszec.auditory", "pl.transitive_negative", []meaning.Role{"experiencer", "stimulus"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "experiencer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "object", Role: "stimulus", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+	}},
+	{"pl.lubic.like.negative", "pl.lubic.like", "pl.transitive_negative", []meaning.Role{"experiencer", "target"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "experiencer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "target", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+	}},
+	{"pl.ogladac.view.negative", "pl.ogladac.view", "pl.transitive_negative", []meaning.Role{"viewer", "target"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "viewer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "target", Required: true, GrammaticalFunction: "object", Case: "genitive"},
 	}},
 	{"pl.dostac.receive.transitive", "pl.dostac.receive", "pl.transitive", []meaning.Role{"recipient", "theme"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "recipient", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
@@ -255,6 +271,30 @@ func CompileValency() (*valency.Index, error) {
 			Arguments:        append([]valency.ArgumentSlot(nil), item.arguments...),
 			AllowedFamilyIDs: []ids.ConstructionID{familyID}, Provenance: polishValencySource,
 		}
+		if item.id == "pl.pisac.write.message_only" || item.id == "pl.pisac.write.recipient_only" || item.id == "pl.pisac.write.full" {
+			message, err := ids.NewConceptID("message")
+			if err != nil {
+				return nil, fmt.Errorf("Polish writing-message selection concept: %w", err)
+			}
+			letter, err := ids.NewConceptID("letter_document")
+			if err != nil {
+				return nil, fmt.Errorf("Polish writing-message letter concept: %w", err)
+			}
+			frame.SelectionalConstraints = []valency.SelectionalConstraint{{
+				ID: "writing_message_content", Role: "message", Strength: valency.ConstraintHard,
+				AllowedConceptIDs: []ids.ConceptID{message, letter},
+			}}
+		}
+		if item.id == "pl.pisac.document.action" {
+			document, err := ids.NewConceptID("document")
+			if err != nil {
+				return nil, fmt.Errorf("Polish writing-document selection concept: %w", err)
+			}
+			frame.SelectionalConstraints = []valency.SelectionalConstraint{{
+				ID: "writing_document_content", Role: "document", Strength: valency.ConstraintHard,
+				AllowedConceptIDs: []ids.ConceptID{document},
+			}}
+		}
 		frame.SurfaceOmittedRoles = append([]meaning.Role(nil), polishCommerceOmittedRoles[item.id]...)
 		if item.id == "pl.zyc.live.action" {
 			meat, err := ids.NewConceptID("meat_food")
@@ -293,6 +333,12 @@ func CompileValency() (*valency.Index, error) {
 				return nil, fmt.Errorf("Polish WH question family: %w", err)
 			}
 			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, questionFamilyID)
+		case "pl.lubic.like.action", "pl.ogladac.view.action":
+			negativeFamilyID, err := ids.NewConstructionID("pl.transitive_negative")
+			if err != nil {
+				return nil, fmt.Errorf("Polish negative affective frame family: %w", err)
+			}
+			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
 		case "pl.patrzec.directed.na":
 			negativeFamilyID, err := ids.NewConstructionID("pl.oblique_negative")
 			if err != nil {

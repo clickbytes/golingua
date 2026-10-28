@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "language": "pl",
+  "family": {
+    "id": "construction:pl.transitive_to",
+    "language": "pl",
+    "slot_specs": [
+      {"id":"subject","position":0,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required","case":"nominative"},
+      {"id":"verb","position":1,"category":"VP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"},
+      {"id":"object","position":2,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required","case":"accusative"},
+      {"id":"oblique","position":3,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required","case":"genitive","adposition":"do"}
+    ],
+    "constraints": [{"id":"subject_verb_number","kind":"agreement","strength":"hard","controller_slot":"subject","target_slot":"verb","features":["number"]}],
+    "provenance":{"id":"golingua-issue-434-writing-message","path":"languages/pl/constructions/transitive_to.json","version":"2026-10-28","license":"internal","author":"Codex by owner delegation"}
+  },
+  "variants": [
+    {"id":"construction:pl.transitive_to.svoc","family_id":"construction:pl.transitive_to","sequence":[{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"do"},{"kind":"slot","slot_id":"oblique"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"both","provenance":{"id":"golingua-issue-434-writing-message","path":"languages/pl/constructions/transitive_to.json","version":"2026-10-28","license":"internal","author":"Codex by owner delegation"}}
+  ]
+}

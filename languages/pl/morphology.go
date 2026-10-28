@@ -87,6 +87,9 @@ func polishPresentThirdPersonParadigms(profile *features.LanguageFeatureProfile)
 		{"pl_verb_dawac_present_3sg_3pl", "daje", "dają", provenance.SourceRef{ID: "wsjp-pl-dawac", URI: "https://wsjp.pl/haslo/podglad/6365/dawac/4488497/prezent", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
 		{"pl_verb_kupowac_present_3sg_3pl", "kupuje", "kupują", provenance.SourceRef{ID: "wsjp-pl-kupowac", URI: "https://wsjp.pl/index.php/haslo/podglad/7275/kupowac/2372345/mieszkanie", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
 		{"pl_verb_sprzedawac_present_3sg_3pl", "sprzedaje", "sprzedają", provenance.SourceRef{ID: "wsjp-pl-sprzedawac", URI: "https://wsjp.pl/haslo/podglad/18191/sprzedawac/4925066/w-sklepie", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
+		{"pl_verb_lubic_present_3sg_3pl", "lubi", "lubią", provenance.SourceRef{ID: "wsjp-pl-lubic", URI: "https://wsjp.pl/haslo/podglad/37948/lubic/4064834/ludzi", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
+		{"pl_verb_ogladac_present_3sg_3pl", "ogląda", "oglądają", provenance.SourceRef{ID: "wsjp-pl-ogladac", URI: "https://wsjp.pl/index.php/haslo/podglad/20347/ogladac/4739983/towar", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
+		{"pl_verb_pisac_present_3sg_3pl", "pisze", "piszą", provenance.SourceRef{ID: "wsjp-pl-pisac", URI: "https://wsjp.pl/haslo/podglad/9846/pisac/3960164/do-kolegi", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
 	} {
 		pos := "verb"
 		if item.id == "pl_verb_budzic_sie_present_3sg_3pl" {
@@ -138,6 +141,9 @@ func polishPresentThirdPersonMorphRecords(lexemes []lexicon.MorphLexeme) ([]lexe
 		"lexeme:pl.dawac.v":           {"pl_verb_dawac_present_3sg_3pl", "daje", "dają"},
 		"lexeme:pl.kupowac.v":         {"pl_verb_kupowac_present_3sg_3pl", "kupuje", "kupują"},
 		"lexeme:pl.sprzedawac.v":      {"pl_verb_sprzedawac_present_3sg_3pl", "sprzedaje", "sprzedają"},
+		"lexeme:pl.lubic.v":           {"pl_verb_lubic_present_3sg_3pl", "lubi", "lubią"},
+		"lexeme:pl.ogladac.v":         {"pl_verb_ogladac_present_3sg_3pl", "ogląda", "oglądają"},
+		"lexeme:pl.pisac.v":           {"pl_verb_pisac_present_3sg_3pl", "pisze", "piszą"},
 	}
 	result := make([]lexemeRecord, 0, len(forms))
 	for _, lexeme := range lexemes {

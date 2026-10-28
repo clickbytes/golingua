@@ -5,6 +5,7 @@ package pl
 // data/pl/1000-core-review.tsv; senses link to CORE as pending candidates
 // without transfer authority. No paradigm is asserted for new lexemes yet.
 var mediaEntries = []lexicalEntry{
+	{"pl.gazeta.n", "gazeta", "noun", []lexicalMeaning{{"pl.gazeta.publication", "A periodically issued printed publication containing news, commentary, or other articles.", "newspaper"}}},
 	{"pl.dokument.n", "dokument", "noun", []lexicalMeaning{{"pl.dokument.artifact", "An intentionally recorded information artifact with an identifiable continuing content and form", "document"}}},
 	{"pl.wiadomosc.n", "wiadomość", "noun", []lexicalMeaning{{"pl.wiadomosc.artifact", "A discrete communicated or recorded unit intended to convey information to a recipient", "message"}}},
 	{"pl.list.n", "list", "noun", []lexicalMeaning{{"pl.list.artifact", "A written document composed as correspondence to a specific recipient", "letter_document"}}},

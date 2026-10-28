@@ -25,6 +25,8 @@ var polishPresentNegationRoutes = []polishPresentNegationRoute{
 	{concept: "concept:hearing", sense: "sense:pl.slyszec.auditory", lexeme: "lexeme:pl.slyszec.v", family: "construction:pl.transitive_negative", variant: "construction:pl.transitive_negative.svo", subjectRole: "experiencer", kind: meaning.KindEvent},
 	{concept: "concept:looking", sense: "sense:pl.patrzec.directed", lexeme: "lexeme:pl.patrzec.v", family: "construction:pl.oblique_negative", variant: "construction:pl.oblique_negative.svo", subjectRole: "agent", kind: meaning.KindEvent},
 	{concept: "concept:class_membership", sense: "sense:pl.byc.class_membership", lexeme: "lexeme:pl.byc.v", family: "construction:pl.identification_negative", variant: "construction:pl.identification_negative.to", subjectRole: "member", kind: meaning.KindState},
+	{concept: "concept:liking", sense: "sense:pl.lubic.like", lexeme: "lexeme:pl.lubic.v", family: "construction:pl.transitive_negative", variant: "construction:pl.transitive_negative.svo", subjectRole: "experiencer", kind: meaning.KindEvent},
+	{concept: "concept:watching", sense: "sense:pl.ogladac.view", lexeme: "lexeme:pl.ogladac.v", family: "construction:pl.transitive_negative", variant: "construction:pl.transitive_negative.svo", subjectRole: "viewer", kind: meaning.KindEvent},
 }
 
 func polishPresentNegationRouteForSense(sense ids.SenseID) (polishPresentNegationRoute, bool) {

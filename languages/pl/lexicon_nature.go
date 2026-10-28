@@ -5,6 +5,7 @@ package pl
 // data/pl/1000-core-review.tsv; senses link to CORE as pending candidates
 // without transfer authority. No paradigm is asserted for new lexemes yet.
 var natureEntries = []lexicalEntry{
+	{"pl.deszcz.n", "deszcz", "noun", []lexicalMeaning{{"pl.deszcz.precipitation", "Water falling from clouds in drops.", "rain"}}},
 	{"pl.ssak.n", "ssak", "noun", []lexicalMeaning{{"pl.ssak.animal", "A vertebrate of the mammalian class, typically nursing its young with milk", "mammal"}}},
 	{"pl.ptak.n", "ptak", "noun", []lexicalMeaning{{"pl.ptak.animal", "A feathered vertebrate of the bird class; flight ability is not required", "bird"}}},
 	{"pl.ryba.n", "ryba", "noun", []lexicalMeaning{{"pl.ryba.animal", "An aquatic gill-breathing vertebrate; not a prepared food item", "fish_animal"}, {"pl.ryba.food", "Fish flesh considered as food, distinct from the live fish", "fish_meat"}}},

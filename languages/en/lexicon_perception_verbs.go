@@ -12,6 +12,7 @@ var englishPerceptionVerbSource = provenance.SourceRef{
 
 // These pending verbs distinguish sensory attention, cognition and decision acts.
 var englishPerceptionVerbEntries = []lexicalEntry{
+	{"en.watching.v", "watch", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.watching.event", "observe or keep attention on a person, activity, or event over time", "watching"}}},
 	{"en.listening.v", "listen", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.listening.event", "direct auditory attention toward sounds, whether or not their information is understood", "listening"}}},
 	{"en.smelling.v", "smell", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.smelling.event", "perceive a volatile substance or source through the sense of smell", "smelling"}}},
 	{"en.tasting.v", "taste", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.tasting.event", "perceive a substance’s flavor by contact with taste receptors", "tasting"}}},

@@ -44,7 +44,8 @@ var polishEntries = []lexicalEntry{
 var polishCountNounLexemes = map[string]struct{}{
 	"pl.matka.n": {}, "pl.ojciec.n": {}, "pl.pies.n": {}, "pl.dom.n": {},
 	"pl.szkola.n": {}, "pl.ksiazka.n": {}, "pl.reka.n": {}, "pl.oko.n": {},
-	"pl.dziecko.n": {}, "pl.stol.n": {}, "pl.nauczyciel.n": {}, "pl.lekarz.n": {},
+	"pl.dokument.n": {},
+	"pl.dziecko.n":  {}, "pl.stol.n": {}, "pl.nauczyciel.n": {}, "pl.lekarz.n": {},
 	"pl.samochod.n": {}, "pl.ryba.n": {}, "pl.szpital.n": {}, "pl.pizza.n": {},
 	"pl.okno.n": {}, "pl.jablko.n": {}, "pl.list.n": {},
 	"pl.sasiad.n": {}, "pl.klient.n": {}, "pl.wiadomosc.n": {}, "pl.kot.n": {},
@@ -61,6 +62,15 @@ var polishLexicalSource = provenance.SourceRef{
 var polishManipulationIntegrationSource = provenance.SourceRef{
 	ID: "golingua-pl-manipulation-integration-431", URI: "https://github.com/clickbytes/golingua/issues/431",
 	Version: "2026-10-28", License: "internal", Author: "Codex by owner delegation",
+}
+
+var polishIssue434LexicalBindingSource = provenance.SourceRef{
+	ID: "golingua-pl-concept-binding-434", URI: "https://github.com/clickbytes/golingua/issues/434",
+	Version: "2026-10-28", License: "internal", Author: "Codex by owner delegation",
+}
+
+var polishApprovedIssue434LexicalSenses = map[string]struct{}{
+	"pl.gazeta.publication": {}, "pl.deszcz.precipitation": {}, "pl.ogladac.view": {}, "pl.pisac.document": {},
 }
 
 var polishApprovedManipulationIntegrationSenses = map[string]struct{}{
@@ -575,8 +585,19 @@ var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.pracowac.activity":    "pl.pracowac.activity.frame",
 }
 
+var polishAdditionalFramesBySense = map[string][]lexicon.ValencyID{
+	"pl.pisac.write": {
+		"pl.pisac.write.message_only",
+		"pl.pisac.write.recipient_only",
+		"pl.pisac.write.full",
+	},
+}
+
 var polishParadigmByLexeme = map[string]string{
 	"pl.dac.v":             "pl_verb_dac_past_3sg_masculine",
+	"pl.lubic.v":           "pl_verb_lubic_present_3sg_3pl",
+	"pl.ogladac.v":         "pl_verb_ogladac_present_3sg_3pl",
+	"pl.pisac.v":           "pl_verb_pisac_present_3sg_3pl",
 	"pl.dawac.v":           "pl_verb_dawac_present_3sg_3pl",
 	"pl.kupowac.v":         "pl_verb_kupowac_present_3sg_3pl",
 	"pl.sprzedawac.v":      "pl_verb_sprzedawac_present_3sg_3pl",
@@ -631,6 +652,9 @@ func LexicalDocument() (lexicon.Document, error) {
 	}
 	if err := polishManipulationIntegrationSource.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish manipulation integration source: %w", err)
+	}
+	if err := polishIssue434LexicalBindingSource.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish issue 434 lexical binding source: %w", err)
 	}
 	if err := polishLexicalReviewBatch1Source.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
@@ -724,7 +748,7 @@ func LexicalDocument() (lexicon.Document, error) {
 				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "number_behavior", Value: "count"})
 			}
 			switch entry.id {
-			case "pl.woda.n", "pl.jedzenie.n", "pl.pieniadze.n", "pl.papier.n":
+			case "pl.woda.n", "pl.jedzenie.n", "pl.pieniadze.n", "pl.papier.n", "pl.deszcz.n":
 				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "number_behavior", Value: "mass"})
 			}
 			document.Lexemes = append(document.Lexemes, lexeme)
@@ -734,14 +758,17 @@ func LexicalDocument() (lexicon.Document, error) {
 					return lexicon.Document{}, fmt.Errorf("Polish sense %s: %w", meaning.id, err)
 				}
 				sense := lexicon.LexicalSense{ID: senseID, LexemeID: lexemeID, Usage: []string{meaning.description}}
+				if frameIDs := polishAdditionalFramesBySense[meaning.id]; len(frameIDs) > 0 {
+					sense.ValencyIDs = append(sense.ValencyIDs, frameIDs...)
+				}
 				if frameID, ok := polishFrameBySense[meaning.id]; ok {
-					sense.ValencyIDs = []lexicon.ValencyID{frameID}
+					sense.ValencyIDs = append(sense.ValencyIDs, frameID)
 				} else if frameID, ok := motionFrameForSense(meaning.id); ok {
-					sense.ValencyIDs = []lexicon.ValencyID{lexicon.ValencyID(frameID)}
+					sense.ValencyIDs = append(sense.ValencyIDs, lexicon.ValencyID(frameID))
 				} else if frameID, ok := actionFrameForSense(meaning.id); ok {
-					sense.ValencyIDs = []lexicon.ValencyID{lexicon.ValencyID(frameID)}
+					sense.ValencyIDs = append(sense.ValencyIDs, lexicon.ValencyID(frameID))
 				} else if frameID, ok := additionalFrameForSense(meaning.id); ok {
-					sense.ValencyIDs = []lexicon.ValencyID{lexicon.ValencyID(frameID)}
+					sense.ValencyIDs = append(sense.ValencyIDs, lexicon.ValencyID(frameID))
 				}
 				document.Senses = append(document.Senses, sense)
 				if meaning.candidateCore == "" {
@@ -874,6 +901,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishManipulationIntegrationSource
+				}
+				if _, approved := polishApprovedIssue434LexicalSenses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishIssue434LexicalBindingSource
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}
