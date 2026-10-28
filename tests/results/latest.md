@@ -2,8 +2,8 @@
 
 > Observational report generated on push to `main`. Matrix outcomes do not gate the technical `go-ci` workflow.
 
-- Source SHA: `da879864e1724a5ed7a61f1ce539143121c5cd4f`
-- Generated (UTC): `2026-10-28T15:09:03Z`
+- Source SHA: `01649b86413f68f96f1e5a2585e403d239b79dbb`
+- Generated (UTC): `2026-10-28T15:22:50Z`
 - Command: `go test ./tests/... -count=1 -v`
 - Command exit code: `1` (NONZERO)
 - Registered records: 1000; record checks: 3000
@@ -135,14 +135,14 @@
 | `A1.10-TIME-1066-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1067-EN-PL` | EN → PL | FAIL | PASS | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1068-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1069-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1070-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1071-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1072-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1073-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1074-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1075-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
-| `A1.10-TIME-1076-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1069-EN-PL` | EN → PL | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1070-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1071-EN-PL` | EN → PL | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1072-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1073-EN-PL` | EN → PL | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1074-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1075-EN-PL` | EN → PL | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
+| `A1.10-TIME-1076-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1077-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1078-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
 | `A1.10-TIME-1079-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_multiplicity, participant_roles, semantic_time_frame |
@@ -271,10 +271,10 @@
 | `A1.12-AMB-1206-PL-EN` | PL → EN | FAIL | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1207-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1208-PL-EN` | PL → EN | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1209-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1210-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1211-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
-| `A1.12-AMB-1212-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1209-EN-PL` | EN → PL | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1210-PL-EN` | PL → EN | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1211-EN-PL` | EN → PL | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
+| `A1.12-AMB-1212-PL-EN` | PL → EN | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1213-EN-PL` | EN → PL | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1214-PL-EN` | PL → EN | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1215-EN-PL` | EN → PL | FAIL | PASS | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
@@ -471,22 +471,22 @@
 | `A1.3-CO-322-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.3-CO-323-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.3-CO-324-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
-| `A1.4-AC-401-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_roles, semantic_event, valency |
-| `A1.4-AC-402-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_roles, semantic_event, valency |
-| `A1.4-AC-403-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_roles, semantic_event, valency |
-| `A1.4-AC-404-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_roles, semantic_event, valency |
-| `A1.4-AC-405-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_roles, semantic_event, valency |
-| `A1.4-AC-406-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_roles, semantic_event, valency |
-| `A1.4-AC-407-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_roles, semantic_event, valency |
-| `A1.4-AC-408-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_roles, semantic_event, valency |
-| `A1.4-AC-409-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_roles, semantic_event, valency |
-| `A1.4-AC-410-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_roles, semantic_event, valency |
-| `A1.4-AC-411-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_roles, semantic_event, valency |
-| `A1.4-AC-412-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_roles, semantic_event, valency |
-| `A1.4-AC-413-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_roles, semantic_event, valency |
-| `A1.4-AC-414-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_roles, semantic_event, valency |
-| `A1.4-AC-415-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_roles, semantic_event, valency |
-| `A1.4-AC-416-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_roles, semantic_event, valency |
+| `A1.4-AC-401-EN-PL` | EN → PL | PASS | PASS | PASS | participant_roles, semantic_event, valency |
+| `A1.4-AC-402-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_roles, semantic_event, valency |
+| `A1.4-AC-403-EN-PL` | EN → PL | PASS | PASS | PASS | participant_roles, semantic_event, valency |
+| `A1.4-AC-404-PL-EN` | PL → EN | FAIL | FAIL | FAIL | participant_roles, semantic_event, valency |
+| `A1.4-AC-405-EN-PL` | EN → PL | PASS | PASS | PASS | participant_roles, semantic_event, valency |
+| `A1.4-AC-406-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_roles, semantic_event, valency |
+| `A1.4-AC-407-EN-PL` | EN → PL | PASS | PASS | PASS | participant_roles, semantic_event, valency |
+| `A1.4-AC-408-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_roles, semantic_event, valency |
+| `A1.4-AC-409-EN-PL` | EN → PL | PASS | PASS | PASS | participant_roles, semantic_event, valency |
+| `A1.4-AC-410-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_roles, semantic_event, valency |
+| `A1.4-AC-411-EN-PL` | EN → PL | PASS | PASS | PASS | participant_roles, semantic_event, valency |
+| `A1.4-AC-412-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_roles, semantic_event, valency |
+| `A1.4-AC-413-EN-PL` | EN → PL | PASS | PASS | PASS | participant_roles, semantic_event, valency |
+| `A1.4-AC-414-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_roles, semantic_event, valency |
+| `A1.4-AC-415-EN-PL` | EN → PL | FAIL | PASS | PASS | participant_roles, semantic_event, valency |
+| `A1.4-AC-416-PL-EN` | PL → EN | PASS | FAIL | FAIL | participant_roles, semantic_event, valency |
 | `A1.4-AC-417-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_roles, semantic_event, valency |
 | `A1.4-AC-418-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_roles, semantic_event, valency |
 | `A1.4-AC-419-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | participant_roles, semantic_event, valency |
@@ -1091,8 +1091,8 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_null` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_empty` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_unknown` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_frame_on_referent` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_on_predicate` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_frame_on_referent` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_changed` | PASS |
@@ -1407,44 +1407,46 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 
 | Group | Direction | Stage | Check outcome | Records |
 |---|---|---|---|---:|
-| actions | en → pl | analysis | FAIL | 8 |
-| actions | en → pl | analysis | GAP_ANALYZE | 47 |
-| actions | en → pl | analysis | PASS | 10 |
+| actions | en → pl | analysis | FAIL | 9 |
+| actions | en → pl | analysis | GAP_ANALYZE | 39 |
+| actions | en → pl | analysis | PASS | 17 |
 | actions | en → pl | integration | FAIL | 8 |
-| actions | en → pl | integration | GAP_ANALYZE | 47 |
-| actions | en → pl | integration | PASS | 10 |
-| actions | en → pl | realization | GAP_REALIZE | 47 |
-| actions | en → pl | realization | PASS | 18 |
-| actions | pl → en | analysis | FAIL | 6 |
-| actions | pl → en | analysis | GAP_ANALYZE | 47 |
-| actions | pl → en | analysis | PASS | 12 |
-| actions | pl → en | integration | GAP_ANALYZE | 47 |
+| actions | en → pl | integration | GAP_ANALYZE | 39 |
+| actions | en → pl | integration | PASS | 18 |
+| actions | en → pl | realization | GAP_REALIZE | 39 |
+| actions | en → pl | realization | PASS | 26 |
+| actions | pl → en | analysis | FAIL | 7 |
+| actions | pl → en | analysis | GAP_ANALYZE | 39 |
+| actions | pl → en | analysis | PASS | 19 |
+| actions | pl → en | integration | FAIL | 8 |
+| actions | pl → en | integration | GAP_ANALYZE | 39 |
 | actions | pl → en | integration | PASS | 18 |
-| actions | pl → en | realization | GAP_REALIZE | 47 |
+| actions | pl → en | realization | FAIL | 8 |
+| actions | pl → en | realization | GAP_REALIZE | 39 |
 | actions | pl → en | realization | PASS | 18 |
 | ambiguity_reference | en → pl | analysis | FAIL | 5 |
-| ambiguity_reference | en → pl | analysis | GAP_ANALYZE | 13 |
+| ambiguity_reference | en → pl | analysis | GAP_ANALYZE | 11 |
 | ambiguity_reference | en → pl | analysis | GAP_I | 7 |
-| ambiguity_reference | en → pl | analysis | PASS | 20 |
-| ambiguity_reference | en → pl | integration | FAIL | 5 |
-| ambiguity_reference | en → pl | integration | GAP_ANALYZE | 13 |
+| ambiguity_reference | en → pl | analysis | PASS | 22 |
+| ambiguity_reference | en → pl | integration | FAIL | 7 |
+| ambiguity_reference | en → pl | integration | GAP_ANALYZE | 11 |
 | ambiguity_reference | en → pl | integration | GAP_I | 7 |
 | ambiguity_reference | en → pl | integration | PASS | 20 |
-| ambiguity_reference | en → pl | realization | FAIL | 6 |
+| ambiguity_reference | en → pl | realization | FAIL | 8 |
 | ambiguity_reference | en → pl | realization | GAP_I | 7 |
-| ambiguity_reference | en → pl | realization | GAP_REALIZE | 7 |
+| ambiguity_reference | en → pl | realization | GAP_REALIZE | 5 |
 | ambiguity_reference | en → pl | realization | PASS | 25 |
 | ambiguity_reference | pl → en | analysis | FAIL | 9 |
-| ambiguity_reference | pl → en | analysis | GAP_ANALYZE | 14 |
+| ambiguity_reference | pl → en | analysis | GAP_ANALYZE | 12 |
 | ambiguity_reference | pl → en | analysis | GAP_I | 7 |
-| ambiguity_reference | pl → en | analysis | PASS | 15 |
-| ambiguity_reference | pl → en | integration | FAIL | 8 |
-| ambiguity_reference | pl → en | integration | GAP_ANALYZE | 14 |
+| ambiguity_reference | pl → en | analysis | PASS | 17 |
+| ambiguity_reference | pl → en | integration | FAIL | 10 |
+| ambiguity_reference | pl → en | integration | GAP_ANALYZE | 12 |
 | ambiguity_reference | pl → en | integration | GAP_I | 7 |
 | ambiguity_reference | pl → en | integration | PASS | 16 |
-| ambiguity_reference | pl → en | realization | FAIL | 8 |
+| ambiguity_reference | pl → en | realization | FAIL | 10 |
 | ambiguity_reference | pl → en | realization | GAP_I | 7 |
-| ambiguity_reference | pl → en | realization | GAP_REALIZE | 7 |
+| ambiguity_reference | pl → en | realization | GAP_REALIZE | 5 |
 | ambiguity_reference | pl → en | realization | PASS | 23 |
 | case_adjective_order | en → pl | analysis | FAIL | 4 |
 | case_adjective_order | en → pl | analysis | GAP_ANALYZE | 25 |
@@ -1558,37 +1560,38 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 | questions | pl → en | realization | GAP_I | 42 |
 | questions | pl → en | realization | GAP_REALIZE | 17 |
 | time_agreement | en → pl | analysis | FAIL | 5 |
-| time_agreement | en → pl | analysis | GAP_ANALYZE | 30 |
+| time_agreement | en → pl | analysis | GAP_ANALYZE | 26 |
 | time_agreement | en → pl | analysis | GAP_I | 8 |
-| time_agreement | en → pl | analysis | PASS | 17 |
-| time_agreement | en → pl | integration | FAIL | 5 |
-| time_agreement | en → pl | integration | GAP_ANALYZE | 30 |
+| time_agreement | en → pl | analysis | PASS | 21 |
+| time_agreement | en → pl | integration | FAIL | 9 |
+| time_agreement | en → pl | integration | GAP_ANALYZE | 26 |
 | time_agreement | en → pl | integration | GAP_I | 8 |
 | time_agreement | en → pl | integration | PASS | 17 |
+| time_agreement | en → pl | realization | FAIL | 4 |
 | time_agreement | en → pl | realization | GAP_I | 8 |
-| time_agreement | en → pl | realization | GAP_REALIZE | 30 |
+| time_agreement | en → pl | realization | GAP_REALIZE | 26 |
 | time_agreement | en → pl | realization | PASS | 22 |
 | time_agreement | pl → en | analysis | FAIL | 3 |
-| time_agreement | pl → en | analysis | GAP_ANALYZE | 30 |
+| time_agreement | pl → en | analysis | GAP_ANALYZE | 26 |
 | time_agreement | pl → en | analysis | GAP_I | 8 |
-| time_agreement | pl → en | analysis | PASS | 19 |
-| time_agreement | pl → en | integration | FAIL | 8 |
-| time_agreement | pl → en | integration | GAP_ANALYZE | 30 |
+| time_agreement | pl → en | analysis | PASS | 23 |
+| time_agreement | pl → en | integration | FAIL | 12 |
+| time_agreement | pl → en | integration | GAP_ANALYZE | 26 |
 | time_agreement | pl → en | integration | GAP_I | 8 |
 | time_agreement | pl → en | integration | PASS | 14 |
-| time_agreement | pl → en | realization | FAIL | 5 |
+| time_agreement | pl → en | realization | FAIL | 9 |
 | time_agreement | pl → en | realization | GAP_I | 8 |
-| time_agreement | pl → en | realization | GAP_REALIZE | 30 |
+| time_agreement | pl → en | realization | GAP_REALIZE | 26 |
 | time_agreement | pl → en | realization | PASS | 17 |
 
 ## Inventory and pack metadata
 
 - Inventory records parsed: 1000 / 1000 declared directions.
 - Snapshot identity records: 1.
-- Sense catalogue associations parsed: 2031 (not morphology execution coverage).
+- Sense catalogue associations parsed: 2032 (not morphology execution coverage).
 - Declared Meaning ID references: 1094 allowed; 1094 required.
 - Inventory fields preserve declared tags, source semantics, allowed/required Meaning IDs, and owner status separately from runtime observations.
-- Inventory source SHA `da879864e1724a5ed7a61f1ce539143121c5cd4f`: 1000 directions.
+- Inventory source SHA `01649b86413f68f96f1e5a2585e403d239b79dbb`: 1000 directions.
 
 ### Declared source requirements
 
@@ -1661,7 +1664,7 @@ Aggregates below summarize authored source requirements; they are not observed a
 | `writing_message` | 2 |
 
 Declared role mentions: `agent` 16, `asset` 4, `associate` 4, `associated` 22, `author` 4, `back` 8, `bearer` 24, `beneficiary` 6, `choice_restriction` 2, `companion` 2, `content` 2, `destination` 2, `document` 2, `drinker` 16, `eater` 12, `entity` 2, `existence` 50, `experiencer` 160, `figure` 4, `food` 10, `friend_a` 2, `friend_b` 2, `front` 8, `giver` 20, `helper` 6, `higher` 6, `holder` 50, `instrument` 4, `item` 4, `landmark` 32, `landmark_a` 4, `landmark_b` 4, `liquid` 12, `located` 34, `location` 10, `lower` 6, `manner` 2, `material` 38, `member` 2, `object` 56, `occupant` 6, `owner` 4, `partner` 2, `person_variable` 6, `possessor` 18, `quantified_set` 50, `reader` 38, `reason` 2, `recipient` 24, `runner` 4, `sibling_a` 4, `sibling_b` 4, `sleeper` 22, `source` 2, `speaker` 4, `stimulus` 160, `support` 2, `supported` 2, `target` 4, `thanker` 2, `theme` 20, `time` 4, `tool` 2, `user` 2, `walker` 2, `writer` 2.
-- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "67d23354976e6f5d0bd5b15e27a27a64d6216e278d3b1264d5bb1a0fdf2b9a8c", "format_version": 1}`; inventory source SHA: `da879864e1724a5ed7a61f1ce539143121c5cd4f`.
+- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "43e904103f0944984c67d5e410f4b93872dc73b49afef13504f9cda2da08c6ca", "format_version": 1}`; inventory source SHA: `01649b86413f68f96f1e5a2585e403d239b79dbb`.
 
 Catalogue sense associations are not proof that a paradigm form or morphology procedure ran. Aggregates below describe declared pack associations only.
 
@@ -1674,39 +1677,45 @@ Catalogue sense associations are not proof that a paradigm form or morphology pr
 | associated | en | noun | en_noun_principal_parts | 9 |
 | associated | en | noun | en_noun_regular | 55 |
 | associated | en | noun | en_noun_sibilant | 13 |
-| associated | en | noun | en_noun_singular_attested | 4 |
+| associated | en | noun | en_noun_singular_attested | 9 |
 | associated | en | noun | en_noun_zero_plural | 3 |
-| associated | en | noun | not-declared | 609 |
+| associated | en | noun | not-declared | 604 |
 | associated | en | preposition | not-declared | 23 |
 | associated | en | pronoun | en_personal_pronoun_i | 1 |
 | associated | en | pronoun | en_personal_pronoun_we | 1 |
 | associated | en | pronoun | en_personal_pronoun_you | 1 |
 | associated | en | verb | en_identification_be_present_3sg | 1 |
 | associated | en | verb | en_verb_finite_consonant_y | 1 |
-| associated | en | verb | en_verb_finite_principal_parts | 6 |
+| associated | en | verb | en_verb_finite_principal_parts | 8 |
 | associated | en | verb | en_verb_finite_regular | 12 |
 | associated | en | verb | en_verb_finite_sibilant | 5 |
 | associated | en | verb | en_verb_finite_silent_e | 13 |
-| associated | en | verb | not-declared | 238 |
+| associated | en | verb | not-declared | 237 |
 | associated | pl | adjective | pl_adjective_dorosly_attested | 1 |
 | associated | pl | adjective | pl_identification_czarny_masculine_animal_nominative | 1 |
 | associated | pl | foreign | not-declared | 1 |
-| associated | pl | noun | not-declared | 687 |
+| associated | pl | noun | not-declared | 681 |
 | associated | pl | noun | pl_noun_attested_feminine | 8 |
 | associated | pl | noun | pl_noun_attested_masculine_animal | 1 |
 | associated | pl | noun | pl_noun_attested_masculine_inanimate | 7 |
 | associated | pl | noun | pl_noun_attested_masculine_personal | 5 |
 | associated | pl | noun | pl_noun_attested_neuter | 6 |
+| associated | pl | noun | pl_noun_attested_pl_chleb_n | 1 |
+| associated | pl | noun | pl_noun_attested_pl_herbata_n | 1 |
+| associated | pl | noun | pl_noun_attested_pl_jajko_n | 1 |
+| associated | pl | noun | pl_noun_attested_pl_kawa_n | 1 |
 | associated | pl | noun | pl_noun_attested_pl_klucz_n | 1 |
 | associated | pl | noun | pl_noun_attested_pl_kon_n | 1 |
 | associated | pl | noun | pl_noun_attested_pl_kot_n | 1 |
 | associated | pl | noun | pl_noun_attested_pl_krzeslo_n | 1 |
 | associated | pl | noun | pl_noun_attested_pl_miasto_n | 1 |
 | associated | pl | noun | pl_noun_attested_pl_mieszkanie_n | 1 |
+| associated | pl | noun | pl_noun_attested_pl_mleko_n | 1 |
 | associated | pl | noun | pl_noun_attested_pl_ptak_n | 1 |
 | associated | pl | noun | pl_noun_attested_pl_rzeka_n | 1 |
 | associated | pl | noun | pl_noun_attested_pl_siostra_n | 2 |
 | associated | pl | noun | pl_noun_attested_pl_torba_n | 1 |
+| associated | pl | noun | pl_noun_attested_pl_zupa_n | 1 |
 | associated | pl | noun | pl_noun_drzewo_attested | 1 |
 | associated | pl | noun | pl_noun_feminine_a_partial | 4 |
 | associated | pl | noun | pl_noun_plural_only_attested | 1 |
@@ -1715,10 +1724,12 @@ Catalogue sense associations are not proof that a paradigm form or morphology pr
 | associated | pl | pronoun | pl_personal_pl.my.pron | 1 |
 | associated | pl | pronoun | pl_personal_pl.ty.pron | 1 |
 | associated | pl | pronoun | pl_personal_pl.wy.pron | 1 |
-| associated | pl | verb | not-declared | 237 |
+| associated | pl | verb | not-declared | 235 |
 | associated | pl | verb | pl_identification_byc_present_3sg | 1 |
 | associated | pl | verb | pl_verb_czytac_finite | 1 |
+| associated | pl | verb | pl_verb_jesc_present_3sg_3pl | 1 |
 | associated | pl | verb | pl_verb_perfective_finite | 2 |
+| associated | pl | verb | pl_verb_pic_present_3sg_3pl | 1 |
 | associated | pl | verb | pl_verb_present_i | 1 |
 | associated | pl | verb | pl_verb_present_y | 2 |
 | associated | pl | verb_reflexive | not-declared | 30 |
@@ -1734,7 +1745,7 @@ Runtime calls are separate from check outcomes. A false adapter marker is runtim
 | independent_realization | true | 762 |
 | integration | true | 1000 |
 | native_analysis | true | 1012 |
-| source_gap_probe | true | 347 |
+| source_gap_probe | true | 319 |
 
 ### Independent realization runtime NOT RUN
 
@@ -1861,7 +1872,7 @@ Runtime calls are separate from check outcomes. A false adapter marker is runtim
 ### Separate observed source probes
 
 - context_source_analysis, adapter executed `true`: 152
-- source_gap_probe, adapter executed `true`: 347
+- source_gap_probe, adapter executed `true`: 319
 
 ## Direct-result JSON observations
 
@@ -1879,31 +1890,31 @@ Observed top-level outcomes by runtime stage; these do not replace check statuse
 | context_source_analysis | ambiguous | 6 |
 | context_source_analysis | incomplete | 11 |
 | context_source_analysis | ok | 65 |
-| context_source_analysis | unknown | 5 |
-| context_source_analysis | unsupported | 65 |
+| context_source_analysis | unknown | 2 |
+| context_source_analysis | unsupported | 68 |
 | direct_result |  | 1 |
 | direct_result | ambiguous | 29 |
 | direct_result | incomplete | 14 |
 | direct_result | ok | 82 |
 | direct_result | unknown | 18 |
 | direct_result | unsupported | 29 |
-| independent_realization |  | 21 |
-| independent_realization | ambiguous | 177 |
-| independent_realization | incomplete | 38 |
-| independent_realization | ok | 129 |
+| independent_realization |  | 33 |
+| independent_realization | ambiguous | 190 |
+| independent_realization | incomplete | 55 |
+| independent_realization | ok | 131 |
 | independent_realization | unknown | 25 |
-| independent_realization | unsupported | 372 |
-| integration | ambiguous | 131 |
-| integration | incomplete | 52 |
-| integration | ok | 44 |
-| integration | unknown | 9 |
-| integration | unsupported | 764 |
-| native_analysis | ambiguous | 38 |
-| native_analysis | incomplete | 47 |
-| native_analysis | ok | 154 |
-| native_analysis | unknown | 9 |
-| native_analysis | unsupported | 764 |
-| source_gap_probe | unsupported | 347 |
+| independent_realization | unsupported | 328 |
+| integration | ambiguous | 146 |
+| integration | incomplete | 63 |
+| integration | ok | 46 |
+| integration | unknown | 5 |
+| integration | unsupported | 740 |
+| native_analysis | ambiguous | 42 |
+| native_analysis | incomplete | 48 |
+| native_analysis | ok | 177 |
+| native_analysis | unknown | 5 |
+| native_analysis | unsupported | 740 |
+| source_gap_probe | unsupported | 319 |
 | translation | invalid | 2 |
 | translation | unknown | 2 |
 | translation | unsupported | 12 |
@@ -1966,14 +1977,16 @@ These are the authored graphs supplied to the realizer, distinct from source ana
 
 Authored `meaning_input` supplied to independent realization is excluded from observed graphs below. Graph summaries deduplicate identical graphs within a case and stage. Missing temporal frames or multiplicities are counted as unknown.
 
-- Unique observed graph snapshots: 709
+- Unique observed graph snapshots: 773
 
 | Graph property | Value | Count |
 |---|---|---:|
-| node kind | event | 533 |
-| node kind | referent | 1234 |
+| node kind | event | 597 |
+| node kind | referent | 1362 |
 | node kind | scope | 48 |
 | node kind | state | 215 |
+| predicate (event) | `concept:drinking` | 36 |
+| predicate (event) | `concept:eating` | 28 |
 | predicate (event) | `concept:hearing` | 112 |
 | predicate (event) | `concept:looking` | 24 |
 | predicate (event) | `concept:reading` | 140 |
@@ -1983,7 +1996,11 @@ Authored `meaning_input` supplied to independent realization is excluded from ob
 | predicate (state) | `concept:class_membership` | 157 |
 | participant role | agent | 24 |
 | participant role | bearer | 58 |
+| participant role | drinker | 36 |
+| participant role | eater | 28 |
 | participant role | experiencer | 343 |
+| participant role | food | 28 |
+| participant role | liquid | 36 |
 | participant role | material | 140 |
 | participant role | member | 157 |
 | participant role | reader | 140 |
@@ -1992,11 +2009,11 @@ Authored `meaning_input` supplied to independent realization is excluded from ob
 | participant role | target | 24 |
 | participant role | theme | 22 |
 | temporal_frame | past | 82 |
-| temporal_frame | present | 623 |
-| temporal_frame | unknown | 1325 |
-| referent multiplicity | many | 239 |
-| referent multiplicity | one | 962 |
-| referent multiplicity | unknown | 33 |
+| temporal_frame | present | 687 |
+| temporal_frame | unknown | 1453 |
+| referent multiplicity | many | 251 |
+| referent multiplicity | one | 1020 |
+| referent multiplicity | unknown | 91 |
 
 ## Observed trace and feature associations
 
@@ -2033,6 +2050,8 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:en.oblique` | `construction:en.oblique.svo.indefinite_target` | `en.look.directed.at` | ok | 10 |
 | `construction:en.question.wh` | `construction:en.question.wh.object.neutral.analyze` | `en.see.visual.transitive` | ok | 2 |
 | `construction:en.question.wh` | `construction:en.question.wh.subject` | `en.see.visual.transitive` | ok | 2 |
+| `construction:en.transitive` | `construction:en.transitive.svo` | `en.drinking.transitive` | ok | 14 |
+| `construction:en.transitive` | `construction:en.transitive.svo` | `en.eating.transitive` | ok | 18 |
 | `construction:en.transitive` | `construction:en.transitive.svo` | `en.hear.auditory.transitive` | ok | 59 |
 | `construction:en.transitive` | `construction:en.transitive.svo` | `en.see.visual.transitive` | ok | 116 |
 | `construction:en.transitive` | `construction:en.transitive.svo.bare_object.subject_a` | `en.hear.auditory.transitive` | ok | 1 |
@@ -2052,8 +2071,10 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object` | `en.hear.auditory.transitive` | ok | 21 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object` | `en.read.text.transitive` | ok | 23 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object` | `en.see.visual.transitive` | ok | 42 |
+| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object_an` | `en.eating.transitive` | ok | 4 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object_an` | `en.hear.auditory.transitive` | ok | 1 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_object_an` | `en.see.visual.transitive` | ok | 5 |
+| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject` | `en.eating.transitive` | ok | 4 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject` | `en.hear.auditory.transitive` | ok | 16 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject` | `en.read.text.transitive` | ok | 8 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject` | `en.see.visual.transitive` | ok | 40 |
@@ -2061,11 +2082,16 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_a_object_an` | `en.see.visual.transitive` | ok | 5 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_an` | `en.hear.auditory.transitive` | ok | 3 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_an` | `en.see.visual.transitive` | ok | 6 |
+| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_an_mass_object` | `en.drinking.transitive` | ok | 2 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_an_object_a` | `en.hear.auditory.transitive` | ok | 3 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_an_object_a` | `en.see.visual.transitive` | ok | 6 |
+| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_mass_object` | `en.drinking.transitive` | ok | 12 |
+| `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_mass_object` | `en.eating.transitive` | ok | 8 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_object` | `en.hear.auditory.transitive` | ok | 15 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_object` | `en.read.text.transitive` | ok | 9 |
 | `construction:en.transitive` | `construction:en.transitive.svo.indefinite_subject_object` | `en.see.visual.transitive` | ok | 38 |
+| `construction:en.transitive` | `construction:en.transitive.svo.mass_object` | `en.drinking.transitive` | ok | 14 |
+| `construction:en.transitive` | `construction:en.transitive.svo.mass_object` | `en.eating.transitive` | ok | 10 |
 | `construction:en.transitive` | `construction:en.transitive.svo.reading` | `en.read.text.transitive` | ok | 55 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo` | `en.hear.auditory.transitive` | ok | 9 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo` | `en.see.visual.transitive` | ok | 17 |
@@ -2130,6 +2156,8 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:pl.question.wh` | `construction:pl.question.wh.subject` | `pl.widziec.visual.transitive` | ok | 2 |
 | `construction:pl.transitive` | `construction:pl.transitive.svo` | `pl.czytac.interpret.frame` | ok | 69 |
 | `construction:pl.transitive` | `construction:pl.transitive.svo` | `pl.dostac.receive.transitive` | ok | 17 |
+| `construction:pl.transitive` | `construction:pl.transitive.svo` | `pl.jesc.eat.frame` | ok | 28 |
+| `construction:pl.transitive` | `construction:pl.transitive.svo` | `pl.pic.drink.action` | ok | 28 |
 | `construction:pl.transitive` | `construction:pl.transitive.svo` | `pl.slyszec.auditory.transitive` | ok | 54 |
 | `construction:pl.transitive` | `construction:pl.transitive.svo` | `pl.widziec.visual.transitive` | ok | 117 |
 | `construction:pl.transitive_negative` | `construction:pl.transitive_negative.svo` | `pl.slyszec.auditory.transitive_negative` | ok | 13 |
@@ -2160,41 +2188,41 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | Feature | State | Value | Deduplicated observations |
 |---|---|---|---:|
 | `adjective_degree` | known | positive | 25 |
-| `aspect` | known | imperfective | 273 |
+| `aspect` | known | imperfective | 301 |
 | `aspect` | known | perfective | 9 |
-| `case` | known | accusative | 183 |
+| `case` | known | accusative | 211 |
 | `case` | known | genitive | 20 |
-| `case` | known | nominative | 259 |
+| `case` | known | nominative | 287 |
 | `degree` | known | positive | 35 |
-| `determiner` | known | bare | 17 |
-| `determiner` | known | definite | 228 |
-| `determiner` | known | indefinite | 90 |
-| `gender` | known | feminine | 84 |
-| `gender` | known | masculine_animal | 157 |
-| `gender` | known | masculine_inanimate | 28 |
-| `gender` | known | masculine_personal | 101 |
-| `gender` | known | neuter | 47 |
+| `determiner` | known | bare | 41 |
+| `determiner` | known | definite | 254 |
+| `determiner` | known | indefinite | 96 |
+| `gender` | known | feminine | 96 |
+| `gender` | known | masculine_animal | 171 |
+| `gender` | known | masculine_inanimate | 36 |
+| `gender` | known | masculine_personal | 109 |
+| `gender` | known | neuter | 57 |
 | `gender` | known | non_masculine_personal | 2 |
-| `mood` | known | indicative | 596 |
-| `noun_number` | known | plural | 68 |
-| `noun_number` | known | singular | 285 |
-| `number` | known | plural | 180 |
-| `number` | known | singular | 561 |
+| `mood` | known | indicative | 652 |
+| `noun_number` | known | plural | 72 |
+| `noun_number` | known | singular | 313 |
+| `number` | known | plural | 188 |
+| `number` | known | singular | 617 |
 | `person` | known | first | 44 |
 | `person` | known | second | 36 |
-| `person` | known | third | 615 |
+| `person` | known | third | 671 |
 | `pronoun_case` | known | subject | 40 |
 | `pronoun_number` | known | plural | 13 |
 | `pronoun_number` | known | singular | 9 |
 | `pronoun_person` | known | first | 22 |
 | `pronoun_person` | known | second | 18 |
 | `tense` | known | past | 78 |
-| `tense` | known | present | 551 |
+| `tense` | known | present | 607 |
 | `verb_form` | known | base | 18 |
-| `verb_form` | known | finite | 578 |
-| `verb_number` | known | plural | 92 |
-| `verb_number` | known | singular | 202 |
-| `voice` | known | active | 596 |
+| `verb_form` | known | finite | 634 |
+| `verb_number` | known | plural | 96 |
+| `verb_number` | known | singular | 226 |
+| `voice` | known | active | 652 |
 
 ## Representation gap diagnosis
 
@@ -2214,15 +2242,14 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | Meaning representation | `conversation` | No reciprocal conversation predicate is licensed; speaking would assert a different one-way event. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.11-CASE-1179-EN-PL`, `A1.11-CASE-1180-PL-EN` |
 | Meaning representation | `crying_emotionally` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-975-EN-PL`, `A1.9-Q-976-PL-EN` |
 | Meaning representation | `cutting_object` | CORE cutting_object omits the instrument role; knife_utensil is only a referent concept. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.11-CASE-1175-EN-PL`, `A1.11-CASE-1176-PL-EN` |
+| Meaning representation | `drinking` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_PARSE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-933-EN-PL`, `A1.9-Q-934-PL-EN` |
 | Meaning representation | `drinking` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-935-EN-PL`, `A1.9-Q-936-PL-EN` |
-| Meaning representation | `drinking` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-933-EN-PL`, `A1.9-Q-934-PL-EN` |
-| Meaning representation | `drinking` | Negation over the existentially bound cat participant is required: the actor must be quantified, while negating one event does not quantify its drinker. Meaning has no typed bound-variable link from a quantifier to that event role. | NO_SEMANTIC_ALTERNATIVES, NO_START_PLAN, UNKNOWN_SURFACE | `A1.8-NEG-887-EN-PL` |
-| Meaning representation | `drinking` | Negation over the existentially bound cat participant is required: the actor must be quantified, while negating one event does not quantify its drinker. Meaning has no typed bound-variable link from a quantifier to that event role. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.8-NEG-888-PL-EN` |
+| Meaning representation | `drinking` | Negation over the existentially bound cat participant is required: the actor must be quantified, while negating one event does not quantify its drinker. Meaning has no typed bound-variable link from a quantifier to that event role. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.8-NEG-887-EN-PL`, `A1.8-NEG-888-PL-EN` |
 | Meaning representation | `drinking` | The requested amount requires a typed quantity variable bound to the liquid role; omission of that argument does not encode a WH amount. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-969-EN-PL`, `A1.9-Q-970-PL-EN` |
 | Meaning representation | `drinking` | The source asserts a future event or state, but Meaning.TemporalFrame represents only past or present; the future frame value/operator cannot be represented. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.10-TIME-1101-EN-PL`, `A1.10-TIME-1102-PL-EN` |
 | Meaning representation | `drinking+reading` | The source asserts two past events with temporal overlap in a when-clause; Meaning has no temporal relation/binding between event nodes, so event overlap and the linked reading cannot be represented. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.10-TIME-1109-EN-PL`, `A1.10-TIME-1110-PL-EN` |
+| Meaning representation | `eating` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_PARSE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-929-EN-PL`, `A1.9-Q-930-PL-EN` |
 | Meaning representation | `eating` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-931-EN-PL`, `A1.9-Q-932-PL-EN` |
-| Meaning representation | `eating` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-929-EN-PL`, `A1.9-Q-930-PL-EN` |
 | Meaning representation | `eating` | The question requires an explicit unknown time variable bound to the event; a past frame alone does not encode a WH-time query. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-971-EN-PL`, `A1.9-Q-972-PL-EN` |
 | Meaning representation | `eating` | The requested count requires a typed quantity variable bound to the food role; omission of that argument does not encode a WH count. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-963-EN-PL`, `A1.9-Q-964-PL-EN` |
 | Meaning representation | `eating` | The sentence requires explicit negative scope over a frequency restriction (never / not always); no frequency operator is represented in Meaning. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.8-NEG-883-EN-PL`, `A1.8-NEG-884-PL-EN` |
@@ -2393,12 +2420,12 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | analysis | `UNMATCHED_PARSE_CANDIDATE` | 51 |
 | context_source_analysis | `AMBIGUOUS_PARSE` | 5 |
 | context_source_analysis | `DISAMBIGUATION_INCOMPLETE` | 3 |
-| context_source_analysis | `NO_PARSE` | 19 |
-| context_source_analysis | `NO_SEMANTIC_ALTERNATIVES` | 5 |
+| context_source_analysis | `NO_PARSE` | 23 |
+| context_source_analysis | `NO_SEMANTIC_ALTERNATIVES` | 2 |
 | context_source_analysis | `NO_START_PLAN` | 46 |
 | context_source_analysis | `PARTIAL_PARSE_EVIDENCE` | 24 |
-| context_source_analysis | `UNKNOWN_SURFACE` | 65 |
-| context_source_analysis | `UNMATCHED_PARSE_CANDIDATE` | 226 |
+| context_source_analysis | `UNKNOWN_SURFACE` | 55 |
+| context_source_analysis | `UNMATCHED_PARSE_CANDIDATE` | 241 |
 | context_source_analysis | `UNRESOLVED_ROLE_SENSE` | 24 |
 | direct_result | `AMBIGUOUS_PARSE` | 2 |
 | direct_result | `EXPLICIT_REALIZATION_ASSUMPTION` | 218 |
@@ -2411,47 +2438,47 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | direct_result | `TARGET_NO_SURFACE_CANDIDATE` | 18 |
 | direct_result | `UNMATCHED_PARSE_CANDIDATE` | 32 |
 | independent_realization | `DISCOURSE_ACT_UNSUPPORTED` | 40 |
-| independent_realization | `EXPLICIT_REALIZATION_ASSUMPTION` | 1228 |
-| independent_realization | `NO_LICENSED_TARGET` | 246 |
+| independent_realization | `EXPLICIT_REALIZATION_ASSUMPTION` | 1318 |
+| independent_realization | `NO_LICENSED_TARGET` | 172 |
 | independent_realization | `OPERATOR_COVERAGE_UNKNOWN` | 116 |
 | independent_realization | `OPERATOR_MAPPING_UNAVAILABLE` | 120 |
 | independent_realization | `QUESTION_ANSWER_UNAVAILABLE` | 38 |
 | independent_realization | `REALIZATION_FIELD_LOSS` | 90 |
-| independent_realization | `TARGET_ALTERNATIVES_AMBIGUOUS` | 242 |
+| independent_realization | `TARGET_ALTERNATIVES_AMBIGUOUS` | 265 |
 | independent_realization | `TARGET_FRAME_VARIANT_MISMATCH` | 2 |
-| independent_realization | `TARGET_LEXICAL_COVERAGE_UNAVAILABLE` | 72 |
+| independent_realization | `TARGET_LEXICAL_COVERAGE_UNAVAILABLE` | 76 |
 | independent_realization | `TARGET_NO_SURFACE_CANDIDATE` | 25 |
 | independent_realization | `TARGET_OPERATOR_COVERAGE_UNAVAILABLE` | 116 |
 | integration | `AMBIGUOUS_PARSE` | 17 |
-| integration | `DISAMBIGUATION_INCOMPLETE` | 22 |
-| integration | `EXPLICIT_REALIZATION_ASSUMPTION` | 870 |
+| integration | `DISAMBIGUATION_INCOMPLETE` | 26 |
+| integration | `EXPLICIT_REALIZATION_ASSUMPTION` | 960 |
 | integration | `MISSING_REQUIRED_ROLE` | 20 |
-| integration | `NO_PARSE` | 131 |
-| integration | `NO_SEMANTIC_ALTERNATIVES` | 9 |
+| integration | `NO_PARSE` | 156 |
+| integration | `NO_SEMANTIC_ALTERNATIVES` | 5 |
 | integration | `NO_START_PLAN` | 195 |
 | integration | `OPERATOR_COVERAGE_UNKNOWN` | 3 |
-| integration | `PARTIAL_PARSE_EVIDENCE` | 232 |
+| integration | `PARTIAL_PARSE_EVIDENCE` | 235 |
 | integration | `REALIZATION_FIELD_LOSS` | 78 |
-| integration | `TARGET_ALTERNATIVES_AMBIGUOUS` | 131 |
-| integration | `TRANSLATION_NOT_OK` | 23 |
-| integration | `UNKNOWN_SURFACE` | 918 |
-| integration | `UNMATCHED_PARSE_CANDIDATE` | 5022 |
-| integration | `UNRESOLVED_ROLE_SENSE` | 232 |
+| integration | `TARGET_ALTERNATIVES_AMBIGUOUS` | 144 |
+| integration | `TRANSLATION_NOT_OK` | 33 |
+| integration | `UNKNOWN_SURFACE` | 797 |
+| integration | `UNMATCHED_PARSE_CANDIDATE` | 5070 |
+| integration | `UNRESOLVED_ROLE_SENSE` | 235 |
 | native_analysis | `AMBIGUOUS_PARSE` | 17 |
-| native_analysis | `DISAMBIGUATION_INCOMPLETE` | 30 |
+| native_analysis | `DISAMBIGUATION_INCOMPLETE` | 34 |
 | native_analysis | `MISSING_REQUIRED_ROLE` | 12 |
-| native_analysis | `NO_PARSE` | 131 |
-| native_analysis | `NO_SEMANTIC_ALTERNATIVES` | 9 |
+| native_analysis | `NO_PARSE` | 156 |
+| native_analysis | `NO_SEMANTIC_ALTERNATIVES` | 5 |
 | native_analysis | `NO_START_PLAN` | 195 |
 | native_analysis | `OPERATOR_COVERAGE_UNKNOWN` | 2 |
-| native_analysis | `PARTIAL_PARSE_EVIDENCE` | 91 |
-| native_analysis | `UNKNOWN_SURFACE` | 918 |
-| native_analysis | `UNMATCHED_PARSE_CANDIDATE` | 2893 |
-| native_analysis | `UNRESOLVED_ROLE_SENSE` | 91 |
-| source_gap_probe | `NO_PARSE` | 87 |
+| native_analysis | `PARTIAL_PARSE_EVIDENCE` | 93 |
+| native_analysis | `UNKNOWN_SURFACE` | 797 |
+| native_analysis | `UNMATCHED_PARSE_CANDIDATE` | 2905 |
+| native_analysis | `UNRESOLVED_ROLE_SENSE` | 93 |
+| source_gap_probe | `NO_PARSE` | 104 |
 | source_gap_probe | `NO_START_PLAN` | 22 |
-| source_gap_probe | `UNKNOWN_SURFACE` | 336 |
-| source_gap_probe | `UNMATCHED_PARSE_CANDIDATE` | 1387 |
+| source_gap_probe | `UNKNOWN_SURFACE` | 248 |
+| source_gap_probe | `UNMATCHED_PARSE_CANDIDATE` | 1358 |
 | translation | `INVALID_TRANSLATION_INPUT` | 2 |
 | translation | `NO_PARSE` | 12 |
 | translation | `NO_SEMANTIC_ALTERNATIVES` | 2 |
@@ -2461,6 +2488,6 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 
 ## Counts
 
-PASS: 578 | FAIL: 132 | GAP_ANALYZE: 834 | GAP_REALIZE: 376 | GAP_I: 1080 | SPEC_PENDING: 0 | INFRA: 0 | NOT RUN: 0
+PASS: 620 | FAIL: 174 | GAP_ANALYZE: 778 | GAP_REALIZE: 348 | GAP_I: 1080 | SPEC_PENDING: 0 | INFRA: 0 | NOT RUN: 0
 
 `SPEC_PENDING` means the check ran but lacks a closed independent contract. `NOT RUN` means no matching record check result was observed. Runtime adapter NOT RUN markers are counted separately above. Additional checks retain their own statuses. Consult the full raw log artifact for every individual observation.
