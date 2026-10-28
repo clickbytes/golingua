@@ -115,6 +115,14 @@ var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"pl.ciac.cut", "pl.ciac.cut.action", "pl.transitive", "pl.transitive.svo"},
 	{"pl.skladac.fold", "pl.skladac.fold.action", "pl.transitive", "pl.transitive.svo"},
 	{"pl.rozdzierac.tear", "pl.rozdzierac.tear.action", "pl.transitive", "pl.transitive.svo"},
+	{"pl.dawac.transfer", "pl.dawac.transfer.ditransitive", "pl.ditransitive", "pl.ditransitive.svo"},
+	{"pl.dawac.transfer", "pl.dawac.transfer.ditransitive", "pl.ditransitive", "pl.ditransitive.svo.period"},
+	{"pl.dawac.transfer", "pl.dawac.transfer.ditransitive", "pl.ditransitive", "pl.ditransitive.recipient_front"},
+	{"pl.dawac.transfer", "pl.dawac.transfer.ditransitive", "pl.ditransitive", "pl.ditransitive.recipient_front.period"},
+	{"pl.dawac.transfer", "pl.dawac.transfer.ditransitive", "pl.ditransitive", "pl.ditransitive.object_front"},
+	{"pl.dawac.transfer", "pl.dawac.transfer.ditransitive", "pl.ditransitive", "pl.ditransitive.object_front.period"},
+	{"pl.sprzedawac.sell", "pl.sprzedawac.sell.reviewed", "pl.ditransitive", "pl.ditransitive.object_before_recipient"},
+	{"pl.sprzedawac.sell", "pl.sprzedawac.sell.reviewed", "pl.ditransitive", "pl.ditransitive.object_before_recipient.period"},
 }
 
 // Families are explicit per frame, never silently assumed transitive.
@@ -154,6 +162,11 @@ var polishFrames = []frameDeclaration{
 		{ID: "subject", Role: "giver", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "recipient", Role: "recipient", Required: true, GrammaticalFunction: "indirect_object", Case: "dative"},
 		{ID: "theme", Role: "theme", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+	}},
+	{"pl.dawac.transfer.ditransitive", "pl.dawac.transfer", "pl.ditransitive", []meaning.Role{"giver", "recipient", "theme"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "giver", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "recipient", Role: "recipient", Required: true, GrammaticalFunction: "indirect_object", Case: "dative"},
+		{ID: "object", Role: "theme", Required: true, GrammaticalFunction: "object", Case: "accusative"},
 	}},
 	{"pl.pytac.request_info.frame", "pl.pytac.request_info", "pl.transitive", []meaning.Role{"sender", "addressee"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "sender", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
@@ -221,6 +234,8 @@ func CompileValency() (*valency.Index, error) {
 	declarations = append(declarations, multiRoleActionFrames...)
 	declarations = append(declarations, communicationLastFrames...)
 	declarations = append(declarations, outcomeActionFrames...)
+	declarations = append(declarations, polishCommerceOmissionFrames...)
+	declarations = append(declarations, polishCommerceFullPurchaseFrames...)
 	frames := make([]valency.ValencyFrame, 0, len(declarations))
 	for _, item := range declarations {
 		senseID, err := ids.NewSenseID(item.sense)
@@ -240,6 +255,7 @@ func CompileValency() (*valency.Index, error) {
 			Arguments:        append([]valency.ArgumentSlot(nil), item.arguments...),
 			AllowedFamilyIDs: []ids.ConstructionID{familyID}, Provenance: polishValencySource,
 		}
+		frame.SurfaceOmittedRoles = append([]meaning.Role(nil), polishCommerceOmittedRoles[item.id]...)
 		if item.id == "pl.zyc.live.action" {
 			meat, err := ids.NewConceptID("meat_food")
 			if err != nil {
@@ -286,7 +302,7 @@ func CompileValency() (*valency.Index, error) {
 		}
 		frames = append(frames, frame)
 	}
-	bindingDeclarations := append(append([]constructionBindingDeclaration(nil), polishConstructionBindingDeclarations...), polishPersonalConstructionBindings()...)
+	bindingDeclarations := append(append(append(append([]constructionBindingDeclaration(nil), polishConstructionBindingDeclarations...), polishPersonalConstructionBindings()...), polishCommerceOmissionBindings()...), polishCommerceFullPurchaseBindings()...)
 	bindings := make([]valency.ConstructionBinding, 0, len(bindingDeclarations))
 	for _, item := range bindingDeclarations {
 		senseID, err := ids.NewSenseID(item.sense)

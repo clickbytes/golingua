@@ -252,7 +252,15 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 		if err != nil {
 			return engine.SurfaceResult{}, err
 		}
-		executionInput, err := pipeline.ExecutionBuilder.Build(ctx, source, candidates, selected, plan)
+		// A frame-licensed absent role makes the complete target candidate
+		// incomplete, while its predicate lexicalization remains usable. Keep
+		// that status on the plan/result, and let the morphology builder handle
+		// the exact licensed candidate as a slot request.
+		executionCandidate := selected
+		if len(selected.MissingOmittedRoles) > 0 && plan.Outcome == status.OutcomeIncomplete {
+			executionCandidate.Outcome = status.OutcomeOK
+		}
+		executionInput, err := pipeline.ExecutionBuilder.Build(ctx, source, candidates, executionCandidate, plan)
 		if err != nil {
 			return engine.SurfaceResult{}, err
 		}

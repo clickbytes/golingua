@@ -16,15 +16,16 @@ import (
 // MeaningCandidate is one graph or evidence-only semantic interpretation.
 // SemanticID identifies equivalent meanings; ID identifies this derivation.
 type MeaningCandidate struct {
-	ID                   string                       `json:"id"`
-	SemanticID           string                       `json:"semantic_id"`
-	Meaning              *meaning.Meaning             `json:"meaning,omitempty"`
-	QuestionAnswer       *QuestionAnswer              `json:"question_answer,omitempty"`
-	Contexts             []MeaningContext             `json:"request_contexts,omitempty"`
-	Status               status.OutcomeKind           `json:"status"`
-	Evidence             EvidenceTrace                `json:"evidence"`
-	SoftConstraintMisses []valency.SoftConstraintMiss `json:"soft_constraint_misses,omitempty"`
-	DerivationIDs        []string                     `json:"derivation_ids,omitempty"`
+	ID                         string                       `json:"id"`
+	SemanticID                 string                       `json:"semantic_id"`
+	Meaning                    *meaning.Meaning             `json:"meaning,omitempty"`
+	QuestionAnswer             *QuestionAnswer              `json:"question_answer,omitempty"`
+	Contexts                   []MeaningContext             `json:"request_contexts,omitempty"`
+	Status                     status.OutcomeKind           `json:"status"`
+	Evidence                   EvidenceTrace                `json:"evidence"`
+	SoftConstraintMisses       []valency.SoftConstraintMiss `json:"soft_constraint_misses,omitempty"`
+	MissingSurfaceOmittedRoles []meaning.Role               `json:"missing_surface_omitted_roles,omitempty"`
+	DerivationIDs              []string                     `json:"derivation_ids,omitempty"`
 }
 
 // QuestionAnswer carries the typed gap that an Algebra Ask binds. It is
@@ -280,6 +281,7 @@ func Disambiguate(candidates []MeaningCandidate, inputOutcome status.OutcomeKind
 		for _, miss := range candidate.SoftConstraintMisses {
 			current.SoftConstraintMisses = appendSoftMissUnique(current.SoftConstraintMisses, miss)
 		}
+		current.MissingSurfaceOmittedRoles = mergeOmittedRoles(current.MissingSurfaceOmittedRoles, candidate.MissingSurfaceOmittedRoles)
 		for _, context := range candidate.Contexts {
 			current.Contexts = appendContextUnique(current.Contexts, context)
 		}
@@ -301,6 +303,20 @@ func Disambiguate(candidates []MeaningCandidate, inputOutcome status.OutcomeKind
 	return Result{Outcome: outcome, Candidates: merged, Diagnostics: resultDiagnostics}, nil
 }
 
+func mergeOmittedRoles(target, source []meaning.Role) []meaning.Role {
+	seen := make(map[meaning.Role]struct{}, len(target)+len(source))
+	result := make([]meaning.Role, 0, len(target)+len(source))
+	for _, role := range append(append([]meaning.Role(nil), target...), source...) {
+		if _, exists := seen[role]; exists {
+			continue
+		}
+		seen[role] = struct{}{}
+		result = append(result, role)
+	}
+	sort.Slice(result, func(i, j int) bool { return result[i] < result[j] })
+	return result
+}
+
 func cloneMeaningCandidate(source MeaningCandidate) MeaningCandidate {
 	copy := source
 	copy.Meaning = cloneMeaning(source.Meaning)
@@ -314,6 +330,7 @@ func cloneMeaningCandidate(source MeaningCandidate) MeaningCandidate {
 		copy.Contexts[index] = MeaningContext{Meaning: *cloneMeaning(&context.Meaning), Context: cloneContext(context.Context)}
 	}
 	copy.SoftConstraintMisses = append([]valency.SoftConstraintMiss(nil), source.SoftConstraintMisses...)
+	copy.MissingSurfaceOmittedRoles = append([]meaning.Role(nil), source.MissingSurfaceOmittedRoles...)
 	copy.DerivationIDs = append([]string(nil), source.DerivationIDs...)
 	return copy
 }

@@ -1,0 +1,4148 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "family": {
+    "id": "construction:en.give.transfer",
+    "language": "en",
+    "slot_specs": [
+      {
+        "id": "subject",
+        "position": 0,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "verb",
+        "position": 1,
+        "category": "VP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "recipient",
+        "position": 2,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "theme",
+        "position": 3,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      }
+    ],
+    "constraints": [
+      {
+        "id": "subject_verb_number",
+        "kind": "agreement",
+        "strength": "hard",
+        "controller_slot": "subject",
+        "target_slot": "verb",
+        "features": [
+          "number"
+        ]
+      }
+    ],
+    "provenance": {
+      "id": "golingua-g11-giving-433",
+      "path": "languages/en/constructions/give_transfer.json",
+      "version": "2026-10-28-433",
+      "license": "internal",
+      "author": "Codex by owner delegation"
+    }
+  },
+  "variants": [
+    {
+      "id": "construction:en.give.transfer.double_np.the_the_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.the_the_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.the_the_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.the_a_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.the_a_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.the_a_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.the_an_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.the_an_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.the_an_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.a_the_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.a_the_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.a_the_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.a_a_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.a_a_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.a_a_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.a_an_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.a_an_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.a_an_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.an_the_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.an_the_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.an_the_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.an_a_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.an_a_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.an_a_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.an_an_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.an_an_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.double_np.an_an_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.the_the_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.the_the_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.the_the_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.the_a_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.the_a_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.the_a_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.the_an_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.the_an_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.the_an_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.a_the_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.a_the_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.a_the_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.a_a_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.a_a_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.a_a_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.a_an_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.a_an_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.a_an_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.an_the_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.an_the_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.an_the_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.an_a_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.an_a_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.an_a_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.an_an_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.an_an_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.to_pp.an_an_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-giving-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.the_the_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.the_the_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.the_the_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.the_a_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.the_a_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.the_a_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.the_an_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.the_an_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.the_an_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.a_the_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.a_the_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.a_the_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.a_a_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.a_a_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.a_a_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.a_an_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.a_an_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.a_an_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.an_the_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.an_the_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.an_the_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.an_a_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.an_a_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.an_a_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.an_an_the",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.an_an_a",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    },
+    {
+      "id": "construction:en.give.transfer.from_pp.an_an_an",
+      "family_id": "construction:en.give.transfer",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "from"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g11-commerce-433",
+        "path": "languages/en/constructions/give_transfer.json",
+        "version": "2026-10-28-433",
+        "license": "internal"
+      }
+    }
+  ]
+}

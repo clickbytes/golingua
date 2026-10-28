@@ -118,6 +118,7 @@ type RealizationPlan struct {
 	NodeID               meaning.NodeID                  `json:"node_id"`
 	Kind                 meaning.NodeKind                `json:"kind"`
 	Roles                []meaning.Role                  `json:"roles,omitempty"`
+	MissingOmittedRoles  []meaning.Role                  `json:"missing_omitted_roles,omitempty"`
 	MeaningPath          []meaning.NodeID                `json:"meaning_path"`
 	CoreConceptID        ids.ConceptID                   `json:"core_concept_id"`
 	LexemeID             ids.LexemeID                    `json:"lexeme_id"`
@@ -217,6 +218,9 @@ func BuildPlan(input PlanInput) (RealizationPlan, error) {
 		}
 		if !sameSoftConstraintMisses(validation.SoftConstraintMisses, input.Candidate.SoftConstraintMisses) {
 			return RealizationPlan{}, planError(status.OutcomeInvalid, "SOFT_CONSTRAINT_EVIDENCE_MISMATCH", "candidate.soft_constraint_misses", "candidate soft-constraint evidence does not match the validated Meaning and frame")
+		}
+		if !sameOmittedRoles(validation.MissingOmittedRoles, input.Candidate.MissingOmittedRoles) {
+			return RealizationPlan{}, planError(status.OutcomeInvalid, "OMITTED_ROLE_EVIDENCE_MISMATCH", "candidate.missing_omitted_roles", "candidate omitted-role evidence does not match the validated Meaning and exact frame")
 		}
 	}
 	autoLosses, err := unrepresentedWrapperLosses(input.Meaning, node.ID, input.Candidate.ConstructionPlan.Steps, input.Candidate.QuestionAnswer, budget.Meaning.MaxDepth, budget.MaxLosses-len(input.Losses))
@@ -326,6 +330,10 @@ func BuildPlan(input PlanInput) (RealizationPlan, error) {
 		outcome = mergePlanOutcome(outcome, status.OutcomeIncomplete)
 		diagnostics = appendPlanDiagnostic(diagnostics, planDiagnostic("MEANING_OPERATOR_NOT_REALIZED", "Meaning ancestry contains fields without an explicit construction realization", "meaning_path"))
 	}
+	if len(candidate.MissingOmittedRoles) > 0 {
+		outcome = mergePlanOutcome(outcome, status.OutcomeIncomplete)
+		diagnostics = appendPlanDiagnostic(diagnostics, planDiagnostic("TARGET_ROLE_ABSENT_BY_FRAME_LICENSE", "source Meaning omits a role explicitly permitted by the selected target frame", "meaning."+string(node.ID)+".participants"))
+	}
 	if len(input.Assumptions) > 0 {
 		outcome = mergePlanOutcome(outcome, status.OutcomeIncomplete)
 		diagnostics = appendPlanDiagnostic(diagnostics, planDiagnostic("EXPLICIT_REALIZATION_ASSUMPTION", "plan contains caller-declared assumptions", "assumptions"))
@@ -342,7 +350,7 @@ func BuildPlan(input PlanInput) (RealizationPlan, error) {
 	}
 	plan := RealizationPlan{
 		SemanticID: candidate.SemanticID, SourceCandidateID: candidate.SourceCandidateID,
-		Language: features.LanguageID(candidate.Lexeme.Language), NodeID: node.ID, Kind: node.Kind, Roles: sortedRoles(candidate.Roles), MeaningPath: path,
+		Language: features.LanguageID(candidate.Lexeme.Language), NodeID: node.ID, Kind: node.Kind, Roles: sortedRoles(candidate.Roles), MissingOmittedRoles: append([]meaning.Role(nil), candidate.MissingOmittedRoles...), MeaningPath: path,
 		CoreConceptID: candidate.TransferBinding.CoreRef, LexemeID: candidate.Lexeme.ID,
 		SenseID:              candidate.Sense.ID,
 		Construction:         cloneConstructionPlan(candidate.ConstructionPlan),
@@ -691,6 +699,18 @@ func sameSequenceStrings(left, right []string) bool {
 }
 
 func sameSoftConstraintMisses(left, right []valency.SoftConstraintMiss) bool {
+	if len(left) != len(right) {
+		return false
+	}
+	for index := range left {
+		if left[index] != right[index] {
+			return false
+		}
+	}
+	return true
+}
+
+func sameOmittedRoles(left, right []meaning.Role) bool {
 	if len(left) != len(right) {
 		return false
 	}

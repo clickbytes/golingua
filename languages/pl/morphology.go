@@ -20,6 +20,11 @@ var drinkingMorphSource = provenance.SourceRef{
 	Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
 }
 
+var givingPerfectivePastSource = provenance.SourceRef{
+	ID: "wsjp-pl-dac-past", URI: "https://wsjp.pl/haslo/podglad/6368/dac",
+	Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
+}
+
 // Only explicitly declared noun and adjective forms enter these paradigms.
 func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm {
 	result := attestedNounParadigms(profile)
@@ -28,11 +33,28 @@ func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm 
 	result = append(result, doroslyAdjectiveParadigm(profile))
 	result = append(result, identificationParadigms(profile)...)
 	result = append(result, polishPresentThirdPersonParadigms(profile)...)
+	result = append(result, polishDaćPastParadigm(profile))
 	return append(result, polishPersonalParadigms(profile)...)
 }
 
+func polishDaćPastParadigm(profile *features.LanguageFeatureProfile) morph.Paradigm {
+	const id = "pl_verb_dac_past_3sg_masculine"
+	return morph.Paradigm{
+		SchemaVersion: morph.ParadigmSchemaVersion, ID: id, Language: "pl", ProfileVersion: profile.Version(), POS: "verb",
+		PrincipalPartRequirements: []morph.PrincipalPartRequirement{{StemID: "pl_verb_dac_past_stem", PartID: "past_stem", Required: true}},
+		Cells: []morph.ParadigmCell{{ID: "past_3sg_masculine_personal", Features: []features.FeatureValue{
+			{Feature: "aspect", State: features.StateKnown, Value: "perfective"}, {Feature: "mood", State: features.StateKnown, Value: "indicative"},
+			{Feature: "gender", State: features.StateKnown, Value: "masculine_personal"}, {Feature: "number", State: features.StateKnown, Value: "singular"},
+			{Feature: "person", State: features.StateKnown, Value: "third"}, {Feature: "tense", State: features.StateKnown, Value: "past"},
+			{Feature: "verb_form", State: features.StateKnown, Value: "finite"}, {Feature: "voice", State: features.StateKnown, Value: "active"},
+		}}},
+		Rules: []morph.CellRule{{CellID: "past_3sg_masculine_personal", ProcedureID: "procedure:" + id + ".past_3sg_masculine_personal", Provenance: givingPerfectivePastSource,
+			Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "pl_verb_dac_past_stem"}, {Kind: procedure.OperationAppend, Text: "ł"}}}},
+	}
+}
+
 func polishPresentThirdPersonParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm {
-	result := make([]morph.Paradigm, 0, 26)
+	result := make([]morph.Paradigm, 0, 29)
 	for _, item := range []struct {
 		id, singular, plural string
 		source               provenance.SourceRef
@@ -62,6 +84,9 @@ func polishPresentThirdPersonParadigms(profile *features.LanguageFeatureProfile)
 		{"pl_verb_pracowac_present_3sg_3pl", "pracuje", "pracują", provenance.SourceRef{ID: "wsjp-pl-pracowac", URI: "https://wsjp.pl/haslo/podglad/19959/pracowac/5068993/w-banku", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
 		{"pl_verb_latac_present_3sg_3pl", "lata", "latają", provenance.SourceRef{ID: "wsjp-pl-latac", URI: "https://wsjp.pl/haslo/podglad/38367/latac/4212091/samolot-ptak", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
 		{"pl_verb_isc_present_3sg_3pl", "idzie", "idą", provenance.SourceRef{ID: "wsjp-pl-isc", URI: "https://wsjp.pl/haslo/podglad/19012/isc/5066139/do-domu", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
+		{"pl_verb_dawac_present_3sg_3pl", "daje", "dają", provenance.SourceRef{ID: "wsjp-pl-dawac", URI: "https://wsjp.pl/haslo/podglad/6365/dawac/4488497/prezent", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
+		{"pl_verb_kupowac_present_3sg_3pl", "kupuje", "kupują", provenance.SourceRef{ID: "wsjp-pl-kupowac", URI: "https://wsjp.pl/index.php/haslo/podglad/7275/kupowac/2372345/mieszkanie", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
+		{"pl_verb_sprzedawac_present_3sg_3pl", "sprzedaje", "sprzedają", provenance.SourceRef{ID: "wsjp-pl-sprzedawac", URI: "https://wsjp.pl/haslo/podglad/18191/sprzedawac/4925066/w-sklepie", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
 	} {
 		pos := "verb"
 		if item.id == "pl_verb_budzic_sie_present_3sg_3pl" {
@@ -110,6 +135,9 @@ func polishPresentThirdPersonMorphRecords(lexemes []lexicon.MorphLexeme) ([]lexe
 		"lexeme:pl.pracowac.v":        {"pl_verb_pracowac_present_3sg_3pl", "pracuje", "pracują"},
 		"lexeme:pl.latac.v":           {"pl_verb_latac_present_3sg_3pl", "lata", "latają"},
 		"lexeme:pl.isc.v":             {"pl_verb_isc_present_3sg_3pl", "idzie", "idą"},
+		"lexeme:pl.dawac.v":           {"pl_verb_dawac_present_3sg_3pl", "daje", "dają"},
+		"lexeme:pl.kupowac.v":         {"pl_verb_kupowac_present_3sg_3pl", "kupuje", "kupują"},
+		"lexeme:pl.sprzedawac.v":      {"pl_verb_sprzedawac_present_3sg_3pl", "sprzedaje", "sprzedają"},
 	}
 	result := make([]lexemeRecord, 0, len(forms))
 	for _, lexeme := range lexemes {
@@ -170,6 +198,18 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 		return nil, err
 	}
 	attested = append(attested, presentVerbs...)
+	dacFound := false
+	for _, lexeme := range document.Lexemes {
+		if lexeme.ID.String() != "lexeme:pl.dac.v" {
+			continue
+		}
+		dacFound = true
+		lexeme.ParadigmID = "pl_verb_dac_past_3sg_masculine"
+		attested = append(attested, lexemeRecord{Lexeme: lexeme, PrincipalParts: morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "past_stem", Form: "da"}}}})
+	}
+	if !dacFound {
+		return nil, fmt.Errorf("Polish dać past morphology lexeme is missing")
+	}
 	foundCat := false
 	foundBird := false
 	foundSee := false

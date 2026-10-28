@@ -37,6 +37,7 @@ var polishEntries = []lexicalEntry{
 	{"pl.patrzec.v", "patrzeć", "verb", []lexicalMeaning{{"pl.patrzec.directed", "direct visual attention to a target", "looking"}}},
 	{"pl.slyszec.v", "słyszeć", "verb", []lexicalMeaning{{"pl.slyszec.auditory", "perceive through hearing", "hearing"}}},
 	{"pl.dac.v", "dać", "verb", []lexicalMeaning{{"pl.dac.transfer", "initiate transfer to a recipient", "giving"}}},
+	{"pl.dawac.v", "dawać", "verb", []lexicalMeaning{{"pl.dawac.transfer", "Transfer an item, right, or opportunity to another participant, typically without specifying completion of a single transfer.", "giving"}}},
 	{"pl.dostac.v", "dostać", "verb", []lexicalMeaning{{"pl.dostac.receive", "become recipient of a theme", "receiving"}, {"pl.dostac.receive_message", "Obtaining a message delivered from another participant.", "receiving_message"}}},
 }
 
@@ -85,7 +86,7 @@ var polishApprovedLexicalSenses = map[string]struct{}{
 	"pl.oko.organ": {}, "pl.woda.substance": {}, "pl.jedzenie.food": {},
 	"pl.zdarzenie.event": {}, "pl.percepcja.sense": {}, "pl.widziec.visual": {},
 	"pl.patrzec.directed": {}, "pl.slyszec.auditory": {}, "pl.przybycie.arrival": {},
-	"pl.dac.transfer": {}, "pl.dostac.receive": {}, "pl.komunikowanie.communication": {},
+	"pl.dac.transfer": {}, "pl.dawac.transfer": {}, "pl.dostac.receive": {}, "pl.komunikowanie.communication": {},
 	"pl.pytac.request_info": {}, "pl.odpowiadac.answer": {}, "pl.czytac.interpret": {},
 	"pl.uczyc_sie.acquire": {}, "pl.uczyc.instruct": {}, "pl.jesc.eat": {},
 	"pl.spac.sleep": {}, "pl.cecha.property": {}, "pl.wielkosc.size": {},
@@ -562,6 +563,7 @@ var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.slyszec.auditory":     "pl.slyszec.auditory.transitive",
 	"pl.dostac.receive":       "pl.dostac.receive.transitive",
 	"pl.dac.transfer":         "pl.dac.transfer.ditransitive",
+	"pl.dawac.transfer":       "pl.dawac.transfer.ditransitive",
 	"pl.pytac.request_info":   "pl.pytac.request_info.frame",
 	"pl.odpowiadac.answer":    "pl.odpowiadac.answer.frame",
 	"pl.czytac.interpret":     "pl.czytac.interpret.frame",
@@ -574,6 +576,10 @@ var polishFrameBySense = map[string]lexicon.ValencyID{
 }
 
 var polishParadigmByLexeme = map[string]string{
+	"pl.dac.v":             "pl_verb_dac_past_3sg_masculine",
+	"pl.dawac.v":           "pl_verb_dawac_present_3sg_3pl",
+	"pl.kupowac.v":         "pl_verb_kupowac_present_3sg_3pl",
+	"pl.sprzedawac.v":      "pl_verb_sprzedawac_present_3sg_3pl",
 	"pl.budzic_sie.v":      "pl_verb_budzic_sie_present_3sg_3pl",
 	"pl.isc.v":             "pl_verb_isc_present_3sg_3pl",
 	"pl.zasypiac.v":        "pl_verb_zasypiac_present_3sg_3pl",

@@ -220,6 +220,13 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 	if input.Frame.ID != plan.FrameID || input.Frame.SenseID != plan.SenseID {
 		return ExecuteResult{}, executeError(status.OutcomeInvalid, "PLAN_FRAME_MISMATCH", "frame", "supplied valency frame differs from the selected plan sense or frame")
 	}
+	omitted := make(map[meaning.Role]bool, len(plan.MissingOmittedRoles))
+	for _, role := range plan.MissingOmittedRoles {
+		if omitted[role] || !containsRole(input.Frame.SurfaceOmittedRoles, role) {
+			return ExecuteResult{}, executeError(status.OutcomeInvalid, "OMITTED_ROLE_FRAME_MISMATCH", "plan.missing_omitted_roles", "only unique roles explicitly licensed by the exact selected frame may be omitted")
+		}
+		omitted[role] = true
+	}
 	if err := validateConstructionPlanForSurface(plan, input.Family); err != nil {
 		return ExecuteResult{}, err
 	}
@@ -274,6 +281,9 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 			}
 			if slot.ArgumentBinding != nil {
 				participant, count := participantByRole(predicate, slot.ArgumentBinding.SemanticRole)
+				if omitted[slot.ArgumentBinding.SemanticRole] && count == 0 {
+					continue
+				}
 				if count > 1 {
 					return ExecuteResult{}, executeError(status.OutcomeAmbiguous, "MEANING_ROLE_AMBIGUOUS", "meaning."+string(plan.NodeID)+".participants", "source Meaning supplies multiple targets for one semantic role")
 				}
@@ -320,6 +330,12 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 	outcome := plan.Outcome
 	diagnostics := append([]status.Diagnostic(nil), plan.Diagnostics...)
 	result := ExecuteResult{Outcome: outcome, Family: cloneExecutionFamily(input.Family), Slots: []SlotForm{}, Diagnostics: diagnostics}
+	if len(omitted) > 0 {
+		result.Outcome = mergePlanOutcome(result.Outcome, status.OutcomeIncomplete)
+		for role := range omitted {
+			result.Diagnostics = append(result.Diagnostics, status.Diagnostic{Code: "TARGET_ROLE_ABSENT_BY_FRAME_LICENSE", Path: "meaning." + string(plan.NodeID) + ".participants." + string(role), Message: "licensed surface omission leaves this semantic role unresolved", Severity: status.SeverityWarning})
+		}
+	}
 	traceSteps, textBytes := 0, 0
 	for _, slot := range slots {
 		req, supplied := requests[slot.ID]

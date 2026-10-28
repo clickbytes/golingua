@@ -123,7 +123,7 @@ func (engine *Engine) Translate(ctx context.Context, request Request) (Translati
 			result.Diagnostics = appendDiagnostic(result.Diagnostics, diagnostic("RESOURCE_LIMIT", "candidates", "translation alternative retention limit was exhausted"))
 			break
 		}
-		if sourceCandidate.Meaning == nil || (sourceCandidate.Status != status.OutcomeOK && !mayRealizePartialRoleCandidate(sourceCandidate)) {
+		if sourceCandidate.Meaning == nil || (sourceCandidate.Status != status.OutcomeOK && !mayRealizePartialRoleCandidate(sourceCandidate, sourceLanguage)) {
 			result.Candidates = append(result.Candidates, unresolvedAlternative(sourceCandidate))
 			continue
 		}
@@ -437,7 +437,61 @@ func hasVerifiedBindingEvidence(pack language.Language, trace semantic.EvidenceT
 	return false
 }
 
-func mayRealizePartialRoleCandidate(candidate semantic.MeaningCandidate) bool {
+func mayRealizePartialRoleCandidate(candidate semantic.MeaningCandidate, sourceLanguage language.Language) bool {
+	if candidate.Status == status.OutcomeIncomplete && candidate.Evidence.Outcome == status.OutcomeIncomplete && candidate.Meaning != nil && len(candidate.MissingSurfaceOmittedRoles) > 0 && len(candidate.SoftConstraintMisses) == 0 {
+		roles := make(map[string]bool, len(candidate.MissingSurfaceOmittedRoles))
+		for _, role := range candidate.MissingSurfaceOmittedRoles {
+			if role == "" || roles[string(role)] {
+				return false
+			}
+			roles[string(role)] = true
+		}
+		seen := make(map[string]bool, len(roles))
+		omissionDiagnostics := make(map[string]bool, len(roles))
+		unresolved := 0
+		partial, roleDiagnostic := false, false
+		for _, diagnostic := range candidate.Evidence.Diagnostics {
+			switch diagnostic.Code {
+			case "SURFACE_OMITTED_ROLE":
+				role := strings.TrimPrefix(diagnostic.Path, "meaning_node.participants.")
+				if diagnostic.Path != "meaning_node.participants."+role || diagnostic.Severity != status.SeverityWarning || diagnostic.Message != "licensed semantic role is absent from the source Meaning; no participant was inferred" || !roles[role] || omissionDiagnostics[role] {
+					return false
+				}
+				omissionDiagnostics[role] = true
+			case "PARTIAL_PARSE_EVIDENCE":
+				if partial || diagnostic.Message != semantic.UnresolvedRoleSenseReason {
+					return false
+				}
+				partial = true
+			case semantic.DiagnosticUnresolvedRoleSense:
+				if roleDiagnostic || diagnostic.Path != "roles" || diagnostic.Severity != status.SeverityWarning || diagnostic.Message != semantic.UnresolvedRoleSenseReason {
+					return false
+				}
+				roleDiagnostic = true
+			default:
+				return false
+			}
+		}
+		for _, record := range candidate.Evidence.Records {
+			if record.Outcome == status.OutcomeOK {
+				continue
+			}
+			if record.Outcome == status.OutcomeIncomplete && record.Reason == "frame explicitly permits this semantic role to be absent from the source Meaning" && roles[string(record.Role)] && record.SenseID.String() != "" && record.CoreConceptID.String() != "" && record.BindingKey != "" && record.FrameID != "" && record.FamilyID.String() != "" && record.VariantID != "" && record.PlanID != "" && record.CandidateID != "" && record.ReadingID != "" && record.SourceSpan.End > record.SourceSpan.Start && exactOmissionPredicateEvidence(sourceLanguage, candidate, record) {
+				if seen[string(record.Role)] {
+					return false
+				}
+				seen[string(record.Role)] = true
+				continue
+			}
+			if record.Outcome != status.OutcomeUnsupported || record.Reason != semantic.UnresolvedRoleSenseReason || record.Role == "" || record.SenseID.String() == "" || record.SourceSpan.End <= record.SourceSpan.Start || record.CandidateID == "" || record.CoreConceptID.String() != "" || record.BindingKey != "" || record.FrameID != "" || record.FamilyID.String() != "" || record.VariantID != "" {
+				return false
+			}
+			unresolved++
+		}
+		if len(seen) == len(roles) && len(omissionDiagnostics) == len(roles) && (unresolved == 0 || partial && roleDiagnostic && unresolved > 0) {
+			return true
+		}
+	}
 	if candidate.Status != status.OutcomeIncomplete || candidate.Evidence.Outcome != status.OutcomeIncomplete || candidate.Meaning == nil || len(candidate.SoftConstraintMisses) > 0 {
 		return false
 	}
@@ -475,6 +529,44 @@ func mayRealizePartialRoleCandidate(candidate semantic.MeaningCandidate) bool {
 		unresolvedRecords++
 	}
 	return unresolvedRecords > 0
+}
+
+func exactOmissionPredicateEvidence(pack language.Language, candidate semantic.MeaningCandidate, omission semantic.EvidenceRecord) bool {
+	if candidate.Meaning == nil || omission.Outcome != status.OutcomeIncomplete || omission.Role == "" {
+		return false
+	}
+	concept := meaning.ConceptRefFromID(omission.CoreConceptID)
+	var predicate *meaning.Node
+	for index := range candidate.Meaning.Nodes {
+		node := &candidate.Meaning.Nodes[index]
+		if (node.Kind == meaning.KindEvent || node.Kind == meaning.KindState) && node.Concept == concept {
+			if predicate != nil {
+				return false
+			}
+			predicate = node
+		}
+	}
+	if predicate == nil {
+		return false
+	}
+	for _, participant := range predicate.Participants {
+		if participant.Role == omission.Role {
+			return false
+		}
+	}
+	for _, record := range candidate.Evidence.Records {
+		if record.Outcome != status.OutcomeOK || record.Role != "" || record.CandidateID != omission.CandidateID ||
+			record.ReadingID != omission.ReadingID || record.SenseID != omission.SenseID || record.CoreConceptID != omission.CoreConceptID ||
+			record.BindingKey != omission.BindingKey || record.FrameID != omission.FrameID || record.FamilyID != omission.FamilyID ||
+			record.VariantID != omission.VariantID || record.PlanID != omission.PlanID || record.SourceSpan != omission.SourceSpan ||
+			record.PhraseNodeID != omission.PhraseNodeID {
+			continue
+		}
+		if hasVerifiedBindingEvidence(pack, semantic.EvidenceTrace{Outcome: status.OutcomeOK, Records: []semantic.EvidenceRecord{record}}, candidate.Meaning, true) {
+			return true
+		}
+	}
+	return false
 }
 
 func containsVariantID(variants []ids.ConstructionID, value string) bool {

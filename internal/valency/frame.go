@@ -21,6 +21,7 @@ const (
 	MaxBindings              = 250_000
 	MaxArgumentsPerFrame     = 64
 	MaxSemanticRoles         = 64
+	MaxSurfaceOmittedRoles   = 64
 	MaxConstraintsPerFrame   = 256
 	MaxConceptsPerConstraint = 64
 	MaxKindsPerConstraint    = 16
@@ -70,10 +71,13 @@ type SelectionalConstraint struct {
 // ValencyFrame licenses semantic argument roles for one lexical sense. It
 // intentionally has no subject=agent or object=theme default.
 type ValencyFrame struct {
-	ID                     FrameID                 `json:"id"`
-	SenseID                ids.SenseID             `json:"sense_id"`
-	SemanticRoles          []meaning.Role          `json:"semantic_roles"`
-	Arguments              []ArgumentSlot          `json:"arguments"`
+	ID            FrameID        `json:"id"`
+	SenseID       ids.SenseID    `json:"sense_id"`
+	SemanticRoles []meaning.Role `json:"semantic_roles"`
+	Arguments     []ArgumentSlot `json:"arguments"`
+	// SurfaceOmittedRoles explicitly licenses roles that may be absent from
+	// the Meaning for this exact frame. Each role still has an optional slot.
+	SurfaceOmittedRoles    []meaning.Role          `json:"surface_omitted_roles,omitempty"`
 	SelectionalConstraints []SelectionalConstraint `json:"selectional_constraints,omitempty"`
 	AllowedFamilyIDs       []ids.ConstructionID    `json:"allowed_family_ids"`
 	Provenance             provenance.SourceRef    `json:"provenance"`
@@ -113,6 +117,7 @@ type SoftConstraintMiss struct {
 // hard validation failures.
 type ValidationResult struct {
 	SoftConstraintMisses []SoftConstraintMiss `json:"soft_constraint_misses,omitempty"`
+	MissingOmittedRoles  []meaning.Role       `json:"missing_omitted_roles,omitempty"`
 }
 
 // Validate checks a frame's internal structure and canonical identities.
@@ -134,6 +139,9 @@ func (frame ValencyFrame) Validate() error {
 	}
 	if len(frame.SemanticRoles) > MaxSemanticRoles {
 		return resourceLimit("semantic_roles", len(frame.SemanticRoles), MaxSemanticRoles)
+	}
+	if len(frame.SurfaceOmittedRoles) > MaxSurfaceOmittedRoles {
+		return resourceLimit("surface_omitted_roles", len(frame.SurfaceOmittedRoles), MaxSurfaceOmittedRoles)
 	}
 	if len(frame.AllowedFamilyIDs) > MaxFamiliesPerFrame {
 		return resourceLimit("allowed_families", len(frame.AllowedFamilyIDs), MaxFamiliesPerFrame)
@@ -180,6 +188,22 @@ func (frame ValencyFrame) Validate() error {
 	}
 	if len(argumentRoles) != len(roles) {
 		return invalid("INCOMPLETE_ARGUMENT_SLOTS", "frame.arguments", "every declared semantic role requires exactly one argument slot")
+	}
+	omitted := make(map[meaning.Role]struct{}, len(frame.SurfaceOmittedRoles))
+	for index, role := range frame.SurfaceOmittedRoles {
+		path := fmt.Sprintf("frame.surface_omitted_roles[%d]", index)
+		if _, exists := roles[role]; !exists {
+			return invalid("UNKNOWN_SURFACE_OMITTED_ROLE", path, "omitted role must be declared in semantic_roles")
+		}
+		if _, exists := omitted[role]; exists {
+			return invalid("DUPLICATE_SURFACE_OMITTED_ROLE", path, "omitted role is duplicated")
+		}
+		omitted[role] = struct{}{}
+		for _, argument := range frame.Arguments {
+			if argument.Role == role && argument.Required {
+				return invalid("REQUIRED_SURFACE_OMITTED_ROLE", path, "surface-omitted role must have an optional argument slot")
+			}
+		}
 	}
 	constraintIDs := make(map[string]struct{}, len(frame.SelectionalConstraints))
 	for index, constraint := range frame.SelectionalConstraints {
@@ -296,6 +320,7 @@ func validConstructionID(id ids.ConstructionID) bool {
 func canonicalFrame(frame ValencyFrame) ValencyFrame {
 	result := cloneFrame(frame)
 	sort.Slice(result.SemanticRoles, func(i, j int) bool { return result.SemanticRoles[i] < result.SemanticRoles[j] })
+	sort.Slice(result.SurfaceOmittedRoles, func(i, j int) bool { return result.SurfaceOmittedRoles[i] < result.SurfaceOmittedRoles[j] })
 	sort.Slice(result.Arguments, func(i, j int) bool { return result.Arguments[i].ID < result.Arguments[j].ID })
 	for index := range result.SelectionalConstraints {
 		constraint := &result.SelectionalConstraints[index]
@@ -316,6 +341,7 @@ func cloneFrame(frame ValencyFrame) ValencyFrame {
 	result := frame
 	result.SemanticRoles = append([]meaning.Role(nil), frame.SemanticRoles...)
 	result.Arguments = append([]ArgumentSlot(nil), frame.Arguments...)
+	result.SurfaceOmittedRoles = append([]meaning.Role(nil), frame.SurfaceOmittedRoles...)
 	result.SelectionalConstraints = make([]SelectionalConstraint, len(frame.SelectionalConstraints))
 	for index, constraint := range frame.SelectionalConstraints {
 		result.SelectionalConstraints[index] = constraint

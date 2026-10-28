@@ -104,6 +104,14 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	if err != nil {
 		return nil, err
 	}
+	buyingSense, err := ids.NewSenseID("pl.kupowac.buy")
+	if err != nil {
+		return nil, err
+	}
+	sellingSense, err := ids.NewSenseID("pl.sprzedawac.sell")
+	if err != nil {
+		return nil, err
+	}
 	caseValues := map[features.FeatureValueID]string{}
 	for _, value := range []string{"nominative", "genitive", "dative", "accusative", "instrumental", "locative", "vocative"} {
 		caseValues[features.FeatureValueID(value)] = value
@@ -116,7 +124,11 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		}
 		manipulationSenses[sense] = true
 	}
-	supportedSenses := map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true, eatingSense: true, drinkingSense: true}
+	givingSense, err := ids.NewSenseID("pl.dawac.transfer")
+	if err != nil {
+		return nil, err
+	}
+	supportedSenses := map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true, eatingSense: true, drinkingSense: true, givingSense: true, buyingSense: true, sellingSense: true}
 	for sense := range manipulationSenses {
 		supportedSenses[sense] = true
 	}
@@ -171,7 +183,14 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		},
 		eatingSense:   {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}, {"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"}},
 		drinkingSense: {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}, {"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"}},
+		givingSense:   {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}, {"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"}},
 	}
+	commerceFeatures := []map[features.FeatureID]features.FeatureValueID{
+		{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
+		{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
+	}
+	predicateAlternatives[buyingSense] = commerceFeatures
+	predicateAlternatives[sellingSense] = commerceFeatures
 	for _, name := range []string{"pl.otwierac_obiekt.open", "pl.zamykac_obiekt.close", "pl.niesc.carry", "pl.trzymac.hold", "pl.ciagnac.pull", "pl.pchac.push", "pl.ciac.cut", "pl.skladac.fold", "pl.rozdzierac.tear"} {
 		sense, senseErr := ids.NewSenseID(name)
 		if senseErr != nil {
@@ -192,7 +211,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		Language: "pl", ClauseConnector: "i", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}}, AllowFinalPeriod: false,
 		ScopedSourcePlan: scopedPlan, ScopedReadingPolicy: ScopedSourceReadingPolicy,
 		RelationPathPlan: relationPathPlan, RelationSourceReadingPolicy: RelationSourceReadingPolicy,
-		AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "nie": true, "to": true, "ten": true, "jest": true, "są": true, "kto": true, "kogo": true, "i": true, "się": true},
+		AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "od": true, "nie": true, "to": true, "ten": true, "jest": true, "są": true, "kto": true, "kogo": true, "i": true, "się": true},
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
@@ -205,7 +224,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		EvidenceBuilder: polishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), valency: valencyIndex, constructions: registry, base: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses:                     supportedSenses,
 			PredicateFeatureAlternativesBySense: predicateAlternatives,
-			AllowedUnlexicalizedTerminals:       map[string]bool{"na": true, "nie": true, "to": true, "ten": true, "jest": true, "się": true},
+			AllowedUnlexicalizedTerminals:       map[string]bool{"na": true, "od": true, "nie": true, "to": true, "ten": true, "jest": true, "są": true, "się": true},
 		}},
 	}, nil
 }

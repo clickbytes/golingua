@@ -2,6 +2,7 @@ package valency
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/clickbytes/golingua/internal/core"
 	"github.com/clickbytes/golingua/internal/ids"
@@ -97,11 +98,17 @@ func ValidateFrame(frame ValencyFrame, request ValidationRequest, ontology *core
 		participants[participant.Role] = target
 	}
 	for role, argument := range frameRoles {
-		if _, exists := participants[role]; !exists && argument.Required {
-			return ValidationResult{}, incomplete("MISSING_REQUIRED_ROLE", "meaning_node.participants."+string(role), "required semantic role is missing from the selected Meaning")
+		if _, exists := participants[role]; exists || !argument.Required {
+			continue
+		}
+		return ValidationResult{}, incomplete("MISSING_REQUIRED_ROLE", "meaning_node.participants."+string(role), "required semantic role is missing from the selected Meaning")
+	}
+	result := ValidationResult{SoftConstraintMisses: []SoftConstraintMiss{}, MissingOmittedRoles: []meaning.Role{}}
+	for _, role := range frame.SurfaceOmittedRoles {
+		if _, exists := participants[role]; !exists {
+			result.MissingOmittedRoles = append(result.MissingOmittedRoles, role)
 		}
 	}
-	result := ValidationResult{SoftConstraintMisses: []SoftConstraintMiss{}}
 	for _, constraint := range frame.SelectionalConstraints {
 		target, present := participants[constraint.Role]
 		if !present {
@@ -135,6 +142,7 @@ func ValidateFrame(frame ValencyFrame, request ValidationRequest, ontology *core
 		result.SoftConstraintMisses = append(result.SoftConstraintMisses, SoftConstraintMiss{ConstraintID: constraint.ID, Role: constraint.Role, Actual: targetID})
 	}
 	sortSoftMisses(result.SoftConstraintMisses)
+	sort.Slice(result.MissingOmittedRoles, func(i, j int) bool { return result.MissingOmittedRoles[i] < result.MissingOmittedRoles[j] })
 	return result, nil
 }
 
