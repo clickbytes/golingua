@@ -231,6 +231,15 @@ func (engine *Engine) realizeAlgebra(
 			return algebraRealizationFailure(result, matchStatus, matchCode, partPaths[index], matchMessage), nil
 		}
 	}
+	if queryAnswer == nil && input.Expression != nil && input.Expression.Kind == algebra.TermAnd && len(input.Expression.Operands) == 2 {
+		coordinated, coordErr := engine.realizeTwoAtomAnd(ctx, input, languageID, languagePackage, matches, unresolved, refuseContextResiduals)
+		if coordErr != nil {
+			return result, coordErr
+		}
+		if coordinated != nil {
+			return *coordinated, nil
+		}
+	}
 	if len(matches) == 0 {
 		result.Residuals = append(result.Residuals, unresolved...)
 		return algebraRealizationFailure(result, refusalStatus, "NO_EXACT_REALIZATION_BINDING", "input.expression", "no exact approved symbol target covers the expression"), nil
@@ -289,6 +298,13 @@ func (engine *Engine) realizeAlgebra(
 	if realizeErr != nil {
 		return algebraRealizationError(result, realizeErr, "TARGET_REALIZATION_FAILED", "target")
 	}
+	return validateAlgebraTargetSurface(result, surface, []algebraAtomMatch{match}, candidate.Meaning, targetLanguage, budget)
+}
+
+// validateAlgebraTargetSurface preserves the strict target-output contract for
+// singleton and coordinated algebra realization. Each match consumes a distinct
+// exact generated binding record, including when senses are identical.
+func validateAlgebraTargetSurface(result AlgebraRealizationResult, surface SurfaceResult, matches []algebraAtomMatch, candidateGraph *meaning.Meaning, targetLanguage language.Language, budget Budget) (AlgebraRealizationResult, error) {
 	if !surface.Outcome.Valid() || len(surface.Diagnostics) > status.MaxDiagnostics {
 		return algebraRealizationFailure(result, status.OutcomeError, "INVALID_TARGET_OUTCOME", "target.outcome", "target adapter returned an unsupported realization status"), nil
 	}
@@ -307,10 +323,6 @@ func (engine *Engine) realizeAlgebra(
 	textBytes := 0
 	usableSurface := false
 	completeSurface := false
-	selectedCoreRef, parseCoreErr := ids.ParseConceptID(result.Coverage[0].CoreRef)
-	if parseCoreErr != nil {
-		return algebraRealizationFailure(result, status.OutcomeInvalid, "INVALID_SELECTED_CORE_REF", "coverage.core_ref", "selected target coverage contains a malformed CORE concept ID"), nil
-	}
 	for index, alternative := range surface.Alternatives {
 		path := fmt.Sprintf("target.alternatives[%d]", index)
 		if !alternative.Outcome.Valid() || !validID(alternative.ID) || len(alternative.Diagnostics) > status.MaxDiagnostics || len(alternative.Assumptions) > MaxTranslationAssumptions || len(alternative.Losses) > MaxTranslationLosses {
@@ -343,8 +355,27 @@ func (engine *Engine) realizeAlgebra(
 			if textBytes > budget.MaxCandidateTextBytes {
 				return algebraRealizationFailure(result, status.OutcomeResourceLimit, "RESOURCE_LIMIT", "target.text", "surface alternatives exceed the aggregate text byte limit"), nil
 			}
-			if !hasExactGeneratedAlgebraBindingEvidence(targetLanguage, alternative.Evidence, match.binding.SenseID, selectedCoreRef, candidate.Meaning) {
-				return algebraRealizationFailure(result, status.OutcomeUnsupported, "TARGET_BINDING_EVIDENCE_UNAVAILABLE", path+".evidence", "text was rejected because no exact verified generated binding evidence supports the selected sense and CORE concept"), nil
+			usedEvidence := make(map[int]bool)
+			for matchIndex, matched := range matches {
+				coreRef, parseCoreErr := ids.ParseConceptID(result.Coverage[matchIndex].CoreRef)
+				if parseCoreErr != nil {
+					return algebraRealizationFailure(result, status.OutcomeInvalid, "INVALID_SELECTED_CORE_REF", "coverage.core_ref", "selected target coverage contains a malformed CORE concept ID"), nil
+				}
+				found := false
+				for evidenceIndex, record := range alternative.Evidence.Records {
+					if usedEvidence[evidenceIndex] {
+						continue
+					}
+					one := semantic.EvidenceTrace{AlternativeID: alternative.Evidence.AlternativeID, Outcome: alternative.Evidence.Outcome, Records: []semantic.EvidenceRecord{record}, Diagnostics: alternative.Evidence.Diagnostics}
+					if hasExactGeneratedAlgebraBindingEvidence(targetLanguage, one, matched.binding.SenseID, coreRef, candidateGraph) {
+						usedEvidence[evidenceIndex] = true
+						found = true
+						break
+					}
+				}
+				if !found {
+					return algebraRealizationFailure(result, status.OutcomeUnsupported, "TARGET_BINDING_EVIDENCE_UNAVAILABLE", path+".evidence", "text was rejected because every exact selected clause requires its own verified generated binding record"), nil
+				}
 			}
 			if alternative.Outcome == status.OutcomeOK || alternative.Outcome == status.OutcomeIncomplete {
 				usableSurface = true

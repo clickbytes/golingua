@@ -8,8 +8,17 @@ import (
 	"github.com/clickbytes/golingua/internal/valency"
 )
 
-//go:embed constructions/transitive_personal.json constructions/transitive.json constructions/transitive_past.json constructions/transitive_negative.json constructions/oblique.json constructions/oblique_negative.json constructions/question.json constructions/wh_question.json constructions/identification.json constructions/identification_negative.json constructions/attribution.json constructions/attributed_seeing.json
+//go:embed constructions/transitive_personal.json constructions/transitive.json constructions/transitive_past.json constructions/transitive_negative.json constructions/oblique.json constructions/oblique_negative.json constructions/question.json constructions/wh_question.json constructions/identification.json constructions/identification_negative.json constructions/attribution.json constructions/attributed_seeing.json constructions/coordination.json
 var sentenceConstructions embed.FS
+
+// SentenceCoordination compiles the explicit language-local clause join plan.
+func SentenceCoordination() (construction.ClauseCoordinationPlan, error) {
+	data, err := sentenceConstructions.ReadFile("constructions/coordination.json")
+	if err != nil {
+		return construction.ClauseCoordinationPlan{}, err
+	}
+	return construction.DecodeClauseCoordinationPlan(data, "en")
+}
 
 // SentenceConstructions compiles the language-local templates against the
 // authored valency index. Only exact approved bindings in that index license

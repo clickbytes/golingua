@@ -43,21 +43,22 @@ type TargetOperatorBuilder interface {
 // linearization to engine.TargetRealizer. Slot feature planning is language
 // local and therefore required as an explicit compiled dependency.
 type TargetPipeline struct {
-	Language         features.LanguageID
-	LanguageRegistry *language.Registry
-	Lexicon          *lexicon.Index
-	Valency          *valency.Index
-	Constructions    *construction.Registry
-	Variants         map[ids.ConstructionID]*construction.VariantIndex
-	Core             *core.ConceptGraph
-	OperatorBuilder  TargetOperatorBuilder
-	SelectionBudget  realizer.Budget
-	PlanBudget       realizer.PlanBudget
-	ExecuteBudget    realizer.ExecuteBudget
-	LinearizeBudget  realizer.LinearizeBudget
-	PlanBuilder      TargetPlanBuilder
-	ExecutionBuilder TargetExecutionBuilder
-	CandidatePolicy  realizer.TargetCandidatePolicy
+	Language           features.LanguageID
+	LanguageRegistry   *language.Registry
+	Lexicon            *lexicon.Index
+	Valency            *valency.Index
+	Constructions      *construction.Registry
+	Variants           map[ids.ConstructionID]*construction.VariantIndex
+	Core               *core.ConceptGraph
+	OperatorBuilder    TargetOperatorBuilder
+	SelectionBudget    realizer.Budget
+	PlanBudget         realizer.PlanBudget
+	ExecuteBudget      realizer.ExecuteBudget
+	LinearizeBudget    realizer.LinearizeBudget
+	PlanBuilder        TargetPlanBuilder
+	ExecutionBuilder   TargetExecutionBuilder
+	CandidatePolicy    realizer.TargetCandidatePolicy
+	ClauseCoordination *construction.ClauseCoordinationPlan
 }
 
 var _ engine.TargetRealizer = (*TargetPipeline)(nil)
@@ -73,6 +74,9 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 	}
 	if err := ctx.Err(); err != nil {
 		return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
+	}
+	if coordinated, matched, coordErr := pipeline.realizeCoordinated(ctx, source); matched {
+		return coordinated, coordErr
 	}
 	var operators []construction.Operator
 	operatorCoverageComplete := source.Meaning != nil && meaningHasNoExplicitOperators(*source.Meaning)
