@@ -131,7 +131,15 @@ func (engine *Engine) translateDSE(ctx context.Context, request Request) (Transl
 			result.Candidates = append(result.Candidates, dseUnresolvedAlternative(candidate, status.OutcomeUnsupported, []status.Diagnostic{refusal}))
 			continue
 		}
-		enriched, mappings, mapStatus, mapCode, mapMessage := enrichDSEContext(engine, document, candidate)
+		var enriched algebra.Document
+		var mappings []DSEReferenceConceptMapping
+		var mapStatus status.OutcomeKind
+		var mapCode, mapMessage string
+		if document.Expression != nil && document.Expression.Kind == algebra.TermAnd {
+			enriched, mappings, mapStatus, mapCode, mapMessage = enrichDSECoordination(engine, sourceResources.SourcePackage, document, candidate)
+		} else {
+			enriched, mappings, mapStatus, mapCode, mapMessage = enrichDSEContext(engine, document, candidate)
+		}
 		if mapStatus != status.OutcomeOK {
 			refusal := diagnostic(mapCode, "composition.candidates."+candidate.ID, mapMessage)
 			realizationReceipt.Status = mapStatus
@@ -283,12 +291,19 @@ func dseLexicalConditionReceipt(sourcePackage *language.SemanticLanguagePackage,
 		return DSEConditionConsumption{}, false
 	}
 	var mapping *DSEReferenceConceptMapping
+	coordinated := len(candidate.ClauseSources) == 2
 	for index := range mappings {
 		if mappings[index].ReferenceID != argument.Value.ID {
 			continue
 		}
-		if mapping != nil || mappings[index].MappingKind != string(lexicon.MappingEquivalent) || mappings[index].ApprovalStatus != string(lexicon.BindingApproved) {
+		if mappings[index].MappingKind != string(lexicon.MappingEquivalent) || mappings[index].ApprovalStatus != string(lexicon.BindingApproved) {
 			return DSEConditionConsumption{}, false
+		}
+		if mapping != nil {
+			if !coordinated || mapping.SourceSenseID != mappings[index].SourceSenseID || mapping.CoreConceptID != mappings[index].CoreConceptID || mapping.MappingKind != mappings[index].MappingKind || mapping.ApprovalStatus != mappings[index].ApprovalStatus || mapping.ProvenanceID != mappings[index].ProvenanceID {
+				return DSEConditionConsumption{}, false
+			}
+			continue
 		}
 		mapping = &mappings[index]
 	}
@@ -301,16 +316,23 @@ func dseLexicalConditionReceipt(sourcePackage *language.SemanticLanguagePackage,
 			roleSources++
 		}
 	}
-	if roleSources != 1 {
+	if roleSources < 1 || (roleSources != 1 && !coordinated) {
 		return DSEConditionConsumption{}, false
 	}
 	coverage := 0
 	for _, row := range candidate.ConditionCoverage {
-		if row.ConditionID == condition.ID && row.Code == condition.Code && string(row.Kind) == string(condition.Kind) && len(row.TargetReferenceIDs) == 1 && row.TargetReferenceIDs[0] == mapping.ReferenceID {
-			coverage++
+		if row.ConditionID != condition.ID {
+			continue
 		}
+		if row.Code != condition.Code || string(row.Kind) != string(condition.Kind) || len(row.TargetReferenceIDs) != 1 || row.TargetReferenceIDs[0] != mapping.ReferenceID {
+			return DSEConditionConsumption{}, false
+		}
+		if !coordinated && coverage != 0 {
+			return DSEConditionConsumption{}, false
+		}
+		coverage++
 	}
-	if coverage != 1 {
+	if coverage < 1 || (coverage != 1 && !coordinated) {
 		return DSEConditionConsumption{}, false
 	}
 	sense, err := ids.ParseSenseID(mapping.SourceSenseID)
@@ -330,7 +352,7 @@ func dseLexicalConditionReceipt(sourcePackage *language.SemanticLanguagePackage,
 		}
 		selected = binding
 	}
-	if selected == nil || !hasDSEReferenceFragment(candidate.FragmentChecks, selected.Target) {
+	if selected == nil || !hasDSEReferenceFragment(candidate.FragmentChecks, selected.Target, coordinated) {
 		return DSEConditionConsumption{}, false
 	}
 	return DSEConditionConsumption{
@@ -341,7 +363,7 @@ func dseLexicalConditionReceipt(sourcePackage *language.SemanticLanguagePackage,
 	}, true
 }
 
-func hasDSEReferenceFragment(checks []semantic.DSEFragmentCheck, expected *lexicon.SemanticTarget) bool {
+func hasDSEReferenceFragment(checks []semantic.DSEFragmentCheck, expected *lexicon.SemanticTarget, allowRepeated bool) bool {
 	if expected == nil {
 		return false
 	}
@@ -358,7 +380,7 @@ func hasDSEReferenceFragment(checks []semantic.DSEFragmentCheck, expected *lexic
 			matches++
 		}
 	}
-	return matches == 1
+	return matches == 1 || (allowRepeated && matches > 1)
 }
 
 func dseSourceRefusal(candidate semantic.DSECandidate) (status.OutcomeKind, string, string) {
@@ -455,6 +477,9 @@ func dseTranslationAsk(expression *algebra.Term) (answerID, answerRole string, i
 }
 
 func dseTranslationExpressionSupported(expression *algebra.Term) bool {
+	if expression != nil && expression.Kind == algebra.TermAnd && len(expression.Operands) == 2 && expression.Operands[0] != nil && expression.Operands[0].Kind == algebra.TermAtom && expression.Operands[1] != nil && expression.Operands[1].Kind == algebra.TermAtom {
+		return true
+	}
 	_, _, _, supported := dseTranslationAsk(expression)
 	return supported
 }
