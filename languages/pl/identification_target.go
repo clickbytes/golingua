@@ -186,7 +186,7 @@ func polishIdentificationReferenceMode(source semantic.MeaningCandidate, predica
 			return "", false
 		}
 		switch mention.Anchor.Value {
-		case "proximal", "unresolved", "demonstrative":
+		case "proximal", "distal", "unresolved", "demonstrative":
 		default:
 			return "", false
 		}

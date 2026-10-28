@@ -24,6 +24,8 @@ func identificationParadigms(profile *features.LanguageFeatureProfile) []morph.P
 		Language: "en", ProfileVersion: profile.Version(), POS: "verb",
 		PrincipalPartRequirements: []morph.PrincipalPartRequirement{{
 			StemID: "en_identification_be_present_3sg_form", PartID: "third_person_singular_form", Required: true,
+		}, {
+			StemID: "en_identification_be_present_3pl_form", PartID: "third_person_plural_form", Required: true,
 		}},
 		Cells: []morph.ParadigmCell{{
 			ID: "finite_present_indicative_active_third_singular",
@@ -36,12 +38,28 @@ func identificationParadigms(profile *features.LanguageFeatureProfile) []morph.P
 				{Feature: "verb_number", State: features.StateKnown, Value: "singular"},
 				{Feature: "voice", State: features.StateKnown, Value: "active"},
 			},
+		}, {
+			ID: "finite_present_indicative_active_third_plural",
+			Features: []features.FeatureValue{
+				{Feature: "mood", State: features.StateKnown, Value: "indicative"},
+				{Feature: "number", State: features.StateKnown, Value: "plural"},
+				{Feature: "person", State: features.StateKnown, Value: "third"},
+				{Feature: "tense", State: features.StateKnown, Value: "present"},
+				{Feature: "verb_form", State: features.StateKnown, Value: "finite"},
+				{Feature: "verb_number", State: features.StateKnown, Value: "plural"},
+				{Feature: "voice", State: features.StateKnown, Value: "active"},
+			},
 		}},
 		Rules: []morph.CellRule{{
 			CellID:      "finite_present_indicative_active_third_singular",
 			ProcedureID: "procedure:en_identification_be_present_3sg.finite_present_indicative_active_third_singular",
 			Provenance:  englishIdentificationSource,
 			Steps:       []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "en_identification_be_present_3sg_form"}},
+		}, {
+			CellID:      "finite_present_indicative_active_third_plural",
+			ProcedureID: "procedure:en_identification_be_present_3sg.finite_present_indicative_active_third_plural",
+			Provenance:  englishIdentificationSource,
+			Steps:       []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "en_identification_be_present_3pl_form"}},
 		}},
 	}
 	adjective := morph.Paradigm{
@@ -66,7 +84,7 @@ func identificationParadigms(profile *features.LanguageFeatureProfile) []morph.P
 func identificationMorphRecords(lexeme lexicon.MorphLexeme) (morph.PrincipalParts, bool) {
 	switch lexeme.ID.String() {
 	case "lexeme:en.be.v":
-		return morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "third_person_singular_form", Form: "is"}}}, true
+		return morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "third_person_singular_form", Form: "is"}, {ID: "third_person_plural_form", Form: "are"}}}, true
 	case "lexeme:en.black.adj":
 		return morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "positive_form", Form: "black"}}}, true
 	default:

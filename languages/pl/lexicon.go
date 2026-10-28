@@ -49,6 +49,7 @@ var polishCountNounLexemes = map[string]struct{}{
 	"pl.sasiad.n": {}, "pl.klient.n": {}, "pl.wiadomosc.n": {}, "pl.kot.n": {},
 	"pl.ptak.n": {}, "pl.kon.n": {}, "pl.miasto.n": {}, "pl.mieszkanie.n": {},
 	"pl.rzeka.n": {}, "pl.siostra.n": {}, "pl.mewa.n": {}, "pl.drzewo.n": {},
+	"pl.krzeslo.n": {}, "pl.klucz.n": {}, "pl.torba.n": {},
 }
 
 var polishLexicalSource = provenance.SourceRef{

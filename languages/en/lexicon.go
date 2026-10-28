@@ -1222,7 +1222,9 @@ var englishParadigmByLexeme = map[string]string{
 	"en.message.n": "en_noun_regular", "en.letter_document.n": "en_noun_regular",
 	"en.map_document.n": "en_noun_regular", "en.website.n": "en_noun_regular",
 	"en.coin.n": "en_noun_regular", "en.ticket.n": "en_noun_regular",
-	"en.passport.n":    "en_noun_regular",
+	"en.passport.n": "en_noun_regular",
+	"en.horse.n":    "en_noun_regular",
+	"en.key_tool.n": "en_noun_regular", "en.bag.n": "en_noun_regular",
 	"en.class_group.n": "en_noun_sibilant", "en.bus.n": "en_noun_sibilant",
 	"en.watch_device.n": "en_noun_sibilant", "en.box.n": "en_noun_sibilant",
 	"en.branch_plant.n": "en_noun_sibilant", "en.brush_tool.n": "en_noun_sibilant",
@@ -1264,6 +1266,7 @@ var englishParadigmByLexeme = map[string]string{
 	"en.frying_food.v": "en_verb_finite_consonant_y",
 	"en.food.n":        "en_noun_singular_attested",
 	"en.money.n":       "en_noun_singular_attested", "en.water.n": "en_noun_singular_attested",
+	"en.fish_meat.n": "en_noun_singular_attested",
 }
 
 // englishAArticleLexemes are sentence-facing count nouns whose indefinite
@@ -1275,6 +1278,8 @@ var englishAArticleLexemes = map[string]struct{}{
 	"en.customer.n": {}, "en.dog.n": {}, "en.teacher.n": {}, "en.doctor.n": {},
 	"en.tree.n": {}, "en.child.n": {}, "en.message.n": {}, "en.letter_document.n": {},
 	"en.window.n": {},
+	"en.table.n":  {}, "en.fish_animal.n": {}, "en.horse.n": {},
+	"en.chair.n": {}, "en.key_tool.n": {}, "en.bag.n": {},
 }
 
 var englishAnArticleLexemes = map[string]struct{}{
@@ -1288,6 +1293,7 @@ var englishCountNounLexemes = map[string]struct{}{
 	"en.school.n": {}, "en.book.n": {}, "en.hand.n": {}, "en.eye.n": {},
 	"en.child.n": {}, "en.table.n": {}, "en.teacher.n": {}, "en.doctor.n": {},
 	"en.car.n": {}, "en.fish_animal.n": {}, "en.hospital_building.n": {},
+	"en.chair.n": {}, "en.key_tool.n": {}, "en.bag.n": {},
 	"en.hospital_institution.n": {}, "en.pizza_food.n": {}, "en.neighbor.n": {},
 	"en.customer.n": {}, "en.message.n": {}, "en.cat.n": {}, "en.bird.n": {},
 	"en.horse.n": {}, "en.city.n": {}, "en.apartment.n": {}, "en.river.n": {},
@@ -1319,7 +1325,7 @@ func LexicalDocument() (lexicon.Document, error) {
 				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "indefinite_article", Value: "an"})
 			}
 			switch entry.id {
-			case "en.food.n", "en.money.n", "en.water.n":
+			case "en.food.n", "en.money.n", "en.water.n", "en.fish_meat.n":
 				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "number_behavior", Value: "mass"})
 			}
 			if _, countable := englishCountNounLexemes[entry.id]; countable {

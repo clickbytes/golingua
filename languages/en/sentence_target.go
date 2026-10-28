@@ -177,13 +177,28 @@ func (englishSentenceFeatures) Features(_ context.Context, source semantic.Meani
 			return nil, fmt.Errorf("English identification cannot realize the supplied Meaning attributes")
 		}
 		if slot.Category == construction.CategoryVP && predicate.Sense.ID.String() == identification.senseID {
-			return englishFiniteVerbFeatures("present", "third", "singular"), nil
+			number := englishMultiplicityNumber(identification.multiplicity)
+			if number == "" {
+				number = "singular"
+			}
+			return englishFiniteVerbFeatures("present", "third", number), nil
 		}
 		if slot.Category == construction.CategoryNP && slot.ArgumentBinding != nil && string(slot.ArgumentBinding.SemanticRole) == identification.role {
 			if !englishIdentificationMemberCountSupported(source, identification, []realizer.TargetCandidate{candidate}) {
 				return nil, fmt.Errorf("English class membership requires an explicit count-noun target for its member referent")
 			}
-			return []features.FeatureValue{{Feature: "noun_number", State: features.StateKnown, Value: "singular"}, {Feature: "number", State: features.StateKnown, Value: "singular"}}, nil
+			number := ""
+			mass, pluralOnly := englishNumberClass(candidate.Lexeme.Properties, candidate.Lexeme.ParadigmID)
+			if mass && !pluralOnly {
+				number = "singular"
+			} else {
+				var ok bool
+				number, _, ok = englishTargetNumber(source, candidate.NodeID, candidate.Lexeme.Properties, candidate.Lexeme.ParadigmID)
+				if !ok {
+					return nil, fmt.Errorf("English class membership member number is incompatible with its lexical class")
+				}
+			}
+			return []features.FeatureValue{{Feature: "noun_number", State: features.StateKnown, Value: features.FeatureValueID(number)}, {Feature: "number", State: features.StateKnown, Value: features.FeatureValueID(number)}}, nil
 		}
 	}
 	if slot.Category == construction.CategoryAP && predicate.Sense.ID.String() == "sense:en.black.color" && candidate.Sense.ID.String() == "sense:en.black.color" && candidate.Lexeme.ID.String() == "lexeme:en.black.adj" {
@@ -720,10 +735,10 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 			}
 			variant := candidate.CompiledVariant.Variant.ID.String()
 			if identification.mode == "proximal" {
-				return variant == identification.family+".this"
+				return englishIdentificationVariantArticleAllowed(identification, variant, candidates, identification.family+".this")
 			}
 			_, allowed := englishIdentificationReferenceChoice(variant, identification.family)
-			return allowed && (variant == identification.family+".this" || variant == identification.family+".that" || variant == identification.family+".it")
+			return allowed && englishIdentificationVariantArticleAllowed(identification, variant, candidates, identification.family+".this", identification.family+".that", identification.family+".it")
 		}
 		if candidate.Family.Family.ID.String() == "construction:en.identification" || candidate.Family.Family.ID.String() == "construction:en.attribution" {
 			return false
@@ -736,15 +751,36 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 				return false
 			}
 			variant := candidate.CompiledVariant.Variant.ID.String()
+			if identification.role == "member" && identification.multiplicity == meaning.MultiplicityMany {
+				switch identification.mode {
+				case "proximal":
+					return variant == identification.family+".these"
+				case "distal":
+					return variant == identification.family+".those"
+				case "unresolved", "demonstrative":
+					return variant == identification.family+".these" || variant == identification.family+".those"
+				}
+			}
 			_, allowed := englishIdentificationReferenceChoice(variant, identification.family)
 			if identification.mode == "proximal" {
-				allowed = variant == identification.family+".this"
+				if identification.role == "member" {
+					allowed = englishIdentificationVariantArticleAllowed(identification, variant, candidates, identification.family+".this")
+				} else {
+					allowed = variant == identification.family+".this"
+				}
+			}
+			if identification.mode == "distal" {
+				if identification.role == "member" {
+					allowed = englishIdentificationVariantArticleAllowed(identification, variant, candidates, identification.family+".that")
+				} else {
+					allowed = variant == identification.family+".that"
+				}
 			}
 			if identification.mode == "demonstrative" {
 				allowed = identification.family == "construction:en.attribution" && (variant == identification.family+".this" || variant == identification.family+".that")
 			}
 			if identification.mode == "unresolved" {
-				allowed = identification.family == "construction:en.identification" && (variant == identification.family+".this" || variant == identification.family+".that" || variant == identification.family+".it")
+				allowed = identification.family == "construction:en.identification" && englishIdentificationVariantArticleAllowed(identification, variant, candidates, identification.family+".this", identification.family+".that", identification.family+".it")
 			}
 			return allowed && familyID == identification.family && candidate.Sense.ID.String() == identification.senseID
 		}
@@ -999,6 +1035,42 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 		}
 	}
 	return true
+}
+
+func englishIdentificationVariantArticleAllowed(identification englishIdentification, variant string, candidates []realizer.TargetCandidate, stems ...string) bool {
+	article := ""
+	mass := false
+	for _, target := range candidates {
+		if target.NodeID != identification.referent || target.Kind != meaning.KindReferent || target.Outcome != status.OutcomeOK || target.TransferBinding.CoreRef.String() != string(identification.concept) {
+			continue
+		}
+		mass, pluralOnly := englishNumberClass(target.Lexeme.Properties, target.Lexeme.ParadigmID)
+		if mass && !pluralOnly {
+			for _, stem := range stems {
+				if variant == stem+".mass" {
+					return true
+				}
+			}
+			continue
+		}
+		if value, known := englishIndefiniteArticle(target.Lexeme.Properties); known {
+			if article != "" && article != value {
+				return false
+			}
+			article = value
+		}
+		isMass, _ := englishNumberClass(target.Lexeme.Properties, target.Lexeme.ParadigmID)
+		mass = mass || isMass
+	}
+	if article == "" && !mass {
+		return false
+	}
+	for _, stem := range stems {
+		if mass && variant == stem+".mass" || variant == stem && article == "a" || variant == stem+".an" && article == "an" {
+			return true
+		}
+	}
+	return false
 }
 
 // englishWHQuestionTargetCandidate selects a neutral target variant by its

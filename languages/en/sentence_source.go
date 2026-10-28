@@ -99,7 +99,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		Language: "en", ClauseConnector: "and", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}}, AllowFinalPeriod: false,
 		ScopedSourcePlan: scopedPlan, ScopedReadingPolicy: ScopedSourceReadingPolicy,
 		RelationPathPlan: relationPathPlan, RelationSourceReadingPolicy: RelationSourceReadingPolicy,
-		AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "do": true, "does": true, "not": true, "this": true, "that": true, "it": true, "is": true, "a": true, "who": true, "whom": true, "and": true},
+		AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "do": true, "does": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true, "who": true, "whom": true, "and": true},
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
@@ -107,7 +107,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 			Categories: map[lexicon.PartOfSpeech][]construction.SlotCategory{
 				"noun": {construction.CategoryNP}, "pronoun": {construction.CategoryNP}, "verb": {construction.CategoryVP}, "adjective": {construction.CategoryAP},
 			},
-		}}, lexicon: snapshot.Lexicon()}}},
+		}}, lexicon: snapshot.Lexicon()}, lexicon: snapshot.Lexicon()}},
 		EvidenceBuilder: englishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), base: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true},
 			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
@@ -143,11 +143,14 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 				},
 				// English simple past is finite but has one form for all persons
 				// and numbers, so no agreement feature is required for this cell.
-				receivingSense:      {{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"}},
-				classificationSense: {{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "number": "singular", "verb_number": "singular"}},
-				attributionSense:    {{"adjective_degree": "positive"}},
+				receivingSense: {{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"}},
+				classificationSense: {
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "number": "singular", "verb_number": "singular"},
+					{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "number": "plural", "verb_number": "plural"},
+				},
+				attributionSense: {{"adjective_degree": "positive"}},
 			},
-			AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "do": true, "does": true, "not": true, "this": true, "that": true, "it": true, "is": true, "a": true},
+			AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "do": true, "does": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true},
 		}},
 	}, nil
 }
@@ -623,9 +626,27 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 		}
 		if !hasDeterminer {
 			if hasEnglishThisNPPrefix(lattice, candidate.TokenStart) {
+				if !lexemeFound || lexeme.POS != "noun" || !hasNumberBehavior(builder.lexicon, candidate.LexemeID, "mass") {
+					continue
+				}
 				if number := knownEnglishNounNumber(candidate.Features); number != "" {
 					candidate.Features["number"] = features.FeatureValueID(number)
 				}
+				candidate.Features["determiner"] = "bare"
+				filtered = append(filtered, candidate)
+				continue
+			}
+			if article, hasIdentificationArticle := englishIdentificationPrefixArticle(lattice, candidate.TokenStart); hasIdentificationArticle {
+				if !lexemeFound || lexeme.POS != "noun" || knownEnglishNounNumber(candidate.Features) != "singular" {
+					continue
+				}
+				expected, known := englishIndefiniteArticle(lexeme.Properties)
+				if !known || expected != article || !hasNumberBehavior(builder.lexicon, candidate.LexemeID, "count") {
+					continue
+				}
+				candidate.Features["determiner"] = "indefinite"
+				candidate.Features["noun_number"] = "singular"
+				candidate.Features["number"] = "singular"
 				filtered = append(filtered, candidate)
 				continue
 			}

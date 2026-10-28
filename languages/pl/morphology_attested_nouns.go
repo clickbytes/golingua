@@ -20,6 +20,18 @@ var attestedNounSource = provenance.SourceRef{
 }
 
 var attestedNounExternalSources = map[string]provenance.SourceRef{
+	"pl.krzeslo.n": {
+		ID: "wsjp-pl-krzeslo-n", URI: "https://wsjp.pl/haslo/podglad/6705/krzeslo/4734420/mebel",
+		Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
+	},
+	"pl.klucz.n": {
+		ID: "wsjp-pl-klucz-n", URI: "https://wsjp.pl/haslo/podglad/16229/klucz/5076317/do-otwierania",
+		Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
+	},
+	"pl.torba.n": {
+		ID: "wsjp-pl-torba-n", URI: "https://wsjp.pl/haslo/podglad/3755/torba/759009/do-noszenia-ze-soba",
+		Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
+	},
 	"pl.kot.n": {
 		ID: "wsjp-pl-kot-n", URI: "https://wsjp.pl/haslo/podglad/29368/kot/5136345/domowy",
 		Version: "2026-10-23", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
@@ -118,6 +130,9 @@ var attestedNounForms = []attestedNounEntry{
 	{"pl.rzeka.n", "rzeka", "feminine", [7]string{"rzeka", "rzeki", "rzece", "", "", "rzece", ""}, [7]string{"rzeki", "rzek", "", "rzeki", "", "", "rzeki"}},
 	{"pl.siostra.n", "siostra", "feminine", [7]string{"siostra", "siostry", "siostrze", "siostrę", "siostrą", "siostrze", "siostro"}, [7]string{"siostry", "sióstr", "siostrom", "siostry", "siostrami", "siostrach", "siostry"}},
 	{"pl.mewa.n", "mewa", "feminine", [7]string{"mewa", "mewy", "mewie", "", "", "mewie", ""}, [7]string{"mewy", "mew", "", "mewy", "", "", "mewy"}},
+	{"pl.krzeslo.n", "krzesło", "neuter", [7]string{"krzesło", "krzesła", "krzesłu", "krzesło", "krzesłem", "krześle", "krzesło"}, [7]string{"krzesła", "krzeseł", "krzesłom", "krzesła", "krzesłami", "krzesłach", "krzesła"}},
+	{"pl.klucz.n", "klucz", "masculine_inanimate", [7]string{"klucz", "klucza", "kluczowi", "klucz", "kluczem", "kluczu", "kluczu"}, [7]string{"klucze", "kluczy", "kluczom", "klucze", "kluczami", "kluczach", "klucze"}},
+	{"pl.torba.n", "torba", "feminine", [7]string{"torba", "torby", "torbie", "torbę", "torbą", "torbie", "torbo"}, [7]string{"torby", "toreb", "torbom", "torby", "torbami", "torbach", "torby"}},
 }
 
 var attestedNounCases = [7]string{"nominative", "genitive", "dative", "accusative", "instrumental", "locative", "vocative"}
@@ -126,10 +141,12 @@ func attestedNounGender(lexemeID string) (string, bool) {
 	switch lexemeID {
 	case "pl.kot.n", "pl.ptak.n", "pl.kon.n":
 		return "masculine_animal", true
-	case "pl.miasto.n", "pl.mieszkanie.n", "pl.okno.n", "pl.jablko.n":
+	case "pl.miasto.n", "pl.mieszkanie.n", "pl.okno.n", "pl.jablko.n", "pl.krzeslo.n":
 		return "neuter", true
-	case "pl.rzeka.n", "pl.siostra.n", "pl.mewa.n":
+	case "pl.rzeka.n", "pl.siostra.n", "pl.mewa.n", "pl.torba.n":
 		return "feminine", true
+	case "pl.klucz.n":
+		return "masculine_inanimate", true
 	case "pl.matka.n":
 		return "feminine", true
 	case "pl.ojciec.n":
