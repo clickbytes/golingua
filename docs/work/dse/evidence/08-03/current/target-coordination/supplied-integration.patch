@@ -1,0 +1,213 @@
+--- a/internal/engine/algebra_realization.go
++++ b/internal/engine/algebra_realization.go
+@@ -298,6 +298,14 @@
+ 	if realizeErr != nil {
+ 		return algebraRealizationError(result, realizeErr, "TARGET_REALIZATION_FAILED", "target")
+ 	}
++	return validateAlgebraTargetSurface(result, surface, []algebraAtomMatch{match}, candidate.Meaning, targetLanguage, budget)
++}
++
++
++// validateAlgebraTargetSurface preserves the strict target-output contract for
++// singleton and coordinated algebra realization. Each match consumes a distinct
++// exact generated binding record, including when senses are identical.
++func validateAlgebraTargetSurface(result AlgebraRealizationResult, surface SurfaceResult, matches []algebraAtomMatch, candidateGraph *meaning.Meaning, targetLanguage language.Language, budget Budget) (AlgebraRealizationResult, error) {
+ 	if !surface.Outcome.Valid() || len(surface.Diagnostics) > status.MaxDiagnostics {
+ 		return algebraRealizationFailure(result, status.OutcomeError, "INVALID_TARGET_OUTCOME", "target.outcome", "target adapter returned an unsupported realization status"), nil
+ 	}
+@@ -316,11 +324,7 @@
+ 	textBytes := 0
+ 	usableSurface := false
+ 	completeSurface := false
+-	selectedCoreRef, parseCoreErr := ids.ParseConceptID(result.Coverage[0].CoreRef)
+-	if parseCoreErr != nil {
+-		return algebraRealizationFailure(result, status.OutcomeInvalid, "INVALID_SELECTED_CORE_REF", "coverage.core_ref", "selected target coverage contains a malformed CORE concept ID"), nil
+-	}
+-	for index, alternative := range surface.Alternatives {
++		for index, alternative := range surface.Alternatives {
+ 		path := fmt.Sprintf("target.alternatives[%d]", index)
+ 		if !alternative.Outcome.Valid() || !validID(alternative.ID) || len(alternative.Diagnostics) > status.MaxDiagnostics || len(alternative.Assumptions) > MaxTranslationAssumptions || len(alternative.Losses) > MaxTranslationLosses {
+ 			return algebraRealizationFailure(result, status.OutcomeInvalid, "INVALID_SURFACE_ALTERNATIVE", path, "target adapter returned malformed alternative metadata"), nil
+@@ -352,8 +356,17 @@
+ 			if textBytes > budget.MaxCandidateTextBytes {
+ 				return algebraRealizationFailure(result, status.OutcomeResourceLimit, "RESOURCE_LIMIT", "target.text", "surface alternatives exceed the aggregate text byte limit"), nil
+ 			}
+-			if !hasExactGeneratedAlgebraBindingEvidence(targetLanguage, alternative.Evidence, match.binding.SenseID, selectedCoreRef, candidate.Meaning) {
+-				return algebraRealizationFailure(result, status.OutcomeUnsupported, "TARGET_BINDING_EVIDENCE_UNAVAILABLE", path+".evidence", "text was rejected because no exact verified generated binding evidence supports the selected sense and CORE concept"), nil
++			usedEvidence := make(map[int]bool)
++			for matchIndex, matched := range matches {
++				coreRef, parseCoreErr := ids.ParseConceptID(result.Coverage[matchIndex].CoreRef)
++				if parseCoreErr != nil { return algebraRealizationFailure(result, status.OutcomeInvalid, "INVALID_SELECTED_CORE_REF", "coverage.core_ref", "selected target coverage contains a malformed CORE concept ID"), nil }
++				found := false
++				for evidenceIndex, record := range alternative.Evidence.Records {
++					if usedEvidence[evidenceIndex] { continue }
++					one := semantic.EvidenceTrace{AlternativeID: alternative.Evidence.AlternativeID, Outcome: alternative.Evidence.Outcome, Records: []semantic.EvidenceRecord{record}}
++					if hasExactGeneratedAlgebraBindingEvidence(targetLanguage, one, matched.binding.SenseID, coreRef, candidateGraph) { usedEvidence[evidenceIndex]=true; found=true; break }
++				}
++				if !found { return algebraRealizationFailure(result, status.OutcomeUnsupported, "TARGET_BINDING_EVIDENCE_UNAVAILABLE", path+".evidence", "text was rejected because every exact selected clause requires its own verified generated binding record"), nil }
+ 			}
+ 			if alternative.Outcome == status.OutcomeOK || alternative.Outcome == status.OutcomeIncomplete {
+ 				usableSurface = true
+--- a/internal/engine/algebra_coordination.go
++++ b/internal/engine/algebra_coordination.go
+@@ -100,6 +100,8 @@
+ 		result.Diagnostics = append(result.Diagnostics, status.Diagnostic{Code: "TARGET_RUNTIME_UNAVAILABLE", Path: "language", Message: "no verified target adapter is available for the requested language", Severity: status.SeverityError})
+ 		return &result, nil
+ 	}
++	targetLanguage, registered := engine.languages.Language(languageID)
++	if !registered { result.Status=status.OutcomeUnsupported; return &result,nil }
+ 	budget := engineBudget(engine)
+ 	requestCtx, cancel := context.WithTimeout(ctx, budget.RequestTimeout)
+ 	defer cancel()
+@@ -107,129 +109,10 @@
+ 	if realizeErr != nil {
+ 		return nil, realizeErr
+ 	}
+-	if !surface.Outcome.Valid() || len(surface.Diagnostics) > status.MaxDiagnostics || len(surface.Alternatives) > budget.MaxSurfaceAlternatives || len(surface.Alternatives) > MaxTranslationAlternatives {
+-		result.Status = status.OutcomeInvalid
+-		result.Diagnostics = append(result.Diagnostics, status.Diagnostic{Code: "INVALID_COORDINATED_TARGET_RESULT", Path: "target", Message: "target returned an invalid or oversized coordinated result", Severity: status.SeverityError})
+-		return &result, nil
+-	}
+-	for _, diagnostic := range surface.Diagnostics {
+-		if diagnostic.Validate() != nil {
+-			result.Status = status.OutcomeInvalid
+-			result.Diagnostics = appendDiagnostic(result.Diagnostics, status.Diagnostic{Code: "INVALID_TARGET_DIAGNOSTIC", Path: "target.diagnostics", Message: "target returned an invalid diagnostic", Severity: status.SeverityError})
+-			return &result, nil
+-		}
+-	}
+-	result.Alternatives = append(result.Alternatives, surface.Alternatives...)
+-	result.Diagnostics = appendDiagnostics(result.Diagnostics, surface.Diagnostics)
+-	result.Status = surface.Outcome
+-	targetLanguage, registered := engine.languages.Language(languageID)
+-	if !registered {
+-		result.Status = status.OutcomeUnsupported
+-		return &result, nil
+-	}
+-	textBytes := 0
+-	complete := false
+-	seen := map[string]bool{}
+-	for i, a := range result.Alternatives {
+-		if !a.Outcome.Valid() || !validID(a.ID) || seen[a.ID] || len(a.Diagnostics) > status.MaxDiagnostics || len(a.Assumptions) > MaxTranslationAssumptions || len(a.Losses) > MaxTranslationLosses {
+-			result.Status = status.OutcomeInvalid
+-			result.Alternatives[i].Text = ""
+-			continue
+-		}
+-		seen[a.ID] = true
+-		for _, d := range a.Diagnostics {
+-			if d.Validate() != nil {
+-				result.Status = status.OutcomeInvalid
+-			}
+-		}
+-		for _, v := range a.Assumptions {
+-			if validateAssumption(v) != nil {
+-				result.Status = status.OutcomeInvalid
+-			}
+-		}
+-		for _, v := range a.Losses {
+-			if validateLoss(v) != nil || a.Outcome == status.OutcomeOK && v.Outcome != status.OutcomeOK {
+-				result.Status = status.OutcomeInvalid
+-			}
+-		}
+-		if validateText(a.Text, MaxTranslationTextBytes, true) != nil {
+-			result.Status = status.OutcomeResourceLimit
+-			result.Alternatives[i].Text = ""
+-			continue
+-		}
+-		if a.Text != "" {
+-			textBytes += len(a.Text)
+-			if textBytes > budget.MaxCandidateTextBytes {
+-				result.Status = status.OutcomeResourceLimit
+-				result.Alternatives[i].Text = ""
+-				continue
+-			}
+-		}
+-		if err := a.Evidence.Validate(); err != nil || a.Evidence.AlternativeID != a.ID || a.Evidence.Outcome != a.Outcome {
+-			result.Status = status.OutcomeInvalid
+-			result.Alternatives[i].Text = ""
+-			continue
+-		}
+-		used := map[int]bool{}
+-		proofOK := true
+-		for _, c := range cov {
+-			sense, se := ids.ParseSenseID(c.SenseID)
+-			coreRef, ce := ids.ParseConceptID(c.CoreRef)
+-			if se != nil || ce != nil || !hasCoordinatedGeneratedBindingEvidence(targetLanguage, a.Evidence, sense, coreRef, used) {
+-				proofOK = false
+-				break
+-			}
+-		}
+-		if !proofOK {
+-			result.Status = status.OutcomeUnsupported
+-			result.Alternatives[i].Text = ""
+-			continue
+-		}
+-		if a.Text != "" && (a.Outcome == status.OutcomeOK || a.Outcome == status.OutcomeIncomplete) {
+-		}
+-		if a.Outcome == status.OutcomeOK && a.Text != "" {
+-			complete = true
+-		}
+-		if a.Text == "" && a.Outcome == status.OutcomeOK {
+-			result.Status = status.OutcomeIncomplete
+-		}
+-		if a.Outcome != status.OutcomeOK && len(a.Diagnostics) == 0 {
+-			result.Status = status.OutcomeInvalid
+-		}
+-	}
+-	if complete && (result.Status == status.OutcomeUnknown || result.Status == status.OutcomeUnsupported) {
+-		result.Status = status.OutcomeIncomplete
+-		result.Diagnostics = appendDiagnostic(result.Diagnostics, status.Diagnostic{Code: "PARTIAL_TARGET_REALIZATION", Path: "target.alternatives", Message: "a complete coordinated alternative coexists with an unsupported aggregate target outcome", Severity: status.SeverityWarning})
+-	}
+-	if len(result.Alternatives) == 0 && result.Status == status.OutcomeOK {
+-		failed := algebraRealizationFailure(result, status.OutcomeIncomplete, "NO_SURFACE_ALTERNATIVE", "target.alternatives", "target returned OK without a surface alternative")
+-		return &failed, nil
+-	}
+-	if len(result.Residuals) > 0 && len(result.Alternatives) > 0 && result.Status == status.OutcomeOK {
+-		result.Status = status.OutcomeIncomplete
+-	}
+-	return &result, nil
+-}
+-
+-func hasCoordinatedGeneratedBindingEvidence(pack language.Language, trace semantic.EvidenceTrace, sense ids.SenseID, coreRef ids.ConceptID, used map[int]bool) bool {
+-	for index, record := range trace.Records {
+-		if used[index] || record.Origin != semantic.EvidenceOriginGenerated || record.Outcome != status.OutcomeOK || record.SenseID != sense || record.CoreConceptID != coreRef || record.BindingKey != semantic.BindingKeyFor(sense, coreRef) {
+-			continue
+-		}
+-		for _, binding := range pack.Bindings {
+-			if binding.SenseID != sense || binding.CoreRef != coreRef || !binding.Approved || !binding.Realize || binding.Mapping != lexicon.MappingEquivalent || binding.ValencyFrameID != string(record.FrameID) || binding.FamilyID != record.FamilyID {
+-				continue
+-			}
+-			for _, variant := range binding.VariantIDs {
+-				if variant.String() == record.VariantID.String() && record.PlanID != "" {
+-					used[index] = true
+-					return true
+-				}
+-			}
+-		}
+-	}
+-	return false
+-}
++	returnResult, validationErr := validateAlgebraTargetSurface(result, surface, matches, candidate.Meaning, targetLanguage, budget)
++	return &returnResult, validationErr
++}
++
+ 
+ func coveredByEither(matches []algebraAtomMatch, ref string) bool {
+ 	for _, m := range matches {
+--- a/internal/runtime/target_coordination.go
++++ b/internal/runtime/target_coordination.go
+@@ -20,12 +20,12 @@
+ 	if source.Meaning == nil || pipeline.ClauseCoordination == nil {
+ 		return engine.SurfaceResult{}, false, nil
+ 	}
+-	if source.QuestionAnswer != nil {
+-		return engine.SurfaceResult{}, true, targetPipelineError(status.OutcomeUnsupported, "COORDINATION_QUERY_DATA_UNSUPPORTED", "source.question_answer", "coordinated statement target does not accept query answer data")
+-	}
+ 	discourse, events, ok := coordinationEvents(*source.Meaning)
+ 	if !ok {
+ 		return engine.SurfaceResult{}, false, nil
++	}
++	if source.QuestionAnswer != nil || len(source.Evidence.Records) != 0 {
++		return engine.SurfaceResult{}, true, targetPipelineError(status.OutcomeUnsupported, "COORDINATION_SOURCE_EVIDENCE_UNSUPPORTED", "source", "coordinated target requires a statement Meaning without query answer or source-aligned evidence")
+ 	}
+ 	_ = discourse
+ 	if err := meaning.ValidateMeaning(*source.Meaning, pipeline.Core, meaning.DefaultBudget()); err != nil {

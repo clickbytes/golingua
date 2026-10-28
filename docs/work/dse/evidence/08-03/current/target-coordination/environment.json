@@ -1,0 +1,7 @@
+{
+  "source_sha": "a9df53473840f3837f11e09b709b9ec22f4187c1",
+  "binary": "/tmp/golingua398-target-final",
+  "binary_sha256": "f27b84a80a314c85dfa37eb6208cba3ba757b9c41772e02a0f81e58d1d708fab",
+  "go_version": "go version go1.27.0 linux/amd64",
+  "note": "final-* observations use this immutable binary and committed code. Draft/review/integrated observations are retained separately."
+}

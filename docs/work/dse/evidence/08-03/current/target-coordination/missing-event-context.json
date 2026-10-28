@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "parameters": [],
+  "limits": {},
+  "closed": true,
+  "references": [
+    {
+      "id": "E1",
+      "type": {
+        "kind": "Event"
+      },
+      "temporal_frame": "present"
+    },
+    {
+      "id": "E2",
+      "type": {
+        "kind": "Event"
+      },
+      "temporal_frame": "present"
+    },
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      },
+      "multiplicity": "one"
+    },
+    {
+      "id": "B",
+      "type": {
+        "kind": "Entity"
+      },
+      "multiplicity": "one"
+    }
+  ],
+  "expression": {
+    "kind": "And",
+    "operands": [
+      {
+        "kind": "Atom",
+        "symbol": "pilot.vision_event",
+        "args": [
+          {
+            "role": "event",
+            "value": {
+              "kind": "Ref",
+              "id": "E1",
+              "type": {
+                "kind": "Event"
+              }
+            }
+          },
+          {
+            "role": "experiencer",
+            "value": {
+              "kind": "Ref",
+              "id": "A",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          },
+          {
+            "role": "stimulus",
+            "value": {
+              "kind": "Ref",
+              "id": "B",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "kind": "Atom",
+        "symbol": "pilot.vision_event",
+        "args": [
+          {
+            "role": "event",
+            "value": {
+              "kind": "Ref",
+              "id": "E2",
+              "type": {
+                "kind": "Event"
+              }
+            }
+          },
+          {
+            "role": "experiencer",
+            "value": {
+              "kind": "Ref",
+              "id": "B",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          },
+          {
+            "role": "stimulus",
+            "value": {
+              "kind": "Ref",
+              "id": "A",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "request_context": {
+    "schema_version": 1,
+    "id": "dse398.independent.two-events",
+    "referents": [
+      {
+        "id": "E1",
+        "type": {
+          "kind": "Event"
+        },
+        "concept_id": "concept:seeing",
+        "temporal_frame": "present"
+      },
+      {
+        "id": "A",
+        "type": {
+          "kind": "Entity"
+        },
+        "concept_id": "concept:teacher",
+        "multiplicity": "one"
+      },
+      {
+        "id": "B",
+        "type": {
+          "kind": "Entity"
+        },
+        "concept_id": "concept:dog",
+        "multiplicity": "one"
+      }
+    ],
+    "mentions": [],
+    "resolution_evidence": [],
+    "conditions": []
+  }
+}
