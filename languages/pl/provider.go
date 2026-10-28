@@ -89,8 +89,8 @@ func (provider *sentenceProvider) Analyze(ctx context.Context, surface string) (
 }
 
 func sentenceSenseIDs() ([]ids.SenseID, error) {
-	senseIDs := make([]ids.SenseID, 0, 7)
-	for _, value := range []string{"pl.widziec.visual", "pl.slyszec.auditory", "pl.dostac.receive", "pl.patrzec.directed", "pl.czytac.interpret", "pl.byc.class_membership", "pl.czarny.black"} {
+	senseIDs := make([]ids.SenseID, 0, 9)
+	for _, value := range []string{"pl.widziec.visual", "pl.slyszec.auditory", "pl.dostac.receive", "pl.patrzec.directed", "pl.czytac.interpret", "pl.byc.class_membership", "pl.czarny.black", "pl.jesc.eat", "pl.pic.drink"} {
 		senseID, err := ids.NewSenseID(value)
 		if err != nil {
 			return nil, err

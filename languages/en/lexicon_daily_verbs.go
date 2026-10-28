@@ -12,6 +12,7 @@ var englishDailyVerbSource = provenance.SourceRef{
 
 // These pending verbs name common food, home and routine activities.
 var englishDailyVerbEntries = []lexicalEntry{
+	{"en.eating.v", "eat", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.eating.event", "take food into the body for nourishment", "eating"}}},
 	{"en.printing_document.v", "print", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.printing_document.event", "produce a physical copy of document content with printing equipment", "printing_document"}}},
 	{"en.cooking_food.v", "cook", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.cooking_food.event", "prepare food by combining ingredients and applying kitchen processes", "cooking_food"}}},
 	{"en.baking_food.v", "bake", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.baking_food.event", "cook food using sustained dry heat in an enclosed oven", "baking_food"}}},

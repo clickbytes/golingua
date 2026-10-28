@@ -82,6 +82,8 @@ var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"pl.slyszec.auditory", "pl.slyszec.auditory.transitive", "pl.transitive", "pl.transitive.svo"},
 	{"pl.dostac.receive", "pl.dostac.receive.transitive", "pl.transitive", "pl.transitive.svo"},
 	{"pl.czytac.interpret", "pl.czytac.interpret.frame", "pl.transitive", "pl.transitive.svo"},
+	{"pl.jesc.eat", "pl.jesc.eat.frame", "pl.transitive", "pl.transitive.svo"},
+	{"pl.pic.drink", "pl.pic.drink.action", "pl.transitive", "pl.transitive.svo"},
 	{"pl.patrzec.directed", "pl.patrzec.directed.na", "pl.oblique", "pl.oblique.svo"},
 }
 
