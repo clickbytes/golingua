@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "context_id": "dse398.wh-object-source",
+  "references": [
+    {
+      "id": "E1",
+      "type": {
+        "kind": "Event"
+      },
+      "temporal_frame": "present"
+    },
+    {
+      "id": "A",
+      "type": {
+        "kind": "Entity"
+      },
+      "multiplicity": "many"
+    }
+  ],
+  "request_context": {
+    "schema_version": 1,
+    "id": "dse398.wh-object-source",
+    "referents": [
+      {
+        "id": "E1",
+        "type": {
+          "kind": "Event"
+        },
+        "temporal_frame": "present"
+      },
+      {
+        "id": "A",
+        "type": {
+          "kind": "Entity"
+        },
+        "multiplicity": "many"
+      }
+    ],
+    "mentions": [],
+    "resolution_evidence": [],
+    "conditions": []
+  },
+  "role_references": [
+    {
+      "role": "experiencer",
+      "reference_id": "A"
+    }
+  ],
+  "port_references": [
+    {
+      "port_id": "event",
+      "reference_id": "E1"
+    }
+  ]
+}
