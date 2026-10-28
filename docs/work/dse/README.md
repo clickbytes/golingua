@@ -13,15 +13,7 @@ DSE is the owner-authorized, bounded work plan for domain-independent semantic e
 
 The plan has nine aggregate chapters, #368–#376, and 24 executable leaves, #377–#400. The recommended work order is serial: #377–#378; #379–#385; #386–#390; #391–#393; #394–#398; then #399–#400. Dependencies listed on each leaf remain the actual START gate; the grouped order is not a substitute for checking them on current `main`.
 
-At the issue-map snapshot for #378:
-
-- #377 is `DONE`, with merge `bd6b4d24a8a16f348672a98a4d1a9b09fb4e1dc3` and PR #401.
-- #378 is the sole `ACTIVE` leaf.
-- #379–#400 are `QUEUED`.
-- Chapter #368 is `IN_PROGRESS`; other chapter states are aggregate `QUEUED`.
-- DSE implementation/runtime is **NOT RUN**. Owner language acceptance is **NOT_EVALUATED**.
-
-These are recorded statuses, not an assertion that every reserved branch or future PR exists. Refresh state only through the authorized serial workflow and actual evidence.
+At the #400 acceptance snapshot, leaves #377–#399 have merged results and evidence; #400 is the active acceptance leaf. The current register is [issue-map.json](issue-map.json). [Domain-independence audit](independence-audit.md), [results](results.md), [acceptance](acceptance.md), and [final observations](evidence/09-02/README.md) describe the supported profile and its limits. Owner language acceptance remains **NOT EVALUATED**.
 
 The issue map is a pre-merge snapshot: an active leaf cannot know its own future PR or merge SHA. Keep unknown values null. The verified post-merge completion receipt belongs on that leaf's GitHub issue; a later authorized leaf may record that predecessor receipt in its map update. For final #400, its issue is the canonical post-merge self-receipt. Do not invent a SHA or make an unplanned direct-main backfill just to fill a self-reference.
 
