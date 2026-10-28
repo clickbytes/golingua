@@ -282,13 +282,10 @@ func dseCoordinationDefinitePreview(document algebra.Document, candidate semanti
 				return false
 			}
 			if argument.Value.Type.Kind == algebra.TypeEvent {
-				if argument.Role != "event" {
-					return false
-				}
 				eventReferences[argument.Value.ID] = true
 				continue
 			}
-			if argument.Value.Type.Kind != algebra.TypeEntity || argument.Role == "event" {
+			if argument.Value.Type.Kind != algebra.TypeEntity {
 				return false
 			}
 			if roleReferences[argument.Value.ID] == nil {
