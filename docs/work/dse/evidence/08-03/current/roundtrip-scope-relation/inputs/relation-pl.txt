@@ -1,0 +1,1 @@
+Relacja od x do y zachodzi wtedy i tylko wtedy, gdy istnieje taki element z, że x widzi z i z widzi y.

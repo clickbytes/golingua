@@ -1,0 +1,1500 @@
+{
+  "checked_pairs": 12,
+  "all_existing_contexts_empty_or_missing": true,
+  "all_analyzed_context_ids": "dse-398-empty",
+  "all_derived_documents_share_exact_context": true,
+  "pairs": [
+    {
+      "flow_id": "outer-pl-en-pl",
+      "leg": "target",
+      "analyzed_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/outer-pl-en-pl-05-target-compare-left-full.json",
+      "analyzed_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "analyzed_context_id": "dse-398-empty",
+      "original_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/not-all.json",
+      "original_independent_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "scope-contrast-context",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "comparison_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/compare-not-all.json",
+      "comparison_copy_context_before": "MISSING",
+      "comparison_copy_context_after": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "derived_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/outer-pl-en-pl/target-independent-with-matched-context.json",
+      "derivation": "copied verified empty request_context from analyzed document; expression/references/time/signatures/sorts unchanged",
+      "before_sha256": {
+        "expression": "fa6731dd83234c0293c167a3e4ac9e8c9816d27be3700aa2d2b08483e4d03485",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "after_sha256": {
+        "expression": "fa6731dd83234c0293c167a3e4ac9e8c9816d27be3700aa2d2b08483e4d03485",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "unchanged_checked_fields": true,
+      "context_audit": {
+        "analyzed_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "analyzed_references": {
+          "state": "missing"
+        },
+        "independent_original_request_context": {
+          "state": "nonempty",
+          "value": {
+            "schema_version": 1,
+            "id": "scope-contrast-context",
+            "referents": [],
+            "mentions": [],
+            "resolution_evidence": [],
+            "conditions": []
+          }
+        },
+        "independent_original_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "independent_compare_source_request_context": {
+          "state": "missing"
+        },
+        "independent_compare_source_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "derived_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "derived_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "all_existing_contexts_verified_empty_or_missing": true,
+        "only_derived_request_context_was_added_or_aligned": true
+      },
+      "temporal_frames_before": [
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_after": [
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_unchanged": true
+    },
+    {
+      "flow_id": "outer-pl-en-pl",
+      "leg": "return",
+      "analyzed_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/outer-pl-en-pl-09-return-compare-left-full.json",
+      "analyzed_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "analyzed_context_id": "dse-398-empty",
+      "original_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/not-all.json",
+      "original_independent_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "scope-contrast-context",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "comparison_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/compare-not-all.json",
+      "comparison_copy_context_before": "MISSING",
+      "comparison_copy_context_after": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "derived_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/outer-pl-en-pl/return-independent-with-matched-context.json",
+      "derivation": "copied verified empty request_context from analyzed document; expression/references/time/signatures/sorts unchanged",
+      "before_sha256": {
+        "expression": "fa6731dd83234c0293c167a3e4ac9e8c9816d27be3700aa2d2b08483e4d03485",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "after_sha256": {
+        "expression": "fa6731dd83234c0293c167a3e4ac9e8c9816d27be3700aa2d2b08483e4d03485",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "unchanged_checked_fields": true,
+      "context_audit": {
+        "analyzed_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "analyzed_references": {
+          "state": "missing"
+        },
+        "independent_original_request_context": {
+          "state": "nonempty",
+          "value": {
+            "schema_version": 1,
+            "id": "scope-contrast-context",
+            "referents": [],
+            "mentions": [],
+            "resolution_evidence": [],
+            "conditions": []
+          }
+        },
+        "independent_original_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "independent_compare_source_request_context": {
+          "state": "missing"
+        },
+        "independent_compare_source_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "derived_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "derived_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "all_existing_contexts_verified_empty_or_missing": true,
+        "only_derived_request_context_was_added_or_aligned": true
+      },
+      "temporal_frames_before": [
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_after": [
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_unchanged": true
+    },
+    {
+      "flow_id": "outer-en-pl-en",
+      "leg": "target",
+      "analyzed_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/outer-en-pl-en-05-target-compare-left-full.json",
+      "analyzed_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "analyzed_context_id": "dse-398-empty",
+      "original_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/not-all.json",
+      "original_independent_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "scope-contrast-context",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "comparison_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/compare-not-all.json",
+      "comparison_copy_context_before": "MISSING",
+      "comparison_copy_context_after": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "derived_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/outer-en-pl-en/target-independent-with-matched-context.json",
+      "derivation": "copied verified empty request_context from analyzed document; expression/references/time/signatures/sorts unchanged",
+      "before_sha256": {
+        "expression": "fa6731dd83234c0293c167a3e4ac9e8c9816d27be3700aa2d2b08483e4d03485",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "after_sha256": {
+        "expression": "fa6731dd83234c0293c167a3e4ac9e8c9816d27be3700aa2d2b08483e4d03485",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "unchanged_checked_fields": true,
+      "context_audit": {
+        "analyzed_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "analyzed_references": {
+          "state": "missing"
+        },
+        "independent_original_request_context": {
+          "state": "nonempty",
+          "value": {
+            "schema_version": 1,
+            "id": "scope-contrast-context",
+            "referents": [],
+            "mentions": [],
+            "resolution_evidence": [],
+            "conditions": []
+          }
+        },
+        "independent_original_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "independent_compare_source_request_context": {
+          "state": "missing"
+        },
+        "independent_compare_source_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "derived_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "derived_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "all_existing_contexts_verified_empty_or_missing": true,
+        "only_derived_request_context_was_added_or_aligned": true
+      },
+      "temporal_frames_before": [
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_after": [
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_unchanged": true
+    },
+    {
+      "flow_id": "outer-en-pl-en",
+      "leg": "return",
+      "analyzed_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/outer-en-pl-en-09-return-compare-left-full.json",
+      "analyzed_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "analyzed_context_id": "dse-398-empty",
+      "original_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/not-all.json",
+      "original_independent_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "scope-contrast-context",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "comparison_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/compare-not-all.json",
+      "comparison_copy_context_before": "MISSING",
+      "comparison_copy_context_after": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "derived_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/outer-en-pl-en/return-independent-with-matched-context.json",
+      "derivation": "copied verified empty request_context from analyzed document; expression/references/time/signatures/sorts unchanged",
+      "before_sha256": {
+        "expression": "fa6731dd83234c0293c167a3e4ac9e8c9816d27be3700aa2d2b08483e4d03485",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "after_sha256": {
+        "expression": "fa6731dd83234c0293c167a3e4ac9e8c9816d27be3700aa2d2b08483e4d03485",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "unchanged_checked_fields": true,
+      "context_audit": {
+        "analyzed_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "analyzed_references": {
+          "state": "missing"
+        },
+        "independent_original_request_context": {
+          "state": "nonempty",
+          "value": {
+            "schema_version": 1,
+            "id": "scope-contrast-context",
+            "referents": [],
+            "mentions": [],
+            "resolution_evidence": [],
+            "conditions": []
+          }
+        },
+        "independent_original_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "independent_compare_source_request_context": {
+          "state": "missing"
+        },
+        "independent_compare_source_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "derived_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "derived_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "all_existing_contexts_verified_empty_or_missing": true,
+        "only_derived_request_context_was_added_or_aligned": true
+      },
+      "temporal_frames_before": [
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_after": [
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_unchanged": true
+    },
+    {
+      "flow_id": "inner-pl-en-pl",
+      "leg": "target",
+      "analyzed_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/inner-pl-en-pl-05-target-compare-left-full.json",
+      "analyzed_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "analyzed_context_id": "dse-398-empty",
+      "original_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/all-not.json",
+      "original_independent_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "scope-contrast-context",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "comparison_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/compare-all-not.json",
+      "comparison_copy_context_before": "MISSING",
+      "comparison_copy_context_after": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "derived_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/inner-pl-en-pl/target-independent-with-matched-context.json",
+      "derivation": "copied verified empty request_context from analyzed document; expression/references/time/signatures/sorts unchanged",
+      "before_sha256": {
+        "expression": "59e49ab054a1393f2e8f242e6fc30f227a3e7901836c74347c2e8ae815af7a25",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "after_sha256": {
+        "expression": "59e49ab054a1393f2e8f242e6fc30f227a3e7901836c74347c2e8ae815af7a25",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "unchanged_checked_fields": true,
+      "context_audit": {
+        "analyzed_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "analyzed_references": {
+          "state": "missing"
+        },
+        "independent_original_request_context": {
+          "state": "nonempty",
+          "value": {
+            "schema_version": 1,
+            "id": "scope-contrast-context",
+            "referents": [],
+            "mentions": [],
+            "resolution_evidence": [],
+            "conditions": []
+          }
+        },
+        "independent_original_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "independent_compare_source_request_context": {
+          "state": "missing"
+        },
+        "independent_compare_source_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "derived_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "derived_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "all_existing_contexts_verified_empty_or_missing": true,
+        "only_derived_request_context_was_added_or_aligned": true
+      },
+      "temporal_frames_before": [
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_after": [
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_unchanged": true
+    },
+    {
+      "flow_id": "inner-pl-en-pl",
+      "leg": "return",
+      "analyzed_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/inner-pl-en-pl-09-return-compare-left-full.json",
+      "analyzed_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "analyzed_context_id": "dse-398-empty",
+      "original_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/all-not.json",
+      "original_independent_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "scope-contrast-context",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "comparison_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/compare-all-not.json",
+      "comparison_copy_context_before": "MISSING",
+      "comparison_copy_context_after": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "derived_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/inner-pl-en-pl/return-independent-with-matched-context.json",
+      "derivation": "copied verified empty request_context from analyzed document; expression/references/time/signatures/sorts unchanged",
+      "before_sha256": {
+        "expression": "59e49ab054a1393f2e8f242e6fc30f227a3e7901836c74347c2e8ae815af7a25",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "after_sha256": {
+        "expression": "59e49ab054a1393f2e8f242e6fc30f227a3e7901836c74347c2e8ae815af7a25",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "unchanged_checked_fields": true,
+      "context_audit": {
+        "analyzed_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "analyzed_references": {
+          "state": "missing"
+        },
+        "independent_original_request_context": {
+          "state": "nonempty",
+          "value": {
+            "schema_version": 1,
+            "id": "scope-contrast-context",
+            "referents": [],
+            "mentions": [],
+            "resolution_evidence": [],
+            "conditions": []
+          }
+        },
+        "independent_original_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "independent_compare_source_request_context": {
+          "state": "missing"
+        },
+        "independent_compare_source_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "derived_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "derived_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "all_existing_contexts_verified_empty_or_missing": true,
+        "only_derived_request_context_was_added_or_aligned": true
+      },
+      "temporal_frames_before": [
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_after": [
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_unchanged": true
+    },
+    {
+      "flow_id": "inner-en-pl-en",
+      "leg": "target",
+      "analyzed_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/inner-en-pl-en-05-target-compare-left-full.json",
+      "analyzed_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "analyzed_context_id": "dse-398-empty",
+      "original_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/all-not.json",
+      "original_independent_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "scope-contrast-context",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "comparison_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/compare-all-not.json",
+      "comparison_copy_context_before": "MISSING",
+      "comparison_copy_context_after": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "derived_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/inner-en-pl-en/target-independent-with-matched-context.json",
+      "derivation": "copied verified empty request_context from analyzed document; expression/references/time/signatures/sorts unchanged",
+      "before_sha256": {
+        "expression": "59e49ab054a1393f2e8f242e6fc30f227a3e7901836c74347c2e8ae815af7a25",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "after_sha256": {
+        "expression": "59e49ab054a1393f2e8f242e6fc30f227a3e7901836c74347c2e8ae815af7a25",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "unchanged_checked_fields": true,
+      "context_audit": {
+        "analyzed_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "analyzed_references": {
+          "state": "missing"
+        },
+        "independent_original_request_context": {
+          "state": "nonempty",
+          "value": {
+            "schema_version": 1,
+            "id": "scope-contrast-context",
+            "referents": [],
+            "mentions": [],
+            "resolution_evidence": [],
+            "conditions": []
+          }
+        },
+        "independent_original_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "independent_compare_source_request_context": {
+          "state": "missing"
+        },
+        "independent_compare_source_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "derived_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "derived_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "all_existing_contexts_verified_empty_or_missing": true,
+        "only_derived_request_context_was_added_or_aligned": true
+      },
+      "temporal_frames_before": [
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_after": [
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_unchanged": true
+    },
+    {
+      "flow_id": "inner-en-pl-en",
+      "leg": "return",
+      "analyzed_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/inner-en-pl-en-09-return-compare-left-full.json",
+      "analyzed_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "analyzed_context_id": "dse-398-empty",
+      "original_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/all-not.json",
+      "original_independent_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "scope-contrast-context",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "comparison_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/timed-scope-target/compare-all-not.json",
+      "comparison_copy_context_before": "MISSING",
+      "comparison_copy_context_after": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "derived_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/inner-en-pl-en/return-independent-with-matched-context.json",
+      "derivation": "copied verified empty request_context from analyzed document; expression/references/time/signatures/sorts unchanged",
+      "before_sha256": {
+        "expression": "59e49ab054a1393f2e8f242e6fc30f227a3e7901836c74347c2e8ae815af7a25",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "after_sha256": {
+        "expression": "59e49ab054a1393f2e8f242e6fc30f227a3e7901836c74347c2e8ae815af7a25",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "unchanged_checked_fields": true,
+      "context_audit": {
+        "analyzed_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "analyzed_references": {
+          "state": "missing"
+        },
+        "independent_original_request_context": {
+          "state": "nonempty",
+          "value": {
+            "schema_version": 1,
+            "id": "scope-contrast-context",
+            "referents": [],
+            "mentions": [],
+            "resolution_evidence": [],
+            "conditions": []
+          }
+        },
+        "independent_original_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "independent_compare_source_request_context": {
+          "state": "missing"
+        },
+        "independent_compare_source_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "derived_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "derived_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "all_existing_contexts_verified_empty_or_missing": true,
+        "only_derived_request_context_was_added_or_aligned": true
+      },
+      "temporal_frames_before": [
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_after": [
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_unchanged": true
+    },
+    {
+      "flow_id": "relation-pl-en-pl",
+      "leg": "target",
+      "analyzed_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/relation-pl-en-pl-05-target-compare-left-full.json",
+      "analyzed_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "analyzed_context_id": "dse-398-empty",
+      "original_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-two-hop-see-present-independent.json",
+      "original_independent_context_check": {
+        "request_context": {
+          "presence": "missing",
+          "id": null,
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "comparison_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-two-hop-see-present-independent.json",
+      "comparison_copy_context_before": "MISSING",
+      "comparison_copy_context_after": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "derived_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/relation-pl-en-pl/target-independent-with-matched-context.json",
+      "derivation": "copied verified empty request_context from analyzed document; expression/references/time/signatures/sorts unchanged",
+      "before_sha256": {
+        "expression": "1ed758f9bd23e63790be748359ef5efc2bfd78a02018e7dcff7bb42d6db45231",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "after_sha256": {
+        "expression": "1ed758f9bd23e63790be748359ef5efc2bfd78a02018e7dcff7bb42d6db45231",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "unchanged_checked_fields": true,
+      "context_audit": {
+        "analyzed_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "analyzed_references": {
+          "state": "missing"
+        },
+        "independent_original_request_context": {
+          "state": "missing"
+        },
+        "independent_original_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "independent_compare_source_request_context": {
+          "state": "missing"
+        },
+        "independent_compare_source_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "derived_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "derived_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "all_existing_contexts_verified_empty_or_missing": true,
+        "only_derived_request_context_was_added_or_aligned": true
+      },
+      "temporal_frames_before": [
+        {
+          "path": "expression.body.body.body.operands[0].temporal_frame",
+          "value": "present"
+        },
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_after": [
+        {
+          "path": "expression.body.body.body.operands[0].temporal_frame",
+          "value": "present"
+        },
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_unchanged": true
+    },
+    {
+      "flow_id": "relation-pl-en-pl",
+      "leg": "return",
+      "analyzed_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/relation-pl-en-pl-09-return-compare-left-full.json",
+      "analyzed_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "analyzed_context_id": "dse-398-empty",
+      "original_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-two-hop-see-present-independent.json",
+      "original_independent_context_check": {
+        "request_context": {
+          "presence": "missing",
+          "id": null,
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "comparison_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-two-hop-see-present-independent.json",
+      "comparison_copy_context_before": "MISSING",
+      "comparison_copy_context_after": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "derived_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/relation-pl-en-pl/return-independent-with-matched-context.json",
+      "derivation": "copied verified empty request_context from analyzed document; expression/references/time/signatures/sorts unchanged",
+      "before_sha256": {
+        "expression": "1ed758f9bd23e63790be748359ef5efc2bfd78a02018e7dcff7bb42d6db45231",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "after_sha256": {
+        "expression": "1ed758f9bd23e63790be748359ef5efc2bfd78a02018e7dcff7bb42d6db45231",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "unchanged_checked_fields": true,
+      "context_audit": {
+        "analyzed_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "analyzed_references": {
+          "state": "missing"
+        },
+        "independent_original_request_context": {
+          "state": "missing"
+        },
+        "independent_original_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "independent_compare_source_request_context": {
+          "state": "missing"
+        },
+        "independent_compare_source_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "derived_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "derived_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "all_existing_contexts_verified_empty_or_missing": true,
+        "only_derived_request_context_was_added_or_aligned": true
+      },
+      "temporal_frames_before": [
+        {
+          "path": "expression.body.body.body.operands[0].temporal_frame",
+          "value": "present"
+        },
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_after": [
+        {
+          "path": "expression.body.body.body.operands[0].temporal_frame",
+          "value": "present"
+        },
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_unchanged": true
+    },
+    {
+      "flow_id": "relation-en-pl-en",
+      "leg": "target",
+      "analyzed_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/relation-en-pl-en-05-target-compare-left-full.json",
+      "analyzed_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "analyzed_context_id": "dse-398-empty",
+      "original_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-two-hop-see-present-independent.json",
+      "original_independent_context_check": {
+        "request_context": {
+          "presence": "missing",
+          "id": null,
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "comparison_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-two-hop-see-present-independent.json",
+      "comparison_copy_context_before": "MISSING",
+      "comparison_copy_context_after": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "derived_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/relation-en-pl-en/target-independent-with-matched-context.json",
+      "derivation": "copied verified empty request_context from analyzed document; expression/references/time/signatures/sorts unchanged",
+      "before_sha256": {
+        "expression": "1ed758f9bd23e63790be748359ef5efc2bfd78a02018e7dcff7bb42d6db45231",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "after_sha256": {
+        "expression": "1ed758f9bd23e63790be748359ef5efc2bfd78a02018e7dcff7bb42d6db45231",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "unchanged_checked_fields": true,
+      "context_audit": {
+        "analyzed_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "analyzed_references": {
+          "state": "missing"
+        },
+        "independent_original_request_context": {
+          "state": "missing"
+        },
+        "independent_original_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "independent_compare_source_request_context": {
+          "state": "missing"
+        },
+        "independent_compare_source_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "derived_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "derived_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "all_existing_contexts_verified_empty_or_missing": true,
+        "only_derived_request_context_was_added_or_aligned": true
+      },
+      "temporal_frames_before": [
+        {
+          "path": "expression.body.body.body.operands[0].temporal_frame",
+          "value": "present"
+        },
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_after": [
+        {
+          "path": "expression.body.body.body.operands[0].temporal_frame",
+          "value": "present"
+        },
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_unchanged": true
+    },
+    {
+      "flow_id": "relation-en-pl-en",
+      "leg": "return",
+      "analyzed_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/relation-en-pl-en-09-return-compare-left-full.json",
+      "analyzed_context_check": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "analyzed_context_id": "dse-398-empty",
+      "original_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-two-hop-see-present-independent.json",
+      "original_independent_context_check": {
+        "request_context": {
+          "presence": "missing",
+          "id": null,
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "comparison_independent_document": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation-two-hop-see-present-independent.json",
+      "comparison_copy_context_before": "MISSING",
+      "comparison_copy_context_after": {
+        "request_context": {
+          "presence": "present",
+          "id": "dse-398-empty",
+          "schema_version": 1,
+          "nonempty_fields": {},
+          "empty": true
+        },
+        "top_level_nonempty": {},
+        "empty": true
+      },
+      "derived_independent_copy": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/relation-en-pl-en/return-independent-with-matched-context.json",
+      "derivation": "copied verified empty request_context from analyzed document; expression/references/time/signatures/sorts unchanged",
+      "before_sha256": {
+        "expression": "1ed758f9bd23e63790be748359ef5efc2bfd78a02018e7dcff7bb42d6db45231",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "after_sha256": {
+        "expression": "1ed758f9bd23e63790be748359ef5efc2bfd78a02018e7dcff7bb42d6db45231",
+        "references": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "signatures": "105f736070df75b7b35aa1f442010e0e20632ba4a4ae7ffea74c34c46d047608",
+        "sorts": "b0cc6ec21048a84410c459ebd4f5580afdd24e9e22d8163755f5004f7a98bb5c"
+      },
+      "unchanged_checked_fields": true,
+      "context_audit": {
+        "analyzed_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "analyzed_references": {
+          "state": "missing"
+        },
+        "independent_original_request_context": {
+          "state": "missing"
+        },
+        "independent_original_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "independent_compare_source_request_context": {
+          "state": "missing"
+        },
+        "independent_compare_source_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "derived_request_context": {
+          "state": "nonempty",
+          "value": {
+            "conditions": [],
+            "id": "dse-398-empty",
+            "mentions": [],
+            "referents": [],
+            "resolution_evidence": [],
+            "schema_version": 1
+          }
+        },
+        "derived_references": {
+          "state": "present-empty",
+          "value": []
+        },
+        "all_existing_contexts_verified_empty_or_missing": true,
+        "only_derived_request_context_was_added_or_aligned": true
+      },
+      "temporal_frames_before": [
+        {
+          "path": "expression.body.body.body.operands[0].temporal_frame",
+          "value": "present"
+        },
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_after": [
+        {
+          "path": "expression.body.body.body.operands[0].temporal_frame",
+          "value": "present"
+        },
+        {
+          "path": "expression.body.body.body.operands[1].temporal_frame",
+          "value": "present"
+        }
+      ],
+      "temporal_frames_unchanged": true
+    }
+  ]
+}

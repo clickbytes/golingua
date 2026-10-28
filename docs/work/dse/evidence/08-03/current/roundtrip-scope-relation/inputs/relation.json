@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "dataset_store": "snapshot-store",
+  "dataset_id": "golingua-authored",
+  "semantic_profile": "dse",
+  "dse_profile": {
+    "id": "dse398.relation.runtime",
+    "version": "2026-10-27.1",
+    "registry_fingerprint": "dse-registry-set-v1:0d7ea618816a36e40aac0d86db6b2b2c4cab02b0ccc2d4f7287987030a787f86",
+    "registries": [
+      {
+        "path": "metadata.json",
+        "id": "dse395.independent.probe",
+        "version": "2026-10-26.1",
+        "fingerprint": "sha256:ad5be13b6bda00502a4c259e18b44e6b353c134362d86b760c7f971c89d8b67e"
+      }
+    ],
+    "languages": {
+      "en": {
+        "source_package": {
+          "path": "en/source.json",
+          "id": "golingua.language.en.source-395",
+          "version": "2026-10-26.1",
+          "fingerprint": "sha256:13c84536eb3820afcf88906276901bd007791ccc8e5f1379b45e21293d25acb1"
+        },
+        "target_package": {
+          "path": "en/scope-target.json",
+          "id": "golingua.language.en.scope-398",
+          "version": "2026-10-28.1",
+          "fingerprint": "sha256:e3b84232ebbfc6ba4da130bd687b0d95d2f06d7e1929411b87646b04634b76f8"
+        },
+        "source_plan": {
+          "path": "en/relation-source-plan.json",
+          "id": "golingua.language.en.relation-source-plan",
+          "version": "2026-10-28.1",
+          "fingerprint": "sha256:600db9c0e4cdd3ee64ba2cb3009d0df6846785c0d758bc40609dcb977c9cb208"
+        },
+        "source_context": {
+          "path": "context.json",
+          "id": "dse-398-empty",
+          "version": "1",
+          "fingerprint": "sha256:1f13d36c187532945be956237c3c178bebd4b611852b8d7643a8cf1b9dac3c40"
+        }
+      },
+      "pl": {
+        "source_package": {
+          "path": "pl/source.json",
+          "id": "golingua.language.pl.source-395",
+          "version": "2026-10-26.1",
+          "fingerprint": "sha256:b0063e76f80f3bb9f6e2905f842c2d62981ab1becdb886ff14467b69880091c5"
+        },
+        "target_package": {
+          "path": "pl/scope-target.json",
+          "id": "golingua.language.pl.scope-398",
+          "version": "2026-10-28.1",
+          "fingerprint": "sha256:cec69de3426289efaeda155092cf21704d94bd4aab30ef497e3ee5e76e82514d"
+        },
+        "source_plan": {
+          "path": "pl/relation-source-plan.json",
+          "id": "golingua.language.pl.relation-source-plan",
+          "version": "2026-10-28.1",
+          "fingerprint": "sha256:dc580f38be49a106ee178ec721c13efe8a95259cb512a740998f19274e335478"
+        },
+        "source_context": {
+          "path": "context.json",
+          "id": "dse-398-empty",
+          "version": "1",
+          "fingerprint": "sha256:1f13d36c187532945be956237c3c178bebd4b611852b8d7643a8cf1b9dac3c40"
+        }
+      }
+    }
+  }
+}

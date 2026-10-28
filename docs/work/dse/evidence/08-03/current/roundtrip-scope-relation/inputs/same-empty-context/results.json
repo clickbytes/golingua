@@ -1,0 +1,150 @@
+{
+  "command_count": 12,
+  "context_id": "dse-398-empty",
+  "results": [
+    {
+      "name": "outer-pl-en-pl-target-same-empty-context",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse-398-empty",
+      "diagnostics": [],
+      "left": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/outer-pl-en-pl-05-target-compare-left-full.json",
+      "right": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/outer-pl-en-pl/target-independent-with-matched-context.json",
+      "stdout": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/outer-pl-en-pl-target-same-empty-context.stdout.json",
+      "stderr": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/outer-pl-en-pl-target-same-empty-context.stderr.txt"
+    },
+    {
+      "name": "outer-pl-en-pl-return-same-empty-context",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse-398-empty",
+      "diagnostics": [],
+      "left": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/outer-pl-en-pl-09-return-compare-left-full.json",
+      "right": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/outer-pl-en-pl/return-independent-with-matched-context.json",
+      "stdout": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/outer-pl-en-pl-return-same-empty-context.stdout.json",
+      "stderr": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/outer-pl-en-pl-return-same-empty-context.stderr.txt"
+    },
+    {
+      "name": "outer-en-pl-en-target-same-empty-context",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse-398-empty",
+      "diagnostics": [],
+      "left": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/outer-en-pl-en-05-target-compare-left-full.json",
+      "right": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/outer-en-pl-en/target-independent-with-matched-context.json",
+      "stdout": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/outer-en-pl-en-target-same-empty-context.stdout.json",
+      "stderr": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/outer-en-pl-en-target-same-empty-context.stderr.txt"
+    },
+    {
+      "name": "outer-en-pl-en-return-same-empty-context",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse-398-empty",
+      "diagnostics": [],
+      "left": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/outer-en-pl-en-09-return-compare-left-full.json",
+      "right": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/outer-en-pl-en/return-independent-with-matched-context.json",
+      "stdout": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/outer-en-pl-en-return-same-empty-context.stdout.json",
+      "stderr": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/outer-en-pl-en-return-same-empty-context.stderr.txt"
+    },
+    {
+      "name": "inner-pl-en-pl-target-same-empty-context",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse-398-empty",
+      "diagnostics": [],
+      "left": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/inner-pl-en-pl-05-target-compare-left-full.json",
+      "right": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/inner-pl-en-pl/target-independent-with-matched-context.json",
+      "stdout": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/inner-pl-en-pl-target-same-empty-context.stdout.json",
+      "stderr": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/inner-pl-en-pl-target-same-empty-context.stderr.txt"
+    },
+    {
+      "name": "inner-pl-en-pl-return-same-empty-context",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse-398-empty",
+      "diagnostics": [],
+      "left": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/inner-pl-en-pl-09-return-compare-left-full.json",
+      "right": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/inner-pl-en-pl/return-independent-with-matched-context.json",
+      "stdout": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/inner-pl-en-pl-return-same-empty-context.stdout.json",
+      "stderr": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/inner-pl-en-pl-return-same-empty-context.stderr.txt"
+    },
+    {
+      "name": "inner-en-pl-en-target-same-empty-context",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse-398-empty",
+      "diagnostics": [],
+      "left": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/inner-en-pl-en-05-target-compare-left-full.json",
+      "right": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/inner-en-pl-en/target-independent-with-matched-context.json",
+      "stdout": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/inner-en-pl-en-target-same-empty-context.stdout.json",
+      "stderr": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/inner-en-pl-en-target-same-empty-context.stderr.txt"
+    },
+    {
+      "name": "inner-en-pl-en-return-same-empty-context",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse-398-empty",
+      "diagnostics": [],
+      "left": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/inner-en-pl-en-09-return-compare-left-full.json",
+      "right": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/inner-en-pl-en/return-independent-with-matched-context.json",
+      "stdout": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/inner-en-pl-en-return-same-empty-context.stdout.json",
+      "stderr": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/inner-en-pl-en-return-same-empty-context.stderr.txt"
+    },
+    {
+      "name": "relation-pl-en-pl-target-same-empty-context",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse-398-empty",
+      "diagnostics": [],
+      "left": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/relation-pl-en-pl-05-target-compare-left-full.json",
+      "right": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/relation-pl-en-pl/target-independent-with-matched-context.json",
+      "stdout": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/relation-pl-en-pl-target-same-empty-context.stdout.json",
+      "stderr": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/relation-pl-en-pl-target-same-empty-context.stderr.txt"
+    },
+    {
+      "name": "relation-pl-en-pl-return-same-empty-context",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse-398-empty",
+      "diagnostics": [],
+      "left": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/relation-pl-en-pl-09-return-compare-left-full.json",
+      "right": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/relation-pl-en-pl/return-independent-with-matched-context.json",
+      "stdout": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/relation-pl-en-pl-return-same-empty-context.stdout.json",
+      "stderr": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/relation-pl-en-pl-return-same-empty-context.stderr.txt"
+    },
+    {
+      "name": "relation-en-pl-en-target-same-empty-context",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse-398-empty",
+      "diagnostics": [],
+      "left": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/relation-en-pl-en-05-target-compare-left-full.json",
+      "right": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/relation-en-pl-en/target-independent-with-matched-context.json",
+      "stdout": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/relation-en-pl-en-target-same-empty-context.stdout.json",
+      "stderr": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/relation-en-pl-en-target-same-empty-context.stderr.txt"
+    },
+    {
+      "name": "relation-en-pl-en-return-same-empty-context",
+      "exit_code": 0,
+      "status": "ok",
+      "verdict": "proved_equivalent",
+      "context_id": "dse-398-empty",
+      "diagnostics": [],
+      "left": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/generated/relation-en-pl-en-09-return-compare-left-full.json",
+      "right": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/same-empty-context/relation-en-pl-en/return-independent-with-matched-context.json",
+      "stdout": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/relation-en-pl-en-return-same-empty-context.stdout.json",
+      "stderr": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/same-empty-context/relation-en-pl-en-return-same-empty-context.stderr.txt"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"status":"invalid","diagnostics":[{"code":"EQUIVALENCE_REQUEST_CONTEXT_MISMATCH","message":"both source documents and the selected environment must carry the same request context","path":"inputs.request_context","severity":"error"}]}

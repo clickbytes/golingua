@@ -1,0 +1,202 @@
+{
+  "schema_version": 1,
+  "signatures": [
+    {
+      "id": "pilot.vision_event",
+      "label": "pilot visual-perception event relation",
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.auditory_event",
+      "label": "pilot auditory-perception event relation",
+      "ports": [
+        {
+          "role": "event",
+          "type": {
+            "kind": "Event"
+          }
+        },
+        {
+          "role": "experiencer",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "stimulus",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pilot.r",
+      "label": "neutral ordered relation",
+      "ports": [
+        {
+          "role": "a",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "b",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.teacher",
+      "label": "explicit probe convention probe.teacher",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.dog",
+      "label": "explicit probe convention probe.dog",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.definite",
+      "label": "explicit probe convention probe.definite",
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    }
+  ],
+  "parameters": [],
+  "limits": {},
+  "closed": true,
+  "references": [],
+  "expression": {
+    "kind": "Quantifier",
+    "id": "x",
+    "type": {
+      "kind": "Entity"
+    },
+    "quantifier": "all",
+    "restrictor": {
+      "kind": "Atom",
+      "symbol": "probe.teacher",
+      "args": [
+        {
+          "role": "entity",
+          "value": {
+            "kind": "Var",
+            "id": "x"
+          }
+        }
+      ]
+    },
+    "body": {
+      "kind": "Not",
+      "body": {
+        "kind": "Exists",
+        "id": "y",
+        "type": {
+          "kind": "Entity"
+        },
+        "body": {
+          "kind": "And",
+          "operands": [
+            {
+              "kind": "Atom",
+              "symbol": "probe.dog",
+              "args": [
+                {
+                  "role": "entity",
+                  "value": {
+                    "kind": "Var",
+                    "id": "y"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "Exists",
+              "id": "e",
+              "type": {
+                "kind": "Event"
+              },
+              "body": {
+                "kind": "Atom",
+                "symbol": "pilot.vision_event",
+                "args": [
+                  {
+                    "role": "event",
+                    "value": {
+                      "kind": "Var",
+                      "id": "e"
+                    }
+                  },
+                  {
+                    "role": "experiencer",
+                    "value": {
+                      "kind": "Var",
+                      "id": "x"
+                    }
+                  },
+                  {
+                    "role": "stimulus",
+                    "value": {
+                      "kind": "Var",
+                      "id": "y"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "request_context": {
+    "schema_version": 1,
+    "id": "scope-contrast-context",
+    "referents": [],
+    "mentions": [],
+    "resolution_evidence": [],
+    "conditions": []
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "created_utc": "2026-10-28T10:40:21Z",
+  "job_base_sha": "bff69b4",
+  "source_revision_from_go_build_info": "bff69b46c04dc6f1c3d31fb170bfe3bd261d96d6",
+  "source_revision_matches_job_base": true,
+  "working_tree_modified_at_build": true,
+  "build": {
+    "argv": [
+      "go",
+      "build",
+      "-o",
+      "/tmp/golingua-dse/398-roundtrip-scope-relation/golingua",
+      "./cmd/golingua"
+    ],
+    "cwd": "/home/ppotepa/git/work/golingua",
+    "started_utc": "2026-10-28T10:33:36Z",
+    "exit_code": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "binary_path": "/tmp/golingua-dse/398-roundtrip-scope-relation/golingua",
+    "binary_sha256": "88699ad2d387ca0b30fa986ccad2eb2a0ba549825e863a1dd1cb4dd16d416f13",
+    "go_version": "/tmp/golingua-dse/398-roundtrip-scope-relation/golingua: go1.27.0",
+    "go_build_info": "/tmp/golingua-dse/398-roundtrip-scope-relation/golingua: go1.27.0\n\tpath\tgithub.com/clickbytes/golingua/cmd/golingua\n\tmod\tgithub.com/clickbytes/golingua\tv0.1.0-alpha.1.0.20261028103148-bff69b46c04d+dirty\t\n\tdep\tcharm.land/bubbletea/v2\tv2.0.10\th1:oolvo20VBpI0PfqE7iFjkZ1bx0WpmXGfnKz5Yldjq5o=\n\tdep\tgithub.com/charmbracelet/colorprofile\tv0.4.3\th1:QPa1IWkYI+AOB+fE+mg/5/4HRMZcaXex9t5KX76i20Q=\n\tdep\tgithub.com/charmbracelet/ultraviolet\tv0.0.0-20260703014108-f5a850f9c2b7\th1:3FmWoGNWK4STvqg0O0Aeav2T7rodWJAPeF0QpH+8gFw=\n\tdep\tgithub.com/charmbracelet/x/ansi\tv0.11.7\th1:kzv1kJvjg2S3r9KHo8hDdHFQLEqn4RBCb39dAYC84jI=\n\tdep\tgithub.com/charmbracelet/x/term\tv0.2.2\th1:xVRT/S2ZcKdhhOuSP4t5cLi5o+JxklsoEObBSgfgZRk=\n\tdep\tgithub.com/charmbracelet/x/termios\tv0.1.1\th1:o3Q2bT8eqzGnGPOYheoYS8eEleT5ZVNYNy8JawjaNZY=\n\tdep\tgithub.com/charmbracelet/x/windows\tv0.2.2\th1:IofanmuvaxnKHuV04sC0eBy/smG6kIKrWG2/jYn2GuM=\n\tdep\tgithub.com/clipperhouse/displaywidth\tv0.11.0\th1:lBc6kY44VFw+TDx4I8opi/EtL9m20WSEFgwIwO+UVM8=\n\tdep\tgithub.com/clipperhouse/uax29/v2\tv2.7.0\th1:+gs4oBZ2gPfVrKPthwbMzWZDaAFPGYK72F0NJv2v7Vk=\n\tdep\tgithub.com/lucasb-eyer/go-colorful\tv1.4.0\th1:UtrWVfLdarDgc44HcS7pYloGHJUjHV/4FwW4TvVgFr4=\n\tdep\tgithub.com/mattn/go-runewidth\tv0.0.23\th1:7ykA0T0jkPpzSvMS5i9uoNn2Xy3R383f9HDx3RybWcw=\n\tdep\tgithub.com/muesli/cancelreader\tv0.2.2\th1:3I4Kt4BQjOR54NavqnDogx/MIoWBFa0StPA8ELUXHmA=\n\tdep\tgithub.com/rivo/uniseg\tv0.4.7\th1:WUdvkW8uEhrYfLC4ZzdpI2ztxP1I582+49Oc5Mq64VQ=\n\tdep\tgithub.com/xo/terminfo\tv0.0.0-20220910002029-abceb7e1c41e\th1:JVG44RsyaB9T2KIHavMF/ppJZNG9ZpyihvCd0w101no=\n\tdep\tgolang.org/x/sync\tv0.24.0\th1:iqiDrGoDgyuvAKrhLQthUEzU/R378N78gXbBjxed7oA=\n\tdep\tgolang.org/x/sys\tv0.46.0\th1:noSf2Fq6F8DBgS+LysIkx7rIExoNHJsxOAtPp4rthXw=\n\tdep\tgolang.org/x/term\tv0.42.0\th1:UiKe+zDFmJobeJ5ggPwOshJIVt6/Ft0rcfrXZDLWAWY=\n\tdep\tgolang.org/x/text\tv0.43.0\th1:1QivrlhwAsnMOcqgOdl9my7s9OyZl8O5/UGUTJVXoWc=\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\tCGO_ENABLED=1\n\tbuild\tCGO_CFLAGS=\n\tbuild\tCGO_CPPFLAGS=\n\tbuild\tCGO_CXXFLAGS=\n\tbuild\tCGO_LDFLAGS=\n\tbuild\tGOARCH=amd64\n\tbuild\tGOOS=linux\n\tbuild\tGOAMD64=v1\n\tbuild\tvcs=git\n\tbuild\tvcs.revision=bff69b46c04dc6f1c3d31fb170bfe3bd261d96d6\n\tbuild\tvcs.time=2026-10-28T10:31:48Z\n\tbuild\tvcs.modified=true\n",
+    "stdout_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/build.stdout.txt",
+    "stderr_path": "docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/outputs/build.stderr.txt",
+    "finished_utc": "same-second as recorded start; exact end timestamp not captured"
+  },
+  "runtime_profiles": {
+    "scope": {
+      "runtime_config": "/home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/scope.json",
+      "id": "dse398.scope.runtime",
+      "version": "2026-10-27.1",
+      "registry_fingerprint": "dse-registry-set-v1:0d7ea618816a36e40aac0d86db6b2b2c4cab02b0ccc2d4f7287987030a787f86",
+      "registries": [
+        {
+          "path": "metadata.json",
+          "id": "dse395.independent.probe",
+          "version": "2026-10-26.1",
+          "fingerprint": "sha256:ad5be13b6bda00502a4c259e18b44e6b353c134362d86b760c7f971c89d8b67e"
+        }
+      ],
+      "languages": {
+        "en": {
+          "source_package": {
+            "path": "en/source.json",
+            "id": "golingua.language.en.source-395",
+            "version": "2026-10-26.1",
+            "fingerprint": "sha256:13c84536eb3820afcf88906276901bd007791ccc8e5f1379b45e21293d25acb1"
+          },
+          "target_package": {
+            "path": "en/scope-target.json",
+            "id": "golingua.language.en.scope-398",
+            "version": "2026-10-28.1",
+            "fingerprint": "sha256:e3b84232ebbfc6ba4da130bd687b0d95d2f06d7e1929411b87646b04634b76f8"
+          },
+          "source_plan": {
+            "path": "en/scope-source-plan.json",
+            "id": "golingua.language.en.scope-source-plan",
+            "version": "2026-10-28.1",
+            "fingerprint": "sha256:41c3b375a3cabefd5ac8cd8da53ec66f83ccfba161159859ce9d385f8c905b12"
+          },
+          "source_context": {
+            "path": "context.json",
+            "id": "dse-398-empty",
+            "version": "1",
+            "fingerprint": "sha256:1f13d36c187532945be956237c3c178bebd4b611852b8d7643a8cf1b9dac3c40"
+          }
+        },
+        "pl": {
+          "source_package": {
+            "path": "pl/source.json",
+            "id": "golingua.language.pl.source-395",
+            "version": "2026-10-26.1",
+            "fingerprint": "sha256:b0063e76f80f3bb9f6e2905f842c2d62981ab1becdb886ff14467b69880091c5"
+          },
+          "target_package": {
+            "path": "pl/scope-target.json",
+            "id": "golingua.language.pl.scope-398",
+            "version": "2026-10-28.1",
+            "fingerprint": "sha256:cec69de3426289efaeda155092cf21704d94bd4aab30ef497e3ee5e76e82514d"
+          },
+          "source_plan": {
+            "path": "pl/scope-source-plan.json",
+            "id": "golingua.language.pl.scope-source-plan",
+            "version": "2026-10-28.1",
+            "fingerprint": "sha256:ee0a42cebf096ed149fea2ad78489444533225f36c42867bc5e3888eb28d5db1"
+          },
+          "source_context": {
+            "path": "context.json",
+            "id": "dse-398-empty",
+            "version": "1",
+            "fingerprint": "sha256:1f13d36c187532945be956237c3c178bebd4b611852b8d7643a8cf1b9dac3c40"
+          }
+        }
+      },
+      "dataset_store": "snapshot-store",
+      "dataset_id": "golingua-authored"
+    },
+    "relation": {
+      "runtime_config": "/home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/relation.json",
+      "id": "dse398.relation.runtime",
+      "version": "2026-10-27.1",
+      "registry_fingerprint": "dse-registry-set-v1:0d7ea618816a36e40aac0d86db6b2b2c4cab02b0ccc2d4f7287987030a787f86",
+      "registries": [
+        {
+          "path": "metadata.json",
+          "id": "dse395.independent.probe",
+          "version": "2026-10-26.1",
+          "fingerprint": "sha256:ad5be13b6bda00502a4c259e18b44e6b353c134362d86b760c7f971c89d8b67e"
+        }
+      ],
+      "languages": {
+        "en": {
+          "source_package": {
+            "path": "en/source.json",
+            "id": "golingua.language.en.source-395",
+            "version": "2026-10-26.1",
+            "fingerprint": "sha256:13c84536eb3820afcf88906276901bd007791ccc8e5f1379b45e21293d25acb1"
+          },
+          "target_package": {
+            "path": "en/scope-target.json",
+            "id": "golingua.language.en.scope-398",
+            "version": "2026-10-28.1",
+            "fingerprint": "sha256:e3b84232ebbfc6ba4da130bd687b0d95d2f06d7e1929411b87646b04634b76f8"
+          },
+          "source_plan": {
+            "path": "en/relation-source-plan.json",
+            "id": "golingua.language.en.relation-source-plan",
+            "version": "2026-10-28.1",
+            "fingerprint": "sha256:600db9c0e4cdd3ee64ba2cb3009d0df6846785c0d758bc40609dcb977c9cb208"
+          },
+          "source_context": {
+            "path": "context.json",
+            "id": "dse-398-empty",
+            "version": "1",
+            "fingerprint": "sha256:1f13d36c187532945be956237c3c178bebd4b611852b8d7643a8cf1b9dac3c40"
+          }
+        },
+        "pl": {
+          "source_package": {
+            "path": "pl/source.json",
+            "id": "golingua.language.pl.source-395",
+            "version": "2026-10-26.1",
+            "fingerprint": "sha256:b0063e76f80f3bb9f6e2905f842c2d62981ab1becdb886ff14467b69880091c5"
+          },
+          "target_package": {
+            "path": "pl/scope-target.json",
+            "id": "golingua.language.pl.scope-398",
+            "version": "2026-10-28.1",
+            "fingerprint": "sha256:cec69de3426289efaeda155092cf21704d94bd4aab30ef497e3ee5e76e82514d"
+          },
+          "source_plan": {
+            "path": "pl/relation-source-plan.json",
+            "id": "golingua.language.pl.relation-source-plan",
+            "version": "2026-10-28.1",
+            "fingerprint": "sha256:dc580f38be49a106ee178ec721c13efe8a95259cb512a740998f19274e335478"
+          },
+          "source_context": {
+            "path": "context.json",
+            "id": "dse-398-empty",
+            "version": "1",
+            "fingerprint": "sha256:1f13d36c187532945be956237c3c178bebd4b611852b8d7643a8cf1b9dac3c40"
+          }
+        }
+      },
+      "dataset_store": "snapshot-store",
+      "dataset_id": "golingua-authored"
+    }
+  },
+  "snapshot": {
+    "store_copy": "/home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/inputs/snapshot-store",
+    "active_identity": {
+      "schema_version": 1,
+      "dataset_id": "golingua-authored",
+      "digest": "e62fdf8903c59fd27690aa46e58b00d199a10a0e1108869e3aa8d47a8f7196f0"
+    },
+    "active_manifest_sha256": "d33959e4dc0eaa0316125200c64fc9eef924da7c46916e6f6669176328e69f21"
+  },
+  "command_log": {
+    "path": "/home/ppotepa/git/work/golingua/docs/work/dse/evidence/08-03/current/roundtrip-scope-relation/commands.jsonl",
+    "invocations": 98,
+    "stdout_stderr_files": 196,
+    "first_started_utc": "2026-10-28T10:36:59.844234Z",
+    "last_ended_utc": "2026-10-28T10:39:13.510679Z",
+    "every_record_has_argv_cwd_exit_and_output_hashes": true
+  },
+  "test_runner": "NOT RUN",
+  "Go tests": "NOT RUN",
+  "source_changes": "none; evidence artifacts only"
+}
