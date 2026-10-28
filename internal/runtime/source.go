@@ -63,6 +63,14 @@ type SourcePipeline struct {
 	Constructions    *construction.Registry
 	SemanticBudget   semantic.Budget
 	EvidenceBuilder  CompositionEvidenceBuilder
+	// ScopedSourcePlan and ScopedReadingPolicy are explicit language-local
+	// dependencies for the bounded scoped clause source path.
+	ScopedSourcePlan    construction.ScopedClausePlan
+	ScopedReadingPolicy ScopedSourceReadingPolicy
+	// RelationPathPlan and RelationSourceReadingPolicy are explicit compiled
+	// dependencies for the bounded anonymous relation-path source route.
+	RelationPathPlan            engine.RelationPathPlan
+	RelationSourceReadingPolicy RelationSourceReadingPolicy
 	// AllowedUnlexicalizedTerminals names exact function words whose evidence
 	// comes from a matched construction terminal rather than a lexical reading.
 	AllowedUnlexicalizedTerminals map[string]bool

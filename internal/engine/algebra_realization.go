@@ -16,6 +16,7 @@ import (
 	"github.com/clickbytes/golingua/internal/language"
 	"github.com/clickbytes/golingua/internal/lexicon"
 	"github.com/clickbytes/golingua/internal/meaning"
+	"github.com/clickbytes/golingua/internal/provenance"
 	"github.com/clickbytes/golingua/internal/semantic"
 	"github.com/clickbytes/golingua/internal/status"
 )
@@ -91,6 +92,57 @@ type AlgebraScopeAlternativeEvidence struct {
 	Parts          []ScopedSurfacePart `json:"parts"`
 }
 
+type AlgebraRelationPathAlternativeEvidence struct {
+	ID        string                    `json:"id"`
+	VariantID string                    `json:"variant_id"`
+	Parts     []RelationPathSurfacePart `json:"parts"`
+}
+
+type AlgebraRelationPathCoverage struct {
+	Verified                    bool                                     `json:"verified"`
+	VerificationScope           string                                   `json:"verification_scope"`
+	GrammaticalTenseInterpreted bool                                     `json:"grammatical_tense_interpreted"`
+	Paths                       RelationPathPaths                        `json:"paths"`
+	BinderX                     string                                   `json:"binder_x"`
+	BinderY                     string                                   `json:"binder_y"`
+	BinderZ                     string                                   `json:"binder_z"`
+	Symbol                      string                                   `json:"symbol"`
+	SenseID                     string                                   `json:"sense_id"`
+	LexemeID                    string                                   `json:"lexeme_id"`
+	Lemma                       string                                   `json:"lemma"`
+	POS                         string                                   `json:"pos"`
+	FrameID                     string                                   `json:"frame_id"`
+	FrameProvenance             provenance.SourceRef                     `json:"frame_provenance"`
+	BindingProvenance           provenance.SourceRef                     `json:"binding_provenance"`
+	TargetValidation            language.TargetValidation                `json:"target_validation"`
+	SubjectRole                 string                                   `json:"subject_role"`
+	ObjectRole                  string                                   `json:"object_role"`
+	PortRoles                   map[string]string                        `json:"port_roles"`
+	Events                      []AlgebraRelationEventCoverage           `json:"events,omitempty"`
+	RequestContext              *AlgebraScopeContextEvidence             `json:"request_context,omitempty"`
+	PlanProvenance              provenance.SourceRef                     `json:"plan_provenance"`
+	Alternatives                []AlgebraRelationPathAlternativeEvidence `json:"alternatives"`
+}
+
+// AlgebraRelationEventCoverage keeps the two event witnesses separate from
+// their shared predicate and preserves only temporal features explicit in IR.
+type AlgebraRelationEventCoverage struct {
+	BinderID      string `json:"binder_id"`
+	EventPortID   string `json:"event_port_id"`
+	Path          string `json:"path"`
+	AtomPath      string `json:"atom_path"`
+	TemporalFrame string `json:"temporal_frame,omitempty"`
+}
+
+type RelationPathPaths struct {
+	FirstLambda  string `json:"first_lambda"`
+	SecondLambda string `json:"second_lambda"`
+	Witness      string `json:"witness"`
+	Conjunction  string `json:"conjunction"`
+	FirstAtom    string `json:"first_atom"`
+	SecondAtom   string `json:"second_atom"`
+}
+
 // AlgebraRealizationResidual retains input meaning that this bounded route did
 // not realize. The source object is included when the residual originated in
 // the typed expression or request context.
@@ -104,21 +156,24 @@ type AlgebraRealizationResidual struct {
 	ResolutionEvidence *algebra.ResolutionEvidence `json:"resolution_evidence,omitempty"`
 	ContextCondition   *algebra.ContextCondition   `json:"context_condition,omitempty"`
 	ReferenceID        string                      `json:"reference_id,omitempty"`
+	ContextID          string                      `json:"context_id,omitempty"`
+	Declaration        *algebra.Declaration        `json:"declaration,omitempty"`
 }
 
 // AlgebraRealizationResult reports coverage, surface alternatives and all
 // retained residuals for one independent typed-IR realization request.
 type AlgebraRealizationResult struct {
-	Status          status.OutcomeKind           `json:"status"`
-	Language        string                       `json:"language"`
-	LanguagePackage string                       `json:"language_package,omitempty"`
-	PackageVersion  string                       `json:"package_version,omitempty"`
-	Coverage        []AlgebraRealizationCoverage `json:"coverage"`
-	Residuals       []AlgebraRealizationResidual `json:"residuals"`
-	Alternatives    []SurfaceAlternative         `json:"alternatives"`
-	Diagnostics     []status.Diagnostic          `json:"diagnostics"`
-	Scope           string                       `json:"scope"`
-	ScopeCoverage   *AlgebraScopeCoverage        `json:"scope_coverage,omitempty"`
+	Status               status.OutcomeKind           `json:"status"`
+	Language             string                       `json:"language"`
+	LanguagePackage      string                       `json:"language_package,omitempty"`
+	PackageVersion       string                       `json:"package_version,omitempty"`
+	Coverage             []AlgebraRealizationCoverage `json:"coverage"`
+	Residuals            []AlgebraRealizationResidual `json:"residuals"`
+	Alternatives         []SurfaceAlternative         `json:"alternatives"`
+	Diagnostics          []status.Diagnostic          `json:"diagnostics"`
+	Scope                string                       `json:"scope"`
+	ScopeCoverage        *AlgebraScopeCoverage        `json:"scope_coverage,omitempty"`
+	RelationPathCoverage *AlgebraRelationPathCoverage `json:"relation_path_coverage,omitempty"`
 }
 
 type algebraAtomMatch struct {
@@ -223,6 +278,12 @@ func (engine *Engine) realizeAlgebra(
 	validatedSignatures := signaturesByID(selectedMetadata.Signatures)
 	if plan, matched := matchAlgebraScope(input.Expression, validatedSignatures); matched {
 		return engine.realizeAlgebraScope(ctx, result, input, languageID, languagePackage, validations, validatedSignatures, plan)
+	}
+	if plan, matched := matchAlgebraEventRelationPath(input.Expression, validatedSignatures); matched {
+		return engine.realizeAlgebraEventRelationPath(ctx, result, merged, languageID, languagePackage, selectedMetadata, plan)
+	}
+	if plan, matched := matchAlgebraRelationPath(input.Expression, validatedSignatures); matched {
+		return engine.realizeAlgebraRelationPath(ctx, result, merged, languageID, languagePackage, selectedMetadata, plan)
 	}
 	if input.Expression == nil {
 		return algebraRealizationFailure(result, status.OutcomeInvalid, "MISSING_EXPRESSION", "input.expression", "an expression is required for realization"), nil

@@ -6,6 +6,7 @@ import (
 	"github.com/clickbytes/golingua/internal/algebra"
 	"github.com/clickbytes/golingua/internal/language"
 	"github.com/clickbytes/golingua/internal/semantic"
+	"github.com/clickbytes/golingua/internal/status"
 )
 
 // DSEOptions contains caller-selected semantic snapshots and explicit request
@@ -34,8 +35,44 @@ func (pipeline *SourcePipeline) AnalyzeDSE(ctx context.Context, source string, o
 	if err != nil {
 		return DSEAnalysis{}, err
 	}
+	if len(pipeline.RelationPathPlan.Variants) > 0 {
+		match, matchErr := MatchRelationPathSource(pipeline.RelationPathPlan, syntax.Lattice, source, RelationSourceOptions{
+			Context: ctx, Tokens: pipeline.Tokenize, Budget: options.Budget,
+			Policy: pipeline.RelationSourceReadingPolicy, AllowFinalPeriod: pipeline.AllowFinalPeriod,
+		})
+		if matchErr != nil {
+			return DSEAnalysis{}, matchErr
+		}
+		syntax.RelationSourceMatch = &match
+		noMatch := match.Status == status.OutcomeUnsupported && len(match.Diagnostics) == 1 && match.Diagnostics[0].Code == "RELATION_SOURCE_NO_MATCH"
+		if !noMatch {
+			composition, composeErr := ComposeRelationSourceMatch(ctx, match, pipeline.RelationPathPlan, options)
+			if composeErr != nil {
+				return DSEAnalysis{}, composeErr
+			}
+			return DSEAnalysis{Syntax: syntax, Composition: composition}, nil
+		}
+	}
 	if syntax.Coordination != nil {
 		return pipeline.analyzeDSECoordination(ctx, syntax, options)
+	}
+	if len(pipeline.ScopedSourcePlan.Variants) > 0 {
+		match, matchErr := MatchScopedSource(pipeline.ScopedSourcePlan, syntax.Lattice, source, ScopedSourceOptions{
+			Context: ctx, Tokens: pipeline.Tokenize, Budget: options.Budget,
+			Policy: pipeline.ScopedReadingPolicy, AllowFinalPeriod: pipeline.AllowFinalPeriod,
+		})
+		if matchErr != nil {
+			return DSEAnalysis{}, matchErr
+		}
+		syntax.ScopedMatch = &match
+		noMatch := match.Status == status.OutcomeUnsupported && len(match.Diagnostics) == 1 && match.Diagnostics[0].Code == "SCOPED_SOURCE_NO_MATCH"
+		if !noMatch {
+			composition, composeErr := ComposeScopedSourceMatch(ctx, match, pipeline.ScopedSourcePlan, options)
+			if composeErr != nil {
+				return DSEAnalysis{}, composeErr
+			}
+			return DSEAnalysis{Syntax: syntax, Composition: composition}, nil
+		}
 	}
 	composition, err := semantic.ComposeDSE(semantic.DSEInput{
 		Context:                  ctx,

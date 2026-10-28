@@ -17,6 +17,7 @@ import (
 )
 
 func (engine *Engine) realizeAlgebraScope(ctx context.Context, result AlgebraRealizationResult, input algebra.Document, languageID features.LanguageID, pack *language.SemanticLanguagePackage, validations []language.TargetValidation, signatures map[string]algebra.Signature, plan algebraScopePlan) (AlgebraRealizationResult, error) {
+	result.Scope = "checked quantified scope and exact approved lexical bindings; compiled-plan matching and target regeneration do not establish truth or independent linguistic quality"
 	retain := func(code, message string, outcome status.OutcomeKind) (AlgebraRealizationResult, error) {
 		result.Residuals = append(result.Residuals, AlgebraRealizationResidual{Path: "input.expression", Code: code, Message: message, Term: cloneAlgebraTerm(input.Expression)})
 		return algebraRealizationFailure(result, outcome, code, "input.expression", message), nil
@@ -130,7 +131,7 @@ func validateScopedAlgebraSurface(ctx context.Context, result AlgebraRealization
 	if err != nil {
 		return fail(status.OutcomeInvalid, "INVALID_SCOPED_PLAN", "target.scope.plan", "target scoped plan failed strict language and provenance validation")
 	}
-	subjectBinder, err := validateScopeFrame(request, pack)
+	subjectBinder, err := validateScopeFrame(request, pack, validatedPlan)
 	if err != nil {
 		return fail(status.OutcomeInvalid, "SCOPED_FRAME_MISMATCH", "target.scope.frame", err.Error())
 	}

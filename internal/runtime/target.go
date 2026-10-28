@@ -43,28 +43,60 @@ type TargetOperatorBuilder interface {
 // linearization to engine.TargetRealizer. Slot feature planning is language
 // local and therefore required as an explicit compiled dependency.
 type TargetPipeline struct {
-	Language           features.LanguageID
-	LanguageRegistry   *language.Registry
-	Lexicon            *lexicon.Index
-	Valency            *valency.Index
-	Constructions      *construction.Registry
-	Variants           map[ids.ConstructionID]*construction.VariantIndex
-	Core               *core.ConceptGraph
-	OperatorBuilder    TargetOperatorBuilder
-	SelectionBudget    realizer.Budget
-	PlanBudget         realizer.PlanBudget
-	ExecuteBudget      realizer.ExecuteBudget
-	LinearizeBudget    realizer.LinearizeBudget
-	PlanBuilder        TargetPlanBuilder
-	ExecutionBuilder   TargetExecutionBuilder
-	CandidatePolicy    realizer.TargetCandidatePolicy
-	ClauseCoordination *construction.ClauseCoordinationPlan
-	ScopedRealizer     engine.ScopedTargetRealizer
+	Language             features.LanguageID
+	LanguageRegistry     *language.Registry
+	Lexicon              *lexicon.Index
+	Valency              *valency.Index
+	Constructions        *construction.Registry
+	Variants             map[ids.ConstructionID]*construction.VariantIndex
+	Core                 *core.ConceptGraph
+	OperatorBuilder      TargetOperatorBuilder
+	SelectionBudget      realizer.Budget
+	PlanBudget           realizer.PlanBudget
+	ExecuteBudget        realizer.ExecuteBudget
+	LinearizeBudget      realizer.LinearizeBudget
+	PlanBuilder          TargetPlanBuilder
+	ExecutionBuilder     TargetExecutionBuilder
+	CandidatePolicy      realizer.TargetCandidatePolicy
+	ClauseCoordination   *construction.ClauseCoordinationPlan
+	ScopedRealizer       engine.ScopedTargetRealizer
+	RelationPathRealizer engine.RelationPathTargetRealizer
 }
 
 var _ engine.TargetRealizer = (*TargetPipeline)(nil)
 var _ engine.ScopedTargetRealizer = (*TargetPipeline)(nil)
 var _ engine.ScopedTargetVerifier = (*TargetPipeline)(nil)
+var _ engine.RelationPathTargetRealizer = (*TargetPipeline)(nil)
+var _ engine.RelationPathTargetVerifier = (*TargetPipeline)(nil)
+
+func (pipeline *TargetPipeline) RealizeRelationPath(ctx context.Context, request engine.RelationPathRequest) (engine.RelationPathResult, error) {
+	if pipeline == nil || pipeline.RelationPathRealizer == nil {
+		return engine.RelationPathResult{Status: status.OutcomeUnsupported, Diagnostics: []status.Diagnostic{{Code: "RELATION_PATH_TARGET_UNAVAILABLE", Path: "target.relation_path", Message: "target pipeline has no relation path realizer", Severity: status.SeverityError}}}, nil
+	}
+	return pipeline.RelationPathRealizer.RealizeRelationPath(ctx, request)
+}
+
+func (pipeline *TargetPipeline) RelationPathPlan() (engine.RelationPathPlan, error) {
+	if pipeline == nil || pipeline.RelationPathRealizer == nil {
+		return engine.RelationPathPlan{}, targetPipelineError(status.OutcomeUnsupported, "RELATION_PATH_TARGET_UNAVAILABLE", "target.relation_path", "target pipeline has no relation path realizer")
+	}
+	verifier, ok := pipeline.RelationPathRealizer.(engine.RelationPathTargetVerifier)
+	if !ok {
+		return engine.RelationPathPlan{}, targetPipelineError(status.OutcomeUnsupported, "RELATION_PATH_VERIFICATION_UNAVAILABLE", "target.relation_path", "target relation path realizer does not expose a verified plan")
+	}
+	return verifier.RelationPathPlan()
+}
+
+func (pipeline *TargetPipeline) VerifyRelationPath(ctx context.Context, request engine.RelationPathRequest, alternative engine.RelationPathAlternative) error {
+	if pipeline == nil || pipeline.RelationPathRealizer == nil {
+		return targetPipelineError(status.OutcomeUnsupported, "RELATION_PATH_TARGET_UNAVAILABLE", "target.relation_path", "target pipeline has no relation path realizer")
+	}
+	verifier, ok := pipeline.RelationPathRealizer.(engine.RelationPathTargetVerifier)
+	if !ok {
+		return targetPipelineError(status.OutcomeUnsupported, "RELATION_PATH_VERIFICATION_UNAVAILABLE", "target.relation_path", "target pipeline cannot independently verify a relation path alternative")
+	}
+	return verifier.VerifyRelationPath(ctx, request, alternative)
+}
 
 // RealizeScope delegates quantified scope realization to an optional
 // language-specific implementation. Ordinary Meaning realization remains

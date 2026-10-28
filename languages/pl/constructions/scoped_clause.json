@@ -14,6 +14,7 @@
       "negation": "outer",
       "subject_binder": "x",
       "case_policy": "marked",
+      "frame_object_case": "accusative",
       "parts": [
         {
           "literal": "Nie jest tak, że każdy"
@@ -67,6 +68,7 @@
       "negation": "inner",
       "subject_binder": "x",
       "case_policy": "marked",
+      "frame_object_case": "accusative",
       "parts": [
         {
           "literal": "Dla każdego"

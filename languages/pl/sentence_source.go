@@ -45,6 +45,14 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 	if err != nil {
 		return nil, err
 	}
+	scopedPlan, err := SentenceScopedClauses()
+	if err != nil {
+		return nil, err
+	}
+	relationPathPlan, err := SentenceRelationPathPlan()
+	if err != nil {
+		return nil, err
+	}
 	seeingSense, err := ids.NewSenseID("pl.widziec.visual")
 	if err != nil {
 		return nil, err
@@ -78,7 +86,9 @@ func NewSentenceSource(snapshot *pack.Pack) (*runtime.SourcePipeline, error) {
 		caseValues[features.FeatureValueID(value)] = value
 	}
 	return &runtime.SourcePipeline{
-		Language: "pl", ClauseConnector: "i", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}},
+		Language: "pl", ClauseConnector: "i", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}}, AllowFinalPeriod: false,
+		ScopedSourcePlan: scopedPlan, ScopedReadingPolicy: ScopedSourceReadingPolicy,
+		RelationPathPlan: relationPathPlan, RelationSourceReadingPolicy: RelationSourceReadingPolicy,
 		AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "nie": true, "to": true, "ten": true, "jest": true, "kto": true, "kogo": true, "i": true},
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,

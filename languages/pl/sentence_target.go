@@ -66,14 +66,19 @@ func NewSentenceTarget(snapshot *pack.Pack, registry *language.Registry) (*runti
 	if err != nil {
 		return nil, err
 	}
+	relationPlan, err := SentenceRelationPathPlan()
+	if err != nil {
+		return nil, err
+	}
 	return &runtime.TargetPipeline{
 		Language: "pl", LanguageRegistry: registry, Lexicon: snapshot.Lexicon(), Valency: valencyIndex,
 		Constructions: constructions, Variants: variants, Core: snapshot.CoreGraph(),
 		OperatorBuilder: polishSentenceOperatorBuilder{}, ExecutionBuilder: execution,
-		CandidatePolicy:    polishSentenceCandidatePolicy{},
-		PlanBuilder:        polishSentencePlanAnnotations{},
-		ClauseCoordination: &coordination,
-		ScopedRealizer:     &runtime.ScopedClauseRealizer{Language: "pl", Plan: scopePlan, Valency: valencyIndex, Morphology: seed, Features: polishScopedFeaturePlanner{}},
+		CandidatePolicy:      polishSentenceCandidatePolicy{},
+		PlanBuilder:          polishSentencePlanAnnotations{},
+		ClauseCoordination:   &coordination,
+		ScopedRealizer:       &runtime.ScopedClauseRealizer{Language: "pl", Plan: scopePlan, Valency: valencyIndex, Morphology: seed, Features: polishScopedFeaturePlanner{}},
+		RelationPathRealizer: &runtime.RelationPathRealizer{Language: "pl", Plan: relationPlan, Morphology: seed, Features: polishRelationPathFeaturePlanner{}},
 	}, nil
 }
 

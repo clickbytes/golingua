@@ -27,7 +27,7 @@ func scopedVariant(plan construction.ScopedClausePlan, alt ScopedTargetAlternati
 	return found, count == 1
 }
 
-func validateScopeFrame(req ScopedTargetRequest, pack *language.SemanticLanguagePackage) (string, error) {
+func validateScopeFrame(req ScopedTargetRequest, pack *language.SemanticLanguagePackage, plan construction.ScopedClausePlan) (string, error) {
 	if pack == nil || req.EventSelection.Binding.Target == nil {
 		return "", fmt.Errorf("event role frame evidence is absent")
 	}
@@ -60,23 +60,41 @@ func validateScopeFrame(req ScopedTargetRequest, pack *language.SemanticLanguage
 		}
 		roles := map[string]bool{}
 		objectRoles := map[string]bool{}
+		objectCase := ""
 		for _, arg := range frame.Arguments {
 			if arg.GrammaticalFunction == "subject" {
 				roles[string(arg.Role)] = true
 			}
 			if arg.GrammaticalFunction == "object" {
 				objectRoles[string(arg.Role)] = true
+				objectCase = arg.Case
 			}
 		}
 		if len(roles) != 1 || len(objectRoles) != 1 {
 			return "", fmt.Errorf("frame must have exactly one subject and one object role")
 		}
+		binder := ""
 		if roles[req.Roles.XRole] && objectRoles[req.Roles.YRole] {
 			matched++
-			subjectBinder = "x"
+			binder = "x"
 		} else if roles[req.Roles.YRole] && objectRoles[req.Roles.XRole] {
 			matched++
-			subjectBinder = "y"
+			binder = "y"
+		}
+		if binder != "" {
+			variants := 0
+			for _, variant := range plan.Variants {
+				if variant.Negation == string(req.NegationLocation) && variant.SubjectBinder == binder && variant.FrameObjectCase != "" {
+					variants++
+					if objectCase != variant.FrameObjectCase {
+						return "", fmt.Errorf("frame object case does not match selected construction variant")
+					}
+				}
+			}
+			if variants > 1 {
+				return "", fmt.Errorf("multiple frame object case constraints match selected scope")
+			}
+			subjectBinder = binder
 		}
 	}
 	if matched != 1 || subjectBinder == "" {

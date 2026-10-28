@@ -178,6 +178,13 @@ func (r *ScopedClauseRealizer) RealizeScope(ctx context.Context, req engine.Scop
 	if variant == nil {
 		return scopedFailure(status.OutcomeUnsupported, "SCOPED_VARIANT_UNAVAILABLE", "plan.variants", "no compiled construction preserves this scope and subject binding"), nil
 	}
+	if variant.FrameObjectCase != "" {
+		for _, argument := range frame.Arguments {
+			if argument.GrammaticalFunction == "object" && argument.Case != variant.FrameObjectCase {
+				return scopedFailure(status.OutcomeUnsupported, "SCOPED_FRAME_OBJECT_CASE_MISMATCH", "request.event.frame.object.case", "selected frame object case does not match the construction variant"), nil
+			}
+		}
+	}
 	if req.EventTemporalFrame == "" {
 		return scopedFailure(status.OutcomeIncomplete, "SCOPED_TEMPORAL_FRAME_UNKNOWN", "request.event_temporal_frame", "the event temporal frame is required by the compiled construction"), nil
 	}

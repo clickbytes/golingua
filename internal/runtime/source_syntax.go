@@ -20,6 +20,8 @@ type SourceSyntax struct {
 	Forest              parser.Forest
 	CompositionEvidence CompositionEvidence
 	Coordination        *SourceCoordination
+	ScopedMatch         *ScopedSourceMatch   `json:"scoped_source_match,omitempty"`
+	RelationSourceMatch *RelationSourceMatch `json:"relation_source_match,omitempty"`
 	OriginalSourceBytes int
 }
 

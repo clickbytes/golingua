@@ -35,12 +35,13 @@ type ScopedClausePlan struct {
 }
 
 type ScopedClauseVariant struct {
-	ID            string                          `json:"id"`
-	Negation      string                          `json:"negation"`
-	SubjectBinder string                          `json:"subject_binder"`
-	CasePolicy    string                          `json:"case_policy"`
-	Parts         []ScopedClausePart              `json:"parts"`
-	Constraints   []ScopedClauseVariantConstraint `json:"constraints,omitempty"`
+	ID              string                          `json:"id"`
+	Negation        string                          `json:"negation"`
+	SubjectBinder   string                          `json:"subject_binder"`
+	CasePolicy      string                          `json:"case_policy"`
+	FrameObjectCase string                          `json:"frame_object_case,omitempty"`
+	Parts           []ScopedClausePart              `json:"parts"`
+	Constraints     []ScopedClauseVariantConstraint `json:"constraints,omitempty"`
 }
 
 // ScopedClauseVariantConstraint is a declarative restriction. It carries no
@@ -103,6 +104,9 @@ func DecodeScopedClausePlan(data []byte, language features.LanguageID) (ScopedCl
 		}
 		if variant.CasePolicy != "marked" && variant.CasePolicy != "unmarked" {
 			return ScopedClausePlan{}, fmt.Errorf("variant %d has invalid or missing case policy", index)
+		}
+		if variant.FrameObjectCase != "" && variant.FrameObjectCase != "accusative" && variant.FrameObjectCase != "genitive" {
+			return ScopedClausePlan{}, fmt.Errorf("variant %d has invalid frame object case", index)
 		}
 		pair := variant.Negation + ":" + variant.SubjectBinder
 		if _, exists := seenPairs[pair]; exists {
