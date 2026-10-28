@@ -1,0 +1,12 @@
+{
+  "source_head": "e4f93549ac03ba5c1bdf043ceb28381c95d39e4c",
+  "main_head": "dab9d23b48fe429ca4221c5efdf8e081bc6405b3",
+  "binary": "/tmp/golingua398-reverse",
+  "binary_sha256": "e2cdc6caf59e396196852f27d2aa53fc1ffcbd5c00c99724d1d154c9c92fd8eb",
+  "go_version": "go version go1.27.0 linux/amd64",
+  "runtime_configs": [
+    "docs/work/dse/evidence/08-03/current/coordination-translation/runtime-config-en.json",
+    "docs/work/dse/evidence/08-03/current/coordination-translation/runtime-config-pl.json"
+  ],
+  "scope": "EN→PL candidate text plus PL reanalysis and expression-only comparison; no full request-context equivalence claim"
+}
