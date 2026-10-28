@@ -1,0 +1,100 @@
+{
+  "closed": true,
+  "expression": {
+    "body": {
+      "body": {
+        "body": {
+          "kind": "And",
+          "operands": [
+            {
+              "body": {
+                "args": [
+                  {
+                    "role": "event",
+                    "value": {
+                      "id": "norm_b4",
+                      "kind": "Var"
+                    }
+                  },
+                  {
+                    "role": "experiencer",
+                    "value": {
+                      "id": "norm_b1",
+                      "kind": "Var"
+                    }
+                  },
+                  {
+                    "role": "stimulus",
+                    "value": {
+                      "id": "norm_b3",
+                      "kind": "Var"
+                    }
+                  }
+                ],
+                "kind": "Atom",
+                "symbol": "pilot.vision_event"
+              },
+              "id": "norm_b4",
+              "kind": "Exists",
+              "temporal_frame": "present",
+              "type": {
+                "kind": "Event"
+              }
+            },
+            {
+              "body": {
+                "args": [
+                  {
+                    "role": "event",
+                    "value": {
+                      "id": "norm_b5",
+                      "kind": "Var"
+                    }
+                  },
+                  {
+                    "role": "experiencer",
+                    "value": {
+                      "id": "norm_b3",
+                      "kind": "Var"
+                    }
+                  },
+                  {
+                    "role": "stimulus",
+                    "value": {
+                      "id": "norm_b2",
+                      "kind": "Var"
+                    }
+                  }
+                ],
+                "kind": "Atom",
+                "symbol": "pilot.vision_event"
+              },
+              "id": "norm_b5",
+              "kind": "Exists",
+              "temporal_frame": "present",
+              "type": {
+                "kind": "Event"
+              }
+            }
+          ]
+        },
+        "id": "norm_b3",
+        "kind": "Exists",
+        "type": {
+          "kind": "Entity"
+        }
+      },
+      "id": "norm_b2",
+      "kind": "Lambda",
+      "type": {
+        "kind": "Entity"
+      }
+    },
+    "id": "norm_b1",
+    "kind": "Lambda",
+    "type": {
+      "kind": "Entity"
+    }
+  },
+  "schema_version": 1
+}
