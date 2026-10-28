@@ -581,3 +581,54 @@ Kopia aktywnego wpisu ma digest zastąpiony 64 zerami; wynik to odmowa całego o
   "output_sha256": "d54e44c5778371b345a15fdbbeb911356baf4216e449c3ff2d2609e0683e2190"
 }
 ```
+
+### Pełny odczyt po restarcie
+
+Rzeczywista odpowiedź analizatora dla `TEACHERS`; provenance odnosi się do propozycji agenta, nie do akceptacji właściciela.
+
+```json
+{
+  "status": "ok",
+  "language": "en",
+  "surface": "TEACHERS",
+  "readings": [
+    {
+      "id": "7c76579a27bb45c7e37345267e7df0306be74be4ab7d868085ab248864b0ebdc",
+      "surface": "TEACHERS",
+      "lexeme_id": "lexeme:en.teacher.n",
+      "pos": "noun",
+      "paradigm_id": "en_noun_regular",
+      "cell_id": "plural",
+      "features": {
+        "language": "en",
+        "profile_version": "v2026-10-25.1",
+        "values": [
+          {
+            "feature": "noun_number",
+            "state": "known",
+            "value": "plural"
+          }
+        ]
+      },
+      "source": "exception",
+      "exception_id": "agent-teacher-marker",
+      "provenance": {
+        "id": "agent-technical-marker",
+        "uri": "https://github.com/clickbytes/golingua/issues/425",
+        "version": "2026-10-28.1",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      },
+      "trace": [
+        {
+          "paradigm_id": "en_noun_regular",
+          "cell_id": "plural",
+          "exception_id": "agent-teacher-marker",
+          "effect": "replace",
+          "source_id": "agent-technical-marker"
+        }
+      ]
+    }
+  ]
+}
+```
