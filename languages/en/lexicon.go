@@ -1175,33 +1175,51 @@ var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
 }
 
 var englishFrameBySense = map[string]lexicon.ValencyID{
-	"en.be.class_membership": "en.be.class_membership.frame",
-	"en.black.color":         "en.black.color.frame",
-	"en.see.visual":          "en.see.visual.transitive",
-	"en.look.directed":       "en.look.directed.at",
-	"en.hear.auditory":       "en.hear.auditory.transitive",
-	"en.get.receive":         "en.get.receive.transitive",
-	"en.read.text":           "en.read.text.transitive",
-	"en.eating.event":        "en.eating.transitive",
-	"en.drinking.event":      "en.drinking.transitive",
+	"en.be.class_membership":  "en.be.class_membership.frame",
+	"en.black.color":          "en.black.color.frame",
+	"en.see.visual":           "en.see.visual.transitive",
+	"en.look.directed":        "en.look.directed.at",
+	"en.hear.auditory":        "en.hear.auditory.transitive",
+	"en.get.receive":          "en.get.receive.transitive",
+	"en.read.text":            "en.read.text.transitive",
+	"en.eating.event":         "en.eating.transitive",
+	"en.drinking.event":       "en.drinking.transitive",
+	"en.opening_object.event": "en.opening_object.transitive",
+	"en.closing_object.event": "en.closing_object.transitive",
+	"en.carrying.event":       "en.carrying.transitive",
+	"en.holding_object.event": "en.holding_object.transitive",
+	"en.pulling_object.event": "en.pulling_object.transitive",
+	"en.pushing_object.event": "en.pushing_object.transitive",
+	"en.cutting_object.event": "en.cutting_object.transitive",
+	"en.folding_object.event": "en.folding_object.transitive",
+	"en.tearing_object.event": "en.tearing_object.transitive",
 }
 
 var englishParadigmByLexeme = map[string]string{
-	"en.be.v":       "en_identification_be_present_3sg",
-	"en.black.adj":  "en_identification_black_positive",
-	"en.the.det":    "en_determiner_definite",
-	"en.a.det":      "en_determiner_indefinite",
-	"en.an.det":     "en_determiner_indefinite",
-	"en.i.pron":     "en_personal_pronoun_i",
-	"en.we.pron":    "en_personal_pronoun_we",
-	"en.you.pron":   "en_personal_pronoun_you",
-	"en.see.v":      "en_verb_finite_principal_parts",
-	"en.hear.v":     "en_verb_finite_principal_parts",
-	"en.look.v":     "en_verb_finite_regular",
-	"en.get.v":      "en_verb_finite_principal_parts",
-	"en.read.v":     "en_verb_finite_principal_parts",
-	"en.eating.v":   "en_verb_finite_principal_parts",
-	"en.drinking.v": "en_verb_finite_principal_parts",
+	"en.be.v":             "en_identification_be_present_3sg",
+	"en.black.adj":        "en_identification_black_positive",
+	"en.the.det":          "en_determiner_definite",
+	"en.a.det":            "en_determiner_indefinite",
+	"en.an.det":           "en_determiner_indefinite",
+	"en.i.pron":           "en_personal_pronoun_i",
+	"en.we.pron":          "en_personal_pronoun_we",
+	"en.you.pron":         "en_personal_pronoun_you",
+	"en.see.v":            "en_verb_finite_principal_parts",
+	"en.hear.v":           "en_verb_finite_principal_parts",
+	"en.look.v":           "en_verb_finite_regular",
+	"en.get.v":            "en_verb_finite_principal_parts",
+	"en.read.v":           "en_verb_finite_principal_parts",
+	"en.eating.v":         "en_verb_finite_principal_parts",
+	"en.drinking.v":       "en_verb_finite_principal_parts",
+	"en.opening_object.v": "en_verb_finite_principal_parts",
+	"en.closing_object.v": "en_verb_finite_principal_parts",
+	"en.carrying.v":       "en_verb_finite_principal_parts",
+	"en.holding_object.v": "en_verb_finite_principal_parts",
+	"en.pulling_object.v": "en_verb_finite_principal_parts",
+	"en.pushing_object.v": "en_verb_finite_principal_parts",
+	"en.cutting_object.v": "en_verb_finite_principal_parts",
+	"en.folding_object.v": "en_verb_finite_principal_parts",
+	"en.tearing_object.v": "en_verb_finite_principal_parts",
 	// Count nouns use only a spelling class that matches their declared lemma;
 	// mass nouns stay on the explicit singular-only class below.
 	"en.mother.n": "en_noun_regular", "en.father.n": "en_noun_regular",
@@ -1261,8 +1279,7 @@ var englishParadigmByLexeme = map[string]string{
 	"en.earning_money.v": "en_verb_finite_regular", "en.manipulating_object.v": "en_verb_finite_silent_e",
 	"en.brushing_teeth.v": "en_verb_finite_sibilant", "en.dressing_self.v": "en_verb_finite_sibilant",
 	"en.searching_for_item.v": "en_verb_finite_sibilant", "en.touching_object.v": "en_verb_finite_sibilant",
-	"en.pushing_object.v": "en_verb_finite_sibilant",
-	"en.baking_food.v":    "en_verb_finite_silent_e", "en.bathing.v": "en_verb_finite_silent_e",
+	"en.baking_food.v": "en_verb_finite_silent_e", "en.bathing.v": "en_verb_finite_silent_e",
 	"en.charging_battery.v": "en_verb_finite_silent_e", "en.replacing_component.v": "en_verb_finite_silent_e",
 	"en.saving_money.v": "en_verb_finite_silent_e", "en.sharing_resource.v": "en_verb_finite_silent_e",
 	"en.reserving_resource.v": "en_verb_finite_silent_e", "en.releasing_object.v": "en_verb_finite_silent_e",
@@ -1275,6 +1292,7 @@ var englishParadigmByLexeme = map[string]string{
 	"en.bread.n":     "en_noun_singular_attested", "en.soup_food.n": "en_noun_singular_attested",
 	"en.milk_food.n": "en_noun_singular_attested", "en.tea_beverage.n": "en_noun_singular_attested",
 	"en.coffee_beverage.n": "en_noun_singular_attested",
+	"en.paper_material.n":  "en_noun_singular_attested",
 }
 
 // englishAArticleLexemes are sentence-facing count nouns whose indefinite
@@ -1335,7 +1353,7 @@ func LexicalDocument() (lexicon.Document, error) {
 				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "indefinite_article", Value: "an"})
 			}
 			switch entry.id {
-			case "en.food.n", "en.money.n", "en.water.n", "en.fish_meat.n", "en.bread.n", "en.soup_food.n", "en.milk_food.n", "en.tea_beverage.n", "en.coffee_beverage.n":
+			case "en.food.n", "en.money.n", "en.water.n", "en.fish_meat.n", "en.bread.n", "en.soup_food.n", "en.milk_food.n", "en.tea_beverage.n", "en.coffee_beverage.n", "en.paper_material.n":
 				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "number_behavior", Value: "mass"})
 			}
 			if _, countable := englishCountNounLexemes[entry.id]; countable {

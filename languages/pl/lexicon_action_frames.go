@@ -30,6 +30,8 @@ func actionFrameForSense(sense string) (string, bool) {
 		return "pl.opuszczac.lower.action", true
 	case "pl.popychac.push":
 		return "pl.popychac.push.action", true
+	case "pl.pchac.push":
+		return "pl.pchac.push.action", true
 	case "pl.ciagnac.pull":
 		return "pl.ciagnac.pull.action", true
 	case "pl.obracac.rotate":
@@ -48,6 +50,8 @@ func actionFrameForSense(sense string) (string, bool) {
 		return "pl.ciac.cut.action", true
 	case "pl.drzec.tear":
 		return "pl.drzec.tear.action", true
+	case "pl.rozdzierac.tear":
+		return "pl.rozdzierac.tear.action", true
 	case "pl.skladac.fold":
 		return "pl.skladac.fold.action", true
 	case "pl.zaginac.bend":

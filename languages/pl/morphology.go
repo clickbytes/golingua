@@ -27,23 +27,30 @@ func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm 
 	result = append(result, treeNounParadigm(profile))
 	result = append(result, doroslyAdjectiveParadigm(profile))
 	result = append(result, identificationParadigms(profile)...)
-	result = append(result, eatingDrinkingParadigms(profile)...)
+	result = append(result, polishPresentThirdPersonParadigms(profile)...)
 	return append(result, polishPersonalParadigms(profile)...)
 }
 
-func eatingDrinkingParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm {
-	result := make([]morph.Paradigm, 0, 2)
+func polishPresentThirdPersonParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm {
+	result := make([]morph.Paradigm, 0, 13)
 	for _, item := range []struct {
-		id    string
-		parts []struct{ partID, form string }
+		id, singular, plural string
+		source               provenance.SourceRef
 	}{
-		{"pl_verb_jesc_present_3sg_3pl", []struct{ partID, form string }{{"present_3sg_form", "je"}, {"present_3pl_form", "jedzą"}}},
-		{"pl_verb_pic_present_3sg_3pl", []struct{ partID, form string }{{"present_3sg_form", "pije"}, {"present_3pl_form", "piją"}}},
+		{"pl_verb_jesc_present_3sg_3pl", "je", "jedzą", eatingDrinkingMorphSource},
+		{"pl_verb_pic_present_3sg_3pl", "pije", "piją", drinkingMorphSource},
+		{"pl_verb_otwierac_obiekt_present_3sg_3pl", "otwiera", "otwierają", provenance.SourceRef{ID: "wsjp-pl-otwierac", URI: "https://wsjp.pl/haslo/podglad/16726/otwierac/4886610/okno", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
+		{"pl_verb_zamykac_obiekt_present_3sg_3pl", "zamyka", "zamykają", provenance.SourceRef{ID: "wsjp-pl-zamykac", URI: "https://wsjp.pl/haslo/podglad/4812/zamykac/5096451/okno", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
+		{"pl_verb_niesc_present_3sg_3pl", "niesie", "niosą", provenance.SourceRef{ID: "wsjp-pl-niesc", URI: "https://wsjp.pl/haslo/podglad/34633/niesc", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
+		{"pl_verb_trzymac_present_3sg_3pl", "trzyma", "trzymają", provenance.SourceRef{ID: "wsjp-pl-trzymac", URI: "https://wsjp.pl/haslo/podglad/17843/trzymac/5009629/w-dloni", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
+		{"pl_verb_ciagnac_present_3sg_3pl", "ciągnie", "ciągną", provenance.SourceRef{ID: "wsjp-pl-ciagnac", URI: "https://wsjp.pl/haslo/podglad/4760/ciagnac/5135673/woz", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
+		{"pl_verb_popychac_present_3sg_3pl", "popycha", "popychają", provenance.SourceRef{ID: "wsjp-pl-popychac", URI: "https://wsjp.pl/haslo/podglad/28202/popychac/5027558/wozek", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
+		{"pl_verb_pchac_present_3sg_3pl", "pcha", "pchają", provenance.SourceRef{ID: "wsjp-pl-pchac", URI: "https://wsjp.pl/haslo/podglad/28194/pchac/2702490/wozek", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
+		{"pl_verb_ciac_present_3sg_3pl", "tnie", "tną", provenance.SourceRef{ID: "wsjp-pl-ciac", URI: "https://wsjp.pl/haslo/podglad/1652/ciac/5013762/na-czesci", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
+		{"pl_verb_skladac_present_3sg_3pl", "składa", "składają", provenance.SourceRef{ID: "wsjp-pl-skladac", URI: "https://wsjp.pl/haslo/podglad/23658/skladac/5027088/parasol", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
+		{"pl_verb_drzec_present_3sg_3pl", "drze", "drą", provenance.SourceRef{ID: "wsjp-pl-drzec", URI: "https://wsjp.pl/haslo/podglad/36741/drzec/4891089/kartke", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
+		{"pl_verb_rozdzierac_present_3sg_3pl", "rozdziera", "rozdzierają", provenance.SourceRef{ID: "dobryslownik-pl-rozdzierac", URI: "https://dobryslownik.pl/slowo/rozdziera%C4%87/48819/", Version: "2026-10-28", License: "unknown", Author: "Dobry słownik języka polskiego i poradnia językowa"}},
 	} {
-		source := eatingDrinkingMorphSource
-		if item.id == "pl_verb_pic_present_3sg_3pl" {
-			source = drinkingMorphSource
-		}
 		paradigm := morph.Paradigm{SchemaVersion: morph.ParadigmSchemaVersion, ID: morph.ParadigmID(item.id), Language: "pl", ProfileVersion: profile.Version(), POS: "verb"}
 		for _, cell := range []struct{ id, number, partID string }{{"present_3sg", "singular", "present_3sg_form"}, {"present_3pl", "plural", "present_3pl_form"}} {
 			stemID := procedure.StemID(item.id + "_" + cell.partID)
@@ -53,38 +60,45 @@ func eatingDrinkingParadigms(profile *features.LanguageFeatureProfile) []morph.P
 				{Feature: "number", State: features.StateKnown, Value: features.FeatureValueID(cell.number)}, {Feature: "person", State: features.StateKnown, Value: "third"},
 				{Feature: "tense", State: features.StateKnown, Value: "present"}, {Feature: "verb_form", State: features.StateKnown, Value: "finite"}, {Feature: "voice", State: features.StateKnown, Value: "active"},
 			}})
-			paradigm.Rules = append(paradigm.Rules, morph.CellRule{CellID: morph.CellID("present_indicative_active_imperfective_" + cell.id), ProcedureID: "procedure:" + item.id + ".present_" + cell.number, Provenance: source, Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: stemID}}})
+			paradigm.Rules = append(paradigm.Rules, morph.CellRule{CellID: morph.CellID("present_indicative_active_imperfective_" + cell.id), ProcedureID: "procedure:" + item.id + ".present_" + cell.number, Provenance: item.source, Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: stemID}}})
 		}
 		result = append(result, paradigm)
 	}
 	return result
 }
 
-func eatingDrinkingMorphRecords(lexemes []lexicon.MorphLexeme) ([]lexemeRecord, error) {
-	forms := map[string]map[string]string{
-		"lexeme:pl.jesc.v": {"present_3sg_form": "je", "present_3pl_form": "jedzą"},
-		"lexeme:pl.pic.v":  {"present_3sg_form": "pije", "present_3pl_form": "piją"},
+func polishPresentThirdPersonMorphRecords(lexemes []lexicon.MorphLexeme) ([]lexemeRecord, error) {
+	forms := map[string]struct{ paradigmID, singular, plural string }{
+		"lexeme:pl.jesc.v":            {"pl_verb_jesc_present_3sg_3pl", "je", "jedzą"},
+		"lexeme:pl.pic.v":             {"pl_verb_pic_present_3sg_3pl", "pije", "piją"},
+		"lexeme:pl.otwierac_obiekt.v": {"pl_verb_otwierac_obiekt_present_3sg_3pl", "otwiera", "otwierają"},
+		"lexeme:pl.zamykac_obiekt.v":  {"pl_verb_zamykac_obiekt_present_3sg_3pl", "zamyka", "zamykają"},
+		"lexeme:pl.niesc.v":           {"pl_verb_niesc_present_3sg_3pl", "niesie", "niosą"},
+		"lexeme:pl.trzymac.v":         {"pl_verb_trzymac_present_3sg_3pl", "trzyma", "trzymają"},
+		"lexeme:pl.ciagnac.v":         {"pl_verb_ciagnac_present_3sg_3pl", "ciągnie", "ciągną"},
+		"lexeme:pl.popychac.v":        {"pl_verb_popychac_present_3sg_3pl", "popycha", "popychają"},
+		"lexeme:pl.pchac.v":           {"pl_verb_pchac_present_3sg_3pl", "pcha", "pchają"},
+		"lexeme:pl.ciac.v":            {"pl_verb_ciac_present_3sg_3pl", "tnie", "tną"},
+		"lexeme:pl.skladac.v":         {"pl_verb_skladac_present_3sg_3pl", "składa", "składają"},
+		"lexeme:pl.drzec.v":           {"pl_verb_drzec_present_3sg_3pl", "drze", "drą"},
+		"lexeme:pl.rozdzierac.v":      {"pl_verb_rozdzierac_present_3sg_3pl", "rozdziera", "rozdzierają"},
 	}
 	result := make([]lexemeRecord, 0, len(forms))
 	for _, lexeme := range lexemes {
-		parts, ok := forms[lexeme.ID.String()]
+		formsForLexeme, ok := forms[lexeme.ID.String()]
 		if !ok {
 			continue
 		}
-		if lexeme.Lemma == "jeść" {
-			lexeme.ParadigmID = "pl_verb_jesc_present_3sg_3pl"
-		} else {
-			lexeme.ParadigmID = "pl_verb_pic_present_3sg_3pl"
-		}
-		principalParts := morph.PrincipalParts{LexemeID: lexeme.ID}
-		for id, form := range parts {
-			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: morph.PrincipalPartID(id), Form: form})
-		}
+		lexeme.ParadigmID = formsForLexeme.paradigmID
+		principalParts := morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{
+			{ID: "present_3sg_form", Form: formsForLexeme.singular},
+			{ID: "present_3pl_form", Form: formsForLexeme.plural},
+		}}
 		result = append(result, lexemeRecord{Lexeme: lexeme, PrincipalParts: principalParts})
 		delete(forms, lexeme.ID.String())
 	}
 	if len(forms) != 0 {
-		return nil, fmt.Errorf("Polish eating/drinking morphology lexeme is missing")
+		return nil, fmt.Errorf("Polish present-tense verb morphology lexeme is missing")
 	}
 	return result, nil
 }
@@ -123,11 +137,11 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 		return nil, err
 	}
 	attested = append(attested, personal...)
-	foodVerbs, err := eatingDrinkingMorphRecords(document.Lexemes)
+	presentVerbs, err := polishPresentThirdPersonMorphRecords(document.Lexemes)
 	if err != nil {
 		return nil, err
 	}
-	attested = append(attested, foodVerbs...)
+	attested = append(attested, presentVerbs...)
 	foundCat := false
 	foundBird := false
 	foundSee := false

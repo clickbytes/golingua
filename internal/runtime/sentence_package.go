@@ -131,9 +131,9 @@ func sentenceCapabilityEvidenceIDs(languageID features.LanguageID) []string {
 func currentSentenceSenseNames(languageID features.LanguageID) ([]string, bool) {
 	switch languageID {
 	case "en":
-		return []string{"en.see.visual", "en.hear.auditory", "en.get.receive", "en.look.directed", "en.read.text", "en.be.class_membership", "en.black.color", "en.eating.event", "en.drinking.event"}, true
+		return []string{"en.see.visual", "en.hear.auditory", "en.get.receive", "en.look.directed", "en.read.text", "en.be.class_membership", "en.black.color", "en.eating.event", "en.drinking.event", "en.opening_object.event", "en.closing_object.event", "en.carrying.event", "en.holding_object.event", "en.pulling_object.event", "en.pushing_object.event", "en.cutting_object.event", "en.folding_object.event", "en.tearing_object.event"}, true
 	case "pl":
-		return []string{"pl.widziec.visual", "pl.slyszec.auditory", "pl.dostac.receive", "pl.patrzec.directed", "pl.czytac.interpret", "pl.byc.class_membership", "pl.czarny.black", "pl.jesc.eat", "pl.pic.drink"}, true
+		return []string{"pl.widziec.visual", "pl.slyszec.auditory", "pl.dostac.receive", "pl.patrzec.directed", "pl.czytac.interpret", "pl.byc.class_membership", "pl.czarny.black", "pl.jesc.eat", "pl.pic.drink", "pl.otwierac_obiekt.open", "pl.zamykac_obiekt.close", "pl.niesc.carry", "pl.trzymac.hold", "pl.ciagnac.pull", "pl.pchac.push", "pl.ciac.cut", "pl.skladac.fold", "pl.rozdzierac.tear"}, true
 	default:
 		return nil, false
 	}

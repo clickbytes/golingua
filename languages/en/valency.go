@@ -101,7 +101,7 @@ type constructionBindingDeclaration struct {
 	sense, frame, family, variant string
 }
 
-var englishConstructionBindingDeclarations = append(append(append([]constructionBindingDeclaration{
+var englishConstructionBindingDeclarations = append(append(append(append([]constructionBindingDeclaration{
 	{"en.eating.event", "en.eating.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.eating.event", "en.eating.transitive", "en.transitive", "en.transitive.svo.mass_object"},
 	{"en.eating.event", "en.eating.transitive", "en.transitive", "en.transitive.svo.indefinite_object"},
@@ -118,6 +118,15 @@ var englishConstructionBindingDeclarations = append(append(append([]construction
 	{"en.drinking.event", "en.drinking.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an"},
 	{"en.drinking.event", "en.drinking.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_mass_object"},
 	{"en.drinking.event", "en.drinking.transitive", "en.transitive", "en.transitive.svo.indefinite_subject_an_mass_object"},
+	{"en.opening_object.event", "en.opening_object.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.closing_object.event", "en.closing_object.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.carrying.event", "en.carrying.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.holding_object.event", "en.holding_object.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.pulling_object.event", "en.pulling_object.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.pushing_object.event", "en.pushing_object.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.cutting_object.event", "en.cutting_object.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.folding_object.event", "en.folding_object.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.tearing_object.event", "en.tearing_object.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.see.visual", "en.see.visual.transitive", "en.question.wh", "en.question.wh.subject"},
 	{"en.see.visual", "en.see.visual.transitive", "en.question.wh", "en.question.wh.object.echo"},
 	{"en.see.visual", "en.see.visual.transitive", "en.question.wh", "en.question.wh.subject.realize"},
@@ -221,7 +230,7 @@ var englishConstructionBindingDeclarations = append(append(append([]construction
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_subject_an_target_an"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique_negative", "en.oblique_negative.svo"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique_negative", "en.oblique_negative.svo.plural"},
-}, englishNegativeArticleBindingDeclarations()...), englishReadingPastBindingDeclarations()...), englishBarePluralBindingDeclarations()...)
+}, englishNegativeArticleBindingDeclarations()...), englishReadingPastBindingDeclarations()...), englishBarePluralBindingDeclarations()...), englishManipulationBindingDeclarations()...)
 
 var englishReadingPresentIndefiniteSuffixes = [...]string{
 	".indefinite_object", ".indefinite_subject", ".indefinite_subject_object",
@@ -363,7 +372,56 @@ func englishNegativeArticleBindingDeclarations() []constructionBindingDeclaratio
 	return bindings
 }
 
+func englishManipulationBindingDeclarations() []constructionBindingDeclaration {
+	routes := []struct{ sense, frame string }{
+		{"en.opening_object.event", "en.opening_object.transitive"},
+		{"en.closing_object.event", "en.closing_object.transitive"},
+		{"en.carrying.event", "en.carrying.transitive"},
+		{"en.holding_object.event", "en.holding_object.transitive"},
+		{"en.pulling_object.event", "en.pulling_object.transitive"},
+		{"en.pushing_object.event", "en.pushing_object.transitive"},
+		{"en.cutting_object.event", "en.cutting_object.transitive"},
+		{"en.folding_object.event", "en.folding_object.transitive"},
+		{"en.tearing_object.event", "en.tearing_object.transitive"},
+	}
+	suffixes := []string{".mass_object", ".indefinite_object", ".indefinite_object_an", ".indefinite_subject", ".indefinite_subject_an", ".indefinite_subject_mass_object", ".indefinite_subject_an_mass_object"}
+	bindings := make([]constructionBindingDeclaration, 0, len(routes)*len(suffixes))
+	for _, route := range routes {
+		for _, suffix := range suffixes {
+			bindings = append(bindings, constructionBindingDeclaration{sense: route.sense, frame: route.frame, family: "en.transitive", variant: "en.transitive.svo" + suffix})
+		}
+	}
+	return bindings
+}
+
 var englishFrames = []frameDeclaration{
+	{"en.opening_object.transitive", "en.opening_object.event", "en.transitive", []meaning.Role{"agent", "object"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject"}, {ID: "object", Role: "object", Required: true, GrammaticalFunction: "object"},
+	}},
+	{"en.closing_object.transitive", "en.closing_object.event", "en.transitive", []meaning.Role{"agent", "object"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject"}, {ID: "object", Role: "object", Required: true, GrammaticalFunction: "object"},
+	}},
+	{"en.carrying.transitive", "en.carrying.event", "en.transitive", []meaning.Role{"carrier", "load"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "carrier", Required: true, GrammaticalFunction: "subject"}, {ID: "object", Role: "load", Required: true, GrammaticalFunction: "object"},
+	}},
+	{"en.holding_object.transitive", "en.holding_object.event", "en.transitive", []meaning.Role{"holder", "object"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "holder", Required: true, GrammaticalFunction: "subject"}, {ID: "object", Role: "object", Required: true, GrammaticalFunction: "object"},
+	}},
+	{"en.pulling_object.transitive", "en.pulling_object.event", "en.transitive", []meaning.Role{"agent", "theme"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject"}, {ID: "object", Role: "theme", Required: true, GrammaticalFunction: "object"},
+	}},
+	{"en.pushing_object.transitive", "en.pushing_object.event", "en.transitive", []meaning.Role{"agent", "theme"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject"}, {ID: "object", Role: "theme", Required: true, GrammaticalFunction: "object"},
+	}},
+	{"en.cutting_object.transitive", "en.cutting_object.event", "en.transitive", []meaning.Role{"agent", "material"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject"}, {ID: "object", Role: "material", Required: true, GrammaticalFunction: "object"},
+	}},
+	{"en.folding_object.transitive", "en.folding_object.event", "en.transitive", []meaning.Role{"agent", "material"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject"}, {ID: "object", Role: "material", Required: true, GrammaticalFunction: "object"},
+	}},
+	{"en.tearing_object.transitive", "en.tearing_object.event", "en.transitive", []meaning.Role{"agent", "material"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject"}, {ID: "object", Role: "material", Required: true, GrammaticalFunction: "object"},
+	}},
 	{"en.eating.transitive", "en.eating.event", "en.transitive", []meaning.Role{"eater", "food"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "eater", Required: true, GrammaticalFunction: "subject"},
 		{ID: "object", Role: "food", Required: true, GrammaticalFunction: "object"},

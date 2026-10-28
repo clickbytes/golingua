@@ -108,6 +108,71 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	for _, value := range []string{"nominative", "genitive", "dative", "accusative", "instrumental", "locative", "vocative"} {
 		caseValues[features.FeatureValueID(value)] = value
 	}
+	manipulationSenses := map[ids.SenseID]bool{}
+	for _, name := range []string{"pl.otwierac_obiekt.open", "pl.zamykac_obiekt.close", "pl.niesc.carry", "pl.trzymac.hold", "pl.ciagnac.pull", "pl.pchac.push", "pl.ciac.cut", "pl.skladac.fold", "pl.rozdzierac.tear"} {
+		sense, senseErr := ids.NewSenseID(name)
+		if senseErr != nil {
+			return nil, senseErr
+		}
+		manipulationSenses[sense] = true
+	}
+	supportedSenses := map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true, eatingSense: true, drinkingSense: true}
+	for sense := range manipulationSenses {
+		supportedSenses[sense] = true
+	}
+	predicateAlternatives := map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
+		seeingSense: append([]map[features.FeatureID]features.FeatureValueID{
+			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
+			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "masculine_personal"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "feminine"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "neuter"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"},
+		}, polishPersonalPredicateFeatures(false)...),
+		hearingSense: append([]map[features.FeatureID]features.FeatureValueID{
+			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
+			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
+		}, polishPersonalPredicateFeatures(false)...),
+		lookingSense: {
+			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
+			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
+		},
+		readingSense: append([]map[features.FeatureID]features.FeatureValueID{
+			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
+			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "masculine_personal"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "feminine"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "neuter"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"},
+		}, polishPersonalPredicateFeatures(true)...),
+		receivingSense: {
+			{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "singular"},
+			{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
+			{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"},
+		},
+		classificationSense: {
+			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
+			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
+		},
+		attributionSense: {
+			{"degree": "positive", "number": "singular", "gender": "masculine_animal", "case": "nominative"},
+			{"degree": "positive", "number": "singular", "gender": "neuter", "case": "nominative"},
+		},
+		eatingSense:   {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}, {"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"}},
+		drinkingSense: {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}, {"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"}},
+	}
+	for _, name := range []string{"pl.otwierac_obiekt.open", "pl.zamykac_obiekt.close", "pl.niesc.carry", "pl.trzymac.hold", "pl.ciagnac.pull", "pl.pchac.push", "pl.ciac.cut", "pl.skladac.fold", "pl.rozdzierac.tear"} {
+		sense, senseErr := ids.NewSenseID(name)
+		if senseErr != nil {
+			return nil, senseErr
+		}
+		predicateAlternatives[sense] = []map[features.FeatureID]features.FeatureValueID{
+			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
+			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
+		}
+	}
 	return &runtime.SourcePipeline{
 		Language: "pl", ClauseConnector: "i", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}}, AllowFinalPeriod: false,
 		ScopedSourcePlan: scopedPlan, ScopedReadingPolicy: ScopedSourceReadingPolicy,
@@ -123,51 +188,9 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 			CaseFeature: "case", CaseValues: caseValues,
 		}}}}},
 		EvidenceBuilder: polishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), valency: valencyIndex, constructions: registry, base: runtime.BareDeclarativeEvidenceBuilder{
-			SupportedSenses: map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true, eatingSense: true, drinkingSense: true},
-			PredicateFeatureAlternativesBySense: map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
-				seeingSense: append([]map[features.FeatureID]features.FeatureValueID{
-					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
-					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
-					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "masculine_personal"},
-					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "feminine"},
-					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "neuter"},
-					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
-					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"},
-				}, polishPersonalPredicateFeatures(false)...),
-				hearingSense: append([]map[features.FeatureID]features.FeatureValueID{
-					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
-					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
-				}, polishPersonalPredicateFeatures(false)...),
-				lookingSense: {
-					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
-					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
-				},
-				readingSense: append([]map[features.FeatureID]features.FeatureValueID{
-					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
-					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
-					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "masculine_personal"},
-					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "feminine"},
-					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "neuter"},
-					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
-					{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"},
-				}, polishPersonalPredicateFeatures(true)...),
-				receivingSense: {
-					{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "singular"},
-					{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
-					{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"},
-				},
-				classificationSense: {
-					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
-					{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
-				},
-				attributionSense: {
-					{"degree": "positive", "number": "singular", "gender": "masculine_animal", "case": "nominative"},
-					{"degree": "positive", "number": "singular", "gender": "neuter", "case": "nominative"},
-				},
-				eatingSense:   {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}, {"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"}},
-				drinkingSense: {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}, {"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"}},
-			},
-			AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "nie": true, "to": true, "ten": true, "jest": true},
+			SupportedSenses:                     supportedSenses,
+			PredicateFeatureAlternativesBySense: predicateAlternatives,
+			AllowedUnlexicalizedTerminals:       map[string]bool{"na": true, "nie": true, "to": true, "ten": true, "jest": true},
 		}},
 	}, nil
 }

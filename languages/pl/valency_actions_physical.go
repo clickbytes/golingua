@@ -8,6 +8,14 @@ import (
 // physicalActionFrames declares only role signatures actually present in CORE and
 // independently reviewed Polish case/adposition choices for these candidates.
 var physicalActionFrames = []frameDeclaration{
+	{"pl.pchac.push.action", "pl.pchac.push", "pl.transitive", []meaning.Role{"agent", "theme"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "theme", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+	}},
+	{"pl.rozdzierac.tear.action", "pl.rozdzierac.tear", "pl.transitive", []meaning.Role{"agent", "material"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "material", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+	}},
 	{"pl.dotykac_obj.touch.action", "pl.dotykac_obj.touch", "pl.transitive", []meaning.Role{"actor", "object"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "actor", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "object", Role: "object", Required: true, GrammaticalFunction: "object", Case: "accusative"},

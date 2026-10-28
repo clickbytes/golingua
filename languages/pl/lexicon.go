@@ -57,6 +57,15 @@ var polishLexicalSource = provenance.SourceRef{
 	Version: "2026-10-23-receiving", License: "unknown", Author: "golingua contributors",
 }
 
+var polishManipulationIntegrationSource = provenance.SourceRef{
+	ID: "golingua-pl-manipulation-integration-431", URI: "https://github.com/clickbytes/golingua/issues/431",
+	Version: "2026-10-28", License: "internal", Author: "Codex by owner delegation",
+}
+
+var polishApprovedManipulationIntegrationSenses = map[string]struct{}{
+	"pl.pchac.push": {}, "pl.rozdzierac.tear": {},
+}
+
 var polishApprovedPersonalPronounSenses = map[string]struct{}{
 	"pl.ja.speaker": {}, "pl.my.speaker_group": {}, "pl.ty.addressee": {}, "pl.wy.addressee_group": {},
 }
@@ -562,23 +571,34 @@ var polishFrameBySense = map[string]lexicon.ValencyID{
 }
 
 var polishParadigmByLexeme = map[string]string{
-	"pl.byc.v":       "pl_identification_byc_present_3sg",
-	"pl.czarny.adj":  "pl_identification_czarny_masculine_animal_nominative",
-	"pl.sasiad.n":    "pl_noun_attested_masculine_personal",
-	"pl.klient.n":    "pl_noun_attested_masculine_personal",
-	"pl.widziec.v":   "pl_verb_present_i",
-	"pl.slyszec.v":   "pl_verb_present_y",
-	"pl.patrzec.v":   "pl_verb_present_y",
-	"pl.czytac.v":    "pl_verb_czytac_finite",
-	"pl.jesc.v":      "pl_verb_jesc_present_3sg_3pl",
-	"pl.pic.v":       "pl_verb_pic_present_3sg_3pl",
-	"pl.dorosly.adj": "pl_adjective_dorosly_attested",
-	"pl.drzewo.n":    "pl_noun_drzewo_attested",
-	"pl.dostac.v":    "pl_verb_perfective_finite",
-	"pl.ja.pron":     string(polishPersonalParadigmID("pl.ja.pron")),
-	"pl.my.pron":     string(polishPersonalParadigmID("pl.my.pron")),
-	"pl.ty.pron":     string(polishPersonalParadigmID("pl.ty.pron")),
-	"pl.wy.pron":     string(polishPersonalParadigmID("pl.wy.pron")),
+	"pl.byc.v":             "pl_identification_byc_present_3sg",
+	"pl.czarny.adj":        "pl_identification_czarny_masculine_animal_nominative",
+	"pl.sasiad.n":          "pl_noun_attested_masculine_personal",
+	"pl.klient.n":          "pl_noun_attested_masculine_personal",
+	"pl.widziec.v":         "pl_verb_present_i",
+	"pl.slyszec.v":         "pl_verb_present_y",
+	"pl.patrzec.v":         "pl_verb_present_y",
+	"pl.czytac.v":          "pl_verb_czytac_finite",
+	"pl.jesc.v":            "pl_verb_jesc_present_3sg_3pl",
+	"pl.pic.v":             "pl_verb_pic_present_3sg_3pl",
+	"pl.otwierac_obiekt.v": "pl_verb_otwierac_obiekt_present_3sg_3pl",
+	"pl.zamykac_obiekt.v":  "pl_verb_zamykac_obiekt_present_3sg_3pl",
+	"pl.niesc.v":           "pl_verb_niesc_present_3sg_3pl",
+	"pl.trzymac.v":         "pl_verb_trzymac_present_3sg_3pl",
+	"pl.ciagnac.v":         "pl_verb_ciagnac_present_3sg_3pl",
+	"pl.popychac.v":        "pl_verb_popychac_present_3sg_3pl",
+	"pl.pchac.v":           "pl_verb_pchac_present_3sg_3pl",
+	"pl.ciac.v":            "pl_verb_ciac_present_3sg_3pl",
+	"pl.skladac.v":         "pl_verb_skladac_present_3sg_3pl",
+	"pl.drzec.v":           "pl_verb_drzec_present_3sg_3pl",
+	"pl.rozdzierac.v":      "pl_verb_rozdzierac_present_3sg_3pl",
+	"pl.dorosly.adj":       "pl_adjective_dorosly_attested",
+	"pl.drzewo.n":          "pl_noun_drzewo_attested",
+	"pl.dostac.v":          "pl_verb_perfective_finite",
+	"pl.ja.pron":           string(polishPersonalParadigmID("pl.ja.pron")),
+	"pl.my.pron":           string(polishPersonalParadigmID("pl.my.pron")),
+	"pl.ty.pron":           string(polishPersonalParadigmID("pl.ty.pron")),
+	"pl.wy.pron":           string(polishPersonalParadigmID("pl.wy.pron")),
 }
 
 // LexicalDocument constructs the Polish lexical data from Go declarations.
@@ -587,6 +607,9 @@ var polishParadigmByLexeme = map[string]string{
 func LexicalDocument() (lexicon.Document, error) {
 	if err := polishLexicalSource.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical source: %w", err)
+	}
+	if err := polishManipulationIntegrationSource.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish manipulation integration source: %w", err)
 	}
 	if err := polishLexicalReviewBatch1Source.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical review source: %w", err)
@@ -680,7 +703,7 @@ func LexicalDocument() (lexicon.Document, error) {
 				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "number_behavior", Value: "count"})
 			}
 			switch entry.id {
-			case "pl.woda.n", "pl.jedzenie.n", "pl.pieniadze.n":
+			case "pl.woda.n", "pl.jedzenie.n", "pl.pieniadze.n", "pl.papier.n":
 				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "number_behavior", Value: "mass"})
 			}
 			document.Lexemes = append(document.Lexemes, lexeme)
@@ -825,6 +848,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishPersonalSource
+				}
+				if _, approved := polishApprovedManipulationIntegrationSenses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishManipulationIntegrationSource
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}

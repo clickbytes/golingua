@@ -26,6 +26,7 @@ var attestedNounExternalSources = map[string]provenance.SourceRef{
 	"pl.mleko.n":   {ID: "wsjp-pl-mleko", URI: "https://wsjp.pl/haslo/podglad/1993/mleko", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
 	"pl.herbata.n": {ID: "wsjp-pl-herbata", URI: "https://wsjp.pl/haslo/podglad/15163/herbata/1949148/napoj", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
 	"pl.kawa.n":    {ID: "wsjp-pl-kawa", URI: "https://wsjp.pl/haslo/podglad/22171/kawa/4843824/napoj", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.papier.n":  {ID: "wsjp-pl-papier", URI: "https://wsjp.pl/haslo/podglad/35381/papier/3873750/do-pisania", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
 	"pl.krzeslo.n": {
 		ID: "wsjp-pl-krzeslo-n", URI: "https://wsjp.pl/haslo/podglad/6705/krzeslo/4734420/mebel",
 		Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
@@ -110,6 +111,7 @@ var attestedNounForms = []attestedNounEntry{
 	{"pl.mleko.n", "mleko", "neuter", [7]string{"mleko", "mleka", "mleku", "mleko", "mlekiem", "mleku", "mleko"}, [7]string{"mleka", "mlek", "mlekom", "mleka", "mlekami", "mlekach", "mleka"}},
 	{"pl.herbata.n", "herbata", "feminine", [7]string{"herbata", "herbaty", "herbacie", "herbatę", "herbatą", "herbacie", "herbato"}, [7]string{"herbaty", "herbat", "herbatom", "herbaty", "herbatami", "herbatach", "herbaty"}},
 	{"pl.kawa.n", "kawa", "feminine", [7]string{"kawa", "kawy", "kawie", "kawę", "kawą", "kawie", "kawo"}, [7]string{"kawy", "kaw", "kawom", "kawy", "kawami", "kawach", "kawy"}},
+	{"pl.papier.n", "papier", "masculine_inanimate", [7]string{"papier", "papieru", "papierowi", "papier", "papierem", "papierze", "papierze"}, [7]string{"papiery", "papierów", "papierom", "papiery", "papierami", "papierach", "papiery"}},
 	{"pl.matka.n", "matka", "feminine", [7]string{"matka", "matki", "matce", "matkę", "matką", "matce", "matko"}, [7]string{"matki", "matek", "matkom", "matki", "matkami", "matkach", "matki"}},
 	{"pl.ojciec.n", "ojciec", "masculine_personal", [7]string{"ojciec", "ojca", "ojcu", "ojca", "ojcem", "ojcu", "ojcze"}, [7]string{"ojcowie", "ojców", "ojcom", "ojców", "ojcami", "ojcach", "ojcowie"}},
 	{"pl.pies.n", "pies", "masculine_animal", [7]string{"pies", "psa", "psu", "psa", "psem", "psie", "psie"}, [7]string{"psy", "psów", "psom", "psy", "psami", "psach", "psy"}},
@@ -157,7 +159,7 @@ func attestedNounGender(lexemeID string) (string, bool) {
 		return "neuter", true
 	case "pl.rzeka.n", "pl.siostra.n", "pl.mewa.n", "pl.torba.n", "pl.zupa.n", "pl.herbata.n", "pl.kawa.n":
 		return "feminine", true
-	case "pl.klucz.n", "pl.chleb.n":
+	case "pl.klucz.n", "pl.chleb.n", "pl.papier.n":
 		return "masculine_inanimate", true
 	case "pl.matka.n":
 		return "feminine", true

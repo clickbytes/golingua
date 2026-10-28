@@ -85,6 +85,15 @@ var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"pl.jesc.eat", "pl.jesc.eat.frame", "pl.transitive", "pl.transitive.svo"},
 	{"pl.pic.drink", "pl.pic.drink.action", "pl.transitive", "pl.transitive.svo"},
 	{"pl.patrzec.directed", "pl.patrzec.directed.na", "pl.oblique", "pl.oblique.svo"},
+	{"pl.otwierac_obiekt.open", "pl.otwierac_obiekt.open.action", "pl.transitive", "pl.transitive.svo"},
+	{"pl.zamykac_obiekt.close", "pl.zamykac_obiekt.close.action", "pl.transitive", "pl.transitive.svo"},
+	{"pl.niesc.carry", "pl.niesc.carry.motion", "pl.transitive", "pl.transitive.svo"},
+	{"pl.trzymac.hold", "pl.trzymac.hold.action", "pl.transitive", "pl.transitive.svo"},
+	{"pl.ciagnac.pull", "pl.ciagnac.pull.action", "pl.transitive", "pl.transitive.svo"},
+	{"pl.pchac.push", "pl.pchac.push.action", "pl.transitive", "pl.transitive.svo"},
+	{"pl.ciac.cut", "pl.ciac.cut.action", "pl.transitive", "pl.transitive.svo"},
+	{"pl.skladac.fold", "pl.skladac.fold.action", "pl.transitive", "pl.transitive.svo"},
+	{"pl.rozdzierac.tear", "pl.rozdzierac.tear.action", "pl.transitive", "pl.transitive.svo"},
 }
 
 // Families are explicit per frame, never silently assumed transitive.
