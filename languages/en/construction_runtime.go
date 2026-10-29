@@ -5,11 +5,25 @@ import (
 	"fmt"
 
 	"github.com/clickbytes/golingua/internal/construction"
+	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/valency"
 )
 
-//go:embed constructions/intransitive.json constructions/transitive_personal.json constructions/transitive.json constructions/transitive_past.json constructions/transitive_negative.json constructions/oblique.json constructions/to_oblique.json constructions/oblique_negative.json constructions/question.json constructions/wh_question.json constructions/identification.json constructions/identification_negative.json constructions/attribution.json constructions/attributed_seeing.json constructions/give_transfer.json constructions/coordination.json constructions/scoped_clause.json
+//go:embed constructions/intransitive.json constructions/transitive_personal.json constructions/transitive.json constructions/transitive_past.json constructions/transitive_negative.json constructions/oblique.json constructions/to_oblique.json constructions/oblique_negative.json constructions/question.json constructions/wh_question.json constructions/identification.json constructions/identification_negative.json constructions/attribution.json constructions/attributed_seeing.json constructions/attributed_seeing_object.json constructions/attributed_seeing_both.json constructions/give_transfer.json constructions/coordination.json constructions/scoped_clause.json constructions/phrases.json
 var sentenceConstructions embed.FS
+
+// SentencePhraseProfile loads the shared structural phrase profile for the
+// exact language feature profile used by source analysis.
+func SentencePhraseProfile(profile *features.LanguageFeatureProfile) (construction.PhraseProfile, error) {
+	if profile == nil || profile.Language() != "en" {
+		return construction.PhraseProfile{}, fmt.Errorf("English phrase profile requires an English feature profile")
+	}
+	data, err := sentenceConstructions.ReadFile("constructions/phrases.json")
+	if err != nil {
+		return construction.PhraseProfile{}, err
+	}
+	return construction.DecodePhraseProfile(data, profile)
+}
 
 // SentenceScopedClauses compiles the language-local bounded scope patterns.
 func SentenceScopedClauses() (construction.ScopedClausePlan, error) {
@@ -33,7 +47,7 @@ func SentenceCoordination() (construction.ClauseCoordinationPlan, error) {
 // authored valency index. Only exact approved bindings in that index license
 // a sense; the presence of a family alone grants no sentence capability.
 func SentenceConstructions(index *valency.Index) ([]construction.CompiledConstructionPackage, *construction.Registry, error) {
-	files := []string{"intransitive.json", "transitive_personal.json", "transitive.json", "transitive_past.json", "transitive_negative.json", "oblique.json", "to_oblique.json", "oblique_negative.json", "question.json", "wh_question.json", "identification.json", "identification_negative.json", "attribution.json", "attributed_seeing.json", "give_transfer.json"}
+	files := []string{"intransitive.json", "transitive_personal.json", "transitive.json", "transitive_past.json", "transitive_negative.json", "oblique.json", "to_oblique.json", "oblique_negative.json", "question.json", "wh_question.json", "identification.json", "identification_negative.json", "attribution.json", "attributed_seeing.json", "attributed_seeing_object.json", "attributed_seeing_both.json", "give_transfer.json"}
 	packages := make([]construction.CompiledConstructionPackage, 0, len(files))
 	families := make([]construction.ConstructionFamily, 0, len(files))
 	for _, file := range files {

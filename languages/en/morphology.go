@@ -56,7 +56,7 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 		}
 		principalParts := morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{part}}
 		switch lexeme.ID.String() {
-		case "lexeme:en.be.v", "lexeme:en.black.adj":
+		case "lexeme:en.be.v", "lexeme:en.black.adj", "lexeme:en.red.adj", "lexeme:en.white.adj", "lexeme:en.blue.adj", "lexeme:en.green.adj", "lexeme:en.open.adj", "lexeme:en.sad.adj":
 			principalParts, _ = identificationMorphRecords(lexeme)
 		case "lexeme:en.see.v":
 			principalParts = finiteEnglishPrincipalParts(lexeme, "see", "sees", "saw", "seen", "seeing")

@@ -10,8 +10,9 @@ import (
 )
 
 const (
-	MaxPhrasePlans = 100_000
-	MaxPhraseItems = 1_000_000
+	MaxPhrasePlans        = 100_000
+	MaxPhraseItems        = 1_000_000
+	MaxTemplateAgreements = 64
 )
 
 type PhraseID string
@@ -24,6 +25,7 @@ const (
 	PhrasePP           PhraseKind      = "pp"
 	PhraseInputLexical PhraseInputKind = "lexical"
 	PhraseInputNP      PhraseInputKind = "np"
+	PhraseInputAP      PhraseInputKind = "ap"
 	PhraseInputVP      PhraseInputKind = "vp"
 	PhraseInputPP      PhraseInputKind = "pp"
 )
@@ -31,10 +33,11 @@ const (
 // PhraseInput names a required or optional runtime input. IDs are placeholders,
 // never lexical content or a claim that a corresponding lexical item exists.
 type PhraseInput struct {
-	ID       string          `json:"id"`
-	Role     string          `json:"role"`
-	Kind     PhraseInputKind `json:"kind"`
-	Required bool            `json:"required"`
+	ID       string                 `json:"id"`
+	Role     string                 `json:"role"`
+	Kind     PhraseInputKind        `json:"kind"`
+	Required bool                   `json:"required"`
+	Features features.FeatureBundle `json:"features,omitempty"`
 }
 
 type PhraseChild struct {
@@ -57,6 +60,7 @@ type PhrasePlan struct {
 	Kind         PhraseKind             `json:"kind"`
 	Inputs       []PhraseInput          `json:"inputs,omitempty"`
 	Children     []PhraseChild          `json:"children,omitempty"`
+	Order        []string               `json:"order,omitempty"`
 	Features     features.FeatureBundle `json:"features,omitempty"`
 	Agreements   []FeatureAgreement     `json:"agreements,omitempty"`
 	FrameID      valency.FrameID        `json:"frame_id,omitempty"`
@@ -64,8 +68,20 @@ type PhrasePlan struct {
 }
 
 type CompiledPhrasePlan struct {
-	Plan PhrasePlan
+	Plan         PhrasePlan
+	Completeness PhrasePlanCompleteness
 }
+
+// PhrasePlanCompleteness says whether compilation verified all declared
+// agreement constraints. Partial plans retain checked structure while at
+// least one constraint remains unresolved; they are evidence, not executable
+// proof of a complete phrase.
+type PhrasePlanCompleteness string
+
+const (
+	PhrasePlanComplete PhrasePlanCompleteness = "complete"
+	PhrasePlanPartial  PhrasePlanCompleteness = "partial"
+)
 
 type PhraseIndex struct {
 	plans []CompiledPhrasePlan
@@ -73,9 +89,10 @@ type PhraseIndex struct {
 }
 
 type PhraseTemplateInput struct {
-	Role     string          `json:"role"`
-	Kind     PhraseInputKind `json:"kind"`
-	Required bool            `json:"required"`
+	Role       string               `json:"role"`
+	Kind       PhraseInputKind      `json:"kind"`
+	Required   bool                 `json:"required"`
+	FeatureIDs []features.FeatureID `json:"feature_ids,omitempty"`
 }
 
 type PhraseTemplateChild struct {
@@ -84,19 +101,156 @@ type PhraseTemplateChild struct {
 	Required bool       `json:"required"`
 }
 
+// PhraseTemplateAgreement declares a language-local feature equality between
+// two input roles. The constraint applies only when both optional inputs exist.
+type PhraseTemplateAgreement struct {
+	ControllerRole string             `json:"controller_role"`
+	TargetRole     string             `json:"target_role"`
+	Feature        features.FeatureID `json:"feature"`
+}
+
 type PhraseTemplate struct {
-	ID         string                `json:"id"`
-	Kind       PhraseKind            `json:"kind"`
-	Inputs     []PhraseTemplateInput `json:"inputs"`
-	Children   []PhraseTemplateChild `json:"children"`
-	FeatureIDs []features.FeatureID  `json:"feature_ids,omitempty"`
+	ID         string                    `json:"id"`
+	Kind       PhraseKind                `json:"kind"`
+	Inputs     []PhraseTemplateInput     `json:"inputs"`
+	Children   []PhraseTemplateChild     `json:"children"`
+	FeatureIDs []features.FeatureID      `json:"feature_ids,omitempty"`
+	Order      []string                  `json:"order,omitempty"`
+	Agreements []PhraseTemplateAgreement `json:"agreements,omitempty"`
 }
 
 type PhraseProfile struct {
-	SchemaVersion int                 `json:"schema_version"`
-	Language      features.LanguageID `json:"language"`
-	Version       string              `json:"version"`
-	Templates     []PhraseTemplate    `json:"templates"`
+	SchemaVersion   int                  `json:"schema_version"`
+	Language        features.LanguageID  `json:"language"`
+	Version         string               `json:"version"`
+	Templates       []PhraseTemplate     `json:"templates"`
+	DeterminerForms []DeterminerFormRule `json:"determiner_forms,omitempty"`
+}
+
+// ApplicablePhraseAgreements resolves a template's role-based agreement
+// declarations to the exact input IDs present in a phrase plan. Declarations
+// whose optional roles are absent do not apply.
+func ApplicablePhraseAgreements(template PhraseTemplate, inputs []PhraseInput) []FeatureAgreement {
+	byRole := make(map[string]PhraseInput, len(inputs))
+	for _, input := range inputs {
+		byRole[input.Role] = input
+	}
+	agreements := make([]FeatureAgreement, 0, len(template.Agreements))
+	for _, declaration := range template.Agreements {
+		controller, controllerPresent := byRole[declaration.ControllerRole]
+		target, targetPresent := byRole[declaration.TargetRole]
+		if !controllerPresent || !targetPresent {
+			continue
+		}
+		agreements = append(agreements, FeatureAgreement{
+			ControllerInput: controller.ID,
+			TargetInput:     target.ID,
+			Feature:         declaration.Feature,
+		})
+	}
+	return agreements
+}
+
+// DeterminerFormRule licenses one exact surface for a bounded combination of
+// head and determiner features. Several rules may license a syncretic form.
+type DeterminerFormRule struct {
+	Surface            string                  `json:"surface"`
+	HeadFeatures       []features.FeatureValue `json:"head_features"`
+	DeterminerFeatures []features.FeatureValue `json:"determiner_features"`
+	Onset              string                  `json:"onset,omitempty"`
+}
+
+type DeterminerMatchStatus string
+
+const (
+	DeterminerUnsupported DeterminerMatchStatus = "unsupported"
+	DeterminerIncomplete  DeterminerMatchStatus = "incomplete"
+	DeterminerOK          DeterminerMatchStatus = "ok"
+	DeterminerAmbiguous   DeterminerMatchStatus = "ambiguous"
+)
+
+type DeterminerMatch struct {
+	Status     DeterminerMatchStatus
+	Candidates []DeterminerFormRule
+}
+
+// EvaluateDeterminerForms performs case-insensitive Unicode surface lookup over
+// declarative profile data. Returned rules retain their canonical profile forms.
+// Missing constrained features yield incomplete; known conflicts yield unsupported.
+func EvaluateDeterminerForms(profile PhraseProfile, surface string, head, determiner features.FeatureBundle, onset string) DeterminerMatch {
+	var candidates []DeterminerFormRule
+	missing := false
+	for _, rule := range profile.DeterminerForms {
+		if !strings.EqualFold(rule.Surface, surface) {
+			continue
+		}
+		if rule.Onset != "" && onset != "" && rule.Onset != onset {
+			continue
+		}
+		ok, partial := matchesDeterminerBundle(rule.HeadFeatures, head)
+		if ok {
+			ok2, partial2 := matchesDeterminerBundle(rule.DeterminerFeatures, determiner)
+			ok, partial = ok2, partial || partial2
+		}
+		if ok && rule.Onset != "" && onset == "" {
+			ok, partial = false, true
+		}
+		if ok {
+			candidates = append(candidates, rule)
+		} else if partial {
+			missing = true
+		}
+	}
+	if len(candidates) == 1 {
+		return DeterminerMatch{Status: DeterminerOK, Candidates: candidates}
+	}
+	if len(candidates) > 1 {
+		first := featureTupleKey(candidates[0].HeadFeatures) + "\x00" + featureTupleKey(candidates[0].DeterminerFeatures)
+		identical := true
+		for _, candidate := range candidates[1:] {
+			if featureTupleKey(candidate.HeadFeatures)+"\x00"+featureTupleKey(candidate.DeterminerFeatures) != first {
+				identical = false
+				break
+			}
+		}
+		if identical {
+			return DeterminerMatch{Status: DeterminerOK, Candidates: candidates[:1]}
+		}
+		return DeterminerMatch{Status: DeterminerAmbiguous, Candidates: candidates}
+	}
+	if missing {
+		return DeterminerMatch{Status: DeterminerIncomplete}
+	}
+	return DeterminerMatch{Status: DeterminerUnsupported}
+}
+
+func matchesDeterminerBundle(required []features.FeatureValue, actual features.FeatureBundle) (bool, bool) {
+	values := map[features.FeatureID]features.FeatureValue{}
+	for _, value := range actual.Values {
+		values[value.Feature] = value
+	}
+	partial := false
+	for _, want := range required {
+		got, ok := values[want.Feature]
+		if !ok {
+			partial = true
+			continue
+		}
+		if got.State == features.StateUnknown {
+			partial = true
+			continue
+		}
+		if got.State == features.StateAbsent {
+			return false, false
+		}
+		if got.State != features.StateKnown {
+			return false, false
+		}
+		if got.Value != want.Value {
+			return false, false
+		}
+	}
+	return !partial, partial
 }
 
 func CompilePhraseGraph(plans []PhrasePlan, phraseProfile PhraseProfile, profile *features.LanguageFeatureProfile, frames map[valency.FrameID]valency.ValencyFrame) (*PhraseIndex, error) {
@@ -147,6 +301,11 @@ func CompilePhraseGraph(plans []PhrasePlan, phraseProfile PhraseProfile, profile
 	for i, plan := range plans {
 		seenRoles := map[string]struct{}{}
 		for _, child := range plan.Children {
+			for _, input := range plan.Inputs {
+				if child.Role == input.Role {
+					return nil, invalid("DUPLICATE_PHRASE_ROLE", "plans["+strconv.Itoa(i)+"].children", "a phrase role cannot be both an input and a child")
+				}
+			}
 			position, exists := byID[child.PlanID]
 			if !exists {
 				return nil, unknown("UNKNOWN_PHRASE_CHILD", "plans["+strconv.Itoa(i)+"].children", "child plan reference does not exist")
@@ -222,12 +381,16 @@ func (index *PhraseIndex) Plans() []CompiledPhrasePlan {
 	}
 	result := make([]CompiledPhrasePlan, len(index.plans))
 	for i, plan := range index.plans {
-		result[i] = CompiledPhrasePlan{Plan: clonePhrasePlan(plan.Plan)}
+		result[i] = CompiledPhrasePlan{Plan: clonePhrasePlan(plan.Plan), Completeness: plan.Completeness}
 	}
 	return result
 }
 
 func compilePhraseNode(plan PhrasePlan, phraseProfile PhraseProfile, profile *features.LanguageFeatureProfile, frames map[valency.FrameID]valency.ValencyFrame) (CompiledPhrasePlan, error) {
+	return compilePhraseNodeWithPartial(plan, phraseProfile, profile, frames, false)
+}
+
+func compilePhraseNodeWithPartial(plan PhrasePlan, phraseProfile PhraseProfile, profile *features.LanguageFeatureProfile, frames map[valency.FrameID]valency.ValencyFrame, allowPartialAgreement bool) (CompiledPhrasePlan, error) {
 	if profile == nil {
 		return CompiledPhrasePlan{}, unknown("PHRASE_PROFILE_UNAVAILABLE", "profile", "phrase compilation requires an explicit language feature profile")
 	}
@@ -257,7 +420,7 @@ func compilePhraseNode(plan PhrasePlan, phraseProfile PhraseProfile, profile *fe
 		if !validToken(input.ID) || !validToken(input.Role) {
 			return CompiledPhrasePlan{}, invalid("INVALID_PHRASE_INPUT", "inputs", "phrase input requires bounded ID and role")
 		}
-		if input.Kind != PhraseInputLexical && input.Kind != PhraseInputNP && input.Kind != PhraseInputVP && input.Kind != PhraseInputPP {
+		if input.Kind != PhraseInputLexical && input.Kind != PhraseInputNP && input.Kind != PhraseInputAP && input.Kind != PhraseInputVP && input.Kind != PhraseInputPP {
 			return CompiledPhrasePlan{}, invalid("INVALID_PHRASE_INPUT_KIND", "inputs", "phrase input kind is unsupported")
 		}
 		if _, exists := inputs[input.Role]; exists {
@@ -272,6 +435,60 @@ func compilePhraseNode(plan PhrasePlan, phraseProfile PhraseProfile, profile *fe
 		}
 		inputIDs[input.ID] = struct{}{}
 		inputs[input.Role] = input
+	}
+	if len(template.Order) > 0 {
+		presentRoles := make(map[string]struct{}, len(plan.Inputs)+len(plan.Children))
+		for _, input := range plan.Inputs {
+			presentRoles[input.Role] = struct{}{}
+		}
+		for _, child := range plan.Children {
+			presentRoles[child.Role] = struct{}{}
+		}
+		expectedOrder := make([]string, 0, len(presentRoles))
+		for _, role := range template.Order {
+			if _, present := presentRoles[role]; present {
+				expectedOrder = append(expectedOrder, role)
+			}
+		}
+		seenOrder := map[string]struct{}{}
+		for _, role := range plan.Order {
+			if _, duplicate := seenOrder[role]; duplicate {
+				return CompiledPhrasePlan{}, invalid("DUPLICATE_PHRASE_ORDER_ROLE", "order", "phrase plan order role is duplicated")
+			}
+			seenOrder[role] = struct{}{}
+		}
+		if len(plan.Order) != len(expectedOrder) {
+			return CompiledPhrasePlan{}, incomplete("PHRASE_ORDER_MISSING", "order", "phrase plan order must match the selected template order")
+		}
+		for i, role := range expectedOrder {
+			if plan.Order[i] != role {
+				return CompiledPhrasePlan{}, unsupported("PHRASE_ORDER_MISMATCH", "order", "phrase plan order must match the selected language template")
+			}
+		}
+	} else if len(plan.Order) > 0 {
+		return CompiledPhrasePlan{}, invalid("UNEXPECTED_PHRASE_ORDER", "order", "phrase plan order is only allowed when declared by its template")
+	}
+	for _, input := range plan.Inputs {
+		bundleProvided := len(input.Features.Values) > 0 || input.Features.Language != "" || input.Features.ProfileVersion != ""
+		if !bundleProvided {
+			continue
+		}
+		if input.Features.Language != profile.Language() || input.Features.ProfileVersion != profile.Version() {
+			return CompiledPhrasePlan{}, unsupported("PHRASE_INPUT_FEATURE_PROFILE_MISMATCH", "inputs."+input.Role+".features", "input feature bundle must use the exact language feature profile")
+		}
+		if err := features.ValidateBundle(profile, input.Features); err != nil {
+			return CompiledPhrasePlan{}, err
+		}
+		spec := templateInputs[input.Role]
+		allowedFeatures := spec.FeatureIDs
+		if len(allowedFeatures) == 0 {
+			allowedFeatures = template.FeatureIDs
+		}
+		for _, value := range input.Features.Values {
+			if !containsFeatureID(allowedFeatures, value.Feature) {
+				return CompiledPhrasePlan{}, unsupported("PHRASE_INPUT_FEATURE_NOT_IN_TEMPLATE", "inputs."+input.Role+".features."+string(value.Feature), "input feature is not declared for this template role")
+			}
+		}
 	}
 	for role, spec := range templateInputs {
 		if spec.Required {
@@ -429,14 +646,24 @@ func compilePhraseNode(plan PhrasePlan, phraseProfile PhraseProfile, profile *fe
 	} else if plan.Kind != PhrasePP && plan.GovernedCase.State != "" {
 		return CompiledPhrasePlan{}, invalid("UNEXPECTED_GOVERNED_CASE", "governed_case", "governed case field is only allowed on PP")
 	}
+	partial := false
+	seenAgreements := map[string]struct{}{}
 	for _, agreement := range plan.Agreements {
+		agreementKey := agreement.ControllerInput + "\x00" + agreement.TargetInput + "\x00" + string(agreement.Feature)
+		if _, exists := seenAgreements[agreementKey]; exists {
+			return CompiledPhrasePlan{}, invalid("DUPLICATE_PHRASE_AGREEMENT", "agreements", "feature agreement is duplicated")
+		}
+		seenAgreements[agreementKey] = struct{}{}
 		if agreement.ControllerInput == agreement.TargetInput {
 			return CompiledPhrasePlan{}, invalid("SELF_PHRASE_AGREEMENT", "agreements", "agreement requires distinct explicit inputs")
 		}
-		if _, ok := inputsByID(plan.Inputs)[agreement.ControllerInput]; !ok {
+		inputByID := inputsByID(plan.Inputs)
+		controller, controllerOK := inputByID[agreement.ControllerInput]
+		if !controllerOK {
 			return CompiledPhrasePlan{}, unknown("UNKNOWN_AGREEMENT_CONTROLLER", "agreements", "agreement controller input is missing")
 		}
-		if _, ok := inputsByID(plan.Inputs)[agreement.TargetInput]; !ok {
+		target, targetOK := inputByID[agreement.TargetInput]
+		if !targetOK {
 			return CompiledPhrasePlan{}, unknown("UNKNOWN_AGREEMENT_TARGET", "agreements", "agreement target input is missing")
 		}
 		if _, ok := profile.Lookup(agreement.Feature); !ok {
@@ -445,6 +672,23 @@ func compilePhraseNode(plan PhrasePlan, phraseProfile PhraseProfile, profile *fe
 		if !containsFeatureID(template.FeatureIDs, agreement.Feature) {
 			return CompiledPhrasePlan{}, unsupported("AGREEMENT_FEATURE_NOT_IN_TEMPLATE", "agreements", "agreement feature is not declared by the selected phrase template")
 		}
+		controllerSpec, targetSpec := templateInputs[controller.Role], templateInputs[target.Role]
+		if len(controllerSpec.FeatureIDs) > 0 && !containsFeatureID(controllerSpec.FeatureIDs, agreement.Feature) ||
+			len(targetSpec.FeatureIDs) > 0 && !containsFeatureID(targetSpec.FeatureIDs, agreement.Feature) {
+			return CompiledPhrasePlan{}, unsupported("AGREEMENT_FEATURE_NOT_IN_INPUT", "agreements", "agreement feature is not declared for both input roles")
+		}
+		controllerValue, controllerHasValue := phraseInputFeature(controller.Features, agreement.Feature)
+		targetValue, targetHasValue := phraseInputFeature(target.Features, agreement.Feature)
+		if controllerHasValue && targetHasValue && controllerValue.State == features.StateKnown && targetValue.State == features.StateKnown {
+			if controllerValue.Value != targetValue.Value {
+				return CompiledPhrasePlan{}, unsupported("PHRASE_FEATURE_AGREEMENT_MISMATCH", "agreements", "known input feature values do not satisfy the declared agreement")
+			}
+			continue
+		}
+		if !allowPartialAgreement {
+			return CompiledPhrasePlan{}, incomplete("PHRASE_FEATURE_AGREEMENT_INCOMPLETE", "agreements."+string(agreement.Feature), "declared agreement requires known values on both inputs")
+		}
+		partial = true
 	}
 	if plan.Kind != PhraseVP && plan.FrameID != "" {
 		return CompiledPhrasePlan{}, invalid("UNEXPECTED_PHRASE_FIELDS", "plan", "frame reference is only allowed on VP")
@@ -452,10 +696,56 @@ func compilePhraseNode(plan PhrasePlan, phraseProfile PhraseProfile, profile *fe
 	if plan.Kind == PhrasePP && len(plan.Agreements) > 0 {
 		return CompiledPhrasePlan{}, invalid("UNEXPECTED_PP_AGREEMENT", "agreements", "PP plans use governed case, not input agreement rules")
 	}
+	if plan.Kind == PhraseNP && len(template.Agreements) > 0 {
+		expected := ApplicablePhraseAgreements(*template, plan.Inputs)
+		if len(plan.Agreements) < len(expected) {
+			return CompiledPhrasePlan{}, incomplete("PHRASE_TEMPLATE_AGREEMENTS_MISMATCH", "agreements", "NP plan agreements must match the applicable template declarations")
+		}
+		if len(plan.Agreements) > len(expected) {
+			return CompiledPhrasePlan{}, unsupported("PHRASE_TEMPLATE_AGREEMENTS_MISMATCH", "agreements", "NP plan contains more agreements than its present template roles require")
+		}
+		matched := make([]bool, len(expected))
+		for _, actual := range plan.Agreements {
+			found := false
+			for i, want := range expected {
+				if actual == want {
+					matched[i] = true
+					found = true
+					break
+				}
+			}
+			if !found {
+				return CompiledPhrasePlan{}, unsupported("PHRASE_TEMPLATE_AGREEMENTS_MISMATCH", "agreements", "NP plan contains an agreement not declared for its present template roles")
+			}
+		}
+		for i, want := range expected {
+			if !matched[i] {
+				return CompiledPhrasePlan{}, incomplete("PHRASE_TEMPLATE_AGREEMENT_MISSING", "agreements", "an applicable template agreement is missing from the NP plan")
+			}
+			controller := inputsByID(plan.Inputs)[want.ControllerInput]
+			target := inputsByID(plan.Inputs)[want.TargetInput]
+			controllerValue, controllerHasValue := phraseInputFeature(controller.Features, want.Feature)
+			targetValue, targetHasValue := phraseInputFeature(target.Features, want.Feature)
+			if !controllerHasValue || !targetHasValue || controllerValue.State == features.StateUnknown || targetValue.State == features.StateUnknown {
+				if !allowPartialAgreement {
+					return CompiledPhrasePlan{}, incomplete("PHRASE_TEMPLATE_AGREEMENT_INCOMPLETE", "agreements."+string(want.Feature), "declared agreement requires known values on both present inputs")
+				}
+				partial = true
+				continue
+			}
+			if controllerValue.State != features.StateKnown || targetValue.State != features.StateKnown || controllerValue.Value != targetValue.Value {
+				return CompiledPhrasePlan{}, unsupported("PHRASE_FEATURE_AGREEMENT_MISMATCH", "agreements."+string(want.Feature), "known input feature values do not satisfy the declared agreement")
+			}
+		}
+	}
 	if plan.GovernedCase.Feature == "" && (plan.GovernedCase.State != "" || plan.GovernedCase.Value != "" || plan.GovernedCase.Variable != nil) {
 		return CompiledPhrasePlan{}, invalid("INVALID_GOVERNED_CASE", "governed_case", "governed case requires a complete feature value")
 	}
-	return CompiledPhrasePlan{Plan: clonePhrasePlan(plan)}, nil
+	completeness := PhrasePlanComplete
+	if partial {
+		completeness = PhrasePlanPartial
+	}
+	return CompiledPhrasePlan{Plan: clonePhrasePlan(plan), Completeness: completeness}, nil
 }
 
 func allowedPhraseChild(parent PhraseKind, role string, child PhraseKind) bool {
@@ -519,7 +809,17 @@ func containsFeatureID(values []features.FeatureID, candidate features.FeatureID
 func clonePhrasePlan(plan PhrasePlan) PhrasePlan {
 	result := plan
 	result.Inputs = append([]PhraseInput(nil), plan.Inputs...)
+	for i := range result.Inputs {
+		result.Inputs[i].Features.Values = append([]features.FeatureValue(nil), result.Inputs[i].Features.Values...)
+		for j := range result.Inputs[i].Features.Values {
+			if result.Inputs[i].Features.Values[j].Variable != nil {
+				variable := *result.Inputs[i].Features.Values[j].Variable
+				result.Inputs[i].Features.Values[j].Variable = &variable
+			}
+		}
+	}
 	result.Children = append([]PhraseChild(nil), plan.Children...)
+	result.Order = append([]string(nil), plan.Order...)
 	result.Agreements = append([]FeatureAgreement(nil), plan.Agreements...)
 	result.Features.Values = append([]features.FeatureValue(nil), plan.Features.Values...)
 	for i := range result.Features.Values {
@@ -533,4 +833,13 @@ func clonePhrasePlan(plan PhrasePlan) PhrasePlan {
 		result.GovernedCase.Variable = &variable
 	}
 	return result
+}
+
+func phraseInputFeature(bundle features.FeatureBundle, id features.FeatureID) (features.FeatureValue, bool) {
+	for _, value := range bundle.Values {
+		if value.Feature == id {
+			return value, true
+		}
+	}
+	return features.FeatureValue{}, false
 }

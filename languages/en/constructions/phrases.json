@@ -1,10 +1,320 @@
 {
-  "schema_version": 1,
+  "schema_version": 3,
   "language": "en",
-  "version": "1",
+  "version": "2",
   "templates": [
-    {"id":"np-base","kind":"np","inputs":[{"role":"head","kind":"lexical","required":true},{"role":"determiner","kind":"lexical","required":false},{"role":"modifier","kind":"np","required":false},{"role":"quantity","kind":"lexical","required":false}],"children":[{"role":"modifier","kind":"np","required":false},{"role":"quantity","kind":"np","required":false}],"feature_ids":["noun_number"]},
-    {"id":"vp-base","kind":"vp","inputs":[{"role":"verb","kind":"lexical","required":true},{"role":"auxiliary","kind":"lexical","required":false}],"children":[{"role":"auxiliary","kind":"vp","required":false}],"feature_ids":["mood","person","tense","verb_number"]},
-    {"id":"pp-base","kind":"pp","inputs":[{"role":"preposition","kind":"lexical","required":true}],"children":[{"role":"complement","kind":"np","required":true}],"feature_ids":[]}
+    {
+      "id": "np-attributive",
+      "kind": "np",
+      "inputs": [
+        {
+          "role": "head",
+          "kind": "lexical",
+          "required": true,
+          "feature_ids": [
+            "number",
+            "noun_number"
+          ]
+        },
+        {
+          "role": "determiner",
+          "kind": "lexical",
+          "required": false,
+          "feature_ids": [
+            "determiner",
+            "number"
+          ]
+        },
+        {
+          "role": "modifier",
+          "kind": "ap",
+          "required": false,
+          "feature_ids": [
+            "adjective_degree"
+          ]
+        }
+      ],
+      "children": [],
+      "feature_ids": [
+        "adjective_degree",
+        "determiner",
+        "noun_number",
+        "number"
+      ],
+      "order": [
+        "determiner",
+        "modifier",
+        "head"
+      ]
+    },
+    {
+      "id": "np-base",
+      "kind": "np",
+      "inputs": [
+        {
+          "role": "head",
+          "kind": "lexical",
+          "required": true
+        },
+        {
+          "role": "determiner",
+          "kind": "lexical",
+          "required": false
+        },
+        {
+          "role": "modifier",
+          "kind": "np",
+          "required": false
+        },
+        {
+          "role": "quantity",
+          "kind": "lexical",
+          "required": false
+        }
+      ],
+      "children": [
+        {
+          "role": "modifier",
+          "kind": "np",
+          "required": false
+        },
+        {
+          "role": "quantity",
+          "kind": "np",
+          "required": false
+        }
+      ],
+      "feature_ids": [
+        "noun_number"
+      ]
+    },
+    {
+      "id": "vp-base",
+      "kind": "vp",
+      "inputs": [
+        {
+          "role": "verb",
+          "kind": "lexical",
+          "required": true
+        },
+        {
+          "role": "auxiliary",
+          "kind": "lexical",
+          "required": false
+        }
+      ],
+      "children": [
+        {
+          "role": "auxiliary",
+          "kind": "vp",
+          "required": false
+        }
+      ],
+      "feature_ids": [
+        "mood",
+        "person",
+        "tense",
+        "verb_number"
+      ]
+    },
+    {
+      "id": "pp-base",
+      "kind": "pp",
+      "inputs": [
+        {
+          "role": "preposition",
+          "kind": "lexical",
+          "required": true
+        }
+      ],
+      "children": [
+        {
+          "role": "complement",
+          "kind": "np",
+          "required": true
+        }
+      ],
+      "feature_ids": []
+    }
+  ],
+  "determiner_forms": [
+    {
+      "surface": "a",
+      "head_features": [
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "determiner",
+          "state": "known",
+          "value": "indefinite"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        }
+      ],
+      "onset": "consonant"
+    },
+    {
+      "surface": "an",
+      "head_features": [
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "determiner",
+          "state": "known",
+          "value": "indefinite"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        }
+      ],
+      "onset": "vowel"
+    },
+    {
+      "surface": "the",
+      "head_features": [
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "determiner",
+          "state": "known",
+          "value": "definite"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        }
+      ]
+    },
+    {
+      "surface": "the",
+      "head_features": [
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "determiner",
+          "state": "known",
+          "value": "definite"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        }
+      ]
+    },
+    {
+      "surface": "this",
+      "head_features": [
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "determiner",
+          "state": "known",
+          "value": "demonstrative_proximal"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        }
+      ]
+    },
+    {
+      "surface": "that",
+      "head_features": [
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "determiner",
+          "state": "known",
+          "value": "demonstrative_distal"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        }
+      ]
+    },
+    {
+      "surface": "these",
+      "head_features": [
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "determiner",
+          "state": "known",
+          "value": "demonstrative_proximal"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        }
+      ]
+    },
+    {
+      "surface": "those",
+      "head_features": [
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "determiner",
+          "state": "known",
+          "value": "demonstrative_distal"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        }
+      ]
+    }
   ]
 }

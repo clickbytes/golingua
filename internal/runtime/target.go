@@ -245,6 +245,45 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 				return engine.SurfaceResult{}, err
 			}
 		}
+		// Polish pluralia tantum can realize a referent with singular or
+		// plural cardinality using the same lexical plural form. Preserve that
+		// loss on the referent only when the selected slot candidate actually
+		// uses a lexeme declaring this behavior.
+		if pipeline.Language == "pl" && source.Meaning != nil {
+			for _, slot := range selected.Family.Family.SlotSpecs {
+				if slot.ArgumentBinding == nil || slot.Category != construction.CategoryNP {
+					continue
+				}
+				referentID, found := targetRoleReferent(*source.Meaning, selected.NodeID, slot.ArgumentBinding.SemanticRole)
+				if !found {
+					continue
+				}
+				referent := targetMeaningNode(*source.Meaning, referentID)
+				var matching []realizer.TargetCandidate
+				for _, lexicalCandidate := range candidates {
+					if lexicalCandidate.NodeID != referentID || lexicalCandidate.Kind != meaning.KindReferent {
+						continue
+					}
+					matching = append(matching, lexicalCandidate)
+				}
+				// A single selected lexical route is unambiguous here. If target
+				// lexemes compete, leave their candidate-local number behavior to
+				// slot execution rather than attributing one route's loss to all.
+				if len(matching) == 1 && hasLexicalPluralWithoutCardinality(matching[0].Lexeme.Properties) {
+					if path, ok := MeaningPath(*source.Meaning, referentID); ok {
+						if referent.Multiplicity == "" {
+							predicate := targetMeaningNode(*source.Meaning, selected.NodeID)
+							if predicate.Kind == meaning.KindState && len(predicate.Participants) == 1 {
+								predicatePath, _ := MeaningPath(*source.Meaning, selected.NodeID)
+								planInput.Assumptions = removeNumberAssumptionsAt(planInput.Assumptions, path, predicatePath)
+							}
+						} else if referent.Multiplicity == meaning.MultiplicityOne || referent.Multiplicity == meaning.MultiplicityMany {
+							planInput.Losses = append(planInput.Losses, realizer.FieldLoss{Path: path, Field: "number", Outcome: status.OutcomeIncomplete, Reason: "Polish pluralia tantum marks lexical grammatical number but does not distinguish source referent cardinality"})
+						}
+					}
+				}
+			}
+		}
 		if err := ctx.Err(); err != nil {
 			return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
 		}
@@ -280,7 +319,7 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 		if err != nil {
 			return engine.SurfaceResult{}, err
 		}
-		linearized, err := realizer.Linearize(plan, executed.Family, executed.Slots, executionInput.InformationStructure, pipeline.LinearizeBudget)
+		linearized, err := realizer.LinearizeWithNPProfiles(plan, executed.Family, executed.Slots, executed.NPForms, executionInput.PhraseProfile, executionInput.FeatureProfile, executionInput.InformationStructure, pipeline.LinearizeBudget)
 		if err != nil {
 			return engine.SurfaceResult{}, err
 		}
@@ -350,6 +389,62 @@ func meaningHasNoExplicitOperators(graph meaning.Meaning) bool {
 		}
 	}
 	return true
+}
+
+func hasLexicalPluralWithoutCardinality(properties []lexicon.Property) bool {
+	for _, property := range properties {
+		if property.Key == "multiplicity_behavior" && property.Value == "lexical_plural_not_cardinality" {
+			return true
+		}
+	}
+	return false
+}
+
+func removeNumberAssumptionsAt(values []realizer.FieldAssumption, paths ...[]meaning.NodeID) []realizer.FieldAssumption {
+	result := make([]realizer.FieldAssumption, 0, len(values))
+	for _, value := range values {
+		remove := false
+		for _, path := range paths {
+			if value.Field != "number" || len(path) == 0 || len(value.Path) != len(path) {
+				continue
+			}
+			match := true
+			for index := range path {
+				if path[index] != value.Path[index] {
+					match = false
+					break
+				}
+			}
+			remove = remove || match
+		}
+		if !remove {
+			result = append(result, value)
+		}
+	}
+	return result
+}
+
+func targetMeaningNode(graph meaning.Meaning, id meaning.NodeID) meaning.Node {
+	for _, node := range graph.Nodes {
+		if node.ID == id {
+			return node
+		}
+	}
+	return meaning.Node{}
+}
+
+func targetRoleReferent(graph meaning.Meaning, predicateID meaning.NodeID, role meaning.Role) (meaning.NodeID, bool) {
+	for _, node := range graph.Nodes {
+		if node.ID != predicateID || node.Kind != meaning.KindEvent && node.Kind != meaning.KindState {
+			continue
+		}
+		for _, participant := range node.Participants {
+			if participant.Role == role && targetMeaningNode(graph, participant.Target).Kind == meaning.KindReferent {
+				return participant.Target, true
+			}
+		}
+	}
+	return "", false
 }
 
 func targetExecutionNodeIDs(graph meaning.Meaning, surfaceIDs map[meaning.NodeID]bool) map[meaning.NodeID]bool {

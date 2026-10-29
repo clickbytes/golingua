@@ -13,9 +13,53 @@ var englishIdentificationSource = provenance.SourceRef{
 	Version: "2026-10-24", License: "internal", Author: "Codex by owner delegation",
 }
 
+var englishAdjectiveDataSource = provenance.SourceRef{
+	ID: "golingua-en-authored-adjectives-435", Path: "languages/en/identification_data.go",
+	Version: "2026-10-28", License: "internal", Author: "Codex by owner delegation",
+}
+
 var identificationEntries = []lexicalEntry{
 	{"en.be.v", "be", "verb", []lexicalMeaning{{"en.be.class_membership", "instantiate the class given by a referent", "class_membership"}}},
 	{"en.black.adj", "black", "adjective", []lexicalMeaning{{"en.black.color", "black color attributed to one bearer", "black"}}},
+	{"en.red.adj", "red", "adjective", []lexicalMeaning{{"en.red.color", "red color attributed to one bearer", "red"}}},
+	{"en.white.adj", "white", "adjective", []lexicalMeaning{{"en.white.color", "white color attributed to one bearer", "white"}}},
+	{"en.blue.adj", "blue", "adjective", []lexicalMeaning{{"en.blue.color", "blue color attributed to one bearer", "blue"}}},
+	{"en.green.adj", "green", "adjective", []lexicalMeaning{{"en.green.color", "green color attributed to one bearer", "green"}}},
+	{"en.open.adj", "open", "adjective", []lexicalMeaning{{"en.open.state", "state of a bearer configured to permit passage, entry, or access", "open_state"}}},
+	{"en.sad.adj", "sad", "adjective", []lexicalMeaning{{"en.sad.state", "sad affect attributed to one bearer", "sad"}}},
+}
+
+type englishAttributionSpec struct {
+	sense, concept, lexeme string
+	indefiniteArticle      string
+}
+
+var englishAttributionSpecs = []englishAttributionSpec{
+	{sense: "sense:en.black.color", concept: "concept:black", lexeme: "lexeme:en.black.adj", indefiniteArticle: "a"},
+	{sense: "sense:en.red.color", concept: "concept:red", lexeme: "lexeme:en.red.adj", indefiniteArticle: "a"},
+	{sense: "sense:en.white.color", concept: "concept:white", lexeme: "lexeme:en.white.adj", indefiniteArticle: "a"},
+	{sense: "sense:en.blue.color", concept: "concept:blue", lexeme: "lexeme:en.blue.adj", indefiniteArticle: "a"},
+	{sense: "sense:en.green.color", concept: "concept:green", lexeme: "lexeme:en.green.adj", indefiniteArticle: "a"},
+	{sense: "sense:en.open.state", concept: "concept:open_state", lexeme: "lexeme:en.open.adj", indefiniteArticle: "an"},
+	{sense: "sense:en.sad.state", concept: "concept:sad", lexeme: "lexeme:en.sad.adj", indefiniteArticle: "a"},
+}
+
+func englishAttributionForSense(sense string) (englishAttributionSpec, bool) {
+	for _, spec := range englishAttributionSpecs {
+		if spec.sense == sense {
+			return spec, true
+		}
+	}
+	return englishAttributionSpec{}, false
+}
+
+func englishAttributionForConcept(concept string) (englishAttributionSpec, bool) {
+	for _, spec := range englishAttributionSpecs {
+		if spec.concept == concept {
+			return spec, true
+		}
+	}
+	return englishAttributionSpec{}, false
 }
 
 func identificationParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm {
@@ -78,7 +122,20 @@ func identificationParadigms(profile *features.LanguageFeatureProfile) []morph.P
 			Steps:      []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "en_identification_black_positive_form"}},
 		}},
 	}
-	return []morph.Paradigm{verb, adjective}
+	result := []morph.Paradigm{verb, adjective}
+	for _, entry := range identificationEntries[2:] {
+		paradigmID := "en_identification_" + entry.lemma + "_positive"
+		stemID := paradigmID + "_form"
+		result = append(result, morph.Paradigm{
+			SchemaVersion: morph.ParadigmSchemaVersion, ID: morph.ParadigmID(paradigmID),
+			Language: "en", ProfileVersion: profile.Version(), POS: "adjective",
+			PrincipalPartRequirements: []morph.PrincipalPartRequirement{{StemID: procedure.StemID(stemID), PartID: "positive_form", Required: true}},
+			Cells:                     []morph.ParadigmCell{{ID: "positive", Features: []features.FeatureValue{{Feature: "adjective_degree", State: features.StateKnown, Value: "positive"}}}},
+			Rules: []morph.CellRule{{CellID: "positive", ProcedureID: "procedure:" + paradigmID + ".positive", Provenance: englishAdjectiveDataSource,
+				Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: procedure.StemID(stemID)}}}},
+		})
+	}
+	return result
 }
 
 func identificationMorphRecords(lexeme lexicon.MorphLexeme) (morph.PrincipalParts, bool) {
@@ -87,6 +144,8 @@ func identificationMorphRecords(lexeme lexicon.MorphLexeme) (morph.PrincipalPart
 		return morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "third_person_singular_form", Form: "is"}, {ID: "third_person_plural_form", Form: "are"}}}, true
 	case "lexeme:en.black.adj":
 		return morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "positive_form", Form: "black"}}}, true
+	case "lexeme:en.red.adj", "lexeme:en.white.adj", "lexeme:en.blue.adj", "lexeme:en.green.adj", "lexeme:en.open.adj", "lexeme:en.sad.adj":
+		return morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "positive_form", Form: lexeme.Lemma}}}, true
 	default:
 		return morph.PrincipalParts{}, false
 	}

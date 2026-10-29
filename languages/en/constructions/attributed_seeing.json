@@ -5,22 +5,973 @@
     "id": "construction:en.attributed_seeing",
     "language": "en",
     "slot_specs": [
-      {"id":"modifier","position":0,"category":"AP","cardinality":{"minimum":1,"maximum":1},"optionality":"required","modifier_binding":{"target_slot":"subject","semantic_role":"bearer"}},
-      {"id":"subject","position":1,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required","argument_binding":{"semantic_role":"experiencer"}},
-      {"id":"verb","position":2,"category":"VP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"},
-      {"id":"object","position":3,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required","argument_binding":{"semantic_role":"stimulus"}}
+      {
+        "id": "modifier",
+        "position": 0,
+        "category": "AP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required",
+        "modifier_binding": {
+          "target_slot": "subject",
+          "semantic_role": "bearer"
+        }
+      },
+      {
+        "id": "subject",
+        "position": 1,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required",
+        "argument_binding": {
+          "semantic_role": "experiencer"
+        }
+      },
+      {
+        "id": "verb",
+        "position": 2,
+        "category": "VP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "object",
+        "position": 3,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required",
+        "argument_binding": {
+          "semantic_role": "stimulus"
+        }
+      }
     ],
     "constraints": [
-      {"id":"subject_verb_number","kind":"agreement","strength":"hard","controller_slot":"subject","target_slot":"verb","features":["number"]}
+      {
+        "id": "subject_verb_number",
+        "kind": "agreement",
+        "strength": "hard",
+        "controller_slot": "subject",
+        "target_slot": "verb",
+        "features": [
+          "number"
+        ]
+      }
     ],
-    "provenance":{"id":"golingua-en-attributed-seeing-327","uri":"https://github.com/clickbytes/golingua/issues/327","version":"2026-10-25","license":"internal","author":"Codex by owner delegation"}
+    "provenance": {
+      "id": "golingua-en-attributed-seeing-327",
+      "uri": "https://github.com/clickbytes/golingua/issues/327",
+      "version": "2026-10-25",
+      "license": "internal",
+      "author": "Codex by owner delegation"
+    }
   },
   "variants": [
-    {"id":"construction:en.attributed_seeing.svo","family_id":"construction:en.attributed_seeing","sequence":[{"kind":"terminal","terminal":"the"},{"kind":"slot","slot_id":"modifier"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"the"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"both","conditions":[{"kind":"feature_equals","slot_id":"verb","feature":"tense","value":"present"},{"kind":"feature_equals","slot_id":"subject","feature":"number","value":"singular"},{"kind":"feature_equals","slot_id":"object","feature":"number","value":"singular"}],"provenance":{"id":"golingua-en-attributed-seeing-327","uri":"https://github.com/clickbytes/golingua/issues/327","version":"2026-10-25","license":"internal","author":"Codex by owner delegation"}},
-    {"id":"construction:en.attributed_seeing.svo.indefinite_object","family_id":"construction:en.attributed_seeing","sequence":[{"kind":"terminal","terminal":"the"},{"kind":"slot","slot_id":"modifier"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"a"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"both","conditions":[{"kind":"feature_equals","slot_id":"verb","feature":"tense","value":"present"},{"kind":"feature_equals","slot_id":"subject","feature":"number","value":"singular"},{"kind":"feature_equals","slot_id":"object","feature":"number","value":"singular"}],"provenance":{"id":"golingua-en-attributed-seeing-327","uri":"https://github.com/clickbytes/golingua/issues/327","version":"2026-10-25","license":"internal","author":"Codex by owner delegation"}},
-    {"id":"construction:en.attributed_seeing.svo.indefinite_object_an","family_id":"construction:en.attributed_seeing","sequence":[{"kind":"terminal","terminal":"the"},{"kind":"slot","slot_id":"modifier"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"an"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"both","conditions":[{"kind":"feature_equals","slot_id":"verb","feature":"tense","value":"present"},{"kind":"feature_equals","slot_id":"subject","feature":"number","value":"singular"},{"kind":"feature_equals","slot_id":"object","feature":"number","value":"singular"}],"provenance":{"id":"golingua-en-attributed-seeing-327","uri":"https://github.com/clickbytes/golingua/issues/327","version":"2026-10-25","license":"internal","author":"Codex by owner delegation"}},
-    {"id":"construction:en.attributed_seeing.svo.indefinite_subject","family_id":"construction:en.attributed_seeing","sequence":[{"kind":"terminal","terminal":"a"},{"kind":"slot","slot_id":"modifier"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"the"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"both","conditions":[{"kind":"feature_equals","slot_id":"verb","feature":"tense","value":"present"},{"kind":"feature_equals","slot_id":"subject","feature":"number","value":"singular"},{"kind":"feature_equals","slot_id":"object","feature":"number","value":"singular"}],"provenance":{"id":"golingua-en-attributed-seeing-327","uri":"https://github.com/clickbytes/golingua/issues/327","version":"2026-10-25","license":"internal","author":"Codex by owner delegation"}},
-    {"id":"construction:en.attributed_seeing.svo.indefinite_subject_object","family_id":"construction:en.attributed_seeing","sequence":[{"kind":"terminal","terminal":"a"},{"kind":"slot","slot_id":"modifier"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"a"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"both","conditions":[{"kind":"feature_equals","slot_id":"verb","feature":"tense","value":"present"},{"kind":"feature_equals","slot_id":"subject","feature":"number","value":"singular"},{"kind":"feature_equals","slot_id":"object","feature":"number","value":"singular"}],"provenance":{"id":"golingua-en-attributed-seeing-327","uri":"https://github.com/clickbytes/golingua/issues/327","version":"2026-10-25","license":"internal","author":"Codex by owner delegation"}},
-    {"id":"construction:en.attributed_seeing.svo.indefinite_subject_a_object_an","family_id":"construction:en.attributed_seeing","sequence":[{"kind":"terminal","terminal":"a"},{"kind":"slot","slot_id":"modifier"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"an"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"both","conditions":[{"kind":"feature_equals","slot_id":"verb","feature":"tense","value":"present"},{"kind":"feature_equals","slot_id":"subject","feature":"number","value":"singular"},{"kind":"feature_equals","slot_id":"object","feature":"number","value":"singular"}],"provenance":{"id":"golingua-en-attributed-seeing-327","uri":"https://github.com/clickbytes/golingua/issues/327","version":"2026-10-25","license":"internal","author":"Codex by owner delegation"}}
+    {
+      "id": "construction:en.attributed_seeing.svo",
+      "family_id": "construction:en.attributed_seeing",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-attributed-seeing-327",
+        "uri": "https://github.com/clickbytes/golingua/issues/327",
+        "version": "2026-10-25",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attributed_seeing.svo.indefinite_object",
+      "family_id": "construction:en.attributed_seeing",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-attributed-seeing-327",
+        "uri": "https://github.com/clickbytes/golingua/issues/327",
+        "version": "2026-10-25",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attributed_seeing.svo.indefinite_object_an",
+      "family_id": "construction:en.attributed_seeing",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-attributed-seeing-327",
+        "uri": "https://github.com/clickbytes/golingua/issues/327",
+        "version": "2026-10-25",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attributed_seeing.svo.indefinite_subject",
+      "family_id": "construction:en.attributed_seeing",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-attributed-seeing-327",
+        "uri": "https://github.com/clickbytes/golingua/issues/327",
+        "version": "2026-10-25",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attributed_seeing.svo.indefinite_subject_object",
+      "family_id": "construction:en.attributed_seeing",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-attributed-seeing-327",
+        "uri": "https://github.com/clickbytes/golingua/issues/327",
+        "version": "2026-10-25",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attributed_seeing.svo.indefinite_subject_a_object_an",
+      "family_id": "construction:en.attributed_seeing",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-attributed-seeing-327",
+        "uri": "https://github.com/clickbytes/golingua/issues/327",
+        "version": "2026-10-25",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attributed_seeing.svo.indefinite_subject_an",
+      "family_id": "construction:en.attributed_seeing",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-attributed-seeing-327",
+        "uri": "https://github.com/clickbytes/golingua/issues/327",
+        "version": "2026-10-25",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attributed_seeing.svo.plural_subject",
+      "family_id": "construction:en.attributed_seeing",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "plural"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-attributed-seeing-plural-435",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attributed_seeing.svo.plural_subject.indefinite_object",
+      "family_id": "construction:en.attributed_seeing",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "plural"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-attributed-seeing-plural-435",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attributed_seeing.svo.plural_subject.indefinite_object_an",
+      "family_id": "construction:en.attributed_seeing",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "plural"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-attributed-seeing-plural-435",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attributed_seeing.svo.demonstrative_this",
+      "family_id": "construction:en.attributed_seeing",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "this"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-attributed-seeing-demonstratives-435",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attributed_seeing.svo.demonstrative_that",
+      "family_id": "construction:en.attributed_seeing",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "that"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-attributed-seeing-demonstratives-435",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attributed_seeing.svo.demonstrative_these",
+      "family_id": "construction:en.attributed_seeing",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "these"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "plural"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-attributed-seeing-demonstratives-435",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attributed_seeing.svo.demonstrative_those",
+      "family_id": "construction:en.attributed_seeing",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "those"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "plural"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-attributed-seeing-demonstratives-435",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    }
   ]
 }

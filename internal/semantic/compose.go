@@ -70,6 +70,7 @@ type ReferenceEvidence struct {
 	ReferentID  meaning.ReferentID
 	EvidenceID  string
 	Anchor      *meaning.DeicticAnchor
+	Unanchored  bool
 }
 
 // ImplicitRoleEvidence licenses one omitted optional argument from a complete
@@ -100,6 +101,7 @@ type CompositionInput struct {
 	Forest                   parser.Forest
 	Candidates               []parser.PhraseCandidate
 	Lattice                  analyzer.LexicalLattice
+	PhraseProfile            construction.PhraseProfile
 	SourceBytes              int
 	Lexicon                  *lexicon.Index
 	Valency                  *valency.Index
@@ -195,8 +197,9 @@ func Compose(input CompositionInput) (ComposeResult, error) {
 		}
 		resolved := reference.ReferentID != "" && reference.EvidenceID != ""
 		unresolved := reference.ReferentID == "" && reference.EvidenceID == "" && reference.Anchor != nil
-		if !resolved && !unresolved {
-			return ComposeResult{}, semanticError(status.OutcomeInvalid, "INVALID_REFERENCE_EVIDENCE", "references", "reference evidence requires both identity fields or an unresolved anchor")
+		unanchored := reference.ReferentID == "" && reference.EvidenceID == "" && reference.Anchor == nil && reference.Unanchored
+		if !resolved && !unresolved && !unanchored {
+			return ComposeResult{}, semanticError(status.OutcomeInvalid, "INVALID_REFERENCE_EVIDENCE", "references", "reference evidence requires identity fields, an unresolved anchor, or explicit absence of an anchor")
 		}
 		if reference.Anchor != nil {
 			anchorContext := meaning.RequestContext{
@@ -336,7 +339,7 @@ func validateCompositionInputs(input CompositionInput, sourceBytes int) error {
 			if !addText(string(alternative.PlanID), alternative.FamilyID.String(), string(alternative.VariantID), alternative.Permission.SenseID.String(), string(alternative.Permission.FrameID), alternative.DerivationID) {
 				return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", "forest", "nested parser text exceeds the semantic text budget")
 			}
-			nestedItems += len(alternative.Slots) + len(alternative.Unresolved)
+			nestedItems += len(alternative.Slots) + len(alternative.Unresolved) + len(alternative.NPPhraseGroups)
 			if err := checkInventory("forest"); err != nil {
 				return err
 			}
@@ -370,6 +373,46 @@ func validateCompositionInputs(input CompositionInput, sourceBytes int) error {
 					return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", fmt.Sprintf("forest.nodes[%d].alternatives[%d].slots[%d]", i, j, k), "nested parser metadata exceeds its text bound")
 				}
 			}
+			groupSlots := map[string]bool{}
+			groupCandidates := map[string]bool{}
+			for groupIndex, group := range alternative.NPPhraseGroups {
+				path := fmt.Sprintf("forest.nodes[%d].alternatives[%d].np_phrase_groups[%d]", i, j, groupIndex)
+				if !addText(group.ModifierSlotID, group.HeadSlotID, group.CompositeCandidateID, group.ModifierCandidateID, group.HeadCandidateID, group.DeterminerCandidateID) {
+					return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", path, "NP group identifiers exceed the semantic text budget")
+				}
+				if group.ModifierSlotID == "" || group.HeadSlotID == "" || group.CompositeCandidateID == "" || group.ModifierCandidateID == "" || group.HeadCandidateID == "" || group.TokenStart < 0 || group.TokenEnd <= group.TokenStart || group.TokenEnd > len(input.Lattice.Tokens) {
+					return semanticError(status.OutcomeInvalid, "INVALID_NP_GROUP_BINDING", path, "NP group must identify exact slots, lexical candidates, composite evidence, and a valid source range")
+				}
+				if groupSlots[group.ModifierSlotID] || groupSlots[group.HeadSlotID] || groupCandidates[group.ModifierCandidateID] || groupCandidates[group.HeadCandidateID] {
+					return semanticError(status.OutcomeInvalid, "OVERLAPPING_NP_GROUP_BINDING", path, "NP group slot and lexical candidate claims must be disjoint")
+				}
+				groupSlots[group.ModifierSlotID], groupSlots[group.HeadSlotID] = true, true
+				groupCandidates[group.ModifierCandidateID], groupCandidates[group.HeadCandidateID] = true, true
+				if group.DeterminerCandidateID != "" {
+					if groupCandidates[group.DeterminerCandidateID] {
+						return semanticError(status.OutcomeInvalid, "OVERLAPPING_NP_GROUP_BINDING", path, "determiner evidence is claimed by more than one NP group")
+					}
+					groupCandidates[group.DeterminerCandidateID] = true
+				}
+				modifierFound, headFound := false, false
+				for slotIndex, slot := range alternative.Slots {
+					if slot.SlotID == group.ModifierSlotID {
+						modifierFound = true
+						if len(slot.CandidateIDs) != 1 || slot.CandidateIDs[0] != group.ModifierCandidateID {
+							return semanticError(status.OutcomeInvalid, "NP_GROUP_MODIFIER_SLOT_MISMATCH", fmt.Sprintf("forest.nodes[%d].alternatives[%d].slots[%d]", i, j, slotIndex), "NP group modifier differs from the exact ordinary slot binding")
+						}
+					}
+					if slot.SlotID == group.HeadSlotID {
+						headFound = true
+						if len(slot.CandidateIDs) != 1 || slot.CandidateIDs[0] != group.HeadCandidateID {
+							return semanticError(status.OutcomeInvalid, "NP_GROUP_HEAD_SLOT_MISMATCH", fmt.Sprintf("forest.nodes[%d].alternatives[%d].slots[%d]", i, j, slotIndex), "NP group head differs from the exact ordinary slot binding")
+						}
+					}
+				}
+				if !modifierFound || !headFound {
+					return semanticError(status.OutcomeInvalid, "NP_GROUP_SLOT_BINDING_MISSING", path, "NP group must correspond to both ordinary AP and NP slot bindings")
+				}
+			}
 		}
 	}
 	for _, rootID := range input.Forest.Roots {
@@ -395,6 +438,124 @@ func validateCompositionInputs(input CompositionInput, sourceBytes int) error {
 		nestedItems += len(candidate.ReadingIDs) + len(candidate.SenseIDs) + len(candidate.Features)
 		if err := checkInventory("candidates"); err != nil {
 			return err
+		}
+		nestedItems += len(candidate.CompositeNPs)
+		if err := checkInventory("candidates.composite_nps"); err != nil {
+			return err
+		}
+		for compositeIndex, composite := range candidate.CompositeNPs {
+			path := fmt.Sprintf("candidates[%d].composite_nps[%d]", i, compositeIndex)
+			if !addText(composite.ID, composite.HeadCandidateID, composite.ModifierCandidateID, composite.DeterminerCandidateID,
+				string(composite.Plan.Plan.ID), composite.Plan.Plan.TemplateID, string(composite.Plan.Plan.Language), string(composite.Plan.Plan.Kind),
+				string(composite.Plan.Plan.Features.Language), string(composite.Plan.Plan.Features.ProfileVersion), string(composite.Plan.Plan.FrameID),
+				string(composite.Plan.Plan.GovernedCase.Feature), string(composite.Plan.Plan.GovernedCase.State), string(composite.Plan.Plan.GovernedCase.Value)) {
+				return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", path, "nested NP phrase text exceeds the semantic text budget")
+			}
+			if err := checkSpan(composite.Span, path+".span"); err != nil {
+				return err
+			}
+			if !composite.Outcome.Valid() {
+				return semanticError(status.OutcomeInvalid, "INVALID_NP_PHRASE_OUTCOME", path+".outcome", "composite NP outcome is invalid")
+			}
+			nestedItems += len(composite.EvidenceCandidateIDs) + len(composite.Plan.Plan.Inputs) + len(composite.Plan.Plan.Children) +
+				len(composite.Plan.Plan.Order) + len(composite.Plan.Plan.Agreements) + len(composite.Plan.Plan.Features.Values)
+			if composite.Plan.Plan.GovernedCase.Variable != nil {
+				nestedItems++
+			}
+			if err := checkInventory(path); err != nil {
+				return err
+			}
+			if composite.Plan.Plan.GovernedCase.Variable != nil && !addText(string(composite.Plan.Plan.GovernedCase.Variable.ID), string(composite.Plan.Plan.GovernedCase.Variable.Scope)) {
+				return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", path+".plan.governed_case.variable", "nested NP variable text exceeds the semantic text budget")
+			}
+			for _, evidenceID := range composite.EvidenceCandidateIDs {
+				if !addText(evidenceID) {
+					return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", path+".evidence_candidate_ids", "nested NP evidence text exceeds the semantic text budget")
+				}
+			}
+			for _, role := range composite.Plan.Plan.Order {
+				if !addText(role) {
+					return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", path+".plan.order", "nested NP order text exceeds the semantic text budget")
+				}
+			}
+			for inputIndex, phraseInput := range composite.Plan.Plan.Inputs {
+				if !addText(phraseInput.ID, phraseInput.Role, string(phraseInput.Kind), string(phraseInput.Features.Language), string(phraseInput.Features.ProfileVersion)) {
+					return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", fmt.Sprintf("%s.plan.inputs[%d]", path, inputIndex), "nested NP input text exceeds the semantic text budget")
+				}
+				nestedItems += len(phraseInput.Features.Values)
+				if err := checkInventory(path + ".plan.inputs"); err != nil {
+					return err
+				}
+				for _, value := range phraseInput.Features.Values {
+					variableID, variableScope := "", ""
+					if value.Variable != nil {
+						variableID, variableScope = string(value.Variable.ID), string(value.Variable.Scope)
+					}
+					if !addText(string(value.Feature), string(value.State), string(value.Value), variableID, variableScope) {
+						return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", path+".plan.inputs.features", "nested NP feature text exceeds the semantic text budget")
+					}
+				}
+			}
+			for _, child := range composite.Plan.Plan.Children {
+				if !addText(child.Role, string(child.PlanID)) {
+					return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", path+".plan.children", "nested NP child text exceeds the semantic text budget")
+				}
+			}
+			for _, agreement := range composite.Plan.Plan.Agreements {
+				if !addText(agreement.ControllerInput, agreement.TargetInput, string(agreement.Feature)) {
+					return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", path+".plan.agreements", "nested NP agreement text exceeds the semantic text budget")
+				}
+			}
+			for _, value := range composite.Plan.Plan.Features.Values {
+				variableID, variableScope := "", ""
+				if value.Variable != nil {
+					variableID, variableScope = string(value.Variable.ID), string(value.Variable.Scope)
+				}
+				if !addText(string(value.Feature), string(value.State), string(value.Value), variableID, variableScope) {
+					return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", path+".plan.features", "nested NP feature text exceeds the semantic text budget")
+				}
+			}
+			if composite.Determiner != nil {
+				determiner := composite.Determiner
+				if !addText(determiner.ID, determiner.Surface) {
+					return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", path+".determiner", "nested NP determiner text exceeds the semantic text budget")
+				}
+				if err := checkSpan(determiner.Span, path+".determiner.span"); err != nil {
+					return err
+				}
+				nestedItems += len(determiner.Features) + len(determiner.CompatibleAgreementGenders)
+				if determiner.DeterminerOnset != "" {
+					nestedItems++
+					if !addText(determiner.DeterminerOnset) {
+						return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", path+".determiner.onset", "nested NP determiner onset exceeds the semantic text budget")
+					}
+				}
+				if err := checkInventory(path + ".determiner"); err != nil {
+					return err
+				}
+				for feature, value := range determiner.Features {
+					if !addText(string(feature), string(value)) {
+						return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", path+".determiner.features", "nested NP determiner features exceed the semantic text budget")
+					}
+				}
+				for _, value := range determiner.CompatibleAgreementGenders {
+					if !addText(string(value)) {
+						return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", path+".determiner.compatible_agreement_genders", "nested NP determiner agreement text exceeds the semantic text budget")
+					}
+				}
+			}
+			nestedItems += len(composite.Diagnostics)
+			if err := checkInventory(path + ".diagnostics"); err != nil {
+				return err
+			}
+			for _, diagnostic := range composite.Diagnostics {
+				if err := diagnostic.Validate(); err != nil {
+					return semanticError(status.OutcomeInvalid, "INVALID_NP_PHRASE_DIAGNOSTIC", path+".diagnostics", err.Error())
+				}
+				if !addText(diagnostic.Code, diagnostic.Message, diagnostic.Path, string(diagnostic.Severity)) {
+					return semanticError(status.OutcomeResourceLimit, "RESOURCE_LIMIT", path+".diagnostics", "nested NP diagnostic text exceeds the semantic text budget")
+				}
+			}
 		}
 		for _, value := range candidate.ReadingIDs {
 			if !addText(value) {
@@ -694,9 +855,7 @@ func composeAlternative(result *ComposeResult, input CompositionInput, alternati
 		for _, combination := range combinations {
 			modifierCost := 0
 			if record, found := input.Constructions.ByID(alternative.FamilyID); found {
-				if _, declared := familyModifier(record.Family); declared {
-					modifierCost = 1
-				}
+				modifierCost = len(familyModifiers(record.Family))
 			}
 			*work += len(input.Operators) + 1 + modifierCost
 			if *work > budget.MaxExpansions {
@@ -858,17 +1017,19 @@ func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlter
 		event.TemporalFrame = attribute.TemporalFrame
 	}
 	nodes = append(nodes, event)
-	var modifierStateID meaning.NodeID
+	var modifierStateIDs []meaning.NodeID
 	if familyRecord, familyFound := input.Constructions.ByID(alternative.FamilyID); familyFound {
-		if _, declared := familyModifier(familyRecord.Family); declared {
-			modifier, modifierOutcome, modifierRecords, diagnostic := modifierCompositionFor(input, alternative, familyRecord.Family, candidates, phraseNodes, referentNodeByCandidate, nodes, attributes)
+		if len(familyModifiers(familyRecord.Family)) > 0 {
+			modifier, modifierOutcome, modifierRecords, diagnostics := modifierCompositionFor(input, alternative, familyRecord.Family, candidates, phraseNodes, referentNodeByCandidate, nodes, attributes)
 			if modifierOutcome != status.OutcomeOK {
 				failedRecords := append(append([]EvidenceRecord(nil), records...), modifierRecords...)
-				candidate := evidenceOnlyMeaningCandidate(id, modifierOutcome, failedRecords, diagnostic)
-				return candidate, failedRecords, nil, modifierOutcome, []status.Diagnostic{diagnostic}, nil
+				candidate := evidenceOnlyMeaningCandidate(id, modifierOutcome, failedRecords, diagnostics...)
+				return candidate, failedRecords, nil, modifierOutcome, diagnostics, nil
 			}
-			modifierStateID = modifier.state.ID
-			nodes = append(nodes, modifier.state)
+			for _, state := range modifier.states {
+				modifierStateIDs = append(modifierStateIDs, state.ID)
+				nodes = append(nodes, state)
+			}
 			records = append(records, modifierRecords...)
 		}
 	}
@@ -889,9 +1050,7 @@ func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlter
 		operatorNodes[0].Kind == meaning.KindScope && operatorNodes[0].Operator == meaning.OperatorNegation && operatorNodes[0].Target == "event" {
 		roots = []meaning.NodeID{operatorNodes[0].ID}
 	}
-	if modifierStateID != "" {
-		roots = append(roots, modifierStateID)
-	}
+	roots = append(roots, modifierStateIDs...)
 	graph, err := meaning.Build(roots, graphNodes, budget.Meaning)
 	if err != nil {
 		outcome, diagnostics := errorOutcome(err)
@@ -1469,11 +1628,18 @@ func semanticGraphID(graph meaning.Meaning, context meaning.RequestContext, alte
 	return "meaning:" + stableHash(context.ID+"\x00"+strings.Join(rootSignatures, "\x00")), nil
 }
 
-func evidenceOnlyMeaningCandidate(id string, outcome status.OutcomeKind, records []EvidenceRecord, diagnostic status.Diagnostic) MeaningCandidate {
-	if id == "" {
-		id = "evidence:" + stableHash(diagnostic.Code+"\x00"+diagnostic.Message)
+func evidenceOnlyMeaningCandidate(id string, outcome status.OutcomeKind, records []EvidenceRecord, diagnostics ...status.Diagnostic) MeaningCandidate {
+	if len(diagnostics) == 0 {
+		diagnostics = []status.Diagnostic{semanticDiagnostic("SEMANTIC_EVIDENCE_INCOMPLETE", "semantic evidence is incomplete", "evidence")}
 	}
-	trace := EvidenceTrace{AlternativeID: id, Outcome: outcome, Records: append([]EvidenceRecord(nil), records...), Diagnostics: []status.Diagnostic{diagnostic}}
+	if id == "" {
+		parts := make([]string, 0, len(diagnostics)*2)
+		for _, diagnostic := range diagnostics {
+			parts = append(parts, diagnostic.Code, diagnostic.Message)
+		}
+		id = "evidence:" + stableHash(strings.Join(parts, "\x00"))
+	}
+	trace := EvidenceTrace{AlternativeID: id, Outcome: outcome, Records: append([]EvidenceRecord(nil), records...), Diagnostics: append([]status.Diagnostic(nil), diagnostics...)}
 	return MeaningCandidate{ID: id, SemanticID: id, Status: outcome, Evidence: trace}
 }
 

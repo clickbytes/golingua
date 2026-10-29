@@ -244,18 +244,22 @@ func pluralOnlyNounParadigm(profile *features.LanguageFeatureProfile) morph.Para
 }
 
 func pluralOnlyNounRecords(lexemes []lexicon.MorphLexeme) ([]lexemeRecord, error) {
+	formsByLexeme := map[string][7]string{
+		"lexeme:pl.pieniadze.n": {"pieniądze", "pieniędzy", "pieniądzom", "pieniądze", "pieniędzmi", "pieniądzach", "pieniądze"},
+		"lexeme:pl.drzwi.n":     {"drzwi", "drzwi", "drzwiom", "drzwi", "drzwiami", "drzwiach", "drzwi"},
+	}
 	for _, lexeme := range lexemes {
-		if lexeme.ID.String() != "lexeme:pl.pieniadze.n" {
+		forms, exists := formsByLexeme[lexeme.ID.String()]
+		if !exists {
 			continue
 		}
 		parts := morph.PrincipalParts{LexemeID: lexeme.ID, Parts: make([]morph.PrincipalPart, 0, len(attestedNounCases))}
-		forms := [7]string{"pieniądze", "pieniędzy", "pieniądzom", "pieniądze", "pieniędzmi", "pieniądzach", "pieniądze"}
 		for index, grammaticalCase := range attestedNounCases {
 			parts.Parts = append(parts.Parts, morph.PrincipalPart{ID: morph.PrincipalPartID("pl_" + grammaticalCase), Form: forms[index]})
 		}
 		return []lexemeRecord{{Lexeme: lexeme, PrincipalParts: parts}}, nil
 	}
-	return nil, fmt.Errorf("Polish plural-only noun lexeme is missing")
+	return nil, fmt.Errorf("Polish plural-only noun lexemes are missing")
 }
 
 func attestedNounParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm {

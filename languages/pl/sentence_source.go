@@ -48,6 +48,10 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	if profile == nil || profile.Language() != "pl" || inverse == nil {
 		return nil, fmt.Errorf("Polish sentence source requires a Polish morphology seed")
 	}
+	phraseProfile, err := SentencePhraseProfile(profile)
+	if err != nil {
+		return nil, err
+	}
 	valencyIndex, err := CompileValency()
 	if err != nil {
 		return nil, err
@@ -96,6 +100,18 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	if err != nil {
 		return nil, err
 	}
+	redSense, err := ids.NewSenseID("pl.czerwony.red")
+	if err != nil {
+		return nil, err
+	}
+	attributionSenses := map[ids.SenseID]bool{attributionSense: true, redSense: true}
+	for _, spec := range polishAttributionSpecs {
+		sense, senseErr := ids.NewSenseID(strings.TrimPrefix(spec.sense, "sense:"))
+		if senseErr != nil {
+			return nil, senseErr
+		}
+		attributionSenses[sense] = true
+	}
 	eatingSense, err := ids.NewSenseID("pl.jesc.eat")
 	if err != nil {
 		return nil, err
@@ -128,8 +144,11 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	if err != nil {
 		return nil, err
 	}
-	supportedSenses := map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true, eatingSense: true, drinkingSense: true, givingSense: true, buyingSense: true, sellingSense: true}
+	supportedSenses := map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true, redSense: true, eatingSense: true, drinkingSense: true, givingSense: true, buyingSense: true, sellingSense: true}
 	for sense := range manipulationSenses {
+		supportedSenses[sense] = true
+	}
+	for sense := range attributionSenses {
 		supportedSenses[sense] = true
 	}
 	affectiveSenses := map[ids.SenseID]bool{}
@@ -195,9 +214,22 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 			{"degree": "positive", "number": "singular", "gender": "masculine_animal", "case": "nominative"},
 			{"degree": "positive", "number": "singular", "gender": "neuter", "case": "nominative"},
 		},
+		redSense: {
+			{"degree": "positive", "number": "singular", "gender": "feminine", "case": "nominative"},
+		},
 		eatingSense:   {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}, {"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"}},
 		drinkingSense: {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}, {"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"}},
 		givingSense:   {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}, {"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"}},
+	}
+	for sense := range attributionSenses {
+		predicateAlternatives[sense] = []map[features.FeatureID]features.FeatureValueID{
+			{"degree": "positive", "number": "singular", "gender": "masculine_animal", "case": "nominative"},
+			{"degree": "positive", "number": "singular", "gender": "masculine_inanimate", "case": "nominative"},
+			{"degree": "positive", "number": "singular", "gender": "neuter", "case": "nominative"},
+			{"degree": "positive", "number": "singular", "gender": "feminine", "case": "nominative"},
+			{"degree": "positive", "number": "plural", "gender": "masculine_personal", "case": "nominative"},
+			{"degree": "positive", "number": "plural", "gender": "non_masculine_personal", "case": "nominative"},
+		}
 	}
 	commerceFeatures := []map[features.FeatureID]features.FeatureValueID{
 		{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
@@ -232,14 +264,14 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "mood": "indicative", "voice": "active", "person": "third", "number": "plural"},
 	}
 	return &runtime.SourcePipeline{
-		Language: "pl", ClauseConnector: "i", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}}, AllowFinalPeriod: false,
+		Language: "pl", PhraseProfile: phraseProfile, ClauseConnector: "i", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}}, AllowFinalPeriod: false,
 		ScopedSourcePlan: scopedPlan, ScopedReadingPolicy: ScopedSourceReadingPolicy,
 		RelationPathPlan: relationPathPlan, RelationSourceReadingPolicy: RelationSourceReadingPolicy,
-		AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "od": true, "do": true, "nie": true, "to": true, "ten": true, "jest": true, "są": true, "kto": true, "kogo": true, "i": true, "się": true},
+		AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "od": true, "do": true, "nie": true, "to": true, "ten": true, "ta": true, "jest": true, "są": true, "te": true, "ci": true, "tamte": true, "tamci": true, "kto": true, "kogo": true, "i": true, "się": true, "tamten": true, "tamta": true, "tamto": true},
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
-		PhraseBuilder: polishWHGapPhraseBuilder{inner: polishPastSeeingPhraseBuilder{inner: polishIdentificationPhraseBuilder{inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
+		PhraseBuilder: polishWHGapPhraseBuilder{inner: polishPastSeeingPhraseBuilder{inner: polishIdentificationPhraseBuilder{phraseProfile: phraseProfile, featureProfile: profile, inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
 			Categories: map[lexicon.PartOfSpeech][]construction.SlotCategory{
 				"noun": {construction.CategoryNP}, "pronoun": {construction.CategoryNP}, "verb": {construction.CategoryVP}, "verb_reflexive": {construction.CategoryVP}, "adjective": {construction.CategoryAP},
 			},
@@ -248,7 +280,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		EvidenceBuilder: polishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), valency: valencyIndex, constructions: registry, base: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses:                     supportedSenses,
 			PredicateFeatureAlternativesBySense: predicateAlternatives,
-			AllowedUnlexicalizedTerminals:       map[string]bool{"na": true, "od": true, "do": true, "nie": true, "to": true, "ten": true, "jest": true, "są": true, "się": true},
+			AllowedUnlexicalizedTerminals:       map[string]bool{"na": true, "od": true, "do": true, "nie": true, "to": true, "ten": true, "ta": true, "jest": true, "są": true, "te": true, "ci": true, "tamte": true, "tamci": true, "się": true, "tamten": true, "tamta": true, "tamto": true},
 		}},
 	}, nil
 }
@@ -368,7 +400,7 @@ type polishSentenceEvidenceBuilder struct {
 
 func (builder polishSentenceEvidenceBuilder) Build(ctx context.Context, lattice analyzer.LexicalLattice, candidates []parser.PhraseCandidate, forest parser.Forest) (runtime.CompositionEvidence, error) {
 	evidence, err := builder.buildSyntax(ctx, lattice, candidates, forest)
-	if err != nil || !evidence.OperatorCoverageComplete {
+	if err != nil {
 		return evidence, err
 	}
 	attributes, err := polishNodeAttributes(builder.base.SupportedSenses, builder.lexicon, candidates, forest)
@@ -397,7 +429,7 @@ func (builder polishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, la
 			}
 			evidence.OperatorCoverageComplete = true
 		}
-		evidence = addPolishIdentificationReferences(evidence, candidates, forest)
+		evidence = addPolishIdentificationReferences(evidence, lattice, candidates, forest)
 		return addPolishPersonalEvidence(evidence, candidates, forest, builder.valency, builder.constructions), nil
 	}
 	evidence, err := builder.base.Build(ctx, lattice, candidates, forest)
@@ -453,7 +485,7 @@ func (builder polishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, la
 	if !evidence.OperatorCoverageComplete {
 		return evidence, nil
 	}
-	return addPolishIdentificationReferences(evidence, candidates, forest), nil
+	return addPolishIdentificationReferences(evidence, lattice, candidates, forest), nil
 }
 
 func polishWHQuestionCoverage(lattice analyzer.LexicalLattice, forest parser.Forest) bool {

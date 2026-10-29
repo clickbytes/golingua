@@ -66,6 +66,11 @@ var englishAttributedSeeingSource = provenance.SourceRef{
 	Version: "2026-10-25", License: "internal", Author: "Codex by owner delegation",
 }
 
+var englishAttributedSeeingDemonstrativesSource = provenance.SourceRef{
+	ID: "golingua-en-attributed-seeing-demonstratives-435", URI: "https://github.com/clickbytes/golingua/issues/435",
+	Version: "2026-10-28", License: "internal", Author: "Codex by owner delegation",
+}
+
 var englishNegativeArticleConstructionSource = provenance.SourceRef{
 	ID: "golingua-g10-18-negative-article-alternatives", URI: "https://github.com/clickbytes/golingua/issues/249#issuecomment-6359036189",
 	Version: "2026-10-23-g10-18", License: "internal", Author: "Codex by owner delegation",
@@ -99,6 +104,39 @@ type frameDeclaration struct {
 
 type constructionBindingDeclaration struct {
 	sense, frame, family, variant string
+}
+
+func englishAttributionConstructionBindings() []constructionBindingDeclaration {
+	bindings := make([]constructionBindingDeclaration, 0, len(englishAttributionSpecs)*2)
+	for _, spec := range englishAttributionSpecs {
+		sense := strings.TrimPrefix(spec.sense, "sense:")
+		for _, variant := range []string{"this", "that", "bare", "the", "the_plural", "a", "an"} {
+			bindings = append(bindings, constructionBindingDeclaration{
+				sense: sense, frame: sense + ".frame", family: "en.attribution", variant: "en.attribution." + variant,
+			})
+		}
+	}
+	for _, spec := range englishAttributionSpecs {
+		sense := strings.TrimPrefix(spec.sense, "sense:")
+		for _, variant := range []string{"these", "those"} {
+			bindings = append(bindings, constructionBindingDeclaration{
+				sense: sense, frame: sense + ".frame", family: "en.attribution", variant: "en.attribution." + variant,
+			})
+		}
+	}
+	return bindings
+}
+
+func englishAttributionFrames() []frameDeclaration {
+	frames := make([]frameDeclaration, 0, len(englishAttributionSpecs))
+	for _, spec := range englishAttributionSpecs {
+		sense := strings.TrimPrefix(spec.sense, "sense:")
+		frames = append(frames, frameDeclaration{
+			id: sense + ".frame", sense: sense, family: "en.attribution", roles: []meaning.Role{"bearer"},
+			arguments: []valency.ArgumentSlot{{ID: "bearer", Role: "bearer", Required: true, GrammaticalFunction: "subject"}},
+		})
+	}
+	return frames
 }
 
 var englishConstructionBindingDeclarations = append(append(append(append(append(append([]constructionBindingDeclaration{
@@ -186,9 +224,43 @@ var englishConstructionBindingDeclarations = append(append(append(append(append(
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_object"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_object_an"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.plural_subject"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.plural_subject.indefinite_object"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.plural_subject.indefinite_object_an"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.demonstrative_this"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.demonstrative_that"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.demonstrative_these"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.demonstrative_those"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_subject"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_subject_an"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_subject_object"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_subject_a_object_an"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo.this_object"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo.that_object"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo.these_object"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo.those_object"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo.indefinite_object"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo.indefinite_object_an"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo.plural_object"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo.plural_object.indefinite_subject"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo.plural_object.indefinite_subject_an"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo.indefinite_subject"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo.indefinite_subject_an"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo.indefinite_subject_object"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo.indefinite_subject_a_object_an"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_both", "en.attributed_seeing_both.svo"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_both", "en.attributed_seeing_both.svo.indefinite_object"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_both", "en.attributed_seeing_both.svo.indefinite_object_an"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_both", "en.attributed_seeing_both.svo.indefinite_subject"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_both", "en.attributed_seeing_both.svo.indefinite_subject_an"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_both", "en.attributed_seeing_both.svo.indefinite_subject_object"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_both", "en.attributed_seeing_both.svo.indefinite_subject_an_object"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_both", "en.attributed_seeing_both.svo.indefinite_subject_a_object_an"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_both", "en.attributed_seeing_both.svo.indefinite_subject_an_object_an"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_both", "en.attributed_seeing_both.svo.plural_both"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_both", "en.attributed_seeing_both.svo.plural_subject"},
+	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_both", "en.attributed_seeing_both.svo.plural_object"},
 	{"en.be.class_membership", "en.be.class_membership.frame", "en.identification", "en.identification.this"},
 	{"en.be.class_membership", "en.be.class_membership.frame", "en.identification", "en.identification.these"},
 	{"en.be.class_membership", "en.be.class_membership.frame", "en.identification", "en.identification.those"},
@@ -203,8 +275,6 @@ var englishConstructionBindingDeclarations = append(append(append(append(append(
 	{"en.be.class_membership", "en.be.class_membership.frame", "en.identification_negative", "en.identification_negative.this"},
 	{"en.be.class_membership", "en.be.class_membership.frame", "en.identification_negative", "en.identification_negative.that"},
 	{"en.be.class_membership", "en.be.class_membership.frame", "en.identification_negative", "en.identification_negative.it"},
-	{"en.black.color", "en.black.color.frame", "en.attribution", "en.attribution.this"},
-	{"en.black.color", "en.black.color.frame", "en.attribution", "en.attribution.that"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive_negative", "en.transitive_negative.svo"},
 	{"en.see.visual", "en.see.visual.transitive", "en.transitive_negative", "en.transitive_negative.svo.plural"},
 	{"en.liking.event", "en.liking.transitive", "en.transitive_negative", "en.transitive_negative.svo"},
@@ -607,9 +677,6 @@ var englishFrames = []frameDeclaration{
 	{"en.be.class_membership.frame", "en.be.class_membership", "en.identification", []meaning.Role{"member"}, []valency.ArgumentSlot{
 		{ID: "member", Role: "member", Required: true, GrammaticalFunction: "complement"},
 	}},
-	{"en.black.color.frame", "en.black.color", "en.attribution", []meaning.Role{"bearer"}, []valency.ArgumentSlot{
-		{ID: "bearer", Role: "bearer", Required: true, GrammaticalFunction: "subject"},
-	}},
 	{"en.see.visual.transitive", "en.see.visual", "en.transitive", []meaning.Role{"experiencer", "stimulus"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "experiencer", Required: true, GrammaticalFunction: "subject"},
 		{ID: "object", Role: "stimulus", Required: true, GrammaticalFunction: "object"},
@@ -704,7 +771,9 @@ func CompileValency() (*valency.Index, error) {
 	for _, sense := range document.Senses {
 		senses[sense.ID.String()] = struct{}{}
 	}
-	declarations := append(append(append([]frameDeclaration(nil), englishFrames...), englishCommerceOmissionFrames...), englishCommerceFullFrames...)
+	declarations := append(append([]frameDeclaration(nil), englishFrames...), englishAttributionFrames()...)
+	declarations = append(declarations, englishCommerceOmissionFrames...)
+	declarations = append(declarations, englishCommerceFullFrames...)
 	frames := make([]valency.ValencyFrame, 0, len(declarations))
 	for _, item := range declarations {
 		familyID, err := ids.NewConstructionID(item.family)
@@ -723,6 +792,16 @@ func CompileValency() (*valency.Index, error) {
 			SemanticRoles:    append([]meaning.Role(nil), item.roles...),
 			Arguments:        append([]valency.ArgumentSlot(nil), item.arguments...),
 			AllowedFamilyIDs: []ids.ConstructionID{familyID}, Provenance: englishValencySource,
+		}
+		if item.sense == "en.open.state" {
+			person, err := ids.NewConceptID("person")
+			if err != nil {
+				return nil, fmt.Errorf("English physical-open person exclusion: %w", err)
+			}
+			frame.SelectionalConstraints = []valency.SelectionalConstraint{{
+				ID: "physical_open_excludes_person", Role: "bearer", Strength: valency.ConstraintHard,
+				ExcludedConceptIDs: []ids.ConceptID{person},
+			}}
 		}
 		frame.SurfaceOmittedRoles = append([]meaning.Role(nil), englishCommerceOmittedRoles[item.id]...)
 		if item.id == "en.writing_message.message_only" || item.id == "en.writing_message.recipient_only" || item.id == "en.writing_message.full" {
@@ -756,7 +835,10 @@ func CompileValency() (*valency.Index, error) {
 			}
 			frame.SelectionalConstraints = []valency.SelectionalConstraint{{ID: "living_organism_excludes_meat", Role: "organism", Strength: valency.ConstraintHard, ExcludedConceptIDs: []ids.ConceptID{meat}}}
 		}
-		if item.id == "en.be.class_membership.frame" || item.id == "en.black.color.frame" {
+		if item.id == "en.be.class_membership.frame" || func() bool {
+			_, attributed := englishAttributionForSense("sense:" + strings.TrimSuffix(item.id, ".frame"))
+			return attributed
+		}() {
 			frame.Provenance = englishIdentificationSource
 		}
 		switch item.id {
@@ -790,11 +872,13 @@ func CompileValency() (*valency.Index, error) {
 					return nil, fmt.Errorf("English past seeing frame family: %w", err)
 				}
 				frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, pastFamilyID)
-				attributedFamilyID, err := ids.NewConstructionID("en.attributed_seeing")
-				if err != nil {
-					return nil, fmt.Errorf("English attributed seeing frame family: %w", err)
+				for _, family := range []string{"en.attributed_seeing", "en.attributed_seeing_object", "en.attributed_seeing_both"} {
+					attributedFamilyID, err := ids.NewConstructionID(family)
+					if err != nil {
+						return nil, fmt.Errorf("English attributed seeing frame family: %w", err)
+					}
+					frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, attributedFamilyID)
 				}
-				frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, attributedFamilyID)
 			}
 		case "en.liking.transitive", "en.watching.transitive":
 			negativeFamilyID, err := ids.NewConstructionID("en.transitive_negative")
@@ -822,7 +906,20 @@ func CompileValency() (*valency.Index, error) {
 		}
 		frames = append(frames, frame)
 	}
-	bindingDeclarations := append(append(append([]constructionBindingDeclaration(nil), englishConstructionBindingDeclarations...), englishGivingConstructionBindings()...), englishCommerceOmissionBindings()...)
+	bindingDeclarations := append([]constructionBindingDeclaration(nil), englishConstructionBindingDeclarations...)
+	for _, entry := range []struct{ article, numberSuffix string }{
+		{"this", ""}, {"that", ""},
+		{"these", ".plural_subject"}, {"those", ".plural_subject"},
+		{"these", ".plural_both"}, {"those", ".plural_both"},
+	} {
+		bindingDeclarations = append(bindingDeclarations, constructionBindingDeclaration{
+			sense: "en.see.visual", frame: "en.see.visual.transitive", family: "en.attributed_seeing_both",
+			variant: "en.attributed_seeing_both.svo.demonstrative_" + entry.article + entry.numberSuffix,
+		})
+	}
+	bindingDeclarations = append(bindingDeclarations, englishAttributionConstructionBindings()...)
+	bindingDeclarations = append(bindingDeclarations, englishGivingConstructionBindings()...)
+	bindingDeclarations = append(bindingDeclarations, englishCommerceOmissionBindings()...)
 	bindings := make([]valency.ConstructionBinding, 0, len(bindingDeclarations))
 	for _, item := range bindingDeclarations {
 		senseID, err := ids.NewSenseID(item.sense)
@@ -863,14 +960,20 @@ func englishConstructionBindingProvenance(item constructionBindingDeclaration) p
 	if item.sense == "en.see.visual" && item.family == "en.transitive_past" {
 		return englishSeeingPastConstructionSource
 	}
-	if item.family == "en.attributed_seeing" {
+	if item.family == "en.attributed_seeing" || item.family == "en.attributed_seeing_object" || item.family == "en.attributed_seeing_both" {
+		if item.family == "en.attributed_seeing" && strings.Contains(item.variant, ".demonstrative_") {
+			return englishAttributedSeeingDemonstrativesSource
+		}
 		return englishAttributedSeeingSource
 	}
 	if item.family == "en.identification_negative" {
 		return englishIdentificationNegationSource
 	}
-	if item.sense == "en.be.class_membership" || item.sense == "en.black.color" {
+	if item.sense == "en.be.class_membership" {
 		return englishIdentificationSource
+	}
+	if _, attributed := englishAttributionForSense("sense:" + item.sense); attributed {
+		return englishAdjectiveDataSource
 	}
 	if item.sense == "en.read.text" && item.family == "en.transitive_past" {
 		return englishReadingPastConstructionSource

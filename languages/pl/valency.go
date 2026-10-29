@@ -2,6 +2,7 @@ package pl
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/meaning"
@@ -65,6 +66,47 @@ type constructionBindingDeclaration struct {
 	sense, frame, family, variant string
 }
 
+func polishAttributionConstructionBindings() []constructionBindingDeclaration {
+	variants := []string{"ten", "ten.inanimate", "to", "ta", "tamten", "tamten.inanimate", "tamto", "tamta", "bare"}
+	bindings := make([]constructionBindingDeclaration, 0, len(polishAttributionSpecs)*len(variants))
+	for _, spec := range polishAttributionSpecs {
+		sense := strings.TrimPrefix(spec.sense, "sense:")
+		for _, variant := range variants {
+			bindings = append(bindings, constructionBindingDeclaration{
+				sense: sense, frame: sense + ".frame", family: "pl.attribution", variant: "pl.attribution." + variant,
+			})
+		}
+	}
+	for _, spec := range polishAttributionSpecs {
+		sense := strings.TrimPrefix(spec.sense, "sense:")
+		for _, variant := range []string{"te", "ci", "tamte", "tamci", "bare"} {
+			bindings = append(bindings, constructionBindingDeclaration{
+				sense: sense, frame: sense + ".plural.frame", family: "pl.attribution_plural", variant: "pl.attribution_plural." + variant,
+			})
+		}
+	}
+	return bindings
+}
+
+func polishAttributionFrames() []frameDeclaration {
+	frames := make([]frameDeclaration, 0, len(polishAttributionSpecs))
+	for _, spec := range polishAttributionSpecs {
+		sense := strings.TrimPrefix(spec.sense, "sense:")
+		frames = append(frames, frameDeclaration{
+			id: sense + ".frame", sense: sense, family: "pl.attribution", roles: []meaning.Role{"bearer"},
+			arguments: []valency.ArgumentSlot{{ID: "bearer", Role: "bearer", Required: true, GrammaticalFunction: "subject", Case: "nominative"}},
+		})
+	}
+	for _, spec := range polishAttributionSpecs {
+		sense := strings.TrimPrefix(spec.sense, "sense:")
+		frames = append(frames, frameDeclaration{
+			id: sense + ".plural.frame", sense: sense, family: "pl.attribution_plural", roles: []meaning.Role{"bearer"},
+			arguments: []valency.ArgumentSlot{{ID: "bearer", Role: "bearer", Required: true, GrammaticalFunction: "subject", Case: "nominative"}},
+		})
+	}
+	return frames
+}
+
 var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"pl.zasypiac.sleep", "pl.zasypiac.sleep.action", "pl.intransitive", "pl.intransitive.sv.period"},
 	{"pl.budzic_sie.wake", "pl.budzic_sie.wake.action", "pl.intransitive", "pl.intransitive.sv.reflexive.period"},
@@ -91,17 +133,78 @@ var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.question.wh", "pl.question.wh.object.fronted"},
 	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.question.wh", "pl.question.wh.subject.realize"},
 	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.question.wh", "pl.question.wh.object.realize"},
-	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing", "pl.attributed_seeing.svo"},
 	{"pl.byc.class_membership", "pl.byc.class_membership.frame", "pl.identification", "pl.identification.to"},
 	{"pl.byc.class_membership", "pl.byc.class_membership.frame", "pl.identification_negative", "pl.identification_negative.to"},
-	{"pl.czarny.black", "pl.czarny.black.frame", "pl.attribution", "pl.attribution.ten"},
-	{"pl.czarny.black", "pl.czarny.black.frame", "pl.attribution", "pl.attribution.to"},
 	{"pl.widziec.visual", "pl.widziec.visual.transitive_negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
 	{"pl.slyszec.auditory", "pl.slyszec.auditory.transitive_negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
 	{"pl.patrzec.directed", "pl.patrzec.directed.na", "pl.oblique_negative", "pl.oblique_negative.svo"},
 	{"pl.lubic.like", "pl.lubic.like.negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
 	{"pl.ogladac.view", "pl.ogladac.view.negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
 	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.transitive", "pl.transitive.svo"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing", "pl.attributed_seeing.svo"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing", "pl.attributed_seeing.svo.ten"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing", "pl.attributed_seeing.svo.tamten"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing", "pl.attributed_seeing.svo.ta"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing", "pl.attributed_seeing.svo.tamta"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing", "pl.attributed_seeing.svo.to"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing", "pl.attributed_seeing.svo.tamto"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object", "pl.attributed_seeing_object.svo"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object", "pl.attributed_seeing_object.svo.masculine_animal.tego"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object", "pl.attributed_seeing_object.svo.masculine_animal.tamtego"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object", "pl.attributed_seeing_object.svo.masculine_inanimate.ten"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object", "pl.attributed_seeing_object.svo.masculine_inanimate.tamten"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object", "pl.attributed_seeing_object.svo.masculine_personal.tego"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object", "pl.attributed_seeing_object.svo.masculine_personal.tamtego"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object", "pl.attributed_seeing_object.svo.feminine.te_acc"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object", "pl.attributed_seeing_object.svo.feminine.tamta_acc"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object", "pl.attributed_seeing_object.svo.neuter.to"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object", "pl.attributed_seeing_object.svo.neuter.tamto"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object", "pl.attributed_seeing_object.svo.plural_lexical"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object", "pl.attributed_seeing_object.svo.plural_lexical.te"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object", "pl.attributed_seeing_object.svo.plural_lexical.tamte"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both", "pl.attributed_seeing_both.svo"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both", "pl.attributed_seeing_both.svo.object_plural_lexical"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_plural", "pl.attributed_seeing_plural.svo.masculine_personal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_plural", "pl.attributed_seeing_plural.svo.masculine_animal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_plural", "pl.attributed_seeing_plural.svo.masculine_inanimate"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_plural", "pl.attributed_seeing_plural.svo.feminine"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_plural", "pl.attributed_seeing_plural.svo.neuter"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_plural", "pl.attributed_seeing_plural.svo.masculine_personal.ci"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_plural", "pl.attributed_seeing_plural.svo.masculine_personal.tamci"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_plural", "pl.attributed_seeing_plural.svo.non_masculine_personal.te"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_plural", "pl.attributed_seeing_plural.svo.non_masculine_personal.tamte"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object_plural", "pl.attributed_seeing_object_plural.svo.masculine_personal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object_plural", "pl.attributed_seeing_object_plural.svo.non_masculine_personal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object_plural", "pl.attributed_seeing_object_plural.svo.masculine_personal.ci"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object_plural", "pl.attributed_seeing_object_plural.svo.masculine_personal.tamci"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object_plural", "pl.attributed_seeing_object_plural.svo.non_masculine_personal.te"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object_plural", "pl.attributed_seeing_object_plural.svo.non_masculine_personal.tamte"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object_plural", "pl.attributed_seeing_object_plural.svo.masculine_personal.tych"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_object_plural", "pl.attributed_seeing_object_plural.svo.masculine_personal.tamtych"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.many.many.masculine_personal.masculine_personal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.many.many.masculine_personal.non_masculine_personal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.many.many.non_masculine_personal.masculine_personal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.many.many.non_masculine_personal.non_masculine_personal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.many.one.masculine_personal.masculine_personal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.many.one.masculine_personal.masculine_animal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.many.one.masculine_personal.masculine_inanimate"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.many.one.masculine_personal.feminine"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.many.one.masculine_personal.neuter"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.many.one.non_masculine_personal.masculine_personal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.many.one.non_masculine_personal.masculine_animal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.many.one.non_masculine_personal.masculine_inanimate"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.many.one.non_masculine_personal.feminine"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.many.one.non_masculine_personal.neuter"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.one.many.masculine_personal.masculine_personal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.one.many.masculine_personal.non_masculine_personal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.one.many.masculine_animal.masculine_personal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.one.many.masculine_animal.non_masculine_personal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.one.many.masculine_inanimate.masculine_personal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.one.many.masculine_inanimate.non_masculine_personal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.one.many.feminine.masculine_personal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.one.many.feminine.non_masculine_personal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.one.many.neuter.masculine_personal"},
+	{"pl.widziec.visual", "pl.widziec.visual.transitive", "pl.attributed_seeing_both_plural", "pl.attributed_seeing_both_plural.svo.one.many.neuter.non_masculine_personal"},
 	{"pl.slyszec.auditory", "pl.slyszec.auditory.transitive", "pl.transitive", "pl.transitive.svo"},
 	{"pl.dostac.receive", "pl.dostac.receive.transitive", "pl.transitive", "pl.transitive.svo"},
 	{"pl.czytac.interpret", "pl.czytac.interpret.frame", "pl.transitive", "pl.transitive.svo"},
@@ -138,9 +241,6 @@ var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
 var polishFrames = []frameDeclaration{
 	{"pl.byc.class_membership.frame", "pl.byc.class_membership", "pl.identification", []meaning.Role{"member"}, []valency.ArgumentSlot{
 		{ID: "member", Role: "member", Required: true, GrammaticalFunction: "complement", Case: "nominative"},
-	}},
-	{"pl.czarny.black.frame", "pl.czarny.black", "pl.attribution", []meaning.Role{"bearer"}, []valency.ArgumentSlot{
-		{ID: "bearer", Role: "bearer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 	}},
 	{"pl.widziec.visual.transitive", "pl.widziec.visual", "pl.transitive", []meaning.Role{"experiencer", "stimulus"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "experiencer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
@@ -230,7 +330,8 @@ func CompileValency() (*valency.Index, error) {
 	for _, sense := range document.Senses {
 		senses[sense.ID.String()] = struct{}{}
 	}
-	declarations := append(append([]frameDeclaration(nil), polishFrames...), polishMotionFrames...)
+	declarations := append(append([]frameDeclaration(nil), polishFrames...), polishAttributionFrames()...)
+	declarations = append(declarations, polishMotionFrames...)
 	declarations = append(declarations, physicalActionFrames...)
 	declarations = append(declarations, activityActionFrames...)
 	declarations = append(declarations, healthRoutineActionFrames...)
@@ -270,6 +371,16 @@ func CompileValency() (*valency.Index, error) {
 			SemanticRoles:    append([]meaning.Role(nil), item.roles...),
 			Arguments:        append([]valency.ArgumentSlot(nil), item.arguments...),
 			AllowedFamilyIDs: []ids.ConstructionID{familyID}, Provenance: polishValencySource,
+		}
+		if item.sense == "pl.otwarty.open" {
+			person, err := ids.NewConceptID("person")
+			if err != nil {
+				return nil, fmt.Errorf("Polish physical-open person exclusion: %w", err)
+			}
+			frame.SelectionalConstraints = []valency.SelectionalConstraint{{
+				ID: "physical_open_excludes_person", Role: "bearer", Strength: valency.ConstraintHard,
+				ExcludedConceptIDs: []ids.ConceptID{person},
+			}}
 		}
 		if item.id == "pl.pisac.write.message_only" || item.id == "pl.pisac.write.recipient_only" || item.id == "pl.pisac.write.full" {
 			message, err := ids.NewConceptID("message")
@@ -312,7 +423,13 @@ func CompileValency() (*valency.Index, error) {
 				frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, personalFamilyID)
 			}
 		}
-		if item.id == "pl.byc.class_membership.frame" || item.id == "pl.czarny.black.frame" {
+		if item.id == "pl.byc.class_membership.frame" || strings.HasPrefix(item.id, "pl.") && strings.HasSuffix(item.id, ".frame") && func() bool {
+			_, attributed := polishAttributionForSense("sense:" + strings.TrimSuffix(item.id, ".frame"))
+			return attributed
+		}() {
+			frame.Provenance = polishIdentificationSource
+		}
+		if strings.HasSuffix(item.id, ".plural.frame") {
 			frame.Provenance = polishIdentificationSource
 		}
 		switch item.id {
@@ -323,11 +440,13 @@ func CompileValency() (*valency.Index, error) {
 			}
 			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
 		case "pl.widziec.visual.transitive":
-			attributedFamilyID, err := ids.NewConstructionID("pl.attributed_seeing")
-			if err != nil {
-				return nil, fmt.Errorf("Polish attributed seeing frame family: %w", err)
+			for _, family := range []string{"pl.attributed_seeing", "pl.attributed_seeing_object", "pl.attributed_seeing_both", "pl.attributed_seeing_plural", "pl.attributed_seeing_object_plural", "pl.attributed_seeing_both_plural"} {
+				attributedFamilyID, err := ids.NewConstructionID(family)
+				if err != nil {
+					return nil, fmt.Errorf("Polish attributed seeing frame family: %w", err)
+				}
+				frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, attributedFamilyID)
 			}
-			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, attributedFamilyID)
 			questionFamilyID, err := ids.NewConstructionID("pl.question.wh")
 			if err != nil {
 				return nil, fmt.Errorf("Polish WH question family: %w", err)
@@ -348,7 +467,49 @@ func CompileValency() (*valency.Index, error) {
 		}
 		frames = append(frames, frame)
 	}
-	bindingDeclarations := append(append(append(append([]constructionBindingDeclaration(nil), polishConstructionBindingDeclarations...), polishPersonalConstructionBindings()...), polishCommerceOmissionBindings()...), polishCommerceFullPurchaseBindings()...)
+	bindingDeclarations := append([]constructionBindingDeclaration(nil), polishConstructionBindingDeclarations...)
+	for _, base := range []string{"pl.attributed_seeing_both.svo", "pl.attributed_seeing_both.svo.object_plural_lexical"} {
+		for _, determiner := range []struct {
+			gender string
+			forms  [2]string
+		}{
+			{"masculine_animal", [2]string{"ten", "tamten"}},
+			{"masculine_inanimate", [2]string{"ten", "tamten"}},
+			{"masculine_personal", [2]string{"ten", "tamten"}},
+			{"feminine", [2]string{"ta", "tamta"}},
+			{"neuter", [2]string{"to", "tamto"}},
+		} {
+			for _, form := range determiner.forms {
+				bindingDeclarations = append(bindingDeclarations, constructionBindingDeclaration{
+					sense: "pl.widziec.visual", frame: "pl.widziec.visual.transitive", family: "pl.attributed_seeing_both",
+					variant: base + "." + determiner.gender + "." + form,
+				})
+			}
+		}
+	}
+	for _, item := range polishConstructionBindingDeclarations {
+		if item.family != "pl.attributed_seeing_both_plural" || !strings.Contains(item.variant, ".svo.many.") {
+			continue
+		}
+		parts := strings.Split(strings.TrimPrefix(item.variant, "pl.attributed_seeing_both_plural.svo."), ".")
+		if len(parts) != 4 {
+			continue
+		}
+		forms := []string{"te", "tamte"}
+		if parts[2] == "masculine_personal" {
+			forms = []string{"ci", "tamci"}
+		}
+		for _, form := range forms {
+			bindingDeclarations = append(bindingDeclarations, constructionBindingDeclaration{
+				sense: "pl.widziec.visual", frame: "pl.widziec.visual.transitive", family: "pl.attributed_seeing_both_plural",
+				variant: item.variant + "." + form,
+			})
+		}
+	}
+	bindingDeclarations = append(bindingDeclarations, polishAttributionConstructionBindings()...)
+	bindingDeclarations = append(bindingDeclarations, polishPersonalConstructionBindings()...)
+	bindingDeclarations = append(bindingDeclarations, polishCommerceOmissionBindings()...)
+	bindingDeclarations = append(bindingDeclarations, polishCommerceFullPurchaseBindings()...)
 	bindings := make([]valency.ConstructionBinding, 0, len(bindingDeclarations))
 	for _, item := range bindingDeclarations {
 		senseID, err := ids.NewSenseID(item.sense)
@@ -382,14 +543,17 @@ func polishConstructionBindingProvenance(item constructionBindingDeclaration) pr
 	if item.family == "pl.transitive_personal_explicit" {
 		return polishPersonalExplicitConstructionSource
 	}
-	if item.family == "pl.attributed_seeing" {
+	if item.family == "pl.attributed_seeing" || item.family == "pl.attributed_seeing_object" || item.family == "pl.attributed_seeing_both" {
 		return polishAttributedSeeingSource
 	}
 	if item.family == "pl.identification_negative" {
 		return polishIdentificationNegationSource
 	}
-	if item.sense == "pl.byc.class_membership" || item.sense == "pl.czarny.black" {
+	if item.sense == "pl.byc.class_membership" {
 		return polishIdentificationSource
+	}
+	if _, attributed := polishAttributionForSense("sense:" + item.sense); attributed {
+		return polishPositiveAdjectiveSource
 	}
 	if item.sense == "pl.czytac.interpret" {
 		return polishReadingConstructionSource

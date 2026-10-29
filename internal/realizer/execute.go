@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/clickbytes/golingua/internal/core"
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/ids"
+	"github.com/clickbytes/golingua/internal/lexicon"
 	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/morph"
 	"github.com/clickbytes/golingua/internal/procedure"
@@ -71,6 +73,52 @@ type SlotRequest struct {
 	// CaseFeature names the explicit morphology feature used to realize a
 	// licensed case label, if the family or frame declares one.
 	CaseFeature features.FeatureID
+	// NP carries a typed phrase plan and exact child execution requests when
+	// this slot is a licensed noun phrase. The current linearizer still uses
+	// the outer construction sequence; this plan is retained for the next NP
+	// execution stage and does not alter surface output.
+	NP *NPExecutionRequest
+}
+
+// NPExecutionRequest is a compiled, language-local NP plan tied to the exact
+// lexical head and optional modifier selected for one Meaning referent.
+type NPExecutionRequest struct {
+	Plan                  construction.CompiledPhrasePlan `json:"plan"`
+	ProfileVersion        string                          `json:"profile_version"`
+	VariantID             construction.VariantID          `json:"variant_id"`
+	HeadSlotID            string                          `json:"head_slot_id"`
+	HeadSequenceIndex     int                             `json:"head_sequence_index"`
+	Head                  NPChildExecutionRequest         `json:"head"`
+	ModifierSlotID        string                          `json:"modifier_slot_id,omitempty"`
+	ModifierSequenceIndex int                             `json:"modifier_sequence_index"`
+	Modifier              *NPChildExecutionRequest        `json:"modifier,omitempty"`
+	Determiner            *NPDeterminerExecutionRequest   `json:"determiner,omitempty"`
+	// Bare records that the selected outer variant has no determiner terminal.
+	// It is a construction choice, not an inferred semantic feature.
+	Bare bool `json:"bare"`
+}
+
+// NPChildExecutionRequest preserves the exact target lexical and morphology
+// choice for one phrase-plan input.
+type NPChildExecutionRequest struct {
+	InputID        string                 `json:"input_id"`
+	Role           string                 `json:"role"`
+	NodeID         meaning.NodeID         `json:"node_id"`
+	Candidate      TargetCandidate        `json:"candidate"`
+	PrincipalParts morph.PrincipalParts   `json:"principal_parts"`
+	Features       features.FeatureBundle `json:"features"`
+	CaseFeature    features.FeatureID     `json:"case_feature,omitempty"`
+	Assumptions    []FieldAssumption      `json:"assumptions,omitempty"`
+}
+
+// NPDeterminerExecutionRequest links a terminal licensed by the selected
+// outer construction variant to the local NP plan.
+type NPDeterminerExecutionRequest struct {
+	InputID       string                 `json:"input_id"`
+	Surface       string                 `json:"surface"`
+	VariantID     construction.VariantID `json:"variant_id"`
+	SequenceIndex int                    `json:"sequence_index"`
+	Features      features.FeatureBundle `json:"features"`
 }
 
 // ExecuteInput contains one validated plan, its source Meaning, the exact
@@ -82,6 +130,8 @@ type ExecuteInput struct {
 	Core           *core.ConceptGraph
 	Family         construction.ConstructionFamily
 	Frame          valency.ValencyFrame
+	FeatureProfile *features.LanguageFeatureProfile
+	PhraseProfile  construction.PhraseProfile
 	Slots          map[string]SlotRequest
 	// InformationStructure carries explicit caller evidence for variant
 	// information-structure conditions, keyed by semantic role.
@@ -113,7 +163,43 @@ type ExecuteResult struct {
 	Outcome     status.OutcomeKind              `json:"outcome"`
 	Family      construction.ConstructionFamily `json:"family"`
 	Slots       []SlotForm                      `json:"slots"`
+	NPForms     []NPForm                        `json:"np_forms,omitempty"`
 	Diagnostics []status.Diagnostic             `json:"diagnostics,omitempty"`
+}
+
+// NPForm is a prepared phrase in template order. It retains every outer
+// sequence position claimed by the NP for a future linearizer integration.
+type NPForm struct {
+	SlotID            string                          `json:"slot_id"`
+	HeadNodeID        meaning.NodeID                  `json:"head_node_id"`
+	VariantID         construction.VariantID          `json:"variant_id"`
+	VariantProvenance provenance.SourceRef            `json:"variant_provenance"`
+	Plan              construction.CompiledPhrasePlan `json:"plan"`
+	// DeterminerOnset is evidence from the exact first lexical child selected
+	// during execution. Empty means that onset is unknown.
+	DeterminerOnset      string         `json:"determiner_onset,omitempty"`
+	Parts                []NPFormPart   `json:"parts"`
+	OuterSequenceIndexes []int          `json:"outer_sequence_indexes"`
+	OuterSlotIDs         []string       `json:"outer_slot_ids"`
+	OuterTokens          []NPOuterToken `json:"outer_tokens"`
+}
+
+// NPOuterToken identifies one exact outer sequence token that belongs to this
+// phrase. SlotIDs are empty for terminals.
+type NPOuterToken struct {
+	SequenceIndex int    `json:"sequence_index"`
+	SlotID        string `json:"slot_id,omitempty"`
+	Terminal      string `json:"terminal,omitempty"`
+}
+
+// NPFormPart is one ordered child form or one variant terminal.
+type NPFormPart struct {
+	Role               string                       `json:"role"`
+	InputID            string                       `json:"input_id"`
+	Kind               construction.PhraseInputKind `json:"kind"`
+	Surface            string                       `json:"surface"`
+	SlotForm           *SlotForm                    `json:"slot_form,omitempty"`
+	TerminalProvenance provenance.SourceRef         `json:"terminal_provenance,omitempty"`
 }
 
 // ExecuteError reports invalid setup or a controlled refusal with a typed,
@@ -181,6 +267,20 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 	}
 	if err := input.Family.Validate(); err != nil {
 		return ExecuteResult{}, executeWrapError(err)
+	}
+	for _, slot := range input.Family.SlotSpecs {
+		if slot.ModifierBinding == nil {
+			continue
+		}
+		_, outcome := FindModifierOutcome(input.SourceMeaning, plan.NodeID, input.Family, slot.ID)
+		if outcome == status.OutcomeOK {
+			continue
+		}
+		code := "MODIFIER_STATE_UNAVAILABLE"
+		if outcome == status.OutcomeAmbiguous {
+			code = "MODIFIER_STATE_AMBIGUOUS"
+		}
+		return ExecuteResult{}, executeError(outcome, code, "source.meaning.modifiers."+slot.ID, "modifier slot does not have exactly one state linked to its exact NP referent")
 	}
 	if !CoversLexicalMeaning(input.SourceMeaning, plan.NodeID, input.Family) {
 		return ExecuteResult{}, executeError(status.OutcomeUnsupported, "MEANING_NOT_COVERED_BY_FAMILY", "source.meaning", "selected construction does not cover every lexical node in the source Meaning")
@@ -351,9 +451,13 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 		var sourcePath []meaning.NodeID
 		var sourceNode meaning.Node
 		if slot.ModifierBinding != nil {
-			modifier, ok := FindModifier(input.SourceMeaning, plan.NodeID, input.Family, slot.ID)
-			if !ok {
-				return ExecuteResult{}, executeError(status.OutcomeUnsupported, "MODIFIER_STATE_UNAVAILABLE", "meaning."+string(plan.NodeID), "declared modifier slot has no unique linked root state")
+			modifier, outcome := FindModifierOutcome(input.SourceMeaning, plan.NodeID, input.Family, slot.ID)
+			if outcome != status.OutcomeOK {
+				code := "MODIFIER_STATE_UNAVAILABLE"
+				if outcome == status.OutcomeAmbiguous {
+					code = "MODIFIER_STATE_AMBIGUOUS"
+				}
+				return ExecuteResult{}, executeError(outcome, code, "source.meaning.modifiers."+slot.ID, "declared modifier slot has no unique linked root state")
 			}
 			modifierConceptID, parseErr := ids.ParseConceptID(string(modifier.Concept))
 			if parseErr != nil {
@@ -443,10 +547,598 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 			Trace: append([]morph.GenerationTraceStep(nil), generation.Trace...), Provenance: req.Candidate.TransferBinding.Provenance,
 		})
 	}
+	npForms, err := prepareNPForms(input, result, requests, slotByID, budget)
+	if err != nil {
+		return ExecuteResult{}, err
+	}
+	result.NPForms = npForms
 	if len(result.Slots) == 0 {
 		return ExecuteResult{}, executeError(status.OutcomeIncomplete, "NO_GENERATED_SLOTS", "slots", "no required or explicitly supplied optional slot produced a surface form")
 	}
 	return result, nil
+}
+
+func prepareNPForms(input ExecuteInput, result ExecuteResult, requests map[string]SlotRequest, familySlots map[string]construction.SlotSpec, budget ExecuteBudget) ([]NPForm, error) {
+	ids := make([]string, 0)
+	for slotID, request := range requests {
+		if request.NP != nil {
+			ids = append(ids, slotID)
+		}
+	}
+	if len(ids) > budget.MaxSlots {
+		return nil, executeLimit("np_forms", len(ids), budget.MaxSlots)
+	}
+	sort.Slice(ids, func(i, j int) bool {
+		left, right := requestNPHeadIndex(requests[ids[i]]), requestNPHeadIndex(requests[ids[j]])
+		if left != right {
+			return left < right
+		}
+		return ids[i] < ids[j]
+	})
+	formsBySlot := make(map[string]SlotForm, len(result.Slots))
+	for _, form := range result.Slots {
+		if _, exists := formsBySlot[form.SlotID]; exists {
+			return nil, executeError(status.OutcomeInvalid, "DUPLICATE_GENERATED_SLOT_FORM", "slots."+form.SlotID, "one outer slot generated more than one form")
+		}
+		formsBySlot[form.SlotID] = form
+	}
+	claimedIndexes := make(map[int]string)
+	claimedSlots := make(map[string]string)
+	forms := make([]NPForm, 0, len(ids))
+	retainedTrace, retainedText := 0, 0
+	for _, headSlotID := range ids {
+		request := requests[headSlotID].NP
+		if err := validateNPExecutionRequest(input, headSlotID, request, requests, familySlots); err != nil {
+			return nil, err
+		}
+		form, err := buildNPForm(input, headSlotID, request, formsBySlot, requests)
+		if err != nil {
+			return nil, err
+		}
+		for _, part := range form.Parts {
+			retainedText += len(part.Surface)
+			if part.SlotForm != nil {
+				retainedTrace += len(part.SlotForm.Trace)
+			}
+			if retainedText > budget.MaxTextBytes {
+				return nil, executeLimit("np_form_text_bytes", retainedText, budget.MaxTextBytes)
+			}
+			if retainedTrace > budget.MaxTraceSteps {
+				return nil, executeLimit("np_form_trace_steps", retainedTrace, budget.MaxTraceSteps)
+			}
+		}
+		for i, index := range form.OuterSequenceIndexes {
+			if previous, exists := claimedIndexes[index]; exists {
+				return nil, executeError(status.OutcomeInvalid, "NP_OUTER_SEQUENCE_POSITION_REUSED", "np_forms."+headSlotID, "an outer sequence position is claimed by multiple NPs: "+previous)
+			}
+			claimedIndexes[index] = headSlotID
+			if i < len(form.OuterSlotIDs) && form.OuterSlotIDs[i] != "" {
+				slotID := form.OuterSlotIDs[i]
+				if previous, exists := claimedSlots[slotID]; exists {
+					return nil, executeError(status.OutcomeInvalid, "NP_OUTER_SLOT_REUSED", "np_forms."+headSlotID, "an outer slot is claimed by multiple NPs: "+previous)
+				}
+				claimedSlots[slotID] = headSlotID
+			}
+		}
+		forms = append(forms, form)
+	}
+	return forms, nil
+}
+
+func requestNPHeadIndex(request SlotRequest) int {
+	if request.NP == nil {
+		return -1
+	}
+	return request.NP.HeadSequenceIndex
+}
+
+func validateNPExecutionRequest(input ExecuteInput, headSlotID string, request *NPExecutionRequest, requests map[string]SlotRequest, familySlots map[string]construction.SlotSpec) error {
+	path := "slots." + headSlotID + ".np"
+	if request == nil || input.FeatureProfile == nil || input.PhraseProfile.Language != input.Plan.Language || input.FeatureProfile.Language() != input.Plan.Language || input.PhraseProfile.Version == "" || request.ProfileVersion != input.PhraseProfile.Version {
+		return executeError(status.OutcomeIncomplete, "NP_PROFILE_UNAVAILABLE", path+".profile", "NP execution requires the exact target feature and phrase profiles")
+	}
+	if err := construction.ValidatePhraseProfile(input.PhraseProfile, input.FeatureProfile); err != nil {
+		return executeWrapError(err)
+	}
+	headSlot, exists := familySlots[headSlotID]
+	if !exists || headSlot.Category != construction.CategoryNP || request.HeadSlotID != headSlotID || request.Head.Role != "head" || request.Head.InputID != "head-input" {
+		return executeError(status.OutcomeInvalid, "NP_HEAD_SLOT_MISMATCH", path+".head", "NP request head identity must match its exact outer NP slot")
+	}
+	boundModifierCount := 0
+	for _, spec := range input.Family.SlotSpecs {
+		if spec.ModifierBinding != nil && spec.ModifierBinding.TargetSlot == headSlotID {
+			boundModifierCount++
+		}
+	}
+	if (request.Modifier == nil && boundModifierCount != 0) || (request.Modifier != nil && boundModifierCount != 1) {
+		return executeError(status.OutcomeIncomplete, "NP_MODIFIER_BINDING_COVERAGE_MISMATCH", path+".modifier", "NP request must represent exactly the modifier slots bound to this head")
+	}
+	if request.VariantID != input.Plan.VariantID || request.VariantID != input.Plan.CompiledVariant.Variant.ID || request.Plan.Plan.Kind != construction.PhraseNP || request.Plan.Plan.TemplateID != "np-attributive" || request.Plan.Plan.Language != input.Plan.Language {
+		return executeError(status.OutcomeInvalid, "NP_PLAN_CONTEXT_MISMATCH", path+".plan", "compiled NP plan must match the target language and exact licensed outer variant")
+	}
+	if request.HeadSequenceIndex != variantSlotIndex(input.Plan.CompiledVariant.Variant.Sequence, headSlotID) {
+		return executeError(status.OutcomeInvalid, "NP_HEAD_SEQUENCE_INDEX_MISMATCH", path+".head_sequence_index", "head sequence index does not point to its exact outer slot")
+	}
+	compiled, err := construction.CompileNP(request.Plan.Plan, input.PhraseProfile, input.FeatureProfile)
+	if err != nil {
+		return executeWrapError(err)
+	}
+	if !reflect.DeepEqual(compiled, request.Plan) {
+		return executeError(status.OutcomeInvalid, "NP_PLAN_NOT_CANONICAL", path+".plan", "compiled NP plan differs from a fresh compilation under the selected target profiles")
+	}
+	headRequest, supplied := requests[headSlotID]
+	if !supplied || request.Head.NodeID != headRequest.NodeID || !reflect.DeepEqual(request.Head.Candidate, headRequest.Candidate) || !reflect.DeepEqual(request.Head.PrincipalParts, headRequest.PrincipalParts) || !reflect.DeepEqual(request.Head.Features, headRequest.Features) || request.Head.CaseFeature != headRequest.CaseFeature {
+		return executeError(status.OutcomeInvalid, "NP_HEAD_CHILD_MISMATCH", path+".head", "NP head child must preserve the exact outer slot candidate and morphology request")
+	}
+	if err := features.ValidateBundle(input.FeatureProfile, request.Head.Features); err != nil {
+		return executeWrapError(err)
+	}
+	headNode, found := meaningNodeForExecute(input.SourceMeaning, request.Head.NodeID)
+	if !found || request.Head.Candidate.NodeID != request.Head.NodeID || request.Head.Candidate.Kind != meaning.KindReferent || request.Head.Candidate.TransferBinding.CoreRef.String() != string(headNode.Concept) {
+		return executeError(status.OutcomeInvalid, "NP_HEAD_MEANING_MISMATCH", path+".head", "NP head candidate does not transfer the exact Meaning referent")
+	}
+	if request.Modifier != nil {
+		if request.ModifierSlotID == "" || request.ModifierSequenceIndex < 0 || request.Modifier.InputID != "modifier-input" || request.Modifier.Role != "modifier" {
+			return executeError(status.OutcomeInvalid, "NP_MODIFIER_SLOT_MISMATCH", path+".modifier", "modifier child requires one exact outer modifier slot and sequence index")
+		}
+		modifierSlot, exists := familySlots[request.ModifierSlotID]
+		if !exists || modifierSlot.ModifierBinding == nil || modifierSlot.ModifierBinding.TargetSlot != headSlotID || request.Modifier.NodeID == "" {
+			return executeError(status.OutcomeInvalid, "NP_MODIFIER_BINDING_MISMATCH", path+".modifier", "modifier slot must bind its state to this exact NP head")
+		}
+		if request.ModifierSequenceIndex != variantSlotIndex(input.Plan.CompiledVariant.Variant.Sequence, request.ModifierSlotID) {
+			return executeError(status.OutcomeInvalid, "NP_MODIFIER_SEQUENCE_INDEX_MISMATCH", path+".modifier_sequence_index", "modifier sequence index does not point to its exact outer slot")
+		}
+		outerModifier, supplied := requests[request.ModifierSlotID]
+		if !supplied || !reflect.DeepEqual(request.Modifier.Candidate, outerModifier.Candidate) || !reflect.DeepEqual(request.Modifier.PrincipalParts, outerModifier.PrincipalParts) || !reflect.DeepEqual(request.Modifier.Features, outerModifier.Features) || request.Modifier.CaseFeature != outerModifier.CaseFeature || request.Modifier.NodeID != outerModifier.NodeID {
+			return executeError(status.OutcomeInvalid, "NP_MODIFIER_CHILD_MISMATCH", path+".modifier", "NP modifier child must preserve the exact selected outer modifier request")
+		}
+		modifierNode, outcome := FindModifierOutcome(input.SourceMeaning, input.Plan.NodeID, input.Family, request.ModifierSlotID)
+		if outcome != status.OutcomeOK || modifierNode.ID != request.Modifier.NodeID || string(modifierNode.Concept) != request.Modifier.Candidate.TransferBinding.CoreRef.String() || request.Modifier.Candidate.Kind != meaning.KindState || request.Modifier.Candidate.Lexeme.POS != "adjective" {
+			return executeError(status.OutcomeInvalid, "NP_MODIFIER_MEANING_MISMATCH", path+".modifier", "modifier candidate must realize the exact state whose bearer is this NP head")
+		}
+		participant, count := participantByRole(modifierNode, modifierSlot.ModifierBinding.SemanticRole)
+		if count != 1 || participant.Target != request.Head.NodeID {
+			return executeError(status.OutcomeInvalid, "NP_MODIFIER_BEARER_MISMATCH", path+".modifier", "modifier state bearer does not match the exact NP head referent")
+		}
+	} else if request.ModifierSlotID != "" || request.ModifierSequenceIndex >= 0 {
+		return executeError(status.OutcomeInvalid, "NP_UNEXPECTED_MODIFIER_SLOT", path+".modifier", "modifier outer slot metadata is present without a modifier child")
+	}
+	if request.Determiner == nil {
+		if !request.Bare {
+			return executeError(status.OutcomeInvalid, "NP_DETERMINER_CHOICE_MISSING", path+".determiner", "determiner absence requires an explicit Bare choice")
+		}
+		firstIndex := request.HeadSequenceIndex
+		if request.Modifier != nil && request.ModifierSequenceIndex < firstIndex {
+			firstIndex = request.ModifierSequenceIndex
+		}
+		sequence := input.Plan.CompiledVariant.Variant.Sequence
+		if firstIndex > 0 && sequence[firstIndex-1].Kind == construction.TokenTerminal && hasNPDeterminerRule(input.PhraseProfile, sequence[firstIndex-1].Terminal) {
+			return executeError(status.OutcomeInvalid, "NP_BARE_TERMINAL_MISMATCH", path+".determiner", "Bare cannot omit a determiner terminal selected immediately before the NP")
+		}
+	} else {
+		if request.Bare || request.Determiner.InputID != "determiner-input" || request.Determiner.VariantID != request.VariantID || request.Determiner.SequenceIndex < 0 || request.Determiner.SequenceIndex >= len(input.Plan.CompiledVariant.Variant.Sequence) {
+			return executeError(status.OutcomeInvalid, "NP_DETERMINER_IDENTITY_MISMATCH", path+".determiner", "determiner must be tied to the selected outer variant and sequence position")
+		}
+		token := input.Plan.CompiledVariant.Variant.Sequence[request.Determiner.SequenceIndex]
+		if token.Kind != construction.TokenTerminal || token.Terminal != request.Determiner.Surface || !hasNPDeterminerRule(input.PhraseProfile, token.Terminal) {
+			return executeError(status.OutcomeInvalid, "NP_DETERMINER_TERMINAL_MISMATCH", path+".determiner", "determiner request does not match one licensed outer terminal")
+		}
+		firstIndex := request.HeadSequenceIndex
+		if request.Modifier != nil && request.ModifierSequenceIndex < firstIndex {
+			firstIndex = request.ModifierSequenceIndex
+		}
+		if request.Determiner.SequenceIndex != firstIndex-1 {
+			return executeError(status.OutcomeInvalid, "NP_DETERMINER_SEQUENCE_POSITION_MISMATCH", path+".determiner.sequence_index", "determiner terminal must immediately precede the NP's first selected child")
+		}
+		if request.Determiner.SequenceIndex < firstIndex {
+			firstIndex = request.Determiner.SequenceIndex
+		}
+	}
+	if err := validateNPPlanInputs(input, path, request, headRequest, requests); err != nil {
+		return err
+	}
+	return nil
+}
+
+func validateNPPlanInputs(input ExecuteInput, path string, request *NPExecutionRequest, head SlotRequest, requests map[string]SlotRequest) error {
+	plan := request.Plan.Plan
+	template, exists := phraseNPSpec(input.PhraseProfile, plan.TemplateID)
+	if !exists {
+		return executeError(status.OutcomeUnknown, "NP_TEMPLATE_UNAVAILABLE", path+".plan.template_id", "NP plan template is absent from the selected phrase profile")
+	}
+	expectedCount := 1
+	if request.Modifier != nil {
+		expectedCount++
+	}
+	if request.Determiner != nil {
+		expectedCount++
+	}
+	if len(plan.Inputs) != expectedCount || len(plan.Children) != 0 || !reflect.DeepEqual(plan.Features, features.FeatureBundle{}) || plan.FrameID != "" || plan.GovernedCase != (features.FeatureValue{}) {
+		return executeError(status.OutcomeInvalid, "NP_PLAN_SHAPE_MISMATCH", path+".plan", "NP plan inputs do not correspond exactly to selected head, modifier, and determiner")
+	}
+	inputs := make(map[string]construction.PhraseInput, len(plan.Inputs))
+	for _, phraseInput := range plan.Inputs {
+		if _, duplicate := inputs[phraseInput.Role]; duplicate {
+			return executeError(status.OutcomeInvalid, "NP_PLAN_DUPLICATE_INPUT", path+".plan.inputs", "NP plan contains duplicate input roles")
+		}
+		inputs[phraseInput.Role] = phraseInput
+	}
+	for role, want := range map[string]struct {
+		id       string
+		kind     construction.PhraseInputKind
+		features features.FeatureBundle
+	}{
+		"head": {"head-input", construction.PhraseInputLexical, projectedPhraseFeatures(input.FeatureProfile, template, "head", head.Features)},
+	} {
+		got, ok := inputs[role]
+		if !ok || got.ID != want.id || got.Kind != want.kind || !got.Required || !reflect.DeepEqual(got.Features, want.features) {
+			return executeError(status.OutcomeInvalid, "NP_HEAD_INPUT_EVIDENCE_MISMATCH", path+".plan.inputs.head", "head plan input does not match exact selected head features")
+		}
+	}
+	if request.Modifier != nil {
+		modifier := requests[request.ModifierSlotID]
+		got, ok := inputs["modifier"]
+		want := projectedPhraseFeatures(input.FeatureProfile, template, "modifier", modifier.Features)
+		if !ok || got.ID != "modifier-input" || got.Kind != construction.PhraseInputAP || got.Required || !reflect.DeepEqual(got.Features, want) {
+			return executeError(status.OutcomeInvalid, "NP_MODIFIER_INPUT_EVIDENCE_MISMATCH", path+".plan.inputs.modifier", "modifier plan input does not match exact selected AP features")
+		}
+	}
+	if request.Determiner != nil {
+		got, ok := inputs["determiner"]
+		if !ok || got.ID != "determiner-input" || got.Kind != construction.PhraseInputLexical || got.Required || !reflect.DeepEqual(got.Features, request.Determiner.Features) {
+			return executeError(status.OutcomeInvalid, "NP_DETERMINER_INPUT_EVIDENCE_MISMATCH", path+".plan.inputs.determiner", "determiner plan input does not match the selected outer terminal evidence")
+		}
+		if err := validateNPDeterminerFeatures(input, request, inputs["head"].Features); err != nil {
+			return err
+		}
+	}
+	wantOrder := make([]string, 0, expectedCount)
+	present := map[string]bool{"head": true, "modifier": request.Modifier != nil, "determiner": request.Determiner != nil}
+	for _, role := range template.Order {
+		if present[role] {
+			wantOrder = append(wantOrder, role)
+		}
+	}
+	if !reflect.DeepEqual(plan.Order, wantOrder) {
+		return executeError(status.OutcomeInvalid, "NP_PLAN_ORDER_MISMATCH", path+".plan.order", "NP input order differs from the selected language phrase profile")
+	}
+	if err := validateNPAgreements(input, path, request, inputs); err != nil {
+		return err
+	}
+	return nil
+}
+
+func validateNPAgreements(input ExecuteInput, path string, request *NPExecutionRequest, inputs map[string]construction.PhraseInput) error {
+	template, ok := phraseNPSpec(input.PhraseProfile, request.Plan.Plan.TemplateID)
+	if !ok {
+		return executeError(status.OutcomeIncomplete, "NP_AGREEMENT_TEMPLATE_UNAVAILABLE", path+".plan.template_id", "selected NP phrase template is unavailable for agreement validation")
+	}
+	want := construction.ApplicablePhraseAgreements(template, request.Plan.Plan.Inputs)
+	if !sameNPAgreementSet(request.Plan.Plan.Agreements, want) {
+		return executeError(status.OutcomeInvalid, "NP_PLAN_AGREEMENT_MISMATCH", path+".plan.agreements", "compiled NP agreements do not match the exact known feature evidence")
+	}
+	for _, agreement := range want {
+		controller, controllerOK := inputs[roleForNPInputID(request.Plan.Plan.Inputs, agreement.ControllerInput)]
+		target, targetOK := inputs[roleForNPInputID(request.Plan.Plan.Inputs, agreement.TargetInput)]
+		if !controllerOK || !targetOK {
+			return executeError(status.OutcomeIncomplete, "NP_AGREEMENT_INPUT_INCOMPLETE", path+".plan.agreements", "declared agreement input evidence is unavailable")
+		}
+		left, leftOK := knownFeature(controller.Features.Values, agreement.Feature)
+		right, rightOK := knownFeature(target.Features.Values, agreement.Feature)
+		if !leftOK || !rightOK {
+			return executeError(status.OutcomeIncomplete, "NP_AGREEMENT_EVIDENCE_INCOMPLETE", path+".plan.agreements."+string(agreement.Feature), "declared NP agreement requires known values on both exact phrase inputs")
+		}
+		if left != right {
+			return executeError(status.OutcomeUnsupported, "NP_AGREEMENT_FEATURE_MISMATCH", path+".plan.agreements."+string(agreement.Feature), "known NP input values do not satisfy the selected template agreement")
+		}
+	}
+	return nil
+}
+
+func sameNPAgreementSet(left, right []construction.FeatureAgreement) bool {
+	if len(left) != len(right) {
+		return false
+	}
+	seen := make(map[construction.FeatureAgreement]struct{}, len(left))
+	for _, agreement := range left {
+		if _, duplicate := seen[agreement]; duplicate {
+			return false
+		}
+		seen[agreement] = struct{}{}
+	}
+	for _, agreement := range right {
+		if _, exists := seen[agreement]; !exists {
+			return false
+		}
+	}
+	return true
+}
+
+func roleForNPInputID(inputs []construction.PhraseInput, id string) string {
+	for _, input := range inputs {
+		if input.ID == id {
+			return input.Role
+		}
+	}
+	return ""
+}
+
+func buildNPForm(input ExecuteInput, headSlotID string, request *NPExecutionRequest, formsBySlot map[string]SlotForm, requests map[string]SlotRequest) (NPForm, error) {
+	form := NPForm{SlotID: headSlotID, HeadNodeID: request.Head.NodeID, VariantID: request.VariantID, VariantProvenance: input.Plan.CompiledVariant.Variant.Provenance, Plan: request.Plan, Parts: []NPFormPart{}, OuterSequenceIndexes: []int{}, OuterSlotIDs: []string{}, OuterTokens: []NPOuterToken{}}
+	// Preserve onset only when it comes from the exact first pronounced lexical
+	// child chosen for this NP. The linearizer never guesses onset from spelling.
+	for _, role := range request.Plan.Plan.Order {
+		var properties []lexicon.Property
+		switch role {
+		case "head":
+			properties = request.Head.Candidate.Lexeme.Properties
+		case "modifier":
+			if request.Modifier != nil {
+				properties = request.Modifier.Candidate.Lexeme.Properties
+			}
+		case "determiner":
+			continue
+		}
+		if onset, known := lexicalDeterminerOnset(properties); known {
+			form.DeterminerOnset = onset
+		}
+		break
+	}
+	sequence := input.Plan.CompiledVariant.Variant.Sequence
+	claimed := map[int]bool{}
+	claim := func(index int) error {
+		if index < 0 || index >= len(sequence) || claimed[index] {
+			return executeError(status.OutcomeInvalid, "NP_OUTER_SEQUENCE_POSITION_INVALID", "np_forms."+headSlotID, "outer NP sequence position is missing or claimed twice")
+		}
+		claimed[index] = true
+		return nil
+	}
+	if err := claim(request.HeadSequenceIndex); err != nil {
+		return NPForm{}, err
+	}
+	outerSlots := map[string]bool{headSlotID: true}
+	if request.Modifier != nil {
+		if err := claim(request.ModifierSequenceIndex); err != nil {
+			return NPForm{}, err
+		}
+		outerSlots[request.ModifierSlotID] = true
+	}
+	firstNPIndex := request.HeadSequenceIndex
+	if request.Modifier != nil && request.ModifierSequenceIndex < firstNPIndex {
+		firstNPIndex = request.ModifierSequenceIndex
+	}
+	firstChildIndex := firstNPIndex
+	if request.Determiner != nil && request.Determiner.SequenceIndex < firstChildIndex {
+		firstNPIndex = request.Determiner.SequenceIndex
+	}
+	for i := firstNPIndex; i <= request.HeadSequenceIndex; i++ {
+		if claimed[i] {
+			continue
+		}
+		if request.Determiner == nil || i != request.Determiner.SequenceIndex || sequence[i].Kind != construction.TokenTerminal || !hasNPDeterminerRule(input.PhraseProfile, sequence[i].Terminal) {
+			return NPForm{}, executeError(status.OutcomeInvalid, "NP_OUTER_UNEXPECTED_SEQUENCE_TOKEN", "np_forms."+headSlotID, fmt.Sprintf("NP span token %d (%s:%s), determiner=%v", i, sequence[i].Kind, sequence[i].Terminal, request.Determiner))
+		}
+		if err := claim(i); err != nil {
+			return NPForm{}, err
+		}
+	}
+	if request.Determiner != nil {
+		// The exact determiner position was included in the contiguous NP span above.
+	}
+	for i := range sequence {
+		if !claimed[i] {
+			continue
+		}
+		token := sequence[i]
+		npToken := NPOuterToken{SequenceIndex: i}
+		if token.Kind == construction.TokenSlot {
+			if !outerSlots[token.SlotID] {
+				return NPForm{}, executeError(status.OutcomeInvalid, "NP_OUTER_SLOT_IDENTITY_MISMATCH", "np_forms."+headSlotID, "claimed slot index does not point to the exact NP child slot")
+			}
+			npToken.SlotID = token.SlotID
+			form.OuterSlotIDs = append(form.OuterSlotIDs, token.SlotID)
+		} else {
+			if request.Determiner == nil || token.Terminal != request.Determiner.Surface || i != request.Determiner.SequenceIndex {
+				return NPForm{}, executeError(status.OutcomeInvalid, "NP_OUTER_TERMINAL_IDENTITY_MISMATCH", "np_forms."+headSlotID, "claimed terminal is not the exact selected determiner")
+			}
+			npToken.Terminal = token.Terminal
+			form.OuterSlotIDs = append(form.OuterSlotIDs, "")
+		}
+		form.OuterTokens = append(form.OuterTokens, npToken)
+		form.OuterSequenceIndexes = append(form.OuterSequenceIndexes, i)
+	}
+	for _, role := range request.Plan.Plan.Order {
+		switch role {
+		case "head":
+			slotForm, ok := formsBySlot[headSlotID]
+			if !ok || slotForm.NodeID != request.Head.NodeID || slotForm.LexemeID != request.Head.Candidate.Lexeme.ID || slotForm.SenseID != request.Head.Candidate.Sense.ID || !reflect.DeepEqual(slotForm.Features, request.Head.Features.Values) || !reflect.DeepEqual(slotForm.Provenance, request.Head.Candidate.TransferBinding.Provenance) {
+				return NPForm{}, executeError(status.OutcomeIncomplete, "NP_HEAD_FORM_UNAVAILABLE", "np_forms."+headSlotID+".head", "generated head form does not match the exact NP head request")
+			}
+			copy := cloneSlotForm(slotForm)
+			form.Parts = append(form.Parts, NPFormPart{Role: "head", InputID: request.Head.InputID, Kind: construction.PhraseInputLexical, Surface: slotForm.Surface, SlotForm: &copy})
+		case "modifier":
+			if request.Modifier == nil {
+				return NPForm{}, executeError(status.OutcomeInvalid, "NP_PLAN_MODIFIER_MISSING", "np_forms."+headSlotID+".modifier", "NP plan order names an absent modifier")
+			}
+			slotForm, ok := formsBySlot[request.ModifierSlotID]
+			modifierRequest := requests[request.ModifierSlotID]
+			modifierSpec, specFound := construction.SlotSpec{}, false
+			for _, candidateSpec := range input.Family.SlotSpecs {
+				if candidateSpec.ID == request.ModifierSlotID {
+					modifierSpec, specFound = candidateSpec, true
+					break
+				}
+			}
+			if !ok || !specFound || slotForm.NodeID != request.Modifier.NodeID || slotForm.Role != modifierSpec.ModifierBinding.SemanticRole || slotForm.LexemeID != request.Modifier.Candidate.Lexeme.ID || slotForm.SenseID != request.Modifier.Candidate.Sense.ID || !reflect.DeepEqual(slotForm.Features, request.Modifier.Features.Values) || !reflect.DeepEqual(slotForm.Provenance, modifierRequest.Candidate.TransferBinding.Provenance) || request.Modifier.Candidate.SourceCandidateID != request.Head.Candidate.SourceCandidateID || request.Modifier.Candidate.SemanticID != request.Head.Candidate.SemanticID {
+				return NPForm{}, executeError(status.OutcomeIncomplete, "NP_MODIFIER_FORM_UNAVAILABLE", "np_forms."+headSlotID+".modifier", "generated AP form does not match the exact modifier state request")
+			}
+			copy := cloneSlotForm(slotForm)
+			form.Parts = append(form.Parts, NPFormPart{Role: "modifier", InputID: request.Modifier.InputID, Kind: construction.PhraseInputAP, Surface: slotForm.Surface, SlotForm: &copy})
+		case "determiner":
+			if request.Determiner == nil {
+				return NPForm{}, executeError(status.OutcomeInvalid, "NP_PLAN_DETERMINER_MISSING", "np_forms."+headSlotID+".determiner", "NP plan order names an absent determiner")
+			}
+			form.Parts = append(form.Parts, NPFormPart{Role: "determiner", InputID: request.Determiner.InputID, Kind: construction.PhraseInputLexical, Surface: request.Determiner.Surface, TerminalProvenance: input.Plan.CompiledVariant.Variant.Provenance})
+		default:
+			return NPForm{}, executeError(status.OutcomeUnsupported, "NP_PLAN_ROLE_UNSUPPORTED", "np_forms."+headSlotID+".order", "NP template contains an unsupported role")
+		}
+	}
+	return form, nil
+}
+
+func lexicalDeterminerOnset(properties []lexicon.Property) (string, bool) {
+	article := ""
+	for _, property := range properties {
+		if property.Key != "indefinite_article" || (property.Value != "a" && property.Value != "an") {
+			continue
+		}
+		if article != "" && article != property.Value {
+			return "", false
+		}
+		article = property.Value
+	}
+	switch article {
+	case "a":
+		return "consonant", true
+	case "an":
+		return "vowel", true
+	default:
+		return "", false
+	}
+}
+
+func cloneSlotForm(form SlotForm) SlotForm {
+	form.MeaningPath = append([]meaning.NodeID(nil), form.MeaningPath...)
+	form.Features = append([]features.FeatureValue(nil), form.Features...)
+	form.Trace = append([]morph.GenerationTraceStep(nil), form.Trace...)
+	return form
+}
+
+func phraseNPSpec(profile construction.PhraseProfile, templateID string) (construction.PhraseTemplate, bool) {
+	for _, template := range profile.Templates {
+		if template.ID == templateID && template.Kind == construction.PhraseNP {
+			return template, true
+		}
+	}
+	return construction.PhraseTemplate{}, false
+}
+
+func hasNPDeterminerRule(profile construction.PhraseProfile, surface string) bool {
+	for _, rule := range profile.DeterminerForms {
+		if rule.Surface == surface {
+			return true
+		}
+	}
+	return false
+}
+
+func projectedPhraseFeatures(profile *features.LanguageFeatureProfile, template construction.PhraseTemplate, role string, source features.FeatureBundle) features.FeatureBundle {
+	allowed := map[features.FeatureID]bool{}
+	for _, input := range template.Inputs {
+		if input.Role == role {
+			for _, id := range input.FeatureIDs {
+				allowed[id] = true
+			}
+		}
+	}
+	values := make([]features.FeatureValue, 0, len(source.Values))
+	for _, value := range source.Values {
+		if allowed[value.Feature] {
+			values = append(values, value)
+		}
+	}
+	bundle, _ := features.NewBundle(profile, values)
+	return bundle
+}
+
+func validateNPDeterminerFeatures(input ExecuteInput, request *NPExecutionRequest, head features.FeatureBundle) error {
+	path := "slots." + request.HeadSlotID + ".np.determiner.features"
+	if err := features.ValidateBundle(input.FeatureProfile, request.Determiner.Features); err != nil {
+		return executeWrapError(err)
+	}
+	if err := features.ValidateBundle(input.FeatureProfile, head); err != nil {
+		return executeWrapError(err)
+	}
+	if !hasFeatureValue(head, "number") {
+		if number, known := knownFeature(head.Values, "noun_number"); known {
+			values := append(append([]features.FeatureValue(nil), head.Values...), features.FeatureValue{Feature: "number", State: features.StateKnown, Value: number})
+			var err error
+			head, err = features.NewBundle(input.FeatureProfile, values)
+			if err != nil {
+				return executeWrapError(err)
+			}
+		}
+	}
+	onset := ""
+	firstRole := "head"
+	for _, role := range request.Plan.Plan.Order {
+		if role != "determiner" {
+			firstRole = role
+			break
+		}
+	}
+	properties := request.Head.Candidate.Lexeme.Properties
+	if firstRole == "modifier" && request.Modifier != nil {
+		properties = request.Modifier.Candidate.Lexeme.Properties
+	}
+	if hasOnsetConstraint(input.PhraseProfile, request.Determiner.Surface) {
+		var known bool
+		onset, known = lexicalDeterminerOnset(properties)
+		if !known {
+			return executeError(status.OutcomeIncomplete, "NP_DETERMINER_ONSET_UNKNOWN", path+".onset", "phrase profile onset rule requires evidence from the exact first pronounced lexical candidate")
+		}
+	}
+	match := construction.EvaluateDeterminerForms(input.PhraseProfile, request.Determiner.Surface, head, request.Determiner.Features, onset)
+	switch match.Status {
+	case construction.DeterminerOK:
+		return nil
+	case construction.DeterminerIncomplete:
+		return executeError(status.OutcomeIncomplete, "NP_DETERMINER_EVIDENCE_INCOMPLETE", path, "determiner form requires known exact head and determiner features")
+	case construction.DeterminerAmbiguous:
+		return executeError(status.OutcomeAmbiguous, "NP_DETERMINER_FORM_AMBIGUOUS", path, "multiple non-identical phrase profile rules match the exact determiner features")
+	default:
+		return executeError(status.OutcomeUnsupported, "NP_DETERMINER_FORM_UNSUPPORTED", path, "no phrase profile rule licenses the exact determiner surface and features")
+	}
+}
+
+func hasFeatureValue(bundle features.FeatureBundle, id features.FeatureID) bool {
+	for _, value := range bundle.Values {
+		if value.Feature == id {
+			return true
+		}
+	}
+	return false
+}
+
+func hasOnsetConstraint(profile construction.PhraseProfile, surface string) bool {
+	for _, rule := range profile.DeterminerForms {
+		if rule.Surface == surface && rule.Onset != "" {
+			return true
+		}
+	}
+	return false
+}
+
+func meaningNodeForExecute(graph meaning.Meaning, id meaning.NodeID) (meaning.Node, bool) {
+	for _, node := range graph.Nodes {
+		if node.ID == id {
+			return node, true
+		}
+	}
+	return meaning.Node{}, false
+}
+
+func variantSlotIndex(sequence []construction.SequenceToken, slotID string) int {
+	found := -1
+	for index, token := range sequence {
+		if token.Kind == construction.TokenSlot && token.SlotID == slotID {
+			if found >= 0 {
+				return -1
+			}
+			found = index
+		}
+	}
+	return found
 }
 
 func validateConstructionPlanForSurface(plan RealizationPlan, family construction.ConstructionFamily) error {

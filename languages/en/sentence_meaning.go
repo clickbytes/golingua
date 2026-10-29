@@ -70,9 +70,10 @@ func englishNodeAttributes(supported map[ids.SenseID]bool, index *lexicon.Index,
 							}
 						}
 					}
-					if candidate.Category == construction.CategoryAP && sense.String() == "sense:en.black.color" &&
-						alternative.FamilyID.String() == "construction:en.attribution" &&
-						(alternative.VariantID.String() == "construction:en.attribution.this" || alternative.VariantID.String() == "construction:en.attribution.that") {
+					_, attributionSense := englishAttributionForSense(sense.String())
+					if candidate.Category == construction.CategoryAP && attributionSense && alternative.FamilyID.String() == "construction:en.attribution" &&
+						(alternative.VariantID.String() == "construction:en.attribution.this" || alternative.VariantID.String() == "construction:en.attribution.that" || alternative.VariantID.String() == "construction:en.attribution.bare" || alternative.VariantID.String() == "construction:en.attribution.the" || alternative.VariantID.String() == "construction:en.attribution.the_plural" || alternative.VariantID.String() == "construction:en.attribution.a" || alternative.VariantID.String() == "construction:en.attribution.an" ||
+							alternative.VariantID.String() == "construction:en.attribution.these" || alternative.VariantID.String() == "construction:en.attribution.those") {
 						if err := add(candidate.ID, meaning.TemporalFramePresent, ""); err != nil {
 							return nil, err
 						}

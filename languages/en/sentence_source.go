@@ -47,6 +47,10 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	if profile == nil || profile.Language() != "en" || inverse == nil {
 		return nil, fmt.Errorf("English sentence source requires an English morphology seed")
 	}
+	phraseProfile, err := SentencePhraseProfile(profile)
+	if err != nil {
+		return nil, err
+	}
 	valencyIndex, err := CompileValency()
 	if err != nil {
 		return nil, err
@@ -95,6 +99,18 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	if err != nil {
 		return nil, err
 	}
+	redSense, err := ids.NewSenseID("en.red.color")
+	if err != nil {
+		return nil, err
+	}
+	attributionSenses := map[ids.SenseID]bool{attributionSense: true, redSense: true}
+	for _, spec := range englishAttributionSpecs {
+		sense, senseErr := ids.NewSenseID(strings.TrimPrefix(spec.sense, "sense:"))
+		if senseErr != nil {
+			return nil, senseErr
+		}
+		attributionSenses[sense] = true
+	}
 	eatingSense, err := ids.NewSenseID("en.eating.event")
 	if err != nil {
 		return nil, err
@@ -123,8 +139,11 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		}
 		manipulationSenses[sense] = true
 	}
-	supportedSenses := map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true, eatingSense: true, drinkingSense: true, givingSense: true, buyingSense: true, sellingSense: true}
+	supportedSenses := map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true, redSense: true, eatingSense: true, drinkingSense: true, givingSense: true, buyingSense: true, sellingSense: true}
 	for sense := range manipulationSenses {
+		supportedSenses[sense] = true
+	}
+	for sense := range attributionSenses {
 		supportedSenses[sense] = true
 	}
 	affectiveSenses := map[ids.SenseID]bool{}
@@ -190,10 +209,14 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "number": "plural", "verb_number": "plural"},
 		},
 		attributionSense: {{"adjective_degree": "positive"}},
+		redSense:         {{"adjective_degree": "positive"}},
 		eatingSense:      {{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"}, {"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"}},
 		drinkingSense:    {{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"}, {"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"}},
 		// The new manipulation routes are restricted to third-person present.
 		// They are filled below through a precomputed list.
+	}
+	for sense := range attributionSenses {
+		predicateAlternatives[sense] = []map[features.FeatureID]features.FeatureValueID{{"adjective_degree": "positive"}}
 	}
 	commerceFeatures := []map[features.FeatureID]features.FeatureValueID{
 		{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
@@ -224,14 +247,14 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		}
 	}
 	return &runtime.SourcePipeline{
-		Language: "en", ClauseConnector: "and", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}}, AllowFinalPeriod: false,
+		Language: "en", PhraseProfile: phraseProfile, ClauseConnector: "and", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}}, AllowFinalPeriod: false,
 		ScopedSourcePlan: scopedPlan, ScopedReadingPolicy: ScopedSourceReadingPolicy,
 		RelationPathPlan: relationPathPlan, RelationSourceReadingPolicy: RelationSourceReadingPolicy,
 		AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "to": true, "from": true, "do": true, "does": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true, "who": true, "whom": true, "and": true, "up": true, "asleep": true},
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
-		PhraseBuilder: englishWHGapPhraseBuilder{inner: englishIdentificationPhraseBuilder{inner: englishDeterminerNPBuilder{inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
+		PhraseBuilder: englishWHGapPhraseBuilder{inner: englishIdentificationPhraseBuilder{phraseProfile: phraseProfile, featureProfile: profile, inner: englishDeterminerNPBuilder{inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
 			Categories: map[lexicon.PartOfSpeech][]construction.SlotCategory{
 				"noun": {construction.CategoryNP}, "pronoun": {construction.CategoryNP}, "verb": {construction.CategoryVP}, "adjective": {construction.CategoryAP},
 			},
@@ -308,7 +331,7 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 			}
 			evidence.OperatorCoverageComplete = true
 		}
-		return addEnglishIdentificationReferences(evidence, candidates, forest), nil
+		return addEnglishIdentificationReferences(evidence, candidates, forest, lattice), nil
 	}
 	if _, uniqueNot := englishTerminalSpan(lattice, "not"); !uniqueNot {
 		return runtime.CompositionEvidence{}, nil
@@ -680,7 +703,7 @@ func (builder englishSentenceEvidenceBuilder) buildEnglishNegativeClassification
 	}
 	evidence.OperatorCoverageComplete = count > 0
 	if evidence.OperatorCoverageComplete {
-		evidence = addEnglishIdentificationReferences(evidence, candidates, forest)
+		evidence = addEnglishIdentificationReferences(evidence, candidates, forest, lattice)
 	}
 	return evidence, nil
 }
@@ -696,6 +719,27 @@ func cloneEnglishPredicateAlternatives(source map[ids.SenseID][]map[features.Fea
 type englishDeterminerNPBuilder struct {
 	inner   runtime.SimplePhraseEvidenceBuilder
 	lexicon *lexicon.Index
+}
+
+func englishAttributionArticleForPhrase(candidate parser.PhraseCandidate, index *lexicon.Index) (string, bool) {
+	licensed := false
+	for _, spec := range englishAttributionSpecs {
+		if candidate.LexemeID.String() == spec.lexeme && containsEnglishSenseName(candidate.SenseIDs, strings.TrimPrefix(spec.sense, "sense:")) {
+			licensed = true
+			break
+		}
+	}
+	if !licensed {
+		return "", false
+	}
+	if index == nil {
+		return "", false
+	}
+	lexeme, exists := index.LookupLexeme(candidate.LexemeID)
+	if !exists {
+		return "", false
+	}
+	return englishIndefiniteArticle(lexeme.Properties)
 }
 
 func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice analyzer.LexicalLattice) ([]parser.PhraseCandidate, parser.ParseContext, error) {
@@ -780,24 +824,43 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 		}
 		determinerToken := candidate.TokenStart - 1
 		_, hasDeterminer := englishArticleAt(lattice, determinerToken)
-		modifiedByBlack := false
+		demonstrative, hasDemonstrative := englishDemonstrativeAt(lattice, determinerToken)
+		modifiedByAttribution := ""
 		if !hasDeterminer {
 			for _, phrase := range candidates {
-				if phrase.Category != construction.CategoryAP || phrase.LexemeID.String() != "lexeme:en.black.adj" ||
-					!containsEnglishSenseName(phrase.SenseIDs, "en.black.color") || phrase.TokenEnd != candidate.TokenStart || phrase.TokenStart == 0 {
+				if phrase.Category != construction.CategoryAP || phrase.TokenEnd != candidate.TokenStart || phrase.TokenStart == 0 {
+					continue
+				}
+				attribution, licensed := englishAttributionArticleForPhrase(phrase, builder.lexicon)
+				if !licensed {
 					continue
 				}
 				articleToken := phrase.TokenStart - 1
 				_, found := englishArticleAt(lattice, articleToken)
 				if found {
-					determinerToken, hasDeterminer, modifiedByBlack = articleToken, true, true
+					determinerToken, hasDeterminer, modifiedByAttribution = articleToken, true, attribution
+					break
+				}
+				if deixis, ok := englishDemonstrativeAt(lattice, articleToken); ok {
+					determinerToken, demonstrative, hasDemonstrative = articleToken, deixis, true
 					break
 				}
 			}
 		}
+		if hasDemonstrative {
+			if !lexemeFound || lexeme.POS != "noun" || knownEnglishNounNumber(candidate.Features) != demonstrative.number ||
+				!hasNumberBehavior(builder.lexicon, candidate.LexemeID, "count") && !hasNumberBehavior(builder.lexicon, candidate.LexemeID, "mass") {
+				continue
+			}
+			candidate.Features["determiner"] = features.FeatureValueID("demonstrative_" + demonstrative.distance)
+			candidate.Features["number"] = features.FeatureValueID(demonstrative.number)
+			filtered = append(filtered, candidate)
+			continue
+		}
 		if !hasDeterminer {
 			if hasEnglishThisNPPrefix(lattice, candidate.TokenStart) {
-				if !lexemeFound || lexeme.POS != "noun" || !hasNumberBehavior(builder.lexicon, candidate.LexemeID, "mass") {
+				if !lexemeFound || lexeme.POS != "noun" ||
+					!hasNumberBehavior(builder.lexicon, candidate.LexemeID, "mass") && !hasNumberBehavior(builder.lexicon, candidate.LexemeID, "count") {
 					continue
 				}
 				if number := knownEnglishNounNumber(candidate.Features); number != "" {
@@ -853,8 +916,8 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 								article = "an"
 							}
 							expectedArticle, hasLexicalArticle := englishIndefiniteArticle(noun.Properties)
-							if modifiedByBlack {
-								expectedArticle, hasLexicalArticle = "a", true
+							if modifiedByAttribution != "" {
+								expectedArticle, hasLexicalArticle = modifiedByAttribution, true
 							}
 							if hasLexicalArticle && expectedArticle != article {
 								keep = false

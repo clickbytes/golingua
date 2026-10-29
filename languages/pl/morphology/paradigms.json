@@ -3,7 +3,7 @@
     "schema_version": 1,
     "id": "pl_masc_personal_student",
     "language": "pl",
-    "profile_version": "v2026-10-23.1",
+    "profile_version": "v2026-10-28.1",
     "pos": "noun",
     "principal_part_requirements": [
       {"stem_id": "root", "part_id": "base", "required": true}
@@ -45,7 +45,7 @@
     "schema_version": 1,
     "id": "pl_verb_czytac_finite",
     "language": "pl",
-    "profile_version": "v2026-10-23.1",
+    "profile_version": "v2026-10-28.1",
     "pos": "verb",
     "principal_part_requirements": [
       {"stem_id": "root", "part_id": "present_stem", "required": true},
@@ -102,7 +102,7 @@
     "schema_version": 1,
     "id": "pl_verb_present_i",
     "language": "pl",
-    "profile_version": "v2026-10-23.1",
+    "profile_version": "v2026-10-28.1",
     "pos": "verb",
     "principal_part_requirements": [{"stem_id": "root", "part_id": "present_stem", "required": true}, {"stem_id": "past", "part_id": "past_stem", "required": true}, {"stem_id": "past_masculine_personal_plural", "part_id": "past_masculine_personal_plural_stem", "required": true}],
     "cells": [
@@ -136,7 +136,7 @@
     "schema_version": 1,
     "id": "pl_verb_present_y",
     "language": "pl",
-    "profile_version": "v2026-10-23.1",
+    "profile_version": "v2026-10-28.1",
     "pos": "verb",
     "principal_part_requirements": [{"stem_id": "root", "part_id": "present_stem", "required": true}],
     "cells": [
@@ -160,7 +160,7 @@
     "schema_version": 1,
     "id": "pl_verb_perfective_finite",
     "language": "pl",
-    "profile_version": "v2026-10-23.1",
+    "profile_version": "v2026-10-28.1",
     "pos": "verb",
     "principal_part_requirements": [{"stem_id": "future", "part_id": "future_stem", "required": true}, {"stem_id": "past", "part_id": "past_stem", "required": true}],
     "cells": [
