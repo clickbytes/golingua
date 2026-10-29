@@ -226,6 +226,28 @@ func (polishSentencePlanAnnotations) Annotations(_ context.Context, source seman
 		}
 	}
 	var losses []realizer.FieldLoss
+	familyID := selected.Family.Family.ID.String()
+	if selected.Kind == meaning.KindEvent && (familyID == "construction:pl.attributed_seeing_object_negative" || familyID == "construction:pl.attributed_seeing_object" || familyID == "construction:pl.attributed_seeing_object_plural" || familyID == "construction:pl.attributed_seeing" || familyID == "construction:pl.attributed_seeing_plural") {
+		shape, valid := polishAttributedSeeingShape(source)
+		negativeSeeing := familyID == "construction:pl.attributed_seeing_object_negative" && shape.scope.ID != "" && shape.scope.Operator == meaning.OperatorNegation && shape.scope.Target == selected.NodeID
+		positiveHearing := familyID != "construction:pl.attributed_seeing_object_negative" && shape.scope.ID == "" && string(shape.event.Concept) == "concept:hearing"
+		if valid && shape.event.ID == selected.NodeID && (negativeSeeing || positiveHearing) {
+			for _, participant := range []struct {
+				role     meaning.Role
+				referent meaning.Node
+			}{{"experiencer", shape.subject}, {"stimulus", shape.object}} {
+				path, found := runtime.MeaningPath(*source.Meaning, participant.referent.ID)
+				concept, err := ids.ParseConceptID(string(participant.referent.Concept))
+				if err != nil {
+					return nil, nil, nil, fmt.Errorf("Polish participant source concept %q is invalid: %w", participant.referent.Concept, err)
+				}
+				values, known := runtime.SourceFeatures(source, participant.role, concept)
+				if found && known && (values["determiner"] == "definite" || values["determiner"] == "indefinite") {
+					losses = append(losses, realizer.FieldLoss{Path: path, Field: "determiner", Outcome: status.OutcomeIncomplete, Reason: "Polish noun phrase does not encode the source English article distinction"})
+				}
+			}
+		}
+	}
 	// Polish does not mark English article definiteness on the noun phrase.
 	// Keep the source distinction visible on the exact participant referent.
 	if role, referentID, _, attribution := polishIdentificationStateShape(source, predicate.ID); attribution && role == "bearer" {
@@ -517,7 +539,13 @@ func (polishSentenceOperatorBuilder) Build(ctx context.Context, source semantic.
 	if !found {
 		return runtime.NoOperatorEvidenceBuilder{}.Build(ctx, source)
 	}
-	familyID, err := ids.NewConstructionID(strings.TrimPrefix(route.family, "construction:"))
+	familyName := route.family
+	if route.concept == "concept:seeing" {
+		if shape, valid := polishAttributedSeeingShape(source); valid && shape.scope.ID == scope.ID {
+			familyName = "construction:pl.attributed_seeing_object_negative"
+		}
+	}
+	familyID, err := ids.NewConstructionID(strings.TrimPrefix(familyName, "construction:"))
 	if err != nil {
 		return nil, false, err
 	}

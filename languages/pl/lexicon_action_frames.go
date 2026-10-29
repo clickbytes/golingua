@@ -48,6 +48,8 @@ func actionFrameForSense(sense string) (string, bool) {
 		return "pl.kopac.kick.action", true
 	case "pl.ciac.cut":
 		return "pl.ciac.cut.action", true
+	case "pl.kroic.with_instrument":
+		return "pl.kroic.with_instrument.action", true
 	case "pl.drzec.tear":
 		return "pl.drzec.tear.action", true
 	case "pl.rozdzierac.tear":

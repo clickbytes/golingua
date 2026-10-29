@@ -8,6 +8,10 @@ import (
 // communicationActionFrames records the selected Polish cases/adpositions for
 // the CORE roles; these frames do not approve construction bindings.
 var communicationActionFrames = []frameDeclaration{
+	{"pl.rozmawiac.converse.action", "pl.rozmawiac.converse", "pl.with_oblique", []meaning.Role{"participant_a", "participant_b"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "participant_a", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "oblique", Role: "participant_b", Required: true, GrammaticalFunction: "oblique", Case: "instrumental", Adposition: "z"},
+	}},
 	{"pl.informowac.inform.action", "pl.informowac.inform", "pl.transitive_oblique", []meaning.Role{"informant", "recipient", "content"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "informant", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "object", Role: "recipient", Required: true, GrammaticalFunction: "object", Case: "accusative"},

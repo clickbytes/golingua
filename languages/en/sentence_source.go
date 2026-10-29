@@ -83,6 +83,18 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	if err != nil {
 		return nil, err
 	}
+	helpSense, err := ids.NewSenseID("en.helping.event")
+	if err != nil {
+		return nil, err
+	}
+	thankSense, err := ids.NewSenseID("en.thanking.event")
+	if err != nil {
+		return nil, err
+	}
+	usingSense, err := ids.NewSenseID("en.using_object.event")
+	if err != nil {
+		return nil, err
+	}
 	lookingSense, err := ids.NewSenseID("en.look.directed")
 	if err != nil {
 		return nil, err
@@ -132,14 +144,14 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		return nil, err
 	}
 	manipulationSenses := map[ids.SenseID]bool{}
-	for _, name := range []string{"en.opening_object.event", "en.closing_object.event", "en.carrying.event", "en.holding_object.event", "en.pulling_object.event", "en.pushing_object.event", "en.cutting_object.event", "en.folding_object.event", "en.tearing_object.event"} {
+	for _, name := range []string{"en.opening_object.event", "en.closing_object.event", "en.carrying.event", "en.holding_object.event", "en.pulling_object.event", "en.pushing_object.event", "en.cutting_object.event", "en.cutting_object.with_instrument", "en.folding_object.event", "en.tearing_object.event"} {
 		sense, senseErr := ids.NewSenseID(name)
 		if senseErr != nil {
 			return nil, senseErr
 		}
 		manipulationSenses[sense] = true
 	}
-	supportedSenses := map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true, redSense: true, eatingSense: true, drinkingSense: true, givingSense: true, buyingSense: true, sellingSense: true}
+	supportedSenses := map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true, redSense: true, eatingSense: true, drinkingSense: true, givingSense: true, buyingSense: true, sellingSense: true, helpSense: true, thankSense: true, usingSense: true}
 	for sense := range manipulationSenses {
 		supportedSenses[sense] = true
 	}
@@ -160,6 +172,16 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		return nil, err
 	}
 	supportedSenses[writingMessageSense] = true
+	writingInstrumentSense, err := ids.NewSenseID("en.writing_with_instrument.event")
+	if err != nil {
+		return nil, err
+	}
+	supportedSenses[writingInstrumentSense] = true
+	conversingSense, err := ids.NewSenseID("en.conversing.event")
+	if err != nil {
+		return nil, err
+	}
+	supportedSenses[conversingSense] = true
 	intransitiveSenses := map[ids.SenseID]bool{}
 	for _, name := range []string{"en.sleep.physiological", "en.breathing.event", "en.sneezing.event", "en.running.event", "en.coughing.event", "en.walking.event", "en.living.event", "en.flying_motion.event", "en.waking_up.event", "en.falling_asleep.event", "en.working.activity", "en.go.spatial_movement"} {
 		sense, senseErr := ids.NewSenseID(name)
@@ -224,6 +246,9 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	}
 	predicateAlternatives[buyingSense] = commerceFeatures
 	predicateAlternatives[sellingSense] = commerceFeatures
+	predicateAlternatives[helpSense] = commerceFeatures
+	predicateAlternatives[thankSense] = commerceFeatures
+	predicateAlternatives[usingSense] = commerceFeatures
 	for sense := range manipulationSenses {
 		predicateAlternatives[sense] = []map[features.FeatureID]features.FeatureValueID{
 			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
@@ -240,6 +265,11 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
 		{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
 	}
+	predicateAlternatives[writingInstrumentSense] = predicateAlternatives[writingMessageSense]
+	predicateAlternatives[conversingSense] = []map[features.FeatureID]features.FeatureValueID{
+		{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
+		{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
+	}
 	for sense := range intransitiveSenses {
 		predicateAlternatives[sense] = []map[features.FeatureID]features.FeatureValueID{
 			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
@@ -250,7 +280,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		Language: "en", PhraseProfile: phraseProfile, ClauseConnector: "and", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}}, AllowFinalPeriod: false,
 		ScopedSourcePlan: scopedPlan, ScopedReadingPolicy: ScopedSourceReadingPolicy,
 		RelationPathPlan: relationPathPlan, RelationSourceReadingPolicy: RelationSourceReadingPolicy,
-		AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "to": true, "from": true, "do": true, "does": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true, "who": true, "whom": true, "and": true, "up": true, "asleep": true},
+		AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "to": true, "from": true, "with": true, "do": true, "does": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true, "who": true, "whom": true, "and": true, "up": true, "asleep": true},
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
@@ -262,7 +292,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		EvidenceBuilder: englishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), base: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses:                     supportedSenses,
 			PredicateFeatureAlternativesBySense: predicateAlternatives,
-			AllowedUnlexicalizedTerminals:       map[string]bool{"at": true, "to": true, "from": true, "do": true, "does": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true, "up": true, "asleep": true},
+			AllowedUnlexicalizedTerminals:       map[string]bool{"at": true, "to": true, "from": true, "with": true, "do": true, "does": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true, "up": true, "asleep": true},
 		}},
 	}, nil
 }
@@ -378,7 +408,17 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 			continue
 		}
 		for _, alternative := range node.Alternatives {
-			if alternative.FamilyID != negativeFamily || !route.variantMatchesNumber(alternative.VariantID.String(), number) || alternative.Permission.SenseID.String() != route.sense {
+			attributedNegative := false
+			if route.concept == "concept:seeing" && alternative.FamilyID.String() == "construction:en.attributed_seeing_object_negative" && number == "singular" {
+				switch alternative.VariantID.String() {
+				case "construction:en.attributed_seeing_object_negative.svo",
+					"construction:en.attributed_seeing_object_negative.svo.indefinite_subject",
+					"construction:en.attributed_seeing_object_negative.svo.indefinite_object",
+					"construction:en.attributed_seeing_object_negative.svo.indefinite_both":
+					attributedNegative = true
+				}
+			}
+			if (alternative.FamilyID != negativeFamily && !attributedNegative) || (!attributedNegative && !route.variantMatchesNumber(alternative.VariantID.String(), number)) || alternative.Permission.SenseID.String() != route.sense {
 				return runtime.CompositionEvidence{}, nil
 			}
 			for _, slot := range alternative.Slots {
@@ -395,7 +435,7 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 					evidence.Operators = append(evidence.Operators, semantic.OperatorEvidence{
 						Operator: construction.Operator{
 							ID: "negate", Kind: construction.OperatorNegation, Value: construction.ValueNegated,
-							InputFamilyID: negativeFamily, OutputFamilyID: negativeFamily,
+							InputFamilyID: alternative.FamilyID, OutputFamilyID: alternative.FamilyID,
 							SemanticScope: construction.SemanticScope{TargetNodeID: "event"},
 							Capabilities:  []construction.Capability{"negation-negated"}, Provenance: englishNegationConstructionSource,
 						},

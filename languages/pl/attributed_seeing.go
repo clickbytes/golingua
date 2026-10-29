@@ -11,11 +11,15 @@ import (
 
 type polishAttributedSeeingGraph struct {
 	event, subject, object meaning.Node
+	scope                  meaning.Node
 	properties             map[meaning.NodeID]meaning.Node
 	propertyByBearer       map[meaning.NodeID]meaning.Node
 }
 
 func polishAttributedSeeingShape(source semantic.MeaningCandidate) (polishAttributedSeeingGraph, bool) {
+	if _, _, _, ok := polishAttributedPredicateBinding(source); !ok {
+		return polishAttributedSeeingGraph{}, false
+	}
 	if source.Meaning == nil || meaning.ValidateStructure(*source.Meaning, meaning.DefaultBudget()) != nil {
 		return polishAttributedSeeingGraph{}, false
 	}
@@ -39,12 +43,20 @@ func polishAttributedSeeingShape(source semantic.MeaningCandidate) (polishAttrib
 				return polishAttributedSeeingGraph{}, false
 			}
 			referents[node.ID] = node
+		case meaning.KindScope:
+			if shape.scope.ID != "" || node.Operator != meaning.OperatorNegation {
+				return polishAttributedSeeingGraph{}, false
+			}
+			shape.scope = node
 		default:
 			return polishAttributedSeeingGraph{}, false
 		}
 	}
-	if shape.event.ID == "" || shape.event.Kind != meaning.KindEvent || shape.event.Concept != "concept:seeing" || shape.event.TemporalFrame != meaning.TemporalFramePresent ||
+	if shape.event.ID == "" || shape.event.Kind != meaning.KindEvent || shape.event.TemporalFrame != meaning.TemporalFramePresent ||
 		len(referents) != 2 || len(shape.properties) < 1 || len(shape.properties) > 2 || len(shape.event.Participants) != 2 {
+		return polishAttributedSeeingGraph{}, false
+	}
+	if shape.scope.ID != "" && (shape.scope.Target != shape.event.ID || string(shape.event.Concept) != "concept:seeing") {
 		return polishAttributedSeeingGraph{}, false
 	}
 	var experiencer, stimulus meaning.NodeID
@@ -91,7 +103,11 @@ func polishAttributedSeeingShape(source semantic.MeaningCandidate) (polishAttrib
 	for _, root := range graph.Roots {
 		rootIDs[root] = true
 	}
-	if len(rootIDs) != 1+len(shape.properties) || !rootIDs[shape.event.ID] {
+	expectedRoot := shape.event.ID
+	if shape.scope.ID != "" {
+		expectedRoot = shape.scope.ID
+	}
+	if len(rootIDs) != 1+len(shape.properties) || !rootIDs[expectedRoot] {
 		return polishAttributedSeeingGraph{}, false
 	}
 	for id := range shape.properties {
@@ -100,6 +116,64 @@ func polishAttributedSeeingShape(source semantic.MeaningCandidate) (polishAttrib
 		}
 	}
 	return shape, true
+}
+
+func polishAttributedPredicateBinding(source semantic.MeaningCandidate) (sense, frame, core string, ok bool) {
+	if source.Meaning == nil {
+		return "", "", "", false
+	}
+	for _, node := range source.Meaning.Nodes {
+		if node.Kind != meaning.KindEvent {
+			continue
+		}
+		switch node.Concept {
+		case "concept:seeing":
+			if _, event, _, negated := polishNegatedPresent(source); negated && event.ID == node.ID {
+				return "sense:pl.widziec.visual", "pl.widziec.visual.attributed_negative", "concept:seeing", true
+			}
+			return "sense:pl.widziec.visual", "pl.widziec.visual.transitive", "concept:seeing", true
+		case "concept:hearing":
+			var stimulus, experiencer meaning.NodeID
+			for _, participant := range node.Participants {
+				switch participant.Role {
+				case "stimulus":
+					stimulus = participant.Target
+				case "experiencer":
+					experiencer = participant.Target
+				}
+			}
+			stimulusProperty, experiencerProperty := false, false
+			pluralObject, pluralExperiencer := false, false
+			for _, referenced := range source.Meaning.Nodes {
+				if referenced.ID == stimulus && referenced.Kind == meaning.KindReferent && referenced.Multiplicity == meaning.MultiplicityMany {
+					pluralObject = true
+				}
+				if referenced.ID == experiencer && referenced.Kind == meaning.KindReferent && referenced.Multiplicity == meaning.MultiplicityMany {
+					pluralExperiencer = true
+				}
+				if referenced.Kind == meaning.KindState && len(referenced.Participants) == 1 && referenced.Participants[0].Role == "bearer" {
+					stimulusProperty = stimulusProperty || referenced.Participants[0].Target == stimulus
+					experiencerProperty = experiencerProperty || referenced.Participants[0].Target == experiencer
+				}
+			}
+			if stimulusProperty {
+				if pluralObject {
+					return "sense:pl.slyszec.auditory", "pl.slyszec.auditory.attributed_object_plural", "concept:hearing", true
+				}
+				return "sense:pl.slyszec.auditory", "pl.slyszec.auditory.transitive", "concept:hearing", true
+			}
+			if experiencerProperty {
+				if pluralExperiencer {
+					return "sense:pl.slyszec.auditory", "pl.slyszec.auditory.attributed_subject_plural", "concept:hearing", true
+				}
+				return "sense:pl.slyszec.auditory", "pl.slyszec.auditory.attributed_subject", "concept:hearing", true
+			}
+			return "sense:pl.slyszec.auditory", "pl.slyszec.auditory.attributed_subject", "concept:hearing", true
+		default:
+			return "", "", "", false
+		}
+	}
+	return "", "", "", false
 }
 
 func polishSeeingColorConcept(concept string) bool {
@@ -117,7 +191,8 @@ func polishSeeingMultiplicitySupported(multiplicity meaning.Multiplicity) bool {
 
 func polishAttributedSeeingFamilyID(id string) bool {
 	return id == "construction:pl.attributed_seeing" || id == "construction:pl.attributed_seeing_object" || id == "construction:pl.attributed_seeing_both" ||
-		id == "construction:pl.attributed_seeing_plural" || id == "construction:pl.attributed_seeing_object_plural" || id == "construction:pl.attributed_seeing_both_plural"
+		id == "construction:pl.attributed_seeing_plural" || id == "construction:pl.attributed_seeing_object_plural" || id == "construction:pl.attributed_seeing_both_plural" ||
+		id == "construction:pl.attributed_seeing_object_negative"
 }
 
 func polishAttributedSeeingFamily(candidate realizer.TargetCandidate) bool {
@@ -133,7 +208,7 @@ func polishAttributedSeeingFamilyMatches(source semantic.MeaningCandidate, candi
 	subjectMany := shape.subject.Multiplicity == meaning.MultiplicityMany
 	objectMany := shape.object.Multiplicity == meaning.MultiplicityMany
 	switch familyID {
-	case "construction:pl.attributed_seeing", "construction:pl.attributed_seeing_object":
+	case "construction:pl.attributed_seeing", "construction:pl.attributed_seeing_object", "construction:pl.attributed_seeing_object_negative":
 		if subjectMany || objectMany {
 			return false
 		}
@@ -395,6 +470,13 @@ func polishAttributedSeeingVariant(source semantic.MeaningCandidate, candidate r
 		}
 		return variant == "construction:pl.attributed_seeing.svo"
 	case "construction:pl.attributed_seeing_object":
+		if variant == "construction:pl.attributed_seeing_object.ovs" {
+			if subjectDeixis != "unresolved" || objectDeixis != "unresolved" || shape.subject.Multiplicity != meaning.MultiplicityOne || shape.object.Multiplicity != meaning.MultiplicityOne {
+				return false
+			}
+			pluralOnly, nonPlural := polishAttributedSeeingLexicalNumberAlternatives(source, shape.object, candidates)
+			return !pluralOnly || nonPlural
+		}
 		if objectDeixis == "proximal" || objectDeixis == "distal" {
 			pluralOnly, _ := polishAttributedSeeingLexicalNumberAlternatives(source, shape.object, candidates)
 			if pluralOnly {
@@ -409,6 +491,10 @@ func polishAttributedSeeingVariant(source semantic.MeaningCandidate, candidate r
 		pluralOnly, _ := polishAttributedSeeingLexicalNumberAlternatives(source, shape.object, candidates)
 		return variant == "construction:pl.attributed_seeing_object.svo.plural_lexical" && pluralOnly &&
 			polishAttributedSeeingGenderAvailable(source, shape.object, "agreement_gender", "non_masculine_personal", "plural", candidates)
+	case "construction:pl.attributed_seeing_object_negative":
+		return shape.scope.ID != "" && shape.object.Multiplicity == meaning.MultiplicityOne && shape.subject.Multiplicity == meaning.MultiplicityOne &&
+			(subjectDeixis == "unresolved" && objectDeixis == "unresolved") &&
+			(variant == "construction:pl.attributed_seeing_object_negative.svo" || variant == "construction:pl.attributed_seeing_object_negative.ovs")
 	case "construction:pl.attributed_seeing_both":
 		if objectDeixis == "proximal" || objectDeixis == "distal" {
 			return false
@@ -464,6 +550,13 @@ func polishAttributedSeeingVariant(source semantic.MeaningCandidate, candidate r
 		expected, supported := polishAttributedSeeingDeterminer(subjectDeixis, class, "plural")
 		return supported && terminal == expected
 	case "construction:pl.attributed_seeing_object_plural":
+		if strings.HasPrefix(variant, "construction:pl.attributed_seeing_object_plural.ovs.") {
+			genderClass := strings.TrimPrefix(variant, "construction:pl.attributed_seeing_object_plural.ovs.")
+			return subjectDeixis == "unresolved" && objectDeixis == "unresolved" &&
+				shape.subject.Multiplicity == meaning.MultiplicityOne && shape.object.Multiplicity == meaning.MultiplicityMany &&
+				(genderClass == "masculine_personal" || genderClass == "non_masculine_personal") &&
+				polishAttributedSeeingGenderAvailable(source, shape.object, "agreement_gender", genderClass, "plural", candidates)
+		}
 		prefix := "construction:pl.attributed_seeing_object_plural.svo."
 		if !strings.HasPrefix(variant, prefix) {
 			return false
@@ -614,8 +707,9 @@ func polishAttributedSeeingMainCandidate(source semantic.MeaningCandidate, candi
 	if !ok || !polishAttributedSeeingContextsValid(source) || candidate.NodeID != shape.event.ID || candidate.Kind != meaning.KindEvent || candidate.Outcome != status.OutcomeOK {
 		return false
 	}
-	if candidate.Sense.ID.String() != "sense:pl.widziec.visual" || string(candidate.Frame.ID) != "pl.widziec.visual.transitive" ||
-		candidate.TransferBinding.CoreRef.String() != "concept:seeing" || !polishAttributedSeeingFamily(candidate) || !polishAttributedSeeingVariant(source, candidate, shape, candidates) ||
+	sense, frame, core, supportedPredicate := polishAttributedPredicateBinding(source)
+	if !supportedPredicate || candidate.Sense.ID.String() != sense || string(candidate.Frame.ID) != frame ||
+		candidate.TransferBinding.CoreRef.String() != core || !polishAttributedSeeingFamily(candidate) || !polishAttributedSeeingVariant(source, candidate, shape, candidates) ||
 		!realizer.CoversLexicalMeaning(*source.Meaning, candidate.NodeID, candidate.Family.Family) {
 		return false
 	}

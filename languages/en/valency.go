@@ -21,6 +21,16 @@ var englishConstructionReviewSource = provenance.SourceRef{
 	Version: "2026-10-22", License: "unknown", Author: "Codex by owner delegation",
 }
 
+var englishIssue436ConstructionSource = provenance.SourceRef{
+	ID: "golingua-en-help-thank-construction-436", URI: "https://github.com/clickbytes/golingua/issues/436",
+	Version: "2026-10-29", License: "internal", Author: "Codex by owner delegation",
+}
+
+var englishConversingConstructionSource = provenance.SourceRef{
+	ID: "golingua-en-conversing-construction-436", URI: "https://github.com/clickbytes/golingua/issues/436",
+	Version: "2026-10-29", License: "internal", Author: "Codex by owner delegation",
+}
+
 var englishLookingConstructionReviewSource = provenance.SourceRef{
 	ID:      "golingua-delegated-construction-review",
 	URI:     "https://github.com/clickbytes/golingua/issues/201#issuecomment-6354741947",
@@ -127,6 +137,29 @@ func englishAttributionConstructionBindings() []constructionBindingDeclaration {
 	return bindings
 }
 
+func englishAttributedHearingBindings() []constructionBindingDeclaration {
+	variants := []string{
+		"en.attributed_seeing.svo", "en.attributed_seeing.svo.indefinite_object", "en.attributed_seeing.svo.indefinite_object_an",
+		"en.attributed_seeing.svo.plural_subject", "en.attributed_seeing.svo.plural_subject.indefinite_object", "en.attributed_seeing.svo.plural_subject.indefinite_object_an",
+		"en.attributed_seeing.svo.demonstrative_this", "en.attributed_seeing.svo.demonstrative_that", "en.attributed_seeing.svo.demonstrative_these", "en.attributed_seeing.svo.demonstrative_those",
+		"en.attributed_seeing.svo.indefinite_subject", "en.attributed_seeing.svo.indefinite_subject_an", "en.attributed_seeing.svo.indefinite_subject_object", "en.attributed_seeing.svo.indefinite_subject_a_object_an",
+	}
+	bindings := make([]constructionBindingDeclaration, 0, len(variants))
+	for _, variant := range variants {
+		bindings = append(bindings, constructionBindingDeclaration{sense: "en.hear.auditory", frame: "en.hear.auditory.attributed_subject", family: "en.attributed_seeing", variant: variant})
+	}
+	return bindings
+}
+
+func englishAttributedHearingObjectPluralBindings() []constructionBindingDeclaration {
+	variants := []string{"en.attributed_seeing_object.svo.plural_object", "en.attributed_seeing_object.svo.plural_object.indefinite_subject", "en.attributed_seeing_object.svo.plural_object.indefinite_subject_an"}
+	bindings := make([]constructionBindingDeclaration, 0, len(variants))
+	for _, variant := range variants {
+		bindings = append(bindings, constructionBindingDeclaration{sense: "en.hear.auditory", frame: "en.hear.auditory.attributed_object", family: "en.attributed_seeing_object", variant: variant})
+	}
+	return bindings
+}
+
 func englishAttributionFrames() []frameDeclaration {
 	frames := make([]frameDeclaration, 0, len(englishAttributionSpecs))
 	for _, spec := range englishAttributionSpecs {
@@ -211,6 +244,10 @@ var englishConstructionBindingDeclarations = append(append(append(append(append(
 	{"en.pulling_object.event", "en.pulling_object.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.pushing_object.event", "en.pushing_object.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.cutting_object.event", "en.cutting_object.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.cutting_object.with_instrument", "en.cutting_object.with_instrument", "en.transitive_with_oblique", "en.transitive_with_oblique.svo"},
+	{"en.cutting_object.with_instrument", "en.cutting_object.with_instrument", "en.transitive_with_oblique", "en.transitive_with_oblique.svo.indefinite_target"},
+	{"en.cutting_object.with_instrument", "en.cutting_object.with_instrument", "en.transitive_with_oblique", "en.transitive_with_oblique.svo.indefinite_subject"},
+	{"en.cutting_object.with_instrument", "en.cutting_object.with_instrument", "en.transitive_with_oblique", "en.transitive_with_oblique.svo.indefinite_subject_target"},
 	{"en.folding_object.event", "en.folding_object.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.tearing_object.event", "en.tearing_object.transitive", "en.transitive", "en.transitive.svo"},
 	{"en.see.visual", "en.see.visual.transitive", "en.question.wh", "en.question.wh.subject"},
@@ -236,6 +273,10 @@ var englishConstructionBindingDeclarations = append(append(append(append(append(
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_subject_object"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_subject_a_object_an"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo"},
+	{"en.see.visual", "en.see.visual.attributed_negative", "en.attributed_seeing_object_negative", "en.attributed_seeing_object_negative.svo"},
+	{"en.see.visual", "en.see.visual.attributed_negative", "en.attributed_seeing_object_negative", "en.attributed_seeing_object_negative.svo.indefinite_subject"},
+	{"en.see.visual", "en.see.visual.attributed_negative", "en.attributed_seeing_object_negative", "en.attributed_seeing_object_negative.svo.indefinite_object"},
+	{"en.see.visual", "en.see.visual.attributed_negative", "en.attributed_seeing_object_negative", "en.attributed_seeing_object_negative.svo.indefinite_both"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo.this_object"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo.that_object"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo.these_object"},
@@ -353,6 +394,20 @@ var englishConstructionBindingDeclarations = append(append(append(append(append(
 	{"en.look.directed", "en.look.directed.at", "en.oblique", "en.oblique.svo.indefinite_subject_an_target_an"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique_negative", "en.oblique_negative.svo"},
 	{"en.look.directed", "en.look.directed.at", "en.oblique_negative", "en.oblique_negative.svo.plural"},
+	{"en.helping.event", "en.helping.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.helping.event", "en.helping.transitive", "en.transitive", "en.transitive.svo.bare_subject.object_the"},
+	{"en.helping.event", "en.helping.transitive", "en.transitive", "en.transitive.svo.bare_subject.object_a"},
+	{"en.thanking.event", "en.thanking.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.writing_with_instrument.event", "en.writing_with_instrument.oblique", "en.with_oblique", "en.with_oblique.svo"},
+	{"en.writing_with_instrument.event", "en.writing_with_instrument.oblique", "en.with_oblique", "en.with_oblique.svo.indefinite_target"},
+	{"en.writing_with_instrument.event", "en.writing_with_instrument.oblique", "en.with_oblique", "en.with_oblique.svo.indefinite_target_an"},
+	{"en.writing_with_instrument.event", "en.writing_with_instrument.oblique", "en.with_oblique", "en.with_oblique.svo.indefinite_subject"},
+	{"en.writing_with_instrument.event", "en.writing_with_instrument.oblique", "en.with_oblique", "en.with_oblique.svo.indefinite_subject_an"},
+	{"en.writing_with_instrument.event", "en.writing_with_instrument.oblique", "en.with_oblique", "en.with_oblique.svo.indefinite_subject_target"},
+	{"en.writing_with_instrument.event", "en.writing_with_instrument.oblique", "en.with_oblique", "en.with_oblique.svo.indefinite_subject_a_target_an"},
+	{"en.writing_with_instrument.event", "en.writing_with_instrument.oblique", "en.with_oblique", "en.with_oblique.svo.indefinite_subject_an_target_a"},
+	{"en.writing_with_instrument.event", "en.writing_with_instrument.oblique", "en.with_oblique", "en.with_oblique.svo.indefinite_subject_an_target_an"},
+	{"en.using_object.event", "en.using_object.transitive", "en.transitive", "en.transitive.svo"},
 }, englishNegativeArticleBindingDeclarations()...), englishReadingPastBindingDeclarations()...), englishBarePluralBindingDeclarations()...), englishManipulationBindingDeclarations()...), englishAffectiveBindingDeclarations()...), englishWritingMessageBindingDeclarations()...)
 
 func englishAffectiveBindingDeclarations() []constructionBindingDeclaration {
@@ -600,6 +655,34 @@ func englishManipulationBindingDeclarations() []constructionBindingDeclaration {
 }
 
 var englishFrames = []frameDeclaration{
+	{"en.hear.auditory.attributed_object", "en.hear.auditory", "en.attributed_seeing_object", []meaning.Role{"experiencer", "stimulus"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "experiencer", Required: true, GrammaticalFunction: "subject"},
+		{ID: "object", Role: "stimulus", Required: true, GrammaticalFunction: "object"},
+	}},
+	{"en.hear.auditory.attributed_subject", "en.hear.auditory", "en.attributed_seeing", []meaning.Role{"experiencer", "stimulus"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "experiencer", Required: true, GrammaticalFunction: "subject"},
+		{ID: "object", Role: "stimulus", Required: true, GrammaticalFunction: "object"},
+	}},
+	{"en.see.visual.attributed_negative", "en.see.visual", "en.attributed_seeing_object_negative", []meaning.Role{"experiencer", "stimulus"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "experiencer", Required: true, GrammaticalFunction: "subject"},
+		{ID: "object", Role: "stimulus", Required: true, GrammaticalFunction: "object"},
+	}},
+	{"en.conversing.with", "en.conversing.event", "en.with_oblique", []meaning.Role{"participant_a", "participant_b"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "participant_a", Required: true, GrammaticalFunction: "subject"},
+		{ID: "target", Role: "participant_b", Required: true, GrammaticalFunction: "oblique", Adposition: "with"},
+	}},
+	{"en.using_object.transitive", "en.using_object.event", "en.transitive", []meaning.Role{"user", "tool"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "user", Required: true, GrammaticalFunction: "subject"},
+		{ID: "object", Role: "tool", Required: true, GrammaticalFunction: "object"},
+	}},
+	{"en.helping.transitive", "en.helping.event", "en.transitive", []meaning.Role{"helper", "beneficiary"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "helper", Required: true, GrammaticalFunction: "subject"},
+		{ID: "object", Role: "beneficiary", Required: true, GrammaticalFunction: "object"},
+	}},
+	{"en.thanking.transitive", "en.thanking.event", "en.transitive", []meaning.Role{"thanker", "recipient"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "thanker", Required: true, GrammaticalFunction: "subject"},
+		{ID: "object", Role: "recipient", Required: true, GrammaticalFunction: "object"},
+	}},
 	{"en.writing_message.message_only", "en.writing_message.event", "en.transitive", []meaning.Role{"writer", "message", "recipient"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "writer", Required: true, GrammaticalFunction: "subject"},
 		{ID: "object", Role: "message", Required: true, GrammaticalFunction: "object"},
@@ -626,6 +709,10 @@ var englishFrames = []frameDeclaration{
 	{"en.writing_document.transitive", "en.writing_document.event", "en.transitive", []meaning.Role{"author", "document"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "author", Required: true, GrammaticalFunction: "subject"},
 		{ID: "object", Role: "document", Required: true, GrammaticalFunction: "object"},
+	}},
+	{"en.writing_with_instrument.oblique", "en.writing_with_instrument.event", "en.with_oblique", []meaning.Role{"writer", "instrument"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "writer", Required: true, GrammaticalFunction: "subject"},
+		{ID: "target", Role: "instrument", Required: true, GrammaticalFunction: "oblique", Adposition: "with"},
 	}},
 	{"en.go.spatial_movement.intransitive", "en.go.spatial_movement", "en.intransitive", []meaning.Role{"mover"}, []valency.ArgumentSlot{{ID: "subject", Role: "mover", Required: true, GrammaticalFunction: "subject"}}},
 	{"en.working_activity.intransitive", "en.working.activity", "en.intransitive", []meaning.Role{"worker"}, []valency.ArgumentSlot{{ID: "subject", Role: "worker", Required: true, GrammaticalFunction: "subject"}}},
@@ -659,6 +746,11 @@ var englishFrames = []frameDeclaration{
 	}},
 	{"en.cutting_object.transitive", "en.cutting_object.event", "en.transitive", []meaning.Role{"agent", "material"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject"}, {ID: "object", Role: "material", Required: true, GrammaticalFunction: "object"},
+	}},
+	{"en.cutting_object.with_instrument", "en.cutting_object.with_instrument", "en.transitive_with_oblique", []meaning.Role{"agent", "material", "instrument"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject"},
+		{ID: "object", Role: "material", Required: true, GrammaticalFunction: "object"},
+		{ID: "target", Role: "instrument", Required: true, GrammaticalFunction: "oblique", Adposition: "with"},
 	}},
 	{"en.folding_object.transitive", "en.folding_object.event", "en.transitive", []meaning.Role{"agent", "material"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject"}, {ID: "object", Role: "material", Required: true, GrammaticalFunction: "object"},
@@ -828,6 +920,16 @@ func CompileValency() (*valency.Index, error) {
 				AllowedConceptIDs: []ids.ConceptID{document},
 			}}
 		}
+		if item.id == "en.writing_with_instrument.oblique" {
+			pencil, err := ids.NewConceptID("pencil")
+			if err != nil {
+				return nil, fmt.Errorf("English writing-instrument selection concept: %w", err)
+			}
+			frame.SelectionalConstraints = []valency.SelectionalConstraint{{
+				ID: "writing_instrument_pencil", Role: "instrument", Strength: valency.ConstraintHard,
+				AllowedConceptIDs: []ids.ConceptID{pencil},
+			}}
+		}
 		if item.id == "en.living.intransitive" {
 			meat, err := ids.NewConceptID("meat_food")
 			if err != nil {
@@ -865,6 +967,13 @@ func CompileValency() (*valency.Index, error) {
 					return nil, fmt.Errorf("English WH question family: %w", err)
 				}
 				frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, questionFamilyID)
+			}
+			if item.id == "en.hear.auditory.transitive" {
+				familyID, err := ids.NewConstructionID("en.attributed_seeing_object")
+				if err != nil {
+					return nil, fmt.Errorf("English hearing object-modifier construction family: %w", err)
+				}
+				frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, familyID)
 			}
 			if item.id == "en.see.visual.transitive" {
 				pastFamilyID, err := ids.NewConstructionID("en.transitive_past")
@@ -907,6 +1016,14 @@ func CompileValency() (*valency.Index, error) {
 		frames = append(frames, frame)
 	}
 	bindingDeclarations := append([]constructionBindingDeclaration(nil), englishConstructionBindingDeclarations...)
+	for _, item := range englishConstructionBindingDeclarations {
+		if item.sense != "en.see.visual" || item.frame != "en.see.visual.transitive" || item.family != "en.attributed_seeing_object" {
+			continue
+		}
+		bindingDeclarations = append(bindingDeclarations, constructionBindingDeclaration{
+			sense: "en.hear.auditory", frame: "en.hear.auditory.transitive", family: item.family, variant: item.variant,
+		})
+	}
 	for _, entry := range []struct{ article, numberSuffix string }{
 		{"this", ""}, {"that", ""},
 		{"these", ".plural_subject"}, {"those", ".plural_subject"},
@@ -918,8 +1035,12 @@ func CompileValency() (*valency.Index, error) {
 		})
 	}
 	bindingDeclarations = append(bindingDeclarations, englishAttributionConstructionBindings()...)
+	bindingDeclarations = append(bindingDeclarations, englishAttributedHearingBindings()...)
+	bindingDeclarations = append(bindingDeclarations, englishAttributedHearingObjectPluralBindings()...)
 	bindingDeclarations = append(bindingDeclarations, englishGivingConstructionBindings()...)
 	bindingDeclarations = append(bindingDeclarations, englishCommerceOmissionBindings()...)
+	bindingDeclarations = append(bindingDeclarations, englishUsingTargetBindings()...)
+	bindingDeclarations = append(bindingDeclarations, englishConversingBindings()...)
 	bindings := make([]valency.ConstructionBinding, 0, len(bindingDeclarations))
 	for _, item := range bindingDeclarations {
 		senseID, err := ids.NewSenseID(item.sense)
@@ -943,7 +1064,42 @@ func CompileValency() (*valency.Index, error) {
 	return valency.BuildIndexWithCandidates(frames, bindings, nil)
 }
 
+func englishConversingBindings() []constructionBindingDeclaration {
+	variants := []string{
+		"svo", "svo.indefinite_target", "svo.indefinite_target_an", "svo.indefinite_subject", "svo.indefinite_subject_an",
+		"svo.indefinite_subject_target", "svo.indefinite_subject_a_target_an", "svo.indefinite_subject_an_target_a", "svo.indefinite_subject_an_target_an",
+	}
+	bindings := make([]constructionBindingDeclaration, 0, len(variants))
+	for _, variant := range variants {
+		bindings = append(bindings, constructionBindingDeclaration{
+			sense: "en.conversing.event", frame: "en.conversing.with", family: "en.with_oblique", variant: "en.with_oblique." + variant,
+		})
+	}
+	return bindings
+}
+
+func englishUsingTargetBindings() []constructionBindingDeclaration {
+	variants := []string{
+		"en.transitive.svo.indefinite_object",
+		"en.transitive.svo.indefinite_subject",
+		"en.transitive.svo.indefinite_subject_object",
+	}
+	bindings := make([]constructionBindingDeclaration, 0, len(variants))
+	for _, variant := range variants {
+		bindings = append(bindings, constructionBindingDeclaration{
+			sense: "en.using_object.event", frame: "en.using_object.transitive", family: "en.transitive", variant: variant,
+		})
+	}
+	return bindings
+}
+
 func englishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.sense == "en.conversing.event" {
+		return englishConversingConstructionSource
+	}
+	if item.sense == "en.helping.event" || item.sense == "en.thanking.event" || item.sense == "en.using_object.event" || item.sense == "en.cutting_object.with_instrument" {
+		return englishIssue436ConstructionSource
+	}
 	if item.family == "en.question.wh" {
 		return englishWHQuestionSource
 	}

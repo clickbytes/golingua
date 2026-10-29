@@ -35,6 +35,7 @@ var englishSpeechVerbEntries = []lexicalEntry{
 	{"en.accepting_offer.v", "accept", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.accepting_offer.event", "express consent to terms proposed by another participant", "accepting_offer"}}},
 	{"en.arguing.v", "argue", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.arguing.event", "engage in a verbal dispute in which positions conflict", "arguing"}}},
 	{"en.discussing.v", "discuss", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.discussing.event", "exchange views or information about a shared topic", "discussing"}}},
+	{"en.conversing.v", "talk", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.conversing.event", "engage in spoken exchange with another participant without specifying a topic or disagreement", "conversing"}}},
 	{"en.persuading.v", "persuade", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.persuading.event", "attempt to change another person’s beliefs or intended action through communication", "persuading"}}},
 	{"en.warning.v", "warn", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.warning.event", "alert a recipient to a risk or unfavorable possible occurrence", "warning"}}},
 	{"en.advising.v", "advise", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.advising.event", "offer an assessment or recommended course of action for a recipient’s benefit", "advising"}}},

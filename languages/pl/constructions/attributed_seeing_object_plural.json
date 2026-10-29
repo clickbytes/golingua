@@ -754,6 +754,166 @@
         "license": "internal",
         "author": "Codex by owner delegation"
       }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_object_plural.ovs.masculine_personal",
+      "family_id": "construction:pl.attributed_seeing_object_plural",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "plural"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "agreement_gender",
+          "value": "masculine_personal"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "modifier_object",
+          "feature": "number",
+          "value": "plural"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "modifier_object",
+          "feature": "agreement_gender",
+          "value": "masculine_personal"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "modifier_object",
+          "feature": "case",
+          "value": "accusative"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-plural-435",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_object_plural.ovs.non_masculine_personal",
+      "family_id": "construction:pl.attributed_seeing_object_plural",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "plural"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "agreement_gender",
+          "value": "non_masculine_personal"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "modifier_object",
+          "feature": "number",
+          "value": "plural"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "modifier_object",
+          "feature": "agreement_gender",
+          "value": "non_masculine_personal"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "modifier_object",
+          "feature": "case",
+          "value": "accusative"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-plural-435",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
     }
   ]
 }

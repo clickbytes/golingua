@@ -27,6 +27,7 @@ var polishEntries = []lexicalEntry{
 	{"pl.dziecko.n", "dziecko", "noun", []lexicalMeaning{{"pl.dziecko.person", "young person", "child"}, {"pl.dziecko.kinship", "a person in relation to their own parent, at any age", "child_of_person"}}},
 	{"pl.nauczyciel.n", "nauczyciel", "noun", []lexicalMeaning{{"pl.nauczyciel.role", "person acting as instructor", "teacher"}}},
 	{"pl.lekarz.n", "lekarz", "noun", []lexicalMeaning{{"pl.lekarz.role", "medical practitioner", "doctor"}}},
+	{"pl.uzywac.v", "używać", "verb", []lexicalMeaning{{"pl.uzywac.using", "Intentionally making practical use of an object or tool.", "using_object"}}},
 	{"pl.dom.n", "dom", "noun", []lexicalMeaning{{"pl.dom.building", "residential building", "house"}, {"pl.dom.household", "people living together as a household", "household"}}},
 	{"pl.szkola.n", "szkoła", "noun", []lexicalMeaning{{"pl.szkola.facility", "building used for instruction", "school"}, {"pl.szkola.institution", "organization conducting structured teaching", "school_institution"}}},
 	{"pl.ksiazka.n", "książka", "noun", []lexicalMeaning{{"pl.ksiazka.physical", "physical book for reading", "book"}, {"pl.ksiazka.work", "written work regardless of physical carrier", ""}}},
@@ -44,14 +45,14 @@ var polishEntries = []lexicalEntry{
 var polishCountNounLexemes = map[string]struct{}{
 	"pl.matka.n": {}, "pl.ojciec.n": {}, "pl.pies.n": {}, "pl.dom.n": {},
 	"pl.szkola.n": {}, "pl.ksiazka.n": {}, "pl.reka.n": {}, "pl.oko.n": {},
-	"pl.dokument.n": {},
-	"pl.dziecko.n":  {}, "pl.stol.n": {}, "pl.nauczyciel.n": {}, "pl.lekarz.n": {},
+	"pl.dokument.n": {}, "pl.noz.n": {},
+	"pl.dziecko.n": {}, "pl.stol.n": {}, "pl.nauczyciel.n": {}, "pl.lekarz.n": {},
 	"pl.samochod.n": {}, "pl.ryba.n": {}, "pl.szpital.n": {}, "pl.pizza.n": {},
 	"pl.okno.n": {}, "pl.jablko.n": {}, "pl.list.n": {},
 	"pl.sasiad.n": {}, "pl.klient.n": {}, "pl.wiadomosc.n": {}, "pl.kot.n": {},
 	"pl.ptak.n": {}, "pl.kon.n": {}, "pl.miasto.n": {}, "pl.mieszkanie.n": {},
 	"pl.rzeka.n": {}, "pl.siostra.n": {}, "pl.mewa.n": {}, "pl.drzewo.n": {},
-	"pl.krzeslo.n": {}, "pl.klucz.n": {}, "pl.torba.n": {},
+	"pl.krzeslo.n": {}, "pl.klucz.n": {}, "pl.torba.n": {}, "pl.olowek.n": {},
 }
 
 var polishLexicalSource = provenance.SourceRef{
@@ -64,6 +65,16 @@ var polishManipulationIntegrationSource = provenance.SourceRef{
 	Version: "2026-10-28", License: "internal", Author: "Codex by owner delegation",
 }
 
+var polishIssue436LexicalBindingSource = provenance.SourceRef{
+	ID: "golingua-pl-help-thank-436", URI: "https://github.com/clickbytes/golingua/issues/436",
+	Version: "2026-10-29", License: "internal", Author: "Codex by owner delegation",
+}
+
+var polishConversingLexicalBindingSource = provenance.SourceRef{
+	ID: "golingua-pl-conversing-lexical-436", URI: "https://github.com/clickbytes/golingua/issues/436",
+	Version: "2026-10-29", License: "internal", Author: "Codex by owner delegation",
+}
+
 var polishIssue434LexicalBindingSource = provenance.SourceRef{
 	ID: "golingua-pl-concept-binding-434", URI: "https://github.com/clickbytes/golingua/issues/434",
 	Version: "2026-10-28", License: "internal", Author: "Codex by owner delegation",
@@ -71,6 +82,10 @@ var polishIssue434LexicalBindingSource = provenance.SourceRef{
 
 var polishApprovedIssue434LexicalSenses = map[string]struct{}{
 	"pl.gazeta.publication": {}, "pl.deszcz.precipitation": {}, "pl.ogladac.view": {}, "pl.pisac.document": {},
+}
+
+var polishApprovedConversingSenses = map[string]struct{}{
+	"pl.rozmawiac.converse": {},
 }
 
 var polishApprovedManipulationIntegrationSenses = map[string]struct{}{
@@ -400,7 +415,7 @@ var polishApprovedLexicalBatch14Senses = map[string]struct{}{
 	"pl.przekonywac.persuade": {}, "pl.ostrzegac.warn": {}, "pl.doradzac.advise": {},
 	"pl.polecac.recommend": {}, "pl.skarzyc_sie.complain": {}, "pl.chwalic.praise": {},
 	"pl.krytykowac.criticize": {}, "pl.zartowac.joke": {}, "pl.szeptac.whisper": {},
-	"pl.krzyczec.shout": {}, "pl.pisac.write": {}, "pl.wysylac.send_message": {},
+	"pl.krzyczec.shout": {}, "pl.pisac.write": {}, "pl.pisac.instrument": {}, "pl.wysylac.send_message": {},
 	"pl.dostac.receive_message": {}, "pl.dzwonic.call": {}, "pl.tlumaczyc.translate": {},
 	"pl.tlumaczyc_ustnie.interpret": {}, "pl.oddychac.breathe": {}, "pl.wdychac.inhale": {},
 	"pl.wydychac.exhale": {}, "pl.kaszlec.cough": {}, "pl.kichac.sneeze": {},
@@ -570,35 +585,52 @@ var polishApprovedPositiveAdjectiveSenses = map[string]struct{}{
 	"pl.zielony.green": {}, "pl.otwarty.open": {}, "pl.smutny.sad": {},
 }
 
+var polishApprovedHelpThankSenses = map[string]struct{}{
+	"pl.pisac.instrument": {},
+	"pl.pomagac.help":     {}, "pl.dziekowac.thank": {},
+}
+
+var polishApprovedUsingSenses = map[string]struct{}{
+	"pl.uzywac.using": {},
+}
+
+var polishApprovedCuttingInstrumentSenses = map[string]struct{}{
+	"pl.kroic.with_instrument": {},
+}
+
 var polishApprovedPendingAuditSenses = map[string]struct{}{
 	"pl.nauczyciel.role": {}, "pl.ruch.motion": {}, "pl.malzonek.spouse": {},
 	"pl.partner.romantic": {}, "pl.pieszy.person": {}, "pl.slodycz.quality": {},
 }
 
 var polishFrameBySense = map[string]lexicon.ValencyID{
-	"pl.byc.class_membership": "pl.byc.class_membership.frame",
-	"pl.czarny.black":         "pl.czarny.black.frame",
-	"pl.czerwony.red":         "pl.czerwony.red.frame",
-	"pl.bialy.white":          "pl.bialy.white.frame",
-	"pl.niebieski.blue":       "pl.niebieski.blue.frame",
-	"pl.zielony.green":        "pl.zielony.green.frame",
-	"pl.otwarty.open":         "pl.otwarty.open.frame",
-	"pl.smutny.sad":           "pl.smutny.sad.frame",
-	"pl.widziec.visual":       "pl.widziec.visual.transitive",
-	"pl.patrzec.directed":     "pl.patrzec.directed.na",
-	"pl.slyszec.auditory":     "pl.slyszec.auditory.transitive",
-	"pl.dostac.receive":       "pl.dostac.receive.transitive",
-	"pl.dac.transfer":         "pl.dac.transfer.ditransitive",
-	"pl.dawac.transfer":       "pl.dawac.transfer.ditransitive",
-	"pl.pytac.request_info":   "pl.pytac.request_info.frame",
-	"pl.odpowiadac.answer":    "pl.odpowiadac.answer.frame",
-	"pl.czytac.interpret":     "pl.czytac.interpret.frame",
-	"pl.uczyc.instruct":       "pl.uczyc.instruct.frame",
-	"pl.uczyc_sie.acquire":    "pl.uczyc_sie.acquire.frame",
-	"pl.jesc.eat":             "pl.jesc.eat.frame",
-	"pl.pic.drink":            "pl.pic.drink.action",
-	"pl.spac.sleep":           "pl.spac.sleep.frame",
-	"pl.pracowac.activity":    "pl.pracowac.activity.frame",
+	"pl.rozmawiac.converse":    "pl.rozmawiac.converse.action",
+	"pl.byc.class_membership":  "pl.byc.class_membership.frame",
+	"pl.czarny.black":          "pl.czarny.black.frame",
+	"pl.czerwony.red":          "pl.czerwony.red.frame",
+	"pl.bialy.white":           "pl.bialy.white.frame",
+	"pl.niebieski.blue":        "pl.niebieski.blue.frame",
+	"pl.zielony.green":         "pl.zielony.green.frame",
+	"pl.otwarty.open":          "pl.otwarty.open.frame",
+	"pl.smutny.sad":            "pl.smutny.sad.frame",
+	"pl.widziec.visual":        "pl.widziec.visual.transitive",
+	"pl.pisac.instrument":      "pl.pisac.instrument.action",
+	"pl.patrzec.directed":      "pl.patrzec.directed.na",
+	"pl.slyszec.auditory":      "pl.slyszec.auditory.transitive",
+	"pl.dostac.receive":        "pl.dostac.receive.transitive",
+	"pl.dac.transfer":          "pl.dac.transfer.ditransitive",
+	"pl.dawac.transfer":        "pl.dawac.transfer.ditransitive",
+	"pl.uzywac.using":          "pl.uzywac.using.action",
+	"pl.kroic.with_instrument": "pl.kroic.with_instrument.action",
+	"pl.pytac.request_info":    "pl.pytac.request_info.frame",
+	"pl.odpowiadac.answer":     "pl.odpowiadac.answer.frame",
+	"pl.czytac.interpret":      "pl.czytac.interpret.frame",
+	"pl.uczyc.instruct":        "pl.uczyc.instruct.frame",
+	"pl.uczyc_sie.acquire":     "pl.uczyc_sie.acquire.frame",
+	"pl.jesc.eat":              "pl.jesc.eat.frame",
+	"pl.pic.drink":             "pl.pic.drink.action",
+	"pl.spac.sleep":            "pl.spac.sleep.frame",
+	"pl.pracowac.activity":     "pl.pracowac.activity.frame",
 }
 
 var polishAdditionalFramesBySense = map[string][]lexicon.ValencyID{
@@ -610,11 +642,16 @@ var polishAdditionalFramesBySense = map[string][]lexicon.ValencyID{
 }
 
 var polishParadigmByLexeme = map[string]string{
+	"pl.rozmawiac.v":       "pl_verb_rozmawiac_present_3sg_3pl",
 	"pl.dac.v":             "pl_verb_dac_past_3sg_masculine",
 	"pl.lubic.v":           "pl_verb_lubic_present_3sg_3pl",
 	"pl.ogladac.v":         "pl_verb_ogladac_present_3sg_3pl",
 	"pl.pisac.v":           "pl_verb_pisac_present_3sg_3pl",
+	"pl.kroic.v":           "pl_verb_kroic_present_3sg_3pl",
 	"pl.dawac.v":           "pl_verb_dawac_present_3sg_3pl",
+	"pl.pomagac.v":         "pl_verb_pomagac_present_3sg_3pl",
+	"pl.dziekowac.v":       "pl_verb_dziekowac_present_3sg_3pl",
+	"pl.uzywac.v":          "pl_verb_uzywac_present_3sg_3pl",
 	"pl.kupowac.v":         "pl_verb_kupowac_present_3sg_3pl",
 	"pl.sprzedawac.v":      "pl_verb_sprzedawac_present_3sg_3pl",
 	"pl.budzic_sie.v":      "pl_verb_budzic_sie_present_3sg_3pl",
@@ -927,6 +964,26 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishPositiveAdjectiveSource
+				}
+				if _, approved := polishApprovedHelpThankSenses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishIssue436LexicalBindingSource
+				}
+				if _, approved := polishApprovedUsingSenses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishIssue436LexicalBindingSource
+				}
+				if _, approved := polishApprovedCuttingInstrumentSenses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishIssue436LexicalBindingSource
+				}
+				if _, approved := polishApprovedConversingSenses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishConversingLexicalBindingSource
 				}
 				if _, approved := polishApprovedPersonalPronounSenses[senseID.Symbol().Name]; approved {
 					binding.Mapping = lexicon.MappingEquivalent

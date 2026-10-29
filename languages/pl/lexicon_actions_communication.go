@@ -3,6 +3,7 @@ package pl
 // communicationActionEntries contains selected Polish candidates with explicit
 // role-bearing valency frames. No morphology or construction is inferred.
 var communicationActionEntries = []lexicalEntry{
+	{"pl.rozmawiac.v", "rozmawiać", "verb", []lexicalMeaning{{"pl.rozmawiac.converse", "Engaging in spoken exchange with another participant without specifying a topic or disagreement.", "conversing"}}},
 	{"pl.informowac.v", "informować", "verb", []lexicalMeaning{{"pl.informowac.inform", "Conveying information that the sender expects the recipient to learn.", "informing"}}},
 	{"pl.wyjasniac.v", "wyjaśniać", "verb", []lexicalMeaning{{"pl.wyjasniac.explain", "Making a subject intelligible by presenting reasons, structure, or instructions.", "explaining"}}},
 	{"pl.opisywac.v", "opisywać", "verb", []lexicalMeaning{{"pl.opisywac.describe", "Communicating distinguishing features or conditions of a referent.", "describing"}}},

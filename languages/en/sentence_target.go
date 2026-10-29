@@ -378,7 +378,13 @@ func (englishSentenceOperatorBuilder) Build(ctx context.Context, source semantic
 	if !found {
 		return runtime.NoOperatorEvidenceBuilder{}.Build(ctx, source)
 	}
-	familyID, err := ids.NewConstructionID(strings.TrimPrefix(route.family, "construction:"))
+	familyName := route.family
+	if route.concept == "concept:seeing" {
+		if shape, valid := englishAttributedSeeingShape(source); valid && shape.scope.ID == scope.ID {
+			familyName = "construction:en.attributed_seeing_object_negative"
+		}
+	}
+	familyID, err := ids.NewConstructionID(strings.TrimPrefix(familyName, "construction:"))
 	if err != nil {
 		return nil, false, err
 	}
@@ -1111,7 +1117,7 @@ func (englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.Mean
 			return false
 		}
 	}
-	if candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || familyID != intransitiveFamily && familyID != transitiveFamily && familyID != transitivePastFamily && familyID != obliqueFamily && familyID != "construction:en.to_oblique" && familyID != attributedFamily && familyID != "construction:en.attributed_seeing_object" && familyID != "construction:en.attributed_seeing_both" && familyID != "construction:en.transitive_personal" && !isNegativeFamily {
+	if candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || familyID != intransitiveFamily && familyID != transitiveFamily && familyID != transitivePastFamily && familyID != obliqueFamily && familyID != "construction:en.to_oblique" && familyID != "construction:en.with_oblique" && familyID != "construction:en.transitive_with_oblique" && familyID != attributedFamily && familyID != "construction:en.attributed_seeing_object" && familyID != "construction:en.attributed_seeing_both" && familyID != "construction:en.transitive_personal" && !isNegativeFamily {
 		return true
 	}
 	variant, knownVariant := englishDeterminersForCandidate(candidate)
@@ -1679,6 +1685,10 @@ var englishDeterminerVariants = map[string]englishDeterminers{
 	"construction:en.attributed_seeing.svo.plural_subject.indefinite_object":           {subject: "the", object: "a"},
 	"construction:en.attributed_seeing.svo.plural_subject.indefinite_object_an":        {subject: "the", object: "an"},
 	"construction:en.attributed_seeing_object.svo":                                     {subject: "the", object: "the"},
+	"construction:en.attributed_seeing_object_negative.svo":                            {subject: "the", object: "the"},
+	"construction:en.attributed_seeing_object_negative.svo.indefinite_subject":         {subject: "a", object: "the"},
+	"construction:en.attributed_seeing_object_negative.svo.indefinite_object":          {subject: "the", object: "a"},
+	"construction:en.attributed_seeing_object_negative.svo.indefinite_both":            {subject: "a", object: "a"},
 	"construction:en.attributed_seeing_object.svo.this_object":                         {subject: "the", object: "this"},
 	"construction:en.attributed_seeing_object.svo.that_object":                         {subject: "the", object: "that"},
 	"construction:en.attributed_seeing_object.svo.these_object":                        {subject: "the", object: "these"},
@@ -1742,6 +1752,19 @@ var englishDeterminerVariants = map[string]englishDeterminers{
 	"construction:en.to_oblique.svo.indefinite_subject_a_target_an":                    {subject: "a", target: "an"},
 	"construction:en.to_oblique.svo.indefinite_subject_an_target_a":                    {subject: "an", target: "a"},
 	"construction:en.to_oblique.svo.indefinite_subject_an_target_an":                   {subject: "an", target: "an"},
+	"construction:en.with_oblique.svo":                                                 {subject: "the", target: "the"},
+	"construction:en.with_oblique.svo.indefinite_target":                               {subject: "the", target: "a"},
+	"construction:en.with_oblique.svo.indefinite_target_an":                            {subject: "the", target: "an"},
+	"construction:en.with_oblique.svo.indefinite_subject":                              {subject: "a", target: "the"},
+	"construction:en.with_oblique.svo.indefinite_subject_an":                           {subject: "an", target: "the"},
+	"construction:en.with_oblique.svo.indefinite_subject_target":                       {subject: "a", target: "a"},
+	"construction:en.with_oblique.svo.indefinite_subject_a_target_an":                  {subject: "a", target: "an"},
+	"construction:en.with_oblique.svo.indefinite_subject_an_target_a":                  {subject: "an", target: "a"},
+	"construction:en.with_oblique.svo.indefinite_subject_an_target_an":                 {subject: "an", target: "an"},
+	"construction:en.transitive_with_oblique.svo":                                      {subject: "the", object: "bare", target: "the"},
+	"construction:en.transitive_with_oblique.svo.indefinite_target":                    {subject: "the", object: "bare", target: "a"},
+	"construction:en.transitive_with_oblique.svo.indefinite_subject":                   {subject: "a", object: "bare", target: "the"},
+	"construction:en.transitive_with_oblique.svo.indefinite_subject_target":            {subject: "a", object: "bare", target: "a"},
 	"construction:en.oblique_negative.svo":                                             {subject: "the", target: "the"},
 	"construction:en.oblique_negative.svo.plural":                                      {subject: "the", target: "the"},
 }
@@ -1782,6 +1805,10 @@ func englishStandardDeterminerVariant(familyID string) string {
 		return "construction:en.oblique.svo"
 	case "construction:en.to_oblique":
 		return "construction:en.to_oblique.svo"
+	case "construction:en.with_oblique":
+		return "construction:en.with_oblique.svo"
+	case "construction:en.transitive_with_oblique":
+		return "construction:en.transitive_with_oblique.svo"
 	case "construction:en.oblique_negative":
 		return "construction:en.oblique_negative.svo"
 	case "construction:en.attributed_seeing":
@@ -1828,7 +1855,7 @@ func englishDeterminerForRole(candidate realizer.TargetCandidate, role meaning.R
 		}
 		return "", false
 	}
-	if familyID != "construction:en.intransitive" && familyID != "construction:en.transitive" && familyID != "construction:en.transitive_past" && familyID != "construction:en.transitive_negative" && familyID != "construction:en.oblique" && familyID != "construction:en.to_oblique" && familyID != "construction:en.oblique_negative" && familyID != "construction:en.attributed_seeing" && familyID != "construction:en.attributed_seeing_object" && familyID != "construction:en.attributed_seeing_both" && familyID != "construction:en.transitive_personal" {
+	if familyID != "construction:en.intransitive" && familyID != "construction:en.transitive" && familyID != "construction:en.transitive_past" && familyID != "construction:en.transitive_negative" && familyID != "construction:en.oblique" && familyID != "construction:en.to_oblique" && familyID != "construction:en.with_oblique" && familyID != "construction:en.transitive_with_oblique" && familyID != "construction:en.oblique_negative" && familyID != "construction:en.attributed_seeing" && familyID != "construction:en.attributed_seeing_object" && familyID != "construction:en.attributed_seeing_object_negative" && familyID != "construction:en.attributed_seeing_both" && familyID != "construction:en.transitive_personal" {
 		return "", false
 	}
 	variant, exists := englishDeterminersForCandidate(candidate)

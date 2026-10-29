@@ -76,6 +76,11 @@ var physicalActionFrames = []frameDeclaration{
 		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "object", Role: "material", Required: true, GrammaticalFunction: "object", Case: "accusative"},
 	}},
+	{"pl.kroic.with_instrument.action", "pl.kroic.with_instrument", "pl.transitive_instrumental", []meaning.Role{"agent", "material", "instrument"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "material", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+		{ID: "instrument", Role: "instrument", Required: true, GrammaticalFunction: "oblique", Case: "instrumental"},
+	}},
 	{"pl.drzec.tear.action", "pl.drzec.tear", "pl.transitive", []meaning.Role{"agent", "material"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "object", Role: "material", Required: true, GrammaticalFunction: "object", Case: "accusative"},

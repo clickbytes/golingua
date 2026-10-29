@@ -25,6 +25,31 @@ var givingPerfectivePastSource = provenance.SourceRef{
 	Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
 }
 
+var helpingMorphSource = provenance.SourceRef{
+	ID: "wsjp-pl-pomagac-present", URI: "https://wsjp.pl/haslo/podglad/25622/pomagac/2729386/w-nauce",
+	Version: "2026-10-29", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
+}
+
+var thankingMorphSource = provenance.SourceRef{
+	ID: "wsjp-pl-dziekowac-present", URI: "https://wsjp.pl/haslo/podglad/22696/dziekowac",
+	Version: "2026-10-29", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
+}
+
+var usingMorphSource = provenance.SourceRef{
+	ID: "wsjp-pl-uzywac-present", URI: "https://wsjp.pl/haslo/podglad/15960/uzywac",
+	Version: "2026-10-29", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
+}
+
+var cuttingMorphSource = provenance.SourceRef{
+	ID: "wsjp-pl-kroic-present", URI: "https://wsjp.pl/haslo/podglad/1564/kroic/2531996/chleb",
+	Version: "2026-10-29", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
+}
+
+var conversingMorphSource = provenance.SourceRef{
+	ID: "wsjp-pl-rozmawiac-present", URI: "https://wsjp.pl/haslo/podglad/21480/rozmawiac",
+	Version: "2026-10-29", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
+}
+
 // Only explicitly declared noun and adjective forms enter these paradigms.
 func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm {
 	result := attestedNounParadigms(profile)
@@ -55,7 +80,7 @@ func polishDaćPastParadigm(profile *features.LanguageFeatureProfile) morph.Para
 }
 
 func polishPresentThirdPersonParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm {
-	result := make([]morph.Paradigm, 0, 29)
+	result := make([]morph.Paradigm, 0, 32)
 	for _, item := range []struct {
 		id, singular, plural string
 		source               provenance.SourceRef
@@ -70,6 +95,8 @@ func polishPresentThirdPersonParadigms(profile *features.LanguageFeatureProfile)
 		{"pl_verb_popychac_present_3sg_3pl", "popycha", "popychają", provenance.SourceRef{ID: "wsjp-pl-popychac", URI: "https://wsjp.pl/haslo/podglad/28202/popychac/5027558/wozek", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
 		{"pl_verb_pchac_present_3sg_3pl", "pcha", "pchają", provenance.SourceRef{ID: "wsjp-pl-pchac", URI: "https://wsjp.pl/haslo/podglad/28194/pchac/2702490/wozek", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
 		{"pl_verb_ciac_present_3sg_3pl", "tnie", "tną", provenance.SourceRef{ID: "wsjp-pl-ciac", URI: "https://wsjp.pl/haslo/podglad/1652/ciac/5013762/na-czesci", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
+		{"pl_verb_kroic_present_3sg_3pl", "kroi", "kroją", cuttingMorphSource},
+		{"pl_verb_rozmawiac_present_3sg_3pl", "rozmawia", "rozmawiają", conversingMorphSource},
 		{"pl_verb_skladac_present_3sg_3pl", "składa", "składają", provenance.SourceRef{ID: "wsjp-pl-skladac", URI: "https://wsjp.pl/haslo/podglad/23658/skladac/5027088/parasol", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
 		{"pl_verb_drzec_present_3sg_3pl", "drze", "drą", provenance.SourceRef{ID: "wsjp-pl-drzec", URI: "https://wsjp.pl/haslo/podglad/36741/drzec/4891089/kartke", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
 		{"pl_verb_rozdzierac_present_3sg_3pl", "rozdziera", "rozdzierają", provenance.SourceRef{ID: "dobryslownik-pl-rozdzierac", URI: "https://dobryslownik.pl/slowo/rozdziera%C4%87/48819/", Version: "2026-10-28", License: "unknown", Author: "Dobry słownik języka polskiego i poradnia językowa"}},
@@ -83,6 +110,9 @@ func polishPresentThirdPersonParadigms(profile *features.LanguageFeatureProfile)
 		{"pl_verb_zasypiac_present_3sg_3pl", "zasypia", "zasypiają", provenance.SourceRef{ID: "wsjp-pl-zasypiac", URI: "https://wsjp.pl/haslo/podglad/3218/zasypiac/516873/zaczynac-spac", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
 		{"pl_verb_zyc_present_3sg_3pl", "żyje", "żyją", provenance.SourceRef{ID: "wsjp-pl-zyc", URI: "https://wsjp.pl/haslo/podglad/2312/zyc", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
 		{"pl_verb_pracowac_present_3sg_3pl", "pracuje", "pracują", provenance.SourceRef{ID: "wsjp-pl-pracowac", URI: "https://wsjp.pl/haslo/podglad/19959/pracowac/5068993/w-banku", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
+		{"pl_verb_pomagac_present_3sg_3pl", "pomaga", "pomagają", helpingMorphSource},
+		{"pl_verb_dziekowac_present_3sg_3pl", "dziękuje", "dziękują", thankingMorphSource},
+		{"pl_verb_uzywac_present_3sg_3pl", "używa", "używają", usingMorphSource},
 		{"pl_verb_latac_present_3sg_3pl", "lata", "latają", provenance.SourceRef{ID: "wsjp-pl-latac", URI: "https://wsjp.pl/haslo/podglad/38367/latac/4212091/samolot-ptak", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
 		{"pl_verb_isc_present_3sg_3pl", "idzie", "idą", provenance.SourceRef{ID: "wsjp-pl-isc", URI: "https://wsjp.pl/haslo/podglad/19012/isc/5066139/do-domu", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
 		{"pl_verb_dawac_present_3sg_3pl", "daje", "dają", provenance.SourceRef{ID: "wsjp-pl-dawac", URI: "https://wsjp.pl/haslo/podglad/6365/dawac/4488497/prezent", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
@@ -124,6 +154,8 @@ func polishPresentThirdPersonMorphRecords(lexemes []lexicon.MorphLexeme) ([]lexe
 		"lexeme:pl.popychac.v":        {"pl_verb_popychac_present_3sg_3pl", "popycha", "popychają"},
 		"lexeme:pl.pchac.v":           {"pl_verb_pchac_present_3sg_3pl", "pcha", "pchają"},
 		"lexeme:pl.ciac.v":            {"pl_verb_ciac_present_3sg_3pl", "tnie", "tną"},
+		"lexeme:pl.kroic.v":           {"pl_verb_kroic_present_3sg_3pl", "kroi", "kroją"},
+		"lexeme:pl.rozmawiac.v":       {"pl_verb_rozmawiac_present_3sg_3pl", "rozmawia", "rozmawiają"},
 		"lexeme:pl.skladac.v":         {"pl_verb_skladac_present_3sg_3pl", "składa", "składają"},
 		"lexeme:pl.drzec.v":           {"pl_verb_drzec_present_3sg_3pl", "drze", "drą"},
 		"lexeme:pl.rozdzierac.v":      {"pl_verb_rozdzierac_present_3sg_3pl", "rozdziera", "rozdzierają"},
@@ -137,6 +169,9 @@ func polishPresentThirdPersonMorphRecords(lexemes []lexicon.MorphLexeme) ([]lexe
 		"lexeme:pl.zasypiac.v":        {"pl_verb_zasypiac_present_3sg_3pl", "zasypia", "zasypiają"},
 		"lexeme:pl.zyc.v":             {"pl_verb_zyc_present_3sg_3pl", "żyje", "żyją"},
 		"lexeme:pl.pracowac.v":        {"pl_verb_pracowac_present_3sg_3pl", "pracuje", "pracują"},
+		"lexeme:pl.pomagac.v":         {"pl_verb_pomagac_present_3sg_3pl", "pomaga", "pomagają"},
+		"lexeme:pl.dziekowac.v":       {"pl_verb_dziekowac_present_3sg_3pl", "dziękuje", "dziękują"},
+		"lexeme:pl.uzywac.v":          {"pl_verb_uzywac_present_3sg_3pl", "używa", "używają"},
 		"lexeme:pl.latac.v":           {"pl_verb_latac_present_3sg_3pl", "lata", "latają"},
 		"lexeme:pl.isc.v":             {"pl_verb_isc_present_3sg_3pl", "idzie", "idą"},
 		"lexeme:pl.dawac.v":           {"pl_verb_dawac_present_3sg_3pl", "daje", "dają"},
