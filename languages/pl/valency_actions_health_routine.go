@@ -19,6 +19,10 @@ var healthRoutineActionFrames = []frameDeclaration{
 		{ID: "subject", Role: "author", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "object", Role: "document", Required: true, GrammaticalFunction: "object", Case: "accusative"},
 	}},
+	{"pl.pisac.instrument.action", "pl.pisac.instrument", "pl.transitive", []meaning.Role{"writer", "instrument"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "writer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "instrument", Required: true, GrammaticalFunction: "object", Case: "instrumental"},
+	}},
 	{"pl.gotowac.boil.action", "pl.gotowac.boil", "pl.transitive", []meaning.Role{"cook", "food"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "cook", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "object", Role: "food", Required: true, GrammaticalFunction: "object", Case: "accusative"},

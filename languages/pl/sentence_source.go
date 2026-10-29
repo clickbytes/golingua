@@ -84,6 +84,18 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	if err != nil {
 		return nil, err
 	}
+	helpSense, err := ids.NewSenseID("pl.pomagac.help")
+	if err != nil {
+		return nil, err
+	}
+	thankSense, err := ids.NewSenseID("pl.dziekowac.thank")
+	if err != nil {
+		return nil, err
+	}
+	usingSense, err := ids.NewSenseID("pl.uzywac.using")
+	if err != nil {
+		return nil, err
+	}
 	lookingSense, err := ids.NewSenseID("pl.patrzec.directed")
 	if err != nil {
 		return nil, err
@@ -133,7 +145,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		caseValues[features.FeatureValueID(value)] = value
 	}
 	manipulationSenses := map[ids.SenseID]bool{}
-	for _, name := range []string{"pl.otwierac_obiekt.open", "pl.zamykac_obiekt.close", "pl.niesc.carry", "pl.trzymac.hold", "pl.ciagnac.pull", "pl.pchac.push", "pl.ciac.cut", "pl.skladac.fold", "pl.rozdzierac.tear"} {
+	for _, name := range []string{"pl.otwierac_obiekt.open", "pl.zamykac_obiekt.close", "pl.niesc.carry", "pl.trzymac.hold", "pl.ciagnac.pull", "pl.pchac.push", "pl.ciac.cut", "pl.kroic.with_instrument", "pl.skladac.fold", "pl.rozdzierac.tear"} {
 		sense, senseErr := ids.NewSenseID(name)
 		if senseErr != nil {
 			return nil, senseErr
@@ -144,7 +156,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	if err != nil {
 		return nil, err
 	}
-	supportedSenses := map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true, redSense: true, eatingSense: true, drinkingSense: true, givingSense: true, buyingSense: true, sellingSense: true}
+	supportedSenses := map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true, redSense: true, eatingSense: true, drinkingSense: true, givingSense: true, buyingSense: true, sellingSense: true, helpSense: true, thankSense: true, usingSense: true}
 	for sense := range manipulationSenses {
 		supportedSenses[sense] = true
 	}
@@ -165,6 +177,16 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		return nil, err
 	}
 	supportedSenses[writingMessageSense] = true
+	writingInstrumentSense, err := ids.NewSenseID("pl.pisac.instrument")
+	if err != nil {
+		return nil, err
+	}
+	supportedSenses[writingInstrumentSense] = true
+	conversingSense, err := ids.NewSenseID("pl.rozmawiac.converse")
+	if err != nil {
+		return nil, err
+	}
+	supportedSenses[conversingSense] = true
 	intransitiveSenses := map[ids.SenseID]bool{}
 	for _, name := range []string{"pl.spac.sleep", "pl.oddychac.breathe", "pl.kichac.sneeze", "pl.biec.run", "pl.kaszlec.cough", "pl.chodzic.walk", "pl.isc.move", "pl.zyc.live", "pl.latac.fly", "pl.zasypiac.sleep", "pl.budzic_sie.wake", "pl.pracowac.activity"} {
 		sense, senseErr := ids.NewSenseID(name)
@@ -237,7 +259,10 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	}
 	predicateAlternatives[buyingSense] = commerceFeatures
 	predicateAlternatives[sellingSense] = commerceFeatures
-	for _, name := range []string{"pl.otwierac_obiekt.open", "pl.zamykac_obiekt.close", "pl.niesc.carry", "pl.trzymac.hold", "pl.ciagnac.pull", "pl.pchac.push", "pl.ciac.cut", "pl.skladac.fold", "pl.rozdzierac.tear"} {
+	predicateAlternatives[helpSense] = commerceFeatures
+	predicateAlternatives[thankSense] = commerceFeatures
+	predicateAlternatives[usingSense] = commerceFeatures
+	for _, name := range []string{"pl.otwierac_obiekt.open", "pl.zamykac_obiekt.close", "pl.niesc.carry", "pl.trzymac.hold", "pl.ciagnac.pull", "pl.pchac.push", "pl.ciac.cut", "pl.kroic.with_instrument", "pl.skladac.fold", "pl.rozdzierac.tear"} {
 		sense, senseErr := ids.NewSenseID(name)
 		if senseErr != nil {
 			return nil, senseErr
@@ -263,11 +288,16 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "mood": "indicative", "voice": "active", "person": "third", "number": "singular"},
 		{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "mood": "indicative", "voice": "active", "person": "third", "number": "plural"},
 	}
+	predicateAlternatives[writingInstrumentSense] = predicateAlternatives[writingMessageSense]
+	predicateAlternatives[conversingSense] = []map[features.FeatureID]features.FeatureValueID{
+		{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "mood": "indicative", "voice": "active", "person": "third", "number": "singular"},
+		{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "mood": "indicative", "voice": "active", "person": "third", "number": "plural"},
+	}
 	return &runtime.SourcePipeline{
 		Language: "pl", PhraseProfile: phraseProfile, ClauseConnector: "i", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}}, AllowFinalPeriod: false,
 		ScopedSourcePlan: scopedPlan, ScopedReadingPolicy: ScopedSourceReadingPolicy,
 		RelationPathPlan: relationPathPlan, RelationSourceReadingPolicy: RelationSourceReadingPolicy,
-		AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "od": true, "do": true, "nie": true, "to": true, "ten": true, "ta": true, "jest": true, "są": true, "te": true, "ci": true, "tamte": true, "tamci": true, "kto": true, "kogo": true, "i": true, "się": true, "tamten": true, "tamta": true, "tamto": true},
+		AllowedUnlexicalizedTerminals: map[string]bool{"na": true, "od": true, "do": true, "z": true, "nie": true, "to": true, "ten": true, "ta": true, "jest": true, "są": true, "te": true, "ci": true, "tamte": true, "tamci": true, "kto": true, "kogo": true, "i": true, "się": true, "tamten": true, "tamta": true, "tamto": true},
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
@@ -280,7 +310,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		EvidenceBuilder: polishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), valency: valencyIndex, constructions: registry, base: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses:                     supportedSenses,
 			PredicateFeatureAlternativesBySense: predicateAlternatives,
-			AllowedUnlexicalizedTerminals:       map[string]bool{"na": true, "od": true, "do": true, "nie": true, "to": true, "ten": true, "ta": true, "jest": true, "są": true, "te": true, "ci": true, "tamte": true, "tamci": true, "się": true, "tamten": true, "tamta": true, "tamto": true},
+			AllowedUnlexicalizedTerminals:       map[string]bool{"na": true, "od": true, "do": true, "z": true, "nie": true, "to": true, "ten": true, "ta": true, "jest": true, "są": true, "te": true, "ci": true, "tamte": true, "tamci": true, "się": true, "tamten": true, "tamta": true, "tamto": true},
 		}},
 	}, nil
 }
@@ -374,7 +404,7 @@ func polishPersonalVerbHasCompatibleSubject(verb parser.PhraseCandidate, candida
 	}
 	knownMismatch, compatible, unknown := false, false, false
 	for _, subject := range candidates {
-		if subject.Category != construction.CategoryNP || subject.TokenEnd != verb.TokenStart || subject.Features["case"] != "nominative" {
+		if subject.Category != construction.CategoryNP || (subject.TokenEnd != verb.TokenStart && subject.TokenStart != verb.TokenEnd) || subject.Features["case"] != "nominative" {
 			continue
 		}
 		subjectPerson, subjectNumber := string(subject.Features["person"]), string(subject.Features["number"])
@@ -447,10 +477,10 @@ func (builder polishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, la
 		}
 		for _, alternative := range node.Alternatives {
 			route, supported := polishPresentNegationRouteForSense(alternative.Permission.SenseID)
-			if !supported || alternative.FamilyID.String() != route.family || alternative.VariantID.String() != route.variant {
+			if !supported || !polishPresentNegationVariantAllowed(route, alternative.FamilyID.String(), alternative.VariantID.String()) {
 				return runtime.CompositionEvidence{}, nil
 			}
-			negativeFamily, err := ids.NewConstructionID(strings.TrimPrefix(route.family, "construction:"))
+			negativeFamily, err := ids.NewConstructionID(strings.TrimPrefix(alternative.FamilyID.String(), "construction:"))
 			if err != nil {
 				return runtime.CompositionEvidence{}, err
 			}

@@ -5,16 +5,137 @@
     "id": "construction:pl.transitive_negative",
     "language": "pl",
     "slot_specs": [
-      {"id":"subject","position":0,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"},
-      {"id":"verb","position":1,"category":"VP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"},
-      {"id":"object","position":2,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"}
+      {
+        "id": "subject",
+        "position": 0,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "verb",
+        "position": 1,
+        "category": "VP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "object",
+        "position": 2,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      }
     ],
-    "constraints":[{"id":"subject_verb_number","kind":"agreement","strength":"hard","controller_slot":"subject","target_slot":"verb","features":["number"]}],
-    "operators":["negate"],
-    "capabilities":["negation-negated","negation","surface_negation"],
-    "provenance":{"id":"golingua-g10-16-negated-seeing","uri":"https://github.com/clickbytes/golingua/issues/245#issuecomment-6358351181","version":"2026-10-23","license":"internal","author":"Codex by owner delegation"}
+    "constraints": [
+      {
+        "id": "subject_verb_number",
+        "kind": "agreement",
+        "strength": "hard",
+        "controller_slot": "subject",
+        "target_slot": "verb",
+        "features": [
+          "number"
+        ]
+      }
+    ],
+    "operators": [
+      "negate"
+    ],
+    "capabilities": [
+      "negation-negated",
+      "negation",
+      "surface_negation"
+    ],
+    "provenance": {
+      "id": "golingua-g10-16-negated-seeing",
+      "uri": "https://github.com/clickbytes/golingua/issues/245#issuecomment-6358351181",
+      "version": "2026-10-23",
+      "license": "internal",
+      "author": "Codex by owner delegation"
+    }
   },
   "variants": [
-    {"id":"construction:pl.transitive_negative.svo","family_id":"construction:pl.transitive_negative","sequence":[{"kind":"slot","slot_id":"subject"},{"kind":"terminal","terminal":"nie"},{"kind":"slot","slot_id":"verb"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"both","provenance":{"id":"golingua-g10-16-negated-seeing","uri":"https://github.com/clickbytes/golingua/issues/245#issuecomment-6358351181","version":"2026-10-23","license":"internal","author":"Codex by owner delegation"}}
+    {
+      "id": "construction:pl.transitive_negative.svo",
+      "family_id": "construction:pl.transitive_negative",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "nie"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-g10-16-negated-seeing",
+        "uri": "https://github.com/clickbytes/golingua/issues/245#issuecomment-6358351181",
+        "version": "2026-10-23",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.transitive_negative.ovs",
+      "family_id": "construction:pl.transitive_negative",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "nie"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "marked",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-pl-negative-seeing-ovs-436",
+        "uri": "https://github.com/clickbytes/golingua/issues/436",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    }
   ]
 }

@@ -102,6 +102,8 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 			principalParts = finiteEnglishPrincipalParts(lexeme, "wake", "wakes", "woke", "woken", "waking")
 		case "lexeme:en.walking.v":
 			principalParts = finiteEnglishPrincipalParts(lexeme, "walk", "walks", "walked", "walked", "walking")
+		case "lexeme:en.conversing.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "talk", "talks", "talked", "talked", "talking")
 		case "lexeme:en.falling.v":
 			principalParts = finiteEnglishPrincipalParts(lexeme, "fall", "falls", "fell", "fallen", "falling")
 		case "lexeme:en.falling_asleep.v":
@@ -124,7 +126,7 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 			principalParts = finiteEnglishPrincipalParts(lexeme, "like", "likes", "liked", "liked", "liking")
 		case "lexeme:en.watching.v", "lexeme:en.watching_screen.v":
 			principalParts = finiteEnglishPrincipalParts(lexeme, "watch", "watches", "watched", "watched", "watching")
-		case "lexeme:en.writing_document.v", "lexeme:en.writing_message.v":
+		case "lexeme:en.writing_document.v", "lexeme:en.writing_message.v", "lexeme:en.writing_with_instrument.v":
 			principalParts = finiteEnglishPrincipalParts(lexeme, "write", "writes", "wrote", "written", "writing")
 		}
 		if lexeme.ParadigmID == "en_noun_principal_parts" {

@@ -43,6 +43,8 @@ var attestedNounExternalSources = map[string]provenance.SourceRef{
 		ID: "wsjp-pl-torba-n", URI: "https://wsjp.pl/haslo/podglad/3755/torba/759009/do-noszenia-ze-soba",
 		Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
 	},
+	"pl.olowek.n": {ID: "wsjp-pl-olowek", URI: "https://wsjp.pl/haslo/podglad/794/olowek/180566/do-pisania", Version: "2026-10-29", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.noz.n":    {ID: "wsjp-pl-noz", URI: "https://wsjp.pl/haslo/podglad/19680/noz/4789950/narzedzie", Version: "2026-10-29", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
 	"pl.kot.n": {
 		ID: "wsjp-pl-kot-n", URI: "https://wsjp.pl/haslo/podglad/29368/kot/5136345/domowy",
 		Version: "2026-10-23", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
@@ -120,6 +122,7 @@ var attestedNounForms = []attestedNounEntry{
 	{"pl.herbata.n", "herbata", "feminine", [7]string{"herbata", "herbaty", "herbacie", "herbatę", "herbatą", "herbacie", "herbato"}, [7]string{"herbaty", "herbat", "herbatom", "herbaty", "herbatami", "herbatach", "herbaty"}},
 	{"pl.kawa.n", "kawa", "feminine", [7]string{"kawa", "kawy", "kawie", "kawę", "kawą", "kawie", "kawo"}, [7]string{"kawy", "kaw", "kawom", "kawy", "kawami", "kawach", "kawy"}},
 	{"pl.papier.n", "papier", "masculine_inanimate", [7]string{"papier", "papieru", "papierowi", "papier", "papierem", "papierze", "papierze"}, [7]string{"papiery", "papierów", "papierom", "papiery", "papierami", "papierach", "papiery"}},
+	{"pl.olowek.n", "ołówek", "masculine_inanimate", [7]string{"ołówek", "ołówka", "ołówkowi", "ołówek", "ołówkiem", "ołówku", "ołówku"}, [7]string{"ołówki", "ołówków", "ołówkom", "ołówki", "ołówkami", "ołówkach", "ołówki"}},
 	{"pl.matka.n", "matka", "feminine", [7]string{"matka", "matki", "matce", "matkę", "matką", "matce", "matko"}, [7]string{"matki", "matek", "matkom", "matki", "matkami", "matkach", "matki"}},
 	{"pl.ojciec.n", "ojciec", "masculine_personal", [7]string{"ojciec", "ojca", "ojcu", "ojca", "ojcem", "ojcu", "ojcze"}, [7]string{"ojcowie", "ojców", "ojcom", "ojców", "ojcami", "ojcach", "ojcowie"}},
 	{"pl.pies.n", "pies", "masculine_animal", [7]string{"pies", "psa", "psu", "psa", "psem", "psie", "psie"}, [7]string{"psy", "psów", "psom", "psy", "psami", "psach", "psy"}},
@@ -155,6 +158,7 @@ var attestedNounForms = []attestedNounEntry{
 	{"pl.krzeslo.n", "krzesło", "neuter", [7]string{"krzesło", "krzesła", "krzesłu", "krzesło", "krzesłem", "krześle", "krzesło"}, [7]string{"krzesła", "krzeseł", "krzesłom", "krzesła", "krzesłami", "krzesłach", "krzesła"}},
 	{"pl.klucz.n", "klucz", "masculine_inanimate", [7]string{"klucz", "klucza", "kluczowi", "klucz", "kluczem", "kluczu", "kluczu"}, [7]string{"klucze", "kluczy", "kluczom", "klucze", "kluczami", "kluczach", "klucze"}},
 	{"pl.torba.n", "torba", "feminine", [7]string{"torba", "torby", "torbie", "torbę", "torbą", "torbie", "torbo"}, [7]string{"torby", "toreb", "torbom", "torby", "torbami", "torbach", "torby"}},
+	{"pl.noz.n", "nóż", "masculine_inanimate", [7]string{"nóż", "noża", "nożowi", "nóż", "nożem", "nożu", "nożu"}, [7]string{"noże", "noży", "nożom", "noże", "nożami", "nożach", "noże"}},
 }
 
 var attestedNounCases = [7]string{"nominative", "genitive", "dative", "accusative", "instrumental", "locative", "vocative"}
@@ -169,7 +173,7 @@ func attestedNounGender(lexemeID string) (string, bool) {
 		return "feminine", true
 	case "pl.gazeta.n":
 		return "feminine", true
-	case "pl.klucz.n", "pl.chleb.n", "pl.papier.n", "pl.deszcz.n", "pl.ksiezyc.n", "pl.dokument.n":
+	case "pl.klucz.n", "pl.chleb.n", "pl.papier.n", "pl.deszcz.n", "pl.ksiezyc.n", "pl.dokument.n", "pl.olowek.n", "pl.noz.n":
 		return "masculine_inanimate", true
 	case "pl.matka.n":
 		return "feminine", true

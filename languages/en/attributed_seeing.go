@@ -12,11 +12,15 @@ import (
 
 type englishAttributedSeeingGraph struct {
 	event, subject, object meaning.Node
+	scope                  meaning.Node
 	properties             map[meaning.NodeID]meaning.Node
 	propertyByBearer       map[meaning.NodeID]meaning.Node
 }
 
 func englishAttributedSeeingShape(source semantic.MeaningCandidate) (englishAttributedSeeingGraph, bool) {
+	if _, _, _, ok := englishAttributedPredicateBinding(source); !ok {
+		return englishAttributedSeeingGraph{}, false
+	}
 	if source.Meaning == nil || meaning.ValidateStructure(*source.Meaning, meaning.DefaultBudget()) != nil {
 		return englishAttributedSeeingGraph{}, false
 	}
@@ -40,12 +44,20 @@ func englishAttributedSeeingShape(source semantic.MeaningCandidate) (englishAttr
 				return englishAttributedSeeingGraph{}, false
 			}
 			referents[node.ID] = node
+		case meaning.KindScope:
+			if shape.scope.ID != "" || node.Operator != meaning.OperatorNegation {
+				return englishAttributedSeeingGraph{}, false
+			}
+			shape.scope = node
 		default:
 			return englishAttributedSeeingGraph{}, false
 		}
 	}
-	if shape.event.ID == "" || shape.event.Kind != meaning.KindEvent || shape.event.Concept != "concept:seeing" || shape.event.TemporalFrame != meaning.TemporalFramePresent ||
+	if shape.event.ID == "" || shape.event.Kind != meaning.KindEvent || shape.event.TemporalFrame != meaning.TemporalFramePresent ||
 		len(referents) != 2 || len(shape.properties) < 1 || len(shape.properties) > 2 || len(shape.event.Participants) != 2 {
+		return englishAttributedSeeingGraph{}, false
+	}
+	if shape.scope.ID != "" && (shape.scope.Target != shape.event.ID || string(shape.event.Concept) != "concept:seeing") {
 		return englishAttributedSeeingGraph{}, false
 	}
 	var experiencer, stimulus meaning.NodeID
@@ -92,7 +104,11 @@ func englishAttributedSeeingShape(source semantic.MeaningCandidate) (englishAttr
 	for _, root := range graph.Roots {
 		rootIDs[root] = true
 	}
-	if len(rootIDs) != 1+len(shape.properties) || !rootIDs[shape.event.ID] {
+	expectedRoot := shape.event.ID
+	if shape.scope.ID != "" {
+		expectedRoot = shape.scope.ID
+	}
+	if len(rootIDs) != 1+len(shape.properties) || !rootIDs[expectedRoot] {
 		return englishAttributedSeeingGraph{}, false
 	}
 	for id := range shape.properties {
@@ -101,6 +117,58 @@ func englishAttributedSeeingShape(source semantic.MeaningCandidate) (englishAttr
 		}
 	}
 	return shape, true
+}
+
+func englishAttributedPredicateBinding(source semantic.MeaningCandidate) (sense, frame, core string, ok bool) {
+	if source.Meaning == nil {
+		return "", "", "", false
+	}
+	for _, node := range source.Meaning.Nodes {
+		if node.Kind != meaning.KindEvent {
+			continue
+		}
+		switch node.Concept {
+		case "concept:seeing":
+			if _, event, _, negated := englishNegatedPresent(source); negated && event.ID == node.ID {
+				return "sense:en.see.visual", "en.see.visual.attributed_negative", "concept:seeing", true
+			}
+			return "sense:en.see.visual", "en.see.visual.transitive", "concept:seeing", true
+		case "concept:hearing":
+			var stimulus, experiencer meaning.NodeID
+			for _, participant := range node.Participants {
+				switch participant.Role {
+				case "stimulus":
+					stimulus = participant.Target
+				case "experiencer":
+					experiencer = participant.Target
+				}
+			}
+			stimulusProperty, experiencerProperty := false, false
+			pluralObject := false
+			for _, referenced := range source.Meaning.Nodes {
+				if referenced.ID == stimulus && referenced.Kind == meaning.KindReferent && referenced.Multiplicity == meaning.MultiplicityMany {
+					pluralObject = true
+				}
+				if referenced.Kind == meaning.KindState && len(referenced.Participants) == 1 && referenced.Participants[0].Role == "bearer" {
+					stimulusProperty = stimulusProperty || referenced.Participants[0].Target == stimulus
+					experiencerProperty = experiencerProperty || referenced.Participants[0].Target == experiencer
+				}
+			}
+			if stimulusProperty {
+				if pluralObject {
+					return "sense:en.hear.auditory", "en.hear.auditory.attributed_object", "concept:hearing", true
+				}
+				return "sense:en.hear.auditory", "en.hear.auditory.transitive", "concept:hearing", true
+			}
+			if experiencerProperty {
+				return "sense:en.hear.auditory", "en.hear.auditory.attributed_subject", "concept:hearing", true
+			}
+			return "sense:en.hear.auditory", "en.hear.auditory.attributed_subject", "concept:hearing", true
+		default:
+			return "", "", "", false
+		}
+	}
+	return "", "", "", false
 }
 
 func englishSeeingColorConcept(concept string) bool {
@@ -117,7 +185,7 @@ func englishSeeingMultiplicitySupported(multiplicity meaning.Multiplicity) bool 
 }
 
 func englishAttributedSeeingFamilyID(id string) bool {
-	return id == "construction:en.attributed_seeing" || id == "construction:en.attributed_seeing_object" || id == "construction:en.attributed_seeing_both"
+	return id == "construction:en.attributed_seeing" || id == "construction:en.attributed_seeing_object" || id == "construction:en.attributed_seeing_both" || id == "construction:en.attributed_seeing_object_negative"
 }
 
 func englishAttributedSeeingSupportVariantAllowed(source semantic.MeaningCandidate, property meaning.Node, variant string) bool {
@@ -225,6 +293,12 @@ func englishAttributedSeeingFamilyMatches(source semantic.MeaningCandidate, cand
 	if !englishAttributedSeeingFamilyID(familyID) || candidate.NodeID != shape.event.ID {
 		return false
 	}
+	if familyID == "construction:en.attributed_seeing_object" {
+		pluralObjectVariant := strings.Contains(candidate.CompiledVariant.Variant.ID.String(), ".plural_object")
+		if (shape.object.Multiplicity == meaning.MultiplicityMany) != pluralObjectVariant {
+			return false
+		}
+	}
 	modifierSlots := 0
 	for _, slot := range family.SlotSpecs {
 		if slot.ModifierBinding == nil {
@@ -313,6 +387,16 @@ func englishAttributedSeeingVariant(candidate realizer.TargetCandidate) bool {
 		return strings.HasPrefix(variant, "construction:en.attributed_seeing.svo")
 	case "construction:en.attributed_seeing_object":
 		return strings.HasPrefix(variant, "construction:en.attributed_seeing_object.svo")
+	case "construction:en.attributed_seeing_object_negative":
+		switch variant {
+		case "construction:en.attributed_seeing_object_negative.svo",
+			"construction:en.attributed_seeing_object_negative.svo.indefinite_subject",
+			"construction:en.attributed_seeing_object_negative.svo.indefinite_object",
+			"construction:en.attributed_seeing_object_negative.svo.indefinite_both":
+			return true
+		default:
+			return false
+		}
 	case "construction:en.attributed_seeing_both":
 		return strings.HasPrefix(variant, "construction:en.attributed_seeing_both.svo")
 	default:
@@ -347,6 +431,10 @@ func englishAttributedSeeingSubjectAnchors(source semantic.MeaningCandidate, sub
 }
 
 func englishAttributedSeeingSubjectVariantAllowed(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, shape englishAttributedSeeingGraph) bool {
+	if candidate.Family.Family.ID.String() == "construction:en.attributed_seeing_object_negative" {
+		return shape.scope.ID != "" && shape.subject.Multiplicity == meaning.MultiplicityOne && shape.object.Multiplicity == meaning.MultiplicityOne &&
+			len(englishAttributedSeeingSubjectAnchors(source, shape.subject.ID)) == 0 && len(englishAttributedSeeingSubjectAnchors(source, shape.object.ID)) == 0
+	}
 	variant := candidate.CompiledVariant.Variant.ID.String()
 	if candidate.Family.Family.ID.String() == "construction:en.attributed_seeing_both" && englishAttributedSeeingDeixis(source) != "" {
 		// The bounded two-AP route carries the subject anchor only. Do not let
@@ -402,8 +490,9 @@ func englishAttributedSeeingMainCandidate(source semantic.MeaningCandidate, cand
 	if !ok || !englishAttributedSeeingContextsValid(source) || candidate.NodeID != shape.event.ID || candidate.Kind != meaning.KindEvent || candidate.Outcome != status.OutcomeOK {
 		return false
 	}
-	if candidate.Sense.ID.String() != "sense:en.see.visual" || string(candidate.Frame.ID) != "en.see.visual.transitive" ||
-		candidate.TransferBinding.CoreRef.String() != "concept:seeing" || !englishAttributedSeeingFamily(candidate) || !englishAttributedSeeingVariant(candidate) ||
+	sense, frame, core, supportedPredicate := englishAttributedPredicateBinding(source)
+	if !supportedPredicate || candidate.Sense.ID.String() != sense || string(candidate.Frame.ID) != frame ||
+		candidate.TransferBinding.CoreRef.String() != core || !englishAttributedSeeingFamily(candidate) || !englishAttributedSeeingVariant(candidate) ||
 		!realizer.CoversLexicalMeaning(*source.Meaning, candidate.NodeID, candidate.Family.Family) {
 		return false
 	}

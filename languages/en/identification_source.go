@@ -268,6 +268,10 @@ func addEnglishIdentificationReferences(evidence runtime.CompositionEvidence, ca
 			modifierSlotID := "modifier"
 			exactSeeingDemonstrative := false
 			switch {
+			case sense == "en.hear.auditory" && frame == "en.hear.auditory.attributed_subject" && family == "construction:en.attributed_seeing" &&
+				(variant == "construction:en.attributed_seeing.svo.demonstrative_this" || variant == "construction:en.attributed_seeing.svo.demonstrative_that" ||
+					variant == "construction:en.attributed_seeing.svo.demonstrative_these" || variant == "construction:en.attributed_seeing.svo.demonstrative_those"):
+				slotID, exactSeeingDemonstrative = "subject", true
 			case sense == "en.see.visual" && frame == "en.see.visual.transitive" && family == "construction:en.attributed_seeing" &&
 				(variant == "construction:en.attributed_seeing.svo.demonstrative_this" || variant == "construction:en.attributed_seeing.svo.demonstrative_that" ||
 					variant == "construction:en.attributed_seeing.svo.demonstrative_these" || variant == "construction:en.attributed_seeing.svo.demonstrative_those"):

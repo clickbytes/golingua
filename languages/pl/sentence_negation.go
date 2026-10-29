@@ -56,6 +56,20 @@ func polishPresentNegationRouteForFamily(family ids.ConstructionID) (polishPrese
 	return polishPresentNegationRoute{}, false
 }
 
+func polishPresentNegationVariantAllowed(route polishPresentNegationRoute, family, variant string) bool {
+	if route.concept == "concept:seeing" && family == "construction:pl.attributed_seeing_object_negative" {
+		return variant == "construction:pl.attributed_seeing_object_negative.svo" || variant == "construction:pl.attributed_seeing_object_negative.ovs"
+	}
+	if family != route.family {
+		return false
+	}
+	if variant == route.variant {
+		return true
+	}
+	return route.concept == "concept:seeing" && route.family == "construction:pl.transitive_negative" &&
+		variant == "construction:pl.transitive_negative.ovs"
+}
+
 func polishNegatedPresent(source semantic.MeaningCandidate) (meaning.Node, meaning.Node, polishPresentNegationRoute, bool) {
 	if source.Meaning == nil {
 		return meaning.Node{}, meaning.Node{}, polishPresentNegationRoute{}, false

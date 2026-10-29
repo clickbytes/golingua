@@ -1,0 +1,297 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "family": {
+    "id": "construction:en.attributed_seeing_object_negative",
+    "language": "en",
+    "slot_specs": [
+      {
+        "id": "subject",
+        "position": 0,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required",
+        "argument_binding": {
+          "semantic_role": "experiencer"
+        }
+      },
+      {
+        "id": "verb",
+        "position": 1,
+        "category": "VP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "modifier_object",
+        "position": 2,
+        "category": "AP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required",
+        "modifier_binding": {
+          "target_slot": "object",
+          "semantic_role": "bearer"
+        }
+      },
+      {
+        "id": "object",
+        "position": 3,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required",
+        "argument_binding": {
+          "semantic_role": "stimulus"
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "id": "subject_verb_number",
+        "kind": "agreement",
+        "strength": "hard",
+        "controller_slot": "subject",
+        "target_slot": "verb",
+        "features": [
+          "number"
+        ]
+      }
+    ],
+    "provenance": {
+      "id": "golingua-en-attributed-seeing-435-object",
+      "uri": "https://github.com/clickbytes/golingua/issues/435",
+      "version": "2026-10-28",
+      "license": "internal",
+      "author": "Codex by owner delegation"
+    },
+    "operators": [
+      "negate"
+    ],
+    "capabilities": [
+      "negation-negated",
+      "negation",
+      "surface_negation"
+    ]
+  },
+  "variants": [
+    {
+      "family_id": "construction:en.attributed_seeing_object_negative",
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-en-attributed-seeing-435-object",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      },
+      "id": "construction:en.attributed_seeing_object_negative.svo",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "does"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "not"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ]
+    },
+    {
+      "family_id": "construction:en.attributed_seeing_object_negative",
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-en-attributed-seeing-435-object",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      },
+      "id": "construction:en.attributed_seeing_object_negative.svo.indefinite_subject",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "does"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "not"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ]
+    },
+    {
+      "family_id": "construction:en.attributed_seeing_object_negative",
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-en-attributed-seeing-435-object",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      },
+      "id": "construction:en.attributed_seeing_object_negative.svo.indefinite_object",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "does"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "not"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ]
+    },
+    {
+      "family_id": "construction:en.attributed_seeing_object_negative",
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-en-attributed-seeing-435-object",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      },
+      "id": "construction:en.attributed_seeing_object_negative.svo.indefinite_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "does"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "not"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ]
+    }
+  ]
+}

@@ -20,6 +20,7 @@ var englishProductionVerbEntries = []lexicalEntry{
 	{"en.photographing.v", "photograph", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.photographing.event", "capture a still image of a subject using a camera", "photographing"}}},
 	{"en.recording_sound.v", "record", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.recording_sound.event", "capture sound into a reproducible recording", "recording_sound"}}},
 	{"en.writing_document.v", "write", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.writing_document.event", "create or revise a text intended as a durable document", "writing_document"}}},
+	{"en.writing_with_instrument.v", "write", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.writing_with_instrument.event", "produce written marks using a physical writing instrument without asserting a resulting document or message", "writing_with_instrument"}}},
 	{"en.typing_text.v", "type", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.typing_text.event", "enter characters through a keyboard or comparable input device", "typing_text"}}},
 	{"en.editing_document.v", "edit", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.editing_document.event", "change existing document content to improve or alter its form or meaning", "editing_document"}}},
 }

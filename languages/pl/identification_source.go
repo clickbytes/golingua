@@ -177,8 +177,17 @@ func addPolishIdentificationReferences(evidence runtime.CompositionEvidence, lat
 			continue
 		}
 		for _, alternative := range node.Alternatives {
+			hearingPluralSubjectAnchor := alternative.Permission.SenseID.Symbol().Name == "pl.slyszec.auditory" &&
+				string(alternative.Permission.FrameID) == "pl.slyszec.auditory.attributed_subject_plural" &&
+				alternative.FamilyID.String() == "construction:pl.attributed_seeing_plural"
 			for _, group := range alternative.NPPhraseGroups {
 				if group.DeterminerCandidateID == "" {
+					continue
+				}
+				if hearingPluralSubjectAnchor && group.HeadSlotID == "subject" {
+					// The exact construction route below records proximal versus distal.
+					// The generic NP-group route uses a separate "demonstrative" value
+					// for proximal forms and would create conflicting reference evidence.
 					continue
 				}
 				composite, exists := composites[group.CompositeCandidateID]
@@ -231,6 +240,15 @@ func addPolishIdentificationReferences(evidence runtime.CompositionEvidence, lat
 					anchorValue = "none"
 				} else if strings.HasPrefix(variant, "construction:pl.attribution_plural.tam") {
 					anchorValue = "distal"
+				}
+			case sense == "pl.slyszec.auditory" && frame == "pl.slyszec.auditory.attributed_subject_plural" && family == "construction:pl.attributed_seeing_plural":
+				switch variant {
+				case "construction:pl.attributed_seeing_plural.svo.masculine_personal.ci", "construction:pl.attributed_seeing_plural.svo.non_masculine_personal.te":
+					slotID, anchorValue = "subject", "demonstrative"
+				case "construction:pl.attributed_seeing_plural.svo.masculine_personal.tamci", "construction:pl.attributed_seeing_plural.svo.non_masculine_personal.tamte":
+					slotID, anchorValue = "subject", "distal"
+				default:
+					continue
 				}
 			default:
 				continue

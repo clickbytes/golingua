@@ -19,6 +19,7 @@ var physicalActionEntries = []lexicalEntry{
 	{"pl.upuszczac.v", "upuszczać", "verb", []lexicalMeaning{{"pl.upuszczac.drop", "Causing a held object to fall by letting it go.", "dropping_object"}}},
 	{"pl.kopac.v", "kopać", "verb", []lexicalMeaning{{"pl.kopac.kick", "Striking an object or participant with a foot.", "kicking_object"}}},
 	{"pl.ciac.v", "ciąć", "verb", []lexicalMeaning{{"pl.ciac.cut", "Separating material using a sharp edge or equivalent concentrated force.", "cutting_object"}}},
+	{"pl.kroic.v", "kroić", "verb", []lexicalMeaning{{"pl.kroic.with_instrument", "Separating material using a sharp edge or equivalent concentrated force, with an explicitly expressed cutting instrument.", "cutting_object"}}},
 	{"pl.drzec.v", "drzeć", "verb", []lexicalMeaning{{"pl.drzec.tear", "Separating flexible material by pulling it until it ruptures.", "tearing_object"}}},
 	{"pl.rozdzierac.v", "rozdzierać", "verb", []lexicalMeaning{{"pl.rozdzierac.tear", "Separating flexible material by pulling it until it ruptures.", "tearing_object"}}},
 	{"pl.skladac.v", "składać", "verb", []lexicalMeaning{{"pl.skladac.fold", "Bending flexible material to bring parts of it over one another.", "folding_object"}}},

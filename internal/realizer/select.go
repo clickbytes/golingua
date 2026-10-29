@@ -206,6 +206,11 @@ func SelectTargets(input Input) (Result, error) {
 	}
 	work := totalMeaningWork
 	nodeCounts := make(map[string]int)
+	type frameRejection struct {
+		diagnostic status.Diagnostic
+	}
+	deferredFrameRejections := make(map[string][]frameRejection)
+	deferredFrameOutcomes := make(map[string]status.OutcomeKind)
 	seenCandidateIDs := make(map[string]struct{}, len(ordered))
 	registryBindingsCache := make(map[ids.ConstructionID][]valency.ConstructionBinding)
 	valencyBindingsCache := make(map[ids.ConstructionID][]valency.ConstructionBinding)
@@ -561,8 +566,15 @@ func SelectTargets(input Input) (Result, error) {
 							validation, err := valency.ValidateFrame(validationFrame, valency.ValidationRequest{Meaning: *source.Meaning, NodeID: node.ID, SemanticBinding: transfer, ConstructionBinding: binding}, input.Core)
 							if err != nil {
 								licensed = true
-								result.Outcome = mergeOutcome(result.Outcome, outcomeFromError(err))
-								result.Diagnostics = appendDiagnostic(result.Diagnostics, "TARGET_FRAME_REJECTED", err.Error(), "meaning."+string(node.ID))
+								if alternativeRoleSetMismatch(err) {
+									deferredFrameOutcomes[nodeKey] = mergeOutcome(deferredFrameOutcomes[nodeKey], outcomeFromError(err))
+									if len(deferredFrameRejections[nodeKey]) < status.MaxDiagnostics {
+										deferredFrameRejections[nodeKey] = append(deferredFrameRejections[nodeKey], frameRejection{status.Diagnostic{Code: "TARGET_FRAME_REJECTED", Message: err.Error(), Path: "meaning." + string(node.ID), Severity: status.SeverityWarning}})
+									}
+								} else {
+									result.Outcome = mergeOutcome(result.Outcome, outcomeFromError(err))
+									result.Diagnostics = appendDiagnostic(result.Diagnostics, "TARGET_FRAME_REJECTED", err.Error(), "meaning."+string(node.ID))
+								}
 								continue
 							}
 							licensed = true
@@ -620,6 +632,26 @@ func SelectTargets(input Input) (Result, error) {
 			}
 		}
 		result.Candidates = filtered
+	}
+	// A role-set mismatch rejects one frame, not the Meaning when another
+	// retained frame for the same source node covers its participants.
+	retainedNodes := make(map[string]bool)
+	for _, candidate := range result.Candidates {
+		retainedNodes[candidate.SourceCandidateID+"\x00"+string(candidate.NodeID)] = true
+	}
+	rejectedKeys := make([]string, 0, len(deferredFrameRejections))
+	for key := range deferredFrameRejections {
+		rejectedKeys = append(rejectedKeys, key)
+	}
+	sort.Strings(rejectedKeys)
+	for _, key := range rejectedKeys {
+		if retainedNodes[key] {
+			continue
+		}
+		result.Outcome = mergeOutcome(result.Outcome, deferredFrameOutcomes[key])
+		for _, rejection := range deferredFrameRejections[key] {
+			result.Diagnostics = boundedDiagnostics(result.Diagnostics, []status.Diagnostic{rejection.diagnostic})
+		}
 	}
 	// Construction and lexical alternatives are counted after the optional
 	// language-local policy has retained only the applicable licensed routes.
@@ -1112,6 +1144,18 @@ func outcomeFromError(err error) status.OutcomeKind {
 		}
 	}
 	return status.OutcomeError
+}
+
+func alternativeRoleSetMismatch(err error) bool {
+	var resultError interface{ Result() status.Result }
+	if !errors.As(err, &resultError) {
+		return false
+	}
+	diagnostics := resultError.Result().Diagnostics
+	if len(diagnostics) != 1 {
+		return false
+	}
+	return diagnostics[0].Code == "EXTRA_SEMANTIC_ROLE" || diagnostics[0].Code == "MISSING_REQUIRED_ROLE"
 }
 
 func selectionError(kind status.OutcomeKind, code, path, message string) error {

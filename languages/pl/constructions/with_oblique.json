@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "language": "pl",
+  "family": {
+    "id": "construction:pl.with_oblique",
+    "language": "pl",
+    "slot_specs": [
+      {"id":"subject","position":0,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"},
+      {"id":"verb","position":1,"category":"VP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"},
+      {"id":"oblique","position":2,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required","case":"instrumental","adposition":"z"}
+    ],
+    "constraints": [{"id":"subject_verb_number","kind":"agreement","strength":"hard","controller_slot":"subject","target_slot":"verb","features":["number"]}],
+    "provenance":{"id":"golingua-issue-436-conversing","path":"languages/pl/constructions/with_oblique.json","version":"2026-10-29","license":"internal","author":"Codex by owner delegation"}
+  },
+  "variants": [
+    {"id":"construction:pl.with_oblique.svo","family_id":"construction:pl.with_oblique","sequence":[{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"z"},{"kind":"slot","slot_id":"oblique"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"both","conditions":[{"kind":"feature_equals","slot_id":"verb","feature":"person","value":"third"}],"provenance":{"id":"golingua-issue-436-conversing","path":"languages/pl/constructions/with_oblique.json","version":"2026-10-29","license":"internal","author":"Codex by owner delegation"}}
+  ]
+}
