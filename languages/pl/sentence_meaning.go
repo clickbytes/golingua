@@ -63,8 +63,8 @@ func polishNodeAttributes(supported map[ids.SenseID]bool, index *lexicon.Index, 
 							}
 						}
 					}
-					if candidate.Category == construction.CategoryAP && sense.String() == "sense:pl.czarny.black" &&
-						alternative.FamilyID.String() == "construction:pl.attribution" && (alternative.VariantID.String() == "construction:pl.attribution.ten" || alternative.VariantID.String() == "construction:pl.attribution.to") {
+					_, attributionSense := polishAttributionForSense(sense.String())
+					if candidate.Category == construction.CategoryAP && attributionSense && (alternative.FamilyID.String() == "construction:pl.attribution" || alternative.FamilyID.String() == "construction:pl.attribution_plural") {
 						if err := add(candidate.ID, meaning.TemporalFramePresent, ""); err != nil {
 							return nil, err
 						}
@@ -74,7 +74,7 @@ func polishNodeAttributes(supported map[ids.SenseID]bool, index *lexicon.Index, 
 		}
 	}
 	for _, candidate := range candidates {
-		if candidate.Category != construction.CategoryNP || (!hasNumberBehavior(index, candidate.LexemeID, "count") && !isPolishPersonalPronoun(candidate.LexemeID)) {
+		if candidate.Category != construction.CategoryNP || (!hasNumberBehavior(index, candidate.LexemeID, "count") && !isPolishPersonalPronoun(candidate.LexemeID)) || polishLexicalPluralDoesNotAssertCardinality(index, candidate.LexemeID) {
 			continue
 		}
 		number := knownPolishNounNumber(candidate.Features)
@@ -132,6 +132,22 @@ func hasNumberBehavior(index *lexicon.Index, id ids.LexemeID, expected string) b
 	}
 	for _, property := range lexeme.Properties {
 		if property.Key == "number_behavior" && property.Value == expected {
+			return true
+		}
+	}
+	return false
+}
+
+func polishLexicalPluralDoesNotAssertCardinality(index *lexicon.Index, id ids.LexemeID) bool {
+	if index == nil {
+		return false
+	}
+	lexeme, exists := index.ByLexemeID(id)
+	if !exists {
+		return false
+	}
+	for _, property := range lexeme.Properties {
+		if property.Key == "multiplicity_behavior" && property.Value == "lexical_plural_not_cardinality" {
 			return true
 		}
 	}

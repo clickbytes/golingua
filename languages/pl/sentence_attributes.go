@@ -160,7 +160,15 @@ func polishTargetNumber(source semantic.MeaningCandidate, referentID meaning.Nod
 		}
 	}
 	if grammaticalNumber == "plural_only" || paradigmID == "pl_noun_plural_only_attested" {
-		if referent.Multiplicity != "" {
+		lexicalPluralOnly := false
+		for _, property := range properties {
+			if property.Key == "multiplicity_behavior" && property.Value == "lexical_plural_not_cardinality" {
+				lexicalPluralOnly = true
+			}
+		}
+		// For pluralia tantum, the plural form is lexical and does not assert
+		// cardinality; Meaning keeps cardinality independent of noun morphology.
+		if referent.Multiplicity != "" && !lexicalPluralOnly {
 			return "", false, false
 		}
 		return "plural", false, true
@@ -242,8 +250,10 @@ func polishPredicateEvidenceConsistent(source semantic.MeaningCandidate, predica
 	switch predicate.TransferBinding.CoreRef.String() {
 	case "concept:class_membership":
 		identificationRole = "member"
-	case "concept:black":
-		identificationRole = "bearer"
+	default:
+		if _, attributable := polishAttributionForConcept(predicate.TransferBinding.CoreRef.String()); attributable {
+			identificationRole = "bearer"
+		}
 	}
 	for _, participant := range meaningPredicate.Participants {
 		referent, exists := polishMeaningNode(source, participant.Target)
@@ -265,7 +275,10 @@ func polishPredicateEvidenceConsistent(source semantic.MeaningCandidate, predica
 
 func polishPredicateSubjectRole(predicate realizer.TargetCandidate, role meaning.Role) bool {
 	if predicate.TransferBinding.CoreRef.String() == "concept:class_membership" && role == "member" ||
-		predicate.TransferBinding.CoreRef.String() == "concept:black" && role == "bearer" {
+		role == "bearer" && func() bool {
+			_, attributable := polishAttributionForConcept(predicate.TransferBinding.CoreRef.String())
+			return attributable
+		}() {
 		return true
 	}
 	for _, argument := range predicate.Frame.Arguments {

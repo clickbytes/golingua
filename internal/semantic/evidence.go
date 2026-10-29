@@ -69,23 +69,25 @@ const EvidenceOriginGenerated EvidenceOrigin = "generated"
 // lexical/construction evidence. Empty semantic IDs represent unavailable
 // evidence; they never license a guessed mapping.
 type EvidenceRecord struct {
-	Origin        EvidenceOrigin                  `json:"origin,omitempty"`
-	SourceSpan    text.Span                       `json:"source_span"`
-	CandidateID   string                          `json:"candidate_id,omitempty"`
-	PhraseNodeID  parser.NodeID                   `json:"phrase_node_id,omitempty"`
-	ReadingID     string                          `json:"reading_id,omitempty"`
-	SenseID       ids.SenseID                     `json:"sense_id,omitempty"`
-	CoreConceptID ids.ConceptID                   `json:"core_concept_id,omitempty"`
-	BindingKey    string                          `json:"binding_key,omitempty"`
-	Role          meaning.Role                    `json:"role,omitempty"`
-	Features      []features.FeatureValue         `json:"features,omitempty"`
-	PlanID        construction.ConstructionPlanID `json:"plan_id,omitempty"`
-	FamilyID      ids.ConstructionID              `json:"family_id,omitempty"`
-	VariantID     construction.VariantID          `json:"variant_id,omitempty"`
-	FrameID       valency.FrameID                 `json:"frame_id,omitempty"`
-	Outcome       status.OutcomeKind              `json:"outcome"`
-	Reason        string                          `json:"reason,omitempty"`
-	Provenance    provenance.SourceRef            `json:"provenance,omitempty"`
+	Origin         EvidenceOrigin                  `json:"origin,omitempty"`
+	SourceSpan     text.Span                       `json:"source_span"`
+	CandidateID    string                          `json:"candidate_id,omitempty"`
+	PhraseNodeID   parser.NodeID                   `json:"phrase_node_id,omitempty"`
+	ReadingID      string                          `json:"reading_id,omitempty"`
+	SenseID        ids.SenseID                     `json:"sense_id,omitempty"`
+	CoreConceptID  ids.ConceptID                   `json:"core_concept_id,omitempty"`
+	BindingKey     string                          `json:"binding_key,omitempty"`
+	Role           meaning.Role                    `json:"role,omitempty"`
+	Features       []features.FeatureValue         `json:"features,omitempty"`
+	PlanID         construction.ConstructionPlanID `json:"plan_id,omitempty"`
+	NPPhraseID     string                          `json:"np_phrase_id,omitempty"`
+	NPPhrasePlanID string                          `json:"np_phrase_plan_id,omitempty"`
+	FamilyID       ids.ConstructionID              `json:"family_id,omitempty"`
+	VariantID      construction.VariantID          `json:"variant_id,omitempty"`
+	FrameID        valency.FrameID                 `json:"frame_id,omitempty"`
+	Outcome        status.OutcomeKind              `json:"outcome"`
+	Reason         string                          `json:"reason,omitempty"`
+	Provenance     provenance.SourceRef            `json:"provenance,omitempty"`
 }
 
 // MarshalJSON writes typed stable IDs in their external string form. The ID
@@ -93,30 +95,32 @@ type EvidenceRecord struct {
 // directly would otherwise produce empty JSON objects.
 func (record EvidenceRecord) MarshalJSON() ([]byte, error) {
 	type evidenceRecordJSON struct {
-		Origin        EvidenceOrigin                  `json:"origin,omitempty"`
-		SourceSpan    text.Span                       `json:"source_span"`
-		CandidateID   string                          `json:"candidate_id,omitempty"`
-		PhraseNodeID  parser.NodeID                   `json:"phrase_node_id,omitempty"`
-		ReadingID     string                          `json:"reading_id,omitempty"`
-		SenseID       string                          `json:"sense_id,omitempty"`
-		CoreConceptID string                          `json:"core_concept_id,omitempty"`
-		BindingKey    string                          `json:"binding_key,omitempty"`
-		Role          meaning.Role                    `json:"role,omitempty"`
-		Features      []features.FeatureValue         `json:"features,omitempty"`
-		PlanID        construction.ConstructionPlanID `json:"plan_id,omitempty"`
-		FamilyID      string                          `json:"family_id,omitempty"`
-		VariantID     construction.VariantID          `json:"variant_id,omitempty"`
-		FrameID       valency.FrameID                 `json:"frame_id,omitempty"`
-		Outcome       status.OutcomeKind              `json:"outcome"`
-		Reason        string                          `json:"reason,omitempty"`
-		Provenance    provenance.SourceRef            `json:"provenance,omitempty"`
+		Origin         EvidenceOrigin                  `json:"origin,omitempty"`
+		SourceSpan     text.Span                       `json:"source_span"`
+		CandidateID    string                          `json:"candidate_id,omitempty"`
+		PhraseNodeID   parser.NodeID                   `json:"phrase_node_id,omitempty"`
+		ReadingID      string                          `json:"reading_id,omitempty"`
+		SenseID        string                          `json:"sense_id,omitempty"`
+		CoreConceptID  string                          `json:"core_concept_id,omitempty"`
+		BindingKey     string                          `json:"binding_key,omitempty"`
+		Role           meaning.Role                    `json:"role,omitempty"`
+		Features       []features.FeatureValue         `json:"features,omitempty"`
+		PlanID         construction.ConstructionPlanID `json:"plan_id,omitempty"`
+		NPPhraseID     string                          `json:"np_phrase_id,omitempty"`
+		NPPhrasePlanID string                          `json:"np_phrase_plan_id,omitempty"`
+		FamilyID       string                          `json:"family_id,omitempty"`
+		VariantID      construction.VariantID          `json:"variant_id,omitempty"`
+		FrameID        valency.FrameID                 `json:"frame_id,omitempty"`
+		Outcome        status.OutcomeKind              `json:"outcome"`
+		Reason         string                          `json:"reason,omitempty"`
+		Provenance     provenance.SourceRef            `json:"provenance,omitempty"`
 	}
 	return json.Marshal(evidenceRecordJSON{
 		Origin: record.Origin, SourceSpan: record.SourceSpan, CandidateID: record.CandidateID,
 		PhraseNodeID: record.PhraseNodeID, ReadingID: record.ReadingID,
 		SenseID: record.SenseID.String(), CoreConceptID: record.CoreConceptID.String(),
 		BindingKey: record.BindingKey, Role: record.Role, Features: record.Features,
-		PlanID: record.PlanID, FamilyID: record.FamilyID.String(), VariantID: record.VariantID,
+		PlanID: record.PlanID, NPPhraseID: record.NPPhraseID, NPPhrasePlanID: record.NPPhrasePlanID, FamilyID: record.FamilyID.String(), VariantID: record.VariantID,
 		FrameID: record.FrameID, Outcome: record.Outcome, Reason: record.Reason,
 		Provenance: record.Provenance,
 	})
@@ -251,6 +255,8 @@ func validateEvidenceRecord(record EvidenceRecord, path string) error {
 		max  int
 	}{
 		{record.CandidateID, "candidate_id", 256},
+		{record.NPPhraseID, "np_phrase_id", 256},
+		{record.NPPhrasePlanID, "np_phrase_plan_id", 256},
 		{string(record.PhraseNodeID), "phrase_node_id", 256},
 		{record.ReadingID, "reading_id", 256},
 		{record.BindingKey, "binding_key", 2*ids.MaxSymbolBytes + 2},
@@ -313,6 +319,7 @@ func evidenceRecordStrings(record EvidenceRecord) []string {
 	ref := record.Provenance
 	result := []string{
 		record.CandidateID, string(record.PhraseNodeID), record.ReadingID, record.SenseID.String(),
+		record.NPPhraseID, record.NPPhrasePlanID,
 		record.CoreConceptID.String(), record.BindingKey, string(record.Role), string(record.PlanID),
 		record.FamilyID.String(), record.VariantID.String(), string(record.FrameID), record.Reason,
 		ref.ID, ref.Path, ref.URI, ref.Version, ref.License, ref.Author, ref.ChecksumSHA256,

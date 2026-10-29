@@ -556,8 +556,18 @@ var polishIdentificationSource = provenance.SourceRef{
 	Version: "2026-10-24", License: "internal", Author: "Codex by owner delegation",
 }
 
+var polishPositiveAdjectiveSource = provenance.SourceRef{
+	ID: "golingua-pl-positive-adjectives-435", URI: "https://github.com/clickbytes/golingua/issues/435",
+	Version: "2026-10-28", License: "internal", Author: "Codex by owner delegation",
+}
+
 var polishApprovedIdentificationSenses = map[string]struct{}{
-	"pl.byc.class_membership": {}, "pl.czarny.black": {},
+	"pl.byc.class_membership": {}, "pl.czarny.black": {}, "pl.czerwony.red": {},
+}
+
+var polishApprovedPositiveAdjectiveSenses = map[string]struct{}{
+	"pl.czerwony.red": {}, "pl.bialy.white": {}, "pl.niebieski.blue": {},
+	"pl.zielony.green": {}, "pl.otwarty.open": {}, "pl.smutny.sad": {},
 }
 
 var polishApprovedPendingAuditSenses = map[string]struct{}{
@@ -568,6 +578,12 @@ var polishApprovedPendingAuditSenses = map[string]struct{}{
 var polishFrameBySense = map[string]lexicon.ValencyID{
 	"pl.byc.class_membership": "pl.byc.class_membership.frame",
 	"pl.czarny.black":         "pl.czarny.black.frame",
+	"pl.czerwony.red":         "pl.czerwony.red.frame",
+	"pl.bialy.white":          "pl.bialy.white.frame",
+	"pl.niebieski.blue":       "pl.niebieski.blue.frame",
+	"pl.zielony.green":        "pl.zielony.green.frame",
+	"pl.otwarty.open":         "pl.otwarty.open.frame",
+	"pl.smutny.sad":           "pl.smutny.sad.frame",
 	"pl.widziec.visual":       "pl.widziec.visual.transitive",
 	"pl.patrzec.directed":     "pl.patrzec.directed.na",
 	"pl.slyszec.auditory":     "pl.slyszec.auditory.transitive",
@@ -606,7 +622,13 @@ var polishParadigmByLexeme = map[string]string{
 	"pl.zasypiac.v":        "pl_verb_zasypiac_present_3sg_3pl",
 	"pl.pracowac.v":        "pl_verb_pracowac_present_3sg_3pl",
 	"pl.byc.v":             "pl_identification_byc_present_3sg",
-	"pl.czarny.adj":        "pl_identification_czarny_masculine_animal_nominative",
+	"pl.czarny.adj":        "pl_adjective_positive_czarny",
+	"pl.czerwony.adj":      "pl_adjective_positive_czerwony",
+	"pl.bialy.adj":         "pl_adjective_positive_bialy",
+	"pl.niebieski.adj":     "pl_adjective_positive_niebieski",
+	"pl.zielony.adj":       "pl_adjective_positive_zielony",
+	"pl.otwarty.adj":       "pl_adjective_positive_otwarty",
+	"pl.smutny.adj":        "pl_adjective_positive_smutny",
 	"pl.sasiad.n":          "pl_noun_attested_masculine_personal",
 	"pl.klient.n":          "pl_noun_attested_masculine_personal",
 	"pl.widziec.v":         "pl_verb_present_i",
@@ -722,6 +744,9 @@ func LexicalDocument() (lexicon.Document, error) {
 	if err := polishIdentificationSource.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish identification source: %w", err)
 	}
+	if err := polishPositiveAdjectiveSource.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish positive adjective source: %w", err)
+	}
 	if err := polishPersonalSource.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish personal pronoun source: %w", err)
 	}
@@ -738,9 +763,15 @@ func LexicalDocument() (lexicon.Document, error) {
 			if gender, ok := attestedNounGender(entry.id); ok {
 				lexeme.ParadigmID = string(attestedNounParadigmID(entry.id, gender))
 				lexeme.Properties = []lexicon.Property{{Key: "gender", Value: gender}}
-			} else if entry.id == "pl.pieniadze.n" {
+			} else if entry.id == "pl.pieniadze.n" || entry.id == "pl.drzwi.n" {
 				lexeme.ParadigmID = "pl_noun_plural_only_attested"
 				lexeme.Properties = []lexicon.Property{{Key: "grammatical_number", Value: "plural_only"}}
+				if entry.id == "pl.drzwi.n" {
+					lexeme.Properties = append(lexeme.Properties,
+						lexicon.Property{Key: "agreement_gender", Value: "non_masculine_personal"},
+						lexicon.Property{Key: "multiplicity_behavior", Value: "lexical_plural_not_cardinality"},
+					)
+				}
 			} else if entry.id == "pl.drzewo.n" {
 				lexeme.Properties = []lexicon.Property{{Key: "gender", Value: "neuter"}}
 			}
@@ -891,6 +922,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishIdentificationSource
+				}
+				if _, approved := polishApprovedPositiveAdjectiveSenses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishPositiveAdjectiveSource
 				}
 				if _, approved := polishApprovedPersonalPronounSenses[senseID.Symbol().Name]; approved {
 					binding.Mapping = lexicon.MappingEquivalent

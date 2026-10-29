@@ -187,6 +187,12 @@ var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
 	"en.you.addressee":                             englishPersonalPronounSource,
 	"en.be.class_membership":                       englishIdentificationSource,
 	"en.black.color":                               englishIdentificationSource,
+	"en.red.color":                                 englishAdjectiveDataSource,
+	"en.white.color":                               englishAdjectiveDataSource,
+	"en.blue.color":                                englishAdjectiveDataSource,
+	"en.green.color":                               englishAdjectiveDataSource,
+	"en.open.state":                                englishAdjectiveDataSource,
+	"en.sad.state":                                 englishAdjectiveDataSource,
 	"en.adult.person":                              englishPendingAuditSource,
 	"en.teacher.role":                              englishPendingAuditSource,
 	"en.student.learner":                           englishPendingAuditSource,
@@ -1193,6 +1199,12 @@ var englishFrameBySense = map[string]lexicon.ValencyID{
 	"en.working.activity":       "en.working_activity.intransitive",
 	"en.be.class_membership":    "en.be.class_membership.frame",
 	"en.black.color":            "en.black.color.frame",
+	"en.red.color":              "en.red.color.frame",
+	"en.white.color":            "en.white.color.frame",
+	"en.blue.color":             "en.blue.color.frame",
+	"en.green.color":            "en.green.color.frame",
+	"en.open.state":             "en.open.state.frame",
+	"en.sad.state":              "en.sad.state.frame",
 	"en.see.visual":             "en.see.visual.transitive",
 	"en.look.directed":          "en.look.directed.at",
 	"en.hear.auditory":          "en.hear.auditory.transitive",
@@ -1218,6 +1230,12 @@ var englishAdditionalFramesBySense = map[string][]lexicon.ValencyID{
 var englishParadigmByLexeme = map[string]string{
 	"en.be.v":               "en_identification_be_present_3sg",
 	"en.black.adj":          "en_identification_black_positive",
+	"en.red.adj":            "en_identification_red_positive",
+	"en.white.adj":          "en_identification_white_positive",
+	"en.blue.adj":           "en_identification_blue_positive",
+	"en.green.adj":          "en_identification_green_positive",
+	"en.open.adj":           "en_identification_open_positive",
+	"en.sad.adj":            "en_identification_sad_positive",
 	"en.the.det":            "en_determiner_definite",
 	"en.a.det":              "en_determiner_indefinite",
 	"en.an.det":             "en_determiner_indefinite",
@@ -1344,7 +1362,7 @@ var englishParadigmByLexeme = map[string]string{
 var englishAArticleLexemes = map[string]struct{}{
 	"en.mother.n": {}, "en.father.n": {}, "en.cat.n": {}, "en.book.n": {},
 	"en.house.n": {}, "en.household.n": {}, "en.car.n": {}, "en.bird.n": {}, "en.neighbor.n": {},
-	"en.customer.n": {}, "en.dog.n": {}, "en.teacher.n": {}, "en.doctor.n": {},
+	"en.customer.n": {}, "en.dog.n": {}, "en.door.n": {}, "en.teacher.n": {}, "en.doctor.n": {},
 	"en.newspaper.n": {}, "en.moon_earth.n": {},
 	"en.tree.n": {}, "en.child.n": {}, "en.message.n": {}, "en.letter_document.n": {}, "en.document.n": {},
 	"en.window.n": {},
@@ -1360,7 +1378,7 @@ var englishAnArticleLexemes = map[string]struct{}{
 
 var englishCountNounLexemes = map[string]struct{}{
 	"en.offspring.n": {},
-	"en.mother.n":    {}, "en.father.n": {}, "en.dog.n": {}, "en.house.n": {}, "en.household.n": {},
+	"en.mother.n":    {}, "en.father.n": {}, "en.dog.n": {}, "en.door.n": {}, "en.house.n": {}, "en.household.n": {},
 	"en.school.n": {}, "en.book.n": {}, "en.hand.n": {}, "en.eye.n": {},
 	"en.child.n": {}, "en.table.n": {}, "en.teacher.n": {}, "en.doctor.n": {},
 	"en.car.n": {}, "en.fish_animal.n": {}, "en.hospital_building.n": {},
@@ -1400,6 +1418,11 @@ func LexicalDocument() (lexicon.Document, error) {
 			if _, exists := englishAnArticleLexemes[entry.id]; exists {
 				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "indefinite_article", Value: "an"})
 			}
+			for _, attribution := range englishAttributionSpecs {
+				if attribution.lexeme == "lexeme:"+entry.id && (attribution.indefiniteArticle == "a" || attribution.indefiniteArticle == "an") {
+					lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "indefinite_article", Value: attribution.indefiniteArticle})
+				}
+			}
 			switch entry.id {
 			case "en.food.n", "en.money.n", "en.water.n", "en.fish_meat.n", "en.bread.n", "en.soup_food.n", "en.milk_food.n", "en.tea_beverage.n", "en.coffee_beverage.n", "en.paper_material.n", "en.rain.n":
 				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "number_behavior", Value: "mass"})
@@ -1429,6 +1452,10 @@ func LexicalDocument() (lexicon.Document, error) {
 				binding := lexicon.SemanticBinding{
 					SenseID: senseID, CoreRef: conceptID, Mapping: lexicon.MappingCandidate,
 					Status: lexicon.BindingPending, Provenance: group.source,
+				}
+				switch meaning.id {
+				case "en.red.color", "en.white.color", "en.blue.color", "en.green.color", "en.open.state", "en.sad.state":
+					binding.Provenance = englishAdjectiveDataSource
 				}
 				if reviewSource, reviewed := englishReviewedEquivalentSenseSources[senseID.Symbol().Name]; reviewed {
 					binding.Mapping = lexicon.MappingEquivalent

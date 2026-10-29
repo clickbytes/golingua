@@ -42,7 +42,7 @@ func englishDeterminersForCandidate(candidate realizer.TargetCandidate) (english
 }
 
 func isEnglishDeterminerToken(value string) bool {
-	return value == "the" || value == "a" || value == "an"
+	return value == "the" || value == "a" || value == "an" || value == "this" || value == "that" || value == "these" || value == "those"
 }
 
 func englishVariantRequiresNPNumber(candidate realizer.TargetCandidate, slotID, number string) bool {

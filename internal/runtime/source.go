@@ -45,7 +45,8 @@ type CompositionEvidenceBuilder interface {
 // SourcePipeline adapts the existing bounded source stages to engine.SourceAnalyzer.
 // Language-specific phrase analysis remains an explicit compiled dependency.
 type SourcePipeline struct {
-	Language features.LanguageID
+	Language      features.LanguageID
+	PhraseProfile construction.PhraseProfile
 	// ClauseConnector is one exact, language-local source terminal that may
 	// join two bounded declarative clauses in DSE syntax analysis.
 	ClauseConnector  string
@@ -100,7 +101,8 @@ func (pipeline *SourcePipeline) Analyze(ctx context.Context, input string) (sema
 	}
 	composed, err := semantic.Compose(semantic.CompositionInput{
 		Forest: syntax.Forest, Candidates: syntax.PhraseCandidates, Lattice: syntax.Lattice, SourceBytes: syntax.OriginalSourceBytes,
-		Lexicon: pipeline.Lexicon, Valency: pipeline.Valency, Core: pipeline.Core,
+		PhraseProfile: pipeline.PhraseProfile,
+		Lexicon:       pipeline.Lexicon, Valency: pipeline.Valency, Core: pipeline.Core,
 		Constructions: pipeline.Constructions, References: syntax.CompositionEvidence.References,
 		ImplicitRoles:            syntax.CompositionEvidence.ImplicitRoles,
 		NodeAttributes:           syntax.CompositionEvidence.NodeAttributes,

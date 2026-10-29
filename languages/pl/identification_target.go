@@ -13,8 +13,10 @@ func polishIdentificationPredicateConcept(source semantic.MeaningCandidate, pred
 	}
 	for _, node := range source.Meaning.Nodes {
 		if node.ID == predicateID && node.Kind == meaning.KindState {
-			switch string(node.Concept) {
-			case "concept:class_membership", "concept:black":
+			if string(node.Concept) == "concept:class_membership" {
+				return string(node.Concept)
+			}
+			if _, attributable := polishAttributionForConcept(string(node.Concept)); attributable {
 				return string(node.Concept)
 			}
 		}
@@ -38,12 +40,11 @@ func polishIdentificationState(source semantic.MeaningCandidate, predicateID mea
 		return "", "", "", false
 	}
 	var role meaning.Role
-	switch string(predicate.Concept) {
-	case "concept:class_membership":
+	if string(predicate.Concept) == "concept:class_membership" {
 		role = "member"
-	case "concept:black":
+	} else if _, attributable := polishAttributionForConcept(string(predicate.Concept)); attributable {
 		role = "bearer"
-	default:
+	} else {
 		return "", "", "", false
 	}
 	participant := predicate.Participants[0]
@@ -182,18 +183,20 @@ func polishIdentificationReferenceMode(source semantic.MeaningCandidate, predica
 			return "", false
 		}
 		mention := context.Mentions[0]
-		if mention.ReferentID != "" || mention.EvidenceID != "" || mention.Anchor == nil || mention.Anchor.Kind != "deixis" {
+		if mention.ReferentID != "" || mention.EvidenceID != "" {
 			return "", false
 		}
-		switch mention.Anchor.Value {
-		case "proximal", "distal", "unresolved", "demonstrative":
-		default:
-			return "", false
-		}
-		if commonMode == "" {
-			commonMode = mention.Anchor.Value
-		} else if commonMode != mention.Anchor.Value {
-			return "", false
+		mode := "none"
+		if mention.Anchor != nil {
+			if mention.Anchor.Kind != "deixis" {
+				return "", false
+			}
+			mode = mention.Anchor.Value
+			switch mode {
+			case "proximal", "distal", "unresolved", "demonstrative":
+			default:
+				return "", false
+			}
 		}
 		var contextPredicate, contextReferent meaning.Node
 		for _, node := range graph.Nodes {
@@ -210,10 +213,15 @@ func polishIdentificationReferenceMode(source semantic.MeaningCandidate, predica
 				}
 			}
 		}
-		if contextPredicate.ID == "" || contextReferent.ID == "" || contextReferent.Kind != meaning.KindReferent ||
+		if contextPredicate.ID == "" || contextReferent.ID == "" || contextReferent.Kind != meaning.KindReferent || mention.NodeID != contextReferent.ID ||
 			string(contextReferent.Concept) != string(sourceNodeConcept(*source.Meaning, sourceReferentID)) || mention.NodeID != contextReferent.ID ||
 			contextPredicate.TemporalFrame != sourcePredicate.TemporalFrame || contextReferent.Multiplicity != sourceReferent.Multiplicity ||
 			len(graph.Roots) != 1 || graph.Roots[0] != contextPredicate.ID {
+			return "", false
+		}
+		if commonMode == "" {
+			commonMode = mode
+		} else if commonMode != mode {
 			return "", false
 		}
 	}
@@ -250,12 +258,23 @@ func polishIdentificationReferentFeatures(source semantic.MeaningCandidate, refe
 			switch property.Key {
 			case "gender":
 				candidateGender = property.Value
+			case "agreement_gender":
+				if candidateGender == "" {
+					candidateGender = property.Value
+				}
 			}
 		}
 		if candidateGender == "" || found && (gender != candidateGender || number != candidateNumber) {
 			return "", "", false
 		}
 		gender, number, found = candidateGender, candidateNumber, true
+	}
+	if number == "plural" {
+		if gender == "masculine_personal" {
+			gender = "masculine_personal"
+		} else {
+			gender = "non_masculine_personal"
+		}
 	}
 	return gender, number, found
 }

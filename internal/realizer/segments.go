@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"unicode/utf8"
 
+	"github.com/clickbytes/golingua/internal/morph"
 	"github.com/clickbytes/golingua/internal/status"
 )
 
@@ -30,29 +31,35 @@ const (
 // Every emitted byte, including spaces and punctuation, must occur in a part.
 // The identity fields retain the source trace responsible for that slice.
 type LinearizedPart struct {
-	Text           string      `json:"text"`
-	Kind           SegmentKind `json:"kind"`
-	SourceID       string      `json:"source_id,omitempty"`
-	NodeID         string      `json:"node_id,omitempty"`
-	LexemeID       string      `json:"lexeme_id,omitempty"`
-	SenseID        string      `json:"sense_id,omitempty"`
-	ConstructionID string      `json:"construction_id,omitempty"`
-	ProcedureID    string      `json:"procedure_id,omitempty"`
+	Text           string                      `json:"text"`
+	Kind           SegmentKind                 `json:"kind"`
+	SourceID       string                      `json:"source_id,omitempty"`
+	NodeID         string                      `json:"node_id,omitempty"`
+	LexemeID       string                      `json:"lexeme_id,omitempty"`
+	SenseID        string                      `json:"sense_id,omitempty"`
+	ConstructionID string                      `json:"construction_id,omitempty"`
+	ProcedureID    string                      `json:"procedure_id,omitempty"`
+	MorphTrace     []morph.GenerationTraceStep `json:"morph_trace,omitempty"`
+	NPPlanID       string                      `json:"np_plan_id,omitempty"`
+	NPRole         string                      `json:"np_role,omitempty"`
 }
 
 // Segment is a half-open UTF-8 byte span into the final linearized text.
 // Identity fields copy the exact provenance supplied by the corresponding
 // LinearizedPart; no identity or meaning is inferred from surface spelling.
 type Segment struct {
-	Start          int         `json:"start"`
-	End            int         `json:"end"`
-	Kind           SegmentKind `json:"kind"`
-	SourceID       string      `json:"source_id,omitempty"`
-	NodeID         string      `json:"node_id,omitempty"`
-	LexemeID       string      `json:"lexeme_id,omitempty"`
-	SenseID        string      `json:"sense_id,omitempty"`
-	ConstructionID string      `json:"construction_id,omitempty"`
-	ProcedureID    string      `json:"procedure_id,omitempty"`
+	Start          int                         `json:"start"`
+	End            int                         `json:"end"`
+	Kind           SegmentKind                 `json:"kind"`
+	SourceID       string                      `json:"source_id,omitempty"`
+	NodeID         string                      `json:"node_id,omitempty"`
+	LexemeID       string                      `json:"lexeme_id,omitempty"`
+	SenseID        string                      `json:"sense_id,omitempty"`
+	ConstructionID string                      `json:"construction_id,omitempty"`
+	ProcedureID    string                      `json:"procedure_id,omitempty"`
+	MorphTrace     []morph.GenerationTraceStep `json:"morph_trace,omitempty"`
+	NPPlanID       string                      `json:"np_plan_id,omitempty"`
+	NPRole         string                      `json:"np_role,omitempty"`
 }
 
 // SegmentBudget bounds final UTF-8 text size and the number of source-traced
@@ -144,6 +151,8 @@ func BuildSegments(text string, parts []LinearizedPart, budget SegmentBudget) ([
 			Start: position, End: end, Kind: part.Kind, SourceID: part.SourceID,
 			NodeID: part.NodeID, LexemeID: part.LexemeID, SenseID: part.SenseID,
 			ConstructionID: part.ConstructionID, ProcedureID: part.ProcedureID,
+			MorphTrace: append([]morph.GenerationTraceStep(nil), part.MorphTrace...),
+			NPPlanID:   part.NPPlanID, NPRole: part.NPRole,
 		})
 		position = end
 	}
@@ -163,7 +172,7 @@ func validSegmentKind(kind SegmentKind) bool {
 }
 
 func validatePartTrace(part LinearizedPart) error {
-	values := [...]string{part.SourceID, part.NodeID, part.LexemeID, part.SenseID, part.ConstructionID, part.ProcedureID}
+	values := [...]string{part.SourceID, part.NodeID, part.LexemeID, part.SenseID, part.ConstructionID, part.ProcedureID, part.NPPlanID, part.NPRole}
 	hasIdentity := false
 	for _, value := range values {
 		if value == "" {

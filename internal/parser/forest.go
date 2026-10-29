@@ -125,6 +125,42 @@ type PhraseCandidate struct {
 	Features       map[features.FeatureID]features.FeatureValueID
 	Case           string
 	CaseKnown      bool
+	// CompositeNPs are bounded NP compositions inspected by language-local
+	// source tooling. They are not clause candidates until semantic composition
+	// consumes their child evidence explicitly.
+	CompositeNPs []CompositeNPPhraseCandidate `json:"composite_nps,omitempty"`
+}
+
+// NPPhraseTokenEvidence records a function-word child that has no independent
+// lexical phrase candidate, such as an English determiner.
+type NPPhraseTokenEvidence struct {
+	ID              string
+	TokenIndex      int
+	Surface         string
+	Span            text.Span
+	Features        map[features.FeatureID]features.FeatureValueID
+	DeterminerOnset string
+	// CompatibleAgreementGenders records explicit language-local agreement
+	// classes permitted by an underspecified Polish demonstrative form.
+	CompatibleAgreementGenders []features.FeatureValueID
+}
+
+// CompositeNPPhraseCandidate keeps the exact lexical head, optional AP and
+// optional determiner evidence together with the compiled language-local NP
+// plan. This inventory is inspectable; the clause parser does not consume it.
+type CompositeNPPhraseCandidate struct {
+	ID                    string
+	TokenStart            int
+	TokenEnd              int
+	Span                  text.Span
+	HeadCandidateID       string
+	ModifierCandidateID   string
+	DeterminerCandidateID string
+	Determiner            *NPPhraseTokenEvidence
+	EvidenceCandidateIDs  []string
+	Plan                  construction.CompiledPhrasePlan
+	Outcome               status.OutcomeKind
+	Diagnostics           []status.Diagnostic
 }
 
 // WHGapEvidence explicitly licenses an omitted semantic argument for a WH
@@ -156,13 +192,27 @@ type SlotBinding struct {
 // slot IDs whose evidence was unavailable, preserving partial parses without
 // treating them as complete.
 type ParseAlternative struct {
-	PlanID       construction.ConstructionPlanID
-	FamilyID     ids.ConstructionID
-	VariantID    construction.VariantID
-	Permission   construction.SensePermission
-	Slots        []SlotBinding
-	Unresolved   []string
-	DerivationID string
+	PlanID         construction.ConstructionPlanID
+	FamilyID       ids.ConstructionID
+	VariantID      construction.VariantID
+	Permission     construction.SensePermission
+	Slots          []SlotBinding
+	NPPhraseGroups []NPPhraseGroupBinding
+	Unresolved     []string
+	DerivationID   string
+}
+
+// NPPhraseGroupBinding records one exact compiled attributive NP consumed
+// atomically across its ordinary AP modifier and NP head slots.
+type NPPhraseGroupBinding struct {
+	ModifierSlotID        string
+	HeadSlotID            string
+	CompositeCandidateID  string
+	ModifierCandidateID   string
+	HeadCandidateID       string
+	DeterminerCandidateID string
+	TokenStart            int
+	TokenEnd              int
 }
 
 // PackedNode shares a token subspan across candidate categories and parse

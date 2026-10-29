@@ -88,5 +88,11 @@ func identificationDeclarations() []declaration {
 	return []declaration{
 		{"class_membership", "property", "Categorical predication that the member instantiates the class given by that referent node ConceptRef; neither identity between individuals nor an ontology update.", core.KindProperty, []core.RoleType{{Name: "member", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
 		{"black", "color", "Black color attributed to one bearer, without identity or biological sex claims.", core.KindProperty, []core.RoleType{{Name: "bearer", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"red", "color", "Red color attributed to one bearer, without implying a particular cause or symbolic meaning.", core.KindProperty, []core.RoleType{{Name: "bearer", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"white", "color", "White color attributed to one bearer, without implying material, purity, or symbolic meaning.", core.KindProperty, []core.RoleType{{Name: "bearer", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"blue", "color", "Blue color attributed to one bearer, without implying a particular cause or symbolic meaning.", core.KindProperty, []core.RoleType{{Name: "bearer", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"green", "color", "Green color attributed to one bearer, without implying a particular cause or symbolic meaning.", core.KindProperty, []core.RoleType{{Name: "bearer", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"open_state", "property", "State of a bearer configured to permit passage, entry, or access through its opening.", core.KindProperty, []core.RoleType{{Name: "bearer", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
+		{"sad", "emotion_state", "Sad affect attributed to one bearer, without inferring a cause or duration.", core.KindProperty, []core.RoleType{{Name: "bearer", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
 	}
 }

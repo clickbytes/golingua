@@ -1,17 +1,28 @@
 package realizer
 
 import (
+	"sort"
+
 	"github.com/clickbytes/golingua/internal/construction"
 	"github.com/clickbytes/golingua/internal/meaning"
+	"github.com/clickbytes/golingua/internal/status"
 )
 
 // FindModifier resolves one declared modifier state through its exact NP slot
 // and the selected main predicate's role participant. Concept equality never
 // substitutes for a graph-node link.
 func FindModifier(graph meaning.Meaning, predicateID meaning.NodeID, family construction.ConstructionFamily, slotID string) (meaning.Node, bool) {
+	node, outcome := FindModifierOutcome(graph, predicateID, family, slotID)
+	return node, outcome == status.OutcomeOK
+}
+
+// FindModifierOutcome resolves one modifier slot without using node IDs or
+// graph order as a selection rule. Missing links remain incomplete; competing
+// states with the same semantic role and exact referent remain ambiguous.
+func FindModifierOutcome(graph meaning.Meaning, predicateID meaning.NodeID, family construction.ConstructionFamily, slotID string) (meaning.Node, status.OutcomeKind) {
 	predicate, exists := meaningNodeByID(graph, predicateID)
 	if !exists || predicate.Kind != meaning.KindEvent && predicate.Kind != meaning.KindState {
-		return meaning.Node{}, false
+		return meaning.Node{}, status.OutcomeIncomplete
 	}
 
 	var modifierSlot, targetSlot construction.SlotSpec
@@ -26,16 +37,20 @@ func FindModifier(graph meaning.Meaning, predicateID meaning.NodeID, family cons
 			targetCount++
 		}
 	}
-	if modifierCount != 1 || targetCount != 1 || targetSlot.Category != construction.CategoryNP || targetSlot.ArgumentBinding == nil || targetSlot.ID == modifierSlot.ID {
-		return meaning.Node{}, false
+	if modifierCount != 1 || targetCount != 1 || modifierSlot.ModifierBinding == nil || targetSlot.Category != construction.CategoryNP || targetSlot.ArgumentBinding == nil || targetSlot.Optionality != construction.SlotRequired || targetSlot.Cardinality.Minimum != 1 || targetSlot.Cardinality.Maximum != 1 || targetSlot.ID == modifierSlot.ID ||
+		modifierSlot.Category != construction.CategoryAP || modifierSlot.Optionality != construction.SlotRequired || modifierSlot.Cardinality.Minimum != 1 || modifierSlot.Cardinality.Maximum != 1 {
+		return meaning.Node{}, status.OutcomeUnsupported
 	}
 	targetParticipant, participantCount := participantByRole(predicate, targetSlot.ArgumentBinding.SemanticRole)
-	if participantCount != 1 {
-		return meaning.Node{}, false
+	if participantCount == 0 {
+		return meaning.Node{}, status.OutcomeIncomplete
+	}
+	if participantCount > 1 {
+		return meaning.Node{}, status.OutcomeAmbiguous
 	}
 	target, exists := meaningNodeByID(graph, targetParticipant.Target)
 	if !exists || target.Kind != meaning.KindReferent {
-		return meaning.Node{}, false
+		return meaning.Node{}, status.OutcomeUnsupported
 	}
 
 	stateCount := 0
@@ -54,10 +69,13 @@ func FindModifier(graph meaning.Meaning, predicateID meaning.NodeID, family cons
 			stateCount++
 		}
 	}
-	if stateCount != 1 {
-		return meaning.Node{}, false
+	if stateCount == 0 {
+		return meaning.Node{}, status.OutcomeIncomplete
 	}
-	return selected, true
+	if stateCount > 1 {
+		return meaning.Node{}, status.OutcomeAmbiguous
+	}
+	return selected, status.OutcomeOK
 }
 
 // CoversLexicalMeaning reports whether a selected construction covers every
@@ -86,8 +104,7 @@ func CoversLexicalMeaning(graph meaning.Meaning, predicateID meaning.NodeID, fam
 
 	mainPredicates := 0
 	boundRoles := make(map[meaning.Role]struct{}, len(family.SlotSpecs))
-	modifiers := 0
-	modifierSlotID := ""
+	modifierSlots := make([]construction.SlotSpec, 0, 1)
 	for _, slot := range family.SlotSpecs {
 		if slot.IsMainPredicate() {
 			mainPredicates++
@@ -96,11 +113,10 @@ func CoversLexicalMeaning(graph meaning.Meaning, predicateID meaning.NodeID, fam
 			boundRoles[slot.ArgumentBinding.SemanticRole] = struct{}{}
 		}
 		if slot.ModifierBinding != nil {
-			modifiers++
-			modifierSlotID = slot.ID
+			modifierSlots = append(modifierSlots, slot)
 		}
 	}
-	if mainPredicates != 1 || modifiers > 1 {
+	if mainPredicates != 1 {
 		return false
 	}
 
@@ -120,11 +136,17 @@ func CoversLexicalMeaning(graph meaning.Meaning, predicateID meaning.NodeID, fam
 		}
 		covered[target.ID] = struct{}{}
 	}
-	if modifiers == 1 {
-		modifier, found := FindModifier(graph, predicateID, family, modifierSlotID)
-		if !found {
+	sort.Slice(modifierSlots, func(i, j int) bool { return modifierSlots[i].Position < modifierSlots[j].Position })
+	selectedModifierIDs := make(map[meaning.NodeID]struct{}, len(modifierSlots))
+	for _, modifierSlot := range modifierSlots {
+		modifier, outcome := FindModifierOutcome(graph, predicateID, family, modifierSlot.ID)
+		if outcome != status.OutcomeOK {
 			return false
 		}
+		if _, duplicate := selectedModifierIDs[modifier.ID]; duplicate {
+			return false
+		}
+		selectedModifierIDs[modifier.ID] = struct{}{}
 		covered[modifier.ID] = struct{}{}
 		if len(modifier.Participants) != 1 || modifier.Participants[0].Target == "" {
 			return false

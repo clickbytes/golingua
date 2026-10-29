@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"reflect"
 	"sort"
 	"strings"
 	"unicode/utf8"
@@ -88,6 +89,19 @@ func parseRange(lattice analyzer.LexicalLattice, candidates []PhraseCandidate, c
 	evidenceItems := 0
 	for i := range candidates {
 		evidenceItems += len(candidates[i].ReadingIDs) + len(candidates[i].SenseIDs) + len(candidates[i].Features)
+		evidenceItems += len(candidates[i].CompositeNPs)
+		for _, composite := range candidates[i].CompositeNPs {
+			evidenceItems += len(composite.EvidenceCandidateIDs) + len(composite.Plan.Plan.Inputs) + len(composite.Plan.Plan.Children) + len(composite.Plan.Plan.Order) + len(composite.Plan.Plan.Agreements) + len(composite.Plan.Plan.Features.Values) + len(composite.Diagnostics)
+			if composite.Determiner != nil {
+				evidenceItems += len(composite.Determiner.Features) + len(composite.Determiner.CompatibleAgreementGenders)
+				if composite.Determiner.DeterminerOnset != "" {
+					evidenceItems++
+				}
+			}
+			for _, phraseInput := range composite.Plan.Plan.Inputs {
+				evidenceItems += len(phraseInput.Features.Values)
+			}
+		}
 		if evidenceItems > 65536 {
 			return Forest{}, newCompileLimitError("candidate.evidence", evidenceItems, 65536)
 		}
@@ -164,6 +178,7 @@ type partial struct {
 	slots      map[string]assignment
 	unresolved []string
 	used       map[string]bool
+	npGroups   []NPPhraseGroupBinding
 }
 type matcher struct {
 	forest               *Forest
@@ -517,6 +532,14 @@ func (m *matcher) walk(p compiledPlan, si, ti int, part partial) {
 	}
 	slot := *symbol.Slot
 	role := bindingRole(p, slot.ID)
+	groupMatched := false
+	if slot.ModifierBinding != nil && si+1 < len(p.sequence) && p.sequence[si+1].Slot != nil &&
+		p.sequence[si+1].Slot.ID == slot.ModifierBinding.TargetSlot && slot.Category == construction.CategoryAP && p.sequence[si+1].Slot.Category == construction.CategoryNP {
+		groupMatched = m.walkAttributiveNPGroup(p, si, ti, part, slot, *p.sequence[si+1].Slot)
+	}
+	if groupMatched {
+		return
+	}
 	for _, c := range m.candidates {
 		if !m.expand() {
 			return
@@ -553,6 +576,188 @@ func (m *matcher) walk(p compiledPlan, si, ti int, part partial) {
 		next := clonePartial(part)
 		next.slots[slot.ID] = assignment{role: role}
 		m.walk(p, si+1, ti, next)
+	}
+}
+
+func (m *matcher) walkAttributiveNPGroup(p compiledPlan, si, ti int, part partial, modifierSlot, headSlot construction.SlotSpec) bool {
+	seen := map[string]CompositeNPPhraseCandidate{}
+	matched := false
+	for _, head := range m.candidates {
+		if head.Category != construction.CategoryNP {
+			continue
+		}
+		for _, composite := range head.CompositeNPs {
+			if !m.expand() {
+				return matched
+			}
+			if composite.ID == "" || composite.HeadCandidateID != head.ID || composite.TokenEnd != head.TokenEnd ||
+				(composite.Outcome != status.OutcomeOK && composite.Outcome != status.OutcomeIncomplete && composite.Outcome != status.OutcomeAmbiguous) {
+				continue
+			}
+			if previous, duplicate := seen[composite.ID]; duplicate {
+				if !reflect.DeepEqual(previous, composite) {
+					m.markIncomplete("NP_GROUP_ID_COLLISION", "one composite NP ID has conflicting group evidence")
+					return matched
+				}
+				continue
+			}
+			seen[composite.ID] = composite
+			modifierIndex, exists := m.byID[composite.ModifierCandidateID]
+			if !exists {
+				continue
+			}
+			modifier := m.candidates[modifierIndex]
+			if modifier.Category != construction.CategoryAP || modifier.TokenEnd != head.TokenStart ||
+				!parserCompositeNPCompatible(composite, modifier, head, m.lattice) || !npGroupStartsAtCursor(p, si, ti, composite, modifier, m.lattice) || part.used[modifier.ID] || part.used[head.ID] {
+				continue
+			}
+			next := clonePartial(part)
+			if !m.caseCompatible(p, modifierSlot, modifier, &next) || !m.caseCompatible(p, headSlot, head, &next) {
+				continue
+			}
+			next.slots[modifierSlot.ID] = assignment{candidateIDs: []string{modifier.ID}, role: bindingRole(p, modifierSlot.ID)}
+			next.slots[headSlot.ID] = assignment{candidateIDs: []string{head.ID}, role: bindingRole(p, headSlot.ID)}
+			next.used[modifier.ID] = true
+			next.used[head.ID] = true
+			next.npGroups = append(next.npGroups, NPPhraseGroupBinding{
+				ModifierSlotID: modifierSlot.ID, HeadSlotID: headSlot.ID,
+				CompositeCandidateID: composite.ID, ModifierCandidateID: modifier.ID, HeadCandidateID: head.ID,
+				DeterminerCandidateID: composite.DeterminerCandidateID, TokenStart: composite.TokenStart, TokenEnd: composite.TokenEnd,
+			})
+			if composite.Outcome != status.OutcomeOK {
+				next.unresolved = appendUnique(next.unresolved, modifierSlot.ID)
+				m.markIncomplete("NP_GROUP_EVIDENCE_INCOMPLETE", "attributive NP group has incomplete or ambiguous compiled phrase evidence")
+			}
+			matched = true
+			m.walk(p, si+2, composite.TokenEnd, next)
+		}
+	}
+	return matched
+}
+
+// npGroupStartsAtCursor accepts a group beginning at the AP, or a determiner
+// already consumed by this exact compiled variant immediately before the AP.
+// In the latter case the group binds that token as evidence without consuming
+// it a second time.
+func npGroupStartsAtCursor(p compiledPlan, si, ti int, composite CompositeNPPhraseCandidate, modifier PhraseCandidate, lattice analyzer.LexicalLattice) bool {
+	if composite.TokenStart == ti && modifier.TokenStart == ti {
+		return true
+	}
+	if composite.Determiner != nil && composite.TokenStart == ti && composite.Determiner.TokenIndex == ti && modifier.TokenStart == ti+1 {
+		return true
+	}
+	if composite.Determiner == nil || ti != modifier.TokenStart || composite.Determiner.TokenIndex+1 != ti || composite.TokenStart != composite.Determiner.TokenIndex || si == 0 {
+		return false
+	}
+	previous := p.sequence[si-1]
+	if previous.Slot != nil || composite.Determiner.TokenIndex < 0 || composite.Determiner.TokenIndex >= len(lattice.Tokens) {
+		return false
+	}
+	token := lattice.Tokens[composite.Determiner.TokenIndex].Token
+	return previous.Position == si-1 && symbolMatchesInput(previous, canonicalTerminal(token)) && token.Surface == composite.Determiner.Surface && token.Span == composite.Determiner.Span
+}
+
+func parserCompositeNPCompatible(composite CompositeNPPhraseCandidate, modifier, head PhraseCandidate, lattice analyzer.LexicalLattice) bool {
+	plan := composite.Plan.Plan
+	if (composite.Plan.Completeness != construction.PhrasePlanComplete && composite.Plan.Completeness != construction.PhrasePlanPartial) ||
+		(composite.Plan.Completeness == construction.PhrasePlanPartial && composite.Outcome != status.OutcomeIncomplete && composite.Outcome != status.OutcomeAmbiguous) ||
+		plan.Kind != construction.PhraseNP || plan.TemplateID != "np-attributive" || plan.Language != lattice.Language ||
+		composite.TokenStart < 0 || composite.TokenStart >= len(lattice.Tokens) || composite.TokenEnd <= composite.TokenStart || composite.TokenEnd > len(lattice.Tokens) ||
+		composite.Span.Start < 0 || composite.Span.End <= composite.Span.Start {
+		return false
+	}
+	expectedStart := modifier.TokenStart
+	if composite.Determiner != nil {
+		if composite.DeterminerCandidateID == "" || composite.Determiner.ID != composite.DeterminerCandidateID || composite.Determiner.TokenIndex != composite.TokenStart ||
+			composite.TokenStart+1 != modifier.TokenStart || composite.Determiner.TokenIndex >= len(lattice.Tokens) {
+			return false
+		}
+		token := lattice.Tokens[composite.Determiner.TokenIndex].Token
+		if token.Kind != text.TokenWord || composite.Determiner.Span != token.Span || composite.Determiner.Surface != token.Surface {
+			return false
+		}
+		if !parserDeterminerFeatureMatches(lattice.Language, token, composite.Determiner.Features) {
+			return false
+		}
+		expectedStart = composite.Determiner.TokenIndex
+	} else if composite.DeterminerCandidateID != "" {
+		return false
+	}
+	if composite.TokenStart != expectedStart || composite.TokenEnd != head.TokenEnd || modifier.TokenEnd != head.TokenStart ||
+		composite.Span.Start != lattice.Tokens[composite.TokenStart].Token.Span.Start || composite.Span.End != lattice.Tokens[head.TokenEnd-1].Token.Span.End {
+		return false
+	}
+	expectedEvidence := []string{head.ID, modifier.ID}
+	expectedOrder := []string{"modifier", "head"}
+	if composite.Determiner != nil {
+		expectedEvidence = append(expectedEvidence, composite.Determiner.ID)
+		expectedOrder = []string{"determiner", "modifier", "head"}
+	}
+	if !reflect.DeepEqual(composite.EvidenceCandidateIDs, expectedEvidence) || !reflect.DeepEqual(plan.Order, expectedOrder) || len(plan.Inputs) != len(expectedOrder) {
+		return false
+	}
+	expectedInputs := []struct {
+		id       string
+		role     string
+		kind     construction.PhraseInputKind
+		required bool
+	}{
+		{"head-input", "head", construction.PhraseInputLexical, true},
+		{"modifier-input", "modifier", construction.PhraseInputAP, false},
+	}
+	if composite.Determiner != nil {
+		expectedInputs = append(expectedInputs, struct {
+			id       string
+			role     string
+			kind     construction.PhraseInputKind
+			required bool
+		}{"determiner-input", "determiner", construction.PhraseInputLexical, false})
+	}
+	for index, expected := range expectedInputs {
+		actual := plan.Inputs[index]
+		if actual.ID != expected.id || actual.Role != expected.role || actual.Kind != expected.kind || actual.Required != expected.required {
+			return false
+		}
+	}
+	return true
+}
+
+func parserDeterminerFeatureMatches(language features.LanguageID, token text.Token, values map[features.FeatureID]features.FeatureValueID) bool {
+	surface := token.Folded
+	if surface == "" {
+		surface = token.Normalized
+	}
+	switch language {
+	case "en":
+		want := ""
+		number := ""
+		switch surface {
+		case "the":
+			want = "definite"
+		case "a", "an":
+			want = "indefinite"
+		case "this":
+			want, number = "demonstrative_proximal", "singular"
+		case "these":
+			want, number = "demonstrative_proximal", "plural"
+		case "that":
+			want, number = "demonstrative_distal", "singular"
+		case "those":
+			want, number = "demonstrative_distal", "plural"
+		}
+		return want != "" && values["determiner"] == features.FeatureValueID(want) &&
+			(number == "" || values["number"] == features.FeatureValueID(number))
+	case "pl":
+		want := ""
+		switch surface {
+		case "ten", "ta", "to", "tamten", "tamta", "tamto":
+			want = "singular"
+		case "te", "ci", "tamte", "tamci":
+			want = "plural"
+		}
+		return want != "" && values["number"] == features.FeatureValueID(want)
+	default:
+		return false
 	}
 }
 
@@ -846,11 +1051,13 @@ func (m *matcher) retain(p compiledPlan, part partial) {
 		}
 		bindings = append(bindings, binding)
 	}
-	alt := ParseAlternative{PlanID: p.plan.ID, FamilyID: p.family.ID, VariantID: p.variant.ID, Permission: p.permission, Slots: bindings, Unresolved: append([]string(nil), part.unresolved...), DerivationID: derivationID(p, bindings)}
+	alt := ParseAlternative{PlanID: p.plan.ID, FamilyID: p.family.ID, VariantID: p.variant.ID, Permission: p.permission, Slots: bindings,
+		NPPhraseGroups: append([]NPPhraseGroupBinding(nil), part.npGroups...), Unresolved: append([]string(nil), part.unresolved...),
+		DerivationID: derivationID(p, bindings, part.npGroups)}
 	root := &m.forest.Nodes[rootIndex]
 	root.Alternatives = append(root.Alternatives, alt)
 	m.retainedAlternatives++
-	sem := semanticKey(p, bindings)
+	sem := semanticKey(p, bindings, part.npGroups)
 	if !m.semantic[sem] {
 		m.semantic[sem] = true
 		m.semanticCount++
@@ -934,7 +1141,7 @@ func (m *matcher) markIncomplete(code, message string) {
 }
 
 func clonePartial(p partial) partial {
-	n := partial{slots: make(map[string]assignment, len(p.slots)), unresolved: append([]string(nil), p.unresolved...), used: make(map[string]bool, len(p.used))}
+	n := partial{slots: make(map[string]assignment, len(p.slots)), unresolved: append([]string(nil), p.unresolved...), used: make(map[string]bool, len(p.used)), npGroups: append([]NPPhraseGroupBinding(nil), p.npGroups...)}
 	for k, v := range p.slots {
 		v.candidateIDs = append([]string(nil), v.candidateIDs...)
 		n.slots[k] = v
@@ -1055,7 +1262,7 @@ func predicateValue(candidates []PhraseCandidate, byID map[string]int, plan comp
 	}
 	return false, false
 }
-func derivationID(p compiledPlan, slots []SlotBinding) string {
+func derivationID(p compiledPlan, slots []SlotBinding, npGroups []NPPhraseGroupBinding) string {
 	var b strings.Builder
 	b.WriteString(string(p.plan.ID))
 	b.WriteByte('|')
@@ -1073,10 +1280,20 @@ func derivationID(p compiledPlan, slots []SlotBinding) string {
 			b.WriteString(string(s.WHGap.ScopeNodeID))
 		}
 	}
+	for _, group := range npGroups {
+		b.WriteString("|np:")
+		b.WriteString(group.ModifierSlotID)
+		b.WriteByte('/')
+		b.WriteString(group.HeadSlotID)
+		b.WriteByte('=')
+		b.WriteString(group.CompositeCandidateID)
+		b.WriteByte('@')
+		b.WriteString(fmt.Sprintf("%d:%d", group.TokenStart, group.TokenEnd))
+	}
 	digest := sha256.Sum256([]byte(b.String()))
 	return "derivation:" + hex.EncodeToString(digest[:])
 }
-func semanticKey(p compiledPlan, slots []SlotBinding) string {
+func semanticKey(p compiledPlan, slots []SlotBinding, npGroups []NPPhraseGroupBinding) string {
 	var b strings.Builder
 	b.WriteString(p.permission.SenseID.String())
 	b.WriteByte('/')
@@ -1095,6 +1312,10 @@ func semanticKey(p compiledPlan, slots []SlotBinding) string {
 			b.WriteByte(':')
 			b.WriteString(string(s.WHGap.ScopeNodeID))
 		}
+	}
+	for _, group := range npGroups {
+		b.WriteString("|np:")
+		b.WriteString(group.CompositeCandidateID)
 	}
 	return b.String()
 }

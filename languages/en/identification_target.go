@@ -33,10 +33,12 @@ func englishIdentificationState(source semantic.MeaningCandidate) (englishIdenti
 		switch string(node.Concept) {
 		case "concept:class_membership":
 			id = englishIdentification{stateID: node.ID, role: "member", senseID: "sense:en.be.class_membership", family: "construction:en.identification"}
-		case "concept:black":
-			id = englishIdentification{stateID: node.ID, role: "bearer", senseID: "sense:en.black.color", family: "construction:en.attribution"}
 		default:
-			continue
+			attribution, allowed := englishAttributionForConcept(string(node.Concept))
+			if !allowed {
+				continue
+			}
+			id = englishIdentification{stateID: node.ID, role: "bearer", senseID: attribution.sense, family: "construction:en.attribution"}
 		}
 		id.valid = true
 		if err := meaning.ValidateStructure(*source.Meaning, meaning.DefaultBudget()); err != nil || len(source.Meaning.Roots) != 1 || source.Meaning.Roots[0] != node.ID || len(source.Meaning.Nodes) != 2 || len(node.Participants) != 1 || node.Participants[0].Role != meaning.Role(id.role) {
@@ -64,7 +66,7 @@ func englishIdentificationState(source semantic.MeaningCandidate) (englishIdenti
 				id.mode = mode
 			}
 		}
-		if id.mode != "proximal" && id.mode != "distal" && id.mode != "unresolved" && id.mode != "demonstrative" {
+		if id.mode != "proximal" && id.mode != "distal" && id.mode != "unresolved" && id.mode != "demonstrative" && id.mode != "none" {
 			id.valid = false
 		}
 		return id, true
@@ -244,6 +246,9 @@ func englishIdentificationContext(context semantic.MeaningContext, expected engl
 		return "", false
 	}
 	mention := context.Context.Mentions[0]
+	if mention.NodeID == referent.ID && mention.ReferentID == "" && mention.EvidenceID == "" && mention.Anchor == nil {
+		return "none", true
+	}
 	if mention.NodeID != referent.ID || mention.ReferentID != "" || mention.EvidenceID != "" || mention.Anchor == nil || mention.Anchor.Kind != "deixis" {
 		return "", false
 	}
@@ -258,10 +263,36 @@ func englishIdentificationConcept(senseID string) string {
 	if senseID == "sense:en.be.class_membership" {
 		return "concept:class_membership"
 	}
-	if senseID == "sense:en.black.color" {
-		return "concept:black"
+	if attribution, allowed := englishAttributionForSense(senseID); allowed {
+		return attribution.concept
 	}
 	return ""
+}
+
+func englishAttributionDoorNumberChoice(source semantic.MeaningCandidate, predicate realizer.TargetCandidate, slotID, role string) (string, bool) {
+	identification, recognized := englishTargetIdentificationState(source)
+	if !recognized || !identification.valid || identification.role != "bearer" || identification.concept != "concept:door" ||
+		identification.mode != "none" || predicate.NodeID != identification.stateID || predicate.Family.Family.ID.String() != "construction:en.attribution" {
+		return "", false
+	}
+	if role != "" && (role != "bearer" || slotID != "bearer") {
+		return "", false
+	}
+	variant := predicate.CompiledVariant.Variant.ID.String()
+	switch variant {
+	case "construction:en.attribution.the_plural":
+		if identification.multiplicity == meaning.MultiplicityOne {
+			return "", false
+		}
+		return "plural", true
+	case "construction:en.attribution.the":
+		if identification.multiplicity == meaning.MultiplicityMany {
+			return "", false
+		}
+		return "singular", true
+	default:
+		return "", false
+	}
 }
 
 func englishIdentificationReferenceChoice(variant, family string) (string, bool) {

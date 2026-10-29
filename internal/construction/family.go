@@ -156,9 +156,6 @@ func (family ConstructionFamily) Validate() error {
 			modifierSlots = append(modifierSlots, slot)
 		}
 	}
-	if len(modifierSlots) > 1 {
-		return invalid("MULTIPLE_MODIFIER_BINDINGS", "family.slot_specs", "a family may declare at most one modifier binding")
-	}
 	for _, slot := range modifierSlots {
 		target, exists := slotsByID[slot.ModifierBinding.TargetSlot]
 		if !exists {

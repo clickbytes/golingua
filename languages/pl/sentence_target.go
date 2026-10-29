@@ -37,8 +37,12 @@ func NewSentenceExecutionBuilderWithSeed(seed *Seed) (runtime.MorphologyExecutio
 	if profile == nil || profile.Language() != "pl" || paradigms == nil || exceptions == nil {
 		return runtime.MorphologyExecutionBuilder{}, fmt.Errorf("Polish execution builder requires a Polish morphology seed")
 	}
+	phraseProfile, err := SentencePhraseProfile(profile)
+	if err != nil {
+		return runtime.MorphologyExecutionBuilder{}, err
+	}
 	return runtime.MorphologyExecutionBuilder{
-		Profile: profile, Paradigms: paradigms, Exceptions: exceptions,
+		Profile: profile, PhraseProfile: phraseProfile, Paradigms: paradigms, Exceptions: exceptions,
 		Parts: seed.PrincipalParts, FeaturePlan: polishSentenceFeatures{}, CaseFeature: "case",
 	}, nil
 }
@@ -138,7 +142,7 @@ func (polishSentencePlanAnnotations) Annotations(_ context.Context, source seman
 	if role, referentID, _, ok := polishIdentificationState(source, selected.NodeID); ok {
 		predicatePath, predicateFound := runtime.MeaningPath(*source.Meaning, selected.NodeID)
 		referentPath, referentFound := runtime.MeaningPath(*source.Meaning, referentID)
-		mode, contextOK := polishIdentificationReferenceMode(source, selected.NodeID)
+		_, contextOK := polishTargetIdentificationReferenceMode(source, selected.NodeID)
 		predicate := findSentencePredicate(*source.Meaning, selected.NodeID)
 		if !predicateFound || !referentFound || !contextOK ||
 			!polishIdentificationAttributesAllowed(source, selected.NodeID, role, referentID, selected.TransferBinding.CoreRef) {
@@ -146,13 +150,46 @@ func (polishSentencePlanAnnotations) Annotations(_ context.Context, source seman
 		}
 		assumptions := polishIdentificationDefaults(predicatePath, referentPath, predicate, source.Meaning.Nodes, referentID, "identification")
 		var losses []realizer.FieldLoss
-		if mode == "proximal" || mode == "distal" {
-			losses = append(losses, realizer.FieldLoss{Path: referentPath, Field: "deixis", Outcome: status.OutcomeIncomplete, Reason: "Polish to/ten preserves demonstrative reference but does not encode the source's explicit distance"})
+		if role == "bearer" {
+			referent := findSentenceReferent(*source.Meaning, referentID)
+			conceptID, err := ids.ParseConceptID(string(referent.Concept))
+			if err != nil {
+				return nil, nil, nil, fmt.Errorf("Polish identification source concept %q is invalid: %w", referent.Concept, err)
+			}
+			if values, found := runtime.SourceFeatures(source, "bearer", conceptID); found {
+				determiner := string(values["determiner"])
+				if determiner == "definite" || determiner == "indefinite" {
+					losses = append(losses, realizer.FieldLoss{Path: referentPath, Field: "determiner", Outcome: status.OutcomeIncomplete, Reason: "Polish noun phrase does not encode the source English article distinction"})
+				}
+			}
 		}
 		return nil, assumptions, losses, nil
 	}
 	if source.Meaning == nil || selected.Kind != meaning.KindEvent && selected.Kind != meaning.KindState {
 		return nil, nil, nil, nil
+	}
+	if role, referentID, _, attribution := polishIdentificationStateShape(source, selected.NodeID); attribution && role == "bearer" {
+		predicatePath, predicateFound := runtime.MeaningPath(*source.Meaning, selected.NodeID)
+		referentPath, referentFound := runtime.MeaningPath(*source.Meaning, referentID)
+		predicate := findSentencePredicate(*source.Meaning, selected.NodeID)
+		referent := findSentenceReferent(*source.Meaning, referentID)
+		if !predicateFound || !referentFound || referent.ID == "" || !polishPredicateEvidenceConsistent(source, selected) ||
+			!polishIdentificationAttributesAllowed(source, selected.NodeID, role, referentID, selected.TransferBinding.CoreRef) {
+			return nil, nil, nil, fmt.Errorf("Polish attribution realization requires a valid anchored bearer")
+		}
+		assumptions := polishIdentificationDefaults(predicatePath, referentPath, predicate, source.Meaning.Nodes, referentID, "attribution")
+		var losses []realizer.FieldLoss
+		conceptID, err := ids.ParseConceptID(string(referent.Concept))
+		if err != nil {
+			return nil, nil, nil, fmt.Errorf("Polish attribution source concept %q is invalid: %w", referent.Concept, err)
+		}
+		if values, found := runtime.SourceFeatures(source, role, conceptID); found {
+			determiner := string(values["determiner"])
+			if determiner == "definite" || determiner == "indefinite" {
+				losses = append(losses, realizer.FieldLoss{Path: referentPath, Field: "determiner", Outcome: status.OutcomeIncomplete, Reason: "Polish noun phrase does not encode the source English article distinction"})
+			}
+		}
+		return nil, assumptions, losses, nil
 	}
 	predicate, found := polishMeaningNode(source, selected.NodeID)
 	predicatePath, pathFound := runtime.MeaningPath(*source.Meaning, selected.NodeID)
@@ -188,7 +225,47 @@ func (polishSentencePlanAnnotations) Annotations(_ context.Context, source seman
 			})
 		}
 	}
-	return nil, assumptions, nil, nil
+	var losses []realizer.FieldLoss
+	// Polish does not mark English article definiteness on the noun phrase.
+	// Keep the source distinction visible on the exact participant referent.
+	if role, referentID, _, attribution := polishIdentificationStateShape(source, predicate.ID); attribution && role == "bearer" {
+		referent := findSentenceReferent(*source.Meaning, referentID)
+		if referentPath, pathFound := runtime.MeaningPath(*source.Meaning, referentID); pathFound && referent.ID != "" {
+			conceptID, err := ids.ParseConceptID(string(referent.Concept))
+			if err != nil {
+				return nil, nil, nil, fmt.Errorf("Polish participant source concept %q is invalid: %w", referent.Concept, err)
+			}
+			if values, found := runtime.SourceFeatures(source, role, conceptID); found {
+				determiner := string(values["determiner"])
+				if determiner == "definite" || determiner == "indefinite" {
+					losses = append(losses, realizer.FieldLoss{Path: referentPath, Field: "determiner", Outcome: status.OutcomeIncomplete, Reason: "Polish noun phrase does not encode the source English article distinction"})
+				}
+			}
+		}
+	}
+	return nil, assumptions, losses, nil
+}
+
+func polishIdentificationStateShape(source semantic.MeaningCandidate, predicateID meaning.NodeID) (meaning.Role, meaning.NodeID, string, bool) {
+	if source.Meaning == nil || meaning.ValidateStructure(*source.Meaning, meaning.DefaultBudget()) != nil {
+		return "", "", "", false
+	}
+	graph := *source.Meaning
+	if len(graph.Nodes) != 2 || len(graph.Roots) != 1 || graph.Roots[0] != predicateID {
+		return "", "", "", false
+	}
+	predicate := findSentencePredicate(graph, predicateID)
+	if predicate.ID == "" || predicate.Kind != meaning.KindState || len(predicate.Participants) != 1 {
+		return "", "", "", false
+	}
+	if _, attribution := polishAttributionForConcept(string(predicate.Concept)); !attribution {
+		return "", "", "", false
+	}
+	participant := predicate.Participants[0]
+	if participant.Role != "bearer" || findSentenceReferent(graph, participant.Target).ID == "" {
+		return "", "", "", false
+	}
+	return participant.Role, participant.Target, string(predicate.Concept), true
 }
 
 func polishIdentificationDefaults(predicatePath, referentPath []meaning.NodeID, predicate meaning.Node, nodes []meaning.Node, referentID meaning.NodeID, route string) []realizer.FieldAssumption {
@@ -237,28 +314,31 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 		), nil
 	}
 	if slot.ModifierBinding != nil && polishAttributedSeeingFamily(predicate) {
-		shape, valid := polishAttributedSeeingShape(source)
+		_, valid := polishAttributedSeeingShape(source)
 		if !valid || source.Meaning == nil {
 			return nil, fmt.Errorf("Polish attributed seeing adjective requires the licensed two-root Meaning")
 		}
 		modifier, modifierFound := realizer.FindModifier(*source.Meaning, predicate.NodeID, predicate.Family.Family, slot.ID)
-		_, subjectID, subjectFound := polishSubjectTarget(source, predicate)
-		if !polishAttributedSeeingContextsValid(source) || !modifierFound || modifier.ID != shape.property.ID ||
-			!subjectFound || subjectID != shape.subject.ID || candidate.NodeID != modifier.ID ||
-			candidate.Sense.ID.String() != "sense:pl.czarny.black" || candidate.TransferBinding.CoreRef.String() != "concept:black" || candidate.Lexeme.ID.String() != "lexeme:pl.czarny.adj" {
-			return nil, fmt.Errorf("Polish attributed seeing adjective is not linked to the selected subject property")
+		if !polishAttributedSeeingContextsValid(source) || !modifierFound || candidate.NodeID != modifier.ID ||
+			!polishAttributedSeeingModifierCandidate(source, candidate, candidates) {
+			return nil, fmt.Errorf("Polish attributed seeing adjective is not linked to its selected bearer property")
 		}
-		gender, number, found := polishIdentificationReferentFeatures(source, subjectID, candidates)
+		targetReferent, targetCase, found := polishAttributedSeeingModifierReferent(source, predicate, slot)
 		if !found {
-			return nil, fmt.Errorf("Polish attributed seeing adjective has no unique compatible subject lexical class")
+			return nil, fmt.Errorf("Polish attributed seeing modifier has no unique target argument")
+		}
+		gender, number, found := polishIdentificationReferentFeatures(source, targetReferent, candidates)
+		if !found {
+			return nil, fmt.Errorf("Polish attributed seeing adjective has no unique compatible bearer lexical class")
 		}
 		return knownPolishFeatures(
 			[2]string{"degree", "positive"}, [2]string{"number", number},
-			[2]string{"gender", gender}, [2]string{"case", "nominative"},
+			[2]string{"gender", gender}, [2]string{"agreement_gender", gender}, [2]string{"case", targetCase},
 		), nil
 	}
 	if slot.Category == construction.CategoryAP {
-		if predicate.Sense.ID.String() != "sense:pl.czarny.black" || candidate.Lexeme.ID.String() != "lexeme:pl.czarny.adj" {
+		attribution, allowed := polishAttributionForSense(predicate.Sense.ID.String())
+		if !allowed || candidate.Sense.ID.String() != predicate.Sense.ID.String() || candidate.Lexeme.ID.String() != attribution.lexeme || candidate.TransferBinding.CoreRef.String() != attribution.concept {
 			return nil, nil
 		}
 		_, referentID, _, found := polishIdentificationState(source, predicate.NodeID)
@@ -271,7 +351,7 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 		}
 		return knownPolishFeatures(
 			[2]string{"degree", "positive"}, [2]string{"number", number},
-			[2]string{"gender", gender}, [2]string{"case", "nominative"},
+			[2]string{"gender", gender}, [2]string{"agreement_gender", gender}, [2]string{"case", "nominative"},
 		), nil
 	}
 	if slot.Category == construction.CategoryVP {
@@ -367,10 +447,12 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 		}
 	}
 	gender := ""
+	agreementGender := ""
 	for _, property := range candidate.Lexeme.Properties {
 		if property.Key == "gender" {
 			gender = property.Value
-			break
+		} else if property.Key == "agreement_gender" {
+			agreementGender = property.Value
 		}
 	}
 	if gender == "" && !pluralOnly {
@@ -379,6 +461,15 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 	featureValues := [][2]string{{"case", slot.Case}, {"number", string(number)}}
 	if gender != "" {
 		featureValues = append(featureValues, [2]string{"gender", gender})
+	}
+	if agreementGender == "" && gender != "" {
+		agreementGender = gender
+		if string(number) == "plural" {
+			agreementGender = polishPluralAgreementGender(gender)
+		}
+	}
+	if agreementGender != "" {
+		featureValues = append(featureValues, [2]string{"agreement_gender", agreementGender})
 	}
 	return knownPolishFeatures(featureValues...), nil
 }
@@ -444,6 +535,27 @@ func (polishSentenceOperatorBuilder) Build(ctx context.Context, source semantic.
 
 type polishSentenceCandidatePolicy struct{}
 
+// Independent Meaning input can omit mention context entirely. In that case
+// an attribution's bare route is licensed without inventing deixis.
+func polishTargetIdentificationReferenceMode(source semantic.MeaningCandidate, predicateID meaning.NodeID) (string, bool) {
+	if mode, ok := polishIdentificationReferenceMode(source, predicateID); ok {
+		return mode, true
+	}
+	if source.Meaning == nil || len(source.Contexts) == 0 {
+		return "", false
+	}
+	for _, item := range source.Contexts {
+		if meaning.ValidateReferences(item.Meaning, item.Context, meaning.DefaultBudget()) != nil || len(item.Context.Referents) != 0 || len(item.Context.Mentions) != 0 {
+			return "", false
+		}
+		equal, err := meaning.CanonicalEqual(item.Meaning, *source.Meaning, meaning.DefaultBudget())
+		if err != nil || !equal {
+			return "", false
+		}
+	}
+	return "none", true
+}
+
 func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, all []realizer.TargetCandidate) bool {
 	anchorIntent, contextsValid := polishPersonalContext(source)
 	if anchorIntent && !contextsValid {
@@ -485,10 +597,10 @@ func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.Meaning
 		return false
 	}
 	if polishAttributedSeeingFamily(candidate) {
-		return polishAttributedSeeingMainCandidate(source, candidate)
+		return polishAttributedSeeingMainCandidate(source, candidate, all)
 	}
 	if shape, valid := polishAttributedSeeingShape(source); valid {
-		if candidate.NodeID == shape.property.ID {
+		if _, property := shape.properties[candidate.NodeID]; property {
 			return polishAttributedSeeingModifierCandidate(source, candidate, all)
 		}
 		if candidate.NodeID == shape.event.ID {
@@ -511,14 +623,14 @@ func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.Meaning
 			if !valid || !polishIdentificationAttributesAllowed(source, candidate.NodeID, role, referentID, candidate.TransferBinding.CoreRef) {
 				return false
 			}
-			mode, valid := polishIdentificationReferenceMode(source, candidate.NodeID)
+			mode, valid := polishTargetIdentificationReferenceMode(source, candidate.NodeID)
 			return valid && (mode == "proximal" || mode == "distal" || mode == "unresolved") &&
 				candidate.Sense.ID.String() == "sense:pl.byc.class_membership" &&
 				string(candidate.Frame.ID) == "pl.byc.class_membership.frame" &&
 				candidate.Family.Family.ID.String() == "construction:pl.identification" &&
 				candidate.CompiledVariant.Variant.ID.String() == "construction:pl.identification.to"
 		}
-		mode, valid := polishIdentificationReferenceMode(source, candidate.NodeID)
+		mode, valid := polishTargetIdentificationReferenceMode(source, candidate.NodeID)
 		role, referentID, _, validState := polishIdentificationState(source, candidate.NodeID)
 		if !valid || !validState || !polishIdentificationAttributesAllowed(source, candidate.NodeID, role, referentID, candidate.TransferBinding.CoreRef) {
 			return false
@@ -526,17 +638,57 @@ func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.Meaning
 		switch concept {
 		case "concept:class_membership":
 			return mode == "proximal" || mode == "distal" || mode == "unresolved"
-		case "concept:black":
-			gender, _, knownFeatures := polishIdentificationReferentFeatures(source, referentID, all)
+		case "concept:black", "concept:red", "concept:white", "concept:blue", "concept:green", "concept:open_state", "concept:sad":
+			attribution, licensed := polishAttributionForConcept(concept)
+			if !licensed {
+				return false
+			}
+			gender, number, knownFeatures := polishIdentificationReferentFeatures(source, referentID, all)
 			if !knownFeatures {
 				return false
 			}
 			variant := candidate.CompiledVariant.Variant.ID.String()
+			if number == "plural" {
+				if candidate.Family.Family.ID.String() != "construction:pl.attribution_plural" || string(candidate.Frame.ID) != strings.TrimPrefix(attribution.sense, "sense:")+".plural.frame" {
+					return false
+				}
+				if mode == "none" {
+					return variant == "construction:pl.attribution_plural.bare"
+				}
+				if gender == "masculine_personal" {
+					switch mode {
+					case "proximal":
+						return variant == "construction:pl.attribution_plural.ci"
+					case "distal":
+						return variant == "construction:pl.attribution_plural.tamci"
+					default:
+						return false
+					}
+				}
+				switch mode {
+				case "proximal":
+					return variant == "construction:pl.attribution_plural.te"
+				case "distal":
+					return variant == "construction:pl.attribution_plural.tamte"
+				default:
+					return false
+				}
+			}
+			if candidate.Family.Family.ID.String() != "construction:pl.attribution" {
+				return false
+			}
+			if mode == "none" {
+				return number == "singular" && variant == "construction:pl.attribution.bare"
+			}
 			switch gender {
 			case "masculine_animal":
-				return variant == "construction:pl.attribution.ten" && (mode == "proximal" || mode == "demonstrative")
+				return polishAttributionVariantMatchesDeixis(variant, "ten", "tamten", mode)
+			case "masculine_inanimate":
+				return polishAttributionVariantMatchesDeixis(variant, "ten.inanimate", "tamten.inanimate", mode)
 			case "neuter":
-				return variant == "construction:pl.attribution.to" && (mode == "proximal" || mode == "demonstrative")
+				return polishAttributionVariantMatchesDeixis(variant, "to", "tamto", mode)
+			case "feminine":
+				return polishAttributionVariantMatchesDeixis(variant, "ta", "tamta", mode)
 			default:
 				return false
 			}
@@ -561,6 +713,21 @@ func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.Meaning
 		return false
 	}
 	return polishMultiplicityEvidenceConsistent(source, event.ID, route.subjectRole, referent, candidate.TransferBinding.CoreRef, true)
+}
+
+func polishAttributionVariantMatchesDeixis(variant, proximal, distal, mode string) bool {
+	proximalID := "construction:pl.attribution." + proximal
+	distalID := "construction:pl.attribution." + distal
+	switch mode {
+	case "proximal":
+		return variant == proximalID
+	case "distal":
+		return variant == distalID
+	case "demonstrative", "unresolved":
+		return variant == proximalID || variant == distalID
+	default:
+		return false
+	}
 }
 
 func polishWHQuestionTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate) bool {
@@ -757,6 +924,44 @@ func findSentencePredicate(graph meaning.Meaning, id meaning.NodeID) meaning.Nod
 		}
 	}
 	return meaning.Node{}
+}
+
+func findSentenceReferent(graph meaning.Meaning, id meaning.NodeID) meaning.Node {
+	for _, node := range graph.Nodes {
+		if node.ID == id && node.Kind == meaning.KindReferent {
+			return node
+		}
+	}
+	return meaning.Node{}
+}
+
+func polishAttributedSeeingModifierReferent(source semantic.MeaningCandidate, predicate realizer.TargetCandidate, modifierSlot construction.SlotSpec) (meaning.NodeID, string, bool) {
+	if source.Meaning == nil || modifierSlot.ModifierBinding == nil || modifierSlot.ModifierBinding.SemanticRole != "bearer" {
+		return "", "", false
+	}
+	var target construction.SlotSpec
+	found := false
+	for _, slot := range predicate.Family.Family.SlotSpecs {
+		if slot.ID == modifierSlot.ModifierBinding.TargetSlot {
+			target, found = slot, true
+			break
+		}
+	}
+	if !found || target.Category != construction.CategoryNP || target.ArgumentBinding == nil || target.Case == "" {
+		return "", "", false
+	}
+	shape, valid := polishAttributedSeeingShape(source)
+	if !valid {
+		return "", "", false
+	}
+	switch target.ArgumentBinding.SemanticRole {
+	case "experiencer":
+		return shape.subject.ID, target.Case, true
+	case "stimulus":
+		return shape.object.ID, target.Case, true
+	default:
+		return "", "", false
+	}
 }
 
 func knownPolishFeatures(values ...[2]string) []features.FeatureValue {

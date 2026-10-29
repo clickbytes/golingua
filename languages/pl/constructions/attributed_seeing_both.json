@@ -1,0 +1,1521 @@
+{
+  "schema_version": 1,
+  "language": "pl",
+  "family": {
+    "id": "construction:pl.attributed_seeing_both",
+    "language": "pl",
+    "slot_specs": [
+      {
+        "id": "modifier_subject",
+        "position": 0,
+        "category": "AP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required",
+        "modifier_binding": {
+          "target_slot": "subject",
+          "semantic_role": "bearer"
+        }
+      },
+      {
+        "id": "subject",
+        "position": 1,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required",
+        "argument_binding": {
+          "semantic_role": "experiencer"
+        },
+        "case": "nominative"
+      },
+      {
+        "id": "verb",
+        "position": 2,
+        "category": "VP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "modifier_object",
+        "position": 3,
+        "category": "AP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required",
+        "modifier_binding": {
+          "target_slot": "object",
+          "semantic_role": "bearer"
+        }
+      },
+      {
+        "id": "object",
+        "position": 4,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required",
+        "argument_binding": {
+          "semantic_role": "stimulus"
+        },
+        "case": "accusative"
+      }
+    ],
+    "constraints": [
+      {
+        "id": "subject_verb_number",
+        "kind": "agreement",
+        "strength": "hard",
+        "controller_slot": "subject",
+        "target_slot": "verb",
+        "features": [
+          "number"
+        ]
+      },
+      {
+        "id": "object_modifier_agreement",
+        "kind": "agreement",
+        "strength": "hard",
+        "controller_slot": "object",
+        "target_slot": "modifier_object",
+        "features": [
+          "number",
+          "agreement_gender",
+          "case"
+        ]
+      },
+      {
+        "id": "subject_modifier_agreement",
+        "kind": "agreement",
+        "strength": "hard",
+        "controller_slot": "subject",
+        "target_slot": "modifier_subject",
+        "features": [
+          "number",
+          "agreement_gender",
+          "case"
+        ]
+      }
+    ],
+    "provenance": {
+      "id": "golingua-pl-attributed-seeing-435-two-ap",
+      "uri": "https://github.com/clickbytes/golingua/issues/435",
+      "version": "2026-10-28",
+      "license": "internal",
+      "author": "Codex by owner delegation"
+    }
+  },
+  "variants": [
+    {
+      "id": "construction:pl.attributed_seeing_both.svo",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.object_plural_lexical",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "plural"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.masculine_animal.ten",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "ten"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.masculine_animal.tamten",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "tamten"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.masculine_inanimate.ten",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "ten"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.masculine_inanimate.tamten",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "tamten"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.masculine_personal.ten",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "ten"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.masculine_personal.tamten",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "tamten"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.feminine.ta",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "ta"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.feminine.tamta",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "tamta"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.neuter.to",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.neuter.tamto",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "tamto"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.object_plural_lexical.masculine_animal.ten",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "ten"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "plural"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.object_plural_lexical.masculine_animal.tamten",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "tamten"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "plural"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.object_plural_lexical.masculine_inanimate.ten",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "ten"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "plural"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.object_plural_lexical.masculine_inanimate.tamten",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "tamten"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "plural"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.object_plural_lexical.masculine_personal.ten",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "ten"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "plural"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.object_plural_lexical.masculine_personal.tamten",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "tamten"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "plural"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.object_plural_lexical.feminine.ta",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "ta"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "plural"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.object_plural_lexical.feminine.tamta",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "tamta"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "plural"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.object_plural_lexical.neuter.to",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "plural"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attributed_seeing_both.svo.object_plural_lexical.neuter.tamto",
+      "family_id": "construction:pl.attributed_seeing_both",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "tamto"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "modifier_object"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "subject",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "object",
+          "feature": "number",
+          "value": "plural"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-attributed-seeing-435-two-ap",
+        "uri": "https://github.com/clickbytes/golingua/issues/435",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    }
+  ]
+}

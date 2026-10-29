@@ -1,10 +1,1147 @@
 {
-  "schema_version": 1,
+  "schema_version": 3,
   "language": "pl",
-  "version": "1",
+  "version": "2",
   "templates": [
-    {"id":"np-base","kind":"np","inputs":[{"role":"head","kind":"lexical","required":true},{"role":"determiner","kind":"lexical","required":false},{"role":"modifier","kind":"np","required":false},{"role":"quantity","kind":"lexical","required":false}],"children":[{"role":"modifier","kind":"np","required":false},{"role":"quantity","kind":"np","required":false}],"feature_ids":["case","gender","number"]},
-    {"id":"vp-base","kind":"vp","inputs":[{"role":"verb","kind":"lexical","required":true},{"role":"auxiliary","kind":"lexical","required":false}],"children":[{"role":"auxiliary","kind":"vp","required":false}],"feature_ids":["aspect","mood","person","tense","voice"]},
-    {"id":"pp-base","kind":"pp","inputs":[{"role":"preposition","kind":"lexical","required":true}],"children":[{"role":"complement","kind":"np","required":true}],"feature_ids":["case"]}
+    {
+      "id": "np-attributive",
+      "kind": "np",
+      "inputs": [
+        {
+          "role": "head",
+          "kind": "lexical",
+          "required": true,
+          "feature_ids": [
+            "case",
+            "number",
+            "agreement_gender"
+          ]
+        },
+        {
+          "role": "determiner",
+          "kind": "lexical",
+          "required": false,
+          "feature_ids": [
+            "case",
+            "number",
+            "agreement_gender"
+          ]
+        },
+        {
+          "role": "modifier",
+          "kind": "ap",
+          "required": false,
+          "feature_ids": [
+            "degree",
+            "case",
+            "number",
+            "agreement_gender"
+          ]
+        }
+      ],
+      "children": [],
+      "feature_ids": [
+        "degree",
+        "agreement_gender",
+        "case",
+        "gender",
+        "number"
+      ],
+      "order": [
+        "determiner",
+        "modifier",
+        "head"
+      ],
+      "agreements": [
+        {
+          "controller_role": "head",
+          "target_role": "modifier",
+          "feature": "case"
+        },
+        {
+          "controller_role": "head",
+          "target_role": "modifier",
+          "feature": "number"
+        },
+        {
+          "controller_role": "head",
+          "target_role": "modifier",
+          "feature": "agreement_gender"
+        },
+        {
+          "controller_role": "head",
+          "target_role": "determiner",
+          "feature": "case"
+        },
+        {
+          "controller_role": "head",
+          "target_role": "determiner",
+          "feature": "number"
+        },
+        {
+          "controller_role": "head",
+          "target_role": "determiner",
+          "feature": "agreement_gender"
+        }
+      ]
+    },
+    {
+      "id": "np-base",
+      "kind": "np",
+      "inputs": [
+        {
+          "role": "head",
+          "kind": "lexical",
+          "required": true
+        },
+        {
+          "role": "determiner",
+          "kind": "lexical",
+          "required": false
+        },
+        {
+          "role": "modifier",
+          "kind": "np",
+          "required": false
+        },
+        {
+          "role": "quantity",
+          "kind": "lexical",
+          "required": false
+        }
+      ],
+      "children": [
+        {
+          "role": "modifier",
+          "kind": "np",
+          "required": false
+        },
+        {
+          "role": "quantity",
+          "kind": "np",
+          "required": false
+        }
+      ],
+      "feature_ids": [
+        "case",
+        "gender",
+        "number"
+      ]
+    },
+    {
+      "id": "vp-base",
+      "kind": "vp",
+      "inputs": [
+        {
+          "role": "verb",
+          "kind": "lexical",
+          "required": true
+        },
+        {
+          "role": "auxiliary",
+          "kind": "lexical",
+          "required": false
+        }
+      ],
+      "children": [
+        {
+          "role": "auxiliary",
+          "kind": "vp",
+          "required": false
+        }
+      ],
+      "feature_ids": [
+        "aspect",
+        "mood",
+        "person",
+        "tense",
+        "voice"
+      ]
+    },
+    {
+      "id": "pp-base",
+      "kind": "pp",
+      "inputs": [
+        {
+          "role": "preposition",
+          "kind": "lexical",
+          "required": true
+        }
+      ],
+      "children": [
+        {
+          "role": "complement",
+          "kind": "np",
+          "required": true
+        }
+      ],
+      "feature_ids": [
+        "case"
+      ]
+    }
+  ],
+  "determiner_forms": [
+    {
+      "surface": "ten",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_animal"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_animal"
+        }
+      ]
+    },
+    {
+      "surface": "ten",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_inanimate"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_inanimate"
+        }
+      ]
+    },
+    {
+      "surface": "ta",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "feminine"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "feminine"
+        }
+      ]
+    },
+    {
+      "surface": "to",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "neuter"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "neuter"
+        }
+      ]
+    },
+    {
+      "surface": "tego",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_animal"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_animal"
+        }
+      ]
+    },
+    {
+      "surface": "tego",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_personal"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_personal"
+        }
+      ]
+    },
+    {
+      "surface": "ten",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_inanimate"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_inanimate"
+        }
+      ]
+    },
+    {
+      "surface": "tę",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "feminine"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "feminine"
+        }
+      ]
+    },
+    {
+      "surface": "to",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "neuter"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "neuter"
+        }
+      ]
+    },
+    {
+      "surface": "ci",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_personal"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_personal"
+        }
+      ]
+    },
+    {
+      "surface": "te",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "non_masculine_personal"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "non_masculine_personal"
+        }
+      ]
+    },
+    {
+      "surface": "tych",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_personal"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_personal"
+        }
+      ]
+    },
+    {
+      "surface": "te",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "non_masculine_personal"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "non_masculine_personal"
+        }
+      ]
+    },
+    {
+      "surface": "tamten",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_animal"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_animal"
+        }
+      ]
+    },
+    {
+      "surface": "tamten",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_inanimate"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_inanimate"
+        }
+      ]
+    },
+    {
+      "surface": "tamta",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "feminine"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "feminine"
+        }
+      ]
+    },
+    {
+      "surface": "tamto",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "neuter"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "neuter"
+        }
+      ]
+    },
+    {
+      "surface": "tamtego",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_animal"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_animal"
+        }
+      ]
+    },
+    {
+      "surface": "tamtego",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_personal"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_personal"
+        }
+      ]
+    },
+    {
+      "surface": "tamten",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_inanimate"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_inanimate"
+        }
+      ]
+    },
+    {
+      "surface": "tamtą",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "feminine"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "feminine"
+        }
+      ]
+    },
+    {
+      "surface": "tamto",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "neuter"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "singular"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "neuter"
+        }
+      ]
+    },
+    {
+      "surface": "tamci",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_personal"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_personal"
+        }
+      ]
+    },
+    {
+      "surface": "tamte",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "non_masculine_personal"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "nominative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "non_masculine_personal"
+        }
+      ]
+    },
+    {
+      "surface": "tamtych",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_personal"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "masculine_personal"
+        }
+      ]
+    },
+    {
+      "surface": "tamte",
+      "head_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "non_masculine_personal"
+        }
+      ],
+      "determiner_features": [
+        {
+          "feature": "case",
+          "state": "known",
+          "value": "accusative"
+        },
+        {
+          "feature": "number",
+          "state": "known",
+          "value": "plural"
+        },
+        {
+          "feature": "agreement_gender",
+          "state": "known",
+          "value": "non_masculine_personal"
+        }
+      ]
+    }
   ]
 }
