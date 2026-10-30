@@ -30,6 +30,12 @@
         "language": "pl",
         "lemma": "należeć",
         "pos": "verb"
+      },
+      {
+        "id": "lexeme:pl.wlasciciel.n",
+        "language": "pl",
+        "lemma": "właściciel",
+        "pos": "noun"
       }
     ],
     "senses": [
@@ -61,6 +67,16 @@
         ],
         "valency_ids": [
           "pl.nalezec.belonging.to_oblique"
+        ]
+      },
+      {
+        "id": "sense:pl.wlasciciel.legal_ownership",
+        "lexeme_id": "lexeme:pl.wlasciciel.n",
+        "usage": [
+          "hold recognized ownership rights over an identifiable asset"
+        ],
+        "valency_ids": [
+          "pl.wlasciciel.legal_ownership.nominal"
         ]
       }
     ],
@@ -166,6 +182,42 @@
               "frame_id": "pl.nalezec.belonging.to_oblique",
               "role": "item",
               "port_id": "item",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "sense_id": "sense:pl.wlasciciel.legal_ownership",
+        "mapping_kind": "equivalent",
+        "status": "approved",
+        "provenance": {
+          "id": "golingua-legal-ownership-476",
+          "uri": "https://github.com/clickbytes/golingua/issues/476#issuecomment-6531956278",
+          "version": "2026-10-30",
+          "license": "internal",
+          "author": "Codex by owner delegation"
+        },
+        "target": {
+          "schema_version": 1,
+          "kind": "symbol",
+          "profile": "positive-facts-v1",
+          "symbol_ref": "concept:legal_ownership",
+          "role_ports": [
+            {
+              "frame_id": "pl.wlasciciel.legal_ownership.nominal",
+              "role": "owner",
+              "port_id": "owner",
+              "type": {
+                "kind": "Entity"
+              }
+            },
+            {
+              "frame_id": "pl.wlasciciel.legal_ownership.nominal",
+              "role": "asset",
+              "port_id": "asset",
               "type": {
                 "kind": "Entity"
               }
@@ -279,6 +331,40 @@
       "provenance": {
         "id": "golingua-pl-belonging-476",
         "uri": "https://github.com/clickbytes/golingua/issues/476#issuecomment-6528414953",
+        "version": "2026-10-30",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "pl.wlasciciel.legal_ownership.nominal",
+      "sense_id": "sense:pl.wlasciciel.legal_ownership",
+      "semantic_roles": [
+        "owner",
+        "asset"
+      ],
+      "arguments": [
+        {
+          "id": "subject",
+          "role": "owner",
+          "required": true,
+          "grammatical_function": "subject",
+          "case": "nominative"
+        },
+        {
+          "id": "object",
+          "role": "asset",
+          "required": true,
+          "grammatical_function": "object",
+          "case": "genitive"
+        }
+      ],
+      "allowed_family_ids": [
+        "construction:pl.legal_ownership_nominal"
+      ],
+      "provenance": {
+        "id": "golingua-legal-ownership-476",
+        "uri": "https://github.com/clickbytes/golingua/issues/476#issuecomment-6531956278",
         "version": "2026-10-30",
         "license": "internal",
         "author": "Codex by owner delegation"

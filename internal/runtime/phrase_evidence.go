@@ -492,7 +492,7 @@ func (builder SimplePhraseEvidenceBuilder) Build(_ context.Context, lattice anal
 					return nil, parser.ParseContext{}, runtimeError(status.OutcomeResourceLimit, "PHRASE_CANDIDATE_LIMIT", "phrase_candidates", "simple phrase candidate limit was exhausted")
 				}
 				headTokenIndex := 0
-				if category.IsPredicate() {
+				if category.IsPredicate() || category == construction.CategoryNP {
 					headTokenIndex = token.Index
 				}
 				candidates = append(candidates, parser.PhraseCandidate{

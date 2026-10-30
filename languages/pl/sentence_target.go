@@ -459,6 +459,15 @@ type polishSentenceFeatures struct {
 }
 
 func (featurePlan polishSentenceFeatures) Features(_ context.Context, source semantic.MeaningCandidate, predicate realizer.TargetCandidate, slot construction.SlotSpec, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) ([]features.FeatureValue, error) {
+	if slot.NominalPredicate {
+		state, stateExists := polishMeaningNode(source, predicate.NodeID)
+		if slot.Category != construction.CategoryNP || predicate.Kind != meaning.KindState || source.Meaning == nil || candidate.NodeID != predicate.NodeID || candidate.Kind != meaning.KindState ||
+			!predicate.TransferBinding.TransferAuthorized() || predicate.TransferBinding.CoreRef.String() != "concept:legal_ownership" || !stateExists || !state.RelationPredicate || state.TemporalFrame != "" || state.Concept != "concept:legal_ownership" ||
+			predicate.Family.Family.ID.String() != "construction:pl.legal_ownership_nominal" || candidate.Lexeme.POS != "noun" || slot.Case != "instrumental" {
+			return nil, fmt.Errorf("Polish nominal predicate requires the approved legal ownership noun route")
+		}
+		return knownPolishFeatures([2]string{"case", "instrumental"}, [2]string{"number", "singular"}, [2]string{"gender", "masculine_personal"}), nil
+	}
 	if answer := predicate.QuestionAnswer; answer != nil && answer.TargetNodeID == predicate.NodeID && slot.Category == construction.CategoryVP {
 		if !polishFrameEvidenceConsistent(source, predicate.NodeID, predicate.TransferBinding.CoreRef) {
 			return nil, fmt.Errorf("Polish WH target conflicts with explicit event frame evidence")

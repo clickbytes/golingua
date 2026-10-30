@@ -1049,7 +1049,7 @@ func polishRelationSourceFeatureAlternatives(lattice analyzer.LexicalLattice, ca
 				return nil
 			}
 			coreConcept, exists := ontology.Lookup(transferBindings[0].CoreRef)
-			if !exists || coreConcept.Kind != core.KindRelation {
+			if !exists || coreConcept.Kind != core.KindRelation || !polishOwnershipRelationRolesMatch(coreConcept, frame.SemanticRoles) {
 				return nil
 			}
 			if len(alternative.Slots) != len(boundFamily.Family.SlotSpecs) {
@@ -1064,6 +1064,7 @@ func polishRelationSourceFeatureAlternatives(lattice analyzer.LexicalLattice, ca
 			}
 			predicateCount := 0
 			var predicate parser.PhraseCandidate
+			nominalPredicate := false
 			roleSlotCount := make(map[meaning.Role]int, len(frame.SemanticRoles))
 			for _, spec := range boundFamily.Family.SlotSpecs {
 				slot, exists := slots[spec.ID]
@@ -1086,19 +1087,32 @@ func polishRelationSourceFeatureAlternatives(lattice analyzer.LexicalLattice, ca
 					roleSlotCount[role]++
 					continue
 				}
-				if spec.ArgumentBinding != nil || spec.Category != construction.CategoryVP || spec.ModifierBinding != nil || phrase.Category != construction.CategoryVP || !polishPhraseHasSense(phrase.SenseIDs, senseID) {
+				if !spec.IsMainPredicate() || spec.ModifierBinding != nil || !polishPhraseHasSense(phrase.SenseIDs, senseID) {
+					return nil
+				}
+				if spec.NominalPredicate {
+					lexeme, found := lexiconIndex.ByLexemeID(phrase.LexemeID)
+					if spec.Category != construction.CategoryNP || phrase.Category != construction.CategoryNP || !phrase.CaseKnown || phrase.Case != "instrumental" || !found || lexeme.POS != lexicon.PartOfSpeech("noun") {
+						return nil
+					}
+					nominalPredicate = true
+				} else if spec.Category != construction.CategoryVP || phrase.Category != construction.CategoryVP {
 					return nil
 				}
 				predicateCount++
 				predicate = phrase
 			}
-			if predicateCount != 1 || len(roleSlotCount) != 2 || !polishRelationPresentFinite(predicate.Features) {
+			if predicateCount != 1 || len(roleSlotCount) != 2 || (nominalPredicate && predicate.Features["case"] != "instrumental") || (!nominalPredicate && !polishRelationPresentFinite(predicate.Features)) {
 				return nil
 			}
 			for _, role := range frame.SemanticRoles {
 				if roleSlotCount[role] != 1 {
 					return nil
 				}
+			}
+			if nominalPredicate {
+				result[senseID] = []map[features.FeatureID]features.FeatureValueID{{"case": "instrumental", "number": "singular"}}
+				continue
 			}
 			result[senseID] = []map[features.FeatureID]features.FeatureValueID{
 				{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "mood": "indicative", "voice": "active", "person": "third", "number": "singular"},
@@ -1110,6 +1124,28 @@ func polishRelationSourceFeatureAlternatives(lattice analyzer.LexicalLattice, ca
 		return nil
 	}
 	return result
+}
+
+func polishOwnershipRelationRolesMatch(concept core.Concept, roles []meaning.Role) bool {
+	expected := map[meaning.Role]bool{}
+	switch concept.ID.String() {
+	case "concept:belonging_association":
+		expected["associate"], expected["item"] = true, true
+	case "concept:legal_ownership":
+		expected["owner"], expected["asset"] = true, true
+	default:
+		return false
+	}
+	if len(roles) != len(expected) {
+		return false
+	}
+	for _, role := range roles {
+		if !expected[role] {
+			return false
+		}
+		delete(expected, role)
+	}
+	return len(expected) == 0
 }
 
 func polishRelationPresentFinite(actual map[features.FeatureID]features.FeatureValueID) bool {

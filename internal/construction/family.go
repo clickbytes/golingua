@@ -133,6 +133,7 @@ func (family ConstructionFamily) Validate() error {
 	positions := make(map[int]struct{}, len(family.SlotSpecs))
 	argumentRoles := make(map[string]struct{})
 	modifierSlots := make([]SlotSpec, 0, 1)
+	nominalPredicates := 0
 	for index, slot := range family.SlotSpecs {
 		if err := validateSlot(slot, index); err != nil {
 			return err
@@ -145,6 +146,12 @@ func (family ConstructionFamily) Validate() error {
 		}
 		slotsByID[slot.ID] = slot
 		positions[slot.Position] = struct{}{}
+		if slot.NominalPredicate {
+			nominalPredicates++
+			if nominalPredicates > 1 {
+				return invalid("MULTIPLE_NOMINAL_PREDICATE_SLOTS", "family.slot_specs", "family may declare at most one nominal predicate slot")
+			}
+		}
 		if slot.ArgumentBinding != nil {
 			role := string(slot.ArgumentBinding.SemanticRole)
 			if _, exists := argumentRoles[role]; exists {
@@ -322,6 +329,7 @@ func planID(family ConstructionFamily) ConstructionPlanID {
 		writePlanPart(&builder, slot.ID)
 		writePlanPart(&builder, strconv.Itoa(slot.Position))
 		writePlanPart(&builder, string(slot.Category))
+		writePlanPart(&builder, strconv.FormatBool(slot.NominalPredicate))
 		writePlanPart(&builder, strconv.Itoa(slot.Cardinality.Minimum))
 		writePlanPart(&builder, strconv.Itoa(slot.Cardinality.Maximum))
 		writePlanPart(&builder, string(slot.Optionality))
@@ -376,6 +384,7 @@ func roleLayoutKey(slots []SlotSpec) string {
 	for _, slot := range canonical {
 		writePlanPart(&builder, strconv.Itoa(slot.Position))
 		writePlanPart(&builder, string(slot.Category))
+		writePlanPart(&builder, strconv.FormatBool(slot.NominalPredicate))
 		writePlanPart(&builder, strconv.Itoa(slot.Cardinality.Minimum))
 		writePlanPart(&builder, strconv.Itoa(slot.Cardinality.Maximum))
 		writePlanPart(&builder, string(slot.Optionality))

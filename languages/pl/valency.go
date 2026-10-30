@@ -393,6 +393,10 @@ var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
 // Families are explicit per frame, never silently assumed transitive.
 // They are structural candidates, not approved construction bindings.
 var polishFrames = []frameDeclaration{
+	{"pl.wlasciciel.legal_ownership.nominal", "pl.wlasciciel.legal_ownership", "pl.legal_ownership_nominal", []meaning.Role{"owner", "asset"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "owner", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "asset", Required: true, GrammaticalFunction: "complement", Case: "genitive"},
+	}},
 	{"pl.miec.possession.transitive", "pl.miec.possession", "pl.transitive", []meaning.Role{"holder", "object"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "holder", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "object", Role: "object", Required: true, GrammaticalFunction: "object", Case: "accusative"},
@@ -718,6 +722,10 @@ func CompileValency() (*valency.Index, error) {
 		frames = append(frames, frame)
 	}
 	bindingDeclarations := append([]constructionBindingDeclaration(nil), polishConstructionBindingDeclarations...)
+	bindingDeclarations = append(bindingDeclarations, constructionBindingDeclaration{
+		sense: "pl.wlasciciel.legal_ownership", frame: "pl.wlasciciel.legal_ownership.nominal",
+		family: "pl.legal_ownership_nominal", variant: "pl.legal_ownership_nominal.copular",
+	})
 	for _, item := range polishConstructionBindingDeclarations {
 		if item.sense != "pl.widziec.visual" || item.frame != "pl.widziec.visual.transitive" || item.family != "pl.attributed_seeing_object" {
 			continue

@@ -603,20 +603,22 @@ func validateSourcePlanSelection(doc SourcePlanDocument, pack *SemanticLanguageP
 			for _, role := range frame.SemanticRoles {
 				frameRoleSet[string(role)] = true
 			}
-			if m.HeadPortID != "" || chosen.Target.Kind != lexicon.SemanticTargetSymbol || string(chosen.Target.SymbolRef) != "concept:belonging_association" || len(frame.SemanticRoles) != 2 || !frameRoleSet["associate"] || !frameRoleSet["item"] {
-				return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "belonging relation predicates require exactly the associate/item source frame and no Event head")
+			if m.HeadPortID != "" || chosen.Target.Kind != lexicon.SemanticTargetSymbol || (string(chosen.Target.SymbolRef) != "concept:belonging_association" && string(chosen.Target.SymbolRef) != "concept:legal_ownership") || len(frame.SemanticRoles) != 2 {
+				return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "relation predicates require exactly two source roles and no Event head")
 			}
 			rolePortIDs := map[string]string{}
+			selectedPorts := 0
 			for _, rolePort := range chosen.Target.RolePorts {
 				if rolePort.FrameID != string(m.FrameID) {
 					continue
 				}
-				if (rolePort.Role != "associate" && rolePort.Role != "item") || rolePort.PortID != rolePort.Role || rolePortIDs[rolePort.Role] != "" {
-					return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "target role ports must map associate and item one-to-one to identically named ports")
+				selectedPorts++
+				if !frameRoleSet[rolePort.Role] || rolePort.PortID != rolePort.Role || rolePortIDs[rolePort.Role] != "" {
+					return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "target role ports must map the exact source roles one-to-one to identically named ports")
 				}
 				rolePortIDs[rolePort.Role] = rolePort.PortID
 			}
-			if len(rolePortIDs) != 2 {
+			if len(rolePortIDs) != 2 || selectedPorts != 2 {
 				return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "target must map both exact relation roles")
 			}
 			var signature *algebra.Signature
@@ -630,8 +632,8 @@ func validateSourcePlanSelection(doc SourcePlanDocument, pack *SemanticLanguageP
 				return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "relation symbol must declare exactly two target ports")
 			}
 			for _, port := range signature.Ports {
-				if (port.Role != "associate" && port.Role != "item") || port.Type.Kind != algebra.TypeEntity || rolePortIDs[port.Role] != port.Role {
-					return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "relation signature must declare only associate and item Entity ports")
+				if !frameRoleSet[port.Role] || port.Type.Kind != algebra.TypeEntity || rolePortIDs[port.Role] != port.Role {
+					return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "relation signature must declare only the exact two Entity roles")
 				}
 			}
 		} else {

@@ -191,7 +191,7 @@ func (builder MorphologyExecutionBuilder) Build(ctx context.Context, source sema
 			Features: bundle, CaseFeature: builder.CaseFeature,
 		}
 		if builder.VPAuxiliary != nil {
-			if slot.IsMainPredicate() {
+			if slot.IsMainPredicate() && slot.Category == construction.CategoryVP {
 				if builder.VPAuxiliary.EventNodeID != nodeID {
 					return realizer.ExecuteInput{}, runtimeError(status.OutcomeInvalid, "VP_AUXILIARY_EVENT_MISMATCH", "target.slot_execution.vp_auxiliary", "opt-in VP auxiliary request must target the exact selected main predicate")
 				}
@@ -199,7 +199,7 @@ func (builder MorphologyExecutionBuilder) Build(ctx context.Context, source sema
 				request.VPAuxiliary = &auxiliary
 			}
 		}
-		if slot.IsMainPredicate() {
+		if slot.IsMainPredicate() && slot.Category == construction.CategoryVP {
 			if planner, ok := builder.FeaturePlan.(VPAuxiliaryExecutionPlanner); ok {
 				auxiliary, planErr := planner.BuildVPAuxiliary(ctx, source, selected, slot, candidate, candidates)
 				if planErr != nil {

@@ -155,14 +155,14 @@ func linearizeWithNPProfiles(plan RealizationPlan, family construction.Construct
 		}
 		if slot.ArgumentBinding == nil && slot.ModifierBinding == nil {
 			if !slot.IsMainPredicate() {
-				return LinearizedResult{}, linearizeError(status.OutcomeUnsupported, "UNBOUND_NON_PREDICATE_SLOT", "family.slot_specs."+slot.ID, "only an unbound predicate VP/AP slot may be linearized")
+				return LinearizedResult{}, linearizeError(status.OutcomeUnsupported, "UNBOUND_NON_PREDICATE_SLOT", "family.slot_specs."+slot.ID, "only an explicitly declared main predicate slot may be unbound")
 			}
 			predicateSlot = slot.ID
 			predicateSlotCount++
 		}
 	}
 	if predicateSlotCount != 1 {
-		return LinearizedResult{}, linearizeError(status.OutcomeUnsupported, "PREDICATE_SLOT_CARDINALITY", "family.slot_specs", "surface linearization requires exactly one unbound predicate VP/AP slot")
+		return LinearizedResult{}, linearizeError(status.OutcomeUnsupported, "PREDICATE_SLOT_CARDINALITY", "family.slot_specs", "surface linearization requires exactly one main predicate slot")
 	}
 	seenRoles := make(map[meaning.Role]struct{}, len(plan.Roles))
 	for _, role := range plan.Roles {
@@ -220,7 +220,7 @@ func linearizeWithNPProfiles(plan RealizationPlan, family construction.Construct
 		if spec.IsMainPredicate() && (form.NodeID != plan.NodeID || form.LexemeID != plan.LexemeID || form.SenseID != plan.SenseID) {
 			return LinearizedResult{}, linearizeError(status.OutcomeInvalid, "PREDICATE_SLOT_PLAN_MISMATCH", path, "predicate slot form must match the selected plan node, lexeme, and sense")
 		}
-		if form.VPAuxiliary != nil && (!spec.IsMainPredicate() || form.NodeID != plan.NodeID || form.VPAuxiliary.EventNodeID != plan.NodeID) {
+		if form.VPAuxiliary != nil && (!spec.IsMainPredicate() || spec.Category != construction.CategoryVP || form.NodeID != plan.NodeID || form.VPAuxiliary.EventNodeID != plan.NodeID) {
 			return LinearizedResult{}, linearizeError(status.OutcomeInvalid, "VP_AUXILIARY_SLOT_PLAN_MISMATCH", path+".vp_auxiliary", "VP auxiliary form must attach to the exact main predicate slot")
 		}
 		if spec.ModifierBinding != nil && form.NodeID == plan.NodeID {

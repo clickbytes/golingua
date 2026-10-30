@@ -206,8 +206,13 @@ func ValidateMeaning(meaning Meaning, ontology *core.ConceptGraph, budget Budget
 				for _, participant := range node.Participants {
 					roles[participant.Role] = true
 				}
-				if concept.Kind != core.KindRelation || node.Concept != "concept:belonging_association" || node.TemporalFrame != "" || len(node.Participants) != 2 || !roles["associate"] || !roles["item"] {
-					return invalid("INVALID_RELATION_STATE", "nodes."+string(node.ID), "explicit belonging relation state requires its relation concept, exact associate/item roles, and no event time")
+				if concept.Kind != core.KindRelation || node.Concept != "concept:belonging_association" && node.Concept != "concept:legal_ownership" || node.TemporalFrame != "" || len(node.Participants) != len(concept.RoleTypes) || len(concept.RoleTypes) != 2 {
+					return invalid("INVALID_RELATION_STATE", "nodes."+string(node.ID), "explicit relation state requires the exact two-role relation concept and no event time")
+				}
+				for _, relationRole := range concept.RoleTypes {
+					if !roles[Role(relationRole.Name)] || len(relationRole.AllowedKinds) != 1 || relationRole.AllowedKinds[0] != core.KindEntity {
+						return invalid("INVALID_RELATION_STATE", "nodes."+string(node.ID), "explicit relation state requires every declared role exactly once with Entity-valued arguments")
+					}
 				}
 			} else if concept.Kind != core.KindProperty && concept.Kind != core.KindAbstract {
 				return invalid("CONCEPT_KIND_MISMATCH", "nodes."+string(node.ID)+".concept", "state node requires a property or abstract concept")

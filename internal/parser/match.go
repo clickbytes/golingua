@@ -116,7 +116,7 @@ func parseRange(lattice analyzer.LexicalLattice, candidates []PhraseCandidate, c
 			}
 			rangeCandidates = append(rangeCandidates, candidate)
 		}
-		if candidates[i].Category.IsPredicate() {
+		if candidates[i].Category.IsPredicate() || candidates[i].Category == construction.CategoryNP {
 			headSenses[candidates[i].ID] = candidateHeadSenseSet(candidates[i], lattice)
 		}
 	}
@@ -383,12 +383,12 @@ func validateCandidate(c PhraseCandidate, i int, l analyzer.LexicalLattice, seen
 	if !c.Category.Valid() || c.TokenStart < 0 || c.TokenEnd <= c.TokenStart || c.TokenEnd > len(l.Tokens) {
 		return newParserError(path, "candidate category or token range is invalid")
 	}
-	if c.Category.IsPredicate() {
+	if c.Category.IsPredicate() || c.Category == construction.CategoryNP {
 		if c.HeadTokenIndex < c.TokenStart || c.HeadTokenIndex >= c.TokenEnd {
-			return newParserError(path+".head_token_index", "predicate VP/AP candidate head token is outside its span")
+			return newParserError(path+".head_token_index", "candidate head token is outside its span")
 		}
 	} else if c.HeadTokenIndex != 0 {
-		return newParserError(path+".head_token_index", "only predicate VP/AP candidates may specify a head token")
+		return newParserError(path+".head_token_index", "only predicate and NP candidates may specify a head token")
 	}
 	if c.Span.Start != l.Tokens[c.TokenStart].Token.Span.Start || c.Span.End != l.Tokens[c.TokenEnd-1].Token.Span.End {
 		return newParserError(path+".span", "candidate byte span does not match its half-open token range")
@@ -523,7 +523,20 @@ func (m *matcher) walk(p compiledPlan, si, ti int, part partial) {
 			m.walk(p, si+1, ti, clonePartial(part))
 		}
 		if ti < m.end && symbolMatchesInput(symbol, canonicalTerminal(m.lattice.Tokens[ti].Token)) {
-			m.walk(p, si+1, ti+1, clonePartial(part))
+			next := clonePartial(part)
+			// An explicitly nominal predicate construction can use a finite
+			// copula as a literal terminal rather than as its semantic head. Mark
+			// only an exact, single-token VP candidate at that terminal as
+			// consumed; ordinary constructions still require predicate evidence
+			// to occupy a VP/AP slot.
+			if predicate, ok := p.slots[p.headSlotID]; ok && predicate.NominalPredicate {
+				for _, candidate := range m.candidates {
+					if candidate.Category == construction.CategoryVP && candidate.TokenStart == ti && candidate.TokenEnd == ti+1 {
+						next.used[candidate.ID] = true
+					}
+				}
+			}
+			m.walk(p, si+1, ti+1, next)
 		}
 		if symbol.Optional {
 			m.walk(p, si+1, ti, clonePartial(part))
@@ -1050,6 +1063,9 @@ func (m *matcher) retain(p compiledPlan, part partial) {
 			}
 		}
 		bindings = append(bindings, binding)
+	}
+	for candidateID := range part.used {
+		m.used[candidateID] = true
 	}
 	alt := ParseAlternative{PlanID: p.plan.ID, FamilyID: p.family.ID, VariantID: p.variant.ID, Permission: p.permission, Slots: bindings,
 		NPPhraseGroups: append([]NPPhraseGroupBinding(nil), part.npGroups...), Unresolved: append([]string(nil), part.unresolved...),

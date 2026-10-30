@@ -7,6 +7,7 @@ import (
 	"reflect"
 
 	"github.com/clickbytes/golingua/internal/algebra"
+	"github.com/clickbytes/golingua/internal/core"
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/language"
 	"github.com/clickbytes/golingua/internal/lexicon"
@@ -313,7 +314,7 @@ func (engine *Engine) translateDSE(ctx context.Context, request Request) (Transl
 			// realizer retains those details as residuals and returns an incomplete
 			// result; it does not let them become a complete translation.
 			realized, realizeErr = engine.realizeAlgebra(requestContext, request.To, targetDocument, targetResources.TargetPackage, profile.SelectedMetadata, false)
-		} else if dseCoordinationDefinitePreview(targetDocument, candidate) || dseBelongingConditionPreview(targetDocument, candidate) {
+		} else if dseCoordinationDefinitePreview(targetDocument, candidate) || dseBelongingConditionPreview(targetDocument, candidate) || dseOwnershipConditionPreview(targetDocument, candidate) {
 			// A checked source definite presupposition may remain unexpressed in
 			// the target language. Permit text as an explicitly incomplete preview
 			// only for this narrow coordinated shape; the target residual remains
@@ -524,6 +525,56 @@ func dseBelongingConditionPreview(document algebra.Document, candidate semantic.
 		covered := false
 		for _, coverage := range candidate.ConditionCoverage {
 			if coverage.ConditionID == condition.ID && coverage.Kind == "presupposition" && coverage.Code == condition.Code && len(coverage.TargetReferenceIDs) == 1 && coverage.TargetReferenceIDs[0] == condition.TargetReferentIDs[0] {
+				covered = true
+				break
+			}
+		}
+		if !covered {
+			return false
+		}
+	}
+	return true
+}
+
+// dseOwnershipConditionPreview permits a text-bearing but incomplete target
+// preview for an exact two-role legal-ownership relation when its only
+// remaining referential conditions are explicitly linked to those roles.
+// The conditions stay in the target request context and are reported as
+// residuals; this does not assert that a target surface expressed them.
+func dseOwnershipConditionPreview(document algebra.Document, candidate semantic.DSECandidate) bool {
+	root := document.Expression
+	if candidate.PredicateKind != "relation" || candidate.HeadEventReferenceID != "" || root == nil || root.Kind != algebra.TermAtom || root.Symbol != "concept:legal_ownership" || document.RequestContext == nil || len(document.RequestContext.Conditions) == 0 {
+		return false
+	}
+	roles := map[string]string{}
+	for _, argument := range root.Args {
+		if (argument.Role != "owner" && argument.Role != "asset") || argument.Value == nil || argument.Value.Kind != algebra.TermRef || argument.Value.Type == nil || argument.Value.Type.Kind != algebra.TypeEntity {
+			return false
+		}
+		if _, duplicate := roles[argument.Role]; duplicate {
+			return false
+		}
+		roles[argument.Role] = argument.Value.ID
+	}
+	if len(roles) != 2 || len(candidate.RoleSources) != 2 {
+		return false
+	}
+	for _, source := range candidate.RoleSources {
+		if source.WHGap != nil || roles[source.Role] == "" || roles[source.Role] != source.ReferenceID {
+			return false
+		}
+	}
+	for _, condition := range document.RequestContext.Conditions {
+		if condition.Kind != algebra.ContextPresupposition || (condition.Code != "definite_reference" && condition.Code != "indefinite_reference") || condition.Expression == nil || condition.Expression.Kind != algebra.TermAtom || len(condition.Expression.Args) != 1 || condition.Expression.Args[0].Role != "entity" || len(condition.TargetReferentIDs) != 1 {
+			return false
+		}
+		argument := condition.Expression.Args[0]
+		if argument.Value == nil || argument.Value.Kind != algebra.TermRef || argument.Value.Type == nil || argument.Value.Type.Kind != algebra.TypeEntity || argument.Value.ID != condition.TargetReferentIDs[0] || (roles["owner"] != argument.Value.ID && roles["asset"] != argument.Value.ID) {
+			return false
+		}
+		covered := false
+		for _, coverage := range candidate.ConditionCoverage {
+			if coverage.ConditionID == condition.ID && string(coverage.Kind) == string(condition.Kind) && coverage.Code == condition.Code && len(coverage.TargetReferenceIDs) == 1 && coverage.TargetReferenceIDs[0] == argument.Value.ID {
 				covered = true
 				break
 			}
@@ -993,8 +1044,12 @@ func enrichDSEContext(engine *Engine, document algebra.Document, candidate seman
 			return algebra.Document{}, nil, status.OutcomeInvalid, "DSE_RELATION_SENSE_INVALID", "relation predicate carries a malformed source sense"
 		}
 		predicateBindings := engine.snapshot.Lexicon().TransferBindings(predicateSense)
-		if len(predicateBindings) != 1 || !predicateBindings[0].TransferAuthorized() || predicateBindings[0].CoreRef.String() != "concept:belonging_association" {
-			return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_RELATION_METADATA_MISMATCH", "selected relation source sense must resolve exactly to belonging_association"
+		if len(predicateBindings) != 1 || !predicateBindings[0].TransferAuthorized() {
+			return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_RELATION_METADATA_MISMATCH", "selected relation source sense must resolve to one approved relation concept"
+		}
+		concept, found := engine.core.Lookup(predicateBindings[0].CoreRef)
+		if !found || concept.Kind != core.KindRelation || predicateBindings[0].CoreRef.String() != "concept:belonging_association" && predicateBindings[0].CoreRef.String() != "concept:legal_ownership" || len(concept.RoleTypes) != 2 {
+			return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_RELATION_METADATA_MISMATCH", "selected relation source sense must resolve to a two-role CORE relation concept"
 		}
 	} else {
 		if candidate.HeadEventReferenceID == "" || candidate.Source.SenseID == "" {

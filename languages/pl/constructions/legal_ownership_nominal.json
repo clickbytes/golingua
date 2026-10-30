@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "language": "pl",
+  "family": {
+    "id": "construction:pl.legal_ownership_nominal",
+    "language": "pl",
+    "slot_specs": [
+      {"id":"subject","position":0,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required","case":"nominative"},
+      {"id":"predicate","position":1,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required","case":"instrumental","nominal_predicate":true},
+      {"id":"object","position":2,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required","case":"genitive"}
+    ],
+    "provenance":{"id":"golingua-pl-own-476","path":"languages/pl/constructions/legal_ownership_nominal.json","version":"2026-10-30","license":"internal","author":"Codex by owner delegation"}
+  },
+  "variants": [
+    {"id":"construction:pl.legal_ownership_nominal.copular","family_id":"construction:pl.legal_ownership_nominal","sequence":[{"kind":"slot","slot_id":"subject"},{"kind":"terminal","terminal":"jest"},{"kind":"slot","slot_id":"predicate"},{"kind":"slot","slot_id":"object"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"both","provenance":{"id":"golingua-pl-own-476","path":"languages/pl/constructions/legal_ownership_nominal.json","version":"2026-10-30","license":"internal","author":"Codex by owner delegation"}}
+  ]
+}

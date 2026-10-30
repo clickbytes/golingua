@@ -243,7 +243,7 @@ func (builder BareDeclarativeEvidenceBuilder) Build(ctx context.Context, lattice
 				}
 				for _, id := range slot.CandidateIDs {
 					candidate, exists := byCandidate[id]
-					if !exists || !candidate.Category.IsPredicate() {
+					if !exists || !candidate.Category.IsPredicate() && candidate.Category != construction.CategoryNP {
 						continue
 					}
 					if !candidateHasSense(candidate.SenseIDs, alternative.Permission.SenseID) {

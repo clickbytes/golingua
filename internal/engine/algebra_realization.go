@@ -607,15 +607,25 @@ func findAlgebraAtomMatch(
 	}
 	coreBindings := engine.snapshot.Lexicon().TransferBindings(binding.SenseID)
 	relationPredicate := false
+	relationRoles := make(map[string]bool)
 	if len(coreBindings) == 1 && coreBindings[0].TransferAuthorized() {
-		if concept, found := engine.core.Lookup(coreBindings[0].CoreRef); found && concept.Kind == core.KindRelation && coreBindings[0].CoreRef.String() == "concept:belonging_association" {
+		if concept, found := engine.core.Lookup(coreBindings[0].CoreRef); found && concept.Kind == core.KindRelation && (coreBindings[0].CoreRef.String() == "concept:belonging_association" || coreBindings[0].CoreRef.String() == "concept:legal_ownership") {
 			relationPredicate = true
+			for _, role := range concept.RoleTypes {
+				if len(role.AllowedKinds) != 1 || role.AllowedKinds[0] != core.KindEntity || relationRoles[role.Name] {
+					return nil, status.OutcomeUnsupported, "RELATION_ROLE_SHAPE_UNSUPPORTED", "relation route requires exactly unique Entity-valued CORE roles"
+				}
+				relationRoles[role.Name] = true
+			}
 		}
 	}
-	if len(binding.Target.RolePorts) == 0 || (!relationPredicate && len(binding.Target.RolePorts) >= len(signature.Ports)) || (relationPredicate && len(binding.Target.RolePorts) != 2) {
+	if relationPredicate && (len(relationRoles) != 2 || len(binding.Target.RolePorts) != len(relationRoles)) {
+		return nil, status.OutcomeUnsupported, "RELATION_ROLE_SHAPE_UNSUPPORTED", "relation route requires exactly two CORE Entity roles and matching target ports"
+	}
+	if len(binding.Target.RolePorts) == 0 || (!relationPredicate && len(binding.Target.RolePorts) >= len(signature.Ports)) || (relationPredicate && len(binding.Target.RolePorts) != len(relationRoles)) {
 		message := "target must map participant ports and leave exactly one typed event port"
 		if relationPredicate {
-			message = "belonging relation target must map exactly two Entity role ports without an Event port"
+			message = "relation target must map exactly the declared Entity role ports without an Event port"
 		}
 		return nil, status.OutcomeUnsupported, "TARGET_PORT_SHAPE_UNSUPPORTED", message
 	}
@@ -644,8 +654,8 @@ func findAlgebraAtomMatch(
 			return nil, status.OutcomeInvalid, "MISSING_ATOM_ARGUMENT", "atom argument does not cover every declared port"
 		}
 		if mapped {
-			if relationPredicate && ((port.Role != "associate" && port.Role != "item") || rolePort.Role != port.Role || rolePort.PortID != port.Role) {
-				return nil, status.OutcomeUnsupported, "INVALID_RELATION_ROLE_PORTS", "belonging relation must map associate and item to identically named Entity ports"
+			if relationPredicate && (!relationRoles[port.Role] || rolePort.Role != port.Role || rolePort.PortID != port.Role) {
+				return nil, status.OutcomeUnsupported, "INVALID_RELATION_ROLE_PORTS", "relation must map every declared CORE role to its identically named Entity port"
 			}
 			if !algebra.TypeEqual(port.Type, rolePort.Type) || port.Type.Kind != algebra.TypeEntity {
 				return nil, status.OutcomeUnsupported, "TARGET_PORT_TYPE_MISMATCH", "mapped role port does not exactly match an Entity-valued metadata port"
@@ -671,7 +681,7 @@ func findAlgebraAtomMatch(
 	if (!relationPredicate && eventPort == "") || len(args) != len(signature.Ports) {
 		message := "target does not cover the signature with participant roles and one Event identity"
 		if relationPredicate {
-			message = "belonging relation target must cover exactly the associate/item Entity signature"
+			message = "relation target must cover exactly the declared Entity signature roles"
 		}
 		return nil, status.OutcomeUnsupported, "TARGET_PORT_SHAPE_UNSUPPORTED", message
 	}

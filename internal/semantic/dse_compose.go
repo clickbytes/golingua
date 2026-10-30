@@ -198,6 +198,10 @@ func ComposeDSE(input DSEInput) (DSEResult, error) {
 				}
 				continue
 			}
+			sourceMapping, hasSourceMapping := sourcePredicateMapping(input.Plan.Document(), alternative.Permission.SenseID.String(), string(alternative.Permission.FrameID))
+			nominalRelationMapping := hasSourceMapping && sourceMapping.PredicateKind == "relation" &&
+				containsConstructionID(sourceMapping.AllowedFamilyIDs, alternative.FamilyID) &&
+				(len(sourceMapping.AllowedVariantIDs) == 0 || containsVariantID(sourceMapping.AllowedVariantIDs, alternative.VariantID))
 			vpIDs := make([]string, 0, 2)
 			roleSlots := make(map[string]parser.SlotBinding)
 			for _, slot := range alternative.Slots {
@@ -218,9 +222,24 @@ func ComposeDSE(input DSEInput) (DSEResult, error) {
 						isPredicateSlot = true
 					}
 				}
+				// The parser only compiles an unbound NP as the main predicate
+				// when its exact source construction marks that slot
+				// NominalPredicate. Preserve that distinction here: accept it only
+				// for an explicitly mapped relation sense/frame and an exact
+				// authorized family/variant, with one selected nominal head.
+				if !isPredicateSlot && slot.Role == "" && nominalRelationMapping && len(slot.CandidateIDs) == 1 {
+					if c, found := candidates[slot.CandidateIDs[0]]; found && c.Category == input.Plan.Document().ReferenceCategory && candidateHasSense(c, alternative.Permission.SenseID.String()) {
+						isPredicateSlot = true
+					}
+				}
 				for _, id := range slot.CandidateIDs {
 					if c, found := candidates[id]; found && c.Category.IsPredicate() {
 						vpIDs = appendUniqueString(vpIDs, id)
+					}
+				}
+				if slot.Role == "" && nominalRelationMapping && len(slot.CandidateIDs) == 1 {
+					if c, found := candidates[slot.CandidateIDs[0]]; found && c.Category == input.Plan.Document().ReferenceCategory && candidateHasSense(c, alternative.Permission.SenseID.String()) {
+						vpIDs = appendUniqueString(vpIDs, slot.CandidateIDs[0])
 					}
 				}
 				if !containsFrameRole && !isPredicateSlot {

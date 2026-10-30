@@ -176,7 +176,7 @@ func compilePlanInput(input PlanInput, path string) (compiledPlan, error) {
 			symbol.Slot = &slotCopy
 			if slot.IsMainPredicate() {
 				if headSlotID != "" {
-					return compiledPlan{}, newParserError(path+".variant.sequence", "analysis plan must have exactly one predicate VP/AP slot")
+					return compiledPlan{}, newParserError(path+".variant.sequence", "analysis plan must have exactly one main predicate slot")
 				}
 				headSlotID = slot.ID
 			}
@@ -190,7 +190,7 @@ func compilePlanInput(input PlanInput, path string) (compiledPlan, error) {
 		sequence[i] = symbol
 	}
 	if headSlotID == "" {
-		return compiledPlan{}, newParserError(path+".variant.sequence", "analysis plan must have exactly one predicate VP/AP slot")
+		return compiledPlan{}, newParserError(path+".variant.sequence", "analysis plan must have exactly one main predicate slot")
 	}
 	return compiledPlan{
 		plan: plan, family: family, variant: variant, frame: frame, headSlotID: headSlotID,
