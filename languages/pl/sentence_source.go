@@ -60,7 +60,8 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	if err != nil {
 		return nil, err
 	}
-	plans, _, err := runtime.CompileSentencePlans(profile, packages, valencyIndex)
+	negationRoutes := newPolishNegationRouteResolver(snapshot.Lexicon(), valencyIndex, registry, packages)
+	plans, variants, err := runtime.CompileSentencePlans(profile, packages, valencyIndex)
 	if err != nil {
 		return nil, err
 	}
@@ -136,6 +137,10 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	if err != nil {
 		return nil, err
 	}
+	perfectiveBuyingSense, err := ids.NewSenseID("pl.kupic.buy")
+	if err != nil {
+		return nil, err
+	}
 	sellingSense, err := ids.NewSenseID("pl.sprzedawac.sell")
 	if err != nil {
 		return nil, err
@@ -156,7 +161,11 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	if err != nil {
 		return nil, err
 	}
-	supportedSenses := map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true, redSense: true, eatingSense: true, drinkingSense: true, givingSense: true, buyingSense: true, sellingSense: true, helpSense: true, thankSense: true, usingSense: true}
+	perfectiveGivingSense, err := ids.NewSenseID("pl.dac.transfer")
+	if err != nil {
+		return nil, err
+	}
+	supportedSenses := map[ids.SenseID]bool{seeingSense: true, hearingSense: true, receivingSense: true, lookingSense: true, readingSense: true, classificationSense: true, attributionSense: true, redSense: true, eatingSense: true, drinkingSense: true, givingSense: true, perfectiveGivingSense: true, buyingSense: true, perfectiveBuyingSense: true, sellingSense: true, helpSense: true, thankSense: true, usingSense: true}
 	for sense := range manipulationSenses {
 		supportedSenses[sense] = true
 	}
@@ -187,13 +196,8 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		return nil, err
 	}
 	supportedSenses[conversingSense] = true
-	intransitiveSenses := map[ids.SenseID]bool{}
-	for _, name := range []string{"pl.spac.sleep", "pl.oddychac.breathe", "pl.kichac.sneeze", "pl.biec.run", "pl.kaszlec.cough", "pl.chodzic.walk", "pl.isc.move", "pl.zyc.live", "pl.latac.fly", "pl.zasypiac.sleep", "pl.budzic_sie.wake", "pl.pracowac.activity"} {
-		sense, senseErr := ids.NewSenseID(name)
-		if senseErr != nil {
-			return nil, senseErr
-		}
-		intransitiveSenses[sense] = true
+	intransitiveSenses := approvedPolishIntransitiveSenses(registry, valencyIndex, variants)
+	for sense := range intransitiveSenses {
 		supportedSenses[sense] = true
 	}
 	predicateAlternatives := map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
@@ -209,7 +213,21 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		hearingSense: append([]map[features.FeatureID]features.FeatureValueID{
 			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
 			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "masculine_personal"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "feminine"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "neuter"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"},
 		}, polishPersonalPredicateFeatures(false)...),
+		drinkingSense: {
+			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
+			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "masculine_personal"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "feminine"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "neuter"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"},
+		},
 		lookingSense: {
 			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
 			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
@@ -239,9 +257,23 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		redSense: {
 			{"degree": "positive", "number": "singular", "gender": "feminine", "case": "nominative"},
 		},
-		eatingSense:   {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}, {"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"}},
-		drinkingSense: {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}, {"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"}},
-		givingSense:   {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}, {"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"}},
+		eatingSense: {{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"}, {"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"}, {"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "masculine_personal"}, {"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "feminine"}, {"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "neuter"}, {"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "masculine_personal"}, {"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"}},
+		givingSense: {
+			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
+			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "masculine_personal"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "feminine"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "neuter"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
+			{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"},
+		},
+		perfectiveGivingSense: {
+			{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "singular", "gender": "masculine_personal"},
+			{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "singular", "gender": "feminine"},
+			{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "singular", "gender": "neuter"},
+			{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
+			{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"},
+		},
 	}
 	for sense := range attributionSenses {
 		predicateAlternatives[sense] = []map[features.FeatureID]features.FeatureValueID{
@@ -252,13 +284,40 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 			{"degree": "positive", "number": "plural", "gender": "masculine_personal", "case": "nominative"},
 			{"degree": "positive", "number": "plural", "gender": "non_masculine_personal", "case": "nominative"},
 		}
+		if sense.String() == "sense:pl.otwierac_obiekt.open" || sense.String() == "sense:pl.zamykac_obiekt.close" || sense.String() == "sense:pl.trzymac.hold" || sense.String() == "sense:pl.niesc.carry" || sense.String() == "sense:pl.pchac.push" || sense.String() == "sense:pl.ciagnac.pull" || sense.String() == "sense:pl.ciac.cut" || sense.String() == "sense:pl.rozdzierac.tear" {
+			predicateAlternatives[sense] = append(predicateAlternatives[sense],
+				map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "masculine_personal"},
+				map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "feminine"},
+				map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "neuter"},
+				map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
+				map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"},
+			)
+		}
 	}
 	commerceFeatures := []map[features.FeatureID]features.FeatureValueID{
 		{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
 		{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
 	}
-	predicateAlternatives[buyingSense] = commerceFeatures
-	predicateAlternatives[sellingSense] = commerceFeatures
+	sellingFeatures := append(append([]map[features.FeatureID]features.FeatureValueID(nil), commerceFeatures...),
+		map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "masculine_personal"},
+		map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "feminine"},
+		map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "neuter"},
+		map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
+		map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"})
+	predicateAlternatives[buyingSense] = append(append([]map[features.FeatureID]features.FeatureValueID{}, commerceFeatures...),
+		map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "masculine_personal"},
+		map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "feminine"},
+		map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "neuter"},
+		map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
+		map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"})
+	predicateAlternatives[perfectiveBuyingSense] = []map[features.FeatureID]features.FeatureValueID{
+		{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "singular", "gender": "masculine_personal"},
+		{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "singular", "gender": "feminine"},
+		{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "singular", "gender": "neuter"},
+		{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
+		{"verb_form": "finite", "tense": "past", "aspect": "perfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"},
+	}
+	predicateAlternatives[sellingSense] = sellingFeatures
 	predicateAlternatives[helpSense] = commerceFeatures
 	predicateAlternatives[thankSense] = commerceFeatures
 	predicateAlternatives[usingSense] = commerceFeatures
@@ -270,6 +329,15 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		predicateAlternatives[sense] = []map[features.FeatureID]features.FeatureValueID{
 			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "singular"},
 			{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "person": "third", "number": "plural"},
+		}
+		if name == "pl.pchac.push" || name == "pl.ciagnac.pull" || name == "pl.ciac.cut" {
+			predicateAlternatives[sense] = append(predicateAlternatives[sense],
+				map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "masculine_personal"},
+				map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "feminine"},
+				map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "singular", "gender": "neuter"},
+				map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "masculine_personal"},
+				map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "person": "third", "number": "plural", "gender": "non_masculine_personal"},
+			)
 		}
 	}
 	for sense := range intransitiveSenses {
@@ -287,8 +355,13 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	predicateAlternatives[writingMessageSense] = []map[features.FeatureID]features.FeatureValueID{
 		{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "mood": "indicative", "voice": "active", "person": "third", "number": "singular"},
 		{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "mood": "indicative", "voice": "active", "person": "third", "number": "plural"},
+		{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "mood": "indicative", "voice": "active", "person": "third", "number": "singular", "gender": "masculine_personal"},
+		{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "mood": "indicative", "voice": "active", "person": "third", "number": "singular", "gender": "feminine"},
+		{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "mood": "indicative", "voice": "active", "person": "third", "number": "singular", "gender": "neuter"},
+		{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "mood": "indicative", "voice": "active", "person": "third", "number": "plural", "gender": "masculine_personal"},
+		{"verb_form": "finite", "tense": "past", "aspect": "imperfective", "mood": "indicative", "voice": "active", "person": "third", "number": "plural", "gender": "non_masculine_personal"},
 	}
-	predicateAlternatives[writingInstrumentSense] = predicateAlternatives[writingMessageSense]
+	predicateAlternatives[writingInstrumentSense] = predicateAlternatives[writingMessageSense][:2]
 	predicateAlternatives[conversingSense] = []map[features.FeatureID]features.FeatureValueID{
 		{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "mood": "indicative", "voice": "active", "person": "third", "number": "singular"},
 		{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "mood": "indicative", "voice": "active", "person": "third", "number": "plural"},
@@ -301,13 +374,13 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
-		PhraseBuilder: polishWHGapPhraseBuilder{inner: polishPastSeeingPhraseBuilder{inner: polishIdentificationPhraseBuilder{phraseProfile: phraseProfile, featureProfile: profile, inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
+		PhraseBuilder: polishWHGapPhraseBuilder{inner: polishPastAgreementPhraseBuilder{inner: polishIdentificationPhraseBuilder{phraseProfile: phraseProfile, featureProfile: profile, inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
 			Categories: map[lexicon.PartOfSpeech][]construction.SlotCategory{
 				"noun": {construction.CategoryNP}, "pronoun": {construction.CategoryNP}, "verb": {construction.CategoryVP}, "verb_reflexive": {construction.CategoryVP}, "adjective": {construction.CategoryAP},
 			},
 			CaseFeature: "case", CaseValues: caseValues,
 		}}}}},
-		EvidenceBuilder: polishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), valency: valencyIndex, constructions: registry, base: runtime.BareDeclarativeEvidenceBuilder{
+		EvidenceBuilder: polishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), valency: valencyIndex, constructions: registry, negationRoutes: negationRoutes, base: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses:                     supportedSenses,
 			PredicateFeatureAlternativesBySense: predicateAlternatives,
 			AllowedUnlexicalizedTerminals:       map[string]bool{"na": true, "od": true, "do": true, "z": true, "nie": true, "to": true, "ten": true, "ta": true, "jest": true, "są": true, "te": true, "ci": true, "tamte": true, "tamci": true, "się": true, "tamten": true, "tamta": true, "tamto": true},
@@ -339,9 +412,9 @@ func (builder polishWHGapPhraseBuilder) Build(ctx context.Context, lattice analy
 	return candidates, parseContext, nil
 }
 
-type polishPastSeeingPhraseBuilder struct{ inner runtime.PhraseEvidenceBuilder }
+type polishPastAgreementPhraseBuilder struct{ inner runtime.PhraseEvidenceBuilder }
 
-func (builder polishPastSeeingPhraseBuilder) Build(ctx context.Context, lattice analyzer.LexicalLattice) ([]parser.PhraseCandidate, parser.ParseContext, error) {
+func (builder polishPastAgreementPhraseBuilder) Build(ctx context.Context, lattice analyzer.LexicalLattice) ([]parser.PhraseCandidate, parser.ParseContext, error) {
 	candidates, parseContext, err := builder.inner.Build(ctx, lattice)
 	if err != nil {
 		return nil, parser.ParseContext{}, err
@@ -357,11 +430,11 @@ func (builder polishPastSeeingPhraseBuilder) Build(ctx context.Context, lattice 
 	}
 	filtered := make([]parser.PhraseCandidate, 0, len(candidates))
 	for _, candidate := range candidates {
-		if candidate.Category == construction.CategoryVP && !polishPersonalVerbHasCompatibleSubject(candidate, candidates) {
+		if candidate.Category == construction.CategoryVP && !polishPersonalVerbHasCompatibleSubject(lattice, candidate, candidates) {
 			continue
 		}
-		if candidate.Category == construction.CategoryVP && candidate.LexemeID.String() == "lexeme:pl.widziec.v" &&
-			candidate.Features["tense"] == "past" && !polishPastSeeingVerbHasCompatibleSubject(candidate, candidates) {
+		if candidate.Category == construction.CategoryVP && (candidate.LexemeID.String() == "lexeme:pl.czytac.v" || candidate.LexemeID.String() == "lexeme:pl.widziec.v" || candidate.LexemeID.String() == "lexeme:pl.slyszec.v" || candidate.LexemeID.String() == "lexeme:pl.pic.v" || candidate.LexemeID.String() == "lexeme:pl.spac.v" || candidate.LexemeID.String() == "lexeme:pl.oddychac.v" || candidate.LexemeID.String() == "lexeme:pl.kichac.v" || candidate.LexemeID.String() == "lexeme:pl.kaszlec.v" || candidate.LexemeID.String() == "lexeme:pl.jesc.v" || candidate.LexemeID.String() == "lexeme:pl.pisac.v" || candidate.LexemeID.String() == "lexeme:pl.dac.v" || candidate.LexemeID.String() == "lexeme:pl.dawac.v" || candidate.LexemeID.String() == "lexeme:pl.kupowac.v" || candidate.LexemeID.String() == "lexeme:pl.kupic.v" || candidate.LexemeID.String() == "lexeme:pl.otwierac_obiekt.v" || candidate.LexemeID.String() == "lexeme:pl.zamykac_obiekt.v" || candidate.LexemeID.String() == "lexeme:pl.trzymac.v" || candidate.LexemeID.String() == "lexeme:pl.niesc.v" || candidate.LexemeID.String() == "lexeme:pl.pchac.v" || candidate.LexemeID.String() == "lexeme:pl.ciagnac.v" || candidate.LexemeID.String() == "lexeme:pl.ciac.v" || candidate.LexemeID.String() == "lexeme:pl.skladac.v" || candidate.LexemeID.String() == "lexeme:pl.biec.v" || candidate.LexemeID.String() == "lexeme:pl.rozdzierac.v" || candidate.LexemeID.String() == "lexeme:pl.lubic.v") &&
+			candidate.Features["tense"] == "past" && !polishPastAgreementVerbHasCompatibleSubject(lattice, candidate, candidates) {
 			continue
 		}
 		filtered = append(filtered, candidate)
@@ -369,10 +442,20 @@ func (builder polishPastSeeingPhraseBuilder) Build(ctx context.Context, lattice 
 	return filtered, parseContext, nil
 }
 
-func polishPastSeeingVerbHasCompatibleSubject(verb parser.PhraseCandidate, candidates []parser.PhraseCandidate) bool {
+func polishPastAgreementVerbHasCompatibleSubject(lattice analyzer.LexicalLattice, verb parser.PhraseCandidate, candidates []parser.PhraseCandidate) bool {
+	if verb.LexemeID.String() == "lexeme:pl.czytac.v" {
+		return polishReadingPastAgreementVerbHasCompatibleSubject(lattice, verb, candidates)
+	}
+	if verb.LexemeID.String() == "lexeme:pl.pisac.v" {
+		return polishWritingPastAgreementVerbHasSVOCompatibleSubject(lattice, verb, candidates)
+	}
 	hasKnownMismatch, hasCompatible, hasUnknown := false, false, false
 	for _, subject := range candidates {
-		if subject.Category != construction.CategoryNP || subject.TokenEnd != verb.TokenStart || subject.Features["case"] != "nominative" {
+		adjacent := subject.TokenEnd == verb.TokenStart || subject.TokenStart == verb.TokenEnd
+		if !adjacent && subject.TokenEnd+1 == verb.TokenStart && subject.TokenEnd < len(lattice.Tokens) && lattice.Tokens[subject.TokenEnd].Token.Folded == "nie" {
+			adjacent = true
+		}
+		if subject.Category != construction.CategoryNP || !adjacent || subject.Features["case"] != "nominative" {
 			continue
 		}
 		subjectGender, subjectNumber := string(subject.Features["gender"]), string(subject.Features["number"])
@@ -394,17 +477,115 @@ func polishPastSeeingVerbHasCompatibleSubject(verb parser.PhraseCandidate, candi
 			hasKnownMismatch = true
 		}
 	}
-	return !hasKnownMismatch || hasCompatible || hasUnknown
+	if hasCompatible {
+		return true
+	}
+	if hasKnownMismatch {
+		return false
+	}
+	return !hasKnownMismatch || hasUnknown
 }
 
-func polishPersonalVerbHasCompatibleSubject(verb parser.PhraseCandidate, candidates []parser.PhraseCandidate) bool {
+// Writing-message is licensed in SVO only. Its object can be nominative-
+// syncretic, so past agreement must use a nominative NP before the verb (with
+// the optional intervening negation particle), never a postverbal NP.
+func polishWritingPastAgreementVerbHasSVOCompatibleSubject(lattice analyzer.LexicalLattice, verb parser.PhraseCandidate, candidates []parser.PhraseCandidate) bool {
+	hasKnownMismatch, hasCompatible, hasUnknown := false, false, false
+	for _, subject := range candidates {
+		beforeVerb := subject.TokenEnd == verb.TokenStart ||
+			(subject.TokenEnd+1 == verb.TokenStart && subject.TokenEnd < len(lattice.Tokens) && lattice.Tokens[subject.TokenEnd].Token.Folded == "nie")
+		if subject.Category != construction.CategoryNP || !beforeVerb || subject.Features["case"] != "nominative" {
+			continue
+		}
+		subjectGender, subjectNumber := string(subject.Features["gender"]), string(subject.Features["number"])
+		verbGender, verbNumber := string(verb.Features["gender"]), string(verb.Features["number"])
+		if subjectGender == "" || subjectNumber == "" || verbGender == "" || verbNumber == "" {
+			hasUnknown = true
+			continue
+		}
+		expectedGender := subjectGender
+		if subjectNumber == "singular" && (subjectGender == "masculine_animal" || subjectGender == "masculine_inanimate") {
+			expectedGender = "masculine_personal"
+		}
+		if subjectNumber == "plural" && subjectGender != "masculine_personal" {
+			expectedGender = "non_masculine_personal"
+		}
+		if verbNumber == subjectNumber && verbGender == expectedGender {
+			hasCompatible = true
+		} else {
+			hasKnownMismatch = true
+		}
+	}
+	if hasCompatible {
+		return true
+	}
+	if hasKnownMismatch {
+		return false
+	}
+	return hasUnknown
+}
+
+func polishReadingPastAgreementVerbHasCompatibleSubject(lattice analyzer.LexicalLattice, verb parser.PhraseCandidate, candidates []parser.PhraseCandidate) bool {
+	var beforeVerb, afterVerb []parser.PhraseCandidate
+	for _, candidate := range candidates {
+		if candidate.Category != construction.CategoryNP || candidate.Features["case"] != "nominative" {
+			continue
+		}
+		if candidate.TokenEnd == verb.TokenStart || candidate.TokenEnd+1 == verb.TokenStart && candidate.TokenEnd < len(lattice.Tokens) && lattice.Tokens[candidate.TokenEnd].Token.Folded == "nie" {
+			beforeVerb = append(beforeVerb, candidate)
+		} else if candidate.TokenStart == verb.TokenEnd {
+			afterVerb = append(afterVerb, candidate)
+		}
+	}
+	subjects := beforeVerb
+	if len(subjects) == 0 {
+		subjects = afterVerb
+	}
+	if len(subjects) == 0 {
+		return true
+	}
+	hasKnownMismatch, hasCompatible, hasUnknown := false, false, false
+	for _, subject := range subjects {
+		subjectGender, subjectNumber := string(subject.Features["gender"]), string(subject.Features["number"])
+		verbGender, verbNumber := string(verb.Features["gender"]), string(verb.Features["number"])
+		if subjectGender == "" || subjectNumber == "" || verbGender == "" || verbNumber == "" {
+			hasUnknown = true
+			continue
+		}
+		expectedGender := subjectGender
+		if subjectNumber == "singular" && (subjectGender == "masculine_animal" || subjectGender == "masculine_inanimate") {
+			expectedGender = "masculine_personal"
+		}
+		if subjectNumber == "plural" && subjectGender != "masculine_personal" {
+			expectedGender = "non_masculine_personal"
+		}
+		if verbNumber == subjectNumber && verbGender == expectedGender {
+			hasCompatible = true
+		} else {
+			hasKnownMismatch = true
+		}
+	}
+	if hasCompatible {
+		return true
+	}
+	if hasKnownMismatch {
+		return false
+	}
+	return hasUnknown
+}
+
+func polishPersonalVerbHasCompatibleSubject(lattice analyzer.LexicalLattice, verb parser.PhraseCandidate, candidates []parser.PhraseCandidate) bool {
 	person, number := string(verb.Features["person"]), string(verb.Features["number"])
 	if person == "" || number == "" {
 		return true
 	}
 	knownMismatch, compatible, unknown := false, false, false
 	for _, subject := range candidates {
-		if subject.Category != construction.CategoryNP || (subject.TokenEnd != verb.TokenStart && subject.TokenStart != verb.TokenEnd) || subject.Features["case"] != "nominative" {
+		adjacent := subject.TokenEnd == verb.TokenStart || subject.TokenStart == verb.TokenEnd
+		if !adjacent && subject.TokenEnd+1 == verb.TokenStart && subject.TokenEnd < len(lattice.Tokens) && lattice.Tokens[subject.TokenEnd].Token.Folded == "nie" {
+			adjacent = true
+		}
+		if subject.Category != construction.CategoryNP || !adjacent || subject.Features["case"] != "nominative" {
 			continue
 		}
 		subjectPerson, subjectNumber := string(subject.Features["person"]), string(subject.Features["number"])
@@ -422,10 +603,11 @@ func polishPersonalVerbHasCompatibleSubject(verb parser.PhraseCandidate, candida
 }
 
 type polishSentenceEvidenceBuilder struct {
-	base          runtime.BareDeclarativeEvidenceBuilder
-	lexicon       *lexicon.Index
-	valency       *valency.Index
-	constructions *construction.Registry
+	base           runtime.BareDeclarativeEvidenceBuilder
+	lexicon        *lexicon.Index
+	valency        *valency.Index
+	constructions  *construction.Registry
+	negationRoutes polishNegationRouteResolver
 }
 
 func (builder polishSentenceEvidenceBuilder) Build(ctx context.Context, lattice analyzer.LexicalLattice, candidates []parser.PhraseCandidate, forest parser.Forest) (runtime.CompositionEvidence, error) {
@@ -449,12 +631,30 @@ func (builder polishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, la
 				return runtime.CompositionEvidence{}, nil
 			}
 		}
-		evidence, err := builder.base.Build(ctx, lattice, candidates, forest)
+		pastTransitiveFeatures, pastTransitiveCoverage := polishTransitiveSimplePastCapability(candidates, forest, builder.valency, builder.constructions)
+		pastIntransitiveFeatures, pastIntransitiveCoverage := polishIntransitiveSimplePastCapability(candidates, forest, builder.constructions)
+		if !pastIntransitiveCoverage {
+			pastIntransitiveFeatures = nil
+		}
+		base := builder.base
+		if len(pastIntransitiveFeatures) > 0 {
+			base.PredicateFeatureAlternativesBySense = clonePolishPredicateAlternatives(base.PredicateFeatureAlternativesBySense)
+			for sense, alternatives := range pastIntransitiveFeatures {
+				base.PredicateFeatureAlternativesBySense[sense] = append(base.PredicateFeatureAlternativesBySense[sense], alternatives...)
+			}
+		}
+		if len(pastTransitiveFeatures) > 0 {
+			base.PredicateFeatureAlternativesBySense = clonePolishPredicateAlternatives(base.PredicateFeatureAlternativesBySense)
+			for sense, alternatives := range pastTransitiveFeatures {
+				base.PredicateFeatureAlternativesBySense[sense] = append(base.PredicateFeatureAlternativesBySense[sense], alternatives...)
+			}
+		}
+		evidence, err := base.Build(ctx, lattice, candidates, forest)
 		if err != nil {
 			return evidence, err
 		}
 		if !evidence.OperatorCoverageComplete {
-			if !polishWHQuestionCoverage(lattice, forest) {
+			if !polishWHQuestionCoverage(lattice, forest) && !pastIntransitiveCoverage && !pastTransitiveCoverage {
 				return evidence, nil
 			}
 			evidence.OperatorCoverageComplete = true
@@ -463,7 +663,7 @@ func (builder polishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, la
 		return addPolishPersonalEvidence(evidence, candidates, forest, builder.valency, builder.constructions), nil
 	}
 	evidence, err := builder.base.Build(ctx, lattice, candidates, forest)
-	if err != nil || !evidence.OperatorCoverageComplete {
+	if err != nil {
 		return evidence, err
 	}
 	byID := make(map[string]parser.PhraseCandidate, len(candidates))
@@ -471,13 +671,17 @@ func (builder polishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, la
 		byID[candidate.ID] = candidate
 	}
 	operatorCount := 0
+	seenOperatorEvidence := make(map[string]struct{})
 	for _, node := range forest.Nodes {
 		if node.Category != "clause" {
 			continue
 		}
 		for _, alternative := range node.Alternatives {
-			route, supported := polishPresentNegationRouteForSense(alternative.Permission.SenseID)
+			route, supported := builder.negationRoutes.routeForSense(alternative.Permission.SenseID)
 			if !supported || !polishPresentNegationVariantAllowed(route, alternative.FamilyID.String(), alternative.VariantID.String()) {
+				return runtime.CompositionEvidence{}, nil
+			}
+			if route.derived && !polishAlternativeHasRequiredNegationSlots(alternative, route, byID) {
 				return runtime.CompositionEvidence{}, nil
 			}
 			negativeFamily, err := ids.NewConstructionID(strings.TrimPrefix(alternative.FamilyID.String(), "construction:"))
@@ -493,6 +697,11 @@ func (builder polishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, la
 					if !exists || !polishNegatedPresentCandidate(candidate, route) {
 						continue
 					}
+					operatorKey := fmt.Sprintf("%s|%d|%d", candidateID, notSpan.Start, notSpan.End)
+					if _, duplicate := seenOperatorEvidence[operatorKey]; duplicate {
+						continue
+					}
+					seenOperatorEvidence[operatorKey] = struct{}{}
 					operatorProvenance := polishNegationConstructionSource
 					if route.family == "construction:pl.identification_negative" {
 						operatorProvenance = polishIdentificationNegationSource
@@ -516,6 +725,418 @@ func (builder polishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, la
 		return evidence, nil
 	}
 	return addPolishIdentificationReferences(evidence, lattice, candidates, forest), nil
+}
+
+func polishAlternativeHasRequiredNegationSlots(alternative parser.ParseAlternative, route polishPresentNegationRoute, candidates map[string]parser.PhraseCandidate) bool {
+	specs := route.slotsByFamily[alternative.FamilyID.String()]
+	if len(alternative.Unresolved) > 0 || len(specs) == 0 {
+		return false
+	}
+	slots := make(map[string]parser.SlotBinding, len(alternative.Slots))
+	for _, slot := range alternative.Slots {
+		slots[slot.SlotID] = slot
+	}
+	for slotID, category := range specs {
+		slot, exists := slots[slotID]
+		if !exists || len(slot.CandidateIDs) == 0 {
+			return false
+		}
+		for _, candidateID := range slot.CandidateIDs {
+			candidate, found := candidates[candidateID]
+			if !found || candidate.Category != category {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+// polishTransitiveSimplePastCapability derives past predicate alternatives and
+// operator coverage from retained, fully bound transitive plans. It only
+// authorizes a clause when its approved binding, required slots, finite past VP,
+// and nominative subject agreement all remain available in the parse forest.
+func polishTransitiveSimplePastCapability(candidates []parser.PhraseCandidate, forest parser.Forest, valencyIndex *valency.Index, registry *construction.Registry) (map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID, bool) {
+	allowed := make(map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID)
+	if valencyIndex == nil || registry == nil {
+		return allowed, false
+	}
+	familyID, err := ids.ParseConstructionID("construction:pl.transitive")
+	if err != nil {
+		return allowed, false
+	}
+	familyRecord, exists := registry.ByID(familyID)
+	if !exists {
+		return allowed, false
+	}
+	bindings := registry.BindingsByFamilyID(familyID)
+	frames := make(map[string]valency.ValencyFrame)
+	for _, frame := range valencyIndex.Frames() {
+		frames[string(frame.ID)] = frame
+	}
+	byID := make(map[string]parser.PhraseCandidate, len(candidates))
+	for _, candidate := range candidates {
+		byID[candidate.ID] = candidate
+	}
+	seenClause := false
+	for _, node := range forest.Nodes {
+		if node.Category != "clause" {
+			continue
+		}
+		seenClause = true
+		if len(node.Alternatives) == 0 {
+			return allowed, false
+		}
+		for _, alternative := range node.Alternatives {
+			if alternative.FamilyID != familyID || len(alternative.Unresolved) != 0 {
+				return allowed, false
+			}
+			var approvedBinding *valency.ConstructionBinding
+			for index := range bindings {
+				binding := &bindings[index]
+				if binding.Approved && binding.SenseID == alternative.Permission.SenseID && string(binding.ValencyFrameID) == string(alternative.Permission.FrameID) && binding.FamilyID == alternative.FamilyID && binding.VariantID.String() == alternative.VariantID.String() {
+					approvedBinding = binding
+					break
+				}
+			}
+			if approvedBinding == nil {
+				return allowed, false
+			}
+			frame, frameExists := frames[string(approvedBinding.ValencyFrameID)]
+			if !frameExists || frame.SenseID != approvedBinding.SenseID || !polishFrameAllowsFamily(frame, familyID) {
+				return allowed, false
+			}
+			subjectRole, objectRole, subjectCase, objectCase, frameOK := polishTransitivePastFrameRoles(familyRecord.Family, frame)
+			if !frameOK {
+				return allowed, false
+			}
+			slots := make(map[string]parser.SlotBinding, len(alternative.Slots))
+			for _, slot := range alternative.Slots {
+				if _, duplicate := slots[slot.SlotID]; duplicate {
+					return allowed, false
+				}
+				slots[slot.SlotID] = slot
+			}
+			for _, spec := range familyRecord.Family.SlotSpecs {
+				slot, present := slots[spec.ID]
+				if !present || (spec.Optionality == construction.SlotRequired && len(slot.CandidateIDs) == 0) || len(slot.CandidateIDs) < spec.Cardinality.Minimum {
+					return allowed, false
+				}
+				for _, candidateID := range slot.CandidateIDs {
+					candidate, found := byID[candidateID]
+					if !found || candidate.Category != spec.Category {
+						return allowed, false
+					}
+				}
+			}
+			subjectSlot, subjectPresent := slots["subject"]
+			verbSlot, verbPresent := slots["verb"]
+			if !subjectPresent || !verbPresent || len(subjectSlot.CandidateIDs) == 0 || len(verbSlot.CandidateIDs) == 0 {
+				return allowed, false
+			}
+			objectSlot, objectPresent := slots["object"]
+			if !objectPresent || len(objectSlot.CandidateIDs) == 0 || subjectSlot.Role != subjectRole || objectSlot.Role != objectRole {
+				return allowed, false
+			}
+			for _, subjectID := range subjectSlot.CandidateIDs {
+				subject := byID[subjectID]
+				if subject.Category != construction.CategoryNP || subject.Features["case"] != features.FeatureValueID(subjectCase) {
+					return allowed, false
+				}
+			}
+			for _, objectID := range objectSlot.CandidateIDs {
+				object := byID[objectID]
+				if object.Category != construction.CategoryNP || object.Features["case"] != features.FeatureValueID(objectCase) {
+					return allowed, false
+				}
+			}
+			var matched map[features.FeatureID]features.FeatureValueID
+			matchCount := 0
+			for _, verbID := range verbSlot.CandidateIDs {
+				verb := byID[verbID]
+				if verb.Category != construction.CategoryVP || !candidateHasPolishSense(verb, alternative.Permission.SenseID) || verb.Features["verb_form"] != "finite" || verb.Features["tense"] != "past" || verb.Features["person"] != "third" {
+					continue
+				}
+				if !polishPastIntransitiveVerbNumberGenderValid(verb.Features) {
+					continue
+				}
+				agrees := false
+				for _, subjectID := range subjectSlot.CandidateIDs {
+					subject := byID[subjectID]
+					if subject.Category != construction.CategoryNP || subject.Features["case"] != "nominative" || !polishPastIntransitiveAgreementMatches(subject.Features, verb.Features) {
+						continue
+					}
+					agrees = true
+					break
+				}
+				if agrees {
+					matchCount++
+					matched = make(map[features.FeatureID]features.FeatureValueID, len(verb.Features))
+					for feature, value := range verb.Features {
+						matched[feature] = value
+					}
+				}
+			}
+			if matchCount != 1 || matched == nil {
+				return allowed, false
+			}
+			allowed[alternative.Permission.SenseID] = append(allowed[alternative.Permission.SenseID], matched)
+		}
+	}
+	return allowed, seenClause
+}
+
+func polishTransitivePastFrameRoles(family construction.ConstructionFamily, frame valency.ValencyFrame) (meaning.Role, meaning.Role, string, string, bool) {
+	specs := make(map[string]construction.SlotSpec, len(family.SlotSpecs))
+	for _, spec := range family.SlotSpecs {
+		if _, duplicate := specs[spec.ID]; duplicate {
+			return "", "", "", "", false
+		}
+		specs[spec.ID] = spec
+	}
+	for _, id := range []string{"subject", "verb", "object"} {
+		spec, found := specs[id]
+		if !found || spec.Optionality != construction.SlotRequired || spec.Cardinality.Minimum != 1 || spec.Cardinality.Maximum != 1 {
+			return "", "", "", "", false
+		}
+		category := construction.CategoryNP
+		if id == "verb" {
+			category = construction.CategoryVP
+		}
+		if spec.Category != category {
+			return "", "", "", "", false
+		}
+	}
+	for _, spec := range family.SlotSpecs {
+		if spec.Optionality == construction.SlotRequired && spec.Cardinality.Minimum > 0 && spec.ID != "subject" && spec.ID != "verb" && spec.ID != "object" {
+			return "", "", "", "", false
+		}
+	}
+	var subjectRole, objectRole meaning.Role
+	var subjectCase, objectCase string
+	for _, argument := range frame.Arguments {
+		if !argument.Required {
+			continue
+		}
+		switch argument.ID {
+		case "subject":
+			if argument.GrammaticalFunction != "subject" || argument.Case != "nominative" || argument.Role == "" || subjectRole != "" {
+				return "", "", "", "", false
+			}
+			subjectRole, subjectCase = argument.Role, argument.Case
+		case "object":
+			if argument.GrammaticalFunction != "object" || argument.Case == "" || argument.Role == "" || objectRole != "" {
+				return "", "", "", "", false
+			}
+			objectRole, objectCase = argument.Role, argument.Case
+		default:
+			return "", "", "", "", false
+		}
+	}
+	if subjectRole == "" || objectRole == "" || subjectRole == objectRole ||
+		!polishFrameDeclaresRole(frame, subjectRole) || !polishFrameDeclaresRole(frame, objectRole) {
+		return "", "", "", "", false
+	}
+	return subjectRole, objectRole, subjectCase, objectCase, true
+}
+
+func polishFrameDeclaresRole(frame valency.ValencyFrame, role meaning.Role) bool {
+	for _, declared := range frame.SemanticRoles {
+		if declared == role {
+			return true
+		}
+	}
+	return false
+}
+
+func clonePolishPredicateAlternatives(source map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID) map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID {
+	result := make(map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID, len(source))
+	for sense, alternatives := range source {
+		result[sense] = append([]map[features.FeatureID]features.FeatureValueID(nil), alternatives...)
+	}
+	return result
+}
+
+// approvedPolishIntransitiveSenses derives the finite-predicate inventory
+// from approved bindings whose frame and family each contain exactly one
+// required subject argument and one main VP slot.
+func approvedPolishIntransitiveSenses(registry *construction.Registry, valencyIndex *valency.Index, variants map[ids.ConstructionID]*construction.VariantIndex) map[ids.SenseID]bool {
+	allowed := make(map[ids.SenseID]bool)
+	if registry == nil || valencyIndex == nil {
+		return allowed
+	}
+	familyID, err := ids.ParseConstructionID("construction:pl.intransitive")
+	if err != nil {
+		return allowed
+	}
+	record, exists := registry.ByID(familyID)
+	variantIndex := variants[familyID]
+	if !exists || variantIndex == nil || !polishIntransitiveFamilyShape(record.Family) {
+		return allowed
+	}
+	for _, binding := range registry.BindingsByFamilyID(familyID) {
+		if !binding.Approved || binding.FamilyID != familyID || !polishIntransitiveFrameShape(binding.SenseID, binding.ValencyFrameID, familyID, valencyIndex) {
+			continue
+		}
+		if _, exists := variantIndex.ByID(construction.VariantID(binding.VariantID.String())); !exists {
+			continue
+		}
+		allowed[binding.SenseID] = true
+	}
+	return allowed
+}
+
+func polishIntransitiveFamilyShape(family construction.ConstructionFamily) bool {
+	if len(family.SlotSpecs) != 2 {
+		return false
+	}
+	subject, verb := false, false
+	for _, slot := range family.SlotSpecs {
+		if slot.Optionality != construction.SlotRequired || slot.Cardinality.Minimum != 1 || slot.Cardinality.Maximum != 1 {
+			return false
+		}
+		switch {
+		case slot.ID == "subject" && slot.Category == construction.CategoryNP:
+			subject = true
+		case slot.ID == "verb" && slot.Category == construction.CategoryVP:
+			verb = true
+		default:
+			return false
+		}
+	}
+	return subject && verb
+}
+
+func polishIntransitiveFrameShape(senseID ids.SenseID, frameID valency.FrameID, familyID ids.ConstructionID, valencyIndex *valency.Index) bool {
+	for _, frame := range valencyIndex.FramesBySenseID(senseID) {
+		if frame.ID != frameID || frame.SenseID != senseID || !polishFrameAllowsFamily(frame, familyID) || len(frame.SemanticRoles) != 1 || len(frame.Arguments) != 1 {
+			continue
+		}
+		argument := frame.Arguments[0]
+		if argument.ID == "subject" && argument.Required && argument.GrammaticalFunction == "subject" && argument.Role == frame.SemanticRoles[0] {
+			return true
+		}
+	}
+	return false
+}
+
+// polishIntransitiveSimplePastCapability derives the past feature alternatives
+// and coverage from retained compiled plans, approved valency bindings, and
+// finite past VP features. The bound VP must agree with a nominative subject in
+// Polish gender and number before it can attest coverage.
+func polishIntransitiveSimplePastCapability(candidates []parser.PhraseCandidate, forest parser.Forest, registry *construction.Registry) (map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID, bool) {
+	allowed := make(map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID)
+	if registry == nil {
+		return allowed, false
+	}
+	familyID, err := ids.ParseConstructionID("construction:pl.intransitive")
+	if err != nil {
+		return allowed, false
+	}
+	bindings := registry.BindingsByFamilyID(familyID)
+	byID := make(map[string]parser.PhraseCandidate, len(candidates))
+	for _, candidate := range candidates {
+		byID[candidate.ID] = candidate
+	}
+	seenClause := false
+	for _, node := range forest.Nodes {
+		if node.Category != "clause" {
+			continue
+		}
+		seenClause = true
+		if len(node.Alternatives) == 0 {
+			return allowed, false
+		}
+		for _, alternative := range node.Alternatives {
+			if alternative.FamilyID != familyID || len(alternative.Unresolved) != 0 {
+				return allowed, false
+			}
+			bound := false
+			for _, binding := range bindings {
+				if binding.Approved && binding.SenseID == alternative.Permission.SenseID && string(binding.ValencyFrameID) == string(alternative.Permission.FrameID) && binding.FamilyID == alternative.FamilyID && binding.VariantID.String() == alternative.VariantID.String() {
+					bound = true
+					break
+				}
+			}
+			if !bound {
+				return allowed, false
+			}
+			var subjectIDs, verbIDs []string
+			for _, slot := range alternative.Slots {
+				switch slot.SlotID {
+				case "subject":
+					subjectIDs = slot.CandidateIDs
+				case "verb":
+					verbIDs = slot.CandidateIDs
+				}
+			}
+			if len(subjectIDs) == 0 || len(verbIDs) == 0 {
+				return allowed, false
+			}
+			matchedFeatures := map[features.FeatureID]features.FeatureValueID(nil)
+			verbMatches := 0
+			for _, id := range verbIDs {
+				verb, exists := byID[id]
+				if !exists || verb.Category != construction.CategoryVP || !candidateHasPolishSense(verb, alternative.Permission.SenseID) || verb.Features["verb_form"] != "finite" || verb.Features["tense"] != "past" || verb.Features["aspect"] != "imperfective" || verb.Features["person"] != "third" {
+					continue
+				}
+				if !polishPastIntransitiveVerbNumberGenderValid(verb.Features) {
+					continue
+				}
+				agreement := false
+				for _, subjectID := range subjectIDs {
+					subject, found := byID[subjectID]
+					if found && subject.Category == construction.CategoryNP && subject.Features["case"] == "nominative" && polishPastIntransitiveAgreementMatches(subject.Features, verb.Features) {
+						agreement = true
+						break
+					}
+				}
+				if agreement {
+					verbMatches++
+					matchedFeatures = map[features.FeatureID]features.FeatureValueID{
+						"verb_form": "finite", "tense": "past", "aspect": "imperfective",
+						"person": verb.Features["person"], "number": verb.Features["number"], "gender": verb.Features["gender"],
+					}
+				}
+			}
+			if verbMatches != 1 || matchedFeatures == nil {
+				return allowed, false
+			}
+			allowed[alternative.Permission.SenseID] = append(allowed[alternative.Permission.SenseID], matchedFeatures)
+		}
+	}
+	return allowed, seenClause
+}
+
+func candidateHasPolishSense(candidate parser.PhraseCandidate, sense ids.SenseID) bool {
+	for _, candidateSense := range candidate.SenseIDs {
+		if candidateSense == sense {
+			return true
+		}
+	}
+	return false
+}
+
+func polishPastIntransitiveVerbNumberGenderValid(verb map[features.FeatureID]features.FeatureValueID) bool {
+	number, gender := verb["number"], verb["gender"]
+	if number == "singular" {
+		return gender == "masculine_personal" || gender == "feminine" || gender == "neuter"
+	}
+	return number == "plural" && (gender == "masculine_personal" || gender == "non_masculine_personal")
+}
+
+func polishPastIntransitiveAgreementMatches(subject, verb map[features.FeatureID]features.FeatureValueID) bool {
+	subjectNumber, subjectGender := subject["number"], subject["gender"]
+	verbNumber, verbGender := verb["number"], verb["gender"]
+	if subjectNumber == "" || subjectGender == "" || verbNumber != subjectNumber || verbGender == "" {
+		return false
+	}
+	expectedGender := subjectGender
+	if subjectNumber == "singular" && (subjectGender == "masculine_animal" || subjectGender == "masculine_inanimate") {
+		expectedGender = "masculine_personal"
+	} else if subjectNumber == "plural" && subjectGender != "masculine_personal" {
+		expectedGender = "non_masculine_personal"
+	}
+	return verbGender == expectedGender
 }
 
 func polishWHQuestionCoverage(lattice analyzer.LexicalLattice, forest parser.Forest) bool {

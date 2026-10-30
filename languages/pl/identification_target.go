@@ -36,7 +36,16 @@ func polishIdentificationState(source semantic.MeaningCandidate, predicateID mea
 			break
 		}
 	}
-	if predicate.ID == "" || predicate.Kind != meaning.KindState || len(graph.Nodes) != 2 || len(graph.Roots) != 1 || graph.Roots[0] != predicate.ID || len(predicate.Participants) != 1 {
+	validRoot := len(graph.Roots) == 1 && graph.Roots[0] == predicate.ID
+	if predicate.Kind == meaning.KindState && len(graph.Nodes) == 3 {
+		validRoot = false
+		for _, node := range graph.Nodes {
+			if node.Kind == meaning.KindScope && node.Operator == meaning.OperatorNegation && node.Target == predicate.ID && graph.Roots[0] == node.ID {
+				validRoot = true
+			}
+		}
+	}
+	if predicate.ID == "" || predicate.Kind != meaning.KindState || (len(graph.Nodes) != 2 && len(graph.Nodes) != 3) || !validRoot || len(predicate.Participants) != 1 {
 		return "", "", "", false
 	}
 	var role meaning.Role
@@ -179,6 +188,49 @@ func polishIdentificationReferenceMode(source semantic.MeaningCandidate, predica
 	for _, candidateContext := range source.Contexts {
 		graph := candidateContext.Meaning
 		context := candidateContext.Context
+		if len(graph.Nodes) == 3 && len(graph.Roots) == 1 && len(context.Referents) == 0 && len(context.Mentions) == 1 {
+			var scope, state, referent meaning.Node
+			for _, node := range graph.Nodes {
+				switch node.Kind {
+				case meaning.KindScope:
+					scope = node
+				case meaning.KindState:
+					state = node
+				case meaning.KindReferent:
+					referent = node
+				default:
+					return "", false
+				}
+			}
+			if meaning.ValidateReferences(graph, context, meaning.DefaultBudget()) != nil || scope.ID == "" || state.ID == "" || referent.ID == "" ||
+				graph.Roots[0] != scope.ID || scope.Operator != meaning.OperatorNegation || scope.Target != state.ID || state.Concept != sourcePredicate.Concept ||
+				state.TemporalFrame != sourcePredicate.TemporalFrame || len(state.Participants) != 1 || state.Participants[0].Role != "bearer" || state.Participants[0].Target != referent.ID ||
+				referent.Kind != meaning.KindReferent || referent.Concept != sourceReferent.Concept || referent.Multiplicity != sourceReferent.Multiplicity {
+				return "", false
+			}
+			mention := context.Mentions[0]
+			if mention.NodeID != referent.ID || mention.ReferentID != "" || mention.EvidenceID != "" {
+				return "", false
+			}
+			mode := "none"
+			if mention.Anchor != nil {
+				if mention.Anchor.Kind != "deixis" {
+					return "", false
+				}
+				mode = mention.Anchor.Value
+				switch mode {
+				case "proximal", "distal", "unresolved", "demonstrative":
+				default:
+					return "", false
+				}
+			}
+			if commonMode == "" {
+				commonMode = mode
+			} else if commonMode != mode {
+				return "", false
+			}
+			continue
+		}
 		if meaning.ValidateReferences(graph, context, meaning.DefaultBudget()) != nil || len(context.Referents) != 0 || len(context.Mentions) != 1 || len(graph.Nodes) != 2 || len(graph.Roots) != 1 {
 			return "", false
 		}

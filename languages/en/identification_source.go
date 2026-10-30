@@ -263,7 +263,7 @@ func addEnglishIdentificationReferences(evidence runtime.CompositionEvidence, ca
 			senseID := alternative.Permission.SenseID.String()
 			frame := string(alternative.Permission.FrameID)
 			family := alternative.FamilyID.String()
-			variant := string(alternative.VariantID)
+			variant := strings.TrimSuffix(string(alternative.VariantID), ".past")
 			var slotID string
 			modifierSlotID := "modifier"
 			exactSeeingDemonstrative := false
@@ -291,7 +291,7 @@ func addEnglishIdentificationReferences(evidence runtime.CompositionEvidence, ca
 				_, allowedSense := englishAttributionForSense(senseID)
 				return allowedSense && frame == sense+".frame" && family == "construction:en.attribution" &&
 					(variant == "construction:en.attribution.this" || variant == "construction:en.attribution.that" ||
-						variant == "construction:en.attribution.these" || variant == "construction:en.attribution.those" || variant == "construction:en.attribution.bare" || variant == "construction:en.attribution.the_plural" ||
+						variant == "construction:en.attribution.these" || variant == "construction:en.attribution.those" || variant == "construction:en.attribution.bare" || variant == "construction:en.attribution.bare_plural" || variant == "construction:en.attribution.the_plural" ||
 						variant == "construction:en.attribution.the" || variant == "construction:en.attribution.a" || variant == "construction:en.attribution.an")
 			}():
 				slotID = "bearer"
@@ -316,7 +316,7 @@ func addEnglishIdentificationReferences(evidence runtime.CompositionEvidence, ca
 						strings.HasSuffix(variant, ".that_object") || strings.HasSuffix(variant, ".those_object") {
 						anchorValue = "distal"
 					}
-					if strings.HasSuffix(variant, ".bare") || strings.HasSuffix(variant, ".the") || strings.HasSuffix(variant, ".the_plural") || strings.HasSuffix(variant, ".a") || strings.HasSuffix(variant, ".an") {
+					if strings.HasSuffix(variant, ".bare") || strings.HasSuffix(variant, ".bare_plural") || strings.HasSuffix(variant, ".the") || strings.HasSuffix(variant, ".the_plural") || strings.HasSuffix(variant, ".a") || strings.HasSuffix(variant, ".an") {
 						evidence.References = append(evidence.References, semantic.ReferenceEvidence{CandidateID: candidateID, Unanchored: true})
 						continue
 					}

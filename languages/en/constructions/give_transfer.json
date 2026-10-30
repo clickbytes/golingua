@@ -113,7 +113,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.the_the_a",
@@ -161,7 +169,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.the_the_an",
@@ -209,7 +225,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.the_a_the",
@@ -257,7 +281,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.the_a_a",
@@ -305,7 +337,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.the_a_an",
@@ -353,7 +393,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.the_an_the",
@@ -401,7 +449,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.the_an_a",
@@ -449,7 +505,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.the_an_an",
@@ -497,7 +561,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.a_the_the",
@@ -545,7 +617,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.a_the_a",
@@ -593,7 +673,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.a_the_an",
@@ -641,7 +729,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.a_a_the",
@@ -689,7 +785,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.a_a_a",
@@ -737,7 +841,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.a_a_an",
@@ -785,7 +897,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.a_an_the",
@@ -833,7 +953,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.a_an_a",
@@ -881,7 +1009,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.a_an_an",
@@ -929,7 +1065,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.an_the_the",
@@ -977,7 +1121,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.an_the_a",
@@ -1025,7 +1177,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.an_the_an",
@@ -1073,7 +1233,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.an_a_the",
@@ -1121,7 +1289,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.an_a_a",
@@ -1169,7 +1345,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.an_a_an",
@@ -1217,7 +1401,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.an_an_the",
@@ -1265,7 +1457,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.an_an_a",
@@ -1313,7 +1513,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.double_np.an_an_an",
@@ -1361,7 +1569,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.the_the_the",
@@ -1413,7 +1629,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.the_the_a",
@@ -1465,7 +1689,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.the_the_an",
@@ -1517,7 +1749,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.the_a_the",
@@ -1569,7 +1809,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.the_a_a",
@@ -1621,7 +1869,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.the_a_an",
@@ -1673,7 +1929,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.the_an_the",
@@ -1725,7 +1989,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.the_an_a",
@@ -1777,7 +2049,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.the_an_an",
@@ -1829,7 +2109,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.a_the_the",
@@ -1881,7 +2169,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.a_the_a",
@@ -1933,7 +2229,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.a_the_an",
@@ -1985,7 +2289,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.a_a_the",
@@ -2037,7 +2349,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.a_a_a",
@@ -2089,7 +2409,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.a_a_an",
@@ -2141,7 +2469,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.a_an_the",
@@ -2193,7 +2529,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.a_an_a",
@@ -2245,7 +2589,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.a_an_an",
@@ -2297,7 +2649,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.an_the_the",
@@ -2349,7 +2709,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.an_the_a",
@@ -2401,7 +2769,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.an_the_an",
@@ -2453,7 +2829,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.an_a_the",
@@ -2505,7 +2889,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.an_a_a",
@@ -2557,7 +2949,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.an_a_an",
@@ -2609,7 +3009,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.an_an_the",
@@ -2661,7 +3069,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.an_an_a",
@@ -2713,7 +3129,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.to_pp.an_an_an",
@@ -2765,7 +3189,15 @@
         "version": "2026-10-28-433",
         "license": "internal",
         "author": "Codex by owner delegation"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.the_the_the",
@@ -2816,7 +3248,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.the_the_a",
@@ -2867,7 +3307,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.the_the_an",
@@ -2918,7 +3366,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.the_a_the",
@@ -2969,7 +3425,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.the_a_a",
@@ -3020,7 +3484,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.the_a_an",
@@ -3071,7 +3543,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.the_an_the",
@@ -3122,7 +3602,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.the_an_a",
@@ -3173,7 +3661,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.the_an_an",
@@ -3224,7 +3720,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.a_the_the",
@@ -3275,7 +3779,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.a_the_a",
@@ -3326,7 +3838,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.a_the_an",
@@ -3377,7 +3897,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.a_a_the",
@@ -3428,7 +3956,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.a_a_a",
@@ -3479,7 +4015,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.a_a_an",
@@ -3530,7 +4074,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.a_an_the",
@@ -3581,7 +4133,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.a_an_a",
@@ -3632,7 +4192,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.a_an_an",
@@ -3683,7 +4251,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.an_the_the",
@@ -3734,7 +4310,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.an_the_a",
@@ -3785,7 +4369,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.an_the_an",
@@ -3836,7 +4428,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.an_a_the",
@@ -3887,7 +4487,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.an_a_a",
@@ -3938,7 +4546,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.an_a_an",
@@ -3989,7 +4605,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.an_an_the",
@@ -4040,7 +4664,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.an_an_a",
@@ -4091,7 +4723,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     },
     {
       "id": "construction:en.give.transfer.from_pp.an_an_an",
@@ -4142,7 +4782,15 @@
         "path": "languages/en/constructions/give_transfer.json",
         "version": "2026-10-28-433",
         "license": "internal"
-      }
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        }
+      ]
     }
   ]
 }

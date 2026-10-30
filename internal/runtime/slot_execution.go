@@ -23,6 +23,12 @@ type SlotFeaturePlanner interface {
 	Features(context.Context, semantic.MeaningCandidate, realizer.TargetCandidate, construction.SlotSpec, realizer.TargetCandidate, []realizer.TargetCandidate) ([]features.FeatureValue, error)
 }
 
+// VPAuxiliaryExecutionPlanner derives an auxiliary request only after the
+// exact selected predicate, family variant, and event Meaning are available.
+type VPAuxiliaryExecutionPlanner interface {
+	BuildVPAuxiliary(context.Context, semantic.MeaningCandidate, realizer.TargetCandidate, construction.SlotSpec, realizer.TargetCandidate, []realizer.TargetCandidate) (*realizer.VPAuxiliaryExecutionRequest, error)
+}
+
 // MorphologyExecutionBuilder binds exact selector candidates to the
 // role-bearing frame slots, then requests morphology from the compiled seed.
 // It never selects among competing participant senses or invents role links.
@@ -34,6 +40,9 @@ type MorphologyExecutionBuilder struct {
 	Parts         func(string) (morph.PrincipalParts, bool)
 	FeaturePlan   SlotFeaturePlanner
 	CaseFeature   features.FeatureID
+	// VPAuxiliary is an opt-in language-local request copied only to the exact
+	// main predicate slot. The realizer revalidates its event and operator scope.
+	VPAuxiliary *realizer.VPAuxiliaryExecutionRequest
 }
 
 var _ TargetExecutionBuilder = MorphologyExecutionBuilder{}
@@ -177,18 +186,47 @@ func (builder MorphologyExecutionBuilder) Build(ctx context.Context, source sema
 		if err != nil {
 			return realizer.ExecuteInput{}, fmt.Errorf("target slot %s feature bundle: %w", slot.ID, err)
 		}
-		input.Slots[slot.ID] = realizer.SlotRequest{
+		request := realizer.SlotRequest{
 			NodeID: nodeID, Candidate: candidate, PrincipalParts: parts,
 			Features: bundle, CaseFeature: builder.CaseFeature,
 		}
+		if builder.VPAuxiliary != nil {
+			if slot.IsMainPredicate() {
+				if builder.VPAuxiliary.EventNodeID != nodeID {
+					return realizer.ExecuteInput{}, runtimeError(status.OutcomeInvalid, "VP_AUXILIARY_EVENT_MISMATCH", "target.slot_execution.vp_auxiliary", "opt-in VP auxiliary request must target the exact selected main predicate")
+				}
+				auxiliary := *builder.VPAuxiliary
+				request.VPAuxiliary = &auxiliary
+			}
+		}
+		if slot.IsMainPredicate() {
+			if planner, ok := builder.FeaturePlan.(VPAuxiliaryExecutionPlanner); ok {
+				auxiliary, planErr := planner.BuildVPAuxiliary(ctx, source, selected, slot, candidate, candidates)
+				if planErr != nil {
+					return realizer.ExecuteInput{}, planErr
+				}
+				if auxiliary != nil {
+					if request.VPAuxiliary != nil || auxiliary.EventNodeID != nodeID {
+						return realizer.ExecuteInput{}, runtimeError(status.OutcomeInvalid, "VP_AUXILIARY_EVENT_MISMATCH", "target.slot_execution.vp_auxiliary", "planned auxiliary must target the exact main predicate and cannot conflict with a static request")
+					}
+					if parts, ok := builder.Parts(auxiliary.Lexeme.ID.String()); !ok {
+						return realizer.ExecuteInput{}, runtimeError(status.OutcomeIncomplete, "VP_AUXILIARY_PRINCIPAL_PARTS_UNAVAILABLE", "target.slot_execution.vp_auxiliary", "the selected auxiliary lexeme has no principal parts")
+					} else {
+						auxiliary.PrincipalParts = parts
+					}
+					request.VPAuxiliary = auxiliary
+				}
+			}
+		}
+		input.Slots[slot.ID] = request
 	}
-	if err := attachNPExecutionRequests(input.Slots, selected, plan, builder.Profile, builder.PhraseProfile); err != nil {
+	if err := attachNPExecutionRequests(input.Slots, source, selected, plan, builder.Profile, builder.PhraseProfile); err != nil {
 		return realizer.ExecuteInput{}, err
 	}
 	return input, nil
 }
 
-func attachNPExecutionRequests(slots map[string]realizer.SlotRequest, selected realizer.TargetCandidate, realizationPlan realizer.RealizationPlan, profile *features.LanguageFeatureProfile, phraseProfile construction.PhraseProfile) error {
+func attachNPExecutionRequests(slots map[string]realizer.SlotRequest, source semantic.MeaningCandidate, selected realizer.TargetCandidate, realizationPlan realizer.RealizationPlan, profile *features.LanguageFeatureProfile, phraseProfile construction.PhraseProfile) error {
 	if profile == nil || phraseProfile.Language != profile.Language() {
 		return runtimeError(status.OutcomeUnsupported, "NP_PHRASE_PROFILE_UNAVAILABLE", "target.np.profile", "NP plan compilation requires matching language phrase and feature profiles")
 	}
@@ -264,6 +302,21 @@ func attachNPExecutionRequests(slots map[string]realizer.SlotRequest, selected r
 				determiner = selectedDeterminer
 			}
 		}
+		if determiner == nil {
+			firstModifier := modifier != nil && modifierIndex >= 0 && modifierIndex < headIndex
+			role := meaning.Role("")
+			if headSpec.ArgumentBinding != nil {
+				role = headSpec.ArgumentBinding.SemanticRole
+			}
+			selectedDeterminer, err := targetNPEmbeddedDeterminer(profile, phraseProfile, template, realizationPlan.Assumptions, source, role, head, modifier, firstModifier)
+			if err != nil {
+				return err
+			}
+			if selectedDeterminer != nil {
+				selectedDeterminer.VariantID = selected.CompiledVariant.Variant.ID
+			}
+			determiner = selectedDeterminer
+		}
 		phrasePlan, headChild, modifierChild, err := compileTargetNP(profile, phraseProfile, template, head, modifier, determiner, selected)
 		if err != nil {
 			return err
@@ -283,6 +336,122 @@ func attachNPExecutionRequests(slots map[string]realizer.SlotRequest, selected r
 		slots[headSpec.ID] = head
 	}
 	return nil
+}
+
+// targetNPEmbeddedDeterminer represents a caller-selected determiner as an NP
+// part when the selected outer variant has no determiner terminal. It only
+// acts on explicit determiner assumptions and obtains surfaces/forms from the
+// language phrase profile.
+func targetNPEmbeddedDeterminer(profile *features.LanguageFeatureProfile, phraseProfile construction.PhraseProfile, template construction.PhraseTemplate, assumptions []realizer.FieldAssumption, source semantic.MeaningCandidate, role meaning.Role, head realizer.SlotRequest, modifier *realizer.SlotRequest, modifierFirst bool) (*realizer.NPDeterminerExecutionRequest, error) {
+	value := ""
+	bare := false
+	for _, assumption := range assumptions {
+		if assumption.Field != "determiner" || len(assumption.Path) == 0 || assumption.Path[len(assumption.Path)-1] != head.NodeID {
+			continue
+		}
+		if assumption.Value == "bare" {
+			bare = true
+			continue
+		}
+		if value != "" && value != assumption.Value {
+			return nil, runtimeError(status.OutcomeAmbiguous, "NP_EMBEDDED_DETERMINER_ASSUMPTION_CONFLICT", "target.np.determiner", "multiple determiner assumptions select different phrase-profile values")
+		}
+		value = assumption.Value
+	}
+	if bare && value != "" {
+		return nil, runtimeError(status.OutcomeAmbiguous, "NP_EMBEDDED_DETERMINER_ASSUMPTION_CONFLICT", "target.np.determiner", "bare and overt determiner assumptions conflict")
+	}
+	if bare {
+		return nil, nil
+	}
+	sourceDeterminer := ""
+	if values, found := SourceFeatures(source, role, head.Candidate.TransferBinding.CoreRef); found {
+		sourceDeterminer = string(values["determiner"])
+	}
+	if sourceDeterminer != "" {
+		if sourceDeterminer == "bare" {
+			if value != "" {
+				return nil, runtimeError(status.OutcomeUnsupported, "NP_EMBEDDED_DETERMINER_SOURCE_MISMATCH", "target.np.determiner", "source zero determiner conflicts with an overt target determiner choice")
+			}
+			return nil, nil
+		}
+		if sourceDeterminer != "definite" && sourceDeterminer != "indefinite" {
+			return nil, runtimeError(status.OutcomeUnsupported, "NP_EMBEDDED_SOURCE_DETERMINER_UNSUPPORTED", "target.np.determiner", "source determiner cannot be represented by this embedded determiner choice")
+		}
+		if value != "" && value != sourceDeterminer {
+			return nil, runtimeError(status.OutcomeUnsupported, "NP_EMBEDDED_DETERMINER_SOURCE_MISMATCH", "target.np.determiner", "target determiner assumption conflicts with explicit source determiner evidence")
+		}
+		value = sourceDeterminer
+	}
+	if value == "" {
+		return nil, nil
+	}
+	profileHasChoice := false
+	for _, rule := range phraseProfile.DeterminerForms {
+		for _, feature := range rule.DeterminerFeatures {
+			if feature.Feature == "determiner" && string(feature.Value) == value {
+				profileHasChoice = true
+				break
+			}
+		}
+		if profileHasChoice {
+			break
+		}
+	}
+	if !profileHasChoice {
+		return nil, nil
+	}
+	headBundle, err := projectNPBundle(profile, template, "head", head.Features)
+	if err != nil {
+		return nil, err
+	}
+	if profile.Language() == "en" && !containsBundleFeature(headBundle, "number") {
+		if nounNumber, known := knownNPFeature(headBundle, "noun_number"); known {
+			values := append(append([]features.FeatureValue(nil), headBundle.Values...), features.FeatureValue{Feature: "number", State: features.StateKnown, Value: nounNumber})
+			headBundle, err = features.NewBundle(profile, values)
+			if err != nil {
+				return nil, runtimeError(status.OutcomeIncomplete, "NP_HEAD_NUMBER_FEATURE_INVALID", "target.np.head.number", err.Error())
+			}
+		}
+	}
+	firstChild := head
+	if modifier != nil && modifierFirst {
+		firstChild = *modifier
+	}
+	onset, known := lexicalDeterminerOnset(firstChild.Candidate.Lexeme.Properties)
+	if !known {
+		onset = ""
+	}
+	unique := map[string]realizer.NPDeterminerExecutionRequest{}
+	for _, rule := range phraseProfile.DeterminerForms {
+		matchesValue := false
+		for _, feature := range rule.DeterminerFeatures {
+			if feature.Feature == "determiner" && string(feature.Value) == value {
+				matchesValue = true
+				break
+			}
+		}
+		if !matchesValue {
+			continue
+		}
+		bundle, bundleErr := features.NewBundle(profile, rule.DeterminerFeatures)
+		if bundleErr != nil {
+			return nil, runtimeError(status.OutcomeIncomplete, "NP_DETERMINER_FEATURE_INVALID", "target.np.determiner", bundleErr.Error())
+		}
+		match := construction.EvaluateDeterminerForms(phraseProfile, rule.Surface, headBundle, bundle, onset)
+		if match.Status != construction.DeterminerOK {
+			continue
+		}
+		key := rule.Surface + "\x00" + fmt.Sprint(rule.DeterminerFeatures)
+		unique[key] = realizer.NPDeterminerExecutionRequest{InputID: "determiner-input", Surface: rule.Surface, Embedded: true, SequenceIndex: -1, Features: bundle}
+	}
+	if len(unique) > 1 {
+		return nil, runtimeError(status.OutcomeAmbiguous, "NP_EMBEDDED_DETERMINER_AMBIGUOUS", "target.np.determiner", "multiple phrase-profile forms satisfy the explicit determiner assumption")
+	}
+	for _, request := range unique {
+		return &request, nil
+	}
+	return nil, runtimeError(status.OutcomeIncomplete, "NP_EMBEDDED_DETERMINER_UNAVAILABLE", "target.np.determiner", "explicit determiner assumption has no matching phrase-profile form for this head")
 }
 
 func variantSlotSequenceIndex(sequence []construction.SequenceToken, slotID string) int {
@@ -390,7 +559,7 @@ func compileTargetNP(profile *features.LanguageFeatureProfile, phraseProfile con
 		seed += "\x00" + string(modifier.NodeID) + "\x00" + modifier.Candidate.Lexeme.ID.String()
 	}
 	if determiner != nil {
-		seed += "\x00" + determiner.Surface + "\x00" + fmt.Sprint(determiner.SequenceIndex)
+		seed += "\x00" + determiner.Surface + "\x00" + fmt.Sprint(determiner.SequenceIndex) + "\x00" + fmt.Sprint(determiner.Embedded)
 	}
 	digest := sha256.Sum256([]byte(seed))
 	phrasePlan := construction.PhrasePlan{ID: construction.PhraseID("target-np-" + hex.EncodeToString(digest[:])), TemplateID: template.ID, Language: profile.Language(), Kind: construction.PhraseNP, Inputs: inputs, Order: order, Agreements: agreements}

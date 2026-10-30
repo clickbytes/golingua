@@ -344,6 +344,458 @@
         "version": "2026-10-29",
         "license": "internal"
       }
+    },
+    {
+      "id": "construction:en.attribution.this.past",
+      "family_id": "construction:en.attribution",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "this"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "bearer",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "was"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-en-past-attribution-constructions-437",
+        "path": "languages/en/constructions/attribution.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "singular"
+        }
+      ]
+    },
+    {
+      "id": "construction:en.attribution.that.past",
+      "family_id": "construction:en.attribution",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "that"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "bearer",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "was"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-en-past-attribution-constructions-437",
+        "path": "languages/en/constructions/attribution.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "singular"
+        }
+      ]
+    },
+    {
+      "id": "construction:en.attribution.bare.past",
+      "family_id": "construction:en.attribution",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "bearer",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "was"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-en-past-attribution-constructions-437",
+        "path": "languages/en/constructions/attribution.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "singular"
+        }
+      ]
+    },
+    {
+      "id": "construction:en.attribution.these.past",
+      "family_id": "construction:en.attribution",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "these"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "bearer",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "were"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-en-past-attribution-constructions-437",
+        "path": "languages/en/constructions/attribution.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "plural"
+        }
+      ]
+    },
+    {
+      "id": "construction:en.attribution.those.past",
+      "family_id": "construction:en.attribution",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "those"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "bearer",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "were"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-en-past-attribution-constructions-437",
+        "path": "languages/en/constructions/attribution.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "plural"
+        }
+      ]
+    },
+    {
+      "id": "construction:en.attribution.the.past",
+      "family_id": "construction:en.attribution",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "bearer",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "was"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-en-past-attribution-constructions-437",
+        "path": "languages/en/constructions/attribution.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "singular"
+        }
+      ]
+    },
+    {
+      "id": "construction:en.attribution.a.past",
+      "family_id": "construction:en.attribution",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "bearer",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "was"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-en-past-attribution-constructions-437",
+        "path": "languages/en/constructions/attribution.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "singular"
+        }
+      ]
+    },
+    {
+      "id": "construction:en.attribution.an.past",
+      "family_id": "construction:en.attribution",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "bearer",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "was"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-en-past-attribution-constructions-437",
+        "path": "languages/en/constructions/attribution.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "singular"
+        }
+      ]
+    },
+    {
+      "id": "construction:en.attribution.the_plural.past",
+      "family_id": "construction:en.attribution",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "bearer",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "were"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-en-past-attribution-constructions-437",
+        "path": "languages/en/constructions/attribution.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "plural"
+        }
+      ]
+    },
+    {
+      "id": "construction:en.attribution.bare_plural.past",
+      "family_id": "construction:en.attribution",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "bearer",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "were"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate",
+          "terminal": null
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-en-past-attribution-constructions-437",
+        "path": "languages/en/constructions/attribution.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "plural"
+        }
+      ]
     }
   ]
 }

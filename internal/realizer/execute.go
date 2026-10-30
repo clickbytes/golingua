@@ -78,6 +78,30 @@ type SlotRequest struct {
 	// the outer construction sequence; this plan is retained for the next NP
 	// execution stage and does not alter surface output.
 	NP *NPExecutionRequest
+	// VPAuxiliary is an opt-in language-local realization attached to this
+	// exact main predicate slot. It never introduces a Meaning node.
+	VPAuxiliary *VPAuxiliaryExecutionRequest `json:"vp_auxiliary,omitempty"`
+}
+
+// VPAuxiliaryExecutionRequest supplies an auxiliary lexeme and its finite
+// morphology, plus the selected predicate's lexical base-form feature bundle.
+// A negation particle is allowed only when the exact plan operator scopes over
+// EventNodeID.
+type VPAuxiliaryExecutionRequest struct {
+	EventNodeID      meaning.NodeID              `json:"event_node_id"`
+	Lexeme           lexicon.MorphLexeme         `json:"lexeme"`
+	PrincipalParts   morph.PrincipalParts        `json:"principal_parts"`
+	Features         features.FeatureBundle      `json:"features"`
+	BaseFeatures     features.FeatureBundle      `json:"base_features"`
+	NegationParticle *VPAuxiliaryParticleRequest `json:"negation_particle,omitempty"`
+}
+
+// VPAuxiliaryParticleRequest is one supplied target-language terminal tied to
+// an exact scoped negation operator.
+type VPAuxiliaryParticleRequest struct {
+	OperatorID construction.OperatorID `json:"operator_id"`
+	Surface    string                  `json:"surface"`
+	Provenance provenance.SourceRef    `json:"provenance"`
 }
 
 // NPExecutionRequest is a compiled, language-local NP plan tied to the exact
@@ -93,8 +117,8 @@ type NPExecutionRequest struct {
 	ModifierSequenceIndex int                             `json:"modifier_sequence_index"`
 	Modifier              *NPChildExecutionRequest        `json:"modifier,omitempty"`
 	Determiner            *NPDeterminerExecutionRequest   `json:"determiner,omitempty"`
-	// Bare records that the selected outer variant has no determiner terminal.
-	// It is a construction choice, not an inferred semantic feature.
+	// Bare records that this NP has no selected determiner. It is a construction
+	// choice, not an inferred semantic feature.
 	Bare bool `json:"bare"`
 }
 
@@ -111,13 +135,15 @@ type NPChildExecutionRequest struct {
 	Assumptions    []FieldAssumption      `json:"assumptions,omitempty"`
 }
 
-// NPDeterminerExecutionRequest links a terminal licensed by the selected
-// outer construction variant to the local NP plan.
+// NPDeterminerExecutionRequest links a determiner licensed by the phrase
+// profile to the local NP plan. Embedded determiners are emitted as NP parts
+// and do not claim an outer sequence position.
 type NPDeterminerExecutionRequest struct {
 	InputID       string                 `json:"input_id"`
 	Surface       string                 `json:"surface"`
 	VariantID     construction.VariantID `json:"variant_id"`
-	SequenceIndex int                    `json:"sequence_index"`
+	SequenceIndex int                    `json:"sequence_index,omitempty"`
+	Embedded      bool                   `json:"embedded,omitempty"`
 	Features      features.FeatureBundle `json:"features"`
 }
 
@@ -155,6 +181,34 @@ type SlotForm struct {
 	Features    []features.FeatureValue     `json:"features"`
 	Trace       []morph.GenerationTraceStep `json:"trace"`
 	Provenance  provenance.SourceRef        `json:"provenance"`
+	VPAuxiliary *VPAuxiliaryForm            `json:"vp_auxiliary,omitempty"`
+}
+
+// VPAuxiliaryForm preserves the auxiliary and lexical base forms emitted at
+// one exact predicate slot. EventNodeID is the existing Meaning event ID.
+type VPAuxiliaryForm struct {
+	SlotID      string                   `json:"slot_id"`
+	EventNodeID meaning.NodeID           `json:"event_node_id"`
+	Auxiliary   VPAuxiliaryMorphForm     `json:"auxiliary"`
+	Base        VPAuxiliaryMorphForm     `json:"base"`
+	Negation    *VPAuxiliaryParticleForm `json:"negation,omitempty"`
+}
+
+// VPAuxiliaryMorphForm is a generated lexical form without a semantic sense.
+type VPAuxiliaryMorphForm struct {
+	Surface    string                      `json:"surface"`
+	LexemeID   ids.LexemeID                `json:"lexeme_id"`
+	Features   []features.FeatureValue     `json:"features"`
+	Trace      []morph.GenerationTraceStep `json:"trace"`
+	Provenance provenance.SourceRef        `json:"provenance"`
+}
+
+// VPAuxiliaryParticleForm is one exact supplied language-local operator word.
+type VPAuxiliaryParticleForm struct {
+	Surface     string                  `json:"surface"`
+	OperatorID  construction.OperatorID `json:"operator_id"`
+	ScopeNodeID meaning.NodeID          `json:"scope_node_id"`
+	Provenance  provenance.SourceRef    `json:"provenance"`
 }
 
 // ExecuteResult preserves generated forms in family slot order. Optional
@@ -178,6 +232,7 @@ type NPForm struct {
 	// DeterminerOnset is evidence from the exact first lexical child selected
 	// during execution. Empty means that onset is unknown.
 	DeterminerOnset      string         `json:"determiner_onset,omitempty"`
+	EmbeddedDeterminer   bool           `json:"embedded_determiner,omitempty"`
 	Parts                []NPFormPart   `json:"parts"`
 	OuterSequenceIndexes []int          `json:"outer_sequence_indexes"`
 	OuterSlotIDs         []string       `json:"outer_slot_ids"`
@@ -417,6 +472,11 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 			return ExecuteResult{}, executeError(status.OutcomeUnsupported, "UNSEQUENCED_SLOT_REQUEST", "slots."+slotID, "slot request is not present in the selected variant sequence")
 		}
 	}
+	for slotID, request := range requests {
+		if request.VPAuxiliary != nil && !slotByID[slotID].IsMainPredicate() {
+			return ExecuteResult{}, executeError(status.OutcomeUnsupported, "VP_AUXILIARY_NON_PREDICATE_SLOT", "slots."+slotID+".vp_auxiliary", "VP auxiliary execution can only attach to the exact main predicate slot")
+		}
+	}
 	if err := validateSlotCasePolicies(input.Frame, slots, requests, input.Family, plan.CompiledVariant.Variant); err != nil {
 		return ExecuteResult{}, err
 	}
@@ -534,6 +594,22 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 		form := generation.Forms[0]
 		traceSteps += len(generation.Trace)
 		textBytes += len(form.Surface)
+		var vpAuxiliary *VPAuxiliaryForm
+		if req.VPAuxiliary != nil {
+			if !slot.IsMainPredicate() || req.NodeID != plan.NodeID || sourceNode.Kind != meaning.KindEvent {
+				return ExecuteResult{}, executeError(status.OutcomeUnsupported, "VP_AUXILIARY_EVENT_MISMATCH", "slots."+slot.ID+".vp_auxiliary", "VP auxiliary execution requires the exact main event predicate slot")
+			}
+			generated, auxErr := generateVPAuxiliary(input, slot, req, budget.Procedure)
+			if auxErr != nil {
+				return ExecuteResult{}, auxErr
+			}
+			vpAuxiliary = &generated
+			traceSteps += len(generated.Auxiliary.Trace) + len(generated.Base.Trace)
+			textBytes += len(generated.Auxiliary.Surface) + len(generated.Base.Surface)
+			if generated.Negation != nil {
+				textBytes += len(generated.Negation.Surface)
+			}
+		}
 		if traceSteps > budget.MaxTraceSteps {
 			return ExecuteResult{}, executeLimit("trace_steps", traceSteps, budget.MaxTraceSteps)
 		}
@@ -545,6 +621,7 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 			MeaningPath: append([]meaning.NodeID(nil), sourcePath...), LexemeID: req.Candidate.Lexeme.ID,
 			SenseID: req.Candidate.Sense.ID, Features: append([]features.FeatureValue(nil), req.Features.Values...),
 			Trace: append([]morph.GenerationTraceStep(nil), generation.Trace...), Provenance: req.Candidate.TransferBinding.Provenance,
+			VPAuxiliary: vpAuxiliary,
 		})
 	}
 	npForms, err := prepareNPForms(input, result, requests, slotByID, budget)
@@ -716,22 +793,36 @@ func validateNPExecutionRequest(input ExecuteInput, headSlotID string, request *
 			return executeError(status.OutcomeInvalid, "NP_BARE_TERMINAL_MISMATCH", path+".determiner", "Bare cannot omit a determiner terminal selected immediately before the NP")
 		}
 	} else {
-		if request.Bare || request.Determiner.InputID != "determiner-input" || request.Determiner.VariantID != request.VariantID || request.Determiner.SequenceIndex < 0 || request.Determiner.SequenceIndex >= len(input.Plan.CompiledVariant.Variant.Sequence) {
-			return executeError(status.OutcomeInvalid, "NP_DETERMINER_IDENTITY_MISMATCH", path+".determiner", "determiner must be tied to the selected outer variant and sequence position")
+		if request.Bare || request.Determiner.InputID != "determiner-input" || request.Determiner.VariantID != request.VariantID || !hasNPDeterminerRule(input.PhraseProfile, request.Determiner.Surface) {
+			return executeError(status.OutcomeInvalid, "NP_DETERMINER_IDENTITY_MISMATCH", path+".determiner", "determiner must be tied to the selected outer variant and licensed phrase profile")
 		}
-		token := input.Plan.CompiledVariant.Variant.Sequence[request.Determiner.SequenceIndex]
-		if token.Kind != construction.TokenTerminal || token.Terminal != request.Determiner.Surface || !hasNPDeterminerRule(input.PhraseProfile, token.Terminal) {
-			return executeError(status.OutcomeInvalid, "NP_DETERMINER_TERMINAL_MISMATCH", path+".determiner", "determiner request does not match one licensed outer terminal")
-		}
-		firstIndex := request.HeadSequenceIndex
-		if request.Modifier != nil && request.ModifierSequenceIndex < firstIndex {
-			firstIndex = request.ModifierSequenceIndex
-		}
-		if request.Determiner.SequenceIndex != firstIndex-1 {
-			return executeError(status.OutcomeInvalid, "NP_DETERMINER_SEQUENCE_POSITION_MISMATCH", path+".determiner.sequence_index", "determiner terminal must immediately precede the NP's first selected child")
-		}
-		if request.Determiner.SequenceIndex < firstIndex {
-			firstIndex = request.Determiner.SequenceIndex
+		if request.Determiner.Embedded {
+			if request.Determiner.SequenceIndex != -1 {
+				return executeError(status.OutcomeInvalid, "NP_EMBEDDED_DETERMINER_OUTER_INDEX", path+".determiner.sequence_index", "embedded determiner must not claim an outer sequence index")
+			}
+			firstIndex := request.HeadSequenceIndex
+			if request.Modifier != nil && request.ModifierSequenceIndex < firstIndex {
+				firstIndex = request.ModifierSequenceIndex
+			}
+			sequence := input.Plan.CompiledVariant.Variant.Sequence
+			if firstIndex > 0 && sequence[firstIndex-1].Kind == construction.TokenTerminal && hasNPDeterminerRule(input.PhraseProfile, sequence[firstIndex-1].Terminal) {
+				return executeError(status.OutcomeInvalid, "NP_EMBEDDED_DETERMINER_OUTER_DUPLICATE", path+".determiner", "embedded determiner cannot duplicate a selected outer determiner terminal")
+			}
+		} else {
+			if request.Determiner.SequenceIndex < 0 || request.Determiner.SequenceIndex >= len(input.Plan.CompiledVariant.Variant.Sequence) {
+				return executeError(status.OutcomeInvalid, "NP_DETERMINER_SEQUENCE_INDEX_INVALID", path+".determiner.sequence_index", "outer determiner requires one exact selected variant sequence index")
+			}
+			token := input.Plan.CompiledVariant.Variant.Sequence[request.Determiner.SequenceIndex]
+			if token.Kind != construction.TokenTerminal || token.Terminal != request.Determiner.Surface {
+				return executeError(status.OutcomeInvalid, "NP_DETERMINER_TERMINAL_MISMATCH", path+".determiner", "determiner request does not match one licensed outer terminal")
+			}
+			firstIndex := request.HeadSequenceIndex
+			if request.Modifier != nil && request.ModifierSequenceIndex < firstIndex {
+				firstIndex = request.ModifierSequenceIndex
+			}
+			if request.Determiner.SequenceIndex != firstIndex-1 {
+				return executeError(status.OutcomeInvalid, "NP_DETERMINER_SEQUENCE_POSITION_MISMATCH", path+".determiner.sequence_index", "determiner terminal must immediately precede the NP's first selected child")
+			}
 		}
 	}
 	if err := validateNPPlanInputs(input, path, request, headRequest, requests); err != nil {
@@ -907,15 +998,15 @@ func buildNPForm(input ExecuteInput, headSlotID string, request *NPExecutionRequ
 	if request.Modifier != nil && request.ModifierSequenceIndex < firstNPIndex {
 		firstNPIndex = request.ModifierSequenceIndex
 	}
-	firstChildIndex := firstNPIndex
-	if request.Determiner != nil && request.Determiner.SequenceIndex < firstChildIndex {
+	form.EmbeddedDeterminer = request.Determiner != nil && request.Determiner.Embedded
+	if request.Determiner != nil && !request.Determiner.Embedded && request.Determiner.SequenceIndex < firstNPIndex {
 		firstNPIndex = request.Determiner.SequenceIndex
 	}
 	for i := firstNPIndex; i <= request.HeadSequenceIndex; i++ {
 		if claimed[i] {
 			continue
 		}
-		if request.Determiner == nil || i != request.Determiner.SequenceIndex || sequence[i].Kind != construction.TokenTerminal || !hasNPDeterminerRule(input.PhraseProfile, sequence[i].Terminal) {
+		if request.Determiner == nil || request.Determiner.Embedded || i != request.Determiner.SequenceIndex || sequence[i].Kind != construction.TokenTerminal || !hasNPDeterminerRule(input.PhraseProfile, sequence[i].Terminal) {
 			return NPForm{}, executeError(status.OutcomeInvalid, "NP_OUTER_UNEXPECTED_SEQUENCE_TOKEN", "np_forms."+headSlotID, fmt.Sprintf("NP span token %d (%s:%s), determiner=%v", i, sequence[i].Kind, sequence[i].Terminal, request.Determiner))
 		}
 		if err := claim(i); err != nil {
@@ -978,7 +1069,11 @@ func buildNPForm(input ExecuteInput, headSlotID string, request *NPExecutionRequ
 			if request.Determiner == nil {
 				return NPForm{}, executeError(status.OutcomeInvalid, "NP_PLAN_DETERMINER_MISSING", "np_forms."+headSlotID+".determiner", "NP plan order names an absent determiner")
 			}
-			form.Parts = append(form.Parts, NPFormPart{Role: "determiner", InputID: request.Determiner.InputID, Kind: construction.PhraseInputLexical, Surface: request.Determiner.Surface, TerminalProvenance: input.Plan.CompiledVariant.Variant.Provenance})
+			part := NPFormPart{Role: "determiner", InputID: request.Determiner.InputID, Kind: construction.PhraseInputLexical, Surface: request.Determiner.Surface}
+			if !request.Determiner.Embedded {
+				part.TerminalProvenance = input.Plan.CompiledVariant.Variant.Provenance
+			}
+			form.Parts = append(form.Parts, part)
 		default:
 			return NPForm{}, executeError(status.OutcomeUnsupported, "NP_PLAN_ROLE_UNSUPPORTED", "np_forms."+headSlotID+".order", "NP template contains an unsupported role")
 		}
@@ -1010,8 +1105,156 @@ func lexicalDeterminerOnset(properties []lexicon.Property) (string, bool) {
 func cloneSlotForm(form SlotForm) SlotForm {
 	form.MeaningPath = append([]meaning.NodeID(nil), form.MeaningPath...)
 	form.Features = append([]features.FeatureValue(nil), form.Features...)
-	form.Trace = append([]morph.GenerationTraceStep(nil), form.Trace...)
+	form.Trace = cloneAuxiliaryTrace(form.Trace)
+	if form.VPAuxiliary != nil {
+		auxiliary := *form.VPAuxiliary
+		auxiliary.Auxiliary.Features = append([]features.FeatureValue(nil), auxiliary.Auxiliary.Features...)
+		auxiliary.Auxiliary.Trace = cloneAuxiliaryTrace(auxiliary.Auxiliary.Trace)
+		auxiliary.Base.Features = append([]features.FeatureValue(nil), auxiliary.Base.Features...)
+		auxiliary.Base.Trace = cloneAuxiliaryTrace(auxiliary.Base.Trace)
+		if auxiliary.Negation != nil {
+			particle := *auxiliary.Negation
+			auxiliary.Negation = &particle
+		}
+		form.VPAuxiliary = &auxiliary
+	}
 	return form
+}
+
+func cloneAuxiliaryTrace(trace []morph.GenerationTraceStep) []morph.GenerationTraceStep {
+	cloned := append([]morph.GenerationTraceStep(nil), trace...)
+	for index := range cloned {
+		if cloned[index].Applied == nil {
+			continue
+		}
+		value := *cloned[index].Applied
+		cloned[index].Applied = &value
+	}
+	return cloned
+}
+
+func generateVPAuxiliary(input ExecuteInput, slot construction.SlotSpec, request SlotRequest, budget procedure.Budget) (VPAuxiliaryForm, error) {
+	auxiliary := request.VPAuxiliary
+	if auxiliary == nil || auxiliary.EventNodeID == "" || auxiliary.EventNodeID != input.Plan.NodeID || auxiliary.Lexeme.ID.String() != "lexeme:en.do.aux" || auxiliary.Lexeme.Language != lexicon.LanguageID(input.Plan.Language) || auxiliary.Lexeme.POS != lexicon.PartOfSpeech("verb") {
+		return VPAuxiliaryForm{}, executeError(status.OutcomeInvalid, "VP_AUXILIARY_REQUEST_INVALID", "slots."+slot.ID+".vp_auxiliary", "VP auxiliary requires the declared nonsemantic auxiliary lexeme, target language, and exact event identity")
+	}
+	if slot.Category != construction.CategoryVP || !slot.IsMainPredicate() || request.NodeID != auxiliary.EventNodeID {
+		return VPAuxiliaryForm{}, executeError(status.OutcomeUnsupported, "VP_AUXILIARY_SLOT_UNSUPPORTED", "slots."+slot.ID+".vp_auxiliary", "VP auxiliary requires a VP-category main predicate slot bound to its event")
+	}
+	if auxiliary.Features.Language != input.Plan.Language || auxiliary.BaseFeatures.Language != input.Plan.Language || request.Candidate.Lexeme.Language != lexicon.LanguageID(input.Plan.Language) {
+		return VPAuxiliaryForm{}, executeError(status.OutcomeIncomplete, "VP_AUXILIARY_FEATURE_LANGUAGE_MISMATCH", "slots."+slot.ID+".vp_auxiliary", "auxiliary, lexical base, and selected predicate must use the plan language")
+	}
+	if err := validateVPAuxiliaryNegation(input, auxiliary); err != nil {
+		return VPAuxiliaryForm{}, err
+	}
+	auxGenerated, err := morph.Generate(auxiliary.Lexeme, auxiliary.PrincipalParts, auxiliary.Features, input.Paradigms, input.Exceptions, budget)
+	if err != nil {
+		return VPAuxiliaryForm{}, executeWrapError(err)
+	}
+	auxForm, err := exactlyOneVPAuxiliaryForm(auxGenerated, "auxiliary")
+	if err != nil {
+		return VPAuxiliaryForm{}, err
+	}
+	if auxForm.LexemeID != auxiliary.Lexeme.ID.String() {
+		return VPAuxiliaryForm{}, executeError(status.OutcomeInvalid, "VP_AUXILIARY_LEXEME_MISMATCH", "slots."+slot.ID+".vp_auxiliary.auxiliary", "morphology output does not identify the requested auxiliary lexeme")
+	}
+	baseGenerated, err := morph.Generate(request.Candidate.Lexeme, request.PrincipalParts, auxiliary.BaseFeatures, input.Paradigms, input.Exceptions, budget)
+	if err != nil {
+		return VPAuxiliaryForm{}, executeWrapError(err)
+	}
+	baseForm, err := exactlyOneVPAuxiliaryForm(baseGenerated, "base")
+	if err != nil {
+		return VPAuxiliaryForm{}, err
+	}
+	if baseForm.LexemeID != request.Candidate.Lexeme.ID.String() {
+		return VPAuxiliaryForm{}, executeError(status.OutcomeInvalid, "VP_BASE_LEXEME_MISMATCH", "slots."+slot.ID+".vp_auxiliary.base", "morphology output does not identify the selected predicate lexeme")
+	}
+	for _, token := range input.Plan.CompiledVariant.Variant.Sequence {
+		if token.Kind != construction.TokenTerminal {
+			continue
+		}
+		if strings.EqualFold(token.Terminal, auxForm.Surface) {
+			return VPAuxiliaryForm{}, executeError(status.OutcomeUnsupported, "VP_AUXILIARY_OUTER_DUPLICATE", "plan.compiled_variant.sequence", "selected variant already emits the generated auxiliary as an outer terminal")
+		}
+		if auxiliary.NegationParticle != nil && strings.EqualFold(token.Terminal, auxiliary.NegationParticle.Surface) {
+			return VPAuxiliaryForm{}, executeError(status.OutcomeUnsupported, "VP_NEGATION_OUTER_DUPLICATE", "plan.compiled_variant.sequence", "selected variant already emits the scoped negation particle as an outer terminal")
+		}
+	}
+	result := VPAuxiliaryForm{
+		SlotID: slot.ID, EventNodeID: auxiliary.EventNodeID,
+		Auxiliary: VPAuxiliaryMorphForm{
+			Surface: auxForm.Surface, LexemeID: auxiliary.Lexeme.ID,
+			Features: append([]features.FeatureValue(nil), auxForm.Features...), Trace: append([]morph.GenerationTraceStep(nil), auxGenerated.Trace...),
+			Provenance: *auxForm.Provenance,
+		},
+		Base: VPAuxiliaryMorphForm{
+			Surface: baseForm.Surface, LexemeID: request.Candidate.Lexeme.ID,
+			Features: append([]features.FeatureValue(nil), baseForm.Features...), Trace: append([]morph.GenerationTraceStep(nil), baseGenerated.Trace...),
+			Provenance: *baseForm.Provenance,
+		},
+	}
+	if auxiliary.NegationParticle != nil {
+		particle := auxiliary.NegationParticle
+		result.Negation = &VPAuxiliaryParticleForm{
+			Surface: particle.Surface, OperatorID: particle.OperatorID,
+			ScopeNodeID: input.Plan.Construction.Steps[0].SemanticScope.ScopeNodeID, Provenance: particle.Provenance,
+		}
+	}
+	return result, nil
+}
+
+func exactlyOneVPAuxiliaryForm(generation morph.GenerationResult, role string) (morph.GeneratedForm, error) {
+	switch generation.State {
+	case morph.GenerationGenerated:
+		if len(generation.Forms) > 1 {
+			return morph.GeneratedForm{}, executeError(status.OutcomeAmbiguous, "VP_AUXILIARY_FORM_AMBIGUOUS", "vp_auxiliary."+role, "morphology produced more than one auxiliary or base form")
+		}
+		if len(generation.Forms) != 1 || generation.Forms[0].Surface == "" || generation.Forms[0].Provenance == nil || len(generation.Trace) == 0 {
+			return morph.GeneratedForm{}, executeError(status.OutcomeIncomplete, "VP_AUXILIARY_FORM_INCOMPLETE", "vp_auxiliary."+role, "auxiliary and base forms require one generated surface with morphology provenance")
+		}
+		if err := generation.Forms[0].Provenance.Validate(); err != nil {
+			return morph.GeneratedForm{}, executeError(status.OutcomeIncomplete, "VP_AUXILIARY_PROVENANCE_INVALID", "vp_auxiliary."+role, "generated auxiliary or base form has invalid morphology provenance")
+		}
+		return generation.Forms[0], nil
+	case morph.GenerationBlocked:
+		return morph.GeneratedForm{}, executeFromDiagnostics(status.OutcomeUnsupported, "VP_AUXILIARY_MORPHOLOGY_BLOCKED", "vp_auxiliary."+role, "morphology blocks the requested auxiliary or base form", generation.Diagnostics)
+	case morph.GenerationIncomplete:
+		return morph.GeneratedForm{}, executeFromDiagnostics(status.OutcomeIncomplete, "VP_AUXILIARY_MORPHOLOGY_INCOMPLETE", "vp_auxiliary."+role, "morphology lacks evidence for the requested auxiliary or base form", generation.Diagnostics)
+	case morph.GenerationUnavailable, morph.GenerationUnknown:
+		return morph.GeneratedForm{}, executeFromDiagnostics(status.OutcomeUnknown, "VP_AUXILIARY_MORPHOLOGY_UNKNOWN", "vp_auxiliary."+role, "morphology cannot resolve the requested auxiliary or base form", generation.Diagnostics)
+	default:
+		return morph.GeneratedForm{}, executeError(status.OutcomeInvalid, "VP_AUXILIARY_MORPHOLOGY_STATE_INVALID", "vp_auxiliary."+role, "morphology returned an invalid auxiliary or base state")
+	}
+}
+
+func validateVPAuxiliaryNegation(input ExecuteInput, auxiliary *VPAuxiliaryExecutionRequest) error {
+	if len(input.Plan.Construction.Steps) == 0 {
+		if auxiliary.NegationParticle != nil {
+			return executeError(status.OutcomeInvalid, "VP_NEGATION_OPERATOR_UNAVAILABLE", "slots.vp_auxiliary.negation", "a negation particle requires one exact plan operator scoped to the event")
+		}
+		return nil
+	}
+	if len(input.Plan.Construction.Steps) != 1 || !explicitSurfaceNegation(input.Plan, input.Family) {
+		return executeError(status.OutcomeUnsupported, "VP_AUXILIARY_OPERATOR_CHAIN_UNSUPPORTED", "plan.construction.steps", "VP auxiliary realization accepts only one exact identity negation operator")
+	}
+	operator := input.Plan.Construction.Steps[0]
+	if operator.SemanticScope.TargetNodeID != auxiliary.EventNodeID || operator.SemanticScope.ScopeNodeID == "" || auxiliary.NegationParticle == nil || auxiliary.NegationParticle.OperatorID != operator.ID || auxiliary.NegationParticle.Provenance != operator.Provenance {
+		return executeError(status.OutcomeUnsupported, "VP_NEGATION_SCOPE_MISMATCH", "slots.vp_auxiliary.negation", "negation particle must match the exact operator, event target, scope node, and provenance")
+	}
+	if !validSlotSurface(auxiliary.NegationParticle.Surface) || auxiliary.NegationParticle.Provenance.Validate() != nil {
+		return executeError(status.OutcomeInvalid, "VP_NEGATION_PARTICLE_INVALID", "slots.vp_auxiliary.negation", "negation particle must have a valid surface and operator provenance")
+	}
+	var scope *meaning.Node
+	for index := range input.SourceMeaning.Nodes {
+		if input.SourceMeaning.Nodes[index].ID == operator.SemanticScope.ScopeNodeID {
+			scope = &input.SourceMeaning.Nodes[index]
+			break
+		}
+	}
+	if scope == nil || scope.Kind != meaning.KindScope || scope.Operator != meaning.OperatorNegation || scope.Target != auxiliary.EventNodeID {
+		return executeError(status.OutcomeUnsupported, "VP_NEGATION_MEANING_SCOPE_MISMATCH", "source.meaning."+string(operator.SemanticScope.ScopeNodeID), "negation Meaning scope must target the exact auxiliary event")
+	}
+	return nil
 }
 
 func phraseNPSpec(profile construction.PhraseProfile, templateID string) (construction.PhraseTemplate, bool) {

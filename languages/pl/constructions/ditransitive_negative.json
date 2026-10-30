@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "language": "pl",
+  "family": {
+    "id": "construction:pl.ditransitive_negative",
+    "language": "pl",
+    "slot_specs": [
+      {
+        "id": "subject",
+        "position": 0,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "verb",
+        "position": 1,
+        "category": "VP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "recipient",
+        "position": 2,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "object",
+        "position": 3,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      }
+    ],
+    "constraints": [
+      {
+        "id": "subject_verb_number",
+        "kind": "agreement",
+        "strength": "hard",
+        "controller_slot": "subject",
+        "target_slot": "verb",
+        "features": [
+          "number"
+        ]
+      }
+    ],
+    "operators": [
+      "negate"
+    ],
+    "capabilities": [
+      "negation-negated",
+      "negation",
+      "surface_negation"
+    ],
+    "provenance": {
+      "id": "golingua-437-giving-negation",
+      "path": "languages/pl/constructions/ditransitive_negative.json",
+      "version": "2026-10-29",
+      "license": "internal",
+      "author": "Codex by owner delegation"
+    }
+  },
+  "variants": [
+    {
+      "id": "construction:pl.ditransitive_negative.svo",
+      "family_id": "construction:pl.ditransitive_negative",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "nie"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-437-giving-negation",
+        "path": "languages/pl/constructions/ditransitive_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.ditransitive_negative.svo.period",
+      "family_id": "construction:pl.ditransitive_negative",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "nie"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "object"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-437-giving-negation",
+        "path": "languages/pl/constructions/ditransitive_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    }
+  ]
+}

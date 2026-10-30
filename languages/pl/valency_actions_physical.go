@@ -16,6 +16,10 @@ var physicalActionFrames = []frameDeclaration{
 		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "object", Role: "material", Required: true, GrammaticalFunction: "object", Case: "accusative"},
 	}},
+	{"pl.rozdzierac.tear.negative", "pl.rozdzierac.tear", "pl.transitive_negative", []meaning.Role{"agent", "material"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "material", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+	}},
 	{"pl.dotykac_obj.touch.action", "pl.dotykac_obj.touch", "pl.transitive", []meaning.Role{"actor", "object"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "actor", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "object", Role: "object", Required: true, GrammaticalFunction: "object", Case: "accusative"},

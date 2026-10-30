@@ -77,6 +77,22 @@ var polishMotionFrames = []frameDeclaration{
 		{ID: "subject", Role: "carrier", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "object", Role: "load", Required: true, GrammaticalFunction: "object", Case: "accusative"},
 	}},
+	{"pl.niesc.carry.negative", "pl.niesc.carry", "pl.transitive_negative", []meaning.Role{"carrier", "load"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "carrier", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "load", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+	}},
+	{"pl.pchac.push.negative", "pl.pchac.push", "pl.transitive_negative", []meaning.Role{"agent", "theme"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "theme", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+	}},
+	{"pl.ciagnac.pull.negative", "pl.ciagnac.pull", "pl.transitive_negative", []meaning.Role{"agent", "theme"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "theme", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+	}},
+	{"pl.ciac.cut.negative", "pl.ciac.cut", "pl.transitive_negative", []meaning.Role{"agent", "material"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "material", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+	}},
 	{"pl.wsiadac.board.motion", "pl.wsiadac.board", "pl.oblique", []meaning.Role{"passenger", "vehicle"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "passenger", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "oblique", Role: "vehicle", Required: true, GrammaticalFunction: "oblique", Case: "genitive", Adposition: "do"},

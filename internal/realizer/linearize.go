@@ -12,6 +12,7 @@ import (
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/morph"
+	"github.com/clickbytes/golingua/internal/provenance"
 	"github.com/clickbytes/golingua/internal/status"
 )
 
@@ -219,6 +220,9 @@ func linearizeWithNPProfiles(plan RealizationPlan, family construction.Construct
 		if spec.IsMainPredicate() && (form.NodeID != plan.NodeID || form.LexemeID != plan.LexemeID || form.SenseID != plan.SenseID) {
 			return LinearizedResult{}, linearizeError(status.OutcomeInvalid, "PREDICATE_SLOT_PLAN_MISMATCH", path, "predicate slot form must match the selected plan node, lexeme, and sense")
 		}
+		if form.VPAuxiliary != nil && (!spec.IsMainPredicate() || form.NodeID != plan.NodeID || form.VPAuxiliary.EventNodeID != plan.NodeID) {
+			return LinearizedResult{}, linearizeError(status.OutcomeInvalid, "VP_AUXILIARY_SLOT_PLAN_MISMATCH", path+".vp_auxiliary", "VP auxiliary form must attach to the exact main event predicate slot")
+		}
 		if spec.ModifierBinding != nil && form.NodeID == plan.NodeID {
 			return LinearizedResult{}, linearizeError(status.OutcomeInvalid, "MODIFIER_SLOT_PLAN_MISMATCH", path, "modifier form must identify its own state rather than the main predicate")
 		}
@@ -308,6 +312,41 @@ func linearizeWithNPProfiles(plan RealizationPlan, family construction.Construct
 		if token.Kind == construction.TokenSlot {
 			form, exists := forms[token.SlotID]
 			if !exists { // Only a declared optional slot may be absent.
+				continue
+			}
+			if form.VPAuxiliary != nil {
+				if err := validateLinearizedVPAuxiliary(plan, family, token.SlotID, form); err != nil {
+					return LinearizedResult{}, err
+				}
+				for _, outer := range compiled.Variant.Sequence {
+					if outer.Kind != construction.TokenTerminal {
+						continue
+					}
+					if strings.EqualFold(outer.Terminal, form.VPAuxiliary.Auxiliary.Surface) ||
+						(form.VPAuxiliary.Negation != nil && strings.EqualFold(outer.Terminal, form.VPAuxiliary.Negation.Surface)) {
+						return LinearizedResult{}, linearizeError(status.OutcomeInvalid, "VP_AUXILIARY_OUTER_DUPLICATE", "variant.sequence", "selected variant duplicates an auxiliary form or its scoped negation particle")
+					}
+				}
+				for otherID, other := range forms {
+					if otherID != token.SlotID && other.LexemeID == form.VPAuxiliary.Auxiliary.LexemeID {
+						return LinearizedResult{}, linearizeError(status.OutcomeInvalid, "VP_AUXILIARY_SLOT_DUPLICATE", "slots."+otherID, "the same auxiliary lexeme cannot also be emitted by another outer slot")
+					}
+				}
+				parts, err := linearizedVPAuxiliaryParts(plan, family, form)
+				if err != nil {
+					return LinearizedResult{}, err
+				}
+				for _, part := range parts {
+					if output.Len() > 0 && !lastWasOpening {
+						if err := appendSeparator(); err != nil {
+							return LinearizedResult{}, err
+						}
+					}
+					if err := appendPart(part); err != nil {
+						return LinearizedResult{}, err
+					}
+					lastWasOpening = false
+				}
 				continue
 			}
 			if output.Len() > 0 && !lastWasOpening {
@@ -418,6 +457,9 @@ func validateLinearizedNPForms(plan RealizationPlan, family construction.Constru
 		}
 		if start < 0 || start+len(np.OuterSequenceIndexes) > len(variant.Sequence) {
 			return nil, nil, linearizeError(status.OutcomeInvalid, "NP_FORM_OUTER_RANGE_INVALID", path+".outer_sequence_indexes", "NP form outer positions exceed the selected variant")
+		}
+		if np.EmbeddedDeterminer && start > 0 && variant.Sequence[start-1].Kind == construction.TokenTerminal && hasLinearizedNPDeterminerRule(phraseProfile, variant.Sequence[start-1].Terminal) {
+			return nil, nil, linearizeError(status.OutcomeInvalid, "NP_FORM_EMBEDDED_DETERMINER_DUPLICATE", path+".outer_sequence_indexes", "embedded determiner cannot duplicate a selected outer determiner terminal")
 		}
 		for offset, seqIndex := range np.OuterSequenceIndexes {
 			if seqIndex != start+offset || np.OuterTokens[offset].SequenceIndex != seqIndex || claimedIndexes[seqIndex] {
@@ -545,20 +587,22 @@ func validateNPFormParts(family construction.ConstructionFamily, variant constru
 			}
 			expectedOuterSlots[part.SlotForm.SlotID] = true
 		case "determiner":
-			if input.ID != "determiner-input" || input.Kind != construction.PhraseInputLexical || input.Required || part.SlotForm != nil || part.Kind != construction.PhraseInputLexical || terminalCount != 1 {
-				return linearizeError(status.OutcomeInvalid, "NP_FORM_DETERMINER_PART_MISMATCH", fmt.Sprintf("%s.parts[%d]", path, i), "determiner part must match one exact terminal claim")
+			if input.ID != "determiner-input" || input.Kind != construction.PhraseInputLexical || input.Required || part.SlotForm != nil || part.Kind != construction.PhraseInputLexical || (!np.EmbeddedDeterminer && terminalCount != 1) || (np.EmbeddedDeterminer && terminalCount != 0) {
+				return linearizeError(status.OutcomeInvalid, "NP_FORM_DETERMINER_PART_MISMATCH", fmt.Sprintf("%s.parts[%d]", path, i), "determiner part must match exactly one outer terminal or be explicitly embedded")
 			}
-			if part.TerminalProvenance != variant.Provenance {
-				return linearizeError(status.OutcomeInvalid, "NP_FORM_DETERMINER_PROVENANCE_MISMATCH", fmt.Sprintf("%s.parts[%d]", path, i), "determiner terminal must retain the selected variant provenance")
+			if (!np.EmbeddedDeterminer && part.TerminalProvenance != variant.Provenance) || (np.EmbeddedDeterminer && part.TerminalProvenance != (provenance.SourceRef{})) {
+				return linearizeError(status.OutcomeInvalid, "NP_FORM_DETERMINER_PROVENANCE_MISMATCH", fmt.Sprintf("%s.parts[%d]", path, i), "determiner provenance must match its outer terminal or remain absent for a phrase-profile form")
 			}
-			found := false
-			for _, token := range np.OuterTokens {
-				if token.Terminal == part.Surface && token.Terminal != "" {
-					found = true
+			if !np.EmbeddedDeterminer {
+				found := false
+				for _, token := range np.OuterTokens {
+					if token.Terminal == part.Surface && token.Terminal != "" {
+						found = true
+					}
 				}
-			}
-			if !found {
-				return linearizeError(status.OutcomeInvalid, "NP_FORM_DETERMINER_TERMINAL_MISMATCH", fmt.Sprintf("%s.parts[%d]", path, i), "determiner part has no exact outer terminal claim")
+				if !found {
+					return linearizeError(status.OutcomeInvalid, "NP_FORM_DETERMINER_TERMINAL_MISMATCH", fmt.Sprintf("%s.parts[%d]", path, i), "determiner part has no exact outer terminal claim")
+				}
 			}
 		default:
 			return linearizeError(status.OutcomeUnsupported, "NP_FORM_ROLE_UNSUPPORTED", fmt.Sprintf("%s.parts[%d]", path, i), "NP form contains an unsupported plan role")
@@ -572,17 +616,19 @@ func validateNPFormParts(family construction.ConstructionFamily, variant constru
 			return linearizeError(status.OutcomeInvalid, "NP_FORM_OUTER_SLOT_COVERAGE_MISMATCH", path+".outer_tokens", "outer slot claims omit a selected NP child slot")
 		}
 	}
-	if terminalCount > 1 || (terminalCount == 0 && partRoles["determiner"]) || (terminalCount == 1 && !partRoles["determiner"]) {
-		return linearizeError(status.OutcomeInvalid, "NP_FORM_DETERMINER_COVERAGE_MISMATCH", path+".outer_tokens", "determiner terminal and determiner part must be consumed exactly once")
+	if terminalCount > 1 || (terminalCount == 0 && partRoles["determiner"] != np.EmbeddedDeterminer) || (terminalCount == 1 && (!partRoles["determiner"] || np.EmbeddedDeterminer)) {
+		return linearizeError(status.OutcomeInvalid, "NP_FORM_DETERMINER_COVERAGE_MISMATCH", path+".outer_tokens", "determiner part must be backed by exactly one outer terminal or explicit embedded status")
 	}
 	outerIndex := 0
 	for _, role := range np.Plan.Plan.Order {
 		if role == "determiner" {
-			part := partByRole[role]
-			if outerIndex >= len(np.OuterTokens) || np.OuterTokens[outerIndex].Terminal != part.Surface || np.OuterTokens[outerIndex].SlotID != "" {
-				return linearizeError(status.OutcomeInvalid, "NP_FORM_DETERMINER_ORDER_MISMATCH", path+".outer_tokens", "determiner must occupy the first phrase position licensed by the NP plan")
+			if !np.EmbeddedDeterminer {
+				part := partByRole[role]
+				if outerIndex >= len(np.OuterTokens) || np.OuterTokens[outerIndex].Terminal != part.Surface || np.OuterTokens[outerIndex].SlotID != "" {
+					return linearizeError(status.OutcomeInvalid, "NP_FORM_DETERMINER_ORDER_MISMATCH", path+".outer_tokens", "determiner must occupy the first phrase position licensed by the NP plan")
+				}
+				outerIndex++
 			}
-			outerIndex++
 			continue
 		}
 		part := partByRole[role]
@@ -688,6 +734,15 @@ func findLinearizerSlot(family construction.ConstructionFamily, id string) *cons
 	return nil
 }
 
+func hasLinearizedNPDeterminerRule(profile construction.PhraseProfile, surface string) bool {
+	for _, rule := range profile.DeterminerForms {
+		if rule.Surface == surface {
+			return true
+		}
+	}
+	return false
+}
+
 func slotFeaturesCover(bundle features.FeatureBundle, values []features.FeatureValue) bool {
 	for _, expected := range bundle.Values {
 		found := false
@@ -702,6 +757,77 @@ func slotFeaturesCover(bundle features.FeatureBundle, values []features.FeatureV
 		}
 	}
 	return true
+}
+
+func validateLinearizedVPAuxiliary(plan RealizationPlan, family construction.ConstructionFamily, slotID string, form SlotForm) error {
+	auxiliary := form.VPAuxiliary
+	if auxiliary == nil || auxiliary.SlotID != slotID || auxiliary.EventNodeID != plan.NodeID || form.NodeID != plan.NodeID ||
+		auxiliary.Auxiliary.LexemeID.String() != "lexeme:en.do.aux" || auxiliary.Base.LexemeID != form.LexemeID ||
+		!validSlotSurface(auxiliary.Auxiliary.Surface) || !validSlotSurface(auxiliary.Base.Surface) {
+		return linearizeError(status.OutcomeInvalid, "VP_AUXILIARY_FORM_INVALID", "slots."+slotID+".vp_auxiliary", "auxiliary forms must retain the exact main event, slot, lexeme, and valid surfaces")
+	}
+	for _, item := range []struct {
+		role      string
+		generated VPAuxiliaryMorphForm
+	}{{"auxiliary", auxiliary.Auxiliary}, {"base", auxiliary.Base}} {
+		if err := item.generated.Provenance.Validate(); err != nil || len(item.generated.Trace) == 0 {
+			return linearizeError(status.OutcomeInvalid, "VP_AUXILIARY_TRACE_INVALID", "slots."+slotID+".vp_auxiliary."+item.role, "auxiliary and base forms require generated morphology trace and provenance")
+		}
+	}
+	if len(plan.Construction.Steps) == 0 {
+		if auxiliary.Negation != nil {
+			return linearizeError(status.OutcomeInvalid, "VP_NEGATION_WITHOUT_OPERATOR", "slots."+slotID+".vp_auxiliary.negation", "negative particle has no selected semantic operator")
+		}
+		return nil
+	}
+	if len(plan.Construction.Steps) != 1 || !explicitSurfaceNegation(plan, family) || auxiliary.Negation == nil {
+		return linearizeError(status.OutcomeUnsupported, "VP_AUXILIARY_OPERATOR_UNSUPPORTED", "plan.construction.steps", "VP auxiliary output supports only one exactly scoped negation operator")
+	}
+	operator := plan.Construction.Steps[0]
+	particle := auxiliary.Negation
+	if operator.SemanticScope.TargetNodeID != auxiliary.EventNodeID || operator.SemanticScope.ScopeNodeID == "" ||
+		particle.OperatorID != operator.ID || particle.ScopeNodeID != operator.SemanticScope.ScopeNodeID || particle.Provenance != operator.Provenance ||
+		!validSlotSurface(particle.Surface) || particle.Provenance.Validate() != nil {
+		return linearizeError(status.OutcomeInvalid, "VP_NEGATION_OPERATOR_MISMATCH", "slots."+slotID+".vp_auxiliary.negation", "particle must preserve the exact operator, event target, scope and source provenance")
+	}
+	class, err := classifyTerminal(particle.Surface)
+	if err != nil || class != terminalWord {
+		return linearizeError(status.OutcomeInvalid, "VP_NEGATION_PARTICLE_INVALID", "slots."+slotID+".vp_auxiliary.negation.surface", "scoped negation must be one valid word terminal")
+	}
+	return nil
+}
+
+func linearizedVPAuxiliaryParts(plan RealizationPlan, family construction.ConstructionFamily, form SlotForm) ([]LinearizedPart, error) {
+	if err := validateLinearizedVPAuxiliary(plan, family, form.SlotID, form); err != nil {
+		return nil, err
+	}
+	auxiliary := form.VPAuxiliary
+	parts := make([]LinearizedPart, 0, 3)
+	auxiliaryPart := LinearizedPart{
+		Text: auxiliary.Auxiliary.Surface, Kind: SegmentLexical, SourceID: auxiliary.Auxiliary.Provenance.ID,
+		NodeID: string(auxiliary.EventNodeID), LexemeID: auxiliary.Auxiliary.LexemeID.String(), ConstructionID: plan.FamilyID.String(),
+		MorphTrace: append([]morph.GenerationTraceStep(nil), auxiliary.Auxiliary.Trace...),
+	}
+	if len(auxiliary.Auxiliary.Trace) > 0 {
+		auxiliaryPart.ProcedureID = auxiliary.Auxiliary.Trace[len(auxiliary.Auxiliary.Trace)-1].ProcedureID
+	}
+	parts = append(parts, auxiliaryPart)
+	if auxiliary.Negation != nil {
+		parts = append(parts, LinearizedPart{
+			Text: auxiliary.Negation.Surface, Kind: SegmentTerminal, SourceID: auxiliary.Negation.Provenance.ID,
+			NodeID: string(auxiliary.Negation.ScopeNodeID), ConstructionID: plan.FamilyID.String(),
+		})
+	}
+	basePart := LinearizedPart{
+		Text: auxiliary.Base.Surface, Kind: SegmentLexical, SourceID: auxiliary.Base.Provenance.ID,
+		NodeID: string(auxiliary.EventNodeID), LexemeID: auxiliary.Base.LexemeID.String(), SenseID: form.SenseID.String(),
+		ConstructionID: plan.FamilyID.String(), MorphTrace: append([]morph.GenerationTraceStep(nil), auxiliary.Base.Trace...),
+	}
+	if len(auxiliary.Base.Trace) > 0 {
+		basePart.ProcedureID = auxiliary.Base.Trace[len(auxiliary.Base.Trace)-1].ProcedureID
+	}
+	parts = append(parts, basePart)
+	return parts, nil
 }
 
 func linearizedNPPart(plan RealizationPlan, np NPForm, part NPFormPart) (LinearizedPart, error) {

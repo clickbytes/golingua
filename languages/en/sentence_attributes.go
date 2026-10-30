@@ -238,8 +238,16 @@ func englishPredicateEvidenceConsistent(source semantic.MeaningCandidate, predic
 func englishIdentificationAttributesAllowed(source semantic.MeaningCandidate, predicateID meaning.NodeID, role string, referentID meaning.NodeID, coreID ids.ConceptID) bool {
 	predicate, predicateExists := englishMeaningNode(source, predicateID)
 	referent, referentExists := englishMeaningNode(source, referentID)
-	if !predicateExists || !referentExists || referent.Kind != meaning.KindReferent || predicate.TemporalFrame == meaning.TemporalFramePast {
+	if !predicateExists || !referentExists || referent.Kind != meaning.KindReferent {
 		return false
+	}
+	if predicate.TemporalFrame == meaning.TemporalFramePast {
+		if role != "bearer" {
+			return false
+		}
+		if _, attribution := englishAttributionForConcept(string(predicate.Concept)); !attribution {
+			return false
+		}
 	}
 	return englishFrameEvidenceConsistent(source, predicateID, coreID) &&
 		englishMultiplicityEvidenceConsistent(source, predicateID, meaning.Role(role), referent, coreID, true)

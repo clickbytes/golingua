@@ -1,0 +1,662 @@
+{
+  "schema_version": 1,
+  "language": "pl",
+  "family": {
+    "id": "construction:pl.attribution_negative",
+    "language": "pl",
+    "slot_specs": [
+      {
+        "id": "bearer",
+        "position": 0,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required",
+        "case": "nominative"
+      },
+      {
+        "id": "predicate",
+        "position": 1,
+        "category": "AP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      }
+    ],
+    "constraints": [
+      {
+        "id": "bearer_predicate_agreement",
+        "kind": "agreement",
+        "strength": "hard",
+        "controller_slot": "bearer",
+        "target_slot": "predicate",
+        "features": [
+          "number",
+          "agreement_gender",
+          "case"
+        ]
+      }
+    ],
+    "operators": [
+      "negate"
+    ],
+    "capabilities": [
+      "negation-negated",
+      "negation",
+      "surface_negation"
+    ],
+    "provenance": {
+      "id": "golingua-pl-negative-attribution-437",
+      "path": "languages/pl/constructions/attribution_negative.json",
+      "version": "2026-10-29",
+      "license": "internal",
+      "author": "Codex by owner delegation"
+    }
+  },
+  "variants": [
+    {
+      "id": "construction:pl.attribution_negative.singular.present.masculine_animal",
+      "family_id": "construction:pl.attribution_negative",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "nie"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "jest"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "gender",
+          "value": "masculine_animal"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-negative-attribution-437",
+        "path": "languages/pl/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attribution_negative.singular.present.masculine_inanimate",
+      "family_id": "construction:pl.attribution_negative",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "nie"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "jest"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "gender",
+          "value": "masculine_inanimate"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-negative-attribution-437",
+        "path": "languages/pl/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attribution_negative.singular.present.feminine",
+      "family_id": "construction:pl.attribution_negative",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "nie"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "jest"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "gender",
+          "value": "feminine"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-negative-attribution-437",
+        "path": "languages/pl/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attribution_negative.singular.present.neuter",
+      "family_id": "construction:pl.attribution_negative",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "nie"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "jest"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "gender",
+          "value": "neuter"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-negative-attribution-437",
+        "path": "languages/pl/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attribution_negative.singular.past.masculine_animal",
+      "family_id": "construction:pl.attribution_negative",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "nie"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "był"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "gender",
+          "value": "masculine_animal"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-negative-attribution-437",
+        "path": "languages/pl/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attribution_negative.singular.past.masculine_inanimate",
+      "family_id": "construction:pl.attribution_negative",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "nie"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "był"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "gender",
+          "value": "masculine_inanimate"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-negative-attribution-437",
+        "path": "languages/pl/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attribution_negative.singular.past.feminine",
+      "family_id": "construction:pl.attribution_negative",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "nie"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "była"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "gender",
+          "value": "feminine"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-negative-attribution-437",
+        "path": "languages/pl/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attribution_negative.singular.past.neuter",
+      "family_id": "construction:pl.attribution_negative",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "nie"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "było"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "number",
+          "value": "singular"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "gender",
+          "value": "neuter"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-negative-attribution-437",
+        "path": "languages/pl/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attribution_negative.plural.present.masculine_personal",
+      "family_id": "construction:pl.attribution_negative",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "nie"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "są"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "number",
+          "value": "plural"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "gender",
+          "value": "masculine_personal"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-negative-attribution-437",
+        "path": "languages/pl/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attribution_negative.plural.present.non_masculine_personal",
+      "family_id": "construction:pl.attribution_negative",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "nie"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "są"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "number",
+          "value": "plural"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "agreement_gender",
+          "value": "non_masculine_personal"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-negative-attribution-437",
+        "path": "languages/pl/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attribution_negative.plural.past.masculine_personal",
+      "family_id": "construction:pl.attribution_negative",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "nie"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "byli"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "number",
+          "value": "plural"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "gender",
+          "value": "masculine_personal"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-negative-attribution-437",
+        "path": "languages/pl/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:pl.attribution_negative.plural.past.non_masculine_personal",
+      "family_id": "construction:pl.attribution_negative",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "nie"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "były"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "number",
+          "value": "plural"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "agreement_gender",
+          "value": "non_masculine_personal"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-pl-negative-attribution-437",
+        "path": "languages/pl/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    }
+  ]
+}

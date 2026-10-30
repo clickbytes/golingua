@@ -17,9 +17,6 @@ type polishAttributedSeeingGraph struct {
 }
 
 func polishAttributedSeeingShape(source semantic.MeaningCandidate) (polishAttributedSeeingGraph, bool) {
-	if _, _, _, ok := polishAttributedPredicateBinding(source); !ok {
-		return polishAttributedSeeingGraph{}, false
-	}
 	if source.Meaning == nil || meaning.ValidateStructure(*source.Meaning, meaning.DefaultBudget()) != nil {
 		return polishAttributedSeeingGraph{}, false
 	}
@@ -52,7 +49,10 @@ func polishAttributedSeeingShape(source semantic.MeaningCandidate) (polishAttrib
 			return polishAttributedSeeingGraph{}, false
 		}
 	}
-	if shape.event.ID == "" || shape.event.Kind != meaning.KindEvent || shape.event.TemporalFrame != meaning.TemporalFramePresent ||
+	pastAttributedNegative := shape.event.TemporalFrame == meaning.TemporalFramePast && shape.scope.ID != "" &&
+		shape.scope.Operator == meaning.OperatorNegation && shape.scope.Target == shape.event.ID && shape.event.Concept == "concept:seeing"
+	if shape.event.ID == "" || shape.event.Kind != meaning.KindEvent || (shape.event.Concept != "concept:seeing" && shape.event.Concept != "concept:hearing") ||
+		(shape.event.TemporalFrame != meaning.TemporalFramePresent && !pastAttributedNegative) ||
 		len(referents) != 2 || len(shape.properties) < 1 || len(shape.properties) > 2 || len(shape.event.Participants) != 2 {
 		return polishAttributedSeeingGraph{}, false
 	}
@@ -118,7 +118,7 @@ func polishAttributedSeeingShape(source semantic.MeaningCandidate) (polishAttrib
 	return shape, true
 }
 
-func polishAttributedPredicateBinding(source semantic.MeaningCandidate) (sense, frame, core string, ok bool) {
+func polishAttributedPredicateBinding(source semantic.MeaningCandidate, candidate realizer.TargetCandidate) (sense, frame, core string, ok bool) {
 	if source.Meaning == nil {
 		return "", "", "", false
 	}
@@ -128,6 +128,18 @@ func polishAttributedPredicateBinding(source semantic.MeaningCandidate) (sense, 
 		}
 		switch node.Concept {
 		case "concept:seeing":
+			if candidate.Family.Family.ID.String() == "construction:pl.attributed_seeing_object_negative" &&
+				candidate.Sense.ID.String() == "sense:pl.widziec.visual" && candidate.TransferBinding.CoreRef.String() == "concept:seeing" &&
+				candidate.Frame.ID == "pl.widziec.visual.attributed_negative" && candidate.ConstructionBinding.Approved &&
+				candidate.ConstructionBinding.SenseID == candidate.Sense.ID && candidate.ConstructionBinding.ValencyFrameID == candidate.Frame.ID &&
+				candidate.ConstructionBinding.FamilyID == candidate.Family.Family.ID &&
+				candidate.ConstructionBinding.VariantID.String() == candidate.CompiledVariant.Variant.ID.String() {
+				for _, scope := range source.Meaning.Nodes {
+					if scope.Kind == meaning.KindScope && scope.Operator == meaning.OperatorNegation && scope.Target == node.ID {
+						return "sense:pl.widziec.visual", "pl.widziec.visual.attributed_negative", "concept:seeing", true
+					}
+				}
+			}
 			if _, event, _, negated := polishNegatedPresent(source); negated && event.ID == node.ID {
 				return "sense:pl.widziec.visual", "pl.widziec.visual.attributed_negative", "concept:seeing", true
 			}
@@ -707,7 +719,7 @@ func polishAttributedSeeingMainCandidate(source semantic.MeaningCandidate, candi
 	if !ok || !polishAttributedSeeingContextsValid(source) || candidate.NodeID != shape.event.ID || candidate.Kind != meaning.KindEvent || candidate.Outcome != status.OutcomeOK {
 		return false
 	}
-	sense, frame, core, supportedPredicate := polishAttributedPredicateBinding(source)
+	sense, frame, core, supportedPredicate := polishAttributedPredicateBinding(source, candidate)
 	if !supportedPredicate || candidate.Sense.ID.String() != sense || string(candidate.Frame.ID) != frame ||
 		candidate.TransferBinding.CoreRef.String() != core || !polishAttributedSeeingFamily(candidate) || !polishAttributedSeeingVariant(source, candidate, shape, candidates) ||
 		!realizer.CoversLexicalMeaning(*source.Meaning, candidate.NodeID, candidate.Family.Family) {

@@ -20,9 +20,19 @@ var drinkingMorphSource = provenance.SourceRef{
 	Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
 }
 
+var sleepingMorphSource = provenance.SourceRef{
+	ID: "wsjp-pl-spac-past", URI: "https://wsjp.pl/haslo/podglad/3615/spac/4703056/w-nocy",
+	Version: "2026-10-29", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
+}
+
 var givingPerfectivePastSource = provenance.SourceRef{
 	ID: "wsjp-pl-dac-past", URI: "https://wsjp.pl/haslo/podglad/6368/dac",
 	Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
+}
+
+var givingImperfectivePastSource = provenance.SourceRef{
+	ID: "golingua-pl-dawac-past-authored", Path: "languages/pl/morphology.go",
+	Version: "2026-10-29", License: "internal", Author: "Codex by owner delegation",
 }
 
 var helpingMorphSource = provenance.SourceRef{
@@ -45,8 +55,18 @@ var cuttingMorphSource = provenance.SourceRef{
 	Version: "2026-10-29", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
 }
 
+var cuttingPastMorphSource = provenance.SourceRef{
+	ID: "wsjp-pl-ciac-past", URI: "https://wsjp.pl/haslo/podglad/1652/ciac/5013763/szabla",
+	Version: "2026-10-29", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
+}
+
 var conversingMorphSource = provenance.SourceRef{
 	ID: "wsjp-pl-rozmawiac-present", URI: "https://wsjp.pl/haslo/podglad/21480/rozmawiac",
+	Version: "2026-10-29", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
+}
+
+var pushingPastMorphSource = provenance.SourceRef{
+	ID: "wsjp-pl-pchac-wozek-past", URI: "https://wsjp.pl/haslo/podglad/28194/pchac/2702490/wozek",
 	Version: "2026-10-29", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
 }
 
@@ -60,23 +80,54 @@ func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm 
 	result = append(result, identificationParadigms(profile)...)
 	result = append(result, polishPresentThirdPersonParadigms(profile)...)
 	result = append(result, polishDaćPastParadigm(profile))
+	result = append(result, polishKupicPastParadigm(profile))
 	return append(result, polishPersonalParadigms(profile)...)
+}
+
+func polishKupicPastParadigm(profile *features.LanguageFeatureProfile) morph.Paradigm {
+	const id = "pl_verb_kupic_past_3sg_3pl"
+	paradigm := morph.Paradigm{SchemaVersion: morph.ParadigmSchemaVersion, ID: morph.ParadigmID(id), Language: "pl", ProfileVersion: profile.Version(), POS: "verb",
+		PrincipalPartRequirements: []morph.PrincipalPartRequirement{{StemID: "pl_verb_kupic_past_stem", PartID: "past_stem", Required: true}}}
+	for _, cell := range []struct{ id, number, gender, ending string }{
+		{"past_3sg_masc", "singular", "masculine_personal", "ł"}, {"past_3sg_fem", "singular", "feminine", "ła"}, {"past_3sg_neut", "singular", "neuter", "ło"},
+		{"past_3pl_masc_personal", "plural", "masculine_personal", "li"}, {"past_3pl_non_masc_personal", "plural", "non_masculine_personal", "ły"},
+	} {
+		cellID := morph.CellID(cell.id)
+		paradigm.Cells = append(paradigm.Cells, morph.ParadigmCell{ID: cellID, Features: []features.FeatureValue{
+			{Feature: "aspect", State: features.StateKnown, Value: "perfective"}, {Feature: "mood", State: features.StateKnown, Value: "indicative"},
+			{Feature: "gender", State: features.StateKnown, Value: features.FeatureValueID(cell.gender)}, {Feature: "number", State: features.StateKnown, Value: features.FeatureValueID(cell.number)},
+			{Feature: "person", State: features.StateKnown, Value: "third"}, {Feature: "tense", State: features.StateKnown, Value: "past"}, {Feature: "verb_form", State: features.StateKnown, Value: "finite"}, {Feature: "voice", State: features.StateKnown, Value: "active"},
+		}})
+		paradigm.Rules = append(paradigm.Rules, morph.CellRule{CellID: cellID, ProcedureID: "procedure:" + id + "." + cell.id, Provenance: provenance.SourceRef{ID: "golingua-pl-kupic-past-authored", Path: "languages/pl/morphology.go", Version: "2026-10-29", License: "internal", Author: "Codex by owner delegation"}, Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "pl_verb_kupic_past_stem"}, {Kind: procedure.OperationAppend, Text: cell.ending}}})
+	}
+	return paradigm
 }
 
 func polishDaćPastParadigm(profile *features.LanguageFeatureProfile) morph.Paradigm {
 	const id = "pl_verb_dac_past_3sg_masculine"
-	return morph.Paradigm{
+	paradigm := morph.Paradigm{
 		SchemaVersion: morph.ParadigmSchemaVersion, ID: id, Language: "pl", ProfileVersion: profile.Version(), POS: "verb",
 		PrincipalPartRequirements: []morph.PrincipalPartRequirement{{StemID: "pl_verb_dac_past_stem", PartID: "past_stem", Required: true}},
-		Cells: []morph.ParadigmCell{{ID: "past_3sg_masculine_personal", Features: []features.FeatureValue{
+		Cells:                     []morph.ParadigmCell{},
+		Rules:                     []morph.CellRule{},
+	}
+	for _, cell := range []struct{ id, number, gender, ending string }{
+		{"past_3sg_masculine_personal", "singular", "masculine_personal", "ł"},
+		{"past_3sg_feminine", "singular", "feminine", "ła"},
+		{"past_3sg_neuter", "singular", "neuter", "ło"},
+		{"past_3pl_masculine_personal", "plural", "masculine_personal", "li"},
+		{"past_3pl_non_masculine_personal", "plural", "non_masculine_personal", "ły"},
+	} {
+		paradigm.Cells = append(paradigm.Cells, morph.ParadigmCell{ID: morph.CellID(cell.id), Features: []features.FeatureValue{
 			{Feature: "aspect", State: features.StateKnown, Value: "perfective"}, {Feature: "mood", State: features.StateKnown, Value: "indicative"},
-			{Feature: "gender", State: features.StateKnown, Value: "masculine_personal"}, {Feature: "number", State: features.StateKnown, Value: "singular"},
+			{Feature: "gender", State: features.StateKnown, Value: features.FeatureValueID(cell.gender)}, {Feature: "number", State: features.StateKnown, Value: features.FeatureValueID(cell.number)},
 			{Feature: "person", State: features.StateKnown, Value: "third"}, {Feature: "tense", State: features.StateKnown, Value: "past"},
 			{Feature: "verb_form", State: features.StateKnown, Value: "finite"}, {Feature: "voice", State: features.StateKnown, Value: "active"},
-		}}},
-		Rules: []morph.CellRule{{CellID: "past_3sg_masculine_personal", ProcedureID: "procedure:" + id + ".past_3sg_masculine_personal", Provenance: givingPerfectivePastSource,
-			Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "pl_verb_dac_past_stem"}, {Kind: procedure.OperationAppend, Text: "ł"}}}},
+		}})
+		paradigm.Rules = append(paradigm.Rules, morph.CellRule{CellID: morph.CellID(cell.id), ProcedureID: "procedure:" + id + "." + cell.id, Provenance: givingPerfectivePastSource,
+			Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "pl_verb_dac_past_stem"}, {Kind: procedure.OperationAppend, Text: cell.ending}}})
 	}
+	return paradigm
 }
 
 func polishPresentThirdPersonParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm {
@@ -97,7 +148,7 @@ func polishPresentThirdPersonParadigms(profile *features.LanguageFeatureProfile)
 		{"pl_verb_ciac_present_3sg_3pl", "tnie", "tną", provenance.SourceRef{ID: "wsjp-pl-ciac", URI: "https://wsjp.pl/haslo/podglad/1652/ciac/5013762/na-czesci", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
 		{"pl_verb_kroic_present_3sg_3pl", "kroi", "kroją", cuttingMorphSource},
 		{"pl_verb_rozmawiac_present_3sg_3pl", "rozmawia", "rozmawiają", conversingMorphSource},
-		{"pl_verb_skladac_present_3sg_3pl", "składa", "składają", provenance.SourceRef{ID: "wsjp-pl-skladac", URI: "https://wsjp.pl/haslo/podglad/23658/skladac/5027088/parasol", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
+		{"pl_verb_skladac_present_3sg_3pl", "składa", "składają", provenance.SourceRef{ID: "wsjp-pl-skladac-model", URI: "https://wsjp.pl/haslo/podglad/23658/skladac/5027090/model", Version: "2026-10-29", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
 		{"pl_verb_drzec_present_3sg_3pl", "drze", "drą", provenance.SourceRef{ID: "wsjp-pl-drzec", URI: "https://wsjp.pl/haslo/podglad/36741/drzec/4891089/kartke", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
 		{"pl_verb_rozdzierac_present_3sg_3pl", "rozdziera", "rozdzierają", provenance.SourceRef{ID: "dobryslownik-pl-rozdzierac", URI: "https://dobryslownik.pl/slowo/rozdziera%C4%87/48819/", Version: "2026-10-28", License: "unknown", Author: "Dobry słownik języka polskiego i poradnia językowa"}},
 		{"pl_verb_spac_present_3sg_3pl", "śpi", "śpią", provenance.SourceRef{ID: "wsjp-pl-spac", URI: "https://wsjp.pl/haslo/podglad/3615/spac/4703056/w-nocy", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
@@ -136,6 +187,144 @@ func polishPresentThirdPersonParadigms(profile *features.LanguageFeatureProfile)
 				{Feature: "tense", State: features.StateKnown, Value: "present"}, {Feature: "verb_form", State: features.StateKnown, Value: "finite"}, {Feature: "voice", State: features.StateKnown, Value: "active"},
 			}})
 			paradigm.Rules = append(paradigm.Rules, morph.CellRule{CellID: morph.CellID("present_indicative_active_imperfective_" + cell.id), ProcedureID: "procedure:" + item.id + ".present_" + cell.number, Provenance: item.source, Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: stemID}}})
+		}
+		if item.id == "pl_verb_pic_present_3sg_3pl" || item.id == "pl_verb_spac_present_3sg_3pl" || item.id == "pl_verb_oddychac_present_3sg_3pl" || item.id == "pl_verb_pisac_present_3sg_3pl" || item.id == "pl_verb_dawac_present_3sg_3pl" || item.id == "pl_verb_kupowac_present_3sg_3pl" || item.id == "pl_verb_otwierac_obiekt_present_3sg_3pl" || item.id == "pl_verb_zamykac_obiekt_present_3sg_3pl" || item.id == "pl_verb_lubic_present_3sg_3pl" || item.id == "pl_verb_trzymac_present_3sg_3pl" || item.id == "pl_verb_pchac_present_3sg_3pl" || item.id == "pl_verb_ciagnac_present_3sg_3pl" || item.id == "pl_verb_ciac_present_3sg_3pl" || item.id == "pl_verb_skladac_present_3sg_3pl" || item.id == "pl_verb_biec_present_3sg_3pl" || item.id == "pl_verb_rozdzierac_present_3sg_3pl" || item.id == "pl_verb_kichac_present_3sg_3pl" || item.id == "pl_verb_kaszlec_present_3sg_3pl" || item.id == "pl_verb_ogladac_present_3sg_3pl" || item.id == "pl_verb_sprzedawac_present_3sg_3pl" {
+			stemID := procedure.StemID(item.id + "_past_stem")
+			paradigm.PrincipalPartRequirements = append(paradigm.PrincipalPartRequirements, morph.PrincipalPartRequirement{StemID: stemID, PartID: "past_stem", Required: true})
+			if item.id == "pl_verb_kaszlec_present_3sg_3pl" {
+				paradigm.PrincipalPartRequirements = append(paradigm.PrincipalPartRequirements, morph.PrincipalPartRequirement{StemID: procedure.StemID(item.id + "_past_masc_plural_stem"), PartID: "past_masc_plural_stem", Required: true})
+			}
+			for _, cell := range []struct{ id, number, gender, ending string }{
+				{"past_3sg_masc", "singular", "masculine_personal", "ł"},
+				{"past_3sg_fem", "singular", "feminine", "ła"},
+				{"past_3sg_neut", "singular", "neuter", "ło"},
+				{"past_3pl_masc_personal", "plural", "masculine_personal", "li"},
+				{"past_3pl_non_masc_personal", "plural", "non_masculine_personal", "ły"},
+			} {
+				if item.id == "pl_verb_ciagnac_present_3sg_3pl" {
+					switch cell.id {
+					case "past_3sg_masc":
+						cell.ending = "ął"
+					case "past_3sg_fem":
+						cell.ending = "ęła"
+					case "past_3sg_neut":
+						cell.ending = "ęło"
+					case "past_3pl_masc_personal":
+						cell.ending = "ęli"
+					case "past_3pl_non_masc_personal":
+						cell.ending = "ęły"
+					}
+				}
+				if item.id == "pl_verb_ciac_present_3sg_3pl" {
+					switch cell.id {
+					case "past_3sg_masc":
+						cell.ending = "ął"
+					case "past_3sg_fem":
+						cell.ending = "ęła"
+					case "past_3sg_neut":
+						cell.ending = "ęło"
+					case "past_3pl_masc_personal":
+						cell.ending = "ęli"
+					case "past_3pl_non_masc_personal":
+						cell.ending = "ęły"
+					}
+				}
+				cellID := morph.CellID(cell.id)
+				paradigm.Cells = append(paradigm.Cells, morph.ParadigmCell{ID: cellID, Features: []features.FeatureValue{
+					{Feature: "aspect", State: features.StateKnown, Value: "imperfective"}, {Feature: "mood", State: features.StateKnown, Value: "indicative"},
+					{Feature: "number", State: features.StateKnown, Value: features.FeatureValueID(cell.number)}, {Feature: "person", State: features.StateKnown, Value: "third"},
+					{Feature: "gender", State: features.StateKnown, Value: features.FeatureValueID(cell.gender)}, {Feature: "tense", State: features.StateKnown, Value: "past"},
+					{Feature: "verb_form", State: features.StateKnown, Value: "finite"}, {Feature: "voice", State: features.StateKnown, Value: "active"},
+				}})
+				cellSource := drinkingMorphSource
+				if item.id == "pl_verb_spac_present_3sg_3pl" {
+					cellSource = sleepingMorphSource
+				} else if item.id == "pl_verb_oddychac_present_3sg_3pl" {
+					cellSource = item.source
+				} else if item.id == "pl_verb_pisac_present_3sg_3pl" {
+					cellSource = provenance.SourceRef{ID: "wsjp-pl-pisac", URI: "https://wsjp.pl/haslo/podglad/9846/pisac/3960164/do-kolegi", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}
+				} else if item.id == "pl_verb_dawac_present_3sg_3pl" {
+					cellSource = givingImperfectivePastSource
+				} else if item.id == "pl_verb_kupowac_present_3sg_3pl" {
+					cellSource = provenance.SourceRef{ID: "golingua-pl-kupowac-past-authored", Path: "languages/pl/morphology.go", Version: "2026-10-29", License: "internal", Author: "Codex by owner delegation"}
+				} else if item.id == "pl_verb_otwierac_obiekt_present_3sg_3pl" || item.id == "pl_verb_zamykac_obiekt_present_3sg_3pl" {
+					cellSource = item.source
+				} else if item.id == "pl_verb_lubic_present_3sg_3pl" || item.id == "pl_verb_trzymac_present_3sg_3pl" {
+					cellSource = item.source
+				} else if item.id == "pl_verb_pchac_present_3sg_3pl" {
+					cellSource = pushingPastMorphSource
+				} else if item.id == "pl_verb_ciagnac_present_3sg_3pl" {
+					cellSource = item.source
+				} else if item.id == "pl_verb_ciac_present_3sg_3pl" {
+					cellSource = cuttingPastMorphSource
+				} else if item.id == "pl_verb_rozdzierac_present_3sg_3pl" {
+					cellSource = item.source
+				} else if item.id == "pl_verb_ogladac_present_3sg_3pl" {
+					cellSource = provenance.SourceRef{ID: "golingua-pl-ogladac-past-authored", Path: "languages/pl/morphology.go", Version: "2026-10-30", License: "internal", Author: "Codex by owner delegation"}
+				} else if item.id == "pl_verb_sprzedawac_present_3sg_3pl" {
+					cellSource = provenance.SourceRef{ID: "golingua-pl-sprzedawac-past-authored", Path: "languages/pl/morphology.go", Version: "2026-10-30", License: "internal", Author: "Codex by owner delegation"}
+				} else if item.id == "pl_verb_kichac_present_3sg_3pl" || item.id == "pl_verb_kaszlec_present_3sg_3pl" {
+					cellSource = item.source
+				}
+				if item.id == "pl_verb_skladac_present_3sg_3pl" {
+					cellSource = item.source
+				}
+				if item.id == "pl_verb_biec_present_3sg_3pl" {
+					cellSource = provenance.SourceRef{ID: "wsjp-pl-biec-motion", URI: "https://wsjp.pl/haslo/podglad/25072/biec/3986428/po-schodach", Version: "2026-10-29", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}
+				}
+				cellStemID := stemID
+				if item.id == "pl_verb_kaszlec_present_3sg_3pl" && cell.id == "past_3pl_masc_personal" {
+					cellStemID = procedure.StemID(item.id + "_past_masc_plural_stem")
+				}
+				paradigm.Rules = append(paradigm.Rules, morph.CellRule{CellID: cellID, ProcedureID: "procedure:" + item.id + "." + cell.id, Provenance: cellSource,
+					Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: cellStemID}, {Kind: procedure.OperationAppend, Text: cell.ending}}})
+			}
+		}
+		if item.id == "pl_verb_niesc_present_3sg_3pl" {
+			for _, stem := range []struct{ partID, form string }{{"past_masc_stem", "nió"}, {"past_stem", "nios"}, {"past_masc_plural_stem", "nie"}} {
+				stemID := procedure.StemID(item.id + "_" + stem.partID)
+				paradigm.PrincipalPartRequirements = append(paradigm.PrincipalPartRequirements, morph.PrincipalPartRequirement{StemID: stemID, PartID: morph.PrincipalPartID(stem.partID), Required: true})
+			}
+			for _, cell := range []struct{ id, number, gender, partID, ending string }{
+				{"past_3sg_masc", "singular", "masculine_personal", "past_masc_stem", "sł"},
+				{"past_3sg_fem", "singular", "feminine", "past_stem", "ła"},
+				{"past_3sg_neut", "singular", "neuter", "past_stem", "ło"},
+				{"past_3pl_masc_personal", "plural", "masculine_personal", "past_masc_plural_stem", "śli"},
+				{"past_3pl_non_masc_personal", "plural", "non_masculine_personal", "past_stem", "ły"},
+			} {
+				cellID := morph.CellID(cell.id)
+				paradigm.Cells = append(paradigm.Cells, morph.ParadigmCell{ID: cellID, Features: []features.FeatureValue{
+					{Feature: "aspect", State: features.StateKnown, Value: "imperfective"}, {Feature: "mood", State: features.StateKnown, Value: "indicative"},
+					{Feature: "number", State: features.StateKnown, Value: features.FeatureValueID(cell.number)}, {Feature: "person", State: features.StateKnown, Value: "third"},
+					{Feature: "gender", State: features.StateKnown, Value: features.FeatureValueID(cell.gender)}, {Feature: "tense", State: features.StateKnown, Value: "past"},
+					{Feature: "verb_form", State: features.StateKnown, Value: "finite"}, {Feature: "voice", State: features.StateKnown, Value: "active"},
+				}})
+				stemID := procedure.StemID(item.id + "_" + cell.partID)
+				paradigm.Rules = append(paradigm.Rules, morph.CellRule{CellID: cellID, ProcedureID: "procedure:" + item.id + "." + cell.id, Provenance: item.source, Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: stemID}, {Kind: procedure.OperationAppend, Text: cell.ending}}})
+			}
+		}
+		if item.id == "pl_verb_jesc_present_3sg_3pl" {
+			for _, cell := range []struct {
+				partID string
+				forms  []struct{ id, number, gender, ending string }
+			}{
+				{"past_singular_stem", []struct{ id, number, gender, ending string }{{"past_3sg_masc", "singular", "masculine_personal", "ł"}, {"past_3sg_fem", "singular", "feminine", "ła"}, {"past_3sg_neut", "singular", "neuter", "ło"}}},
+				{"past_pl_masc", []struct{ id, number, gender, ending string }{{"past_3pl_masc_personal", "plural", "masculine_personal", "li"}}},
+				{"past_pl_nonmasc", []struct{ id, number, gender, ending string }{{"past_3pl_non_masc_personal", "plural", "non_masculine_personal", "ły"}}},
+			} {
+				stemID := procedure.StemID(item.id + "_" + cell.partID)
+				paradigm.PrincipalPartRequirements = append(paradigm.PrincipalPartRequirements, morph.PrincipalPartRequirement{StemID: stemID, PartID: morph.PrincipalPartID(cell.partID), Required: true})
+				for _, form := range cell.forms {
+					cellID := morph.CellID(form.id)
+					paradigm.Cells = append(paradigm.Cells, morph.ParadigmCell{ID: cellID, Features: []features.FeatureValue{
+						{Feature: "aspect", State: features.StateKnown, Value: "imperfective"}, {Feature: "mood", State: features.StateKnown, Value: "indicative"},
+						{Feature: "number", State: features.StateKnown, Value: features.FeatureValueID(form.number)}, {Feature: "person", State: features.StateKnown, Value: "third"},
+						{Feature: "gender", State: features.StateKnown, Value: features.FeatureValueID(form.gender)}, {Feature: "tense", State: features.StateKnown, Value: "past"},
+						{Feature: "verb_form", State: features.StateKnown, Value: "finite"}, {Feature: "voice", State: features.StateKnown, Value: "active"},
+					}})
+					paradigm.Rules = append(paradigm.Rules, morph.CellRule{CellID: cellID, ProcedureID: "procedure:" + item.id + "." + form.id, Provenance: eatingDrinkingMorphSource, Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: stemID}, {Kind: procedure.OperationAppend, Text: form.ending}}})
+				}
+			}
 		}
 		result = append(result, paradigm)
 	}
@@ -176,6 +365,7 @@ func polishPresentThirdPersonMorphRecords(lexemes []lexicon.MorphLexeme) ([]lexe
 		"lexeme:pl.isc.v":             {"pl_verb_isc_present_3sg_3pl", "idzie", "idą"},
 		"lexeme:pl.dawac.v":           {"pl_verb_dawac_present_3sg_3pl", "daje", "dają"},
 		"lexeme:pl.kupowac.v":         {"pl_verb_kupowac_present_3sg_3pl", "kupuje", "kupują"},
+		"lexeme:pl.kupic.v":           {"pl_verb_kupic_past_3sg_3pl", "kupuje", "kupują"},
 		"lexeme:pl.sprzedawac.v":      {"pl_verb_sprzedawac_present_3sg_3pl", "sprzedaje", "sprzedają"},
 		"lexeme:pl.lubic.v":           {"pl_verb_lubic_present_3sg_3pl", "lubi", "lubią"},
 		"lexeme:pl.ogladac.v":         {"pl_verb_ogladac_present_3sg_3pl", "ogląda", "oglądają"},
@@ -192,6 +382,83 @@ func polishPresentThirdPersonMorphRecords(lexemes []lexicon.MorphLexeme) ([]lexe
 			{ID: "present_3sg_form", Form: formsForLexeme.singular},
 			{ID: "present_3pl_form", Form: formsForLexeme.plural},
 		}}
+		if lexeme.ID.String() == "lexeme:pl.pic.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "pi"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.otwierac_obiekt.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "otwiera"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.zamykac_obiekt.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "zamyka"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.dawac.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "dawa"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.kupowac.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "kupowa"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.kupic.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "kupi"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.spac.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "spa"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.oddychac.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "oddycha"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.pisac.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "pisa"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.lubic.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "lubi"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.trzymac.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "trzyma"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.niesc.v" {
+			principalParts.Parts = append(principalParts.Parts,
+				morph.PrincipalPart{ID: "past_masc_stem", Form: "nió"},
+				morph.PrincipalPart{ID: "past_stem", Form: "nios"},
+				morph.PrincipalPart{ID: "past_masc_plural_stem", Form: "nie"},
+			)
+		}
+		if lexeme.ID.String() == "lexeme:pl.jesc.v" {
+			principalParts.Parts = append(principalParts.Parts,
+				morph.PrincipalPart{ID: "past_singular_stem", Form: "jad"},
+				morph.PrincipalPart{ID: "past_pl_masc", Form: "jed"},
+				morph.PrincipalPart{ID: "past_pl_nonmasc", Form: "jad"},
+			)
+		}
+		if lexeme.ID.String() == "lexeme:pl.pchac.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "pcha"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.ciagnac.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "ciągn"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.ciac.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "ci"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.skladac.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "składa"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.biec.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "bieg"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.rozdzierac.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "rozdziera"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.kichac.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "kicha"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.kaszlec.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "kaszla"}, morph.PrincipalPart{ID: "past_masc_plural_stem", Form: "kaszle"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.ogladac.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "ogląda"})
+		}
+		if lexeme.ID.String() == "lexeme:pl.sprzedawac.v" {
+			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "sprzedawa"})
+		}
 		result = append(result, lexemeRecord{Lexeme: lexeme, PrincipalParts: principalParts})
 		delete(forms, lexeme.ID.String())
 	}
@@ -284,7 +551,11 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 		if lexeme.ID.String() == "lexeme:pl.slyszec.v" {
 			foundHear = true
 			attested = append(attested, lexemeRecord{Lexeme: lexeme, PrincipalParts: morph.PrincipalParts{
-				LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "present_stem", Form: "słysz"}},
+				LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{
+					{ID: "present_stem", Form: "słysz"},
+					{ID: "past_stem", Form: "słysza"},
+					{ID: "past_masculine_personal_plural_stem", Form: "słysze"},
+				},
 			}})
 		}
 		if lexeme.ID.String() == "lexeme:pl.patrzec.v" {

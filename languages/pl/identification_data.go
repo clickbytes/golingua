@@ -7,7 +7,13 @@ import (
 	"github.com/clickbytes/golingua/internal/lexicon"
 	"github.com/clickbytes/golingua/internal/morph"
 	"github.com/clickbytes/golingua/internal/procedure"
+	"github.com/clickbytes/golingua/internal/provenance"
 )
+
+var polishPastAttributionSource = provenance.SourceRef{
+	ID: "golingua-pl-past-attribution-437", Path: "languages/pl/identification_data.go",
+	Version: "2026-10-29", License: "internal", Author: "Codex by owner delegation",
+}
 
 var identificationEntries = []lexicalEntry{
 	{"pl.byc.v", "być", "verb", []lexicalMeaning{{"pl.byc.class_membership", "instantiate a class given by a referent", "class_membership"}}},
@@ -60,6 +66,16 @@ func identificationParadigms(profile *features.LanguageFeatureProfile) []morph.P
 			StemID: "pl_identification_byc_present_3sg_form", PartID: "present_3sg_form", Required: true,
 		}, {
 			StemID: "pl_identification_byc_present_3pl_form", PartID: "present_3pl_form", Required: true,
+		}, {
+			StemID: "pl_identification_byc_past_masc_form", PartID: "past_masc_form", Required: true,
+		}, {
+			StemID: "pl_identification_byc_past_fem_form", PartID: "past_fem_form", Required: true,
+		}, {
+			StemID: "pl_identification_byc_past_neut_form", PartID: "past_neut_form", Required: true,
+		}, {
+			StemID: "pl_identification_byc_past_masc_personal_form", PartID: "past_masc_personal_form", Required: true,
+		}, {
+			StemID: "pl_identification_byc_past_non_masc_personal_form", PartID: "past_non_masc_personal_form", Required: true,
 		}},
 		Cells: []morph.ParadigmCell{{
 			ID: "present_indicative_active_imperfective_3sg",
@@ -83,6 +99,46 @@ func identificationParadigms(profile *features.LanguageFeatureProfile) []morph.P
 				{Feature: "verb_form", State: features.StateKnown, Value: "finite"},
 				{Feature: "voice", State: features.StateKnown, Value: "active"},
 			},
+		}, {
+			ID: "past_indicative_active_3sg_masculine_personal",
+			Features: []features.FeatureValue{
+				{Feature: "aspect", State: features.StateKnown, Value: "imperfective"}, {Feature: "gender", State: features.StateKnown, Value: "masculine_personal"},
+				{Feature: "mood", State: features.StateKnown, Value: "indicative"}, {Feature: "number", State: features.StateKnown, Value: "singular"},
+				{Feature: "person", State: features.StateKnown, Value: "third"}, {Feature: "tense", State: features.StateKnown, Value: "past"},
+				{Feature: "verb_form", State: features.StateKnown, Value: "finite"}, {Feature: "voice", State: features.StateKnown, Value: "active"},
+			},
+		}, {
+			ID: "past_indicative_active_3sg_feminine",
+			Features: []features.FeatureValue{
+				{Feature: "aspect", State: features.StateKnown, Value: "imperfective"}, {Feature: "gender", State: features.StateKnown, Value: "feminine"},
+				{Feature: "mood", State: features.StateKnown, Value: "indicative"}, {Feature: "number", State: features.StateKnown, Value: "singular"},
+				{Feature: "person", State: features.StateKnown, Value: "third"}, {Feature: "tense", State: features.StateKnown, Value: "past"},
+				{Feature: "verb_form", State: features.StateKnown, Value: "finite"}, {Feature: "voice", State: features.StateKnown, Value: "active"},
+			},
+		}, {
+			ID: "past_indicative_active_3sg_neuter",
+			Features: []features.FeatureValue{
+				{Feature: "aspect", State: features.StateKnown, Value: "imperfective"}, {Feature: "gender", State: features.StateKnown, Value: "neuter"},
+				{Feature: "mood", State: features.StateKnown, Value: "indicative"}, {Feature: "number", State: features.StateKnown, Value: "singular"},
+				{Feature: "person", State: features.StateKnown, Value: "third"}, {Feature: "tense", State: features.StateKnown, Value: "past"},
+				{Feature: "verb_form", State: features.StateKnown, Value: "finite"}, {Feature: "voice", State: features.StateKnown, Value: "active"},
+			},
+		}, {
+			ID: "past_indicative_active_3pl_masculine_personal",
+			Features: []features.FeatureValue{
+				{Feature: "aspect", State: features.StateKnown, Value: "imperfective"}, {Feature: "gender", State: features.StateKnown, Value: "masculine_personal"},
+				{Feature: "mood", State: features.StateKnown, Value: "indicative"}, {Feature: "number", State: features.StateKnown, Value: "plural"},
+				{Feature: "person", State: features.StateKnown, Value: "third"}, {Feature: "tense", State: features.StateKnown, Value: "past"},
+				{Feature: "verb_form", State: features.StateKnown, Value: "finite"}, {Feature: "voice", State: features.StateKnown, Value: "active"},
+			},
+		}, {
+			ID: "past_indicative_active_3pl_non_masculine_personal",
+			Features: []features.FeatureValue{
+				{Feature: "aspect", State: features.StateKnown, Value: "imperfective"}, {Feature: "gender", State: features.StateKnown, Value: "non_masculine_personal"},
+				{Feature: "mood", State: features.StateKnown, Value: "indicative"}, {Feature: "number", State: features.StateKnown, Value: "plural"},
+				{Feature: "person", State: features.StateKnown, Value: "third"}, {Feature: "tense", State: features.StateKnown, Value: "past"},
+				{Feature: "verb_form", State: features.StateKnown, Value: "finite"}, {Feature: "voice", State: features.StateKnown, Value: "active"},
+			},
 		}},
 		Rules: []morph.CellRule{{
 			CellID:      "present_indicative_active_imperfective_3sg",
@@ -94,6 +150,21 @@ func identificationParadigms(profile *features.LanguageFeatureProfile) []morph.P
 			ProcedureID: "procedure:pl_identification_byc_present_3sg.present_indicative_active_imperfective_3pl",
 			Provenance:  polishIdentificationSource,
 			Steps:       []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "pl_identification_byc_present_3pl_form"}},
+		}, {
+			CellID: "past_indicative_active_3sg_masculine_personal", ProcedureID: "procedure:pl_identification_byc.past_3sg_masculine_personal", Provenance: polishPastAttributionSource,
+			Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "pl_identification_byc_past_masc_form"}},
+		}, {
+			CellID: "past_indicative_active_3sg_feminine", ProcedureID: "procedure:pl_identification_byc.past_3sg_feminine", Provenance: polishPastAttributionSource,
+			Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "pl_identification_byc_past_fem_form"}},
+		}, {
+			CellID: "past_indicative_active_3sg_neuter", ProcedureID: "procedure:pl_identification_byc.past_3sg_neuter", Provenance: polishPastAttributionSource,
+			Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "pl_identification_byc_past_neut_form"}},
+		}, {
+			CellID: "past_indicative_active_3pl_masculine_personal", ProcedureID: "procedure:pl_identification_byc.past_3pl_masculine_personal", Provenance: polishPastAttributionSource,
+			Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "pl_identification_byc_past_masc_personal_form"}},
+		}, {
+			CellID: "past_indicative_active_3pl_non_masculine_personal", ProcedureID: "procedure:pl_identification_byc.past_3pl_non_masculine_personal", Provenance: polishPastAttributionSource,
+			Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: "pl_identification_byc_past_non_masc_personal_form"}},
 		}},
 	}
 	return []morph.Paradigm{verb}
@@ -115,5 +186,9 @@ func identificationMorphRecords(lexemes []lexicon.MorphLexeme) ([]lexemeRecord, 
 	if verb.Lemma != "być" || verb.POS != "verb" || verb.ParadigmID != "pl_identification_byc_present_3sg" {
 		return nil, fmt.Errorf("Polish identification morphology lexeme has an incompatible declaration")
 	}
-	return []lexemeRecord{{Lexeme: verb, PrincipalParts: morph.PrincipalParts{LexemeID: verb.ID, Parts: []morph.PrincipalPart{{ID: "present_3sg_form", Form: "jest"}, {ID: "present_3pl_form", Form: "są"}}}}}, nil
+	return []lexemeRecord{{Lexeme: verb, PrincipalParts: morph.PrincipalParts{LexemeID: verb.ID, Parts: []morph.PrincipalPart{
+		{ID: "present_3sg_form", Form: "jest"}, {ID: "present_3pl_form", Form: "są"},
+		{ID: "past_masc_form", Form: "był"}, {ID: "past_fem_form", Form: "była"}, {ID: "past_neut_form", Form: "było"},
+		{ID: "past_masc_personal_form", Form: "byli"}, {ID: "past_non_masc_personal_form", Form: "były"},
+	}}}}, nil
 }

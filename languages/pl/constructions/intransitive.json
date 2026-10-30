@@ -8,11 +8,14 @@
       {"id":"subject","position":0,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"},
       {"id":"verb","position":1,"category":"VP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"}
     ],
+    "operators":["negate"],
+    "capabilities":["negation","negation-negated","surface_negation"],
     "provenance":{"id":"golingua-structural-template","path":"languages/pl/constructions/intransitive.json","version":"1","license":"internal"}
   },
   "variants": [
     {"id":"construction:pl.intransitive.sv","family_id":"construction:pl.intransitive","sequence":[{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"}],"markedness":"neutral","priority":0,"direction_policy":"analyze","provenance":{"id":"golingua-structural-template","path":"languages/pl/constructions/intransitive.json","version":"1","license":"internal"}},
     {"id":"construction:pl.intransitive.sv.period","family_id":"construction:pl.intransitive","sequence":[{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"both","provenance":{"id":"golingua-structural-template","path":"languages/pl/constructions/intransitive.json","version":"2026-10-28-432","license":"internal"}},
-    {"id":"construction:pl.intransitive.sv.reflexive.period","family_id":"construction:pl.intransitive","sequence":[{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"się"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"both","provenance":{"id":"golingua-pl-reflexive-intransitive-432","path":"languages/pl/constructions/intransitive.json","version":"2026-10-28-432","license":"internal"}}
+    {"id":"construction:pl.intransitive.sv.reflexive.period","family_id":"construction:pl.intransitive","sequence":[{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"się"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"both","provenance":{"id":"golingua-pl-reflexive-intransitive-432","path":"languages/pl/constructions/intransitive.json","version":"2026-10-28-432","license":"internal"}},
+    {"id":"construction:pl.intransitive.sv.negative","family_id":"construction:pl.intransitive","sequence":[{"kind":"slot","slot_id":"subject"},{"kind":"terminal","terminal":"nie"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"both","provenance":{"id":"golingua-pl-g437-sleep-negative","path":"languages/pl/constructions/intransitive.json","version":"2026-10-29","license":"internal"}}
   ]
 }

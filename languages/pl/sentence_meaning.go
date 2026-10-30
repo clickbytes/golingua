@@ -3,6 +3,7 @@ package pl
 import (
 	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/clickbytes/golingua/internal/construction"
 	"github.com/clickbytes/golingua/internal/features"
@@ -64,8 +65,13 @@ func polishNodeAttributes(supported map[ids.SenseID]bool, index *lexicon.Index, 
 						}
 					}
 					_, attributionSense := polishAttributionForSense(sense.String())
-					if candidate.Category == construction.CategoryAP && attributionSense && (alternative.FamilyID.String() == "construction:pl.attribution" || alternative.FamilyID.String() == "construction:pl.attribution_plural") {
-						if err := add(candidate.ID, meaning.TemporalFramePresent, ""); err != nil {
+					variant := string(alternative.VariantID)
+					if candidate.Category == construction.CategoryAP && attributionSense && (alternative.FamilyID.String() == "construction:pl.attribution" || alternative.FamilyID.String() == "construction:pl.attribution_plural" || alternative.FamilyID.String() == "construction:pl.attribution_negative") {
+						frame := meaning.TemporalFramePresent
+						if strings.Contains(variant, ".past.") {
+							frame = meaning.TemporalFramePast
+						}
+						if err := add(candidate.ID, frame, ""); err != nil {
 							return nil, err
 						}
 					}

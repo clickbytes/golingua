@@ -25,6 +25,7 @@ var englishEntries = []lexicalEntry{
 	{"en.the.det", "the", "determiner", []lexicalMeaning{{"en.the.definite", "definite determiner", ""}}},
 	{"en.a.det", "a", "determiner", []lexicalMeaning{{"en.a.indefinite", "indefinite determiner", ""}}},
 	{"en.an.det", "an", "determiner", []lexicalMeaning{{"en.an.indefinite", "indefinite determiner before a vowel sound", ""}}},
+	{"en.do.aux", "do", "verb", nil},
 	{"en.dog.n", "dog", "noun", []lexicalMeaning{{"en.dog.animal", "domestic canine animal", "dog"}}},
 	{"en.cat.n", "cat", "noun", []lexicalMeaning{{"en.cat.animal", "domestic feline animal", "cat"}}},
 	{"en.child.n", "child", "noun", []lexicalMeaning{{"en.child.person", "young person", "child"}, {"en.child.kinship", "a person in relation to their own parent, at any age", "child_of_person"}}},
@@ -1297,6 +1298,7 @@ var englishParadigmByLexeme = map[string]string{
 	"en.flying_motion.v":           "en_verb_finite_principal_parts",
 	"en.go.v":                      "en_verb_finite_principal_parts",
 	"en.give.v":                    "en_verb_finite_principal_parts",
+	"en.do.aux":                    "en_verb_finite_principal_parts",
 	"en.buying.v":                  "en_verb_finite_principal_parts",
 	"en.selling.v":                 "en_verb_finite_principal_parts",
 	"en.liking.v":                  "en_verb_finite_principal_parts",
@@ -1312,7 +1314,7 @@ var englishParadigmByLexeme = map[string]string{
 	"en.house.n": "en_noun_regular", "en.household.n": "en_noun_regular",
 	"en.car.n":  "en_noun_regular",
 	"en.bird.n": "en_noun_regular", "en.neighbor.n": "en_noun_regular",
-	"en.customer.n": "en_noun_regular", "en.dog.n": "en_noun_regular",
+	"en.customer.n": "en_noun_regular", "en.dog.n": "en_noun_regular", "en.seller.n": "en_noun_regular",
 	"en.teacher.n": "en_noun_regular", "en.doctor.n": "en_noun_regular",
 	"en.school.n": "en_noun_regular", "en.tree.n": "en_noun_regular",
 	"en.hand.n": "en_noun_regular", "en.eye.n": "en_noun_regular",
@@ -1335,6 +1337,7 @@ var englishParadigmByLexeme = map[string]string{
 	"en.newspaper.n": "en_noun_regular", "en.moon_earth.n": "en_noun_regular",
 	"en.horse.n":    "en_noun_regular",
 	"en.key_tool.n": "en_noun_regular", "en.bag.n": "en_noun_regular",
+	"en.telephone_device.n": "en_noun_regular", "en.phone.n": "en_noun_regular",
 	"en.class_group.n": "en_noun_sibilant", "en.bus.n": "en_noun_sibilant",
 	"en.watch_device.n": "en_noun_sibilant", "en.box.n": "en_noun_sibilant",
 	"en.branch_plant.n": "en_noun_sibilant", "en.brush_tool.n": "en_noun_sibilant",
@@ -1389,11 +1392,12 @@ var englishParadigmByLexeme = map[string]string{
 var englishAArticleLexemes = map[string]struct{}{
 	"en.mother.n": {}, "en.father.n": {}, "en.cat.n": {}, "en.book.n": {},
 	"en.house.n": {}, "en.household.n": {}, "en.car.n": {}, "en.bird.n": {}, "en.neighbor.n": {},
-	"en.customer.n": {}, "en.dog.n": {}, "en.door.n": {}, "en.teacher.n": {}, "en.doctor.n": {},
+	"en.customer.n": {}, "en.dog.n": {}, "en.door.n": {}, "en.teacher.n": {}, "en.doctor.n": {}, "en.seller.n": {},
 	"en.newspaper.n": {}, "en.moon_earth.n": {},
 	"en.tree.n": {}, "en.child.n": {}, "en.message.n": {}, "en.letter_document.n": {}, "en.document.n": {},
-	"en.window.n": {},
-	"en.table.n":  {}, "en.fish_animal.n": {}, "en.horse.n": {},
+	"en.window.n":           {},
+	"en.telephone_device.n": {}, "en.phone.n": {},
+	"en.table.n": {}, "en.fish_animal.n": {}, "en.horse.n": {},
 	"en.chair.n": {}, "en.key_tool.n": {}, "en.bag.n": {}, "en.pencil.n": {}, "en.knife_utensil.n": {},
 }
 
@@ -1411,11 +1415,12 @@ var englishCountNounLexemes = map[string]struct{}{
 	"en.car.n": {}, "en.fish_animal.n": {}, "en.hospital_building.n": {},
 	"en.chair.n": {}, "en.key_tool.n": {}, "en.bag.n": {}, "en.pencil.n": {}, "en.knife_utensil.n": {},
 	"en.hospital_institution.n": {}, "en.pizza_food.n": {}, "en.neighbor.n": {},
-	"en.customer.n": {}, "en.message.n": {}, "en.cat.n": {}, "en.bird.n": {},
+	"en.customer.n": {}, "en.message.n": {}, "en.cat.n": {}, "en.bird.n": {}, "en.seller.n": {},
 	"en.newspaper.n": {}, "en.moon_earth.n": {}, "en.document.n": {},
 	"en.egg_food.n": {},
 	"en.horse.n":    {}, "en.city.n": {}, "en.apartment.n": {}, "en.river.n": {},
 	"en.sister.n": {}, "en.tree.n": {}, "en.window.n": {}, "en.apple_fruit.n": {}, "en.letter_document.n": {},
+	"en.telephone_device.n": {}, "en.phone.n": {},
 }
 
 // LexicalDocument builds the English lexical records from Go declarations.
@@ -1479,6 +1484,11 @@ func LexicalDocument() (lexicon.Document, error) {
 				binding := lexicon.SemanticBinding{
 					SenseID: senseID, CoreRef: conceptID, Mapping: lexicon.MappingCandidate,
 					Status: lexicon.BindingPending, Provenance: group.source,
+				}
+				if meaning.id == "en.phone.alias" {
+					binding.Provenance = englishPhoneAliasProposalSource
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
 				}
 				switch meaning.id {
 				case "en.red.color", "en.white.color", "en.blue.color", "en.green.color", "en.open.state", "en.sad.state":

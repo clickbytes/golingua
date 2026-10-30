@@ -208,6 +208,9 @@ func addPolishIdentificationReferences(evidence runtime.CompositionEvidence, lat
 			frame := string(alternative.Permission.FrameID)
 			family := alternative.FamilyID.String()
 			variant := string(alternative.VariantID)
+			if past := strings.Index(variant, ".past."); past >= 0 {
+				variant = variant[:past]
+			}
 			sense := alternative.Permission.SenseID.Symbol().Name
 			senseID := alternative.Permission.SenseID.String()
 			var slotID, anchorValue string
