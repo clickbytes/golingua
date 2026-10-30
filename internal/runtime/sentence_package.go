@@ -35,9 +35,9 @@ const (
 )
 
 // BuildSentenceLanguagePackage exposes only requested exact approved sentence
-// routes exercised by the current source and target providers.
+// routes backed by the compiled valency and lexical indexes.
 func BuildSentenceLanguagePackage(languageID features.LanguageID, version string, valencyIndex *valency.Index, lexicalIndex *lexicon.Index, senseIDs ...ids.SenseID) (language.Package, error) {
-	if languageID == "" || version == "" || len(senseIDs) == 0 || valencyIndex == nil || lexicalIndex == nil {
+	if (languageID != "en" && languageID != "pl") || version == "" || len(senseIDs) == 0 || valencyIndex == nil || lexicalIndex == nil {
 		return language.Package{}, fmt.Errorf("sentence package requires language, version, exact senses and compiled indexes")
 	}
 	allowedSenses := make(map[ids.SenseID]bool, len(senseIDs))
@@ -45,20 +45,10 @@ func BuildSentenceLanguagePackage(languageID features.LanguageID, version string
 		if senseID.String() == "" {
 			return language.Package{}, fmt.Errorf("sentence package requires non-empty exact senses")
 		}
+		if allowedSenses[senseID] {
+			return language.Package{}, fmt.Errorf("sentence package repeats exact sense %s", senseID)
+		}
 		allowedSenses[senseID] = true
-	}
-	expectedSenseNames, ok := currentSentenceSenseNames(languageID)
-	if !ok || len(allowedSenses) != len(expectedSenseNames) {
-		return language.Package{}, fmt.Errorf("sentence package requires the exact declared routes for language %s", languageID)
-	}
-	for _, name := range expectedSenseNames {
-		expectedSense, err := ids.NewSenseID(name)
-		if err != nil {
-			return language.Package{}, err
-		}
-		if !allowedSenses[expectedSense] {
-			return language.Package{}, fmt.Errorf("sentence package requires exact route %s", expectedSense)
-		}
 	}
 	var bindings []language.Binding
 	bindingIndexes := make(map[string]int)
@@ -130,17 +120,6 @@ func sentenceCapabilityEvidenceIDs(languageID features.LanguageID) []string {
 		caseIDs = append(caseIDs, englishIdentificationClassEvidenceID, englishIdentificationBlackEvidenceID, sentenceEnglishNegativeClassEvidenceID, sentenceEnglishNegativeSeeingEvidenceID, sentenceEnglishBuyingOmissionEvidenceID, sentenceEnglishSellingOmissionEvidenceID)
 	}
 	return caseIDs
-}
-
-func currentSentenceSenseNames(languageID features.LanguageID) ([]string, bool) {
-	switch languageID {
-	case "en":
-		return []string{"en.see.visual", "en.hear.auditory", "en.get.receive", "en.look.directed", "en.read.text", "en.be.class_membership", "en.black.color", "en.red.color", "en.white.color", "en.blue.color", "en.green.color", "en.open.state", "en.sad.state", "en.eating.event", "en.drinking.event", "en.buying.event", "en.selling.event", "en.opening_object.event", "en.closing_object.event", "en.carrying.event", "en.holding_object.event", "en.pulling_object.event", "en.pushing_object.event", "en.cutting_object.event", "en.cutting_object.with_instrument", "en.folding_object.event", "en.tearing_object.event", "en.sleep.physiological", "en.breathing.event", "en.sneezing.event", "en.running.event", "en.coughing.event", "en.walking.event", "en.living.event", "en.flying_motion.event", "en.waking_up.event", "en.falling_asleep.event", "en.working.activity", "en.go.spatial_movement", "en.give.transfer", "en.helping.event", "en.thanking.event", "en.using_object.event", "en.liking.event", "en.watching.event", "en.writing_document.event", "en.writing_message.event", "en.writing_with_instrument.event", "en.conversing.event"}, true
-	case "pl":
-		return []string{"pl.widziec.visual", "pl.slyszec.auditory", "pl.dostac.receive", "pl.patrzec.directed", "pl.czytac.interpret", "pl.byc.class_membership", "pl.czarny.black", "pl.czerwony.red", "pl.bialy.white", "pl.niebieski.blue", "pl.zielony.green", "pl.otwarty.open", "pl.smutny.sad", "pl.jesc.eat", "pl.pic.drink", "pl.kupowac.buy", "pl.kupic.buy", "pl.sprzedawac.sell", "pl.otwierac_obiekt.open", "pl.zamykac_obiekt.close", "pl.niesc.carry", "pl.trzymac.hold", "pl.ciagnac.pull", "pl.pchac.push", "pl.ciac.cut", "pl.kroic.with_instrument", "pl.skladac.fold", "pl.rozdzierac.tear", "pl.spac.sleep", "pl.oddychac.breathe", "pl.kichac.sneeze", "pl.biec.run", "pl.kaszlec.cough", "pl.chodzic.walk", "pl.zyc.live", "pl.latac.fly", "pl.zasypiac.sleep", "pl.budzic_sie.wake", "pl.pracowac.activity", "pl.isc.move", "pl.dawac.transfer", "pl.dac.transfer", "pl.pomagac.help", "pl.dziekowac.thank", "pl.uzywac.using", "pl.lubic.like", "pl.ogladac.view", "pl.pisac.document", "pl.pisac.write", "pl.pisac.instrument", "pl.rozmawiac.converse"}, true
-	default:
-		return nil, false
-	}
 }
 
 // SentenceRouteProvenance returns internal provenance for assumptions emitted

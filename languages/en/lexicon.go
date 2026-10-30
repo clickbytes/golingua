@@ -185,6 +185,7 @@ var englishPendingAuditSource = provenance.SourceRef{
 	Version: "2026-10-23-pending-audit", License: "unknown", Author: "codex-owner-delegated",
 }
 var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
+	"en.have.possession":       englishHaveLexicalSource,
 	"en.conversing.event":      englishConversingLexicalBindingSource,
 	"en.newspaper.direct":      englishIssue434LexicalBindingSource,
 	"en.rain.direct":           englishIssue434LexicalBindingSource,
@@ -1250,6 +1251,7 @@ var englishAdditionalFramesBySense = map[string][]lexicon.ValencyID{
 }
 
 var englishParadigmByLexeme = map[string]string{
+	"en.have.v":                    "en_verb_finite_principal_parts",
 	"en.conversing.v":              "en_verb_finite_regular",
 	"en.be.v":                      "en_identification_be_present_3sg",
 	"en.black.adj":                 "en_identification_black_positive",

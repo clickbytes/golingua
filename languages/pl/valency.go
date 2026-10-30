@@ -187,6 +187,15 @@ func polishNegativeAttributionBindings() []constructionBindingDeclaration {
 }
 
 var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
+	{"pl.miec.possession", "pl.miec.possession.transitive", "pl.transitive", "pl.transitive.svo"},
+	{"pl.miec.possession", "pl.miec.possession.personal", "pl.transitive_personal", "pl.transitive_personal.prodrop.present.first.singular"},
+	{"pl.miec.possession", "pl.miec.possession.personal", "pl.transitive_personal", "pl.transitive_personal.prodrop.present.first.plural"},
+	{"pl.miec.possession", "pl.miec.possession.personal", "pl.transitive_personal", "pl.transitive_personal.prodrop.present.second.singular"},
+	{"pl.miec.possession", "pl.miec.possession.personal", "pl.transitive_personal", "pl.transitive_personal.prodrop.present.second.plural"},
+	{"pl.miec.possession", "pl.miec.possession.personal.negative", "pl.transitive_personal", "pl.transitive_personal.prodrop.negative.present.first.singular"},
+	{"pl.miec.possession", "pl.miec.possession.personal.negative", "pl.transitive_personal", "pl.transitive_personal.prodrop.negative.present.first.plural"},
+	{"pl.miec.possession", "pl.miec.possession.personal.negative", "pl.transitive_personal", "pl.transitive_personal.prodrop.negative.present.second.singular"},
+	{"pl.miec.possession", "pl.miec.possession.personal.negative", "pl.transitive_personal", "pl.transitive_personal.prodrop.negative.present.second.plural"},
 	{"pl.rozmawiac.converse", "pl.rozmawiac.converse.action", "pl.with_oblique", "pl.with_oblique.svo"},
 	{"pl.uzywac.using", "pl.uzywac.using.action", "pl.transitive", "pl.transitive.svo"},
 	{"pl.pomagac.help", "pl.pomagac.help.action", "pl.transitive", "pl.transitive.svo"},
@@ -382,6 +391,18 @@ var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
 // Families are explicit per frame, never silently assumed transitive.
 // They are structural candidates, not approved construction bindings.
 var polishFrames = []frameDeclaration{
+	{"pl.miec.possession.transitive", "pl.miec.possession", "pl.transitive", []meaning.Role{"holder", "object"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "holder", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "object", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+	}},
+	{"pl.miec.possession.personal", "pl.miec.possession", "pl.transitive_personal", []meaning.Role{"holder", "object"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "holder", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "object", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+	}},
+	{"pl.miec.possession.personal.negative", "pl.miec.possession", "pl.transitive_personal", []meaning.Role{"holder", "object"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "holder", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "object", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+	}},
 	{"pl.uzywac.using.action", "pl.uzywac.using", "pl.transitive", []meaning.Role{"user", "tool"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "user", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "object", Role: "tool", Required: true, GrammaticalFunction: "object", Case: "genitive"},

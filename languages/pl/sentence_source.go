@@ -366,6 +366,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "mood": "indicative", "voice": "active", "person": "third", "number": "singular"},
 		{"verb_form": "finite", "tense": "present", "aspect": "imperfective", "mood": "indicative", "voice": "active", "person": "third", "number": "plural"},
 	}
+	addApprovedPolishTransitiveSourceRoutes(supportedSenses, predicateAlternatives, snapshot.Lexicon(), valencyIndex, registry, packages)
 	return &runtime.SourcePipeline{
 		Language: "pl", PhraseProfile: phraseProfile, ClauseConnector: "i", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}}, AllowFinalPeriod: false,
 		ScopedSourcePlan: scopedPlan, ScopedReadingPolicy: ScopedSourceReadingPolicy,
@@ -386,6 +387,52 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 			AllowedUnlexicalizedTerminals:       map[string]bool{"na": true, "od": true, "do": true, "z": true, "nie": true, "to": true, "ten": true, "ta": true, "jest": true, "są": true, "te": true, "ci": true, "tamte": true, "tamci": true, "się": true, "tamten": true, "tamta": true, "tamto": true},
 		}},
 	}, nil
+}
+
+func addApprovedPolishTransitiveSourceRoutes(supported map[ids.SenseID]bool, alternatives map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID, lexiconIndex *lexicon.Index, valencyIndex *valency.Index, registry *construction.Registry, packages []construction.CompiledConstructionPackage) {
+	if lexiconIndex == nil || valencyIndex == nil || registry == nil {
+		return
+	}
+	frames := make(map[string]valency.ValencyFrame)
+	for _, frame := range valencyIndex.Frames() {
+		frames[string(frame.ID)] = frame
+	}
+	variants := make(map[string]construction.Variant)
+	for _, pkg := range packages {
+		for _, variant := range pkg.Package.Variants {
+			variants[pkg.Package.Family.ID.String()+"\x00"+variant.ID.String()] = variant
+		}
+	}
+	for _, familyName := range []string{"construction:pl.transitive", "construction:pl.transitive_personal"} {
+		familyID, err := ids.ParseConstructionID(familyName)
+		if err != nil {
+			continue
+		}
+		if _, found := registry.ByID(familyID); !found {
+			continue
+		}
+		for _, binding := range registry.BindingsByFamilyID(familyID) {
+			frame, frameOK := frames[string(binding.ValencyFrameID)]
+			variant, variantOK := variants[familyName+"\x00"+binding.VariantID.String()]
+			sense, senseOK := lexiconIndex.BySenseID(binding.SenseID)
+			if !binding.Approved || binding.FamilyID != familyID || !frameOK || !variantOK || !senseOK || frame.SenseID != binding.SenseID || !polishFrameAllowsFamily(frame, familyID) {
+				continue
+			}
+			lexeme, lexemeOK := lexiconIndex.ByLexemeID(sense.LexemeID)
+			semanticBindings := lexiconIndex.BindingsForSense(binding.SenseID)
+			if !lexemeOK || lexeme.Language != "pl" || lexeme.POS != "verb" || len(semanticBindings) != 1 || !semanticBindings[0].TransferAuthorized() || len(frame.SemanticRoles) != 2 || len(frame.Arguments) != 2 {
+				continue
+			}
+			required := map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "aspect": "imperfective"}
+			for _, condition := range variant.Conditions {
+				if condition.Kind == construction.ConditionFeatureEquals && condition.SlotID == "verb" {
+					required[condition.Feature] = condition.Value
+				}
+			}
+			supported[binding.SenseID] = true
+			alternatives[binding.SenseID] = append(alternatives[binding.SenseID], required)
+		}
+	}
 }
 
 // polishWHGapPhraseBuilder carries exact token-span evidence for the two
@@ -580,12 +627,17 @@ func polishPersonalVerbHasCompatibleSubject(lattice analyzer.LexicalLattice, ver
 		return true
 	}
 	knownMismatch, compatible, unknown := false, false, false
+	hasAdjacentNonNominative := false
 	for _, subject := range candidates {
 		adjacent := subject.TokenEnd == verb.TokenStart || subject.TokenStart == verb.TokenEnd
 		if !adjacent && subject.TokenEnd+1 == verb.TokenStart && subject.TokenEnd < len(lattice.Tokens) && lattice.Tokens[subject.TokenEnd].Token.Folded == "nie" {
 			adjacent = true
 		}
-		if subject.Category != construction.CategoryNP || !adjacent || subject.Features["case"] != "nominative" {
+		if subject.Category != construction.CategoryNP || !adjacent {
+			continue
+		}
+		if subject.Features["case"] != "nominative" {
+			hasAdjacentNonNominative = true
 			continue
 		}
 		subjectPerson, subjectNumber := string(subject.Features["person"]), string(subject.Features["number"])
@@ -599,7 +651,7 @@ func polishPersonalVerbHasCompatibleSubject(lattice analyzer.LexicalLattice, ver
 			knownMismatch = true
 		}
 	}
-	return !knownMismatch || compatible || unknown
+	return !knownMismatch || compatible || unknown || hasAdjacentNonNominative
 }
 
 type polishSentenceEvidenceBuilder struct {
@@ -724,7 +776,8 @@ func (builder polishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, la
 	if !evidence.OperatorCoverageComplete {
 		return evidence, nil
 	}
-	return addPolishIdentificationReferences(evidence, lattice, candidates, forest), nil
+	evidence = addPolishIdentificationReferences(evidence, lattice, candidates, forest)
+	return addPolishPersonalEvidence(evidence, candidates, forest, builder.valency, builder.constructions), nil
 }
 
 func polishAlternativeHasRequiredNegationSlots(alternative parser.ParseAlternative, route polishPresentNegationRoute, candidates map[string]parser.PhraseCandidate) bool {

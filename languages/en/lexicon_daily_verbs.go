@@ -10,8 +10,14 @@ var englishDailyVerbSource = provenance.SourceRef{
 	Version: "2026-10-22-batch-32", License: "unknown", Author: "golingua contributors",
 }
 
+var englishHaveLexicalSource = provenance.SourceRef{
+	ID: "golingua-issue-476-have-core", URI: "https://github.com/clickbytes/golingua/issues/476#issuecomment-6526225671",
+	Version: "2026-10-30", License: "internal", Author: "Codex by owner delegation",
+}
+
 // These pending verbs name common food, home and routine activities.
 var englishDailyVerbEntries = []lexicalEntry{
+	{"en.have.v", "have", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.have.possession", "be in a state of having an object, without asserting legal title or duration", "possession"}}},
 	{"en.eating.v", "eat", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.eating.event", "take food into the body for nourishment", "eating"}}},
 	{"en.printing_document.v", "print", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.printing_document.event", "produce a physical copy of document content with printing equipment", "printing_document"}}},
 	{"en.cooking_food.v", "cook", lexicon.PartOfSpeech("verb"), []lexicalMeaning{{"en.cooking_food.event", "prepare food by combining ingredients and applying kitchen processes", "cooking_food"}}},

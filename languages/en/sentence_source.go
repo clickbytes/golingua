@@ -64,6 +64,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	if err != nil {
 		return nil, err
 	}
+	predicateSenses := approvedEnglishPredicateSenses(valencyIndex, packages)
 	scopedPlan, err := SentenceScopedClauses()
 	if err != nil {
 		return nil, err
@@ -278,6 +279,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		}
 	}
 	predicateAlternatives[eatingSense] = append(predicateAlternatives[eatingSense], map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"})
+	addApprovedEnglishTransitiveSourceRoutes(supportedSenses, predicateAlternatives, snapshot.Lexicon(), valencyIndex, registry, packages)
 	resolver := englishNegationResolver{registry: registry, valency: valencyIndex, lexicon: snapshot.Lexicon(), variants: variants}
 	return &runtime.SourcePipeline{
 		Language: "en", PhraseProfile: phraseProfile, ClauseConnector: "and", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}}, AllowFinalPeriod: false,
@@ -287,7 +289,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
-		PhraseBuilder: englishWHGapPhraseBuilder{inner: englishIdentificationPhraseBuilder{phraseProfile: phraseProfile, featureProfile: profile, inner: englishDeterminerNPBuilder{resolver: resolver, inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
+		PhraseBuilder: englishWHGapPhraseBuilder{inner: englishIdentificationPhraseBuilder{phraseProfile: phraseProfile, featureProfile: profile, inner: englishDeterminerNPBuilder{resolver: resolver, predicateSenses: predicateSenses, inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
 			Categories: map[lexicon.PartOfSpeech][]construction.SlotCategory{
 				"noun": {construction.CategoryNP}, "pronoun": {construction.CategoryNP}, "verb": {construction.CategoryVP}, "adjective": {construction.CategoryAP},
 			},
@@ -298,6 +300,57 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 			AllowedUnlexicalizedTerminals:       map[string]bool{"at": true, "to": true, "from": true, "with": true, "do": true, "does": true, "did": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true, "up": true, "asleep": true},
 		}},
 	}, nil
+}
+
+func addApprovedEnglishTransitiveSourceRoutes(supported map[ids.SenseID]bool, alternatives map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID, lexiconIndex *lexicon.Index, valencyIndex *valency.Index, registry *construction.Registry, packages []construction.CompiledConstructionPackage) {
+	if lexiconIndex == nil || valencyIndex == nil || registry == nil {
+		return
+	}
+	frames := make(map[string]valency.ValencyFrame)
+	for _, frame := range valencyIndex.Frames() {
+		frames[string(frame.ID)] = frame
+	}
+	variants := make(map[string]construction.Variant)
+	for _, pkg := range packages {
+		for _, variant := range pkg.Package.Variants {
+			variants[pkg.Package.Family.ID.String()+"\x00"+variant.ID.String()] = variant
+		}
+	}
+	for _, familyName := range []string{"construction:en.transitive", "construction:en.transitive_personal", "construction:en.transitive_negative"} {
+		familyID, err := ids.ParseConstructionID(familyName)
+		if err != nil {
+			continue
+		}
+		if _, found := registry.ByID(familyID); !found {
+			continue
+		}
+		for _, binding := range registry.BindingsByFamilyID(familyID) {
+			frame, frameOK := frames[string(binding.ValencyFrameID)]
+			_, variantOK := variants[familyName+"\x00"+binding.VariantID.String()]
+			sense, senseOK := lexiconIndex.BySenseID(binding.SenseID)
+			if !binding.Approved || binding.FamilyID != familyID || !frameOK || !variantOK || !senseOK || frame.SenseID != binding.SenseID || !valencyFrameAllowsFamily(frame, familyID) {
+				continue
+			}
+			lexeme, lexemeOK := lexiconIndex.ByLexemeID(sense.LexemeID)
+			semanticBindings := lexiconIndex.BindingsForSense(binding.SenseID)
+			if !lexemeOK || lexeme.Language != "en" || lexeme.POS != "verb" || len(semanticBindings) != 1 || !semanticBindings[0].TransferAuthorized() {
+				continue
+			}
+			roles := make(map[meaning.Role]bool)
+			for _, role := range frame.SemanticRoles {
+				roles[role] = true
+			}
+			if len(roles) != 2 || len(frame.Arguments) != 2 {
+				continue
+			}
+			required := map[features.FeatureID]features.FeatureValueID{"tense": "present", "verb_form": "finite"}
+			if familyName == "construction:en.transitive_negative" {
+				required["verb_form"] = "base"
+			}
+			supported[binding.SenseID] = true
+			alternatives[binding.SenseID] = append(alternatives[binding.SenseID], required)
+		}
+	}
 }
 
 // englishWHGapPhraseBuilder carries a gap only when the exact WH terminal is
@@ -405,7 +458,7 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 	if evidence, handled, err := builder.buildEnglishAttributedNegativeSeeing(ctx, lattice, candidates, forest); handled || err != nil {
 		return evidence, err
 	}
-	route, number, tense, notSpan, supported := builder.resolver.negationInput(lattice)
+	route, person, number, tense, notSpan, supported := builder.resolver.negationInput(lattice, candidates)
 	if !supported {
 		return runtime.CompositionEvidence{}, nil
 	}
@@ -419,11 +472,21 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 		if err != nil {
 			return runtime.CompositionEvidence{}, err
 		}
-		for _, verbNumber := range []string{"singular", "plural"} {
+		personForRoute := "third"
+		verbNumbers := []string{"singular", "plural"}
+		if negativeRoute.sense == route.sense && tense == "present" {
+			if person != "" {
+				personForRoute = person
+			}
+			if number != "" {
+				verbNumbers = []string{number}
+			}
+		}
+		for _, verbNumber := range verbNumbers {
 			base.PredicateFeatureAlternativesBySense[senseID] = append(
 				base.PredicateFeatureAlternativesBySense[senseID],
 				map[features.FeatureID]features.FeatureValueID{
-					"verb_form": "base", "tense": features.FeatureValueID(tense), "person": "third",
+					"verb_form": "base", "tense": features.FeatureValueID(tense), "person": features.FeatureValueID(personForRoute),
 					"number": features.FeatureValueID(verbNumber), "verb_number": features.FeatureValueID(verbNumber),
 				},
 			)
@@ -464,7 +527,7 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 				variantAllowed = route.pastVariantAllowed(variantID)
 			}
 			sourceOnlyVariant := !attributedNegative && !variantAllowed &&
-				englishApprovedSourceOnlyNegativeVariant(builder.resolver, alternative, route, number, tense, candidates)
+				englishApprovedSourceOnlyNegativeVariant(builder.resolver, alternative, route, person, number, tense, candidates)
 			if (alternative.FamilyID != negativeFamily && !attributedNegative) || (!attributedNegative && !variantAllowed && !sourceOnlyVariant) || alternative.Permission.SenseID.String() != route.sense {
 				return runtime.CompositionEvidence{}, nil
 			}
@@ -491,9 +554,9 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 				}
 				for _, candidateID := range slot.CandidateIDs {
 					candidate, exists := byID[candidateID]
-					candidateRoute, candidateNumber, candidateTense, negated := builder.resolver.negatedPredicateContext(lattice, candidate, candidates)
+					candidateRoute, candidatePerson, candidateNumber, candidateTense, negated := builder.resolver.negatedPredicateContext(lattice, candidate, candidates)
 					if !exists || !negated || candidateRoute.sense != route.sense || candidateTense != tense ||
-						(tense == "present" && candidateNumber != number) ||
+						(tense == "present" && (number != "" && candidateNumber != number || person != "" && candidatePerson != person)) ||
 						candidate.Features["verb_form"] != "base" || string(candidate.Features["number"]) != candidateNumber {
 						continue
 					}
@@ -518,6 +581,7 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 		}
 	}
 	evidence.OperatorCoverageComplete = operatorCount > 0
+	evidence = addEnglishPersonalReferences(evidence, candidates, forest)
 	return evidence, nil
 }
 
@@ -529,19 +593,21 @@ func englishApprovedSourceOnlyNegativeVariant(
 	resolver englishNegationResolver,
 	alternative parser.ParseAlternative,
 	route englishPresentNegationRoute,
-	number, tense string,
+	person, number, tense string,
 	candidates []parser.PhraseCandidate,
 ) bool {
 	if resolver.registry == nil || resolver.valency == nil || resolver.variants == nil ||
 		route.family != "construction:en.transitive_negative" || alternative.FamilyID.String() != route.family ||
-		alternative.Permission.SenseID.String() != route.sense || string(alternative.Permission.FrameID) != route.frame ||
-		len(alternative.Unresolved) != 0 {
+		alternative.Permission.SenseID.String() != route.sense || string(alternative.Permission.FrameID) != route.frame {
 		return false
 	}
 	familyRecord, familyExists := resolver.registry.ByID(alternative.FamilyID)
 	if !familyExists || string(familyRecord.Family.Language) != "en" ||
 		!familyHasOperator(familyRecord.Family, construction.OperatorID("negate")) ||
 		!familyHasCapability(familyRecord.Family, construction.Capability("negation-negated")) {
+		return false
+	}
+	if !englishAlternativeUnresolvedSlotsAreBound(alternative, familyRecord.Family) {
 		return false
 	}
 	variantIndex := resolver.variants[alternative.FamilyID]
@@ -583,43 +649,49 @@ func englishApprovedSourceOnlyNegativeVariant(
 		!sequenceHasSlot(compiled.Variant.Sequence, predicate.ID) {
 		return false
 	}
-	if tense == "past" && number == "" {
-		byID := phraseCandidatesByID(candidates)
-		for _, slot := range alternative.Slots {
-			if slot.SlotID != subjectSlot.ID || len(slot.CandidateIDs) == 0 {
-				continue
+	byID := phraseCandidatesByID(candidates)
+	subjectCandidateCount := 0
+	for _, slot := range alternative.Slots {
+		if slot.SlotID != subjectSlot.ID || len(slot.CandidateIDs) == 0 {
+			continue
+		}
+		for _, candidateID := range slot.CandidateIDs {
+			candidate, found := byID[candidateID]
+			if !found {
+				return false
 			}
-			for _, candidateID := range slot.CandidateIDs {
-				candidate, found := byID[candidateID]
-				if !found || string(candidate.Features["person"]) != "third" {
-					return false
-				}
-				candidateNumber := string(candidate.Features["noun_number"])
-				if candidateNumber != "singular" && candidateNumber != "plural" || number != "" && number != candidateNumber {
-					return false
-				}
+			candidatePerson, candidateNumber := englishCandidateAgreement(candidate)
+			if person == "" {
+				person = candidatePerson
+			} else if person != candidatePerson {
+				return false
+			}
+			if number == "" {
 				number = candidateNumber
+			} else if candidateNumber != "" && number != candidateNumber {
+				return false
 			}
+			subjectCandidateCount++
 		}
-		if number == "" {
-			return false
-		}
+	}
+	if subjectCandidateCount == 0 || person == "" {
+		return false
 	}
 	auxiliary := sequenceAuxiliary(compiled.Variant.Sequence)
 	expectedAuxiliary := ""
 	switch {
 	case tense == "past":
 		expectedAuxiliary = "did"
-	case tense == "present" && number == "plural":
+	case tense == "present" && englishDoAuxiliaryMatches("do", person, number):
 		expectedAuxiliary = "do"
-	case tense == "present" && number == "singular":
+	case tense == "present" && englishDoAuxiliaryMatches("does", person, number):
 		expectedAuxiliary = "does"
 	default:
 		return false
 	}
 	if auxiliary != expectedAuxiliary ||
-		!variantHasFeatureCondition(compiled.Variant, subjectSlot.ID, "person", "third") ||
-		!variantHasFeatureCondition(compiled.Variant, subjectSlot.ID, "noun_number", number) ||
+		!englishVariantHasSubjectPersonCondition(compiled.Variant, subjectSlot.ID, person) ||
+		!englishVariantHasSubjectNumberCondition(compiled.Variant, subjectSlot.ID, number) ||
 		!variantHasFeatureCondition(compiled.Variant, predicate.ID, "tense", tense) {
 		return false
 	}
@@ -637,21 +709,92 @@ func englishApprovedSourceOnlyNegativeVariant(
 	if !approvedBinding {
 		return false
 	}
-	byID := phraseCandidatesByID(candidates)
-	subjectCandidateCount := 0
 	for _, slot := range alternative.Slots {
 		if slot.SlotID != subjectSlot.ID {
 			continue
 		}
 		for _, candidateID := range slot.CandidateIDs {
 			candidate, found := byID[candidateID]
-			if !found || string(candidate.Features["person"]) != "third" || string(candidate.Features["noun_number"]) != number {
+			candidatePerson, candidateNumber := englishCandidateAgreement(candidate)
+			if !found || candidatePerson != person || number != "" && candidateNumber != number {
 				return false
 			}
-			subjectCandidateCount++
 		}
 	}
-	return subjectCandidateCount > 0
+	return true
+}
+
+// englishAlternativeUnresolvedSlotsAreBound permits unresolved feature or
+// agreement evidence only when each affected slot still has a concrete phrase
+// candidate. It does not permit missing arguments or unresolved conditions.
+func englishAlternativeUnresolvedSlotsAreBound(alternative parser.ParseAlternative, family construction.ConstructionFamily) bool {
+	if len(alternative.Unresolved) == 0 {
+		return true
+	}
+	slots := make(map[string]parser.SlotBinding, len(alternative.Slots))
+	for _, slot := range alternative.Slots {
+		slots[slot.SlotID] = slot
+	}
+	specs := make(map[string]bool, len(family.SlotSpecs))
+	for _, spec := range family.SlotSpecs {
+		specs[spec.ID] = true
+	}
+	for _, unresolved := range alternative.Unresolved {
+		slot, exists := slots[unresolved]
+		if !specs[unresolved] || !exists || len(slot.CandidateIDs) == 0 {
+			return false
+		}
+	}
+	return true
+}
+
+func englishCandidateAgreement(candidate parser.PhraseCandidate) (string, string) {
+	person := string(candidate.Features["person"])
+	if person == "" {
+		person = string(candidate.Features["pronoun_person"])
+	}
+	if person == "" {
+		person = "third"
+	}
+	number := string(candidate.Features["number"])
+	if number == "" {
+		number = string(candidate.Features["noun_number"])
+	}
+	if number == "" {
+		number = string(candidate.Features["pronoun_number"])
+	}
+	return person, number
+}
+
+func englishVariantHasSubjectNumberCondition(variant construction.Variant, slot, number string) bool {
+	found := false
+	for _, condition := range variant.Conditions {
+		if condition.Kind != construction.ConditionFeatureEquals || condition.SlotID != slot {
+			continue
+		}
+		if condition.Feature == "noun_number" || condition.Feature == "pronoun_number" || condition.Feature == "number" {
+			found = true
+			if number == "" || string(condition.Value) != number {
+				return false
+			}
+		}
+	}
+	return !found || number != ""
+}
+
+func englishVariantHasSubjectPersonCondition(variant construction.Variant, slot, person string) bool {
+	found := false
+	for _, condition := range variant.Conditions {
+		if condition.Kind != construction.ConditionFeatureEquals || condition.SlotID != slot ||
+			condition.Feature != "person" && condition.Feature != "pronoun_person" {
+			continue
+		}
+		found = true
+		if person == "" || string(condition.Value) != person {
+			return false
+		}
+	}
+	return !found || person != ""
 }
 
 func variantHasFeatureCondition(variant construction.Variant, slot, feature, value string) bool {
@@ -1788,9 +1931,10 @@ func cloneEnglishPredicateAlternatives(source map[ids.SenseID][]map[features.Fea
 }
 
 type englishDeterminerNPBuilder struct {
-	inner    runtime.SimplePhraseEvidenceBuilder
-	lexicon  *lexicon.Index
-	resolver englishNegationResolver
+	inner           runtime.SimplePhraseEvidenceBuilder
+	lexicon         *lexicon.Index
+	resolver        englishNegationResolver
+	predicateSenses map[ids.SenseID]bool
 }
 
 func englishAttributionArticleForPhrase(candidate parser.PhraseCandidate, index *lexicon.Index) (string, bool) {
@@ -1838,7 +1982,7 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 			if englishNegationAuxiliaryCandidate(lattice, candidate) {
 				continue
 			}
-			route, number, tense, negated := builder.resolver.negatedPredicateContext(lattice, candidate, candidates)
+			route, person, number, tense, negated := builder.resolver.negatedPredicateContext(lattice, candidate, candidates)
 			whDoSupport := englishWHDoSupportContext(lattice, candidate)
 			whDoPerson, whDoNumber := "", ""
 			if whDoSupport {
@@ -1853,11 +1997,14 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 					continue
 				}
 				// In this exact auxiliary context, the imperative cell supplies
-				// the English base surface; do-support carries person and number.
+				// the English base surface; do-support carries available agreement.
 				candidate.Features = map[features.FeatureID]features.FeatureValueID{
-					"verb_form": "base", "tense": features.FeatureValueID(tense), "person": "third",
-					"number": features.FeatureValueID(number), "verb_number": features.FeatureValueID(number),
+					"verb_form": "base", "tense": features.FeatureValueID(tense), "person": features.FeatureValueID(person),
 					"mood": "indicative", "voice": "active",
+				}
+				if number != "" {
+					candidate.Features["number"] = features.FeatureValueID(number)
+					candidate.Features["verb_number"] = features.FeatureValueID(number)
 				}
 				negatedBaseSeen[candidate.TokenStart] = true
 			}
@@ -1866,11 +2013,14 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 				// person and number of its parsed subject on the base verb evidence.
 				candidate.Features = map[features.FeatureID]features.FeatureValueID{
 					"verb_form": "base", "tense": "present", "person": features.FeatureValueID(whDoPerson),
-					"number": features.FeatureValueID(whDoNumber), "verb_number": features.FeatureValueID(whDoNumber),
 					"mood": "indicative", "voice": "active",
 				}
+				if whDoNumber != "" {
+					candidate.Features["number"] = features.FeatureValueID(whDoNumber)
+					candidate.Features["verb_number"] = features.FeatureValueID(whDoNumber)
+				}
 			}
-			if !supportedEnglishPredicateRoute(candidate) && (!negated || candidate.LexemeID.String() != route.lexeme) && !whDoSupport {
+			if !supportedEnglishPredicateRoute(candidate, builder.predicateSenses) && (!negated || candidate.LexemeID.String() != route.lexeme) && !whDoSupport {
 				continue
 			}
 			if !englishPersonalAgreementCandidate(candidate, candidates) {
@@ -2055,7 +2205,28 @@ func containsEnglishSenseName(senses []ids.SenseID, expected string) bool {
 	return false
 }
 
-func supportedEnglishPredicateRoute(candidate parser.PhraseCandidate) bool {
+func approvedEnglishPredicateSenses(index *valency.Index, packages []construction.CompiledConstructionPackage) map[ids.SenseID]bool {
+	result := make(map[ids.SenseID]bool)
+	if index == nil {
+		return result
+	}
+	parseVariants := make(map[string]bool)
+	for _, pkg := range packages {
+		for _, variant := range pkg.Package.Variants {
+			if variant.DirectionPolicy == construction.DirectionBoth || variant.DirectionPolicy == construction.DirectionAnalyze {
+				parseVariants[pkg.Package.Family.ID.String()+"\x00"+variant.ID.String()] = true
+			}
+		}
+	}
+	for _, binding := range index.Bindings() {
+		if binding.Approved && parseVariants[binding.FamilyID.String()+"\x00"+binding.VariantID.String()] {
+			result[binding.SenseID] = true
+		}
+	}
+	return result
+}
+
+func supportedEnglishPredicateRoute(candidate parser.PhraseCandidate, approvedSenses map[ids.SenseID]bool) bool {
 	if candidate.Features["verb_form"] != "finite" {
 		return false
 	}
@@ -2068,14 +2239,14 @@ func supportedEnglishPredicateRoute(candidate parser.PhraseCandidate) bool {
 		if candidate.Features["verb_number"] != "singular" && candidate.Features["verb_number"] != "plural" {
 			return false
 		}
-		for _, sense := range candidate.SenseIDs {
-			if sense.String() == "sense:en.see.visual" || sense.String() == "sense:en.hear.auditory" || sense.String() == "sense:en.read.text" {
-				return true
-			}
-		}
-		return person == "third"
 	case "past":
-		return true
+	default:
+		return false
+	}
+	for _, sense := range candidate.SenseIDs {
+		if approvedSenses[sense] {
+			return true
+		}
 	}
 	return false
 }

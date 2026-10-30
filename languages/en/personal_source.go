@@ -15,7 +15,8 @@ func addEnglishPersonalReferences(e runtime.CompositionEvidence, candidates []pa
 			continue
 		}
 		for _, alt := range node.Alternatives {
-			if alt.FamilyID.String() != "construction:en.transitive_personal" {
+			family := alt.FamilyID.String()
+			if family != "construction:en.transitive_personal" && family != "construction:en.transitive_negative" {
 				continue
 			}
 			for _, slot := range alt.Slots {

@@ -108,6 +108,13 @@ var polishLexicalReviewBatch1Source = provenance.SourceRef{
 	Version: "2026-10-23-batch-01", License: "unknown", Author: "codex-owner-delegated",
 }
 
+var polishHaveLexicalSource = provenance.SourceRef{
+	ID: "golingua-issue-476-have-core", URI: "https://github.com/clickbytes/golingua/issues/476#issuecomment-6526225671",
+	Version: "2026-10-30", License: "internal", Author: "Codex by owner delegation",
+}
+
+var polishApprovedHaveSenses = map[string]struct{}{"pl.miec.possession": {}}
+
 var polishApprovedLexicalSenses = map[string]struct{}{
 	"pl.osoba.person": {}, "pl.dziecko.person": {}, "pl.dorosly.person": {},
 	"pl.lekarz.role": {}, "pl.pacjent.medical": {}, "pl.zwierze.animal": {},
@@ -641,6 +648,7 @@ var polishFrameBySense = map[string]lexicon.ValencyID{
 }
 
 var polishAdditionalFramesBySense = map[string][]lexicon.ValencyID{
+	"pl.miec.possession": {"pl.miec.possession.personal", "pl.miec.possession.personal.negative"},
 	"pl.pisac.write": {
 		"pl.pisac.write.message_only",
 		"pl.pisac.write.recipient_only",
@@ -649,6 +657,7 @@ var polishAdditionalFramesBySense = map[string][]lexicon.ValencyID{
 }
 
 var polishParadigmByLexeme = map[string]string{
+	"pl.miec.v":            "pl_verb_miec_personal",
 	"pl.rozmawiac.v":       "pl_verb_rozmawiac_present_3sg_3pl",
 	"pl.dac.v":             "pl_verb_dac_past_3sg_masculine",
 	"pl.lubic.v":           "pl_verb_lubic_present_3sg_3pl",
@@ -865,6 +874,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishLexicalReviewBatch1Source
+				}
+				if _, approved := polishApprovedHaveSenses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishHaveLexicalSource
 				}
 				if _, approved := polishApprovedLexicalBatch2Senses[senseID.Symbol().Name]; approved {
 					binding.Mapping = lexicon.MappingEquivalent

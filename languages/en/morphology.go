@@ -118,6 +118,8 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 			principalParts = finiteEnglishPrincipalParts(lexeme, "go", "goes", "went", "gone", "going")
 		case "lexeme:en.give.v":
 			principalParts = finiteEnglishPrincipalParts(lexeme, "give", "gives", "gave", "given", "giving")
+		case "lexeme:en.have.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "have", "has", "had", "had", "having")
 		case "lexeme:en.do.aux":
 			principalParts = finiteEnglishPrincipalParts(lexeme, "do", "does", "did", "done", "doing")
 		case "lexeme:en.buying.v":
