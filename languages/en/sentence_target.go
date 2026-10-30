@@ -1198,13 +1198,21 @@ func (builder englishSentencePlanAnnotations) AnnotationAlternatives(ctx context
 	}
 	negativeRoute := selected.Frame.ID == "en.give.transfer.negative" && selected.Family.Family.ID.String() == "construction:en.ditransitive_negative"
 	positiveRoute := selected.Frame.ID == "en.give.transfer.past" && selected.Family.Family.ID.String() == "construction:en.give.transfer.past"
-	if source.Meaning == nil || selected.Kind != meaning.KindEvent || selected.Sense.ID.String() != "sense:en.give.transfer" ||
-		(!positiveRoute && !negativeRoute) || selected.TransferBinding.CoreRef.String() != "concept:giving" {
+	writingMessagePastRoute := selected.Sense.ID.String() == "sense:en.writing_message.event" && selected.Frame.ID == "en.writing_message.full" &&
+		selected.Family.Family.ID.String() == "construction:en.give.transfer.past" && selected.CompiledVariant.Variant.ID.String() == englishGivingLocalToPPNPVariant
+	if source.Meaning == nil || selected.Kind != meaning.KindEvent ||
+		(!positiveRoute && !negativeRoute && !writingMessagePastRoute) ||
+		selected.Sense.ID.String() != "sense:en.give.transfer" && !writingMessagePastRoute ||
+		selected.TransferBinding.CoreRef.String() != "concept:giving" && !writingMessagePastRoute {
 		return nil, fmt.Errorf("NP-local determiner alternatives require the exact approved past giving candidate")
 	}
 	event, exists := englishMeaningNode(source, selected.NodeID)
-	if !exists || event.Kind != meaning.KindEvent || event.TemporalFrame != meaning.TemporalFramePast {
-		return nil, fmt.Errorf("NP-local determiner alternatives require a past giving Meaning event")
+	wantConcept := meaning.ConceptRef("concept:giving")
+	if writingMessagePastRoute {
+		wantConcept = "concept:writing_message"
+	}
+	if !exists || event.Kind != meaning.KindEvent || event.Concept != wantConcept || event.TemporalFrame != meaning.TemporalFramePast {
+		return nil, fmt.Errorf("NP-local determiner alternatives require a compatible past Meaning event")
 	}
 	if negativeRoute {
 		_, negatedEvent, route, negated := builder.resolver.negatedPresent(source)
@@ -1213,6 +1221,9 @@ func (builder englishSentencePlanAnnotations) AnnotationAlternatives(ctx context
 		}
 	}
 	roleSlots, ok := englishRequiredFrameRoleSlots(selected)
+	if writingMessagePastRoute {
+		roleSlots, ok = englishWritingMessagePastRoleSlots(selected)
+	}
 	if !ok {
 		return nil, fmt.Errorf("NP-local determiner alternatives require complete frame slot bindings")
 	}
@@ -1259,6 +1270,12 @@ func (builder englishSentencePlanAnnotations) AnnotationAlternatives(ctx context
 		switch sourceDeterminer {
 		case "":
 			choice.values = []string{"indefinite", "definite"}
+		case "bare":
+			if !writingMessagePastRoute {
+				return nil, fmt.Errorf("NP-local English %s article cannot preserve source determiner value %q", localSlot, sourceDeterminer)
+			}
+			choice.values = []string{"indefinite", "definite"}
+			choice.assume = true
 		case "indefinite", "definite":
 			choice.values = []string{sourceDeterminer}
 		default:
@@ -1645,6 +1662,11 @@ func englishSimplePastEventTarget(resolver englishNegationResolver, source seman
 	}
 	if family == "construction:en.give.transfer.past" && selected.Sense.ID.String() == "sense:en.give.transfer" && selected.Frame.ID == "en.give.transfer.past" && englishSimplePastGivingVariant(variant) {
 		return !englishMeaningHasScope(source, predicate.ID)
+	}
+	if family == "construction:en.give.transfer.past" && selected.Sense.ID.String() == "sense:en.writing_message.event" &&
+		selected.Frame.ID == "en.writing_message.full" && variant == englishGivingLocalToPPNPVariant {
+		_, valid := englishWritingMessagePastRoleSlots(selected)
+		return valid && !englishMeaningHasScope(source, predicate.ID)
 	}
 	if family == "construction:en.transitive_past" {
 		return !englishMeaningHasScope(source, predicate.ID)
@@ -2740,15 +2762,39 @@ func englishGivingTargetCandidateAllowed(source semantic.MeaningCandidate, candi
 	case candidate.Sense.ID.String() == "sense:en.selling.event" && candidate.Frame.ID == "en.selling.event.commerce" && strings.HasPrefix(candidate.CompiledVariant.Variant.ID.String(), "construction:en.give.transfer.to_pp."):
 		roleSlots = map[meaning.Role]string{"seller": "subject", "buyer": "recipient", "goods": "theme"}
 	case candidate.Sense.ID.String() == "sense:en.writing_message.event" && candidate.Frame.ID == "en.writing_message.full" && strings.HasPrefix(candidate.CompiledVariant.Variant.ID.String(), "construction:en.give.transfer.to_pp."):
+		predicate, ok := englishMeaningNode(source, candidate.NodeID)
+		if !ok || predicate.Kind != meaning.KindEvent || predicate.Concept != "concept:writing_message" || predicate.TemporalFrame == meaning.TemporalFramePast ||
+			candidate.Family.Family.ID.String() != "construction:en.give.transfer" {
+			return false
+		}
 		roleSlots = map[meaning.Role]string{"writer": "subject", "message": "theme", "recipient": "recipient"}
+	case candidate.Sense.ID.String() == "sense:en.writing_message.event" && candidate.Frame.ID == "en.writing_message.full" &&
+		candidate.Family.Family.ID.String() == "construction:en.give.transfer.past" && candidate.CompiledVariant.Variant.ID.String() == englishGivingLocalToPPNPVariant:
+		predicate, ok := englishMeaningNode(source, candidate.NodeID)
+		if !ok || predicate.Kind != meaning.KindEvent || predicate.Concept != "concept:writing_message" || predicate.TemporalFrame != meaning.TemporalFramePast {
+			return false
+		}
+		var valid bool
+		roleSlots, valid = englishWritingMessagePastRoleSlots(candidate)
+		if !valid {
+			return false
+		}
 	default:
 		return false
 	}
 	if englishGivingLocalNPVariantID(candidate.CompiledVariant.Variant.ID.String()) {
-		var ok bool
-		roleSlots, ok = englishRequiredFrameRoleSlots(candidate)
-		if !ok {
-			return false
+		if candidate.Sense.ID.String() == "sense:en.writing_message.event" {
+			var valid bool
+			roleSlots, valid = englishWritingMessagePastRoleSlots(candidate)
+			if !valid {
+				return false
+			}
+		} else {
+			var valid bool
+			roleSlots, valid = englishRequiredFrameRoleSlots(candidate)
+			if !valid {
+				return false
+			}
 		}
 	}
 	predicate, ok := englishMeaningNode(source, candidate.NodeID)
@@ -2816,7 +2862,8 @@ func englishGivingTargetCandidateAllowed(source semantic.MeaningCandidate, candi
 			}
 			if values, found := runtime.SourceFeatures(source, role, coreConcept(referent)); found {
 				sourceDeterminer := string(values["determiner"])
-				if sourceDeterminer != "" && sourceDeterminer != "definite" && sourceDeterminer != "indefinite" {
+				if sourceDeterminer != "" && sourceDeterminer != "definite" && sourceDeterminer != "indefinite" &&
+					!(candidate.Sense.ID.String() == "sense:en.writing_message.event" && sourceDeterminer == "bare") {
 					return false
 				}
 				if sourceDeterminer == "indefinite" && (articleForm != "a" && articleForm != "an") {
@@ -2839,17 +2886,74 @@ func englishGivingTargetCandidateAllowed(source semantic.MeaningCandidate, candi
 	return true
 }
 
+func englishWritingMessagePastRoleSlots(candidate realizer.TargetCandidate) (map[meaning.Role]string, bool) {
+	if candidate.Sense.ID.String() != "sense:en.writing_message.event" || candidate.Frame.ID != "en.writing_message.full" ||
+		candidate.Frame.SenseID != candidate.Sense.ID || candidate.Family.Family.ID.String() != "construction:en.give.transfer.past" ||
+		candidate.Family.Family.Language != "en" || candidate.TransferBinding.SenseID != candidate.Sense.ID ||
+		candidate.TransferBinding.CoreRef.String() != "concept:writing_message" || !candidate.TransferBinding.TransferAuthorized() ||
+		candidate.Outcome != status.OutcomeOK || len(candidate.MissingOmittedRoles) != 0 || len(candidate.Frame.SurfaceOmittedRoles) != 0 ||
+		candidate.CompiledVariant.FamilyID != candidate.Family.Family.ID || candidate.CompiledVariant.Variant.FamilyID != candidate.Family.Family.ID ||
+		candidate.CompiledVariant.Variant.ID.String() != englishGivingLocalToPPNPVariant ||
+		candidate.CompiledVariant.Variant.DirectionPolicy != construction.DirectionRealize ||
+		candidate.ConstructionBinding.SenseID != candidate.Sense.ID || candidate.ConstructionBinding.ValencyFrameID != candidate.Frame.ID ||
+		candidate.ConstructionBinding.FamilyID != candidate.Family.Family.ID || candidate.ConstructionBinding.VariantID.String() != candidate.CompiledVariant.Variant.ID.String() ||
+		!candidate.ConstructionBinding.Approved || candidate.Frame.Validate() != nil || candidate.Family.Family.Validate() != nil ||
+		candidate.CompiledVariant.Variant.Validate(candidate.Family.Family) != nil || !valencyFrameAllowsFamily(candidate.Frame, candidate.Family.Family.ID) {
+		return nil, false
+	}
+	wantRoles := map[meaning.Role]bool{"writer": true, "message": true, "recipient": true}
+	if len(candidate.Frame.SemanticRoles) != len(wantRoles) || len(candidate.Frame.Arguments) != len(wantRoles) {
+		return nil, false
+	}
+	seenRoles := make(map[meaning.Role]bool, len(candidate.Frame.SemanticRoles))
+	for _, role := range candidate.Frame.SemanticRoles {
+		if !wantRoles[role] || seenRoles[role] {
+			return nil, false
+		}
+		seenRoles[role] = true
+	}
+	wantArguments := map[string]struct {
+		role       meaning.Role
+		function   string
+		adposition string
+	}{
+		"subject":   {role: "writer", function: "subject"},
+		"theme":     {role: "message", function: "object"},
+		"recipient": {role: "recipient", function: "oblique", adposition: "to"},
+	}
+	roleSlots := make(map[meaning.Role]string, len(wantArguments))
+	for _, argument := range candidate.Frame.Arguments {
+		want, exists := wantArguments[argument.ID]
+		if !exists || roleSlots[argument.Role] != "" || argument.Role != want.role || !argument.Required ||
+			argument.GrammaticalFunction != want.function || argument.Adposition != want.adposition {
+			return nil, false
+		}
+		roleSlots[argument.Role] = argument.ID
+	}
+	if len(roleSlots) != len(wantArguments) {
+		return nil, false
+	}
+	return roleSlots, true
+}
+
 func englishGivingLocalNPCandidateAllowed(source semantic.MeaningCandidate, candidate realizer.TargetCandidate) bool {
 	negativeRoute := candidate.Family.Family.ID.String() == "construction:en.ditransitive_negative" && candidate.Frame.ID == "en.give.transfer.negative"
 	positiveRoute := candidate.Family.Family.ID.String() == "construction:en.give.transfer.past" && candidate.Frame.ID == "en.give.transfer.past"
-	if source.Meaning == nil || candidate.Kind != meaning.KindEvent || candidate.Sense.ID.String() != "sense:en.give.transfer" ||
-		candidate.TransferBinding.CoreRef.String() != "concept:giving" || (!positiveRoute && !negativeRoute) || candidate.Outcome != status.OutcomeOK ||
+	writingMessagePastRoute := candidate.Sense.ID.String() == "sense:en.writing_message.event" && candidate.Frame.ID == "en.writing_message.full" &&
+		candidate.Family.Family.ID.String() == "construction:en.give.transfer.past" && candidate.CompiledVariant.Variant.ID.String() == englishGivingLocalToPPNPVariant
+	if source.Meaning == nil || candidate.Kind != meaning.KindEvent || (!positiveRoute && !negativeRoute && !writingMessagePastRoute) ||
+		candidate.Sense.ID.String() != "sense:en.give.transfer" && !writingMessagePastRoute ||
+		candidate.TransferBinding.CoreRef.String() != "concept:giving" && !writingMessagePastRoute || candidate.Outcome != status.OutcomeOK ||
 		candidate.CompiledVariant.Variant.DirectionPolicy != construction.DirectionRealize ||
 		!englishGivingLocalNPVariantID(candidate.CompiledVariant.Variant.ID.String()) {
 		return false
 	}
 	event, exists := englishMeaningNode(source, candidate.NodeID)
-	if !exists || event.Kind != meaning.KindEvent || event.Concept != "concept:giving" || event.TemporalFrame != meaning.TemporalFramePast {
+	wantConcept := meaning.ConceptRef("concept:giving")
+	if writingMessagePastRoute {
+		wantConcept = "concept:writing_message"
+	}
+	if !exists || event.Kind != meaning.KindEvent || event.Concept != wantConcept || event.TemporalFrame != meaning.TemporalFramePast {
 		return false
 	}
 	if negativeRoute {
@@ -2859,6 +2963,9 @@ func englishGivingLocalNPCandidateAllowed(source semantic.MeaningCandidate, cand
 		}
 	}
 	roleSlots, ok := englishRequiredFrameRoleSlots(candidate)
+	if writingMessagePastRoute {
+		roleSlots, ok = englishWritingMessagePastRoleSlots(candidate)
+	}
 	if !ok {
 		return false
 	}

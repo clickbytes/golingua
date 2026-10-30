@@ -657,6 +657,14 @@ func englishWritingMessagePastBindingDeclarations() []constructionBindingDeclara
 	} {
 		bindings = append(bindings, constructionBindingDeclaration{"en.writing_message.event", "en.writing_message.message_only", "en.transitive_past", "en.transitive_past." + variant})
 	}
+	bindings = append(bindings, constructionBindingDeclaration{
+		"en.writing_message.event", "en.writing_message.full", "en.give.transfer.past",
+		"en.give.transfer.past.to_pp.compact_articles",
+	})
+	bindings = append(bindings, constructionBindingDeclaration{
+		"en.writing_message.event", "en.writing_message.full", "en.give.transfer.past",
+		"en.give.transfer.past.to_pp.np_local_subject_theme_recipient",
+	})
 	return bindings
 }
 
@@ -1690,6 +1698,12 @@ func CompileValency() (*valency.Index, error) {
 				return nil, fmt.Errorf("English negative writing-message frame family: %w", err)
 			}
 			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
+		case "en.writing_message.full":
+			pastFamilyID, err := ids.NewConstructionID("en.give.transfer.past")
+			if err != nil {
+				return nil, fmt.Errorf("English past full writing-message frame family: %w", err)
+			}
+			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, pastFamilyID)
 		case "en.be.class_membership.frame":
 			negativeFamilyID, err := ids.NewConstructionID("en.identification_negative")
 			if err != nil {
