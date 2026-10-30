@@ -2,12 +2,12 @@
 
 > Observational report generated on push to `main`. Matrix outcomes do not gate the technical `go-ci` workflow.
 
-- Source SHA: `7d7635e4ee7f93f982fe524836707783935c429b`
-- Generated (UTC): `2026-10-30T23:07:38Z`
+- Source SHA: `09357036469af82677c5f347ab003f07f364b8cb`
+- Generated (UTC): `2026-10-30T23:23:12Z`
 - Command: `go test ./tests/... -count=1 -v`
 - Command exit code: `1` (NONZERO)
 - Registered records: 1000; record checks: 3000
-- Additional observed checks: 279
+- Additional observed checks: 290
 
 | Case ID | Direction | Analysis | Realization | Integration | Declared coverage tags |
 |---|---|---|---|---|---|
@@ -15,9 +15,9 @@
 | `A1-AC-002-PL-EN` | PL → EN | PASS | PASS | PASS | participant_roles, semantic_predicate, valency |
 | `A1-AC-003-EN-PL` | EN → PL | PASS | FAIL | FAIL | participant_roles, semantic_predicate, valency |
 | `A1-AC-004-PL-EN` | PL → EN | PASS | PASS | PASS | participant_roles, semantic_predicate, valency |
-| `A1-ID-001-EN-PL` | EN → PL | PASS | FAIL | FAIL | determiner_ambiguity, reference, semantic_classification |
+| `A1-ID-001-EN-PL` | EN → PL | PASS | PASS | PASS | determiner_ambiguity, reference, semantic_classification |
 | `A1-ID-002-PL-EN` | PL → EN | PASS | PASS | PASS | determiner_ambiguity, reference, semantic_classification |
-| `A1-ID-003-EN-PL` | EN → PL | PASS | FAIL | FAIL | reference, semantic_property_black |
+| `A1-ID-003-EN-PL` | EN → PL | PASS | PASS | PASS | reference, semantic_property_black |
 | `A1-ID-004-PL-EN` | PL → EN | PASS | PASS | PASS | reference, semantic_property_black |
 | `A1-LQ-001-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | locative, semantic_location |
 | `A1-LQ-002-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | case, locative, semantic_location |
@@ -26,7 +26,7 @@
 | `A1-NEG-001-EN-PL` | EN → PL | PASS | PASS | PASS | clause_negation, semantic_polarity_scope |
 | `A1-NEG-002-PL-EN` | PL → EN | PASS | PASS | PASS | clause_negation, semantic_polarity_scope |
 | `A1-NEG-003-EN-PL` | EN → PL | PASS | FAIL | FAIL | clause_negation, semantic_polarity_scope |
-| `A1-NEG-004-PL-EN` | PL → EN | PASS | PASS | FAIL | clause_negation, semantic_polarity_scope |
+| `A1-NEG-004-PL-EN` | PL → EN | PASS | PASS | PASS | clause_negation, semantic_polarity_scope |
 | `A1-PO-001-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | case, participant_roles, semantic_possession, valency |
 | `A1-PO-002-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | case, participant_roles, semantic_possession, valency |
 | `A1-PO-003-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | case, participant_roles, semantic_possession, valency |
@@ -565,71 +565,71 @@
 | `A1.4-AC-492-PL-EN` | PL → EN | GAP_ANALYZE | PASS | FAIL | participant_roles, semantic_event, valency |
 | `A1.4-AC-493-EN-PL` | EN → PL | FAIL | GAP_REALIZE | FAIL | participant_roles, semantic_event, valency |
 | `A1.4-AC-494-PL-EN` | PL → EN | FAIL | GAP_REALIZE | FAIL | participant_roles, semantic_event, valency |
-| `A1.5-ID-501-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-501-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-502-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-503-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-503-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-504-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-505-EN-PL` | EN → PL | FAIL | FAIL | FAIL | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-505-EN-PL` | EN → PL | FAIL | PASS | FAIL | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-506-PL-EN` | PL → EN | FAIL | PASS | FAIL | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-507-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-507-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-508-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-509-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-509-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-510-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-511-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-511-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-512-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-513-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-513-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-514-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-515-EN-PL` | EN → PL | FAIL | FAIL | GAP_ANALYZE | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-515-EN-PL` | EN → PL | FAIL | PASS | GAP_ANALYZE | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-516-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-517-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-517-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-518-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-519-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-519-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-520-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-521-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-521-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-522-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-523-EN-PL` | EN → PL | FAIL | FAIL | FAIL | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-523-EN-PL` | EN → PL | FAIL | PASS | FAIL | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-524-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-525-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-525-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-526-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-527-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-527-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-528-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-529-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-529-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-530-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-531-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-531-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-532-PL-EN` | PL → EN | FAIL | PASS | FAIL | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-533-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-533-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-534-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-535-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-535-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-536-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-537-EN-PL` | EN → PL | FAIL | FAIL | FAIL | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-537-EN-PL` | EN → PL | FAIL | PASS | FAIL | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-538-PL-EN` | PL → EN | FAIL | PASS | FAIL | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-539-EN-PL` | EN → PL | FAIL | FAIL | GAP_ANALYZE | deictic_reference, reference, semantic_classification |
+| `A1.5-ID-539-EN-PL` | EN → PL | FAIL | PASS | GAP_ANALYZE | deictic_reference, reference, semantic_classification |
 | `A1.5-ID-540-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_classification |
-| `A1.5-ID-541-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, number_morphology, reference, semantic_classification |
+| `A1.5-ID-541-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, number_morphology, reference, semantic_classification |
 | `A1.5-ID-542-PL-EN` | PL → EN | PASS | FAIL | FAIL | deictic_reference, number_morphology, reference, semantic_classification |
-| `A1.5-ID-543-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, number_morphology, reference, semantic_classification |
+| `A1.5-ID-543-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, number_morphology, reference, semantic_classification |
 | `A1.5-ID-544-PL-EN` | PL → EN | PASS | FAIL | FAIL | deictic_reference, number_morphology, reference, semantic_classification |
-| `A1.5-ID-545-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_property_black |
+| `A1.5-ID-545-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_property_black |
 | `A1.5-ID-546-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_property_black |
-| `A1.5-ID-547-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_property_black |
+| `A1.5-ID-547-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_property_black |
 | `A1.5-ID-548-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_property_black |
-| `A1.5-ID-549-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_property_black |
+| `A1.5-ID-549-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_property_black |
 | `A1.5-ID-550-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_property_black |
-| `A1.5-ID-551-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_property_black |
+| `A1.5-ID-551-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_property_black |
 | `A1.5-ID-552-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_property_black |
-| `A1.5-ID-553-EN-PL` | EN → PL | FAIL | FAIL | FAIL | deictic_reference, reference, semantic_property_black |
+| `A1.5-ID-553-EN-PL` | EN → PL | FAIL | PASS | FAIL | deictic_reference, reference, semantic_property_black |
 | `A1.5-ID-554-PL-EN` | PL → EN | FAIL | PASS | FAIL | deictic_reference, reference, semantic_property_black |
-| `A1.5-ID-555-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_property_black |
+| `A1.5-ID-555-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_property_black |
 | `A1.5-ID-556-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_property_black |
-| `A1.5-ID-557-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_property_black |
+| `A1.5-ID-557-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_property_black |
 | `A1.5-ID-558-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_property_black |
-| `A1.5-ID-559-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, reference, semantic_property_black |
+| `A1.5-ID-559-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, reference, semantic_property_black |
 | `A1.5-ID-560-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, reference, semantic_property_black |
-| `A1.5-ID-561-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, number_morphology, reference, semantic_property_black |
+| `A1.5-ID-561-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, number_morphology, reference, semantic_property_black |
 | `A1.5-ID-562-PL-EN` | PL → EN | FAIL | GAP_REALIZE | FAIL | deictic_reference, number_morphology, reference, semantic_property_black |
-| `A1.5-ID-563-EN-PL` | EN → PL | FAIL | FAIL | FAIL | deictic_reference, number_morphology, reference, semantic_property_black |
+| `A1.5-ID-563-EN-PL` | EN → PL | FAIL | PASS | FAIL | deictic_reference, number_morphology, reference, semantic_property_black |
 | `A1.5-ID-564-PL-EN` | PL → EN | FAIL | GAP_REALIZE | FAIL | deictic_reference, number_morphology, reference, semantic_property_black |
-| `A1.5-ID-565-EN-PL` | EN → PL | PASS | FAIL | FAIL | deictic_reference, number_morphology, reference, semantic_classification |
+| `A1.5-ID-565-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, number_morphology, reference, semantic_classification |
 | `A1.5-ID-566-PL-EN` | PL → EN | PASS | FAIL | FAIL | deictic_reference, number_morphology, reference, semantic_classification |
 | `A1.5-ID-567-EN-PL` | EN → PL | PASS | PASS | PASS | deictic_reference, number_morphology, reference, semantic_property_black |
 | `A1.5-ID-568-PL-EN` | PL → EN | PASS | PASS | PASS | deictic_reference, number_morphology, reference, semantic_property_black |
@@ -1081,10 +1081,10 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/known_present_frame_is_unsupported_even_with_At` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/many_experiencer_referent_is_unsupported` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/many_stimulus_referent_is_unsupported` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/one_versus_many` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/one_versus_absent_multiplicity` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/present_versus_past` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/present_versus_absent_frame` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/one_versus_many` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/one_versus_absent_multiplicity` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_null` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_empty` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_unknown` | PASS |
@@ -1093,11 +1093,11 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_unknown` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_frame_on_referent` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_on_predicate` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_changed` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_participant_roles_swapped` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_changed` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/temporal_frames` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/referent_multiplicity` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestNegationExpansionFixturesValidateAndRetainScope` | PASS |
@@ -1186,7 +1186,7 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersPreserveActualEnglishSource/A_mother_reads_a_letter.` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersSeparateNominalAndPersonalReadingSources/I` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersSeparateNominalAndPersonalReadingSources/We` | PASS |
-| `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersSeparateNominalAndPersonalReadingSources/You` | FAIL |
+| `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersSeparateNominalAndPersonalReadingSources/You` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersNegativeIndependentChoices/a1.8.neg.019` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersNegativeIndependentChoices/a1.8.neg.020` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersParticipantsAndThisControl` | PASS |
@@ -1195,6 +1195,10 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersRejectMalformedActualSources/The_teacher_sees_a_dogs.` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersRejectMalformedActualSources/The_teacher_sees_an_dog.` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersRejectMalformedActualSources/The_teacher_sees_a_apple.` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersConcurrentNegativeRealization/request-3` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersConcurrentNegativeRealization/request-2` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersConcurrentNegativeRealization/request-0` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersConcurrentNegativeRealization/request-1` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestCompositionBoundaries/bearer_is_object` | FAIL |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestCompositionBoundaries/bearer_is_second_cat_despite_matching_concept` | FAIL |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestCompositionBoundaries/event_time_absent` | PASS |
@@ -1267,7 +1271,7 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPersonalKnownSpeakerHasOnePolishTarget` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestEnglishYouFixturesKeepCountUnknownAndPolishTargetsRemainIndependent` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPersonalIndependentPastReadingUsesGenderEvidenceAssumptions` | PASS |
-| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPolishPastPersonalSourceGenderRestrictsItsTarget` | FAIL |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPolishPastPersonalSourceGenderRestrictsItsTarget` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestParticipantAnchorMisalignmentFailsClosedForTargets/en/conflicting-same-actor-anchors` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestParticipantAnchorMisalignmentFailsClosedForTargets/en/stale-first-paired-context` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestParticipantAnchorMisalignmentFailsClosedForTargets/en/participant-anchor-on-object` | PASS |
@@ -1276,6 +1280,13 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestParticipantAnchorMisalignmentFailsClosedForTargets/pl/participant-anchor-on-object` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPolishImplicitRoleEvidenceRejectsDuplicateAndStaleProofs/duplicate` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPolishImplicitRoleEvidenceRejectsDuplicateAndStaleProofs/stale-derivation` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPersonalPastSyncreticObjectDoesNotControlSubject/Czytałam_list.` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPersonalPastSyncreticObjectDoesNotControlSubject/Czytałem_list.` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPersonalPastSyncreticObjectDoesNotControlSubject/Czytałaś_list.` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPersonalPastSyncreticObjectDoesNotControlSubject/Czytałeś_list.` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPersonalPastSyncreticObjectDoesNotControlSubject/Ty_czytałam_list.` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPersonalPastSyncreticObjectDoesNotControlSubject/Ja_czytałaś_list.` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPersonalPastSyncreticObjectDoesNotControlSubject/Wy_czytałam_list.` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPastSeeingIndependentIToPolish/a1.10.time.017.en` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPastSeeingIndependentIToPolish/a1.10.time.018.en` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPastSeeingPolishSourceAndAgreement/Nauczyciel_widział_psa.` | PASS |
@@ -1344,7 +1355,7 @@ Packages with no observed test run are reported as infrastructure/build failures
 | Package | Go summary | Observed test names |
 |---|---|---|
 | `github.com/clickbytes/golingua/tests/interlingua` | FAIL | 72 |
-| `github.com/clickbytes/golingua/tests/languages/en/A1` | FAIL | 123 |
+| `github.com/clickbytes/golingua/tests/languages/en/A1` | FAIL | 128 |
 | `github.com/clickbytes/golingua/tests/languages/en/A1.1` | FAIL | 43 |
 | `github.com/clickbytes/golingua/tests/languages/en/A1.10` | FAIL | 116 |
 | `github.com/clickbytes/golingua/tests/languages/en/A1.11` | FAIL | 86 |
@@ -1358,7 +1369,7 @@ Packages with no observed test run are reported as infrastructure/build failures
 | `github.com/clickbytes/golingua/tests/languages/en/A1.7` | FAIL | 98 |
 | `github.com/clickbytes/golingua/tests/languages/en/A1.8` | FAIL | 92 |
 | `github.com/clickbytes/golingua/tests/languages/en/A1.9` | FAIL | 118 |
-| `github.com/clickbytes/golingua/tests/languages/pl/A1` | FAIL | 140 |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | FAIL | 148 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.1` | FAIL | 43 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.10` | FAIL | 116 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.11` | FAIL | 86 |
@@ -1487,13 +1498,12 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 | identification | en → pl | analysis | FAIL | 7 |
 | identification | en → pl | analysis | GAP_I | 4 |
 | identification | en → pl | analysis | PASS | 29 |
-| identification | en → pl | integration | FAIL | 33 |
+| identification | en → pl | integration | FAIL | 5 |
 | identification | en → pl | integration | GAP_ANALYZE | 2 |
 | identification | en → pl | integration | GAP_I | 4 |
-| identification | en → pl | integration | PASS | 1 |
-| identification | en → pl | realization | FAIL | 35 |
+| identification | en → pl | integration | PASS | 29 |
 | identification | en → pl | realization | GAP_I | 4 |
-| identification | en → pl | realization | PASS | 1 |
+| identification | en → pl | realization | PASS | 36 |
 | identification | pl → en | analysis | FAIL | 6 |
 | identification | pl → en | analysis | GAP_I | 4 |
 | identification | pl → en | analysis | PASS | 30 |
@@ -1526,11 +1536,11 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 | negation | pl → en | analysis | GAP_ANALYZE | 3 |
 | negation | pl → en | analysis | GAP_I | 9 |
 | negation | pl → en | analysis | PASS | 31 |
-| negation | pl → en | integration | FAIL | 14 |
+| negation | pl → en | integration | FAIL | 13 |
 | negation | pl → en | integration | GAP_ANALYZE | 3 |
 | negation | pl → en | integration | GAP_I | 9 |
 | negation | pl → en | integration | GAP_REALIZE | 3 |
-| negation | pl → en | integration | PASS | 21 |
+| negation | pl → en | integration | PASS | 22 |
 | negation | pl → en | realization | FAIL | 13 |
 | negation | pl → en | realization | GAP_I | 9 |
 | negation | pl → en | realization | GAP_REALIZE | 5 |
@@ -1588,7 +1598,7 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 - Sense catalogue associations parsed: 2075 (not morphology execution coverage).
 - Declared Meaning ID references: 1094 allowed; 1094 required.
 - Inventory fields preserve declared tags, source semantics, allowed/required Meaning IDs, and owner status separately from runtime observations.
-- Inventory source SHA `7d7635e4ee7f93f982fe524836707783935c429b`: 1000 directions.
+- Inventory source SHA `09357036469af82677c5f347ab003f07f364b8cb`: 1000 directions.
 
 ### Declared source requirements
 
@@ -1661,7 +1671,7 @@ Aggregates below summarize authored source requirements; they are not observed a
 | `writing_message` | 2 |
 
 Declared role mentions: `agent` 16, `asset` 4, `associate` 4, `associated` 22, `author` 4, `back` 8, `bearer` 24, `beneficiary` 6, `choice_restriction` 2, `companion` 2, `content` 2, `destination` 2, `document` 2, `drinker` 16, `eater` 12, `entity` 2, `existence` 50, `experiencer` 160, `figure` 4, `food` 10, `friend_a` 2, `friend_b` 2, `front` 8, `giver` 20, `helper` 6, `higher` 6, `holder` 50, `instrument` 4, `item` 4, `landmark` 32, `landmark_a` 4, `landmark_b` 4, `liquid` 12, `located` 34, `location` 10, `lower` 6, `manner` 2, `material` 38, `member` 2, `object` 56, `occupant` 6, `owner` 4, `partner` 2, `person_variable` 6, `possessor` 18, `quantified_set` 50, `reader` 38, `reason` 2, `recipient` 24, `runner` 4, `sibling_a` 4, `sibling_b` 4, `sleeper` 22, `source` 2, `speaker` 4, `stimulus` 160, `support` 2, `supported` 2, `target` 4, `thanker` 2, `theme` 20, `time` 4, `tool` 2, `user` 2, `walker` 2, `writer` 2.
-- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "40a329222c6cf7a189325f68d0cef8cc992be702e38997bb5c5a1fe6d9b60f93", "format_version": 1}`; inventory source SHA: `7d7635e4ee7f93f982fe524836707783935c429b`.
+- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "40a329222c6cf7a189325f68d0cef8cc992be702e38997bb5c5a1fe6d9b60f93", "format_version": 1}`; inventory source SHA: `09357036469af82677c5f347ab003f07f364b8cb`.
 
 Catalogue sense associations are not proof that a paradigm form or morphology procedure ran. Aggregates below describe declared pack associations only.
 
@@ -1949,23 +1959,21 @@ Observed top-level outcomes by runtime stage; these do not replace check statuse
 | context_source_analysis | incomplete | 15 |
 | context_source_analysis | ok | 79 |
 | context_source_analysis | unsupported | 52 |
-| direct_result |  | 1 |
-| direct_result | ambiguous | 46 |
+| direct_result | ambiguous | 47 |
 | direct_result | incomplete | 20 |
 | direct_result | ok | 68 |
 | direct_result | resource_limit | 1 |
 | direct_result | unsupported | 36 |
 | independent_realization |  | 7 |
 | independent_realization | ambiguous | 410 |
-| independent_realization | incomplete | 119 |
-| independent_realization | ok | 111 |
+| independent_realization | incomplete | 154 |
+| independent_realization | ok | 76 |
 | independent_realization | resource_limit | 10 |
 | independent_realization | unsupported | 105 |
 | integration | ambiguous | 370 |
 | integration | error | 2 |
-| integration | incomplete | 163 |
-| integration | ok | 37 |
-| integration | resource_limit | 1 |
+| integration | incomplete | 195 |
+| integration | ok | 6 |
 | integration | unknown | 2 |
 | integration | unsupported | 425 |
 | native_analysis | ambiguous | 82 |
@@ -2428,7 +2436,7 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.vp_auxiliary` | `en.have.possession.transitive` | ok | 3 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.vp_auxiliary` | `en.hear.auditory.transitive` | ok | 10 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.vp_auxiliary` | `en.read.text.transitive` | ok | 6 |
-| `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.vp_auxiliary` | `en.see.visual.transitive` | ok | 13 |
+| `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.vp_auxiliary` | `en.see.visual.transitive` | ok | 14 |
 | `construction:en.transitive_past` | `construction:en.transitive_past.svo` | `en.drinking.transitive` | ok | 4 |
 | `construction:en.transitive_past` | `construction:en.transitive_past.svo` | `en.eating.transitive` | ok | 4 |
 | `construction:en.transitive_past` | `construction:en.transitive_past.svo` | `en.get.receive.transitive` | ok | 17 |
@@ -2470,11 +2478,11 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.reading.second` | `en.read.text.transitive` | ok | 6 |
 | `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.second` | `en.have.possession.transitive` | ok | 6 |
 | `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.second` | `en.hear.auditory.transitive` | ok | 10 |
-| `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.second` | `en.read.text.transitive` | ok | 10 |
+| `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.second` | `en.read.text.transitive` | ok | 11 |
 | `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.second` | `en.see.visual.transitive` | ok | 10 |
 | `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.second.indefinite_object` | `en.have.possession.transitive` | ok | 2 |
 | `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.second.indefinite_object` | `en.hear.auditory.transitive` | ok | 4 |
-| `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.second.indefinite_object` | `en.read.text.transitive` | ok | 4 |
+| `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.second.indefinite_object` | `en.read.text.transitive` | ok | 5 |
 | `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.second.indefinite_object` | `en.see.visual.transitive` | ok | 4 |
 | `construction:en.transitive_personal` | `construction:en.transitive_personal.svo.second.indefinite_object_an` | `en.hear.auditory.transitive` | ok | 2 |
 | `construction:en.transitive_with_oblique` | `construction:en.transitive_with_oblique.svo` | `en.cutting_object.with_instrument` | ok | 3 |
@@ -2687,7 +2695,7 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | Meaning representation | `black` | The question requires an unknown choice variable restricted to book referents and bound to the black bearer role; Question has no such variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-1013-EN-PL`, `A1.9-Q-1014-PL-EN` |
 | Meaning representation | `black` | The source asserts a future event or state, but Meaning.TemporalFrame represents only past or present; the future frame value/operator cannot be represented. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.10-TIME-1103-EN-PL`, `A1.10-TIME-1104-PL-EN` |
 | Meaning representation | `blue` | CORE has black but no blue property predicate; generic color has no bearer role/value, so this sentence has no honest MeaningGraph fixture | EXPLICIT_REALIZATION_ASSUMPTION, TARGET_ALTERNATIVES_AMBIGUOUS | `A1.5-ID-574-PL-EN` |
-| Meaning representation | `blue` | CORE has black but no blue property predicate; generic color has no bearer role/value, so this sentence has no honest MeaningGraph fixture | none observed | `A1.5-ID-573-EN-PL` |
+| Meaning representation | `blue` | CORE has black but no blue property predicate; generic color has no bearer role/value, so this sentence has no honest MeaningGraph fixture | REALIZATION_FIELD_LOSS, TRANSLATION_NOT_OK | `A1.5-ID-573-EN-PL` |
 | Meaning representation | `closing_object` | Meaning v1 request act does not preserve explicit please/politeness; request force alone does not meet the selected full meaning. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.13-COMP-1343-EN-PL`, `A1.13-COMP-1344-PL-EN` |
 | Meaning representation | `conversation` | No reciprocal conversation predicate is licensed; speaking would assert a different one-way event. | EXPLICIT_REALIZATION_ASSUMPTION, TARGET_ALTERNATIVES_AMBIGUOUS | `A1.11-CASE-1180-PL-EN` |
 | Meaning representation | `conversation` | No reciprocal conversation predicate is licensed; speaking would assert a different one-way event. | PARTIAL_PARSE_EVIDENCE, REALIZATION_FIELD_LOSS, UNRESOLVED_ROLE_SENSE | `A1.11-CASE-1179-EN-PL` |
@@ -2763,7 +2771,7 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | Meaning representation | `giving` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-943-EN-PL` |
 | Meaning representation | `giving` | Meaning v1 request act does not preserve explicit please/politeness; neither a bare request nor one child sense represents the selected politeness and child-sense ambiguity. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.13-COMP-1349-EN-PL`, `A1.13-COMP-1350-PL-EN` |
 | Meaning representation | `green` | CORE has black but no green property predicate; generic color has no bearer role/value, so this sentence has no honest MeaningGraph fixture | EXPLICIT_REALIZATION_ASSUMPTION, TARGET_ALTERNATIVES_AMBIGUOUS | `A1.5-ID-576-PL-EN` |
-| Meaning representation | `green` | CORE has black but no green property predicate; generic color has no bearer role/value, so this sentence has no honest MeaningGraph fixture | none observed | `A1.5-ID-575-EN-PL` |
+| Meaning representation | `green` | CORE has black but no green property predicate; generic color has no bearer role/value, so this sentence has no honest MeaningGraph fixture | REALIZATION_FIELD_LOSS, TRANSLATION_NOT_OK | `A1.5-ID-575-EN-PL` |
 | Meaning representation | `have_unspecified` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_PARSE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-985-EN-PL`, `A1.9-Q-986-PL-EN` |
 | Meaning representation | `have_unspecified` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-983-EN-PL`, `A1.9-Q-984-PL-EN`, `A1.9-Q-987-EN-PL`, `A1.9-Q-988-PL-EN` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. | EXPLICIT_REALIZATION_ASSUMPTION, PARTIAL_PARSE_EVIDENCE, TARGET_ALTERNATIVES_AMBIGUOUS, UNRESOLVED_PARSE_EVIDENCE | `A1.6-PO-615-EN-PL` |
@@ -2835,7 +2843,7 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | Meaning representation | `reading` | The source asserts an ongoing progressive event at now; Meaning has no progressive/aspect operator or event-in-progress relation, and temporal_frame cannot encode progressive aspect. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.10-TIME-1105-EN-PL`, `A1.10-TIME-1106-PL-EN` |
 | Meaning representation | `reading` | The source asserts habitual/frequency over repeated events (daily/often); Meaning has no frequency operator or temporal quantification over the event. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.10-TIME-1111-EN-PL`, `A1.10-TIME-1112-PL-EN` |
 | Meaning representation | `red` | CORE has black but no red property predicate; generic color has no bearer role/value, so this sentence has no honest MeaningGraph fixture | EXPLICIT_REALIZATION_ASSUMPTION, PARTIAL_PARSE_EVIDENCE, TARGET_ALTERNATIVES_AMBIGUOUS, UNRESOLVED_ROLE_SENSE | `A1.5-ID-570-PL-EN` |
-| Meaning representation | `red` | CORE has black but no red property predicate; generic color has no bearer role/value, so this sentence has no honest MeaningGraph fixture | PARTIAL_PARSE_EVIDENCE, UNRESOLVED_ROLE_SENSE | `A1.5-ID-569-EN-PL` |
+| Meaning representation | `red` | CORE has black but no red property predicate; generic color has no bearer role/value, so this sentence has no honest MeaningGraph fixture | PARTIAL_PARSE_EVIDENCE, REALIZATION_FIELD_LOSS, UNRESOLVED_ROLE_SENSE | `A1.5-ID-569-EN-PL` |
 | Meaning representation | `reflexive_possessive_association` | CORE has no generic reflexive-possessive association predicate with holder/associated roles. temporary_possession and legal_ownership are KindRelation and cannot substitute for reflexive association. No partial graph is supplied. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-659-EN-PL`, `A1.6-PO-660-PL-EN`, `A1.6-PO-661-EN-PL`, `A1.6-PO-662-PL-EN` |
 | Meaning representation | `running` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-977-EN-PL`, `A1.9-Q-978-PL-EN` |
 | Meaning representation | `sadness` | The negative sadness state requires a bearer role, but CORE sadness has no compatible bearer role; no partial graph substitutes for the complete proposition. | DISAMBIGUATION_INCOMPLETE, EXPLICIT_REALIZATION_ASSUMPTION, TARGET_ALTERNATIVES_AMBIGUOUS | `A1.8-NEG-858-PL-EN` |
@@ -2884,7 +2892,7 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | Meaning representation | `vertical_order` | The full sentence requires the present-time spatial relation vertical_order with roles higher, lower; CORE spatial relation concepts are KindRelation, not Meaning State predicates. A generic located_in relation cannot substitute for this specific relation. Preserve relative higher/lower order without inferring contact or posture. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-715-EN-PL`, `A1.7-LQ-716-PL-EN`, `A1.7-LQ-725-EN-PL`, `A1.7-LQ-726-PL-EN`, `A1.7-LQ-727-EN-PL`, `A1.7-LQ-728-PL-EN` |
 | Meaning representation | `walking` | The input explicitly licenses walking; the WH destination remains unrepresented because Meaning has no typed unknown-variable binding. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-959-EN-PL`, `A1.9-Q-960-PL-EN` |
 | Meaning representation | `white` | CORE has black but no white property predicate; generic color has no bearer role/value, so this sentence has no honest MeaningGraph fixture | EXPLICIT_REALIZATION_ASSUMPTION, TARGET_ALTERNATIVES_AMBIGUOUS | `A1.5-ID-572-PL-EN` |
-| Meaning representation | `white` | CORE has black but no white property predicate; generic color has no bearer role/value, so this sentence has no honest MeaningGraph fixture | none observed | `A1.5-ID-571-EN-PL` |
+| Meaning representation | `white` | CORE has black but no white property predicate; generic color has no bearer role/value, so this sentence has no honest MeaningGraph fixture | REALIZATION_FIELD_LOSS, TRANSLATION_NOT_OK | `A1.5-ID-571-EN-PL` |
 | Meaning representation | `writing_content` | Full negative writing-content proposition requires content binding on writing_message; writing_document would assert a durable document instead. | AMBIGUOUS_PARSE, EXPLICIT_REALIZATION_ASSUMPTION, SURFACE_OMITTED_ROLE, TARGET_ALTERNATIVES_AMBIGUOUS, TARGET_ROLE_ABSENT_BY_FRAME_LICENSE | `A1.8-NEG-810-PL-EN` |
 | Meaning representation | `writing_content` | Full negative writing-content proposition requires content binding on writing_message; writing_document would assert a durable document instead. | NO_PARSE, UNMATCHED_PARSE_CANDIDATE | `A1.8-NEG-809-EN-PL` |
 | Meaning representation | `writing_content` | The full writing-content event needs a content participant, and the WH writer needs an explicit unknown-variable binding; neither is supplied by a partial writing-message event. | NO_PARSE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-947-EN-PL`, `A1.9-Q-948-PL-EN` |
@@ -2912,14 +2920,14 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | context_source_analysis | `UNMATCHED_PARSE_CANDIDATE` | 282 |
 | context_source_analysis | `UNRESOLVED_ROLE_SENSE` | 32 |
 | direct_result | `AMBIGUOUS_PARSE` | 2 |
-| direct_result | `EXPLICIT_REALIZATION_ASSUMPTION` | 238 |
+| direct_result | `EXPLICIT_REALIZATION_ASSUMPTION` | 242 |
 | direct_result | `MODIFIER_TRANSFER_AMBIGUOUS` | 2 |
 | direct_result | `MODIFIER_TRANSFER_UNRESOLVED` | 2 |
 | direct_result | `NO_PARSE` | 7 |
 | direct_result | `NO_START_PLAN` | 1 |
 | direct_result | `REALIZATION_FIELD_LOSS` | 20 |
 | direct_result | `RESOURCE_LIMIT` | 1 |
-| direct_result | `TARGET_ALTERNATIVES_AMBIGUOUS` | 53 |
+| direct_result | `TARGET_ALTERNATIVES_AMBIGUOUS` | 54 |
 | direct_result | `TARGET_LEXICAL_COVERAGE_UNAVAILABLE` | 10 |
 | direct_result | `TARGET_PREDICATE_POLICY_REJECTED` | 32 |
 | direct_result | `TRANSLATION_NOT_OK` | 2 |
@@ -2931,7 +2939,7 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | independent_realization | `OPERATOR_COVERAGE_UNKNOWN` | 52 |
 | independent_realization | `OPERATOR_MAPPING_UNAVAILABLE` | 62 |
 | independent_realization | `QUESTION_ANSWER_UNAVAILABLE` | 38 |
-| independent_realization | `REALIZATION_FIELD_LOSS` | 38 |
+| independent_realization | `REALIZATION_FIELD_LOSS` | 108 |
 | independent_realization | `RESOURCE_LIMIT` | 12 |
 | independent_realization | `TARGET_ALTERNATIVES_AMBIGUOUS` | 482 |
 | independent_realization | `TARGET_FRAME_VARIANT_MISMATCH` | 2 |
@@ -2941,7 +2949,7 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | independent_realization | `TARGET_ROLE_ABSENT_BY_FRAME_LICENSE` | 112 |
 | integration | `AMBIGUOUS_PARSE` | 39 |
 | integration | `DISAMBIGUATION_INCOMPLETE` | 53 |
-| integration | `EXPLICIT_REALIZATION_ASSUMPTION` | 2468 |
+| integration | `EXPLICIT_REALIZATION_ASSUMPTION` | 2476 |
 | integration | `HARD_SELECTIONAL_RESTRICTION` | 6 |
 | integration | `MISSING_REQUIRED_ROLE` | 20 |
 | integration | `NO_PARSE` | 96 |
@@ -2952,16 +2960,15 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | integration | `PARTIAL_PARSE_EVIDENCE` | 870 |
 | integration | `PREDICATE_KIND_UNSUPPORTED` | 15 |
 | integration | `PREDICATE_NODE_UNRESOLVED` | 3 |
-| integration | `REALIZATION_FIELD_LOSS` | 924 |
+| integration | `REALIZATION_FIELD_LOSS` | 998 |
 | integration | `ROLE_LEXICALIZATION_UNAVAILABLE` | 2 |
 | integration | `SURFACE_OMITTED_ROLE` | 65 |
 | integration | `TARGET_ALTERNATIVES_AMBIGUOUS` | 436 |
 | integration | `TARGET_OPERATOR_COVERAGE_UNAVAILABLE` | 6 |
 | integration | `TARGET_PREDICATE_POLICY_REJECTED` | 20 |
-| integration | `TARGET_REALIZATION_CANCELED` | 2 |
 | integration | `TARGET_REALIZATION_FAILED` | 4 |
 | integration | `TARGET_ROLE_ABSENT_BY_FRAME_LICENSE` | 160 |
-| integration | `TRANSLATION_NOT_OK` | 87 |
+| integration | `TRANSLATION_NOT_OK` | 119 |
 | integration | `UNKNOWN_SURFACE` | 376 |
 | integration | `UNMATCHED_PARSE_CANDIDATE` | 3743 |
 | integration | `UNRESOLVED_PARSE_EVIDENCE` | 2 |
@@ -2998,6 +3005,6 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 
 ## Counts
 
-PASS: 825 | FAIL: 720 | GAP_ANALYZE: 262 | GAP_REALIZE: 113 | GAP_I: 1080 | SPEC_PENDING: 0 | INFRA: 0 | NOT RUN: 0
+PASS: 889 | FAIL: 656 | GAP_ANALYZE: 262 | GAP_REALIZE: 113 | GAP_I: 1080 | SPEC_PENDING: 0 | INFRA: 0 | NOT RUN: 0
 
 `SPEC_PENDING` means the check ran but lacks a closed independent contract. `NOT RUN` means no matching record check result was observed. Runtime adapter NOT RUN markers are counted separately above. Additional checks retain their own statuses. Consult the full raw log artifact for every individual observation.
