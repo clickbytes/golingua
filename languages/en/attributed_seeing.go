@@ -17,8 +17,9 @@ type englishAttributedSeeingGraph struct {
 	propertyByBearer       map[meaning.NodeID]meaning.Node
 }
 
-func englishAttributedSeeingShape(source semantic.MeaningCandidate) (englishAttributedSeeingGraph, bool) {
-	if _, _, _, ok := englishAttributedPredicateBinding(source); !ok {
+func englishAttributedSeeingShape(source semantic.MeaningCandidate, resolver englishNegationResolver) (englishAttributedSeeingGraph, bool) {
+	_, frame, _, bindingOK := englishAttributedPredicateBinding(source, resolver)
+	if !bindingOK {
 		return englishAttributedSeeingGraph{}, false
 	}
 	if source.Meaning == nil || meaning.ValidateStructure(*source.Meaning, meaning.DefaultBudget()) != nil {
@@ -53,7 +54,11 @@ func englishAttributedSeeingShape(source semantic.MeaningCandidate) (englishAttr
 			return englishAttributedSeeingGraph{}, false
 		}
 	}
-	if shape.event.ID == "" || shape.event.Kind != meaning.KindEvent || shape.event.TemporalFrame != meaning.TemporalFramePresent ||
+	pastAttributedNegative := shape.event.TemporalFrame == meaning.TemporalFramePast && shape.scope.ID != "" &&
+		shape.scope.Operator == meaning.OperatorNegation && shape.scope.Target == shape.event.ID &&
+		shape.event.Concept == "concept:seeing" && frame == "en.see.visual.attributed_negative"
+	if shape.event.ID == "" || shape.event.Kind != meaning.KindEvent ||
+		(shape.event.TemporalFrame != meaning.TemporalFramePresent && !pastAttributedNegative) ||
 		len(referents) != 2 || len(shape.properties) < 1 || len(shape.properties) > 2 || len(shape.event.Participants) != 2 {
 		return englishAttributedSeeingGraph{}, false
 	}
@@ -119,7 +124,7 @@ func englishAttributedSeeingShape(source semantic.MeaningCandidate) (englishAttr
 	return shape, true
 }
 
-func englishAttributedPredicateBinding(source semantic.MeaningCandidate) (sense, frame, core string, ok bool) {
+func englishAttributedPredicateBinding(source semantic.MeaningCandidate, resolver englishNegationResolver) (sense, frame, core string, ok bool) {
 	if source.Meaning == nil {
 		return "", "", "", false
 	}
@@ -129,7 +134,10 @@ func englishAttributedPredicateBinding(source semantic.MeaningCandidate) (sense,
 		}
 		switch node.Concept {
 		case "concept:seeing":
-			if _, event, _, negated := englishNegatedPresent(source); negated && event.ID == node.ID {
+			var event meaning.Node
+			var negated bool
+			_, event, _, negated = resolver.negatedPresent(source)
+			if negated && event.ID == node.ID {
 				return "sense:en.see.visual", "en.see.visual.attributed_negative", "concept:seeing", true
 			}
 			return "sense:en.see.visual", "en.see.visual.transitive", "concept:seeing", true
@@ -206,8 +214,8 @@ func englishAttributedSeeingSupportVariantAllowed(source semantic.MeaningCandida
 	return bearer.Multiplicity == meaning.MultiplicityOne && (variant == "construction:en.attribution.this" || variant == "construction:en.attribution.that" || variant == "construction:en.attribution.bare" || variant == "construction:en.attribution.the" || variant == "construction:en.attribution.a" || variant == "construction:en.attribution.an")
 }
 
-func englishAttributedSeeingDoorNumberChoice(source semantic.MeaningCandidate, predicate realizer.TargetCandidate, slotID, role string) (string, bool) {
-	shape, valid := englishAttributedSeeingShape(source)
+func englishAttributedSeeingDoorNumberChoice(source semantic.MeaningCandidate, predicate realizer.TargetCandidate, slotID, role string, resolver englishNegationResolver) (string, bool) {
+	shape, valid := englishAttributedSeeingShape(source, resolver)
 	if !valid || predicate.NodeID != shape.event.ID || predicate.Family.Family.ID.String() != "construction:en.attributed_seeing_object" ||
 		slotID != "object" || role != "stimulus" || shape.object.Concept != "concept:door" || shape.object.Multiplicity != "" {
 		return "", false
@@ -221,11 +229,11 @@ func englishAttributedSeeingDoorNumberChoice(source semantic.MeaningCandidate, p
 	return "", false
 }
 
-func englishAttributedSeeingDeixis(source semantic.MeaningCandidate) string {
+func englishAttributedSeeingDeixis(source semantic.MeaningCandidate, resolver englishNegationResolver) string {
 	if source.Meaning == nil {
 		return ""
 	}
-	shape, ok := englishAttributedSeeingShape(source)
+	shape, ok := englishAttributedSeeingShape(source, resolver)
 	if !ok {
 		return ""
 	}
@@ -253,11 +261,11 @@ func englishAttributedSeeingDeixis(source semantic.MeaningCandidate) string {
 // remains possible under every explicit source-context alternative. An
 // unresolved demonstrative permits both distance classes; conflicting anchors
 // are therefore preserved as candidates instead of being resolved by order.
-func englishAttributedSeeingDeixisAllows(source semantic.MeaningCandidate, article string) bool {
+func englishAttributedSeeingDeixisAllows(source semantic.MeaningCandidate, article string, resolver englishNegationResolver) bool {
 	if source.Meaning == nil {
 		return false
 	}
-	shape, ok := englishAttributedSeeingShape(source)
+	shape, ok := englishAttributedSeeingShape(source, resolver)
 	if !ok {
 		return false
 	}
@@ -336,7 +344,7 @@ func englishAttributedSeeingFamilyMatches(source semantic.MeaningCandidate, cand
 	return modifierSlots == len(shape.properties)
 }
 
-func englishAttributedSeeingContextsValid(source semantic.MeaningCandidate) bool {
+func englishAttributedSeeingContextsValid(source semantic.MeaningCandidate, resolver englishNegationResolver) bool {
 	if source.Meaning == nil {
 		return false
 	}
@@ -357,7 +365,7 @@ func englishAttributedSeeingContextsValid(source semantic.MeaningCandidate) bool
 				}
 				continue
 			}
-			shape, valid := englishAttributedSeeingShape(source)
+			shape, valid := englishAttributedSeeingShape(source, resolver)
 			if mention.Anchor.Kind != "deixis" ||
 				(mention.Anchor.Value != "demonstrative" && mention.Anchor.Value != "proximal" && mention.Anchor.Value != "distal") ||
 				!valid || (mention.NodeID != shape.subject.ID && mention.NodeID != shape.object.ID) || mention.ReferentID != "" || mention.EvidenceID != "" {
@@ -392,7 +400,11 @@ func englishAttributedSeeingVariant(candidate realizer.TargetCandidate) bool {
 		case "construction:en.attributed_seeing_object_negative.svo",
 			"construction:en.attributed_seeing_object_negative.svo.indefinite_subject",
 			"construction:en.attributed_seeing_object_negative.svo.indefinite_object",
-			"construction:en.attributed_seeing_object_negative.svo.indefinite_both":
+			"construction:en.attributed_seeing_object_negative.svo.indefinite_both",
+			"construction:en.attributed_seeing_object_negative.svo.past",
+			"construction:en.attributed_seeing_object_negative.svo.past.indefinite_subject",
+			"construction:en.attributed_seeing_object_negative.svo.past.indefinite_object",
+			"construction:en.attributed_seeing_object_negative.svo.past.indefinite_both":
 			return true
 		default:
 			return false
@@ -430,13 +442,13 @@ func englishAttributedSeeingSubjectAnchors(source semantic.MeaningCandidate, sub
 	return values
 }
 
-func englishAttributedSeeingSubjectVariantAllowed(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, shape englishAttributedSeeingGraph) bool {
+func englishAttributedSeeingSubjectVariantAllowed(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, shape englishAttributedSeeingGraph, resolver englishNegationResolver) bool {
 	if candidate.Family.Family.ID.String() == "construction:en.attributed_seeing_object_negative" {
 		return shape.scope.ID != "" && shape.subject.Multiplicity == meaning.MultiplicityOne && shape.object.Multiplicity == meaning.MultiplicityOne &&
 			len(englishAttributedSeeingSubjectAnchors(source, shape.subject.ID)) == 0 && len(englishAttributedSeeingSubjectAnchors(source, shape.object.ID)) == 0
 	}
 	variant := candidate.CompiledVariant.Variant.ID.String()
-	if candidate.Family.Family.ID.String() == "construction:en.attributed_seeing_both" && englishAttributedSeeingDeixis(source) != "" {
+	if candidate.Family.Family.ID.String() == "construction:en.attributed_seeing_both" && englishAttributedSeeingDeixis(source, resolver) != "" {
 		// The bounded two-AP route carries the subject anchor only. Do not let
 		// an object or dual anchor pass through a target variant that only says
 		// "the" for the object NP.
@@ -485,23 +497,23 @@ func englishAttributedSeeingSubjectVariantAllowed(source semantic.MeaningCandida
 	}
 }
 
-func englishAttributedSeeingMainCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate) bool {
-	shape, ok := englishAttributedSeeingShape(source)
-	if !ok || !englishAttributedSeeingContextsValid(source) || candidate.NodeID != shape.event.ID || candidate.Kind != meaning.KindEvent || candidate.Outcome != status.OutcomeOK {
+func englishAttributedSeeingMainCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, resolver englishNegationResolver) bool {
+	shape, ok := englishAttributedSeeingShape(source, resolver)
+	if !ok || !englishAttributedSeeingContextsValid(source, resolver) || candidate.NodeID != shape.event.ID || candidate.Kind != meaning.KindEvent || candidate.Outcome != status.OutcomeOK {
 		return false
 	}
-	sense, frame, core, supportedPredicate := englishAttributedPredicateBinding(source)
+	sense, frame, core, supportedPredicate := englishAttributedPredicateBinding(source, resolver)
 	if !supportedPredicate || candidate.Sense.ID.String() != sense || string(candidate.Frame.ID) != frame ||
 		candidate.TransferBinding.CoreRef.String() != core || !englishAttributedSeeingFamily(candidate) || !englishAttributedSeeingVariant(candidate) ||
 		!realizer.CoversLexicalMeaning(*source.Meaning, candidate.NodeID, candidate.Family.Family) {
 		return false
 	}
-	return englishAttributedSeeingFamilyMatches(source, candidate, shape) && englishAttributedSeeingSubjectVariantAllowed(source, candidate, shape)
+	return englishAttributedSeeingFamilyMatches(source, candidate, shape) && englishAttributedSeeingSubjectVariantAllowed(source, candidate, shape, resolver)
 }
 
-func englishAttributedSeeingModifierCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, all []realizer.TargetCandidate) bool {
-	shape, ok := englishAttributedSeeingShape(source)
-	if !ok || !englishAttributedSeeingContextsValid(source) || candidate.Kind != meaning.KindState || candidate.Outcome != status.OutcomeOK {
+func englishAttributedSeeingModifierCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, all []realizer.TargetCandidate, resolver englishNegationResolver) bool {
+	shape, ok := englishAttributedSeeingShape(source, resolver)
+	if !ok || !englishAttributedSeeingContextsValid(source, resolver) || candidate.Kind != meaning.KindState || candidate.Outcome != status.OutcomeOK {
 		return false
 	}
 	property, exists := shape.properties[candidate.NodeID]
@@ -532,7 +544,7 @@ func englishAttributedSeeingModifierCandidate(source semantic.MeaningCandidate, 
 		}
 		mainAvailable := false
 		for _, main := range all {
-			if main.SourceCandidateID == support.SourceCandidateID && main.SemanticID == support.SemanticID && englishAttributedSeeingMainCandidate(source, main) {
+			if main.SourceCandidateID == support.SourceCandidateID && main.SemanticID == support.SemanticID && englishAttributedSeeingMainCandidate(source, main, resolver) {
 				mainAvailable = true
 				break
 			}

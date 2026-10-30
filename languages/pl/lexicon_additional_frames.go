@@ -127,6 +127,8 @@ func additionalFrameForSense(sense string) (string, bool) {
 		return "pl.przykrywac.cover.reviewed", true
 	case "pl.kupowac.buy":
 		return "pl.kupowac.buy.reviewed", true
+	case "pl.kupic.buy":
+		return "pl.kupic.buy.reviewed", true
 	case "pl.sprzedawac.sell":
 		return "pl.sprzedawac.sell.reviewed", true
 	case "pl.placic.pay":

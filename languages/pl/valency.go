@@ -21,6 +21,16 @@ var polishConstructionReviewSource = provenance.SourceRef{
 	Version: "2026-10-22", License: "unknown", Author: "Codex by owner delegation",
 }
 
+var polishPastAttributionConstructionSource = provenance.SourceRef{
+	ID: "golingua-pl-past-attribution-constructions-437", Path: "languages/pl/valency.go",
+	Version: "2026-10-29", License: "internal", Author: "Codex by owner delegation",
+}
+
+var polishNegativeAttributionConstructionSource = provenance.SourceRef{
+	ID: "golingua-pl-negative-attribution-437", Path: "languages/pl/constructions/attribution_negative.json",
+	Version: "2026-10-29", License: "internal", Author: "Codex by owner delegation",
+}
+
 var polishIssue436ConstructionSource = provenance.SourceRef{
 	ID: "golingua-pl-help-thank-construction-436", URI: "https://github.com/clickbytes/golingua/issues/436",
 	Version: "2026-10-29", License: "internal", Author: "Codex by owner delegation",
@@ -86,6 +96,24 @@ func polishAttributionConstructionBindings() []constructionBindingDeclaration {
 				sense: sense, frame: sense + ".frame", family: "pl.attribution", variant: "pl.attribution." + variant,
 			})
 		}
+		for _, variant := range variants {
+			genders := []string{"masculine_animal", "masculine_inanimate", "feminine", "neuter"}
+			switch variant {
+			case "ten", "tamten":
+				genders = []string{"masculine_animal"}
+			case "ten.inanimate", "tamten.inanimate":
+				genders = []string{"masculine_inanimate"}
+			case "ta", "tamta":
+				genders = []string{"feminine"}
+			case "to", "tamto":
+				genders = []string{"neuter"}
+			}
+			for _, gender := range genders {
+				bindings = append(bindings, constructionBindingDeclaration{
+					sense: sense, frame: sense + ".frame", family: "pl.attribution", variant: "pl.attribution." + variant + ".past." + gender,
+				})
+			}
+		}
 	}
 	for _, spec := range polishAttributionSpecs {
 		sense := strings.TrimPrefix(spec.sense, "sense:")
@@ -93,6 +121,18 @@ func polishAttributionConstructionBindings() []constructionBindingDeclaration {
 			bindings = append(bindings, constructionBindingDeclaration{
 				sense: sense, frame: sense + ".plural.frame", family: "pl.attribution_plural", variant: "pl.attribution_plural." + variant,
 			})
+			genders := []string{"masculine_personal", "non_masculine_personal"}
+			switch variant {
+			case "ci", "tamci":
+				genders = []string{"masculine_personal"}
+			case "te", "tamte":
+				genders = []string{"non_masculine_personal"}
+			}
+			for _, gender := range genders {
+				bindings = append(bindings, constructionBindingDeclaration{
+					sense: sense, frame: sense + ".plural.frame", family: "pl.attribution_plural", variant: "pl.attribution_plural." + variant + ".past." + gender,
+				})
+			}
 		}
 	}
 	return bindings
@@ -114,7 +154,36 @@ func polishAttributionFrames() []frameDeclaration {
 			arguments: []valency.ArgumentSlot{{ID: "bearer", Role: "bearer", Required: true, GrammaticalFunction: "subject", Case: "nominative"}},
 		})
 	}
+	for _, spec := range polishAttributionSpecs {
+		sense := strings.TrimPrefix(spec.sense, "sense:")
+		frames = append(frames, frameDeclaration{
+			id: sense + ".negative.frame", sense: sense, family: "pl.attribution_negative", roles: []meaning.Role{"bearer"},
+			arguments: []valency.ArgumentSlot{{ID: "bearer", Role: "bearer", Required: true, GrammaticalFunction: "subject", Case: "nominative"}},
+		})
+	}
 	return frames
+}
+
+func polishNegativeAttributionBindings() []constructionBindingDeclaration {
+	var bindings []constructionBindingDeclaration
+	for _, spec := range polishAttributionSpecs {
+		sense := strings.TrimPrefix(spec.sense, "sense:")
+		for _, number := range []string{"singular", "plural"} {
+			genders := []string{"masculine_animal", "masculine_inanimate", "feminine", "neuter"}
+			if number == "plural" {
+				genders = []string{"masculine_personal", "non_masculine_personal"}
+			}
+			for _, tense := range []string{"present", "past"} {
+				for _, gender := range genders {
+					bindings = append(bindings, constructionBindingDeclaration{
+						sense: sense, frame: sense + ".negative.frame", family: "pl.attribution_negative",
+						variant: "pl.attribution_negative." + number + "." + tense + "." + gender,
+					})
+				}
+			}
+		}
+	}
+	return bindings
 }
 
 var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
@@ -128,6 +197,11 @@ var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"pl.budzic_sie.wake", "pl.budzic_sie.wake.action", "pl.intransitive", "pl.intransitive.sv.reflexive.period"},
 	{"pl.spac.sleep", "pl.spac.sleep.frame", "pl.intransitive", "pl.intransitive.sv"},
 	{"pl.spac.sleep", "pl.spac.sleep.frame", "pl.intransitive", "pl.intransitive.sv.period"},
+	{"pl.spac.sleep", "pl.spac.sleep.frame", "pl.intransitive", "pl.intransitive.sv.negative"},
+	{"pl.biec.run", "pl.biec.run.motion", "pl.intransitive", "pl.intransitive.sv.negative"},
+	{"pl.oddychac.breathe", "pl.oddychac.breathe.action", "pl.intransitive", "pl.intransitive.sv.negative"},
+	{"pl.kichac.sneeze", "pl.kichac.sneeze.action", "pl.intransitive", "pl.intransitive.sv.negative"},
+	{"pl.kaszlec.cough", "pl.kaszlec.cough.action", "pl.intransitive", "pl.intransitive.sv.negative"},
 	{"pl.oddychac.breathe", "pl.oddychac.breathe.action", "pl.intransitive", "pl.intransitive.sv"},
 	{"pl.oddychac.breathe", "pl.oddychac.breathe.action", "pl.intransitive", "pl.intransitive.sv.period"},
 	{"pl.kichac.sneeze", "pl.kichac.sneeze.action", "pl.intransitive", "pl.intransitive.sv"},
@@ -152,8 +226,23 @@ var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"pl.byc.class_membership", "pl.byc.class_membership.frame", "pl.identification", "pl.identification.to"},
 	{"pl.byc.class_membership", "pl.byc.class_membership.frame", "pl.identification_negative", "pl.identification_negative.to"},
 	{"pl.widziec.visual", "pl.widziec.visual.transitive_negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
+	{"pl.otwierac_obiekt.open", "pl.otwierac_obiekt.open.negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
+	{"pl.zamykac_obiekt.close", "pl.zamykac_obiekt.close.negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
+	{"pl.trzymac.hold", "pl.trzymac.hold.negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
+	{"pl.niesc.carry", "pl.niesc.carry.negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
+	{"pl.pchac.push", "pl.pchac.push.negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
+	{"pl.ciagnac.pull", "pl.ciagnac.pull.negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
+	{"pl.ciac.cut", "pl.ciac.cut.negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
+	{"pl.skladac.fold", "pl.skladac.fold.negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
+	{"pl.rozdzierac.tear", "pl.rozdzierac.tear.negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
 	{"pl.widziec.visual", "pl.widziec.visual.transitive_negative", "pl.transitive_negative", "pl.transitive_negative.ovs"},
 	{"pl.slyszec.auditory", "pl.slyszec.auditory.transitive_negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
+	{"pl.slyszec.auditory", "pl.slyszec.auditory.transitive_negative", "pl.transitive_negative", "pl.transitive_negative.ovs"},
+	{"pl.pic.drink", "pl.pic.drink.negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
+	{"pl.jesc.eat", "pl.jesc.eat.negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
+	{"pl.czytac.interpret", "pl.czytac.interpret.negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
+	{"pl.czytac.interpret", "pl.czytac.interpret.negative", "pl.transitive_negative", "pl.transitive_negative.ovs"},
+	{"pl.pisac.write", "pl.pisac.write.negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
 	{"pl.patrzec.directed", "pl.patrzec.directed.na", "pl.oblique_negative", "pl.oblique_negative.svo"},
 	{"pl.lubic.like", "pl.lubic.like.negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
 	{"pl.ogladac.view", "pl.ogladac.view.negative", "pl.transitive_negative", "pl.transitive_negative.svo"},
@@ -276,6 +365,16 @@ var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"pl.dawac.transfer", "pl.dawac.transfer.ditransitive", "pl.ditransitive", "pl.ditransitive.recipient_front.period"},
 	{"pl.dawac.transfer", "pl.dawac.transfer.ditransitive", "pl.ditransitive", "pl.ditransitive.object_front"},
 	{"pl.dawac.transfer", "pl.dawac.transfer.ditransitive", "pl.ditransitive", "pl.ditransitive.object_front.period"},
+	{"pl.dawac.transfer", "pl.dawac.transfer.ditransitive.negative", "pl.ditransitive_negative", "pl.ditransitive_negative.svo"},
+	{"pl.dawac.transfer", "pl.dawac.transfer.ditransitive.negative", "pl.ditransitive_negative", "pl.ditransitive_negative.svo.period"},
+	{"pl.dac.transfer", "pl.dac.transfer.ditransitive", "pl.ditransitive", "pl.ditransitive.svo"},
+	{"pl.dac.transfer", "pl.dac.transfer.ditransitive", "pl.ditransitive", "pl.ditransitive.svo.period"},
+	{"pl.dac.transfer", "pl.dac.transfer.ditransitive", "pl.ditransitive", "pl.ditransitive.recipient_front"},
+	{"pl.dac.transfer", "pl.dac.transfer.ditransitive", "pl.ditransitive", "pl.ditransitive.recipient_front.period"},
+	{"pl.dac.transfer", "pl.dac.transfer.ditransitive", "pl.ditransitive", "pl.ditransitive.object_front"},
+	{"pl.dac.transfer", "pl.dac.transfer.ditransitive", "pl.ditransitive", "pl.ditransitive.object_front.period"},
+	{"pl.dac.transfer", "pl.dac.transfer.ditransitive.negative", "pl.ditransitive_negative", "pl.ditransitive_negative.svo"},
+	{"pl.dac.transfer", "pl.dac.transfer.ditransitive.negative", "pl.ditransitive_negative", "pl.ditransitive_negative.svo.period"},
 	{"pl.sprzedawac.sell", "pl.sprzedawac.sell.reviewed", "pl.ditransitive", "pl.ditransitive.object_before_recipient"},
 	{"pl.sprzedawac.sell", "pl.sprzedawac.sell.reviewed", "pl.ditransitive", "pl.ditransitive.object_before_recipient.period"},
 }
@@ -297,6 +396,39 @@ var polishFrames = []frameDeclaration{
 	{"pl.widziec.visual.transitive_negative", "pl.widziec.visual", "pl.transitive_negative", []meaning.Role{"experiencer", "stimulus"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "experiencer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "object", Role: "stimulus", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+	}},
+	{"pl.otwierac_obiekt.open.negative", "pl.otwierac_obiekt.open", "pl.transitive_negative", []meaning.Role{"agent", "object"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "object", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+	}},
+	{"pl.zamykac_obiekt.close.negative", "pl.zamykac_obiekt.close", "pl.transitive_negative", []meaning.Role{"agent", "object"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "object", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+	}},
+	{"pl.skladac.fold.negative", "pl.skladac.fold", "pl.transitive_negative", []meaning.Role{"agent", "material"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "agent", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "material", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+	}},
+	{"pl.trzymac.hold.negative", "pl.trzymac.hold", "pl.transitive_negative", []meaning.Role{"holder", "object"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "holder", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "object", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+	}},
+	{"pl.pic.drink.negative", "pl.pic.drink", "pl.transitive_negative", []meaning.Role{"drinker", "liquid"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "drinker", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "liquid", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+	}},
+	{"pl.jesc.eat.negative", "pl.jesc.eat", "pl.transitive_negative", []meaning.Role{"eater", "food"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "eater", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "food", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+	}},
+	{"pl.czytac.interpret.negative", "pl.czytac.interpret", "pl.transitive_negative", []meaning.Role{"reader", "material"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "reader", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "material", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+	}},
+	{"pl.pisac.write.negative", "pl.pisac.write", "pl.transitive_negative", []meaning.Role{"writer", "message", "recipient"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "writer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "object", Role: "message", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+		{ID: "recipient", Role: "recipient", Required: false, GrammaticalFunction: "oblique", Case: "dative"},
 	}},
 	{"pl.widziec.visual.attributed_negative", "pl.widziec.visual", "pl.attributed_seeing_object_negative", []meaning.Role{"experiencer", "stimulus"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "experiencer", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
@@ -341,12 +473,22 @@ var polishFrames = []frameDeclaration{
 	{"pl.dac.transfer.ditransitive", "pl.dac.transfer", "pl.ditransitive", []meaning.Role{"giver", "recipient", "theme"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "giver", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "recipient", Role: "recipient", Required: true, GrammaticalFunction: "indirect_object", Case: "dative"},
-		{ID: "theme", Role: "theme", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+		{ID: "object", Role: "theme", Required: true, GrammaticalFunction: "object", Case: "accusative"},
 	}},
 	{"pl.dawac.transfer.ditransitive", "pl.dawac.transfer", "pl.ditransitive", []meaning.Role{"giver", "recipient", "theme"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "giver", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
 		{ID: "recipient", Role: "recipient", Required: true, GrammaticalFunction: "indirect_object", Case: "dative"},
 		{ID: "object", Role: "theme", Required: true, GrammaticalFunction: "object", Case: "accusative"},
+	}},
+	{"pl.dawac.transfer.ditransitive.negative", "pl.dawac.transfer", "pl.ditransitive_negative", []meaning.Role{"giver", "recipient", "theme"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "giver", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "recipient", Role: "recipient", Required: true, GrammaticalFunction: "indirect_object", Case: "dative"},
+		{ID: "object", Role: "theme", Required: true, GrammaticalFunction: "object", Case: "genitive"},
+	}},
+	{"pl.dac.transfer.ditransitive.negative", "pl.dac.transfer", "pl.ditransitive_negative", []meaning.Role{"giver", "recipient", "theme"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "giver", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "recipient", Role: "recipient", Required: true, GrammaticalFunction: "indirect_object", Case: "dative"},
+		{ID: "object", Role: "theme", Required: true, GrammaticalFunction: "object", Case: "genitive"},
 	}},
 	{"pl.pytac.request_info.frame", "pl.pytac.request_info", "pl.transitive", []meaning.Role{"sender", "addressee"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "sender", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
@@ -446,7 +588,7 @@ func CompileValency() (*valency.Index, error) {
 				ExcludedConceptIDs: []ids.ConceptID{person},
 			}}
 		}
-		if item.id == "pl.pisac.write.message_only" || item.id == "pl.pisac.write.recipient_only" || item.id == "pl.pisac.write.full" {
+		if item.id == "pl.pisac.write.message_only" || item.id == "pl.pisac.write.recipient_only" || item.id == "pl.pisac.write.full" || item.id == "pl.pisac.write.negative" {
 			message, err := ids.NewConceptID("message")
 			if err != nil {
 				return nil, fmt.Errorf("Polish writing-message selection concept: %w", err)
@@ -526,7 +668,7 @@ func CompileValency() (*valency.Index, error) {
 				return nil, fmt.Errorf("Polish WH question family: %w", err)
 			}
 			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, questionFamilyID)
-		case "pl.lubic.like.action", "pl.ogladac.view.action":
+		case "pl.lubic.like.action", "pl.ogladac.view.action", "pl.jesc.eat.frame", "pl.czytac.interpret.frame":
 			negativeFamilyID, err := ids.NewConstructionID("pl.transitive_negative")
 			if err != nil {
 				return nil, fmt.Errorf("Polish negative affective frame family: %w", err)
@@ -596,6 +738,7 @@ func CompileValency() (*valency.Index, error) {
 		}
 	}
 	bindingDeclarations = append(bindingDeclarations, polishAttributionConstructionBindings()...)
+	bindingDeclarations = append(bindingDeclarations, polishNegativeAttributionBindings()...)
 	bindingDeclarations = append(bindingDeclarations, polishPersonalConstructionBindings()...)
 	bindingDeclarations = append(bindingDeclarations, polishCommerceOmissionBindings()...)
 	bindingDeclarations = append(bindingDeclarations, polishCommerceFullPurchaseBindings()...)
@@ -623,6 +766,12 @@ func CompileValency() (*valency.Index, error) {
 }
 
 func polishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.family == "pl.attribution_negative" {
+		return polishNegativeAttributionConstructionSource
+	}
+	if (item.family == "pl.attribution" || item.family == "pl.attribution_plural") && strings.Contains(item.variant, ".past.") {
+		return polishPastAttributionConstructionSource
+	}
 	if item.sense == "pl.rozmawiac.converse" {
 		return polishConversingConstructionSource
 	}

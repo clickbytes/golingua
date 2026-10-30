@@ -10,6 +10,7 @@ import (
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/language"
 	"github.com/clickbytes/golingua/internal/meaning"
+	"github.com/clickbytes/golingua/internal/morph"
 	"github.com/clickbytes/golingua/internal/pack"
 	"github.com/clickbytes/golingua/internal/realizer"
 	"github.com/clickbytes/golingua/internal/runtime"
@@ -43,7 +44,7 @@ func NewSentenceExecutionBuilderWithSeed(seed *Seed) (runtime.MorphologyExecutio
 	}
 	return runtime.MorphologyExecutionBuilder{
 		Profile: profile, PhraseProfile: phraseProfile, Paradigms: paradigms, Exceptions: exceptions,
-		Parts: seed.PrincipalParts, FeaturePlan: polishSentenceFeatures{}, CaseFeature: "case",
+		Parts: seed.PrincipalParts, FeaturePlan: polishSentenceFeatures{paradigms: paradigms}, CaseFeature: "case",
 	}, nil
 }
 
@@ -69,7 +70,7 @@ func NewSentenceTargetWithSeed(snapshot *pack.Pack, registry *language.Registry,
 	if seed == nil {
 		return nil, fmt.Errorf("Polish target pipeline requires a Polish morphology seed")
 	}
-	profile, _, _, _ := seed.RuntimeMorphology()
+	profile, _, paradigms, _ := seed.RuntimeMorphology()
 	if profile == nil || profile.Language() != "pl" {
 		return nil, fmt.Errorf("Polish target pipeline requires a Polish morphology seed")
 	}
@@ -81,6 +82,7 @@ func NewSentenceTargetWithSeed(snapshot *pack.Pack, registry *language.Registry,
 	if err != nil {
 		return nil, err
 	}
+	negationRoutes := newPolishNegationRouteResolver(snapshot.Lexicon(), valencyIndex, constructions, packages)
 	_, variants, err := runtime.CompileSentencePlans(profile, packages, valencyIndex)
 	if err != nil {
 		return nil, err
@@ -89,6 +91,7 @@ func NewSentenceTargetWithSeed(snapshot *pack.Pack, registry *language.Registry,
 	if err != nil {
 		return nil, err
 	}
+	execution.FeaturePlan = polishSentenceFeatures{negationRoutes: negationRoutes, paradigms: paradigms}
 	coordination, err := SentenceCoordination()
 	if err != nil {
 		return nil, err
@@ -104,18 +107,21 @@ func NewSentenceTargetWithSeed(snapshot *pack.Pack, registry *language.Registry,
 	return &runtime.TargetPipeline{
 		Language: "pl", LanguageRegistry: registry, Lexicon: snapshot.Lexicon(), Valency: valencyIndex,
 		Constructions: constructions, Variants: variants, Core: snapshot.CoreGraph(),
-		OperatorBuilder: polishSentenceOperatorBuilder{}, ExecutionBuilder: execution,
-		CandidatePolicy:      polishSentenceCandidatePolicy{},
-		PlanBuilder:          polishSentencePlanAnnotations{},
+		OperatorBuilder: polishSentenceOperatorBuilder{negationRoutes: negationRoutes}, ExecutionBuilder: execution,
+		CandidatePolicy:      polishSentenceCandidatePolicy{negationRoutes: negationRoutes},
+		PlanBuilder:          polishSentencePlanAnnotations{negationRoutes: negationRoutes, paradigms: paradigms},
 		ClauseCoordination:   &coordination,
 		ScopedRealizer:       &runtime.ScopedClauseRealizer{Language: "pl", Plan: scopePlan, Valency: valencyIndex, Morphology: seed, Features: polishScopedFeaturePlanner{}},
 		RelationPathRealizer: &runtime.RelationPathRealizer{Language: "pl", Plan: relationPlan, Morphology: seed, Features: polishRelationPathFeaturePlanner{}},
 	}, nil
 }
 
-type polishSentencePlanAnnotations struct{}
+type polishSentencePlanAnnotations struct {
+	negationRoutes polishNegationRouteResolver
+	paradigms      *morph.CompiledParadigms
+}
 
-func (polishSentencePlanAnnotations) Annotations(_ context.Context, source semantic.MeaningCandidate, selected realizer.TargetCandidate) ([]realizer.FeatureConstraint, []realizer.FieldAssumption, []realizer.FieldLoss, error) {
+func (plan polishSentencePlanAnnotations) Annotations(_ context.Context, source semantic.MeaningCandidate, selected realizer.TargetCandidate) ([]realizer.FeatureConstraint, []realizer.FieldAssumption, []realizer.FieldLoss, error) {
 	if selected.Family.Family.ID.String() == polishPersonalTargetFamily {
 		target, ok := polishPersonalTargetForPredicate(source, selected.NodeID)
 		if !ok || !polishPersonalVariantMatches(source, selected, target) || !polishPredicateEvidenceConsistent(source, selected) {
@@ -206,6 +212,55 @@ func (polishSentencePlanAnnotations) Annotations(_ context.Context, source seman
 	if predicate.TemporalFrame == "" {
 		assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning carries no temporal frame; this response uses the approved present-tense route"})
 	}
+	if predicate.TemporalFrame == meaning.TemporalFramePast && (selected.TransferBinding.CoreRef.String() == "concept:giving" || selected.TransferBinding.CoreRef.String() == "concept:buying") {
+		aspect := ""
+		switch selected.TransferBinding.SenseID.String() {
+		case "sense:pl.dac.transfer":
+			aspect = "perfective"
+		case "sense:pl.dawac.transfer":
+			aspect = "imperfective"
+		case "sense:pl.kupic.buy":
+			aspect = "perfective"
+		case "sense:pl.kupowac.buy":
+			aspect = "imperfective"
+		}
+		if aspect != "" {
+			values, known := runtime.SourceFeatures(source, "", selected.TransferBinding.CoreRef)
+			if !known || string(values["aspect"]) == "" {
+				reason := "Meaning does not specify Polish aspect; this candidate selects the lexical aspect of the Polish buying predicate"
+				if selected.TransferBinding.CoreRef.String() == "concept:giving" {
+					reason = "Meaning does not specify Polish aspect; this candidate selects the lexical aspect of dać or dawać"
+				}
+				assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "aspect", Value: aspect, Reason: reason})
+			}
+		}
+	}
+	if predicate.TemporalFrame == meaning.TemporalFramePast && selected.Kind == meaning.KindEvent &&
+		polishPastGenericTargetFamily(selected.Family.Family.ID.String()) && !polishDedicatedPastTransfer(selected) &&
+		polishApprovedPastTargetCandidate(source, selected) {
+		// Replace any older per-sense annotation with one based on the selected
+		// candidate's actual past paradigm. This also covers negative past plans.
+		filtered := assumptions[:0]
+		for _, assumption := range assumptions {
+			if assumption.Field == "aspect" && sameMeaningPath(assumption.Path, predicatePath) {
+				continue
+			}
+			filtered = append(filtered, assumption)
+		}
+		assumptions = filtered
+		values, known := runtime.SourceFeatures(source, "", selected.TransferBinding.CoreRef)
+		hasAspectEvidence := known && values["aspect"] != ""
+		if !hasAspectEvidence && !polishHasKnownAspectEvidence(source, selected.TransferBinding.CoreRef) {
+			aspect, aspectKnown := polishPastLexicalAspect(selected, plan.paradigms)
+			if aspectKnown {
+				assumptions = append(assumptions, realizer.FieldAssumption{
+					Path: predicatePath, Field: "aspect", Value: aspect,
+					Reason: "Meaning and source evidence do not specify Polish aspect; this candidate selects the lexical aspect of its approved past paradigm",
+				})
+			}
+		}
+	}
+
 	_, subjectID, hasSubject := polishSubjectTarget(source, selected)
 	if hasSubject {
 		if subject, exists := polishMeaningNode(source, subjectID); exists && subject.Multiplicity == "" {
@@ -227,24 +282,21 @@ func (polishSentencePlanAnnotations) Annotations(_ context.Context, source seman
 	}
 	var losses []realizer.FieldLoss
 	familyID := selected.Family.Family.ID.String()
-	if selected.Kind == meaning.KindEvent && (familyID == "construction:pl.attributed_seeing_object_negative" || familyID == "construction:pl.attributed_seeing_object" || familyID == "construction:pl.attributed_seeing_object_plural" || familyID == "construction:pl.attributed_seeing" || familyID == "construction:pl.attributed_seeing_plural") {
-		shape, valid := polishAttributedSeeingShape(source)
-		negativeSeeing := familyID == "construction:pl.attributed_seeing_object_negative" && shape.scope.ID != "" && shape.scope.Operator == meaning.OperatorNegation && shape.scope.Target == selected.NodeID
-		positiveHearing := familyID != "construction:pl.attributed_seeing_object_negative" && shape.scope.ID == "" && string(shape.event.Concept) == "concept:hearing"
-		if valid && shape.event.ID == selected.NodeID && (negativeSeeing || positiveHearing) {
-			for _, participant := range []struct {
-				role     meaning.Role
-				referent meaning.Node
-			}{{"experiencer", shape.subject}, {"stimulus", shape.object}} {
-				path, found := runtime.MeaningPath(*source.Meaning, participant.referent.ID)
-				concept, err := ids.ParseConceptID(string(participant.referent.Concept))
-				if err != nil {
-					return nil, nil, nil, fmt.Errorf("Polish participant source concept %q is invalid: %w", participant.referent.Concept, err)
-				}
-				values, known := runtime.SourceFeatures(source, participant.role, concept)
-				if found && known && (values["determiner"] == "definite" || values["determiner"] == "indefinite") {
-					losses = append(losses, realizer.FieldLoss{Path: path, Field: "determiner", Outcome: status.OutcomeIncomplete, Reason: "Polish noun phrase does not encode the source English article distinction"})
-				}
+	losses = append(losses, polishEventDeterminerLosses(source, selected)...)
+	if selected.Kind == meaning.KindEvent && (familyID == "construction:pl.transitive" || familyID == "construction:pl.transitive_negative") &&
+		((selected.TransferBinding.CoreRef.String() == "concept:opening_object" && selected.TransferBinding.SenseID.String() == "sense:pl.otwierac_obiekt.open") ||
+			(selected.TransferBinding.CoreRef.String() == "concept:closing_object" && selected.TransferBinding.SenseID.String() == "sense:pl.zamykac_obiekt.close")) {
+		for _, participant := range predicate.Participants {
+			if participant.Role != "object" {
+				continue
+			}
+			referent, exists := polishMeaningNode(source, participant.Target)
+			if !exists || referent.Concept != "concept:door" || referent.Multiplicity == "" {
+				continue
+			}
+			path, pathFound := runtime.MeaningPath(*source.Meaning, participant.Target)
+			if pathFound && selected.Lexeme.ID.String() == "lexeme:pl.drzwi.n" {
+				losses = append(losses, realizer.FieldLoss{Path: path, Field: "number", Outcome: status.OutcomeIncomplete, Reason: "Polish drzwi is lexically plural but does not distinguish one door from multiple doors"})
 			}
 		}
 	}
@@ -268,26 +320,120 @@ func (polishSentencePlanAnnotations) Annotations(_ context.Context, source seman
 	return nil, assumptions, losses, nil
 }
 
+func polishEventDeterminerLosses(source semantic.MeaningCandidate, selected realizer.TargetCandidate) []realizer.FieldLoss {
+	if source.Meaning == nil || selected.Kind != meaning.KindEvent ||
+		selected.Family.Family.Language != "pl" ||
+		!selected.TransferBinding.TransferAuthorized() ||
+		selected.TransferBinding.SenseID != selected.Sense.ID ||
+		selected.TransferBinding.CoreRef.String() != string(findSentencePredicate(*source.Meaning, selected.NodeID).Concept) ||
+		!selected.ConstructionBinding.Approved || selected.ConstructionBinding.SenseID != selected.Sense.ID ||
+		selected.ConstructionBinding.ValencyFrameID != selected.Frame.ID || selected.ConstructionBinding.FamilyID != selected.Family.Family.ID ||
+		selected.ConstructionBinding.VariantID.String() != selected.CompiledVariant.Variant.ID.String() ||
+		selected.Frame.SenseID != selected.Sense.ID || !polishFrameAllowsFamily(selected.Frame, selected.Family.Family.ID) ||
+		selected.CompiledVariant.FamilyID != selected.Family.Family.ID || selected.CompiledVariant.Variant.FamilyID != selected.Family.Family.ID ||
+		selected.CompiledVariant.Variant.ID.String() != selected.ConstructionBinding.VariantID.String() ||
+		selected.CompiledVariant.Variant.DirectionPolicy == construction.DirectionAnalyze ||
+		selected.Family.Family.Validate() != nil || selected.Frame.Validate() != nil ||
+		selected.CompiledVariant.Variant.Validate(selected.Family.Family) != nil {
+		return nil
+	}
+	event := findSentencePredicate(*source.Meaning, selected.NodeID)
+	if event.ID == "" || event.Kind != meaning.KindEvent || string(event.Concept) != selected.TransferBinding.CoreRef.String() {
+		return nil
+	}
+	compiled, err := construction.ValidateVariantForFrame(selected.CompiledVariant.Variant, selected.Family.Family, selected.Frame)
+	if err != nil || compiled.FamilyID != selected.Family.Family.ID || compiled.Variant.ID.String() != selected.ConstructionBinding.VariantID.String() ||
+		compiled.PlanID != selected.Family.PlanID || selected.CompiledVariant.PlanID != selected.Family.PlanID {
+		return nil
+	}
+
+	arguments := make(map[meaning.Role]struct{}, len(selected.Frame.Arguments))
+	for _, argument := range selected.Frame.Arguments {
+		if argument.Role == "" {
+			return nil
+		}
+		if _, duplicate := arguments[argument.Role]; duplicate {
+			return nil
+		}
+		arguments[argument.Role] = struct{}{}
+	}
+	participants := make(map[meaning.Role]meaning.Node, len(event.Participants))
+	for _, participant := range event.Participants {
+		if participant.Role == "" || participant.Target == "" {
+			return nil
+		}
+		if _, duplicate := participants[participant.Role]; duplicate {
+			return nil
+		}
+		if _, licensed := arguments[participant.Role]; !licensed {
+			return nil
+		}
+		referent := findSentenceReferent(*source.Meaning, participant.Target)
+		if referent.ID == "" || referent.Kind != meaning.KindReferent {
+			return nil
+		}
+		participants[participant.Role] = referent
+	}
+
+	var losses []realizer.FieldLoss
+	seen := make(map[meaning.NodeID]struct{}, len(participants))
+	for _, argument := range selected.Frame.Arguments {
+		role := argument.Role
+		referent, present := participants[role]
+		if !present {
+			continue
+		}
+		npSlots := 0
+		for _, slot := range selected.Family.Family.SlotSpecs {
+			if slot.ArgumentBinding != nil && slot.ArgumentBinding.SemanticRole == role && slot.Category == construction.CategoryNP {
+				npSlots++
+			}
+		}
+		if npSlots != 1 {
+			return nil
+		}
+		conceptID, err := ids.ParseConceptID(string(referent.Concept))
+		if err != nil {
+			continue
+		}
+		values, known := runtime.SourceFeatures(source, role, conceptID)
+		if !known || (values["determiner"] != "definite" && values["determiner"] != "indefinite") {
+			continue
+		}
+		if _, duplicate := seen[referent.ID]; duplicate {
+			continue
+		}
+		path, found := runtime.MeaningPath(*source.Meaning, referent.ID)
+		if !found {
+			continue
+		}
+		duplicate := false
+		for _, prior := range losses {
+			if prior.Field == "determiner" && sameMeaningPath(prior.Path, path) {
+				duplicate = true
+				break
+			}
+		}
+		if !duplicate {
+			losses = append(losses, realizer.FieldLoss{
+				Path: path, Field: "determiner", Outcome: status.OutcomeIncomplete,
+				Reason: "Polish noun phrase does not encode the explicit English article distinction",
+			})
+			seen[referent.ID] = struct{}{}
+		}
+	}
+	return losses
+}
+
 func polishIdentificationStateShape(source semantic.MeaningCandidate, predicateID meaning.NodeID) (meaning.Role, meaning.NodeID, string, bool) {
-	if source.Meaning == nil || meaning.ValidateStructure(*source.Meaning, meaning.DefaultBudget()) != nil {
+	role, referent, concept, ok := polishIdentificationState(source, predicateID)
+	if !ok || role != "bearer" {
 		return "", "", "", false
 	}
-	graph := *source.Meaning
-	if len(graph.Nodes) != 2 || len(graph.Roots) != 1 || graph.Roots[0] != predicateID {
+	if _, attribution := polishAttributionForConcept(concept); !attribution {
 		return "", "", "", false
 	}
-	predicate := findSentencePredicate(graph, predicateID)
-	if predicate.ID == "" || predicate.Kind != meaning.KindState || len(predicate.Participants) != 1 {
-		return "", "", "", false
-	}
-	if _, attribution := polishAttributionForConcept(string(predicate.Concept)); !attribution {
-		return "", "", "", false
-	}
-	participant := predicate.Participants[0]
-	if participant.Role != "bearer" || findSentenceReferent(graph, participant.Target).ID == "" {
-		return "", "", "", false
-	}
-	return participant.Role, participant.Target, string(predicate.Concept), true
+	return role, referent, concept, true
 }
 
 func polishIdentificationDefaults(predicatePath, referentPath []meaning.NodeID, predicate meaning.Node, nodes []meaning.Node, referentID meaning.NodeID, route string) []realizer.FieldAssumption {
@@ -307,9 +453,12 @@ func polishIdentificationDefaults(predicatePath, referentPath []meaning.NodeID, 
 	return assumptions
 }
 
-type polishSentenceFeatures struct{}
+type polishSentenceFeatures struct {
+	negationRoutes polishNegationRouteResolver
+	paradigms      *morph.CompiledParadigms
+}
 
-func (polishSentenceFeatures) Features(_ context.Context, source semantic.MeaningCandidate, predicate realizer.TargetCandidate, slot construction.SlotSpec, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) ([]features.FeatureValue, error) {
+func (featurePlan polishSentenceFeatures) Features(_ context.Context, source semantic.MeaningCandidate, predicate realizer.TargetCandidate, slot construction.SlotSpec, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) ([]features.FeatureValue, error) {
 	if answer := predicate.QuestionAnswer; answer != nil && answer.TargetNodeID == predicate.NodeID && slot.Category == construction.CategoryVP {
 		if !polishFrameEvidenceConsistent(source, predicate.NodeID, predicate.TransferBinding.CoreRef) {
 			return nil, fmt.Errorf("Polish WH target conflicts with explicit event frame evidence")
@@ -393,10 +542,41 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 			}
 			return knownPolishFeatures(featureValues...), nil
 		}
-		if _, event, route, found := polishNegatedPresent(source); found && event.ID == predicate.NodeID && predicate.Sense.ID.String() == route.sense {
-			number, known := polishPresentNegationNumber(source, predicate, route, candidates)
+		if _, event, route, found := featurePlan.negationRoutes.negatedPresent(source); found && event.ID == predicate.NodeID && (predicate.Sense.ID.String() == route.sense || route.concept == "concept:giving" && polishGivingNegationSenseMatches(route, predicate.Sense.ID.String()) || route.concept == "concept:buying" && polishBuyingNegationSenseMatches(route, predicate.Sense.ID.String())) {
+			if route.concept == "concept:giving" && predicate.Sense.ID.String() == "sense:pl.dac.transfer" && event.TemporalFrame != meaning.TemporalFramePast {
+				return nil, fmt.Errorf("perfective Polish giving target requires a past temporal frame")
+			}
+			number, known := polishNegationNumber(source, predicate, route, candidates, featurePlan.negationRoutes)
 			if !known {
 				return nil, fmt.Errorf("Polish negative predicate cannot realize its Meaning number or temporal frame")
+			}
+			dynamicPast := event.TemporalFrame == meaning.TemporalFramePast && (route.family == "construction:pl.intransitive" || route.derived)
+			dedicatedPast := event.TemporalFrame == meaning.TemporalFramePast && polishPastNegativeConceptAllowed(route.concept)
+			if dynamicPast || dedicatedPast {
+				if dynamicPast && !polishApprovedPastTargetCandidate(source, predicate) {
+					return nil, fmt.Errorf("Polish past negative candidate lacks its exact approved past construction route")
+				}
+				gender, known := polishSubjectPastGender(source, predicate, candidates, number)
+				if !known {
+					return nil, fmt.Errorf("Polish past negative predicate cannot realize subject gender agreement")
+				}
+				aspect := "imperfective"
+				if dedicatedPast {
+					aspect, known = polishDedicatedPastAspect(predicate)
+					if !known {
+						return nil, fmt.Errorf("Polish giving or buying past route has no dedicated aspect")
+					}
+				} else {
+					aspect, known = polishPastLexicalAspect(predicate, featurePlan.paradigms)
+					if !known {
+						return nil, fmt.Errorf("Polish past negative candidate has no past aspect in its selected paradigm")
+					}
+				}
+				return knownPolishFeatures(
+					[2]string{"verb_form", "finite"}, [2]string{"tense", "past"}, [2]string{"aspect", aspect},
+					[2]string{"person", "third"}, [2]string{"number", number}, [2]string{"gender", gender},
+					[2]string{"mood", "indicative"}, [2]string{"voice", "active"},
+				), nil
 			}
 			return knownPolishFeatures(
 				[2]string{"verb_form", "finite"}, [2]string{"tense", "present"}, [2]string{"aspect", "imperfective"},
@@ -424,10 +604,21 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 				return nil, fmt.Errorf("Polish past predicate cannot realize the selected subject's lexical agreement class")
 			}
 			aspect := "perfective"
-			if predicate.Sense.ID.String() == "sense:pl.czytac.interpret" || predicate.Sense.ID.String() == "sense:pl.widziec.visual" {
-				// The approved reading lexeme is imperfective; do not assign the
-				// receiving route's perfective aspect to this distinct sense.
-				aspect = "imperfective"
+			if polishPastGenericTargetFamily(predicate.Family.Family.ID.String()) && !polishDedicatedPastTransfer(predicate) {
+				if !polishApprovedPastTargetCandidate(source, predicate) {
+					return nil, fmt.Errorf("Polish past target candidate lacks its exact approved construction route")
+				}
+				var aspectKnown bool
+				aspect, aspectKnown = polishPastLexicalAspect(predicate, featurePlan.paradigms)
+				if !aspectKnown {
+					return nil, fmt.Errorf("Polish past candidate has no aspect in its selected paradigm")
+				}
+			} else if polishDedicatedPastTransfer(predicate) {
+				var aspectKnown bool
+				aspect, aspectKnown = polishDedicatedPastAspect(predicate)
+				if !aspectKnown {
+					return nil, fmt.Errorf("Polish giving or buying past route has no dedicated aspect")
+				}
 			}
 			return knownPolishFeatures(
 				[2]string{"verb_form", "finite"}, [2]string{"tense", "past"},
@@ -496,9 +687,231 @@ func (polishSentenceFeatures) Features(_ context.Context, source semantic.Meanin
 	return knownPolishFeatures(featureValues...), nil
 }
 
-type polishSentenceOperatorBuilder struct{}
+func polishPastNegativeConceptAllowed(concept string) bool {
+	switch concept {
+	case "concept:buying", "concept:giving":
+		return true
+	default:
+		return false
+	}
+}
 
-func (polishSentenceOperatorBuilder) Build(ctx context.Context, source semantic.MeaningCandidate) ([]construction.Operator, bool, error) {
+func polishPastGenericTargetFamily(family string) bool {
+	switch family {
+	case "construction:pl.intransitive", "construction:pl.transitive", "construction:pl.transitive_negative", "construction:pl.attributed_seeing_object_negative":
+		return true
+	default:
+		return false
+	}
+}
+
+func polishDedicatedPastTransfer(candidate realizer.TargetCandidate) bool {
+	concept := candidate.TransferBinding.CoreRef.String()
+	return candidate.Kind == meaning.KindEvent && (concept == "concept:giving" || concept == "concept:buying")
+}
+
+func polishDedicatedPastAspect(candidate realizer.TargetCandidate) (string, bool) {
+	switch candidate.TransferBinding.SenseID.String() {
+	case "sense:pl.dac.transfer", "sense:pl.kupic.buy":
+		return "perfective", candidate.TransferBinding.CoreRef.String() == "concept:giving" || candidate.TransferBinding.CoreRef.String() == "concept:buying"
+	case "sense:pl.dawac.transfer", "sense:pl.kupowac.buy":
+		return "imperfective", candidate.TransferBinding.CoreRef.String() == "concept:giving" || candidate.TransferBinding.CoreRef.String() == "concept:buying"
+	default:
+		return "", false
+	}
+}
+
+// polishApprovedPastTargetCandidate checks only the selected candidate's
+// already-approved construction path. The selected family and variant remain
+// the source of truth; the paradigm supplies the lexical aspect separately.
+func polishApprovedPastTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate) bool {
+	licensedBuyerOmission := candidate.Frame.ID == "pl.sprzedawac.sell.omit_buyer" &&
+		len(candidate.MissingOmittedRoles) == 1 && candidate.MissingOmittedRoles[0] == "buyer"
+	if source.Meaning == nil || candidate.Kind != meaning.KindEvent || candidate.Outcome != status.OutcomeOK && !licensedBuyerOmission ||
+		len(candidate.MissingOmittedRoles) != 0 && !licensedBuyerOmission || candidate.Family.Family.Language != "pl" ||
+		!polishPastGenericTargetFamily(candidate.Family.Family.ID.String()) || polishDedicatedPastTransfer(candidate) ||
+		!candidate.TransferBinding.TransferAuthorized() || candidate.TransferBinding.SenseID != candidate.Sense.ID ||
+		candidate.TransferBinding.CoreRef.String() != string(findSentencePredicate(*source.Meaning, candidate.NodeID).Concept) ||
+		!candidate.ConstructionBinding.Approved || candidate.ConstructionBinding.SenseID != candidate.Sense.ID ||
+		candidate.ConstructionBinding.ValencyFrameID != candidate.Frame.ID || candidate.ConstructionBinding.FamilyID != candidate.Family.Family.ID ||
+		candidate.ConstructionBinding.VariantID.String() != candidate.CompiledVariant.Variant.ID.String() ||
+		candidate.Frame.SenseID != candidate.Sense.ID || !polishFrameAllowsFamily(candidate.Frame, candidate.Family.Family.ID) ||
+		candidate.CompiledVariant.FamilyID != candidate.Family.Family.ID || candidate.CompiledVariant.Variant.FamilyID != candidate.Family.Family.ID ||
+		candidate.CompiledVariant.Variant.ID.String() != candidate.ConstructionBinding.VariantID.String() ||
+		candidate.Family.Family.Validate() != nil || candidate.Frame.Validate() != nil ||
+		candidate.CompiledVariant.Variant.DirectionPolicy == construction.DirectionAnalyze ||
+		candidate.CompiledVariant.Variant.Validate(candidate.Family.Family) != nil {
+		return false
+	}
+	event := findSentencePredicate(*source.Meaning, candidate.NodeID)
+	if event.ID == "" || event.TemporalFrame != meaning.TemporalFramePast {
+		return false
+	}
+	negative, scoped := false, false
+	for _, node := range source.Meaning.Nodes {
+		if node.Kind != meaning.KindScope || node.Target != event.ID {
+			continue
+		}
+		if scoped || node.Operator != meaning.OperatorNegation {
+			return false
+		}
+		scoped, negative = true, true
+	}
+	familyID := candidate.Family.Family.ID.String()
+	hasNie := false
+	var mainPredicate construction.SlotSpec
+	for _, slot := range candidate.Family.Family.SlotSpecs {
+		if slot.Category == construction.CategoryVP && slot.IsMainPredicate() {
+			if mainPredicate.ID != "" || slot.Optionality != construction.SlotRequired || slot.Cardinality.Minimum != 1 || slot.Cardinality.Maximum != 1 {
+				return false
+			}
+			mainPredicate = slot
+		}
+	}
+	if mainPredicate.ID == "" {
+		return false
+	}
+	mainCount := 0
+	for _, token := range candidate.CompiledVariant.Variant.Sequence {
+		if token.Kind == construction.TokenSlot && token.SlotID == mainPredicate.ID {
+			mainCount++
+		}
+		if token.Kind == construction.TokenTerminal && token.Terminal == "nie" {
+			hasNie = true
+		}
+	}
+	if mainCount != 1 {
+		return false
+	}
+	switch familyID {
+	case "construction:pl.intransitive":
+		if hasNie != negative {
+			return false
+		}
+	case "construction:pl.transitive":
+		if negative || hasNie {
+			return false
+		}
+	case "construction:pl.transitive_negative", "construction:pl.attributed_seeing_object_negative":
+		if !negative || !hasNie {
+			return false
+		}
+		if familyID == "construction:pl.attributed_seeing_object_negative" {
+			shape, valid := polishAttributedSeeingShape(source)
+			if !valid || shape.scope.ID == "" || shape.scope.Target != event.ID || shape.event.Concept != "concept:seeing" {
+				return false
+			}
+		}
+	}
+	participants := make(map[meaning.Role]meaning.NodeID, len(event.Participants))
+	for _, participant := range event.Participants {
+		if participant.Role == "" || participant.Target == "" || participants[participant.Role] != "" {
+			return false
+		}
+		participants[participant.Role] = participant.Target
+	}
+	subjects := 0
+	for _, argument := range candidate.Frame.Arguments {
+		if argument.Required && participants[argument.Role] == "" {
+			return false
+		}
+		if _, present := participants[argument.Role]; present {
+			matchedSlot := false
+			for _, slot := range candidate.Family.Family.SlotSpecs {
+				if slot.ArgumentBinding != nil && slot.ArgumentBinding.SemanticRole == argument.Role && slot.Category == construction.CategoryNP {
+					matchedSlot = true
+					break
+				}
+			}
+			if !matchedSlot {
+				return false
+			}
+		}
+		if argument.GrammaticalFunction == "subject" {
+			subjects++
+			if !argument.Required || argument.Case != "nominative" || participants[argument.Role] == "" {
+				return false
+			}
+		}
+	}
+	if subjects != 1 {
+		return false
+	}
+	compiled, err := construction.ValidateVariantForFrame(candidate.CompiledVariant.Variant, candidate.Family.Family, candidate.Frame)
+	if err != nil || compiled.FamilyID != candidate.Family.Family.ID || compiled.Variant.ID != candidate.CompiledVariant.Variant.ID ||
+		compiled.PlanID != candidate.Family.PlanID || candidate.CompiledVariant.PlanID != candidate.Family.PlanID {
+		return false
+	}
+	for _, condition := range candidate.CompiledVariant.Variant.Conditions {
+		if condition.Kind == construction.ConditionFeatureEquals && condition.SlotID == mainPredicate.ID && condition.Feature == "tense" && string(condition.Value) != "past" {
+			return false
+		}
+	}
+	return polishFrameEvidenceConsistent(source, candidate.NodeID, candidate.TransferBinding.CoreRef)
+}
+
+func polishPastLexicalAspect(candidate realizer.TargetCandidate, paradigms *morph.CompiledParadigms) (string, bool) {
+	if paradigms == nil || candidate.Lexeme.ParadigmID == "" {
+		return "", false
+	}
+	paradigm, found := paradigms.Lookup(morph.ParadigmID(candidate.Lexeme.ParadigmID))
+	if !found {
+		return "", false
+	}
+	aspect := ""
+	for _, cell := range paradigm.Cells {
+		var tense, cellAspect string
+		for _, feature := range cell.Features {
+			if feature.State != features.StateKnown {
+				continue
+			}
+			switch feature.Feature {
+			case "tense":
+				tense = string(feature.Value)
+			case "aspect":
+				cellAspect = string(feature.Value)
+			}
+		}
+		if tense != "past" {
+			continue
+		}
+		if cellAspect != "imperfective" && cellAspect != "perfective" || aspect != "" && aspect != cellAspect {
+			return "", false
+		}
+		aspect = cellAspect
+	}
+	return aspect, aspect != ""
+}
+
+func polishHasKnownAspectEvidence(source semantic.MeaningCandidate, concept ids.ConceptID) bool {
+	for _, record := range source.Evidence.Records {
+		if record.Outcome != status.OutcomeOK || record.Role != "" || record.CoreConceptID != concept {
+			continue
+		}
+		for _, feature := range record.Features {
+			if feature.Feature == "aspect" && feature.State == features.StateKnown && feature.Value != "" {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func sameMeaningPath(left, right []meaning.NodeID) bool {
+	if len(left) != len(right) {
+		return false
+	}
+	for index := range left {
+		if left[index] != right[index] {
+			return false
+		}
+	}
+	return true
+}
+
+type polishSentenceOperatorBuilder struct{ negationRoutes polishNegationRouteResolver }
+
+func (builder polishSentenceOperatorBuilder) Build(ctx context.Context, source semantic.MeaningCandidate) ([]construction.Operator, bool, error) {
 	if ctx == nil {
 		return nil, false, fmt.Errorf("Polish operator evidence requires a request context")
 	}
@@ -535,7 +948,7 @@ func (polishSentenceOperatorBuilder) Build(ctx context.Context, source semantic.
 			Capabilities:  []construction.Capability{"question-wh"}, Provenance: polishWHQuestionSource,
 		}}, true, nil
 	}
-	scope, event, route, found := polishNegatedPresent(source)
+	scope, event, route, found := builder.negationRoutes.negatedPresent(source)
 	if !found {
 		return runtime.NoOperatorEvidenceBuilder{}.Build(ctx, source)
 	}
@@ -561,13 +974,18 @@ func (polishSentenceOperatorBuilder) Build(ctx context.Context, source semantic.
 	}}, true, nil
 }
 
-type polishSentenceCandidatePolicy struct{}
+type polishSentenceCandidatePolicy struct{ negationRoutes polishNegationRouteResolver }
 
 // Independent Meaning input can omit mention context entirely. In that case
 // an attribution's bare route is licensed without inventing deixis.
 func polishTargetIdentificationReferenceMode(source semantic.MeaningCandidate, predicateID meaning.NodeID) (string, bool) {
 	if mode, ok := polishIdentificationReferenceMode(source, predicateID); ok {
 		return mode, true
+	}
+	if role, _, concept, ok := polishIdentificationState(source, predicateID); ok && role == "bearer" && sourceHasScope(source) {
+		if _, attributed := polishAttributionForConcept(concept); attributed && len(source.Contexts) == 0 {
+			return "none", true
+		}
 	}
 	if source.Meaning == nil || len(source.Contexts) == 0 {
 		return "", false
@@ -584,7 +1002,24 @@ func polishTargetIdentificationReferenceMode(source semantic.MeaningCandidate, p
 	return "none", true
 }
 
-func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, all []realizer.TargetCandidate) bool {
+func (policy polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, all []realizer.TargetCandidate) bool {
+	if candidate.Kind == meaning.KindEvent && candidate.TransferBinding.CoreRef.String() == "concept:giving" && candidate.TransferBinding.SenseID.String() == "sense:pl.dac.transfer" {
+		predicate, exists := polishMeaningNode(source, candidate.NodeID)
+		if !exists || predicate.TemporalFrame != meaning.TemporalFramePast {
+			return false
+		}
+	}
+	if candidate.Kind == meaning.KindEvent && candidate.TransferBinding.CoreRef.String() == "concept:buying" && candidate.TransferBinding.SenseID.String() == "sense:pl.kupic.buy" {
+		predicate, exists := polishMeaningNode(source, candidate.NodeID)
+		if !exists || predicate.TemporalFrame != meaning.TemporalFramePast {
+			return false
+		}
+	}
+	if event, exists := polishMeaningNode(source, candidate.NodeID); exists && event.Kind == meaning.KindEvent && event.TemporalFrame == meaning.TemporalFramePast &&
+		(candidate.Family.Family.ID.String() == "construction:pl.intransitive" || candidate.Family.Family.ID.String() == "construction:pl.transitive") &&
+		!polishDedicatedPastTransfer(candidate) && !polishApprovedPastTargetCandidate(source, candidate) {
+		return false
+	}
 	anchorIntent, contextsValid := polishPersonalContext(source)
 	if anchorIntent && !contextsValid {
 		return false
@@ -676,7 +1111,38 @@ func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.Meaning
 				return false
 			}
 			variant := candidate.CompiledVariant.Variant.ID.String()
+			predicate := findSentencePredicate(*source.Meaning, candidate.NodeID)
+			if predicate.ID == "" {
+				return false
+			}
+			if sourceHasScope(source) {
+				if mode != "none" || candidate.Family.Family.ID.String() != "construction:pl.attribution_negative" || candidate.Sense.ID.String() != attribution.sense {
+					return false
+				}
+				tense := "present"
+				if predicate.TemporalFrame == meaning.TemporalFramePast {
+					tense = "past"
+				} else if predicate.TemporalFrame != "" && predicate.TemporalFrame != meaning.TemporalFramePresent {
+					return false
+				}
+				if number != "singular" && number != "plural" {
+					return false
+				}
+				expectedVariant := "construction:pl.attribution_negative." + number + "." + tense + "." + gender
+				return string(candidate.Frame.ID) == strings.TrimPrefix(attribution.sense, "sense:")+".negative.frame" && variant == expectedVariant
+			}
+			pastGender := ""
+			if marker := strings.Index(variant, ".past."); marker >= 0 {
+				pastGender = variant[marker+len(".past."):]
+				variant = variant[:marker]
+			}
+			if (predicate.TemporalFrame == meaning.TemporalFramePast) != (pastGender != "") {
+				return false
+			}
 			if number == "plural" {
+				if pastGender != "" && pastGender != gender {
+					return false
+				}
 				if candidate.Family.Family.ID.String() != "construction:pl.attribution_plural" || string(candidate.Frame.ID) != strings.TrimPrefix(attribution.sense, "sense:")+".plural.frame" {
 					return false
 				}
@@ -702,6 +1168,9 @@ func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.Meaning
 					return false
 				}
 			}
+			if pastGender != "" && pastGender != gender {
+				return false
+			}
 			if candidate.Family.Family.ID.String() != "construction:pl.attribution" {
 				return false
 			}
@@ -723,17 +1192,28 @@ func (polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.Meaning
 		}
 		return false
 	}
-	route, negativeSense := polishPresentNegationRouteForSense(candidate.Sense.ID)
-	negativeFamily := candidate.Family.Family.ID.String() == "construction:pl.transitive_negative" || candidate.Family.Family.ID.String() == "construction:pl.oblique_negative"
+	route, negativeSense := policy.negationRoutes.routeForSense(candidate.Sense.ID)
+	negativeFamily := candidate.Family.Family.ID.String() == "construction:pl.transitive_negative" || candidate.Family.Family.ID.String() == "construction:pl.ditransitive_negative" || candidate.Family.Family.ID.String() == "construction:pl.oblique_negative" ||
+		negativeSense && route.family == "construction:pl.intransitive" && candidate.Family.Family.ID.String() == route.family && candidate.CompiledVariant.Variant.ID.String() == route.variant ||
+		negativeSense && route.derived && route.variantsByFamily[candidate.Family.Family.ID.String()][candidate.CompiledVariant.Variant.ID.String()]
 	if !negativeFamily {
 		if polishNegatedPredicateTarget(source, candidate.NodeID) {
 			return false
 		}
 		return true
 	}
-	_, event, sourceRoute, negated := polishNegatedPresent(source)
-	if !negativeSense || !negated || event.ID != candidate.NodeID || sourceRoute.sense != candidate.Sense.ID.String() || sourceRoute.family != route.family ||
-		event.TemporalFrame == meaning.TemporalFramePast || !polishFrameEvidenceConsistent(source, event.ID, candidate.TransferBinding.CoreRef) {
+	if route.derived && !route.variantsByFamily[candidate.Family.Family.ID.String()][candidate.CompiledVariant.Variant.ID.String()] {
+		return false
+	}
+	_, event, sourceRoute, negated := policy.negationRoutes.negatedPresent(source)
+	dynamicPast := negated && event.TemporalFrame == meaning.TemporalFramePast && (route.family == "construction:pl.intransitive" || route.derived)
+	if dynamicPast && !polishApprovedPastTargetCandidate(source, candidate) {
+		return false
+	}
+	if !negativeSense || !negated || event.ID != candidate.NodeID || sourceRoute.sense != candidate.Sense.ID.String() && !(route.concept == "concept:giving" && polishGivingNegationSenseMatches(route, candidate.Sense.ID.String())) && !(route.concept == "concept:buying" && polishBuyingNegationSenseMatches(route, candidate.Sense.ID.String())) || sourceRoute.family != route.family ||
+		(route.concept == "concept:giving" && candidate.Sense.ID.String() == "sense:pl.dac.transfer" && event.TemporalFrame != meaning.TemporalFramePast) ||
+		(event.TemporalFrame == meaning.TemporalFramePast && route.family != "construction:pl.intransitive" && !route.derived && !polishPastNegativeConceptAllowed(route.concept)) ||
+		!polishFrameEvidenceConsistent(source, event.ID, candidate.TransferBinding.CoreRef) {
 		return false
 	}
 	referent, exists := polishReferentForRole(source, event.ID, route.subjectRole)
@@ -888,12 +1368,12 @@ func polishSubjectPastGender(source semantic.MeaningCandidate, predicate realize
 	}
 	if number == "singular" {
 		switch gender {
-		case "masculine_personal", "feminine", "neuter":
+		case "masculine_personal":
 			return gender, true
 		case "masculine_animal", "masculine_inanimate":
-			if predicate.Sense.ID.String() == "sense:pl.widziec.visual" {
-				return "masculine_personal", true
-			}
+			return "masculine_personal", true
+		case "feminine", "neuter":
+			return gender, true
 		default:
 			return "", false
 		}

@@ -231,8 +231,16 @@ func mustPolishReferent(source semantic.MeaningCandidate, referentID meaning.Nod
 func polishIdentificationAttributesAllowed(source semantic.MeaningCandidate, predicateID meaning.NodeID, role meaning.Role, referentID meaning.NodeID, coreID ids.ConceptID) bool {
 	predicate, predicateExists := polishMeaningNode(source, predicateID)
 	referent, referentExists := polishMeaningNode(source, referentID)
-	if !predicateExists || !referentExists || referent.Kind != meaning.KindReferent || predicate.TemporalFrame == meaning.TemporalFramePast {
+	if !predicateExists || !referentExists || referent.Kind != meaning.KindReferent {
 		return false
+	}
+	if predicate.TemporalFrame == meaning.TemporalFramePast {
+		if role != "bearer" {
+			return false
+		}
+		if _, attribution := polishAttributionForConcept(string(predicate.Concept)); !attribution {
+			return false
+		}
 	}
 	return polishFrameEvidenceConsistent(source, predicateID, coreID) &&
 		polishMultiplicityEvidenceConsistent(source, predicateID, role, referent, coreID, true)
@@ -245,6 +253,21 @@ func polishPredicateEvidenceConsistent(source semantic.MeaningCandidate, predica
 	meaningPredicate, exists := polishMeaningNode(source, predicate.NodeID)
 	if !exists {
 		return false
+	}
+	if meaningPredicate.TemporalFrame == meaning.TemporalFramePast && predicate.TransferBinding.CoreRef.String() == "concept:giving" {
+		targetAspect := ""
+		switch predicate.TransferBinding.SenseID.String() {
+		case "sense:pl.dac.transfer":
+			targetAspect = "perfective"
+		case "sense:pl.dawac.transfer":
+			targetAspect = "imperfective"
+		}
+		if targetAspect != "" {
+			values, known := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)
+			if known && string(values["aspect"]) != "" && string(values["aspect"]) != targetAspect {
+				return false
+			}
+		}
 	}
 	identificationRole := meaning.Role("")
 	switch predicate.TransferBinding.CoreRef.String() {

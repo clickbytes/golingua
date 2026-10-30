@@ -16,6 +16,7 @@ import (
 	"github.com/clickbytes/golingua/internal/runtime"
 	"github.com/clickbytes/golingua/internal/semantic"
 	"github.com/clickbytes/golingua/internal/text"
+	"github.com/clickbytes/golingua/internal/valency"
 )
 
 // NewSentenceSource compiles the English analysis stages against one exact
@@ -59,7 +60,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	if err != nil {
 		return nil, err
 	}
-	plans, _, err := runtime.CompileSentencePlans(profile, packages, valencyIndex)
+	plans, variants, err := runtime.CompileSentencePlans(profile, packages, valencyIndex)
 	if err != nil {
 		return nil, err
 	}
@@ -182,13 +183,8 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		return nil, err
 	}
 	supportedSenses[conversingSense] = true
-	intransitiveSenses := map[ids.SenseID]bool{}
-	for _, name := range []string{"en.sleep.physiological", "en.breathing.event", "en.sneezing.event", "en.running.event", "en.coughing.event", "en.walking.event", "en.living.event", "en.flying_motion.event", "en.waking_up.event", "en.falling_asleep.event", "en.working.activity", "en.go.spatial_movement"} {
-		sense, senseErr := ids.NewSenseID(name)
-		if senseErr != nil {
-			return nil, senseErr
-		}
-		intransitiveSenses[sense] = true
+	intransitiveSenses := approvedEnglishIntransitiveSenses(registry, valencyIndex, variants)
+	for sense := range intransitiveSenses {
 		supportedSenses[sense] = true
 	}
 	predicateAlternatives := map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID{
@@ -209,6 +205,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "second", "verb_number": "plural", "number": "plural"},
 			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
 			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
+			{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"},
 		},
 		lookingSense: {
 			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
@@ -233,7 +230,11 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		attributionSense: {{"adjective_degree": "positive"}},
 		redSense:         {{"adjective_degree": "positive"}},
 		eatingSense:      {{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"}, {"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"}},
-		drinkingSense:    {{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"}, {"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"}},
+		drinkingSense: {
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
+			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
+			{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"},
+		},
 		// The new manipulation routes are restricted to third-person present.
 		// They are filled below through a precomputed list.
 	}
@@ -265,7 +266,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 		{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
 		{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
 	}
-	predicateAlternatives[writingInstrumentSense] = predicateAlternatives[writingMessageSense]
+	predicateAlternatives[writingInstrumentSense] = predicateAlternatives[writingMessageSense][:2]
 	predicateAlternatives[conversingSense] = []map[features.FeatureID]features.FeatureValueID{
 		{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
 		{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
@@ -276,23 +277,25 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 			{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
 		}
 	}
+	predicateAlternatives[eatingSense] = append(predicateAlternatives[eatingSense], map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"})
+	resolver := englishNegationResolver{registry: registry, valency: valencyIndex, lexicon: snapshot.Lexicon(), variants: variants}
 	return &runtime.SourcePipeline{
 		Language: "en", PhraseProfile: phraseProfile, ClauseConnector: "and", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}}, AllowFinalPeriod: false,
 		ScopedSourcePlan: scopedPlan, ScopedReadingPolicy: ScopedSourceReadingPolicy,
 		RelationPathPlan: relationPathPlan, RelationSourceReadingPolicy: RelationSourceReadingPolicy,
-		AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "to": true, "from": true, "with": true, "do": true, "does": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true, "who": true, "whom": true, "and": true, "up": true, "asleep": true},
+		AllowedUnlexicalizedTerminals: map[string]bool{"at": true, "to": true, "from": true, "with": true, "do": true, "does": true, "did": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true, "who": true, "whom": true, "and": true, "up": true, "asleep": true},
 		Morphology:                    inverse, MWEPlans: []construction.CompiledMWEPlan{},
 		Lexicon: snapshot.Lexicon(), ParserIndex: plans, Valency: valencyIndex,
 		Core: snapshot.CoreGraph(), Constructions: registry,
-		PhraseBuilder: englishWHGapPhraseBuilder{inner: englishIdentificationPhraseBuilder{phraseProfile: phraseProfile, featureProfile: profile, inner: englishDeterminerNPBuilder{inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
+		PhraseBuilder: englishWHGapPhraseBuilder{inner: englishIdentificationPhraseBuilder{phraseProfile: phraseProfile, featureProfile: profile, inner: englishDeterminerNPBuilder{resolver: resolver, inner: runtime.SimplePhraseEvidenceBuilder{Config: runtime.POSPhraseConfig{
 			Categories: map[lexicon.PartOfSpeech][]construction.SlotCategory{
 				"noun": {construction.CategoryNP}, "pronoun": {construction.CategoryNP}, "verb": {construction.CategoryVP}, "adjective": {construction.CategoryAP},
 			},
 		}}, lexicon: snapshot.Lexicon()}, lexicon: snapshot.Lexicon()}},
-		EvidenceBuilder: englishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), base: runtime.BareDeclarativeEvidenceBuilder{
+		EvidenceBuilder: englishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), constructions: registry, resolver: resolver, base: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses:                     supportedSenses,
 			PredicateFeatureAlternativesBySense: predicateAlternatives,
-			AllowedUnlexicalizedTerminals:       map[string]bool{"at": true, "to": true, "from": true, "with": true, "do": true, "does": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true, "up": true, "asleep": true},
+			AllowedUnlexicalizedTerminals:       map[string]bool{"at": true, "to": true, "from": true, "with": true, "do": true, "does": true, "did": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true, "up": true, "asleep": true},
 		}},
 	}, nil
 }
@@ -323,13 +326,15 @@ func (builder englishWHGapPhraseBuilder) Build(ctx context.Context, lattice anal
 }
 
 type englishSentenceEvidenceBuilder struct {
-	base    runtime.BareDeclarativeEvidenceBuilder
-	lexicon *lexicon.Index
+	base          runtime.BareDeclarativeEvidenceBuilder
+	lexicon       *lexicon.Index
+	constructions *construction.Registry
+	resolver      englishNegationResolver
 }
 
 func (builder englishSentenceEvidenceBuilder) Build(ctx context.Context, lattice analyzer.LexicalLattice, candidates []parser.PhraseCandidate, forest parser.Forest) (runtime.CompositionEvidence, error) {
 	evidence, err := builder.buildSyntax(ctx, lattice, candidates, forest)
-	if err != nil || !evidence.OperatorCoverageComplete {
+	if err != nil {
 		return evidence, err
 	}
 	attributes, err := englishNodeAttributes(builder.base.SupportedSenses, builder.lexicon, candidates, forest, evidence)
@@ -349,14 +354,39 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 		}
 	}
 	if !hasNot {
-		forest = filterEnglishGivingArticleAlternatives(forest, candidates, builder.lexicon)
-		evidence, err := builder.base.Build(ctx, lattice, candidates, forest)
+		forest = filterEnglishGivingArticleAlternatives(forest, lattice, candidates, builder.lexicon, builder.constructions)
+		pastIntransitiveSenses, pastIntransitiveCoverage := englishIntransitiveSimplePastCapability(candidates, forest, builder.constructions)
+		if !pastIntransitiveCoverage {
+			pastIntransitiveSenses = nil
+		}
+		pastTransitiveSenses := englishTransitivePastCapability(candidates, forest, builder.constructions, builder.resolver.valency)
+		commercePastSenses, commercePastCoverage := englishCommerceTransferPastCapability(candidates, forest, builder.constructions, builder.resolver.valency)
+		for sense := range commercePastSenses {
+			pastTransitiveSenses[sense] = true
+		}
+		base := builder.base
+		if len(pastTransitiveSenses) > 0 {
+			base.PredicateFeatureAlternativesBySense = cloneEnglishPredicateAlternatives(base.PredicateFeatureAlternativesBySense)
+			for sense := range pastTransitiveSenses {
+				base.PredicateFeatureAlternativesBySense[sense] = appendPastFiniteAlternative(base.PredicateFeatureAlternativesBySense[sense])
+			}
+		}
+		if len(pastIntransitiveSenses) > 0 {
+			base.PredicateFeatureAlternativesBySense = cloneEnglishPredicateAlternatives(base.PredicateFeatureAlternativesBySense)
+			for sense := range pastIntransitiveSenses {
+				base.PredicateFeatureAlternativesBySense[sense] = append(base.PredicateFeatureAlternativesBySense[sense], map[features.FeatureID]features.FeatureValueID{
+					"verb_form": "finite", "tense": "past",
+				})
+			}
+		}
+		evidence, err := base.Build(ctx, lattice, candidates, forest)
 		if err != nil {
 			return evidence, err
 		}
 		evidence = addEnglishPersonalReferences(evidence, candidates, forest)
 		if !evidence.OperatorCoverageComplete {
-			if !englishWHQuestionCoverage(lattice, candidates, forest) {
+			if !englishWHQuestionCoverage(lattice, candidates, forest) && !pastIntransitiveCoverage &&
+				!englishTransitivePastCoverage(candidates, forest, builder.constructions, builder.resolver.valency) && !commercePastCoverage {
 				return evidence, nil
 			}
 			evidence.OperatorCoverageComplete = true
@@ -369,13 +399,22 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 	if englishNegativeClassificationInput(lattice) {
 		return builder.buildEnglishNegativeClassification(ctx, lattice, candidates, forest)
 	}
-	route, number, notSpan, supported := englishPresentNegationInput(lattice)
+	if number, tense, notSpan, supported := englishAttributionNegationInput(lattice); supported {
+		return builder.buildEnglishNegativeAttribution(ctx, lattice, candidates, forest, number, tense, notSpan)
+	}
+	if evidence, handled, err := builder.buildEnglishAttributedNegativeSeeing(ctx, lattice, candidates, forest); handled || err != nil {
+		return evidence, err
+	}
+	route, number, tense, notSpan, supported := builder.resolver.negationInput(lattice)
 	if !supported {
 		return runtime.CompositionEvidence{}, nil
 	}
 	base := builder.base
 	base.PredicateFeatureAlternativesBySense = cloneEnglishPredicateAlternatives(builder.base.PredicateFeatureAlternativesBySense)
-	for _, negativeRoute := range englishPresentNegationRoutes {
+	for _, negativeRoute := range builder.resolver.routes() {
+		if tense == "past" && !englishStaticPastNegationRoute(negativeRoute) {
+			continue
+		}
 		senseID, err := ids.NewSenseID(strings.TrimPrefix(negativeRoute.sense, "sense:"))
 		if err != nil {
 			return runtime.CompositionEvidence{}, err
@@ -384,14 +423,14 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 			base.PredicateFeatureAlternativesBySense[senseID] = append(
 				base.PredicateFeatureAlternativesBySense[senseID],
 				map[features.FeatureID]features.FeatureValueID{
-					"verb_form": "base", "tense": "present", "person": "third",
+					"verb_form": "base", "tense": features.FeatureValueID(tense), "person": "third",
 					"number": features.FeatureValueID(verbNumber), "verb_number": features.FeatureValueID(verbNumber),
 				},
 			)
 		}
 	}
 	evidence, err := base.Build(ctx, lattice, candidates, forest)
-	if err != nil || !evidence.OperatorCoverageComplete {
+	if err != nil {
 		return evidence, err
 	}
 	byID := make(map[string]parser.PhraseCandidate, len(candidates))
@@ -403,6 +442,7 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 		return runtime.CompositionEvidence{}, err
 	}
 	operatorCount := 0
+	seenOperatorEvidence := make(map[string]struct{})
 	for _, node := range forest.Nodes {
 		if node.Category != "clause" {
 			continue
@@ -418,8 +458,32 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 					attributedNegative = true
 				}
 			}
-			if (alternative.FamilyID != negativeFamily && !attributedNegative) || (!attributedNegative && !route.variantMatchesNumber(alternative.VariantID.String(), number)) || alternative.Permission.SenseID.String() != route.sense {
+			variantID := alternative.VariantID.String()
+			variantAllowed := route.variantMatchesNumber(variantID, number)
+			if tense == "past" {
+				variantAllowed = route.pastVariantAllowed(variantID)
+			}
+			sourceOnlyVariant := !attributedNegative && !variantAllowed &&
+				englishApprovedSourceOnlyNegativeVariant(builder.resolver, alternative, route, number, tense, candidates)
+			if (alternative.FamilyID != negativeFamily && !attributedNegative) || (!attributedNegative && !variantAllowed && !sourceOnlyVariant) || alternative.Permission.SenseID.String() != route.sense {
 				return runtime.CompositionEvidence{}, nil
+			}
+			if route.family == "construction:en.transitive_negative" || route.family == "construction:en.ditransitive_negative" {
+				familyRecord, familyExists := builder.resolver.registry.ByID(alternative.FamilyID)
+				approvedBinding := false
+				for _, binding := range builder.resolver.registry.BindingsByFamilyID(alternative.FamilyID) {
+					if binding.Approved && binding.SenseID.String() == route.sense && string(binding.ValencyFrameID) == route.frame && binding.VariantID.String() == variantID {
+						approvedBinding = true
+						break
+					}
+				}
+				if !familyExists || !approvedBinding || string(alternative.Permission.FrameID) != route.frame ||
+					!englishAlternativeHasRequiredSlots(alternative, familyRecord.Family, byID) {
+					return runtime.CompositionEvidence{}, nil
+				}
+				if route.family == "construction:en.ditransitive_negative" && !englishGivingNegativeFrameCoverage(alternative, familyRecord.Family, builder.resolver.valency, byID) {
+					return runtime.CompositionEvidence{}, nil
+				}
 			}
 			for _, slot := range alternative.Slots {
 				if slot.Role != "" {
@@ -427,12 +491,13 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 				}
 				for _, candidateID := range slot.CandidateIDs {
 					candidate, exists := byID[candidateID]
-					candidateRoute, candidateNumber, negated := englishNegatedPredicateContext(lattice, candidate)
-					if !exists || !negated || candidateRoute.sense != route.sense || candidateNumber != number ||
-						candidate.Features["verb_form"] != "base" || string(candidate.Features["number"]) != number {
+					candidateRoute, candidateNumber, candidateTense, negated := builder.resolver.negatedPredicateContext(lattice, candidate, candidates)
+					if !exists || !negated || candidateRoute.sense != route.sense || candidateTense != tense ||
+						(tense == "present" && candidateNumber != number) ||
+						candidate.Features["verb_form"] != "base" || string(candidate.Features["number"]) != candidateNumber {
 						continue
 					}
-					evidence.Operators = append(evidence.Operators, semantic.OperatorEvidence{
+					operatorEvidence := semantic.OperatorEvidence{
 						Operator: construction.Operator{
 							ID: "negate", Kind: construction.OperatorNegation, Value: construction.ValueNegated,
 							InputFamilyID: alternative.FamilyID, OutputFamilyID: alternative.FamilyID,
@@ -440,7 +505,13 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 							Capabilities:  []construction.Capability{"negation-negated"}, Provenance: englishNegationConstructionSource,
 						},
 						TargetCandidateID: candidateID, Span: notSpan,
-					})
+					}
+					key := fmt.Sprintf("%#v|%s|%#v", operatorEvidence.Operator, operatorEvidence.TargetCandidateID, operatorEvidence.Span)
+					if _, duplicate := seenOperatorEvidence[key]; duplicate {
+						continue
+					}
+					seenOperatorEvidence[key] = struct{}{}
+					evidence.Operators = append(evidence.Operators, operatorEvidence)
 					operatorCount++
 				}
 			}
@@ -450,7 +521,861 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 	return evidence, nil
 }
 
-func filterEnglishGivingArticleAlternatives(forest parser.Forest, candidates []parser.PhraseCandidate, lexical *lexicon.Index) parser.Forest {
+// englishApprovedSourceOnlyNegativeVariant accepts an analyze-only compiled
+// variant as evidence for a source operator without making it a target route.
+// Every structural and feature check is derived from its exact approved
+// binding, family plan, and retained parse alternative.
+func englishApprovedSourceOnlyNegativeVariant(
+	resolver englishNegationResolver,
+	alternative parser.ParseAlternative,
+	route englishPresentNegationRoute,
+	number, tense string,
+	candidates []parser.PhraseCandidate,
+) bool {
+	if resolver.registry == nil || resolver.valency == nil || resolver.variants == nil ||
+		route.family != "construction:en.transitive_negative" || alternative.FamilyID.String() != route.family ||
+		alternative.Permission.SenseID.String() != route.sense || string(alternative.Permission.FrameID) != route.frame ||
+		len(alternative.Unresolved) != 0 {
+		return false
+	}
+	familyRecord, familyExists := resolver.registry.ByID(alternative.FamilyID)
+	if !familyExists || string(familyRecord.Family.Language) != "en" ||
+		!familyHasOperator(familyRecord.Family, construction.OperatorID("negate")) ||
+		!familyHasCapability(familyRecord.Family, construction.Capability("negation-negated")) {
+		return false
+	}
+	variantIndex := resolver.variants[alternative.FamilyID]
+	if variantIndex == nil {
+		return false
+	}
+	compiled, exists := variantIndex.ByID(alternative.VariantID)
+	if !exists || compiled.Variant.DirectionPolicy != construction.DirectionAnalyze ||
+		!variantHasRequiredSlots(familyRecord.Family, compiled.Variant) ||
+		!sequenceHasTerminal(compiled.Variant.Sequence, "not") {
+		return false
+	}
+	var predicate *construction.SlotSpec
+	for index := range familyRecord.Family.SlotSpecs {
+		slot := &familyRecord.Family.SlotSpecs[index]
+		if slot.Category == construction.CategoryVP && slot.IsMainPredicate() {
+			if predicate != nil {
+				return false
+			}
+			predicate = slot
+		}
+	}
+	if predicate == nil {
+		return false
+	}
+	var frame valency.ValencyFrame
+	frameFound := false
+	for _, candidate := range resolver.valency.Frames() {
+		if string(candidate.ID) == route.frame {
+			frame, frameFound = candidate, true
+			break
+		}
+	}
+	if !frameFound || frame.SenseID.String() != route.sense || !valencyFrameAllowsFamily(frame, alternative.FamilyID) {
+		return false
+	}
+	subjectSlot, _, subjectFound := approvedFamilySubjectSlot(familyRecord.Family, frame)
+	if !subjectFound || !sequenceHasSlot(compiled.Variant.Sequence, subjectSlot.ID) ||
+		!sequenceHasSlot(compiled.Variant.Sequence, predicate.ID) {
+		return false
+	}
+	if tense == "past" && number == "" {
+		byID := phraseCandidatesByID(candidates)
+		for _, slot := range alternative.Slots {
+			if slot.SlotID != subjectSlot.ID || len(slot.CandidateIDs) == 0 {
+				continue
+			}
+			for _, candidateID := range slot.CandidateIDs {
+				candidate, found := byID[candidateID]
+				if !found || string(candidate.Features["person"]) != "third" {
+					return false
+				}
+				candidateNumber := string(candidate.Features["noun_number"])
+				if candidateNumber != "singular" && candidateNumber != "plural" || number != "" && number != candidateNumber {
+					return false
+				}
+				number = candidateNumber
+			}
+		}
+		if number == "" {
+			return false
+		}
+	}
+	auxiliary := sequenceAuxiliary(compiled.Variant.Sequence)
+	expectedAuxiliary := ""
+	switch {
+	case tense == "past":
+		expectedAuxiliary = "did"
+	case tense == "present" && number == "plural":
+		expectedAuxiliary = "do"
+	case tense == "present" && number == "singular":
+		expectedAuxiliary = "does"
+	default:
+		return false
+	}
+	if auxiliary != expectedAuxiliary ||
+		!variantHasFeatureCondition(compiled.Variant, subjectSlot.ID, "person", "third") ||
+		!variantHasFeatureCondition(compiled.Variant, subjectSlot.ID, "noun_number", number) ||
+		!variantHasFeatureCondition(compiled.Variant, predicate.ID, "tense", tense) {
+		return false
+	}
+	if !englishAlternativeHasRequiredSlots(alternative, familyRecord.Family, phraseCandidatesByID(candidates)) {
+		return false
+	}
+	approvedBinding := false
+	for _, binding := range resolver.registry.BindingsByFamilyID(alternative.FamilyID) {
+		if binding.Approved && binding.FamilyID == alternative.FamilyID && binding.SenseID.String() == route.sense &&
+			string(binding.ValencyFrameID) == route.frame && binding.VariantID.String() == alternative.VariantID.String() {
+			approvedBinding = true
+			break
+		}
+	}
+	if !approvedBinding {
+		return false
+	}
+	byID := phraseCandidatesByID(candidates)
+	subjectCandidateCount := 0
+	for _, slot := range alternative.Slots {
+		if slot.SlotID != subjectSlot.ID {
+			continue
+		}
+		for _, candidateID := range slot.CandidateIDs {
+			candidate, found := byID[candidateID]
+			if !found || string(candidate.Features["person"]) != "third" || string(candidate.Features["noun_number"]) != number {
+				return false
+			}
+			subjectCandidateCount++
+		}
+	}
+	return subjectCandidateCount > 0
+}
+
+func variantHasFeatureCondition(variant construction.Variant, slot, feature, value string) bool {
+	for _, condition := range variant.Conditions {
+		if condition.Kind == construction.ConditionFeatureEquals && condition.SlotID == slot &&
+			string(condition.Feature) == feature && string(condition.Value) == value {
+			return true
+		}
+	}
+	return false
+}
+
+func phraseCandidatesByID(candidates []parser.PhraseCandidate) map[string]parser.PhraseCandidate {
+	byID := make(map[string]parser.PhraseCandidate, len(candidates))
+	for _, candidate := range candidates {
+		byID[candidate.ID] = candidate
+	}
+	return byID
+}
+
+// buildEnglishAttributedNegativeSeeing binds the dedicated object-attribute
+// negative family directly from its approved compiled alternative. This keeps
+// its frame distinct from ordinary transitive seeing while both use the lemma
+// "see".
+func (builder englishSentenceEvidenceBuilder) buildEnglishAttributedNegativeSeeing(ctx context.Context, lattice analyzer.LexicalLattice, candidates []parser.PhraseCandidate, forest parser.Forest) (runtime.CompositionEvidence, bool, error) {
+	const familyText = "construction:en.attributed_seeing_object_negative"
+	const senseText = "sense:en.see.visual"
+	const frameText = "en.see.visual.attributed_negative"
+	notSpan, hasNot := englishTerminalSpan(lattice, "not")
+	if !hasNot || builder.resolver.registry == nil || builder.resolver.valency == nil || builder.resolver.lexicon == nil || builder.resolver.variants == nil {
+		return runtime.CompositionEvidence{}, false, nil
+	}
+	familyID, err := ids.NewConstructionID(strings.TrimPrefix(familyText, "construction:"))
+	if err != nil {
+		return runtime.CompositionEvidence{}, false, err
+	}
+	senseID, err := ids.NewSenseID(strings.TrimPrefix(senseText, "sense:"))
+	if err != nil {
+		return runtime.CompositionEvidence{}, false, err
+	}
+	familyRecord, exists := builder.resolver.registry.ByID(familyID)
+	variantIndex := builder.resolver.variants[familyID]
+	if !exists || variantIndex == nil {
+		return runtime.CompositionEvidence{}, false, nil
+	}
+	frameFound := false
+	for _, frame := range builder.resolver.valency.FramesBySenseID(senseID) {
+		if string(frame.ID) == frameText && frame.SenseID == senseID && valencyFrameAllowsFamily(frame, familyID) {
+			frameFound = true
+			break
+		}
+	}
+	if !frameFound {
+		return runtime.CompositionEvidence{}, false, nil
+	}
+	byID := make(map[string]parser.PhraseCandidate, len(candidates))
+	for _, candidate := range candidates {
+		byID[candidate.ID] = candidate
+	}
+	approved := make(map[string]bool)
+	for _, binding := range builder.resolver.registry.BindingsByFamilyID(familyID) {
+		if binding.Approved && binding.SenseID == senseID && string(binding.ValencyFrameID) == frameText {
+			approved[binding.VariantID.String()] = true
+		}
+	}
+	if len(approved) == 0 {
+		return runtime.CompositionEvidence{}, false, nil
+	}
+	hasAttributedAlternative := false
+	for _, node := range forest.Nodes {
+		if node.Category != "clause" {
+			continue
+		}
+		for _, alternative := range node.Alternatives {
+			if alternative.FamilyID == familyID && alternative.Permission.SenseID == senseID && string(alternative.Permission.FrameID) == frameText {
+				hasAttributedAlternative = true
+				break
+			}
+		}
+	}
+	if !hasAttributedAlternative {
+		return runtime.CompositionEvidence{}, false, nil
+	}
+	base := builder.base
+	evidence, err := base.Build(ctx, lattice, candidates, forest)
+	if err != nil {
+		return evidence, true, err
+	}
+	operatorCount := 0
+	seen := make(map[string]bool)
+	for _, node := range forest.Nodes {
+		if node.Category != "clause" {
+			continue
+		}
+		for _, alternative := range node.Alternatives {
+			variantID := alternative.VariantID.String()
+			if alternative.FamilyID != familyID || alternative.Permission.SenseID != senseID || string(alternative.Permission.FrameID) != frameText ||
+				!approved[variantID] || len(alternative.Unresolved) != 0 {
+				continue
+			}
+			parsedID, parseErr := construction.ParseVariantID(variantID)
+			if parseErr != nil {
+				continue
+			}
+			compiled, exists := variantIndex.ByID(parsedID)
+			if !exists || compiled.Variant.DirectionPolicy == construction.DirectionAnalyze || !variantHasRequiredSlots(familyRecord.Family, compiled.Variant) ||
+				(!sequenceHasTerminal(compiled.Variant.Sequence, "does") && !sequenceHasTerminal(compiled.Variant.Sequence, "did")) || !sequenceHasTerminal(compiled.Variant.Sequence, "not") {
+				continue
+			}
+			conditionNumber, numberConsistent := variantSubjectNumberIfConsistent(compiled.Variant, "subject")
+			if !numberConsistent || conditionNumber != "" && conditionNumber != "singular" || !variantSubjectPersonThird(compiled.Variant, "subject") {
+				continue
+			}
+			if !englishAlternativeHasRequiredSlots(alternative, familyRecord.Family, byID) {
+				continue
+			}
+			var predicateCandidate *parser.PhraseCandidate
+			for _, slot := range alternative.Slots {
+				if slot.SlotID != "verb" || slot.Role != "" || len(slot.CandidateIDs) != 1 {
+					continue
+				}
+				candidate := byID[slot.CandidateIDs[0]]
+				if candidate.Category == construction.CategoryVP && candidate.LexemeID.String() == "lexeme:en.see.v" &&
+					containsEnglishSenseName(candidate.SenseIDs, strings.TrimPrefix(senseText, "sense:")) && candidate.Features["verb_form"] == "base" &&
+					candidate.Features["person"] == "third" && candidate.Features["number"] == "singular" {
+					copy := candidate
+					predicateCandidate = &copy
+				}
+			}
+			if predicateCandidate == nil {
+				continue
+			}
+			key := predicateCandidate.ID + "|" + fmt.Sprint(notSpan.Start) + "|" + fmt.Sprint(notSpan.End)
+			if seen[key] {
+				continue
+			}
+			seen[key] = true
+			evidence.Operators = append(evidence.Operators, semantic.OperatorEvidence{
+				Operator: construction.Operator{ID: "negate", Kind: construction.OperatorNegation, Value: construction.ValueNegated,
+					InputFamilyID: familyID, OutputFamilyID: familyID, SemanticScope: construction.SemanticScope{TargetNodeID: "event"},
+					Capabilities: []construction.Capability{"negation-negated"}, Provenance: englishNegationConstructionSource},
+				TargetCandidateID: predicateCandidate.ID, Span: notSpan,
+			})
+			operatorCount++
+		}
+	}
+	evidence.OperatorCoverageComplete = operatorCount > 0
+	return evidence, true, nil
+}
+
+func englishAttributionNegationInput(lattice analyzer.LexicalLattice) (string, string, text.Span, bool) {
+	notSpan, found := englishTerminalSpan(lattice, "not")
+	if !found {
+		return "", "", text.Span{}, false
+	}
+	for index, token := range lattice.Tokens {
+		if token.Token.Span != notSpan || index == 0 {
+			continue
+		}
+		number, tense := "", "present"
+		switch lattice.Tokens[index-1].Token.Folded {
+		case "is":
+			number = "singular"
+		case "are":
+			number = "plural"
+		case "was":
+			number, tense = "singular", "past"
+		case "were":
+			number, tense = "plural", "past"
+		default:
+			return "", "", text.Span{}, false
+		}
+		if index+1 >= len(lattice.Tokens) {
+			return "", "", text.Span{}, false
+		}
+		return number, tense, notSpan, true
+	}
+	return "", "", text.Span{}, false
+}
+
+func (builder englishSentenceEvidenceBuilder) buildEnglishNegativeAttribution(ctx context.Context, lattice analyzer.LexicalLattice, candidates []parser.PhraseCandidate, forest parser.Forest, number, tense string, notSpan text.Span) (runtime.CompositionEvidence, error) {
+	evidence, err := builder.base.Build(ctx, lattice, candidates, forest)
+	if err != nil {
+		return evidence, err
+	}
+	byID := make(map[string]parser.PhraseCandidate, len(candidates))
+	for _, candidate := range candidates {
+		byID[candidate.ID] = candidate
+	}
+	operatorCount := 0
+	seen := make(map[string]bool)
+	for _, node := range forest.Nodes {
+		if node.Category != "clause" {
+			continue
+		}
+		for _, alternative := range node.Alternatives {
+			if alternative.FamilyID.String() != "construction:en.attribution_negative" || alternative.Permission.SenseID.String() == "" {
+				continue
+			}
+			route, ok := builder.resolver.routeForSense(alternative.Permission.SenseID)
+			variantPrefix := "construction:en.attribution_negative." + number + "." + tense + "."
+			if !ok || !route.statePredicate || !strings.HasPrefix(alternative.VariantID.String(), variantPrefix) {
+				continue
+			}
+			for _, slot := range alternative.Slots {
+				if slot.Role != "" || slot.SlotID != "predicate" {
+					continue
+				}
+				for _, candidateID := range slot.CandidateIDs {
+					candidate, exists := byID[candidateID]
+					if !exists || candidate.Category != construction.CategoryAP || candidate.LexemeID.String() != route.lexeme || candidate.Features["adjective_degree"] != "positive" {
+						continue
+					}
+					key := candidateID + "|" + fmt.Sprint(notSpan.Start) + "|" + fmt.Sprint(notSpan.End)
+					if seen[key] {
+						continue
+					}
+					seen[key] = true
+					evidence.Operators = append(evidence.Operators, semantic.OperatorEvidence{
+						Operator: construction.Operator{ID: "negate", Kind: construction.OperatorNegation, Value: construction.ValueNegated,
+							InputFamilyID: alternative.FamilyID, OutputFamilyID: alternative.FamilyID,
+							SemanticScope: construction.SemanticScope{TargetNodeID: "event"},
+							Capabilities:  []construction.Capability{"negation-negated"}, Provenance: englishNegationConstructionSource},
+						TargetCandidateID: candidateID, Span: notSpan,
+					})
+					operatorCount++
+				}
+			}
+		}
+	}
+	evidence.OperatorCoverageComplete = operatorCount > 0
+	if evidence.OperatorCoverageComplete {
+		evidence = addEnglishIdentificationReferences(evidence, candidates, forest, lattice)
+	}
+	return evidence, nil
+}
+
+// englishTransitivePastCapability recognizes only retained, complete forest
+// alternatives backed by an approved binding in the compiled transitive-past
+// family. It derives eligible senses from the exact VP candidate features.
+func englishTransitivePastCapability(candidates []parser.PhraseCandidate, forest parser.Forest, registry *construction.Registry, valencyIndex *valency.Index) map[ids.SenseID]bool {
+	capabilities := make(map[ids.SenseID]bool)
+	if registry == nil || valencyIndex == nil {
+		return capabilities
+	}
+	familyID, err := ids.NewConstructionID("en.transitive_past")
+	if err != nil {
+		return capabilities
+	}
+	record, exists := registry.ByID(familyID)
+	if !exists {
+		return capabilities
+	}
+	frames := make(map[valency.FrameID]valency.ValencyFrame)
+	for _, frame := range valencyIndex.Frames() {
+		frames[frame.ID] = frame
+	}
+	approved := make(map[string]bool)
+	for _, binding := range registry.BindingsByFamilyID(familyID) {
+		if !binding.Approved || binding.FamilyID != familyID {
+			continue
+		}
+		approved[binding.SenseID.String()+"\x00"+string(binding.ValencyFrameID)+"\x00"+binding.VariantID.String()] = true
+	}
+	byID := make(map[string]parser.PhraseCandidate, len(candidates))
+	for _, candidate := range candidates {
+		byID[candidate.ID] = candidate
+	}
+	for _, node := range forest.Nodes {
+		if node.Category != "clause" {
+			continue
+		}
+		for _, alternative := range node.Alternatives {
+			if alternative.FamilyID != familyID || len(alternative.Unresolved) != 0 {
+				continue
+			}
+			sense := alternative.Permission.SenseID
+			bindingKey := sense.String() + "\x00" + string(alternative.Permission.FrameID) + "\x00" + alternative.VariantID.String()
+			if !approved[bindingKey] {
+				continue
+			}
+			frame, frameExists := frames[valency.FrameID(alternative.Permission.FrameID)]
+			if !frameExists || frame.SenseID != sense || !valencyFrameAllowsFamily(frame, familyID) {
+				continue
+			}
+			subjectRole, objectRole, frameOK := englishTransitiveFrameRoles(record.Family, frame)
+			if !frameOK {
+				continue
+			}
+			slots := make(map[string]parser.SlotBinding, len(alternative.Slots))
+			for _, slot := range alternative.Slots {
+				if _, duplicate := slots[slot.SlotID]; duplicate {
+					slots = nil
+					break
+				}
+				slots[slot.SlotID] = slot
+			}
+			if slots == nil {
+				continue
+			}
+			if slots["subject"].Role != subjectRole || slots["object"].Role != objectRole {
+				continue
+			}
+			validAlternative := true
+			for _, spec := range record.Family.SlotSpecs {
+				if spec.Optionality != construction.SlotRequired {
+					continue
+				}
+				slot, found := slots[spec.ID]
+				if !found || slot.WHGap != nil || len(slot.CandidateIDs) == 0 {
+					validAlternative = false
+					break
+				}
+				validSlot := false
+				for _, candidateID := range slot.CandidateIDs {
+					candidate, found := byID[candidateID]
+					if !found || candidate.Category != spec.Category {
+						continue
+					}
+					if spec.Category == construction.CategoryVP &&
+						(candidate.Features["verb_form"] != "finite" || candidate.Features["tense"] != "past" || !containsEnglishSenseName(candidate.SenseIDs, strings.TrimPrefix(sense.String(), "sense:"))) {
+						continue
+					}
+					validSlot = true
+					break
+				}
+				if !validSlot {
+					validAlternative = false
+					break
+				}
+			}
+			if validAlternative {
+				capabilities[sense] = true
+			}
+		}
+	}
+	return capabilities
+}
+
+func englishTransitivePastCoverage(candidates []parser.PhraseCandidate, forest parser.Forest, registry *construction.Registry, valencyIndex *valency.Index) bool {
+	return len(englishTransitivePastCapability(candidates, forest, registry, valencyIndex)) > 0
+}
+
+func englishTransitiveFrameRoles(family construction.ConstructionFamily, frame valency.ValencyFrame) (meaning.Role, meaning.Role, bool) {
+	specs := make(map[string]construction.SlotSpec, len(family.SlotSpecs))
+	for _, spec := range family.SlotSpecs {
+		if _, duplicate := specs[spec.ID]; duplicate {
+			return "", "", false
+		}
+		specs[spec.ID] = spec
+	}
+	for _, id := range []string{"subject", "verb", "object"} {
+		spec, found := specs[id]
+		if !found || spec.Optionality != construction.SlotRequired || spec.Cardinality.Minimum != 1 || spec.Cardinality.Maximum != 1 {
+			return "", "", false
+		}
+		category := construction.CategoryNP
+		if id == "verb" {
+			category = construction.CategoryVP
+		}
+		if spec.Category != category {
+			return "", "", false
+		}
+	}
+	for _, spec := range family.SlotSpecs {
+		if spec.Optionality == construction.SlotRequired && spec.Cardinality.Minimum > 0 && spec.ID != "subject" && spec.ID != "verb" && spec.ID != "object" {
+			return "", "", false
+		}
+	}
+	var subjectRole, objectRole meaning.Role
+	for _, argument := range frame.Arguments {
+		if !argument.Required {
+			continue
+		}
+		switch argument.ID {
+		case "subject":
+			if argument.GrammaticalFunction != "subject" || argument.Role == "" || subjectRole != "" {
+				return "", "", false
+			}
+			subjectRole = argument.Role
+		case "object":
+			if argument.GrammaticalFunction != "object" || argument.Role == "" || objectRole != "" {
+				return "", "", false
+			}
+			objectRole = argument.Role
+		default:
+			return "", "", false
+		}
+	}
+	if subjectRole == "" || objectRole == "" || subjectRole == objectRole {
+		return "", "", false
+	}
+	if !englishFrameDeclaresRole(frame, subjectRole) || !englishFrameDeclaresRole(frame, objectRole) {
+		return "", "", false
+	}
+	return subjectRole, objectRole, true
+}
+
+func englishFrameDeclaresRole(frame valency.ValencyFrame, role meaning.Role) bool {
+	for _, declared := range frame.SemanticRoles {
+		if declared == role {
+			return true
+		}
+	}
+	return false
+}
+
+func appendPastFiniteAlternative(alternatives []map[features.FeatureID]features.FeatureValueID) []map[features.FeatureID]features.FeatureValueID {
+	for _, alternative := range alternatives {
+		if alternative["verb_form"] == "finite" && alternative["tense"] == "past" && alternative["mood"] == "indicative" && alternative["voice"] == "active" {
+			return alternatives
+		}
+	}
+	return append(alternatives, map[features.FeatureID]features.FeatureValueID{
+		"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active",
+	})
+}
+
+// englishCommerceTransferPastCapability derives simple-past coverage from
+// retained plans, approved bindings, finite-past VP evidence, and the exact
+// frame argument/omission contract. Transfer routes need every required role;
+// commerce routes may omit only roles expressly licensed by their frame.
+func englishCommerceTransferPastCapability(candidates []parser.PhraseCandidate, forest parser.Forest, registry *construction.Registry, valencyIndex *valency.Index) (map[ids.SenseID]bool, bool) {
+	capabilities := make(map[ids.SenseID]bool)
+	if registry == nil || valencyIndex == nil {
+		return capabilities, false
+	}
+	byID := make(map[string]parser.PhraseCandidate, len(candidates))
+	for _, candidate := range candidates {
+		byID[candidate.ID] = candidate
+	}
+	seenClause := false
+	for _, node := range forest.Nodes {
+		if node.Category != "clause" {
+			continue
+		}
+		seenClause = true
+		clauseCovered := false
+		for _, alternative := range node.Alternatives {
+			if len(alternative.Unresolved) != 0 {
+				continue
+			}
+			record, exists := registry.ByID(alternative.FamilyID)
+			if !exists {
+				continue
+			}
+			approved := false
+			for _, binding := range registry.BindingsByFamilyID(alternative.FamilyID) {
+				if binding.Approved && binding.SenseID == alternative.Permission.SenseID && binding.ValencyFrameID == alternative.Permission.FrameID && binding.VariantID.String() == alternative.VariantID.String() {
+					approved = true
+					break
+				}
+			}
+			if !approved {
+				continue
+			}
+			var frame *valency.ValencyFrame
+			for _, candidateFrame := range valencyIndex.FramesBySenseID(alternative.Permission.SenseID) {
+				if candidateFrame.ID == alternative.Permission.FrameID {
+					copy := candidateFrame
+					frame = &copy
+					break
+				}
+			}
+			if frame == nil || !commerceTransferFrameRoles(*frame) {
+				continue
+			}
+			slots := make(map[string]parser.SlotBinding, len(alternative.Slots))
+			duplicate := false
+			for _, slot := range alternative.Slots {
+				if _, exists := slots[slot.SlotID]; exists {
+					duplicate = true
+					break
+				}
+				slots[slot.SlotID] = slot
+			}
+			if duplicate || !commerceTransferRequiredSlotsPresent(record.Family.SlotSpecs, *frame, slots, byID, alternative.Permission.SenseID) {
+				continue
+			}
+			capabilities[alternative.Permission.SenseID] = true
+			clauseCovered = true
+		}
+		if !clauseCovered {
+			return capabilities, false
+		}
+	}
+	return capabilities, seenClause
+}
+
+func commerceTransferFrameRoles(frame valency.ValencyFrame) bool {
+	roles := make(map[meaning.Role]bool, len(frame.SemanticRoles))
+	for _, role := range frame.SemanticRoles {
+		roles[role] = true
+	}
+	transfer := roles["giver"] && roles["recipient"] && roles["theme"]
+	commerce := roles["buyer"] && roles["goods"] && roles["seller"]
+	return transfer || commerce
+}
+
+func commerceTransferRequiredSlotsPresent(specs []construction.SlotSpec, frame valency.ValencyFrame, slots map[string]parser.SlotBinding, candidates map[string]parser.PhraseCandidate, sense ids.SenseID) bool {
+	specByID := make(map[string]construction.SlotSpec, len(specs))
+	for _, spec := range specs {
+		if _, duplicate := specByID[spec.ID]; duplicate {
+			return false
+		}
+		specByID[spec.ID] = spec
+	}
+	argumentByID := make(map[string]valency.ArgumentSlot, len(frame.Arguments))
+	for _, argument := range frame.Arguments {
+		if _, duplicate := argumentByID[argument.ID]; duplicate {
+			return false
+		}
+		argumentByID[argument.ID] = argument
+		spec, hasSpec := specByID[argument.ID]
+		slot, hasSlot := slots[argument.ID]
+		if argument.Required {
+			if !hasSpec || spec.Category != construction.CategoryNP || spec.Optionality != construction.SlotRequired || !hasSlot || slot.Role != argument.Role || slot.WHGap != nil || len(slot.CandidateIDs) == 0 || !allEnglishNPs(slot.CandidateIDs, candidates) {
+				return false
+			}
+			continue
+		}
+		omissionLicensed := containsMeaningRole(frame.SurfaceOmittedRoles, argument.Role)
+		if !hasSpec {
+			if !omissionLicensed || hasSlot {
+				return false
+			}
+			continue
+		}
+		if spec.Category != construction.CategoryNP || hasSlot && (slot.Role != argument.Role || slot.WHGap != nil || len(slot.CandidateIDs) == 0 || !allEnglishNPs(slot.CandidateIDs, candidates)) {
+			return false
+		}
+		if !hasSlot && (spec.Optionality != construction.SlotOptional || !omissionLicensed) {
+			return false
+		}
+	}
+	for _, spec := range specs {
+		if spec.Category == construction.CategoryVP && spec.IsMainPredicate() {
+			continue
+		}
+		if spec.Category != construction.CategoryNP {
+			return false
+		}
+		if _, backed := argumentByID[spec.ID]; !backed {
+			return false
+		}
+	}
+	var verbSpec construction.SlotSpec
+	verbCount := 0
+	for _, spec := range specs {
+		if spec.Category == construction.CategoryVP && spec.IsMainPredicate() {
+			verbSpec = spec
+			verbCount++
+		}
+	}
+	if verbCount != 1 {
+		return false
+	}
+	verbSlot, exists := slots[verbSpec.ID]
+	if !exists || verbSlot.Role != "" || verbSlot.WHGap != nil || len(verbSlot.CandidateIDs) != 1 {
+		return false
+	}
+	verb, exists := candidates[verbSlot.CandidateIDs[0]]
+	if !exists || verb.Category != construction.CategoryVP || verb.Features["verb_form"] != "finite" || verb.Features["tense"] != "past" || !containsEnglishSenseName(verb.SenseIDs, strings.TrimPrefix(sense.String(), "sense:")) {
+		return false
+	}
+	return true
+}
+
+func containsMeaningRole(roles []meaning.Role, target meaning.Role) bool {
+	for _, role := range roles {
+		if role == target {
+			return true
+		}
+	}
+	return false
+}
+
+func allEnglishNPs(candidateIDs []string, candidates map[string]parser.PhraseCandidate) bool {
+	for _, candidateID := range candidateIDs {
+		candidate, exists := candidates[candidateID]
+		if !exists || candidate.Category != construction.CategoryNP {
+			return false
+		}
+	}
+	return len(candidateIDs) > 0
+}
+
+// englishIntransitiveSimplePastCapability accepts a past predicate only when a
+// retained compiled parse alternative is licensed by the approved intransitive
+// binding and contains exactly one finite past VP candidate for that sense.
+// The parse forest supplies the selected plan/variant; the registry supplies
+// the approved sense/frame/family/variant relation.
+func englishIntransitiveSimplePastCapability(candidates []parser.PhraseCandidate, forest parser.Forest, registry *construction.Registry) (map[ids.SenseID]bool, bool) {
+	allowed := make(map[ids.SenseID]bool)
+	if registry == nil {
+		return allowed, false
+	}
+	familyID, err := ids.ParseConstructionID("construction:en.intransitive")
+	if err != nil {
+		return allowed, false
+	}
+	bindings := registry.BindingsByFamilyID(familyID)
+	byID := make(map[string]parser.PhraseCandidate, len(candidates))
+	for _, candidate := range candidates {
+		byID[candidate.ID] = candidate
+	}
+	seenClause := false
+	for _, node := range forest.Nodes {
+		if node.Category != "clause" {
+			continue
+		}
+		seenClause = true
+		if len(node.Alternatives) == 0 {
+			return allowed, false
+		}
+		for _, alternative := range node.Alternatives {
+			if alternative.FamilyID != familyID || len(alternative.Unresolved) != 0 {
+				return allowed, false
+			}
+			bound := false
+			for _, binding := range bindings {
+				if binding.Approved && binding.SenseID == alternative.Permission.SenseID && string(binding.ValencyFrameID) == string(alternative.Permission.FrameID) && binding.FamilyID == alternative.FamilyID && binding.VariantID.String() == alternative.VariantID.String() {
+					bound = true
+					break
+				}
+			}
+			if !bound {
+				return allowed, false
+			}
+			verbCount := 0
+			for _, slot := range alternative.Slots {
+				if slot.SlotID != "verb" {
+					continue
+				}
+				for _, id := range slot.CandidateIDs {
+					candidate, exists := byID[id]
+					if !exists || candidate.Category != construction.CategoryVP || candidate.Features["verb_form"] != "finite" || candidate.Features["tense"] != "past" {
+						continue
+					}
+					hasSense := false
+					for _, sense := range candidate.SenseIDs {
+						if sense == alternative.Permission.SenseID {
+							hasSense = true
+							break
+						}
+					}
+					if hasSense {
+						verbCount++
+					}
+				}
+			}
+			if verbCount != 1 {
+				return allowed, false
+			}
+			allowed[alternative.Permission.SenseID] = true
+		}
+	}
+	return allowed, seenClause
+}
+
+// approvedEnglishIntransitiveSenses derives the finite-predicate inventory
+// from approved bindings whose frame and family each contain exactly one
+// required subject argument and one main VP slot.
+func approvedEnglishIntransitiveSenses(registry *construction.Registry, valencyIndex *valency.Index, variants map[ids.ConstructionID]*construction.VariantIndex) map[ids.SenseID]bool {
+	allowed := make(map[ids.SenseID]bool)
+	if registry == nil || valencyIndex == nil {
+		return allowed
+	}
+	familyID, err := ids.ParseConstructionID("construction:en.intransitive")
+	if err != nil {
+		return allowed
+	}
+	record, exists := registry.ByID(familyID)
+	variantIndex := variants[familyID]
+	if !exists || variantIndex == nil || !englishIntransitiveFamilyShape(record.Family) {
+		return allowed
+	}
+	for _, binding := range registry.BindingsByFamilyID(familyID) {
+		if !binding.Approved || binding.FamilyID != familyID || !englishIntransitiveFrameShape(binding.SenseID, binding.ValencyFrameID, familyID, valencyIndex) {
+			continue
+		}
+		if _, exists := variantIndex.ByID(construction.VariantID(binding.VariantID.String())); !exists {
+			continue
+		}
+		allowed[binding.SenseID] = true
+	}
+	return allowed
+}
+
+func englishIntransitiveFamilyShape(family construction.ConstructionFamily) bool {
+	if len(family.SlotSpecs) != 2 {
+		return false
+	}
+	subject, verb := false, false
+	for _, slot := range family.SlotSpecs {
+		if slot.Optionality != construction.SlotRequired || slot.Cardinality.Minimum != 1 || slot.Cardinality.Maximum != 1 {
+			return false
+		}
+		switch {
+		case slot.ID == "subject" && slot.Category == construction.CategoryNP:
+			subject = true
+		case slot.ID == "verb" && slot.Category == construction.CategoryVP:
+			verb = true
+		default:
+			return false
+		}
+	}
+	return subject && verb
+}
+
+func englishIntransitiveFrameShape(senseID ids.SenseID, frameID valency.FrameID, familyID ids.ConstructionID, valencyIndex *valency.Index) bool {
+	for _, frame := range valencyIndex.FramesBySenseID(senseID) {
+		if frame.ID != frameID || frame.SenseID != senseID || !valencyFrameAllowsFamily(frame, familyID) || len(frame.SemanticRoles) != 1 || len(frame.Arguments) != 1 {
+			continue
+		}
+		argument := frame.Arguments[0]
+		if argument.ID == "subject" && argument.Required && argument.GrammaticalFunction == "subject" && argument.Role == frame.SemanticRoles[0] {
+			return true
+		}
+	}
+	return false
+}
+
+func filterEnglishGivingArticleAlternatives(forest parser.Forest, lattice analyzer.LexicalLattice, candidates []parser.PhraseCandidate, lexical *lexicon.Index, registry *construction.Registry) parser.Forest {
 	byID := make(map[string]parser.PhraseCandidate, len(candidates))
 	for _, candidate := range candidates {
 		byID[candidate.ID] = candidate
@@ -462,7 +1387,7 @@ func filterEnglishGivingArticleAlternatives(forest parser.Forest, candidates []p
 		}
 		kept := node.Alternatives[:0]
 		for _, alternative := range node.Alternatives {
-			if alternative.FamilyID.String() == "construction:en.give.transfer" && !englishGivingSourceAlternativeAllowed(alternative, byID, lexical) {
+			if (alternative.FamilyID.String() == "construction:en.give.transfer" || alternative.FamilyID.String() == "construction:en.give.transfer.past") && !englishGivingSourceAlternativeAllowed(alternative, lattice, byID, lexical, registry) {
 				continue
 			}
 			kept = append(kept, alternative)
@@ -472,7 +1397,63 @@ func filterEnglishGivingArticleAlternatives(forest parser.Forest, candidates []p
 	return forest
 }
 
-func englishGivingSourceAlternativeAllowed(alternative parser.ParseAlternative, candidates map[string]parser.PhraseCandidate, lexical *lexicon.Index) bool {
+func englishGivingSourceAlternativeAllowed(alternative parser.ParseAlternative, lattice analyzer.LexicalLattice, candidates map[string]parser.PhraseCandidate, lexical *lexicon.Index, registry *construction.Registry) bool {
+	if alternative.VariantID.String() == "construction:en.give.transfer.past.double_np.compact_articles" ||
+		alternative.VariantID.String() == "construction:en.give.transfer.past.to_pp.compact_articles" {
+		if alternative.FamilyID.String() != "construction:en.give.transfer.past" || alternative.Permission.SenseID.String() != "sense:en.give.transfer" ||
+			string(alternative.Permission.FrameID) != "en.give.transfer.past" || len(alternative.Unresolved) != 0 || registry == nil || lexical == nil {
+			return false
+		}
+		approved := false
+		for _, binding := range registry.BindingsByFamilyID(alternative.FamilyID) {
+			if binding.Approved && binding.FamilyID == alternative.FamilyID && binding.SenseID == alternative.Permission.SenseID &&
+				string(binding.ValencyFrameID) == string(alternative.Permission.FrameID) && binding.VariantID.String() == alternative.VariantID.String() {
+				approved = true
+				break
+			}
+		}
+		if !approved {
+			return false
+		}
+		wantRoles := map[string]string{"subject": "giver", "recipient": "recipient", "theme": "theme"}
+		for slotID, wantRole := range wantRoles {
+			var slot *parser.SlotBinding
+			for index := range alternative.Slots {
+				if alternative.Slots[index].SlotID == slotID {
+					if slot != nil {
+						return false
+					}
+					slot = &alternative.Slots[index]
+				}
+			}
+			if slot == nil || string(slot.Role) != wantRole || len(slot.CandidateIDs) != 1 {
+				return false
+			}
+			phrase, exists := candidates[slot.CandidateIDs[0]]
+			if !exists || phrase.Category != construction.CategoryNP || phrase.LexemeID.String() == "" ||
+				phrase.Features["determiner"] != "definite" && phrase.Features["determiner"] != "indefinite" || phrase.TokenStart <= 0 {
+				return false
+			}
+			article, hasArticle := englishArticleAt(lattice, phrase.TokenStart-1)
+			if !hasArticle || string(phrase.Features["determiner"]) != englishDeterminerFeature(article) {
+				return false
+			}
+			lexeme, hasLexeme := lexical.ByLexemeID(phrase.LexemeID)
+			if !hasLexeme {
+				return false
+			}
+			if article == "the" {
+				continue
+			}
+			articleForm, knownArticle := englishIndefiniteArticle(lexeme.Properties)
+			mass, pluralOnly := englishNumberClass(lexeme.Properties, lexeme.ParadigmID)
+			number := knownEnglishNounNumber(phrase.Features)
+			if !knownArticle || articleForm != article || mass || pluralOnly || number != "singular" || !hasNumberBehavior(lexical, phrase.LexemeID, "count") {
+				return false
+			}
+		}
+		return true
+	}
 	for _, slotID := range []string{"subject", "recipient", "theme"} {
 		article, found := englishGivingSequenceArticle(alternative.VariantID.String(), slotID)
 		if !found {
@@ -757,8 +1738,9 @@ func cloneEnglishPredicateAlternatives(source map[ids.SenseID][]map[features.Fea
 }
 
 type englishDeterminerNPBuilder struct {
-	inner   runtime.SimplePhraseEvidenceBuilder
-	lexicon *lexicon.Index
+	inner    runtime.SimplePhraseEvidenceBuilder
+	lexicon  *lexicon.Index
+	resolver englishNegationResolver
 }
 
 func englishAttributionArticleForPhrase(candidate parser.PhraseCandidate, index *lexicon.Index) (string, bool) {
@@ -806,7 +1788,7 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 			if englishNegationAuxiliaryCandidate(lattice, candidate) {
 				continue
 			}
-			route, number, negated := englishNegatedPredicateContext(lattice, candidate)
+			route, number, tense, negated := builder.resolver.negatedPredicateContext(lattice, candidate, candidates)
 			whDoSupport := englishWHDoSupportContext(lattice, candidate)
 			whDoPerson, whDoNumber := "", ""
 			if whDoSupport {
@@ -823,7 +1805,7 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 				// In this exact auxiliary context, the imperative cell supplies
 				// the English base surface; do-support carries person and number.
 				candidate.Features = map[features.FeatureID]features.FeatureValueID{
-					"verb_form": "base", "tense": "present", "person": "third",
+					"verb_form": "base", "tense": features.FeatureValueID(tense), "person": "third",
 					"number": features.FeatureValueID(number), "verb_number": features.FeatureValueID(number),
 					"mood": "indicative", "voice": "active",
 				}
@@ -1043,11 +2025,7 @@ func supportedEnglishPredicateRoute(candidate parser.PhraseCandidate) bool {
 		}
 		return person == "third"
 	case "past":
-		for _, sense := range candidate.SenseIDs {
-			if sense.String() == "sense:en.get.receive" || sense.String() == "sense:en.read.text" || sense.String() == "sense:en.see.visual" {
-				return true
-			}
-		}
+		return true
 	}
 	return false
 }

@@ -10,6 +10,14 @@ var englishDeviceSource = provenance.SourceRef{
 	Version: "2026-10-22-batch-20", License: "unknown", Author: "golingua contributors",
 }
 
+// This spelling is requested by the owner-authored A1.8-NEG-872 proposal.
+// The runtime binding was evaluated from that proposal for this work item;
+// the proposal's OwnerAcceptance remains NOT_EVALUATED and is not implied.
+var englishPhoneAliasProposalSource = provenance.SourceRef{
+	ID: "owner-proposal-A1.8-NEG-872-en-phone", Path: "tests/languages/en/A1.8/negation.testdomain.go",
+	Version: "2026-10-25-agent-evaluated", License: "internal", Author: "Codex evaluation of owner-authored proposal; OwnerAcceptance=NOT_EVALUATED",
+}
+
 // These pending candidates name common home and information technology devices.
 var englishDeviceEntries = []lexicalEntry{
 	{"en.refrigerator.n", "refrigerator", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.refrigerator.direct", "an appliance with a cooled compartment for preserving contents", "refrigerator"}}},
@@ -27,6 +35,7 @@ var englishDeviceEntries = []lexicalEntry{
 	{"en.tablet_computer.n", "tablet", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.tablet_computer.direct", "a portable flat computer primarily operated through a touch display", "tablet_computer"}}},
 	{"en.smartphone.n", "smartphone", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.smartphone.direct", "a portable telephone with general computing and network functions", "smartphone"}}},
 	{"en.telephone_device.n", "telephone", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.telephone_device.direct", "a device for transmitting and receiving speech over a communications network", "telephone_device"}}},
+	{"en.phone.n", "phone", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.phone.alias", "a telephone device used to transmit and receive speech over a communications network", "telephone_device"}}},
 	{"en.keyboard_device.n", "keyboard", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.keyboard_device.direct", "a set of keys used to enter characters or commands into a machine", "keyboard_device"}}},
 	{"en.mouse_device.n", "computer mouse", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.mouse_device.direct", "a handheld pointing device used to control a computer cursor", "mouse_device"}}},
 	{"en.computer_monitor.n", "monitor", lexicon.PartOfSpeech("noun"), []lexicalMeaning{{"en.computer_monitor.direct", "a display screen used to present computer-generated information", "computer_monitor"}}},

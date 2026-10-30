@@ -1,0 +1,519 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "family": {
+    "id": "construction:en.attribution_negative",
+    "language": "en",
+    "slot_specs": [
+      {
+        "id": "bearer",
+        "position": 0,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "predicate",
+        "position": 1,
+        "category": "AP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      }
+    ],
+    "operators": [
+      "negate"
+    ],
+    "capabilities": [
+      "negation-negated",
+      "negation",
+      "surface_negation"
+    ],
+    "provenance": {
+      "id": "golingua-en-negative-attribution-437",
+      "path": "languages/en/constructions/attribution_negative.json",
+      "version": "2026-10-29",
+      "license": "internal",
+      "author": "Codex by owner delegation"
+    }
+  },
+  "variants": [
+    {
+      "id": "construction:en.attribution_negative.singular.present.the",
+      "family_id": "construction:en.attribution_negative",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "is"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "not"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-negative-attribution-437",
+        "path": "languages/en/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attribution_negative.singular.present.a",
+      "family_id": "construction:en.attribution_negative",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "is"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "not"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-negative-attribution-437",
+        "path": "languages/en/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attribution_negative.singular.present.an",
+      "family_id": "construction:en.attribution_negative",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "is"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "not"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-negative-attribution-437",
+        "path": "languages/en/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attribution_negative.singular.past.the",
+      "family_id": "construction:en.attribution_negative",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "was"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "not"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-negative-attribution-437",
+        "path": "languages/en/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attribution_negative.singular.past.a",
+      "family_id": "construction:en.attribution_negative",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "was"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "not"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-negative-attribution-437",
+        "path": "languages/en/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attribution_negative.singular.past.an",
+      "family_id": "construction:en.attribution_negative",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "was"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "not"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "singular"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-negative-attribution-437",
+        "path": "languages/en/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attribution_negative.plural.present.the",
+      "family_id": "construction:en.attribution_negative",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "are"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "not"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "plural"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-negative-attribution-437",
+        "path": "languages/en/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attribution_negative.plural.present.bare",
+      "family_id": "construction:en.attribution_negative",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "are"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "not"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "plural"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-negative-attribution-437",
+        "path": "languages/en/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attribution_negative.plural.past.the",
+      "family_id": "construction:en.attribution_negative",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "were"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "not"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "plural"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-negative-attribution-437",
+        "path": "languages/en/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.attribution_negative.plural.past.bare",
+      "family_id": "construction:en.attribution_negative",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "bearer"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "were"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "not"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "predicate"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "bearer",
+          "feature": "noun_number",
+          "value": "plural"
+        }
+      ],
+      "provenance": {
+        "id": "golingua-en-negative-attribution-437",
+        "path": "languages/en/constructions/attribution_negative.json",
+        "version": "2026-10-29",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    }
+  ]
+}

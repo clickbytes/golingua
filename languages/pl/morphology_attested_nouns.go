@@ -43,8 +43,9 @@ var attestedNounExternalSources = map[string]provenance.SourceRef{
 		ID: "wsjp-pl-torba-n", URI: "https://wsjp.pl/haslo/podglad/3755/torba/759009/do-noszenia-ze-soba",
 		Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
 	},
-	"pl.olowek.n": {ID: "wsjp-pl-olowek", URI: "https://wsjp.pl/haslo/podglad/794/olowek/180566/do-pisania", Version: "2026-10-29", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
-	"pl.noz.n":    {ID: "wsjp-pl-noz", URI: "https://wsjp.pl/haslo/podglad/19680/noz/4789950/narzedzie", Version: "2026-10-29", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.olowek.n":     {ID: "wsjp-pl-olowek", URI: "https://wsjp.pl/haslo/podglad/794/olowek/180566/do-pisania", Version: "2026-10-29", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.noz.n":        {ID: "wsjp-pl-noz", URI: "https://wsjp.pl/haslo/podglad/19680/noz/4789950/narzedzie", Version: "2026-10-29", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
+	"pl.sprzedawca.n": {ID: "wsjp-pl-sprzedawca-n", URI: "https://wsjp.pl/haslo/podglad/17181/sprzedawca", Version: "2026-10-30", License: "unknown", Author: "Wielki słownik języka polskiego PAN"},
 	"pl.kot.n": {
 		ID: "wsjp-pl-kot-n", URI: "https://wsjp.pl/haslo/podglad/29368/kot/5136345/domowy",
 		Version: "2026-10-23", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
@@ -76,6 +77,16 @@ var attestedNounExternalSources = map[string]provenance.SourceRef{
 	"pl.mewa.n": {
 		ID: "wsjp-pl-mewa-n", URI: "https://wsjp.pl/haslo/podglad/37575/mewa/4059050/ptak",
 		Version: "2026-10-23", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
+	},
+}
+
+// attestedNounProposalSources records forms present in an owner-authored
+// matrix proposal. These forms are implemented as proposal-backed data; this
+// source does not imply that the matrix case has been owner-accepted.
+var attestedNounProposalSources = map[string]provenance.SourceRef{
+	"pl.telefon.n": {
+		ID: "owner-proposal-A1.8-NEG-872-pl-telefon", Path: "tests/languages/pl/A1.8/negation.testdomain.go",
+		Version: "2026-10-25", License: "internal", Author: "owner-authored proposal; OwnerAcceptance=NOT_EVALUATED",
 	},
 }
 
@@ -159,6 +170,8 @@ var attestedNounForms = []attestedNounEntry{
 	{"pl.klucz.n", "klucz", "masculine_inanimate", [7]string{"klucz", "klucza", "kluczowi", "klucz", "kluczem", "kluczu", "kluczu"}, [7]string{"klucze", "kluczy", "kluczom", "klucze", "kluczami", "kluczach", "klucze"}},
 	{"pl.torba.n", "torba", "feminine", [7]string{"torba", "torby", "torbie", "torbę", "torbą", "torbie", "torbo"}, [7]string{"torby", "toreb", "torbom", "torby", "torbami", "torbach", "torby"}},
 	{"pl.noz.n", "nóż", "masculine_inanimate", [7]string{"nóż", "noża", "nożowi", "nóż", "nożem", "nożu", "nożu"}, [7]string{"noże", "noży", "nożom", "noże", "nożami", "nożach", "noże"}},
+	{"pl.telefon.n", "telefon", "masculine_inanimate", [7]string{"telefon", "telefonu", "telefonowi", "telefon", "telefonem", "telefonie", "telefonie"}, [7]string{"telefony", "telefonów", "telefonom", "telefony", "telefonami", "telefonach", "telefony"}},
+	{"pl.sprzedawca.n", "sprzedawca", "masculine_personal", [7]string{"sprzedawca", "sprzedawcy", "sprzedawcy", "sprzedawcę", "sprzedawcą", "sprzedawcy", "sprzedawco"}, [7]string{"sprzedawcy", "sprzedawców", "sprzedawcom", "sprzedawców", "sprzedawcami", "sprzedawcach", "sprzedawcy"}},
 }
 
 var attestedNounCases = [7]string{"nominative", "genitive", "dative", "accusative", "instrumental", "locative", "vocative"}
@@ -173,7 +186,7 @@ func attestedNounGender(lexemeID string) (string, bool) {
 		return "feminine", true
 	case "pl.gazeta.n":
 		return "feminine", true
-	case "pl.klucz.n", "pl.chleb.n", "pl.papier.n", "pl.deszcz.n", "pl.ksiezyc.n", "pl.dokument.n", "pl.olowek.n", "pl.noz.n":
+	case "pl.klucz.n", "pl.chleb.n", "pl.papier.n", "pl.deszcz.n", "pl.ksiezyc.n", "pl.dokument.n", "pl.olowek.n", "pl.noz.n", "pl.telefon.n":
 		return "masculine_inanimate", true
 	case "pl.matka.n":
 		return "feminine", true
@@ -209,7 +222,7 @@ func attestedNounGender(lexemeID string) (string, bool) {
 		return "masculine_inanimate", true
 	case "pl.pizza.n":
 		return "feminine", true
-	case "pl.sasiad.n", "pl.klient.n":
+	case "pl.sasiad.n", "pl.klient.n", "pl.sprzedawca.n":
 		return "masculine_personal", true
 	case "pl.jedzenie.n":
 		return "neuter", true
@@ -268,7 +281,7 @@ func pluralOnlyNounRecords(lexemes []lexicon.MorphLexeme) ([]lexemeRecord, error
 
 func attestedNounParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm {
 	genders := []string{"masculine_personal", "masculine_animal", "masculine_inanimate", "feminine", "neuter"}
-	result := make([]morph.Paradigm, 0, len(genders)+len(attestedNounExternalSources)+1)
+	result := make([]morph.Paradigm, 0, len(genders)+len(attestedNounExternalSources)+len(attestedNounProposalSources)+1)
 	for _, gender := range genders {
 		paradigmID := morph.ParadigmID("pl_noun_attested_" + gender)
 		result = append(result, attestedNounParadigm(profile, paradigmID, gender, attestedNounSource))
@@ -276,6 +289,9 @@ func attestedNounParadigms(profile *features.LanguageFeatureProfile) []morph.Par
 	result = append(result, attestedNounFeminineAPartialParadigm(profile, "pl_noun_feminine_a_partial", "feminine", attestedNounSource))
 	for _, entry := range attestedNounForms {
 		source, external := attestedNounExternalSources[entry.id]
+		if !external {
+			source, external = attestedNounProposalSources[entry.id]
+		}
 		if !external {
 			continue
 		}
@@ -290,7 +306,9 @@ func attestedNounParadigms(profile *features.LanguageFeatureProfile) []morph.Par
 }
 
 func attestedNounParadigmID(lexemeID, gender string) morph.ParadigmID {
-	if _, external := attestedNounExternalSources[lexemeID]; external {
+	_, external := attestedNounExternalSources[lexemeID]
+	_, proposal := attestedNounProposalSources[lexemeID]
+	if external || proposal {
 		stableSuffix := strings.NewReplacer(".", "_", "-", "_").Replace(lexemeID)
 		return morph.ParadigmID("pl_noun_attested_" + stableSuffix)
 	}

@@ -80,6 +80,13 @@ var polishIssue434LexicalBindingSource = provenance.SourceRef{
 	Version: "2026-10-28", License: "internal", Author: "Codex by owner delegation",
 }
 
+var polishPastBuyingLexicalSource = provenance.SourceRef{
+	ID: "golingua-pl-past-buying-437", Path: "languages/pl/lexicon.go",
+	Version: "2026-10-29", License: "internal", Author: "Codex by owner delegation",
+}
+
+var polishApprovedPastBuyingSenses = map[string]struct{}{"pl.kupic.buy": {}}
+
 var polishApprovedIssue434LexicalSenses = map[string]struct{}{
 	"pl.gazeta.publication": {}, "pl.deszcz.precipitation": {}, "pl.ogladac.view": {}, "pl.pisac.document": {},
 }
@@ -653,6 +660,7 @@ var polishParadigmByLexeme = map[string]string{
 	"pl.dziekowac.v":       "pl_verb_dziekowac_present_3sg_3pl",
 	"pl.uzywac.v":          "pl_verb_uzywac_present_3sg_3pl",
 	"pl.kupowac.v":         "pl_verb_kupowac_present_3sg_3pl",
+	"pl.kupic.v":           "pl_verb_kupic_past_3sg_3pl",
 	"pl.sprzedawac.v":      "pl_verb_sprzedawac_present_3sg_3pl",
 	"pl.budzic_sie.v":      "pl_verb_budzic_sie_present_3sg_3pl",
 	"pl.isc.v":             "pl_verb_isc_present_3sg_3pl",
@@ -669,7 +677,7 @@ var polishParadigmByLexeme = map[string]string{
 	"pl.sasiad.n":          "pl_noun_attested_masculine_personal",
 	"pl.klient.n":          "pl_noun_attested_masculine_personal",
 	"pl.widziec.v":         "pl_verb_present_i",
-	"pl.slyszec.v":         "pl_verb_present_y",
+	"pl.slyszec.v":         "pl_verb_slyszec_finite",
 	"pl.patrzec.v":         "pl_verb_present_y",
 	"pl.czytac.v":          "pl_verb_czytac_finite",
 	"pl.jesc.v":            "pl_verb_jesc_present_3sg_3pl",
@@ -708,6 +716,9 @@ var polishParadigmByLexeme = map[string]string{
 func LexicalDocument() (lexicon.Document, error) {
 	if err := polishLexicalSource.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical source: %w", err)
+	}
+	if err := polishPastBuyingLexicalSource.Validate(); err != nil {
+		return lexicon.Document{}, fmt.Errorf("Polish past buying lexical source: %w", err)
 	}
 	if err := polishManipulationIntegrationSource.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish manipulation integration source: %w", err)
@@ -999,6 +1010,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishIssue434LexicalBindingSource
+				}
+				if _, approved := polishApprovedPastBuyingSenses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishPastBuyingLexicalSource
 				}
 				document.Bindings = append(document.Bindings, binding)
 			}

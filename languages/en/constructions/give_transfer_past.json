@@ -1,0 +1,292 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "family": {
+    "id": "construction:en.give.transfer.past",
+    "language": "en",
+    "slot_specs": [
+      {
+        "id": "subject",
+        "position": 0,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "verb",
+        "position": 1,
+        "category": "VP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "recipient",
+        "position": 2,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "theme",
+        "position": 3,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      }
+    ],
+    "constraints": [],
+    "provenance": {
+      "id": "golingua-g11-giving-433",
+      "path": "languages/en/constructions/give_transfer_past.json",
+      "version": "2026-10-29-437-past",
+      "license": "internal",
+      "author": "Codex by owner delegation"
+    }
+  },
+  "variants": [
+    {
+      "id": "construction:en.give.transfer.past.double_np.compact_articles",
+      "family_id": "construction:en.give.transfer.past",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "accepted_inputs": [
+            "a",
+            "an"
+          ]
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "accepted_inputs": [
+            "a",
+            "an"
+          ]
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "accepted_inputs": [
+            "a",
+            "an"
+          ]
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "analyze",
+      "provenance": {
+        "id": "golingua-g11-giving-437-source-compact",
+        "path": "languages/en/constructions/give_transfer_past.json",
+        "version": "2026-10-30-437-np-compact",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "past"
+        }
+      ]
+    },
+    {
+      "id": "construction:en.give.transfer.past.double_np.np_local_subject_recipient_theme",
+      "family_id": "construction:en.give.transfer.past",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-g11-giving-437-np-article",
+        "path": "languages/en/constructions/give_transfer_past.json",
+        "version": "2026-10-30-437-np-article",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "past"
+        }
+      ]
+    },
+    {
+      "id": "construction:en.give.transfer.past.to_pp.compact_articles",
+      "family_id": "construction:en.give.transfer.past",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "accepted_inputs": [
+            "a",
+            "an"
+          ]
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "accepted_inputs": [
+            "a",
+            "an"
+          ]
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "accepted_inputs": [
+            "a",
+            "an"
+          ]
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "analyze",
+      "provenance": {
+        "id": "golingua-g11-giving-437-source-compact",
+        "path": "languages/en/constructions/give_transfer_past.json",
+        "version": "2026-10-30-437-np-compact",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "past"
+        }
+      ]
+    },
+    {
+      "id": "construction:en.give.transfer.past.to_pp.np_local_subject_theme_recipient",
+      "family_id": "construction:en.give.transfer.past",
+      "sequence": [
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-g11-giving-437-np-article",
+        "path": "languages/en/constructions/give_transfer_past.json",
+        "version": "2026-10-30-437-np-article",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "past"
+        }
+      ]
+    }
+  ]
+}

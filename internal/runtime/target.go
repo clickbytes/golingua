@@ -2,7 +2,10 @@ package runtime
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
+	"sort"
 
 	"github.com/clickbytes/golingua/internal/construction"
 	"github.com/clickbytes/golingua/internal/core"
@@ -23,6 +26,25 @@ import (
 // by the pipeline and cannot be replaced by this callback.
 type TargetPlanBuilder interface {
 	Annotations(context.Context, semantic.MeaningCandidate, realizer.TargetCandidate) ([]realizer.FeatureConstraint, []realizer.FieldAssumption, []realizer.FieldLoss, error)
+}
+
+// TargetPlanAnnotations is one caller-declared annotation choice for an exact
+// selected target candidate. The candidate, Meaning, and construction license
+// are shared and cannot be replaced by this choice.
+type TargetPlanAnnotations struct {
+	FeatureConstraints []realizer.FeatureConstraint
+	Assumptions        []realizer.FieldAssumption
+	Losses             []realizer.FieldLoss
+}
+
+// TargetPlanAlternativesBuilder is an optional bounded extension for callers
+// whose one selected candidate supports multiple explicit annotation choices.
+// It must return at least one choice and no more than engine.MaxTranslationAlternatives.
+// Builders that do not implement it retain the single-result TargetPlanBuilder
+// behavior unchanged.
+type TargetPlanAlternativesBuilder interface {
+	TargetPlanBuilder
+	AnnotationAlternatives(context.Context, semantic.MeaningCandidate, realizer.TargetCandidate) ([]TargetPlanAnnotations, error)
 }
 
 // TargetExecutionBuilder supplies target-language slot morphology inputs for
@@ -233,143 +255,408 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 			Severity: status.SeverityWarning,
 		})
 	}
+	seenPlanIDs := make(map[string]struct{})
+surfaceCandidatesLoop:
 	for _, selected := range surfaceCandidates {
 		if err := ctx.Err(); err != nil {
 			return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
 		}
-		planInput := realizer.PlanInput{Meaning: meaning.Meaning{}, Candidate: selected, Core: pipeline.Core, Budget: pipeline.PlanBudget}
-		planInput.Meaning = *source.Meaning
-		if pipeline.PlanBuilder != nil {
-			planInput.FeatureConstraints, planInput.Assumptions, planInput.Losses, err = pipeline.PlanBuilder.Annotations(ctx, source, selected)
+		annotationSets := []TargetPlanAnnotations{{}}
+		if alternativesBuilder, ok := pipeline.PlanBuilder.(TargetPlanAlternativesBuilder); ok {
+			annotationSets, err = alternativesBuilder.AnnotationAlternatives(ctx, source, selected)
 			if err != nil {
 				return engine.SurfaceResult{}, err
 			}
+			if len(annotationSets) == 0 {
+				return engine.SurfaceResult{}, targetPipelineError(status.OutcomeInvalid, "EMPTY_TARGET_PLAN_ALTERNATIVES", "target.plan_alternatives", "an alternatives builder must retain at least one annotation choice for each selected target candidate")
+			}
+			if len(annotationSets) > engine.MaxTranslationAlternatives {
+				result.Outcome = status.OutcomeResourceLimit
+				result.Diagnostics = appendTargetDiagnostics(result.Diagnostics, status.Diagnostic{Code: "RESOURCE_LIMIT", Path: "target.plan_alternatives", Message: "annotation choices exceed the engine translation alternative limit", Severity: status.SeverityWarning})
+				break surfaceCandidatesLoop
+			}
+		} else if pipeline.PlanBuilder != nil {
+			constraints, assumptions, losses, annotationErr := pipeline.PlanBuilder.Annotations(ctx, source, selected)
+			if annotationErr != nil {
+				return engine.SurfaceResult{}, annotationErr
+			}
+			annotationSets[0] = TargetPlanAnnotations{FeatureConstraints: constraints, Assumptions: assumptions, Losses: losses}
 		}
-		// Polish pluralia tantum can realize a referent with singular or
-		// plural cardinality using the same lexical plural form. Preserve that
-		// loss on the referent only when the selected slot candidate actually
-		// uses a lexeme declaring this behavior.
-		if pipeline.Language == "pl" && source.Meaning != nil {
-			for _, slot := range selected.Family.Family.SlotSpecs {
-				if slot.ArgumentBinding == nil || slot.Category != construction.CategoryNP {
-					continue
-				}
-				referentID, found := targetRoleReferent(*source.Meaning, selected.NodeID, slot.ArgumentBinding.SemanticRole)
-				if !found {
-					continue
-				}
-				referent := targetMeaningNode(*source.Meaning, referentID)
-				var matching []realizer.TargetCandidate
-				for _, lexicalCandidate := range candidates {
-					if lexicalCandidate.NodeID != referentID || lexicalCandidate.Kind != meaning.KindReferent {
+		for _, annotations := range annotationSets {
+			if err := ctx.Err(); err != nil {
+				return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
+			}
+			if len(result.Alternatives) >= engine.MaxTranslationAlternatives {
+				result.Outcome = status.OutcomeResourceLimit
+				result.Diagnostics = appendTargetDiagnostics(result.Diagnostics, status.Diagnostic{Code: "RESOURCE_LIMIT", Path: "target.alternatives", Message: "target realization reached the engine translation alternative limit", Severity: status.SeverityWarning})
+				break surfaceCandidatesLoop
+			}
+			planInput := realizer.PlanInput{Meaning: *source.Meaning, Candidate: selected, Core: pipeline.Core, Budget: pipeline.PlanBudget,
+				FeatureConstraints: annotations.FeatureConstraints, Assumptions: annotations.Assumptions, Losses: annotations.Losses}
+			// Polish pluralia tantum can realize a referent with singular or
+			// plural cardinality using the same lexical plural form. Preserve that
+			// loss on the referent only when the selected slot candidate actually
+			// uses a lexeme declaring this behavior.
+			if pipeline.Language == "pl" && source.Meaning != nil {
+				for _, slot := range selected.Family.Family.SlotSpecs {
+					if slot.ArgumentBinding == nil || slot.Category != construction.CategoryNP {
 						continue
 					}
-					matching = append(matching, lexicalCandidate)
-				}
-				// A single selected lexical route is unambiguous here. If target
-				// lexemes compete, leave their candidate-local number behavior to
-				// slot execution rather than attributing one route's loss to all.
-				if len(matching) == 1 && hasLexicalPluralWithoutCardinality(matching[0].Lexeme.Properties) {
-					if path, ok := MeaningPath(*source.Meaning, referentID); ok {
-						if referent.Multiplicity == "" {
-							predicate := targetMeaningNode(*source.Meaning, selected.NodeID)
-							if predicate.Kind == meaning.KindState && len(predicate.Participants) == 1 {
-								predicatePath, _ := MeaningPath(*source.Meaning, selected.NodeID)
-								planInput.Assumptions = removeNumberAssumptionsAt(planInput.Assumptions, path, predicatePath)
+					referentID, found := targetRoleReferent(*source.Meaning, selected.NodeID, slot.ArgumentBinding.SemanticRole)
+					if !found {
+						continue
+					}
+					referent := targetMeaningNode(*source.Meaning, referentID)
+					var matching []realizer.TargetCandidate
+					for _, lexicalCandidate := range candidates {
+						if lexicalCandidate.NodeID != referentID || lexicalCandidate.Kind != meaning.KindReferent {
+							continue
+						}
+						matching = append(matching, lexicalCandidate)
+					}
+					// A single selected lexical route is unambiguous here. If target
+					// lexemes compete, leave their candidate-local number behavior to
+					// slot execution rather than attributing one route's loss to all.
+					if len(matching) == 1 && hasLexicalPluralWithoutCardinality(matching[0].Lexeme.Properties) {
+						if path, ok := MeaningPath(*source.Meaning, referentID); ok {
+							if referent.Multiplicity == "" {
+								predicate := targetMeaningNode(*source.Meaning, selected.NodeID)
+								if predicate.Kind == meaning.KindState && len(predicate.Participants) == 1 {
+									predicatePath, _ := MeaningPath(*source.Meaning, selected.NodeID)
+									planInput.Assumptions = removeNumberAssumptionsAt(planInput.Assumptions, path, predicatePath)
+								}
+							} else if referent.Multiplicity == meaning.MultiplicityOne || referent.Multiplicity == meaning.MultiplicityMany {
+								planInput.Losses = append(planInput.Losses, realizer.FieldLoss{Path: path, Field: "number", Outcome: status.OutcomeIncomplete, Reason: "Polish pluralia tantum marks lexical grammatical number but does not distinguish source referent cardinality"})
 							}
-						} else if referent.Multiplicity == meaning.MultiplicityOne || referent.Multiplicity == meaning.MultiplicityMany {
-							planInput.Losses = append(planInput.Losses, realizer.FieldLoss{Path: path, Field: "number", Outcome: status.OutcomeIncomplete, Reason: "Polish pluralia tantum marks lexical grammatical number but does not distinguish source referent cardinality"})
 						}
 					}
 				}
 			}
-		}
-		if err := ctx.Err(); err != nil {
-			return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
-		}
-		plan, err := realizer.BuildPlan(planInput)
-		if err != nil {
-			return engine.SurfaceResult{}, err
-		}
-		// A frame-licensed absent role makes the complete target candidate
-		// incomplete, while its predicate lexicalization remains usable. Keep
-		// that status on the plan/result, and let the morphology builder handle
-		// the exact licensed candidate as a slot request.
-		executionCandidate := selected
-		if len(selected.MissingOmittedRoles) > 0 && plan.Outcome == status.OutcomeIncomplete {
-			executionCandidate.Outcome = status.OutcomeOK
-		}
-		executionInput, err := pipeline.ExecutionBuilder.Build(ctx, source, candidates, executionCandidate, plan)
-		if err != nil {
-			return engine.SurfaceResult{}, err
-		}
-		if err := ctx.Err(); err != nil {
-			return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
-		}
-		// The callback supplies only language-local morphology inputs and
-		// information-structure evidence; identity-bearing values come from the
-		// selected candidate and canonical plan above.
-		executionInput.Plan = plan
-		executionInput.SourceMeaning = *source.Meaning
-		executionInput.Core = pipeline.Core
-		if executionInput.Budget == (realizer.ExecuteBudget{}) {
-			executionInput.Budget = pipeline.ExecuteBudget
-		}
-		executed, err := realizer.Execute(executionInput)
-		if err != nil {
-			return engine.SurfaceResult{}, err
-		}
-		linearized, err := realizer.LinearizeWithNPProfiles(plan, executed.Family, executed.Slots, executed.NPForms, executionInput.PhraseProfile, executionInput.FeatureProfile, executionInput.InformationStructure, pipeline.LinearizeBudget)
-		if err != nil {
-			return engine.SurfaceResult{}, err
-		}
-		evidence, bindingOK := targetBindingEvidence(pipeline.LanguageRegistry, pipeline.Language, source, selected, plan)
-		// Selection.Outcome summarizes all retained routes. Keep route-local
-		// alternatives usable when that aggregate is ambiguous; result.Outcome
-		// already preserves the overall selection status for the caller.
-		outcome := combineTargetOutcomes(selected.Outcome, plan.Outcome, executed.Outcome, linearized.Outcome)
-		var bindingDiagnostic status.Diagnostic
-		if !bindingOK {
-			outcome = status.OutcomeUnsupported
-			bindingDiagnostic = status.Diagnostic{
-				Code: "TARGET_BINDING_EVIDENCE_UNAVAILABLE", Path: "target.binding",
-				Message:  "target candidate does not match an approved registry binding for its exact sense, frame, family, variant and CORE concept",
-				Severity: status.SeverityError,
+			if err := ctx.Err(); err != nil {
+				return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
 			}
-			evidence = semantic.EvidenceTrace{AlternativeID: plan.ID, Outcome: outcome, Diagnostics: []status.Diagnostic{bindingDiagnostic}}
-		}
-		alternative := engine.SurfaceAlternative{
-			ID: plan.ID, Outcome: outcome, Text: linearized.Text,
-			Evidence: evidence, Assumptions: cloneFieldAssumptions(plan.Assumptions),
-			Losses:      append([]realizer.FieldLoss(nil), plan.Losses...),
-			Diagnostics: append([]status.Diagnostic(nil), selected.Diagnostics...),
-		}
-		alternative.Diagnostics = appendTargetDiagnostics(alternative.Diagnostics, plan.Diagnostics...)
-		alternative.Diagnostics = appendTargetDiagnostics(alternative.Diagnostics, executed.Diagnostics...)
-		alternative.Diagnostics = appendTargetDiagnostics(alternative.Diagnostics, linearized.Diagnostics...)
-		if !bindingOK {
-			alternative.Outcome = outcome
-			alternative.Text = ""
-			alternative.Diagnostics = appendTargetDiagnostics(alternative.Diagnostics, bindingDiagnostic)
-		}
-		if alternative.Outcome != status.OutcomeOK {
-			if len(alternative.Diagnostics) == 0 {
-				alternative.Diagnostics = appendTargetDiagnostics(alternative.Diagnostics, status.Diagnostic{
-					Code: "TARGET_REALIZATION_INCOMPLETE", Path: "target",
-					Message:  "target realization did not produce a complete supported surface alternative",
-					Severity: status.SeverityWarning,
-				})
+			plan, err := realizer.BuildPlan(planInput)
+			if err != nil {
+				return engine.SurfaceResult{}, err
 			}
-			alternative.Evidence.Outcome = alternative.Outcome
-			alternative.Evidence.Diagnostics = append([]status.Diagnostic(nil), alternative.Diagnostics...)
+			if _, duplicate := seenPlanIDs[plan.ID]; duplicate {
+				return engine.SurfaceResult{}, targetPipelineError(status.OutcomeInvalid, "DUPLICATE_TARGET_PLAN_ALTERNATIVE", "target.plan_alternatives", "annotation choices produced the same canonical realization plan ID")
+			}
+			seenPlanIDs[plan.ID] = struct{}{}
+			// A frame-licensed absent role makes the complete target candidate
+			// incomplete, while its predicate lexicalization remains usable. Keep
+			// that status on the plan/result, and let the morphology builder handle
+			// the exact licensed candidate as a slot request.
+			executionCandidate := selected
+			if len(selected.MissingOmittedRoles) > 0 && plan.Outcome == status.OutcomeIncomplete {
+				executionCandidate.Outcome = status.OutcomeOK
+			}
+			remainingAlternatives := engine.MaxTranslationAlternatives - len(result.Alternatives)
+			executionChoices, limitExceeded := targetRoleExecutionChoices(*source.Meaning, selected, candidates, pipeline.Language, remainingAlternatives)
+			if limitExceeded {
+				result.Outcome = status.OutcomeResourceLimit
+				result.Diagnostics = appendTargetDiagnostics(result.Diagnostics, status.Diagnostic{Code: "RESOURCE_LIMIT", Path: "target.role_lexicalizations", Message: "licensed role lexicalization alternatives exceed the remaining engine translation alternative limit", Severity: status.SeverityWarning})
+				break surfaceCandidatesLoop
+			}
+			for _, executionChoice := range executionChoices {
+				if len(result.Alternatives) >= engine.MaxTranslationAlternatives {
+					result.Outcome = status.OutcomeResourceLimit
+					result.Diagnostics = appendTargetDiagnostics(result.Diagnostics, status.Diagnostic{Code: "RESOURCE_LIMIT", Path: "target.alternatives", Message: "target realization reached the engine translation alternative limit", Severity: status.SeverityWarning})
+					break surfaceCandidatesLoop
+				}
+				executionInput, err := pipeline.ExecutionBuilder.Build(ctx, source, executionChoice.Candidates, executionCandidate, plan)
+				if err != nil {
+					return engine.SurfaceResult{}, err
+				}
+				if err := ctx.Err(); err != nil {
+					return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
+				}
+				// The callback supplies only language-local morphology inputs and
+				// information-structure evidence; identity-bearing values come from the
+				// selected candidate and canonical plan above.
+				executionInput.Plan = plan
+				executionInput.SourceMeaning = *source.Meaning
+				executionInput.Core = pipeline.Core
+				if executionInput.Budget == (realizer.ExecuteBudget{}) {
+					executionInput.Budget = pipeline.ExecuteBudget
+				}
+				executed, err := realizer.Execute(executionInput)
+				if err != nil {
+					return engine.SurfaceResult{}, err
+				}
+				linearized, err := realizer.LinearizeWithNPProfiles(plan, executed.Family, executed.Slots, executed.NPForms, executionInput.PhraseProfile, executionInput.FeatureProfile, executionInput.InformationStructure, pipeline.LinearizeBudget)
+				if err != nil {
+					return engine.SurfaceResult{}, err
+				}
+				evidence, bindingOK := targetBindingEvidence(pipeline.LanguageRegistry, pipeline.Language, source, selected, plan)
+				// Selection.Outcome summarizes all retained routes. Keep route-local
+				// alternatives usable when that aggregate is ambiguous; result.Outcome
+				// already preserves the overall selection status for the caller.
+				outcome := combineTargetOutcomes(selected.Outcome, plan.Outcome, executed.Outcome, linearized.Outcome)
+				var bindingDiagnostic status.Diagnostic
+				if !bindingOK {
+					outcome = status.OutcomeUnsupported
+					bindingDiagnostic = status.Diagnostic{
+						Code: "TARGET_BINDING_EVIDENCE_UNAVAILABLE", Path: "target.binding",
+						Message:  "target candidate does not match an approved registry binding for its exact sense, frame, family, variant and CORE concept",
+						Severity: status.SeverityError,
+					}
+					evidence = semantic.EvidenceTrace{AlternativeID: plan.ID, Outcome: outcome, Diagnostics: []status.Diagnostic{bindingDiagnostic}}
+				}
+				alternativeID := plan.ID
+				if len(executionChoice.RoleCandidates) > 0 {
+					alternativeID = targetRoleAlternativeID(plan.ID, executionChoice.RoleCandidates)
+					if bindingOK {
+						if !appendTargetRoleCandidateEvidence(&evidence, executionChoice.RoleCandidates, plan) {
+							bindingOK = false
+							outcome = status.OutcomeUnsupported
+							bindingDiagnostic = status.Diagnostic{Code: "TARGET_ROLE_BINDING_EVIDENCE_UNAVAILABLE", Path: "target.role_lexicalizations", Message: "a selected role lexicalization lacks an exact approved target binding", Severity: status.SeverityError}
+							evidence = semantic.EvidenceTrace{AlternativeID: alternativeID, Outcome: outcome, Diagnostics: []status.Diagnostic{bindingDiagnostic}}
+						}
+					}
+					evidence.AlternativeID = alternativeID
+				}
+				alternative := engine.SurfaceAlternative{
+					ID: alternativeID, Outcome: outcome, Text: linearized.Text,
+					Evidence: evidence, Assumptions: cloneFieldAssumptions(plan.Assumptions),
+					Losses:      append([]realizer.FieldLoss(nil), plan.Losses...),
+					Diagnostics: append([]status.Diagnostic(nil), selected.Diagnostics...),
+				}
+				alternative.Diagnostics = appendTargetDiagnostics(alternative.Diagnostics, plan.Diagnostics...)
+				alternative.Diagnostics = appendTargetDiagnostics(alternative.Diagnostics, executed.Diagnostics...)
+				alternative.Diagnostics = appendTargetDiagnostics(alternative.Diagnostics, linearized.Diagnostics...)
+				if !bindingOK {
+					alternative.Outcome = outcome
+					alternative.Text = ""
+					alternative.Diagnostics = appendTargetDiagnostics(alternative.Diagnostics, bindingDiagnostic)
+				}
+				if alternative.Outcome != status.OutcomeOK {
+					if len(alternative.Diagnostics) == 0 {
+						alternative.Diagnostics = appendTargetDiagnostics(alternative.Diagnostics, status.Diagnostic{
+							Code: "TARGET_REALIZATION_INCOMPLETE", Path: "target",
+							Message:  "target realization did not produce a complete supported surface alternative",
+							Severity: status.SeverityWarning,
+						})
+					}
+					alternative.Evidence.Outcome = alternative.Outcome
+					alternative.Evidence.Diagnostics = append([]status.Diagnostic(nil), alternative.Diagnostics...)
+				}
+				result.Outcome = combineTargetOutcomes(result.Outcome, alternative.Outcome)
+				result.Alternatives = append(result.Alternatives, alternative)
+			}
 		}
-		result.Outcome = combineTargetOutcomes(result.Outcome, alternative.Outcome)
-		result.Alternatives = append(result.Alternatives, alternative)
 	}
 	if len(result.Alternatives) == 0 && result.Outcome == status.OutcomeOK {
 		result.Outcome = status.OutcomeUnknown
 	}
 	return result, nil
+}
+
+type targetRoleCandidateSelection struct {
+	SlotID    string
+	Role      meaning.Role
+	NodeID    meaning.NodeID
+	Candidate realizer.TargetCandidate
+}
+
+type targetRoleExecutionChoice struct {
+	Candidates     []realizer.TargetCandidate
+	RoleCandidates []targetRoleCandidateSelection
+}
+
+type targetRoleCandidateGroup struct {
+	NodeID  meaning.NodeID
+	Choices []realizer.TargetCandidate
+	Slots   []struct {
+		ID   string
+		Role meaning.Role
+	}
+}
+
+// targetRoleExecutionChoices expands only exact, already-selected lexical
+// candidates for NP argument slots. It preserves the predicate plan and limits
+// the Cartesian product before building any execution inputs.
+func targetRoleExecutionChoices(
+	graph meaning.Meaning,
+	selected realizer.TargetCandidate,
+	candidates []realizer.TargetCandidate,
+	languageID features.LanguageID,
+	limit int,
+) ([]targetRoleExecutionChoice, bool) {
+	if limit <= 0 {
+		return nil, true
+	}
+	predicate := targetMeaningNode(graph, selected.NodeID)
+	if predicate.Kind != meaning.KindEvent && predicate.Kind != meaning.KindState {
+		return []targetRoleExecutionChoice{{Candidates: candidates}}, false
+	}
+	groups := make([]targetRoleCandidateGroup, 0)
+	groupByNode := make(map[meaning.NodeID]int)
+	for _, slot := range selected.Family.Family.SlotSpecs {
+		if slot.Category != construction.CategoryNP || slot.ArgumentBinding == nil {
+			continue
+		}
+		var referentID meaning.NodeID
+		matches := 0
+		for _, participant := range predicate.Participants {
+			if participant.Role == slot.ArgumentBinding.SemanticRole && targetMeaningNode(graph, participant.Target).Kind == meaning.KindReferent {
+				referentID = participant.Target
+				matches++
+			}
+		}
+		if matches != 1 {
+			// Keep existing behavior for missing or genuinely ambiguous semantic
+			// role links; candidate fan-out cannot repair those cases.
+			return []targetRoleExecutionChoice{{Candidates: candidates}}, false
+		}
+		if groupIndex, exists := groupByNode[referentID]; exists {
+			groups[groupIndex].Slots = append(groups[groupIndex].Slots, struct {
+				ID   string
+				Role meaning.Role
+			}{slot.ID, slot.ArgumentBinding.SemanticRole})
+			continue
+		}
+		groupByNode[referentID] = len(groups)
+		groups = append(groups, targetRoleCandidateGroup{NodeID: referentID, Slots: []struct {
+			ID   string
+			Role meaning.Role
+		}{{slot.ID, slot.ArgumentBinding.SemanticRole}}})
+	}
+	if len(groups) == 0 {
+		return []targetRoleExecutionChoice{{Candidates: candidates}}, false
+	}
+	product := 1
+	for groupIndex := range groups {
+		group := &groups[groupIndex]
+		concept := string(targetMeaningNode(graph, group.NodeID).Concept)
+		unique := make(map[string]realizer.TargetCandidate)
+		for _, candidate := range candidates {
+			if !targetRoleCandidateAuthorized(candidate, selected.SourceCandidateID, selected.SemanticID, group.NodeID, concept, languageID) {
+				continue
+			}
+			key := targetRoleCandidateKey(candidate)
+			unique[key] = candidate
+		}
+		for _, candidate := range unique {
+			group.Choices = append(group.Choices, candidate)
+		}
+		sort.Slice(group.Choices, func(i, j int) bool {
+			return targetRoleCandidateKey(group.Choices[i]) < targetRoleCandidateKey(group.Choices[j])
+		})
+		if len(group.Choices) == 0 {
+			return []targetRoleExecutionChoice{{Candidates: candidates}}, false
+		}
+		behavior := targetRoleNPBehavior(group.Choices[0])
+		for _, candidate := range group.Choices[1:] {
+			if targetRoleNPBehavior(candidate) != behavior {
+				// The plan annotations are shared across lexical fan-out. If
+				// candidates differ in any declared NP realization behavior, retain
+				// the existing ambiguity rather than copying one candidate's article
+				// or number assumptions to another.
+				return []targetRoleExecutionChoice{{Candidates: candidates}}, false
+			}
+		}
+		if product > limit/len(group.Choices) {
+			return nil, true
+		}
+		product *= len(group.Choices)
+	}
+	if product == 1 {
+		return []targetRoleExecutionChoice{{Candidates: candidates}}, false
+	}
+	choices := make([]targetRoleExecutionChoice, 0, product)
+	selectedChoices := make([]realizer.TargetCandidate, len(groups))
+	var expand func(int)
+	expand = func(index int) {
+		if index < len(groups) {
+			for _, candidate := range groups[index].Choices {
+				selectedChoices[index] = candidate
+				expand(index + 1)
+			}
+			return
+		}
+		choiceCandidates := make([]realizer.TargetCandidate, 0, len(candidates))
+		for _, candidate := range candidates {
+			include := true
+			for groupIndex, group := range groups {
+				if candidate.NodeID == group.NodeID && candidate.Kind == meaning.KindReferent && targetRoleCandidateKey(candidate) != targetRoleCandidateKey(selectedChoices[groupIndex]) {
+					include = false
+					break
+				}
+			}
+			if include {
+				choiceCandidates = append(choiceCandidates, candidate)
+			}
+		}
+		roleSelections := make([]targetRoleCandidateSelection, 0)
+		for groupIndex, group := range groups {
+			for _, slot := range group.Slots {
+				roleSelections = append(roleSelections, targetRoleCandidateSelection{SlotID: slot.ID, Role: slot.Role, NodeID: group.NodeID, Candidate: selectedChoices[groupIndex]})
+			}
+		}
+		choices = append(choices, targetRoleExecutionChoice{Candidates: choiceCandidates, RoleCandidates: roleSelections})
+	}
+	expand(0)
+	return choices, false
+}
+
+func targetRoleCandidateAuthorized(candidate realizer.TargetCandidate, sourceID, semanticID string, nodeID meaning.NodeID, concept string, languageID features.LanguageID) bool {
+	if candidate.SourceCandidateID != sourceID || candidate.SemanticID != semanticID || candidate.NodeID != nodeID ||
+		candidate.Kind != meaning.KindReferent || candidate.Outcome != status.OutcomeOK || candidate.TransferBinding.CoreRef.String() != concept ||
+		!candidate.TransferBinding.TransferAuthorized() || string(candidate.Lexeme.Language) != string(languageID) ||
+		candidate.Lexeme.POS != lexicon.PartOfSpeech("noun") || candidate.Sense.LexemeID != candidate.Lexeme.ID ||
+		candidate.Sense.ID != candidate.TransferBinding.SenseID {
+		return false
+	}
+	return true
+}
+
+func targetRoleCandidateKey(candidate realizer.TargetCandidate) string {
+	return candidate.Lexeme.ID.String() + "\x00" + candidate.Sense.ID.String() + "\x00" + candidate.TransferBinding.CoreRef.String()
+}
+
+func targetRoleNPBehavior(candidate realizer.TargetCandidate) string {
+	properties := make([]string, 0, len(candidate.Lexeme.Properties))
+	for _, property := range candidate.Lexeme.Properties {
+		properties = append(properties, property.Key+"="+property.Value)
+	}
+	sort.Strings(properties)
+	return string(candidate.Lexeme.ParadigmID) + "\x00" + fmt.Sprint(properties)
+}
+
+func targetRoleAlternativeID(planID string, selections []targetRoleCandidateSelection) string {
+	hash := sha256.New()
+	_, _ = fmt.Fprintf(hash, "%s", planID)
+	for _, selection := range selections {
+		_, _ = fmt.Fprintf(hash, "\x00%s\x00%s\x00%s\x00%s", selection.SlotID, selection.Role, selection.NodeID, targetRoleCandidateKey(selection.Candidate))
+	}
+	return planID + "-role-" + hex.EncodeToString(hash.Sum(nil)[:8])
+}
+
+func appendTargetRoleCandidateEvidence(trace *semantic.EvidenceTrace, selections []targetRoleCandidateSelection, plan realizer.RealizationPlan) bool {
+	if trace == nil {
+		return false
+	}
+	seen := make(map[string]struct{})
+	for _, selection := range selections {
+		candidate := selection.Candidate
+		key := targetRoleCandidateKey(candidate)
+		if _, exists := seen[key]; exists {
+			continue
+		}
+		seen[key] = struct{}{}
+		if !candidate.TransferBinding.TransferAuthorized() || candidate.TransferBinding.SenseID != candidate.Sense.ID ||
+			candidate.TransferBinding.CoreRef.String() == "" {
+			return false
+		}
+		trace.Records = append(trace.Records, semantic.EvidenceRecord{
+			Origin: semantic.EvidenceOriginGenerated, SenseID: candidate.TransferBinding.SenseID, CoreConceptID: candidate.TransferBinding.CoreRef,
+			BindingKey: semantic.BindingKeyFor(candidate.TransferBinding.SenseID, candidate.TransferBinding.CoreRef), PlanID: plan.FamilyPlanID,
+			FamilyID: plan.FamilyID, VariantID: plan.VariantID,
+			FrameID: plan.FrameID, Outcome: status.OutcomeOK, Provenance: candidate.TransferBinding.Provenance,
+		})
+	}
+	return trace.Validate() == nil
 }
 
 func cloneFieldAssumptions(values []realizer.FieldAssumption) []realizer.FieldAssumption {

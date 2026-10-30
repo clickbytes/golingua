@@ -3,6 +3,7 @@ package en
 import (
 	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/clickbytes/golingua/internal/construction"
 	"github.com/clickbytes/golingua/internal/features"
@@ -71,10 +72,17 @@ func englishNodeAttributes(supported map[ids.SenseID]bool, index *lexicon.Index,
 						}
 					}
 					_, attributionSense := englishAttributionForSense(sense.String())
-					if candidate.Category == construction.CategoryAP && attributionSense && alternative.FamilyID.String() == "construction:en.attribution" &&
-						(alternative.VariantID.String() == "construction:en.attribution.this" || alternative.VariantID.String() == "construction:en.attribution.that" || alternative.VariantID.String() == "construction:en.attribution.bare" || alternative.VariantID.String() == "construction:en.attribution.the" || alternative.VariantID.String() == "construction:en.attribution.the_plural" || alternative.VariantID.String() == "construction:en.attribution.a" || alternative.VariantID.String() == "construction:en.attribution.an" ||
-							alternative.VariantID.String() == "construction:en.attribution.these" || alternative.VariantID.String() == "construction:en.attribution.those") {
-						if err := add(candidate.ID, meaning.TemporalFramePresent, ""); err != nil {
+					variant := alternative.VariantID.String()
+					attributionVariant := strings.TrimSuffix(variant, ".past")
+					negativeAttribution := alternative.FamilyID.String() == "construction:en.attribution_negative" && strings.HasPrefix(variant, "construction:en.attribution_negative.")
+					if candidate.Category == construction.CategoryAP && attributionSense && (alternative.FamilyID.String() == "construction:en.attribution" || alternative.FamilyID.String() == "construction:en.attribution_negative") &&
+						(negativeAttribution || attributionVariant == "construction:en.attribution.this" || attributionVariant == "construction:en.attribution.that" || attributionVariant == "construction:en.attribution.bare" || attributionVariant == "construction:en.attribution.bare_plural" || attributionVariant == "construction:en.attribution.the" || attributionVariant == "construction:en.attribution.the_plural" || attributionVariant == "construction:en.attribution.a" || attributionVariant == "construction:en.attribution.an" ||
+							attributionVariant == "construction:en.attribution.these" || attributionVariant == "construction:en.attribution.those") {
+						frame := meaning.TemporalFramePresent
+						if strings.Contains(variant, ".past") {
+							frame = meaning.TemporalFramePast
+						}
+						if err := add(candidate.ID, frame, ""); err != nil {
 							return nil, err
 						}
 					}

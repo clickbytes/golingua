@@ -1,6 +1,8 @@
 package en
 
 import (
+	"strings"
+
 	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/realizer"
 	"github.com/clickbytes/golingua/internal/runtime"
@@ -74,6 +76,50 @@ func englishIdentificationState(source semantic.MeaningCandidate) (englishIdenti
 	return englishIdentification{}, false
 }
 
+func englishNegativeAttributionState(source semantic.MeaningCandidate) (englishIdentification, bool) {
+	if source.Meaning == nil || meaning.ValidateStructure(*source.Meaning, meaning.DefaultBudget()) != nil || len(source.Meaning.Nodes) != 3 || len(source.Meaning.Roots) != 1 {
+		return englishIdentification{}, false
+	}
+	var scope, state, referent meaning.Node
+	for _, node := range source.Meaning.Nodes {
+		switch node.Kind {
+		case meaning.KindScope:
+			scope = node
+		case meaning.KindState:
+			state = node
+		case meaning.KindReferent:
+			referent = node
+		}
+	}
+	if scope.ID == "" || state.ID == "" || referent.ID == "" || source.Meaning.Roots[0] != scope.ID || scope.Operator != meaning.OperatorNegation || scope.Target != state.ID ||
+		len(state.Participants) != 1 || state.Participants[0].Role != "bearer" || state.Participants[0].Target != referent.ID || string(referent.Concept) == "" {
+		return englishIdentification{}, false
+	}
+	attribution, allowed := englishAttributionForConcept(string(state.Concept))
+	if !allowed {
+		return englishIdentification{}, false
+	}
+	id := englishIdentification{stateID: state.ID, referent: referent.ID, role: "bearer", concept: referent.Concept, senseID: attribution.sense,
+		family: "construction:en.attribution_negative", temporalFrame: state.TemporalFrame, multiplicity: referent.Multiplicity, mode: "none", valid: true}
+	if len(source.Contexts) > 0 {
+		for _, item := range source.Contexts {
+			if len(item.Context.Referents) != 0 || len(item.Context.Mentions) > 1 {
+				return englishIdentification{}, false
+			}
+			if len(item.Context.Mentions) == 1 {
+				mention := item.Context.Mentions[0]
+				if mention.NodeID != referent.ID || mention.Anchor != nil && mention.Anchor.Kind != "deixis" {
+					return englishIdentification{}, false
+				}
+				if mention.Anchor != nil {
+					id.mode = mention.Anchor.Value
+				}
+			}
+		}
+	}
+	return id, true
+}
+
 func englishNegativeIdentificationState(source semantic.MeaningCandidate) (englishIdentification, bool) {
 	if source.Meaning == nil {
 		return englishIdentification{}, false
@@ -114,6 +160,9 @@ func englishNegativeIdentificationState(source semantic.MeaningCandidate) (engli
 		}
 	}
 	if scope.ID == "" || state.ID == "" || ref.ID == "" || source.Meaning.Roots[0] != scope.ID || scope.Operator != meaning.OperatorNegation || scope.Target != state.ID || string(state.Concept) != "concept:class_membership" || ref.Concept == "" || len(state.Participants) != 1 || state.Participants[0].Role != "member" || state.Participants[0].Target != ref.ID {
+		if state.ID != "" && string(state.Concept) != "concept:class_membership" {
+			return englishIdentification{}, false
+		}
 		return id, true
 	}
 	id.stateID, id.referent, id.concept = state.ID, ref.ID, ref.Concept
@@ -296,6 +345,7 @@ func englishAttributionDoorNumberChoice(source semantic.MeaningCandidate, predic
 }
 
 func englishIdentificationReferenceChoice(variant, family string) (string, bool) {
+	variant = strings.TrimSuffix(variant, ".past")
 	switch variant {
 	case family + ".these":
 		return "these", true
