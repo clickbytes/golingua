@@ -417,7 +417,7 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 		}
 	}
 	if predicateSlots != 1 {
-		return ExecuteResult{}, executeError(status.OutcomeUnsupported, "PREDICATE_SLOT_CARDINALITY", "family.slot_specs", "surface execution requires exactly one unbound predicate VP/AP slot")
+		return ExecuteResult{}, executeError(status.OutcomeUnsupported, "PREDICATE_SLOT_CARDINALITY", "family.slot_specs", "surface execution requires exactly one main predicate slot")
 	}
 	if err := validateMeaningRoleCoverage(predicate, slots); err != nil {
 		return ExecuteResult{}, err
@@ -473,7 +473,7 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 		}
 	}
 	for slotID, request := range requests {
-		if request.VPAuxiliary != nil && !slotByID[slotID].IsMainPredicate() {
+		if request.VPAuxiliary != nil && (!slotByID[slotID].IsMainPredicate() || slotByID[slotID].Category != construction.CategoryVP) {
 			return ExecuteResult{}, executeError(status.OutcomeUnsupported, "VP_AUXILIARY_NON_PREDICATE_SLOT", "slots."+slotID+".vp_auxiliary", "VP auxiliary execution can only attach to the exact main predicate slot")
 		}
 	}
@@ -553,12 +553,15 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 			}
 		} else {
 			if !slot.IsMainPredicate() || req.NodeID != plan.NodeID {
-				return ExecuteResult{}, executeError(status.OutcomeUnsupported, "UNBOUND_NON_PREDICATE_SLOT", "family.slot_specs."+slot.ID, "only the predicate VP/AP slot may be unbound to a semantic argument role")
+				return ExecuteResult{}, executeError(status.OutcomeUnsupported, "UNBOUND_NON_PREDICATE_SLOT", "family.slot_specs."+slot.ID, "only an explicitly declared main predicate slot may be unbound to a semantic argument role")
 			}
 			sourceNode, sourcePath = predicate, path
 		}
 		if err := validateSlotCandidate(req.Candidate, req.NodeID, sourceNode, plan.Language, slot.ID); err != nil {
 			return ExecuteResult{}, err
+		}
+		if slot.NominalPredicate && (slot.Category != construction.CategoryNP || req.Candidate.Lexeme.POS != lexicon.PartOfSpeech("noun")) {
+			return ExecuteResult{}, executeError(status.OutcomeUnsupported, "NOMINAL_PREDICATE_CANDIDATE_MISMATCH", "slots."+slot.ID+".candidate", "an explicitly nominal predicate slot requires a noun candidate in an NP slot")
 		}
 		if sourceNode.ID == plan.NodeID && (req.Candidate.Lexeme.ID != plan.LexemeID || req.Candidate.Sense.ID != plan.SenseID || req.Candidate.TransferBinding.CoreRef != plan.CoreConceptID) {
 			return ExecuteResult{}, executeError(status.OutcomeInvalid, "PREDICATE_CANDIDATE_MISMATCH", "slots."+slot.ID+".candidate", "predicate slot lexical choice differs from the selected realization plan")
@@ -596,7 +599,7 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 		textBytes += len(form.Surface)
 		var vpAuxiliary *VPAuxiliaryForm
 		if req.VPAuxiliary != nil {
-			if !slot.IsMainPredicate() || req.NodeID != plan.NodeID || sourceNode.Kind != meaning.KindEvent && sourceNode.Kind != meaning.KindState {
+			if !slot.IsMainPredicate() || slot.Category != construction.CategoryVP || req.NodeID != plan.NodeID || sourceNode.Kind != meaning.KindEvent && sourceNode.Kind != meaning.KindState {
 				return ExecuteResult{}, executeError(status.OutcomeUnsupported, "VP_AUXILIARY_EVENT_MISMATCH", "slots."+slot.ID+".vp_auxiliary", "VP auxiliary execution requires the exact main predicate slot")
 			}
 			generated, auxErr := generateVPAuxiliary(input, slot, req, budget.Procedure)
@@ -751,7 +754,9 @@ func validateNPExecutionRequest(input ExecuteInput, headSlotID string, request *
 		return executeWrapError(err)
 	}
 	headNode, found := meaningNodeForExecute(input.SourceMeaning, request.Head.NodeID)
-	if !found || request.Head.Candidate.NodeID != request.Head.NodeID || request.Head.Candidate.Kind != meaning.KindReferent || request.Head.Candidate.TransferBinding.CoreRef.String() != string(headNode.Concept) {
+	nominalPredicateHead := headSlot.NominalPredicate && request.Head.NodeID == input.Plan.NodeID && request.Head.Candidate.Kind == meaning.KindState && headNode.RelationPredicate && request.Head.Candidate.Lexeme.POS == lexicon.PartOfSpeech("noun")
+	ordinaryReferentHead := !headSlot.NominalPredicate && request.Head.Candidate.Kind == meaning.KindReferent
+	if !found || request.Head.Candidate.NodeID != request.Head.NodeID || !(nominalPredicateHead || ordinaryReferentHead) || request.Head.Candidate.TransferBinding.CoreRef.String() != string(headNode.Concept) {
 		return executeError(status.OutcomeInvalid, "NP_HEAD_MEANING_MISMATCH", path+".head", "NP head candidate does not transfer the exact Meaning referent")
 	}
 	if request.Modifier != nil {

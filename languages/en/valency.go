@@ -1255,6 +1255,10 @@ func englishManipulationBindingDeclarations() []constructionBindingDeclaration {
 }
 
 var englishFrames = []frameDeclaration{
+	{"en.own.legal_ownership.transitive", "en.own.legal_ownership", "en.transitive", []meaning.Role{"owner", "asset"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "owner", Required: true, GrammaticalFunction: "subject"},
+		{ID: "object", Role: "asset", Required: true, GrammaticalFunction: "object"},
+	}},
 	{"en.have.possession.transitive", "en.have.possession", "en.transitive", []meaning.Role{"holder", "object"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "holder", Required: true, GrammaticalFunction: "subject"},
 		{ID: "object", Role: "object", Required: true, GrammaticalFunction: "object"},
@@ -1877,6 +1881,9 @@ func CompileValency() (*valency.Index, error) {
 		frames = append(frames, frame)
 	}
 	bindingDeclarations := append([]constructionBindingDeclaration(nil), englishConstructionBindingDeclarations...)
+	bindingDeclarations = append(bindingDeclarations, constructionBindingDeclaration{
+		sense: "en.own.legal_ownership", frame: "en.own.legal_ownership.transitive", family: "en.transitive", variant: "en.transitive.svo",
+	})
 	for _, item := range englishConstructionBindingDeclarations {
 		if item.sense != "en.see.visual" || item.frame != "en.see.visual.transitive" || item.family != "en.attributed_seeing_object" {
 			continue

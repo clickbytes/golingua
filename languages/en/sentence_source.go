@@ -1250,7 +1250,7 @@ func englishRelationSourceFeatureAlternatives(lattice analyzer.LexicalLattice, c
 				return nil
 			}
 			coreConcept, exists := ontology.Lookup(transferBindings[0].CoreRef)
-			if !exists || coreConcept.Kind != core.KindRelation {
+			if !exists || coreConcept.Kind != core.KindRelation || !englishOwnershipRelationRolesMatch(coreConcept, frame.SemanticRoles) {
 				return nil
 			}
 			if len(alternative.Slots) != len(boundFamily.Family.SlotSpecs) {
@@ -1311,6 +1311,28 @@ func englishRelationSourceFeatureAlternatives(lattice analyzer.LexicalLattice, c
 		return nil
 	}
 	return result
+}
+
+func englishOwnershipRelationRolesMatch(concept core.Concept, roles []meaning.Role) bool {
+	expected := map[meaning.Role]bool{}
+	switch concept.ID.String() {
+	case "concept:belonging_association":
+		expected["associate"], expected["item"] = true, true
+	case "concept:legal_ownership":
+		expected["owner"], expected["asset"] = true, true
+	default:
+		return false
+	}
+	if len(roles) != len(expected) {
+		return false
+	}
+	for _, role := range roles {
+		if !expected[role] {
+			return false
+		}
+		delete(expected, role)
+	}
+	return len(expected) == 0
 }
 
 func englishRelationPresentFinite(actual map[features.FeatureID]features.FeatureValueID) bool {

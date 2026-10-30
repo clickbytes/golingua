@@ -41,6 +41,7 @@ var polishEntries = []lexicalEntry{
 	{"pl.dawac.v", "dawać", "verb", []lexicalMeaning{{"pl.dawac.transfer", "Transfer an item, right, or opportunity to another participant, typically without specifying completion of a single transfer.", "giving"}}},
 	{"pl.dostac.v", "dostać", "verb", []lexicalMeaning{{"pl.dostac.receive", "become recipient of a theme", "receiving"}, {"pl.dostac.receive_message", "Obtaining a message delivered from another participant.", "receiving_message"}}},
 	{"pl.nalezec.v", "należeć", "verb", []lexicalMeaning{{"pl.nalezec.belonging", "be associated with or belong to an item without asserting ownership", "belonging_association"}}},
+	{"pl.wlasciciel.n", "właściciel", "noun", []lexicalMeaning{{"pl.wlasciciel.legal_ownership", "a participant holding recognized ownership rights over an identifiable asset", "legal_ownership"}}},
 }
 
 var polishCountNounLexemes = map[string]struct{}{
@@ -119,7 +120,14 @@ var polishBelongingLexicalSource = provenance.SourceRef{
 	Version: "2026-10-30", License: "internal", Author: "Codex by owner delegation",
 }
 
+var polishOwnershipLexicalSource = provenance.SourceRef{
+	ID: "golingua-pl-own-476", URI: "https://github.com/clickbytes/golingua/issues/476",
+	Version: "2026-10-30", License: "internal", Author: "Codex by owner delegation",
+}
+
 var polishApprovedBelongingSenses = map[string]struct{}{"pl.nalezec.belonging": {}}
+
+var polishApprovedOwnershipSenses = map[string]struct{}{"pl.wlasciciel.legal_ownership": {}}
 
 var polishApprovedHaveSenses = map[string]struct{}{"pl.miec.possession": {}}
 
@@ -626,34 +634,35 @@ var polishApprovedPendingAuditSenses = map[string]struct{}{
 }
 
 var polishFrameBySense = map[string]lexicon.ValencyID{
-	"pl.nalezec.belonging":     "pl.nalezec.belonging.to_oblique",
-	"pl.rozmawiac.converse":    "pl.rozmawiac.converse.action",
-	"pl.byc.class_membership":  "pl.byc.class_membership.frame",
-	"pl.czarny.black":          "pl.czarny.black.frame",
-	"pl.czerwony.red":          "pl.czerwony.red.frame",
-	"pl.bialy.white":           "pl.bialy.white.frame",
-	"pl.niebieski.blue":        "pl.niebieski.blue.frame",
-	"pl.zielony.green":         "pl.zielony.green.frame",
-	"pl.otwarty.open":          "pl.otwarty.open.frame",
-	"pl.smutny.sad":            "pl.smutny.sad.frame",
-	"pl.widziec.visual":        "pl.widziec.visual.transitive",
-	"pl.pisac.instrument":      "pl.pisac.instrument.action",
-	"pl.patrzec.directed":      "pl.patrzec.directed.na",
-	"pl.slyszec.auditory":      "pl.slyszec.auditory.transitive",
-	"pl.dostac.receive":        "pl.dostac.receive.transitive",
-	"pl.dac.transfer":          "pl.dac.transfer.ditransitive",
-	"pl.dawac.transfer":        "pl.dawac.transfer.ditransitive",
-	"pl.uzywac.using":          "pl.uzywac.using.action",
-	"pl.kroic.with_instrument": "pl.kroic.with_instrument.action",
-	"pl.pytac.request_info":    "pl.pytac.request_info.frame",
-	"pl.odpowiadac.answer":     "pl.odpowiadac.answer.frame",
-	"pl.czytac.interpret":      "pl.czytac.interpret.frame",
-	"pl.uczyc.instruct":        "pl.uczyc.instruct.frame",
-	"pl.uczyc_sie.acquire":     "pl.uczyc_sie.acquire.frame",
-	"pl.jesc.eat":              "pl.jesc.eat.frame",
-	"pl.pic.drink":             "pl.pic.drink.action",
-	"pl.spac.sleep":            "pl.spac.sleep.frame",
-	"pl.pracowac.activity":     "pl.pracowac.activity.frame",
+	"pl.wlasciciel.legal_ownership": "pl.wlasciciel.legal_ownership.nominal",
+	"pl.nalezec.belonging":          "pl.nalezec.belonging.to_oblique",
+	"pl.rozmawiac.converse":         "pl.rozmawiac.converse.action",
+	"pl.byc.class_membership":       "pl.byc.class_membership.frame",
+	"pl.czarny.black":               "pl.czarny.black.frame",
+	"pl.czerwony.red":               "pl.czerwony.red.frame",
+	"pl.bialy.white":                "pl.bialy.white.frame",
+	"pl.niebieski.blue":             "pl.niebieski.blue.frame",
+	"pl.zielony.green":              "pl.zielony.green.frame",
+	"pl.otwarty.open":               "pl.otwarty.open.frame",
+	"pl.smutny.sad":                 "pl.smutny.sad.frame",
+	"pl.widziec.visual":             "pl.widziec.visual.transitive",
+	"pl.pisac.instrument":           "pl.pisac.instrument.action",
+	"pl.patrzec.directed":           "pl.patrzec.directed.na",
+	"pl.slyszec.auditory":           "pl.slyszec.auditory.transitive",
+	"pl.dostac.receive":             "pl.dostac.receive.transitive",
+	"pl.dac.transfer":               "pl.dac.transfer.ditransitive",
+	"pl.dawac.transfer":             "pl.dawac.transfer.ditransitive",
+	"pl.uzywac.using":               "pl.uzywac.using.action",
+	"pl.kroic.with_instrument":      "pl.kroic.with_instrument.action",
+	"pl.pytac.request_info":         "pl.pytac.request_info.frame",
+	"pl.odpowiadac.answer":          "pl.odpowiadac.answer.frame",
+	"pl.czytac.interpret":           "pl.czytac.interpret.frame",
+	"pl.uczyc.instruct":             "pl.uczyc.instruct.frame",
+	"pl.uczyc_sie.acquire":          "pl.uczyc_sie.acquire.frame",
+	"pl.jesc.eat":                   "pl.jesc.eat.frame",
+	"pl.pic.drink":                  "pl.pic.drink.action",
+	"pl.spac.sleep":                 "pl.spac.sleep.frame",
+	"pl.pracowac.activity":          "pl.pracowac.activity.frame",
 }
 
 var polishAdditionalFramesBySense = map[string][]lexicon.ValencyID{
@@ -666,6 +675,7 @@ var polishAdditionalFramesBySense = map[string][]lexicon.ValencyID{
 }
 
 var polishParadigmByLexeme = map[string]string{
+	"pl.wlasciciel.n":      "pl_noun_ownership_predicate",
 	"pl.nalezec.v":         "pl_verb_nalezec_present_3sg_3pl",
 	"pl.miec.v":            "pl_verb_miec_personal",
 	"pl.rozmawiac.v":       "pl_verb_rozmawiac_present_3sg_3pl",
@@ -894,6 +904,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishBelongingLexicalSource
+				}
+				if _, approved := polishApprovedOwnershipSenses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishOwnershipLexicalSource
 				}
 				if _, approved := polishApprovedLexicalBatch2Senses[senseID.Symbol().Name]; approved {
 					binding.Mapping = lexicon.MappingEquivalent

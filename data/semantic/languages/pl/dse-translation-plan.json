@@ -48,6 +48,22 @@
         "kind": "presupposition",
         "code": "lexical_descriptor"
       }
+    },
+    {
+      "sense_id": "sense:pl.wlasciciel.legal_ownership",
+      "frame_id": "pl.wlasciciel.legal_ownership.nominal",
+      "head_port_id": "",
+      "predicate_kind": "relation",
+      "allowed_family_ids": [
+        "construction:pl.legal_ownership_nominal"
+      ],
+      "allowed_variant_ids": [
+        "construction:pl.legal_ownership_nominal.copular"
+      ],
+      "reference_condition": {
+        "kind": "presupposition",
+        "code": "lexical_descriptor"
+      }
     }
   ],
   "operator_mappings": [],

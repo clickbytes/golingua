@@ -2152,6 +2152,7 @@ func englishVariantHasDeterminer(candidate realizer.TargetCandidate, determiner 
 func englishSelectedRelationMatches(candidate realizer.TargetCandidate, state meaning.Node) bool {
 	if state.Kind != meaning.KindState || !state.RelationPredicate || state.TemporalFrame != "" ||
 		!candidate.TransferBinding.TransferAuthorized() || candidate.TransferBinding.CoreRef.String() != string(state.Concept) ||
+		(state.Concept != "concept:belonging_association" && state.Concept != "concept:legal_ownership") ||
 		candidate.Frame.Validate() != nil || candidate.Frame.SenseID != candidate.Sense.ID ||
 		candidate.ConstructionBinding.SenseID != candidate.Sense.ID || candidate.ConstructionBinding.ValencyFrameID != candidate.Frame.ID ||
 		candidate.ConstructionBinding.FamilyID != candidate.Family.Family.ID || !candidate.ConstructionBinding.Approved ||
@@ -2168,9 +2169,16 @@ func englishSelectedRelationMatches(candidate realizer.TargetCandidate, state me
 		len(candidate.Frame.Arguments) != 2 || len(candidate.Frame.SurfaceOmittedRoles) != 0 || len(state.Participants) != 2 {
 		return false
 	}
+	expected := map[meaning.Role]bool{}
+	switch string(state.Concept) {
+	case "concept:belonging_association":
+		expected = map[meaning.Role]bool{"associate": true, "item": true}
+	case "concept:legal_ownership":
+		expected = map[meaning.Role]bool{"owner": true, "asset": true}
+	}
 	roleSet := make(map[meaning.Role]bool, len(candidate.Frame.SemanticRoles))
 	for _, role := range candidate.Frame.SemanticRoles {
-		if role == "" || roleSet[role] {
+		if !expected[role] || roleSet[role] {
 			return false
 		}
 		roleSet[role] = true
@@ -2192,7 +2200,7 @@ func englishSelectedRelationMatches(candidate realizer.TargetCandidate, state me
 		}
 		arguments[argument.Role] = true
 	}
-	return len(participants) == len(roleSet) && len(arguments) == len(roleSet)
+	return len(participants) == len(expected) && len(roleSet) == len(expected) && len(arguments) == len(expected)
 }
 
 func englishSelectedRelationDeicticRole(candidate realizer.TargetCandidate, state meaning.Node) (meaning.Role, meaning.NodeID, bool) {
@@ -2308,9 +2316,12 @@ func (policy englishDeterminerCandidatePolicy) KeepTargetCandidate(source semant
 		attributedFamily     = "construction:en.attributed_seeing"
 	)
 	familyID := candidate.Family.Family.ID.String()
-	if candidate.Kind == meaning.KindState && familyID == "construction:en.to_oblique" {
+	if candidate.Kind == meaning.KindState &&
+		(familyID == "construction:en.to_oblique" || familyID == "construction:en.transitive") {
 		state, exists := englishMeaningNode(source, candidate.NodeID)
-		if !exists || !englishSelectedRelationMatches(candidate, state) {
+		allowedFamily := state.Concept == "concept:belonging_association" && familyID == "construction:en.to_oblique" ||
+			state.Concept == "concept:legal_ownership" && familyID == "construction:en.transitive"
+		if !exists || !allowedFamily || !englishSelectedRelationMatches(candidate, state) {
 			return false
 		}
 		hasAnchorEvidence := false

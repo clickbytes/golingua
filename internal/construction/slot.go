@@ -69,21 +69,22 @@ type ModifierBinding struct {
 
 // SlotSpec describes one ordered NP, VP, or PP position in a family.
 type SlotSpec struct {
-	ID              string           `json:"id"`
-	Position        int              `json:"position"`
-	Category        SlotCategory     `json:"category"`
-	Cardinality     Cardinality      `json:"cardinality"`
-	Optionality     Optionality      `json:"optionality"`
-	ArgumentBinding *ArgumentBinding `json:"argument_binding,omitempty"`
-	ModifierBinding *ModifierBinding `json:"modifier_binding,omitempty"`
-	Case            string           `json:"case,omitempty"`
-	Adposition      string           `json:"adposition,omitempty"`
+	ID               string           `json:"id"`
+	Position         int              `json:"position"`
+	Category         SlotCategory     `json:"category"`
+	Cardinality      Cardinality      `json:"cardinality"`
+	Optionality      Optionality      `json:"optionality"`
+	ArgumentBinding  *ArgumentBinding `json:"argument_binding,omitempty"`
+	ModifierBinding  *ModifierBinding `json:"modifier_binding,omitempty"`
+	Case             string           `json:"case,omitempty"`
+	Adposition       string           `json:"adposition,omitempty"`
+	NominalPredicate bool             `json:"nominal_predicate,omitempty"`
 }
 
 // IsMainPredicate reports whether this slot carries the construction's main
 // predicate rather than an argument or an attributive modifier.
 func (slot SlotSpec) IsMainPredicate() bool {
-	return slot.Category.IsPredicate() && slot.ArgumentBinding == nil && slot.ModifierBinding == nil
+	return (slot.Category.IsPredicate() || slot.Category == CategoryNP && slot.NominalPredicate) && slot.ArgumentBinding == nil && slot.ModifierBinding == nil
 }
 
 // ConstraintStrength distinguishes an obligatory structural rule from a
@@ -132,6 +133,9 @@ func validateSlot(slot SlotSpec, index int) error {
 	}
 	if !slot.Category.Valid() {
 		return invalid("INVALID_SLOT_CATEGORY", path+".category", "slot category must be NP, VP, AP, or PP")
+	}
+	if slot.NominalPredicate && (slot.Category != CategoryNP || slot.ArgumentBinding != nil || slot.ModifierBinding != nil) {
+		return invalid("INVALID_NOMINAL_PREDICATE_SLOT", path, "nominal predicate marker is valid only on an unbound NP slot")
 	}
 	if slot.Position < 0 || slot.Position >= MaxSlotsPerFamily {
 		return invalid("INVALID_SLOT_POSITION", path+".position", "slot position is outside the supported range")

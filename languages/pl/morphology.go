@@ -80,6 +80,11 @@ var polishBelongingMorphSource = provenance.SourceRef{
 	Version: "2026-10-30", License: "internal", Author: "Codex by owner delegation",
 }
 
+var polishOwnershipNounMorphSource = provenance.SourceRef{
+	ID: "golingua-pl-wlasciciel-instrumental-476", URI: "https://github.com/clickbytes/golingua/issues/476",
+	Version: "2026-10-30", License: "internal", Author: "Codex by owner delegation",
+}
+
 // Only explicitly declared noun and adjective forms enter these paradigms.
 func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm {
 	result := attestedNounParadigms(profile)
@@ -89,10 +94,29 @@ func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm 
 	result = append(result, positiveAdjectiveParadigms(profile)...)
 	result = append(result, identificationParadigms(profile)...)
 	result = append(result, polishPresentThirdPersonParadigms(profile)...)
+	result = append(result, polishOwnershipPredicateParadigm(profile))
 	result = append(result, polishDaćPastParadigm(profile))
 	result = append(result, polishKupicPastParadigm(profile))
 	result = append(result, polishHavePersonalParadigm(profile))
 	return append(result, polishPersonalParadigms(profile)...)
+}
+
+func polishOwnershipPredicateParadigm(profile *features.LanguageFeatureProfile) morph.Paradigm {
+	const id = "pl_noun_ownership_predicate"
+	stem := procedure.StemID(id + "_stem")
+	cell := morph.CellID("singular_instrumental")
+	return morph.Paradigm{
+		SchemaVersion: morph.ParadigmSchemaVersion, ID: morph.ParadigmID(id), Language: "pl", ProfileVersion: profile.Version(), POS: "noun",
+		PrincipalPartRequirements: []morph.PrincipalPartRequirement{{StemID: stem, PartID: "stem", Required: true}},
+		Cells: []morph.ParadigmCell{{ID: cell, Features: []features.FeatureValue{
+			{Feature: "number", State: features.StateKnown, Value: "singular"},
+			{Feature: "case", State: features.StateKnown, Value: "instrumental"},
+			{Feature: "gender", State: features.StateKnown, Value: "masculine_personal"},
+		}}},
+		Rules: []morph.CellRule{{CellID: cell, ProcedureID: "procedure:" + id + ".singular_instrumental", Provenance: polishOwnershipNounMorphSource,
+			Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: stem}, {Kind: procedure.OperationAppend, Text: "em"}},
+		}},
+	}
 }
 
 func polishHavePersonalParadigm(profile *features.LanguageFeatureProfile) morph.Paradigm {
@@ -550,6 +574,11 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 		return nil, err
 	}
 	attested = append(attested, personal...)
+	for _, lexeme := range document.Lexemes {
+		if lexeme.ID.String() == "lexeme:pl.wlasciciel.n" {
+			attested = append(attested, lexemeRecord{Lexeme: lexeme, PrincipalParts: morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{{ID: "stem", Form: "właściciel"}}}})
+		}
+	}
 	presentVerbs, err := polishPresentThirdPersonMorphRecords(document.Lexemes)
 	if err != nil {
 		return nil, err

@@ -48,6 +48,7 @@ var englishEntries = []lexicalEntry{
 	{"en.sleep.v", "sleep", "verb", []lexicalMeaning{{"en.sleep.physiological", "undergo physiological sleep", "sleeping"}}},
 	{"en.go.v", "go", "verb", []lexicalMeaning{{"en.go.spatial_movement", "move from one spatial position to another without specifying a particular path or destination", "movement"}}},
 	{"en.belong.v", "belong", "verb", []lexicalMeaning{{"en.belong.association", "be associated with or belong to an item without asserting ownership", "belonging_association"}}},
+	{"en.own.v", "own", "verb", []lexicalMeaning{{"en.own.legal_ownership", "hold recognized ownership rights over an identifiable asset", "legal_ownership"}}},
 }
 
 var englishLexicalSource = provenance.SourceRef{
@@ -187,6 +188,7 @@ var englishPendingAuditSource = provenance.SourceRef{
 }
 var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
 	"en.belong.association":    englishBelongingLexicalSource,
+	"en.own.legal_ownership":   englishOwnershipLexicalSource,
 	"en.have.possession":       englishHaveLexicalSource,
 	"en.conversing.event":      englishConversingLexicalBindingSource,
 	"en.newspaper.direct":      englishIssue434LexicalBindingSource,
@@ -1210,6 +1212,11 @@ var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
 	"en.currency_unit.direct":                      englishLexicalReviewBatch20Source,
 }
 
+var englishOwnershipLexicalSource = provenance.SourceRef{
+	ID: "golingua-en-own-476", URI: "https://github.com/clickbytes/golingua/issues/476",
+	Version: "2026-10-30", License: "internal", Author: "Codex by owner delegation",
+}
+
 var englishBelongingLexicalSource = provenance.SourceRef{
 	ID: "golingua-en-belonging-476", URI: "https://github.com/clickbytes/golingua/issues/476#issuecomment-6528414953",
 	Version: "2026-10-30", License: "internal", Author: "Codex by owner delegation",
@@ -1217,6 +1224,7 @@ var englishBelongingLexicalSource = provenance.SourceRef{
 
 var englishFrameBySense = map[string]lexicon.ValencyID{
 	"en.belong.association":             "en.belong.association.to_oblique",
+	"en.own.legal_ownership":            "en.own.legal_ownership.transitive",
 	"en.conversing.event":               "en.conversing.with",
 	"en.helping.event":                  "en.helping.transitive",
 	"en.thanking.event":                 "en.thanking.transitive",
@@ -1260,6 +1268,7 @@ var englishAdditionalFramesBySense = map[string][]lexicon.ValencyID{
 
 var englishParadigmByLexeme = map[string]string{
 	"en.belong.v":                  "en_verb_finite_principal_parts",
+	"en.own.v":                     "en_verb_finite_principal_parts",
 	"en.have.v":                    "en_verb_finite_principal_parts",
 	"en.conversing.v":              "en_verb_finite_regular",
 	"en.be.v":                      "en_identification_be_present_3sg",
