@@ -2,8 +2,8 @@
 
 > Observational report generated on push to `main`. Matrix outcomes do not gate the technical `go-ci` workflow.
 
-- Source SHA: `f16ff53fb50609303f8cc83b64c19f350b9fd253`
-- Generated (UTC): `2026-10-30T14:45:08Z`
+- Source SHA: `500ad2062e000fcfca5c32876baedac4d2687de7`
+- Generated (UTC): `2026-10-30T14:56:52Z`
 - Command: `go test ./tests/... -count=1 -v`
 - Command exit code: `1` (NONZERO)
 - Registered records: 1000; record checks: 3000
@@ -1093,11 +1093,11 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_unknown` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_frame_on_referent` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_on_predicate` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_participant_roles_swapped` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_omitted` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/temporal_frames` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/referent_multiplicity` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestNegationExpansionFixturesValidateAndRetainScope` | PASS |
@@ -1585,7 +1585,7 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 - Sense catalogue associations parsed: 2069 (not morphology execution coverage).
 - Declared Meaning ID references: 1094 allowed; 1094 required.
 - Inventory fields preserve declared tags, source semantics, allowed/required Meaning IDs, and owner status separately from runtime observations.
-- Inventory source SHA `f16ff53fb50609303f8cc83b64c19f350b9fd253`: 1000 directions.
+- Inventory source SHA `500ad2062e000fcfca5c32876baedac4d2687de7`: 1000 directions.
 
 ### Declared source requirements
 
@@ -1658,7 +1658,7 @@ Aggregates below summarize authored source requirements; they are not observed a
 | `writing_message` | 2 |
 
 Declared role mentions: `agent` 16, `asset` 4, `associate` 4, `associated` 22, `author` 4, `back` 8, `bearer` 24, `beneficiary` 6, `choice_restriction` 2, `companion` 2, `content` 2, `destination` 2, `document` 2, `drinker` 16, `eater` 12, `entity` 2, `existence` 50, `experiencer` 160, `figure` 4, `food` 10, `friend_a` 2, `friend_b` 2, `front` 8, `giver` 20, `helper` 6, `higher` 6, `holder` 50, `instrument` 4, `item` 4, `landmark` 32, `landmark_a` 4, `landmark_b` 4, `liquid` 12, `located` 34, `location` 10, `lower` 6, `manner` 2, `material` 38, `member` 2, `object` 56, `occupant` 6, `owner` 4, `partner` 2, `person_variable` 6, `possessor` 18, `quantified_set` 50, `reader` 38, `reason` 2, `recipient` 24, `runner` 4, `sibling_a` 4, `sibling_b` 4, `sleeper` 22, `source` 2, `speaker` 4, `stimulus` 160, `support` 2, `supported` 2, `target` 4, `thanker` 2, `theme` 20, `time` 4, `tool` 2, `user` 2, `walker` 2, `writer` 2.
-- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "d1d0310c6d8a9b18240db7147adbe99e3675960a95476016517a682b1d4ba287", "format_version": 1}`; inventory source SHA: `f16ff53fb50609303f8cc83b64c19f350b9fd253`.
+- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "d1d0310c6d8a9b18240db7147adbe99e3675960a95476016517a682b1d4ba287", "format_version": 1}`; inventory source SHA: `500ad2062e000fcfca5c32876baedac4d2687de7`.
 
 Catalogue sense associations are not proof that a paradigm form or morphology procedure ran. Aggregates below describe declared pack associations only.
 
@@ -1958,15 +1958,15 @@ Observed top-level outcomes by runtime stage; these do not replace check statuse
 | independent_realization | unsupported | 70 |
 | integration | ambiguous | 350 |
 | integration | error | 2 |
-| integration | incomplete | 153 |
+| integration | incomplete | 152 |
 | integration | ok | 36 |
 | integration | unknown | 4 |
-| integration | unsupported | 455 |
+| integration | unsupported | 456 |
 | native_analysis | ambiguous | 76 |
-| native_analysis | incomplete | 125 |
+| native_analysis | incomplete | 124 |
 | native_analysis | ok | 355 |
 | native_analysis | unknown | 2 |
-| native_analysis | unsupported | 454 |
+| native_analysis | unsupported | 455 |
 | source_gap_probe | ok | 1 |
 | source_gap_probe | unsupported | 67 |
 | translation | invalid | 2 |
@@ -2031,13 +2031,13 @@ These are the authored graphs supplied to the realizer, distinct from source ana
 
 Authored `meaning_input` supplied to independent realization is excluded from observed graphs below. Graph summaries deduplicate identical graphs within a case and stage. Missing temporal frames or multiplicities are counted as unknown.
 
-- Unique observed graph snapshots: 1452
+- Unique observed graph snapshots: 1450
 
 | Graph property | Value | Count |
 |---|---|---:|
-| node kind | event | 1121 |
-| node kind | referent | 2507 |
-| node kind | scope | 206 |
+| node kind | event | 1119 |
+| node kind | referent | 2503 |
+| node kind | scope | 204 |
 | node kind | state | 462 |
 | predicate (event) | `concept:breathing` | 4 |
 | predicate (event) | `concept:buying` | 8 |
@@ -2074,7 +2074,7 @@ Authored `meaning_input` supplied to independent realization is excluded from ob
 | predicate (event) | `concept:waking_up` | 4 |
 | predicate (event) | `concept:walking` | 12 |
 | predicate (event) | `concept:working_activity` | 4 |
-| predicate (event) | `concept:writing_message` | 6 |
+| predicate (event) | `concept:writing_message` | 4 |
 | predicate (event) | `concept:writing_with_instrument` | 4 |
 | predicate (state) | `concept:black` | 275 |
 | predicate (state) | `concept:blue` | 4 |
@@ -2101,7 +2101,7 @@ Authored `meaning_input` supplied to independent realization is excluded from ob
 | participant role | load | 8 |
 | participant role | material | 159 |
 | participant role | member | 157 |
-| participant role | message | 6 |
+| participant role | message | 4 |
 | participant role | mover | 4 |
 | participant role | object | 44 |
 | participant role | organism | 26 |
@@ -2121,12 +2121,12 @@ Authored `meaning_input` supplied to independent realization is excluded from ob
 | participant role | user | 4 |
 | participant role | walker | 12 |
 | participant role | worker | 4 |
-| participant role | writer | 10 |
+| participant role | writer | 8 |
 | temporal_frame | past | 206 |
-| temporal_frame | present | 1244 |
-| temporal_frame | unknown | 2846 |
+| temporal_frame | present | 1242 |
+| temporal_frame | unknown | 2840 |
 | referent multiplicity | many | 418 |
-| referent multiplicity | one | 1916 |
+| referent multiplicity | one | 1912 |
 | referent multiplicity | unknown | 173 |
 
 ## Observed trace and feature associations
@@ -2400,8 +2400,7 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.bare_object.subject_the` | `en.opening_object.transitive.negative` | ok | 1 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.bare_object.subject_the` | `en.writing_message.message_only` | ok | 1 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_object` | `en.opening_object.transitive.negative` | ok | 1 |
-| `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_object` | `en.writing_message.message_only` | incomplete | 2 |
-| `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_object` | `en.writing_message.message_only` | ok | 3 |
+| `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_object` | `en.writing_message.message_only` | ok | 1 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_subject` | `en.opening_object.transitive.negative` | ok | 1 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_subject` | `en.writing_message.message_only` | ok | 1 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.indefinite_subject_object` | `en.opening_object.transitive.negative` | ok | 1 |
@@ -2582,7 +2581,7 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:pl.transitive_negative` | `construction:pl.transitive_negative.svo` | `pl.otwierac_obiekt.open.negative` | ok | 4 |
 | `construction:pl.transitive_negative` | `construction:pl.transitive_negative.svo` | `pl.pic.drink.negative` | ok | 12 |
 | `construction:pl.transitive_negative` | `construction:pl.transitive_negative.svo` | `pl.pisac.write.negative` | incomplete | 2 |
-| `construction:pl.transitive_negative` | `construction:pl.transitive_negative.svo` | `pl.pisac.write.negative` | ok | 3 |
+| `construction:pl.transitive_negative` | `construction:pl.transitive_negative.svo` | `pl.pisac.write.negative` | ok | 2 |
 | `construction:pl.transitive_negative` | `construction:pl.transitive_negative.svo` | `pl.slyszec.auditory.transitive_negative` | ok | 18 |
 | `construction:pl.transitive_negative` | `construction:pl.transitive_negative.svo` | `pl.widziec.visual.transitive_negative` | ok | 26 |
 | `construction:pl.transitive_negative` | `construction:pl.transitive_negative.svo` | `pl.zamykac_obiekt.close.negative` | ok | 8 |
@@ -2628,36 +2627,36 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `case` | known | nominative | 586 |
 | `degree` | known | positive | 140 |
 | `determiner` | known | bare | 73 |
-| `determiner` | known | definite | 516 |
+| `determiner` | known | definite | 514 |
 | `determiner` | known | demonstrative_distal | 3 |
 | `determiner` | known | demonstrative_proximal | 43 |
-| `determiner` | known | indefinite | 130 |
+| `determiner` | known | indefinite | 128 |
 | `gender` | known | feminine | 193 |
 | `gender` | known | masculine_animal | 295 |
 | `gender` | known | masculine_inanimate | 78 |
 | `gender` | known | masculine_personal | 235 |
 | `gender` | known | neuter | 108 |
 | `gender` | known | non_masculine_personal | 46 |
-| `mood` | known | indicative | 1095 |
+| `mood` | known | indicative | 1093 |
 | `noun_number` | known | plural | 139 |
-| `noun_number` | known | singular | 586 |
+| `noun_number` | known | singular | 584 |
 | `number` | known | plural | 324 |
-| `number` | known | singular | 1140 |
+| `number` | known | singular | 1138 |
 | `person` | known | first | 37 |
 | `person` | known | second | 30 |
-| `person` | known | third | 1265 |
+| `person` | known | third | 1263 |
 | `pronoun_case` | known | subject | 40 |
 | `pronoun_number` | known | plural | 13 |
 | `pronoun_number` | known | singular | 9 |
 | `pronoun_person` | known | first | 22 |
 | `pronoun_person` | known | second | 18 |
 | `tense` | known | past | 149 |
-| `tense` | known | present | 979 |
-| `verb_form` | known | base | 68 |
+| `tense` | known | present | 977 |
+| `verb_form` | known | base | 66 |
 | `verb_form` | known | finite | 1027 |
 | `verb_number` | known | plural | 122 |
-| `verb_number` | known | singular | 398 |
-| `voice` | known | active | 1095 |
+| `verb_number` | known | singular | 396 |
+| `voice` | known | active | 1093 |
 
 ## Representation gap diagnosis
 
@@ -2847,7 +2846,7 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | Meaning representation | `white` | CORE has black but no white property predicate; generic color has no bearer role/value, so this sentence has no honest MeaningGraph fixture | EXPLICIT_REALIZATION_ASSUMPTION, TARGET_ALTERNATIVES_AMBIGUOUS | `A1.5-ID-572-PL-EN` |
 | Meaning representation | `white` | CORE has black but no white property predicate; generic color has no bearer role/value, so this sentence has no honest MeaningGraph fixture | none observed | `A1.5-ID-571-EN-PL` |
 | Meaning representation | `writing_content` | Full negative writing-content proposition requires content binding on writing_message; writing_document would assert a durable document instead. | AMBIGUOUS_PARSE, EXPLICIT_REALIZATION_ASSUMPTION, SURFACE_OMITTED_ROLE, TARGET_ALTERNATIVES_AMBIGUOUS, TARGET_ROLE_ABSENT_BY_FRAME_LICENSE | `A1.8-NEG-810-PL-EN` |
-| Meaning representation | `writing_content` | Full negative writing-content proposition requires content binding on writing_message; writing_document would assert a durable document instead. | REALIZATION_FIELD_LOSS, SURFACE_OMITTED_ROLE, TARGET_ROLE_ABSENT_BY_FRAME_LICENSE, UNMATCHED_PARSE_CANDIDATE, UNSUPPORTED_COMPETING_HEAD | `A1.8-NEG-809-EN-PL` |
+| Meaning representation | `writing_content` | Full negative writing-content proposition requires content binding on writing_message; writing_document would assert a durable document instead. | NO_PARSE, UNMATCHED_PARSE_CANDIDATE | `A1.8-NEG-809-EN-PL` |
 | Meaning representation | `writing_content` | The full writing-content event needs a content participant, and the WH writer needs an explicit unknown-variable binding; neither is supplied by a partial writing-message event. | NO_PARSE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-947-EN-PL`, `A1.9-Q-948-PL-EN` |
 | Meaning representation | `writing_instrument` | No writing-with-instrument predicate/role is licensed. writing_document would add durable-document meaning. | EXPLICIT_REALIZATION_ASSUMPTION, TARGET_ALTERNATIVES_AMBIGUOUS | `A1.11-CASE-1178-PL-EN` |
 | Meaning representation | `writing_instrument` | No writing-with-instrument predicate/role is licensed. writing_document would add durable-document meaning. | REALIZATION_FIELD_LOSS, UNMATCHED_PARSE_CANDIDATE, UNSUPPORTED_COMPETING_HEAD | `A1.11-CASE-1177-EN-PL` |
@@ -2904,38 +2903,38 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | integration | `EXPLICIT_REALIZATION_ASSUMPTION` | 2386 |
 | integration | `HARD_SELECTIONAL_RESTRICTION` | 6 |
 | integration | `MISSING_REQUIRED_ROLE` | 20 |
-| integration | `NO_PARSE` | 89 |
+| integration | `NO_PARSE` | 90 |
 | integration | `NO_SEMANTIC_ALTERNATIVES` | 2 |
 | integration | `NO_START_PLAN` | 179 |
 | integration | `NP_HEAD_NUMBER_UNKNOWN` | 8 |
 | integration | `PARTIAL_PARSE_EVIDENCE` | 778 |
-| integration | `REALIZATION_FIELD_LOSS` | 870 |
-| integration | `SURFACE_OMITTED_ROLE` | 68 |
+| integration | `REALIZATION_FIELD_LOSS` | 868 |
+| integration | `SURFACE_OMITTED_ROLE` | 65 |
 | integration | `TARGET_ALTERNATIVES_AMBIGUOUS` | 406 |
 | integration | `TARGET_NO_SURFACE_CANDIDATE` | 8 |
 | integration | `TARGET_REALIZATION_FAILED` | 4 |
-| integration | `TARGET_ROLE_ABSENT_BY_FRAME_LICENSE` | 166 |
+| integration | `TARGET_ROLE_ABSENT_BY_FRAME_LICENSE` | 160 |
 | integration | `TRANSLATION_NOT_OK` | 88 |
 | integration | `UNKNOWN_SURFACE` | 444 |
-| integration | `UNMATCHED_PARSE_CANDIDATE` | 3636 |
+| integration | `UNMATCHED_PARSE_CANDIDATE` | 3640 |
 | integration | `UNRESOLVED_PARSE_EVIDENCE` | 1 |
 | integration | `UNRESOLVED_ROLE_SENSE` | 775 |
-| integration | `UNSUPPORTED_COMPETING_HEAD` | 2 |
+| integration | `UNSUPPORTED_COMPETING_HEAD` | 1 |
 | integration | `VARIANT_FEATURE_CONDITION_MISMATCH` | 2 |
 | native_analysis | `AMBIGUOUS_PARSE` | 25 |
 | native_analysis | `DISAMBIGUATION_INCOMPLETE` | 62 |
 | native_analysis | `HARD_SELECTIONAL_RESTRICTION` | 4 |
 | native_analysis | `MISSING_REQUIRED_ROLE` | 12 |
-| native_analysis | `NO_PARSE` | 89 |
+| native_analysis | `NO_PARSE` | 90 |
 | native_analysis | `NO_SEMANTIC_ALTERNATIVES` | 2 |
 | native_analysis | `NO_START_PLAN` | 179 |
 | native_analysis | `PARTIAL_PARSE_EVIDENCE` | 225 |
-| native_analysis | `SURFACE_OMITTED_ROLE` | 21 |
+| native_analysis | `SURFACE_OMITTED_ROLE` | 19 |
 | native_analysis | `UNKNOWN_SURFACE` | 444 |
-| native_analysis | `UNMATCHED_PARSE_CANDIDATE` | 2053 |
+| native_analysis | `UNMATCHED_PARSE_CANDIDATE` | 2055 |
 | native_analysis | `UNRESOLVED_PARSE_EVIDENCE` | 1 |
 | native_analysis | `UNRESOLVED_ROLE_SENSE` | 223 |
-| native_analysis | `UNSUPPORTED_COMPETING_HEAD` | 2 |
+| native_analysis | `UNSUPPORTED_COMPETING_HEAD` | 1 |
 | source_gap_probe | `NO_PARSE` | 33 |
 | source_gap_probe | `NO_START_PLAN` | 17 |
 | source_gap_probe | `UNKNOWN_SURFACE` | 31 |
