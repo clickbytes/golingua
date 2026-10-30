@@ -88,7 +88,7 @@ func NewSentenceTargetWithSeed(snapshot *pack.Pack, registry *language.Registry,
 	if err != nil {
 		return nil, err
 	}
-	negationResolver := englishNegationResolver{registry: constructions, valency: valencyIndex, lexicon: snapshot.Lexicon(), variants: variants}
+	negationResolver := newEnglishNegationResolver(constructions, valencyIndex, snapshot.Lexicon(), variants)
 	execution, err := NewSentenceExecutionBuilderWithSeed(seed)
 	if err != nil {
 		return nil, err

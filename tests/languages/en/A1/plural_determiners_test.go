@@ -198,12 +198,27 @@ func TestPluralDeterminersSeparateNominalAndPersonalReadingSources(t *testing.T)
 			}
 			candidate := candidateEN(fic.Graph, tc.id, fic.Context)
 			validateCandidateEN(t, candidate)
+			before, marshalErr := json.Marshal(candidate)
+			if marshalErr != nil {
+				t.Fatal(marshalErr)
+			}
 			result, realizeErr := target.Realize(context.Background(), candidate)
+			after, marshalErr := json.Marshal(candidate)
+			if marshalErr != nil || string(before) != string(after) {
+				t.Fatalf("realization changed the independent personal Meaning/context: %v", marshalErr)
+			}
 			logEN(t, "I->EN personal reading "+tc.id, result, realizeErr)
 			if realizeErr != nil || len(result.Alternatives) == 0 {
 				t.Fatalf("personal reading target unavailable: outcome=%s error=%v", result.Outcome, realizeErr)
 			}
 			for _, alternative := range result.Alternatives {
+				if tc.count == "" {
+					for _, assumption := range alternative.Assumptions {
+						if assumption.Field == "number" {
+							t.Errorf("number-neutral pronoun invented cardinality: %+v", assumption)
+						}
+					}
+				}
 				if !strings.HasPrefix(alternative.Text, tc.pronoun+" read ") {
 					t.Errorf("personal reading target lost pronoun or tense: %q", alternative.Text)
 				}
@@ -427,5 +442,26 @@ func assertDeterminerAssumptionsForRoles(t *testing.T, g meaning.Meaning, alts [
 		if got != want {
 			t.Errorf("surface %q has %d determiner assumptions total, want exactly %d role-bound assumptions", a.Text, got, want)
 		}
+	}
+}
+
+// Each request shares one immutable resolver but owns its input and result.
+func TestPluralDeterminersConcurrentNegativeRealization(t *testing.T) {
+	target := targetEN(t)
+	for index := 0; index < 4; index++ {
+		t.Run(fmt.Sprintf("request-%d", index), func(t *testing.T) {
+			t.Parallel()
+			graph, found, err := interlingua.NegationExpansion("a1.8.neg.019")
+			if err != nil || !found {
+				t.Fatalf("independent negative Meaning unavailable: %v", err)
+			}
+			candidate := candidateEN(graph, t.Name(), meaning.RequestContext{})
+			validateCandidateEN(t, candidate)
+			result, err := target.Realize(context.Background(), candidate)
+			want := []string{"A mother does not hear birds.", "A mother does not hear the birds.", "The mother does not hear birds.", "The mother does not hear the birds."}
+			if err != nil || len(result.Alternatives) != len(want) || !sameTextEN(textsEN(result.Alternatives), want) {
+				t.Fatalf("shared negative resolver changed independent realization: texts=%v error=%v", textsEN(result.Alternatives), err)
+			}
+		})
 	}
 }

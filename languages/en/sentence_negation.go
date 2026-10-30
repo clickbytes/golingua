@@ -39,6 +39,8 @@ type englishNegationResolver struct {
 	valency  *valency.Index
 	lexicon  *lexicon.Index
 	variants map[ids.ConstructionID]*construction.VariantIndex
+	// Compiled once for this exact immutable index set. Never modified by a request.
+	compiledRoutes []englishPresentNegationRoute
 }
 
 var englishIdentificationNegationRoute = englishPresentNegationRoute{
@@ -66,9 +68,20 @@ func (resolver englishNegationResolver) routeForVerb(verb string) (englishPresen
 	return matched, found
 }
 
+func newEnglishNegationResolver(registry *construction.Registry, index *valency.Index, lexicalIndex *lexicon.Index, variants map[ids.ConstructionID]*construction.VariantIndex) englishNegationResolver {
+	resolver := englishNegationResolver{registry: registry, valency: index, lexicon: lexicalIndex, variants: variants}
+	resolver.compiledRoutes = append([]englishPresentNegationRoute(nil), englishPresentNegationRoutes...)
+	resolver.compiledRoutes = append(resolver.compiledRoutes, resolver.approvedNegativeRoutes()...)
+	return resolver
+}
+
 func (resolver englishNegationResolver) routes() []englishPresentNegationRoute {
-	routes := append([]englishPresentNegationRoute(nil), englishPresentNegationRoutes...)
-	return append(routes, resolver.approvedNegativeRoutes()...)
+	if resolver.compiledRoutes != nil {
+		return resolver.compiledRoutes
+	}
+	// The zero value deliberately exposes only the existing static routes.
+	// Production adapters compile their data-derived routes at construction.
+	return englishPresentNegationRoutes
 }
 
 // approvedNegativeRoutes derives intransitive and transitive negative

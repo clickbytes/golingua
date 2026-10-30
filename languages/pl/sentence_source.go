@@ -492,6 +492,12 @@ func (builder polishPastAgreementPhraseBuilder) Build(ctx context.Context, latti
 }
 
 func polishPastAgreementVerbHasCompatibleSubject(lattice analyzer.LexicalLattice, verb parser.PhraseCandidate, candidates []parser.PhraseCandidate) bool {
+	if verb.Features["person"] == "first" || verb.Features["person"] == "second" {
+		// A nominative-syncretic object cannot control agreement with an
+		// implicit speaker/addressee. The personal construction checks the
+		// actual subject slot, person and number after parsing.
+		return true
+	}
 	if verb.LexemeID.String() == "lexeme:pl.czytac.v" {
 		return polishReadingPastAgreementVerbHasCompatibleSubject(lattice, verb, candidates)
 	}

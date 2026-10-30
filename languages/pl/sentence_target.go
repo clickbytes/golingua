@@ -148,7 +148,7 @@ func (plan polishSentencePlanAnnotations) Annotations(_ context.Context, source 
 	if role, referentID, _, ok := polishIdentificationState(source, selected.NodeID); ok {
 		predicatePath, predicateFound := runtime.MeaningPath(*source.Meaning, selected.NodeID)
 		referentPath, referentFound := runtime.MeaningPath(*source.Meaning, referentID)
-		_, contextOK := polishTargetIdentificationReferenceMode(source, selected.NodeID)
+		mode, contextOK := polishTargetIdentificationReferenceMode(source, selected.NodeID)
 		predicate := findSentencePredicate(*source.Meaning, selected.NodeID)
 		if !predicateFound || !referentFound || !contextOK ||
 			!polishIdentificationAttributesAllowed(source, selected.NodeID, role, referentID, selected.TransferBinding.CoreRef) {
@@ -156,6 +156,12 @@ func (plan polishSentencePlanAnnotations) Annotations(_ context.Context, source 
 		}
 		assumptions := polishIdentificationDefaults(predicatePath, referentPath, predicate, source.Meaning.Nodes, referentID, "identification")
 		var losses []realizer.FieldLoss
+		// The approved to/ten-series routes do not express explicit source
+		// proximity. Distal attribution uses the tamten-series and preserves it;
+		// the classifying to construction is distance-neutral in either case.
+		if mode == "proximal" || mode == "distal" && role == "member" {
+			losses = append(losses, realizer.FieldLoss{Path: referentPath, Field: "deixis", Outcome: status.OutcomeIncomplete, Reason: "Polish identification preserves demonstrative reference but does not encode the source's explicit distance"})
+		}
 		if role == "bearer" {
 			referent := findSentenceReferent(*source.Meaning, referentID)
 			conceptID, err := ids.ParseConceptID(string(referent.Concept))

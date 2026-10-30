@@ -1296,6 +1296,11 @@ func projectedPhraseFeatures(profile *features.LanguageFeatureProfile, template 
 		}
 	}
 	bundle, _ := features.NewBundle(profile, values)
+	// Phrase compilation canonicalizes an empty feature projection to nil.
+	// Empty versus nil carries no evidence and must not reject invariant heads.
+	if len(bundle.Values) == 0 {
+		bundle.Values = nil
+	}
 	return bundle
 }
 

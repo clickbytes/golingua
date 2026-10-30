@@ -493,7 +493,12 @@ func compileTargetNP(profile *features.LanguageFeatureProfile, phraseProfile con
 	if err != nil {
 		return construction.CompiledPhrasePlan{}, realizer.NPChildExecutionRequest{}, nil, err
 	}
-	if requiredNPFeature(profile.Language(), headBundle, "number") == "" {
+	// A bare pronoun may have a number-neutral morphology cell. Do not add
+	// semantic cardinality just to build its NP; morphology must still realize
+	// the exact requested features. Nominal heads and dependent NP inputs keep
+	// the existing explicit-number and agreement checks.
+	barePronoun := head.Candidate.Lexeme.POS == "pronoun" && modifier == nil && determiner == nil
+	if requiredNPFeature(profile.Language(), headBundle, "number") == "" && !barePronoun {
 		return construction.CompiledPhrasePlan{}, realizer.NPChildExecutionRequest{}, nil, runtimeError(status.OutcomeIncomplete, "NP_HEAD_NUMBER_UNKNOWN", "target.np.head.number", "an NP plan requires explicit number evidence for its selected head")
 	}
 	headChild := realizer.NPChildExecutionRequest{InputID: "head-input", Role: "head", NodeID: head.NodeID, Candidate: head.Candidate, PrincipalParts: head.PrincipalParts, Features: head.Features, CaseFeature: head.CaseFeature}

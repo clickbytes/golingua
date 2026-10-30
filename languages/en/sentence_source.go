@@ -282,7 +282,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 	}
 	predicateAlternatives[eatingSense] = append(predicateAlternatives[eatingSense], map[features.FeatureID]features.FeatureValueID{"verb_form": "finite", "tense": "past", "mood": "indicative", "voice": "active"})
 	addApprovedEnglishTransitiveSourceRoutes(supportedSenses, predicateAlternatives, snapshot.Lexicon(), valencyIndex, registry, packages)
-	resolver := englishNegationResolver{registry: registry, valency: valencyIndex, lexicon: snapshot.Lexicon(), variants: variants}
+	resolver := newEnglishNegationResolver(registry, valencyIndex, snapshot.Lexicon(), variants)
 	return &runtime.SourcePipeline{
 		Language: "en", PhraseProfile: phraseProfile, ClauseConnector: "and", Tokenize: text.TokenizeOptions{Profile: &text.TokenizerProfile{CaseFold: true}}, AllowFinalPeriod: false,
 		ScopedSourcePlan: scopedPlan, ScopedReadingPolicy: ScopedSourceReadingPolicy,

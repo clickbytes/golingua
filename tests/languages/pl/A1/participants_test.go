@@ -539,3 +539,37 @@ func assertSurfaceGenderAssumption(t *testing.T, alternatives []engine.SurfaceAl
 	}
 	t.Errorf("missing %q with gender=%s assumption in %+v", surface, gender, alternatives)
 }
+
+func TestPersonalPastSyncreticObjectDoesNotControlSubject(t *testing.T) {
+	rt := matrix.Runtime(t)
+	source, ok := rt.SourceAnalyzerFor("pl")
+	if !ok {
+		t.Fatal("Polish source unavailable")
+	}
+	for _, tc := range []struct{ input, anchor string }{
+		{"Czytałam list.", "speaker"},
+		{"Czytałem list.", "speaker"},
+		{"Czytałaś list.", "addressee"},
+		{"Czytałeś list.", "addressee"},
+	} {
+		t.Run(tc.input, func(t *testing.T) {
+			result, err := source.Analyze(context.Background(), tc.input)
+			if err != nil || !hasPersonalSourceCandidate(result.Candidates, tc.input, "", "reading", "one", tc.anchor) {
+				t.Fatalf("syncretic object blocked the licensed personal source: error=%v", err)
+			}
+		})
+	}
+	for _, input := range []string{"Ty czytałam list.", "Ja czytałaś list.", "Wy czytałam list."} {
+		t.Run(input, func(t *testing.T) {
+			result, err := source.Analyze(context.Background(), input)
+			if err != nil {
+				t.Fatalf("source must return a diagnosed refusal: %v", err)
+			}
+			for _, candidate := range result.Candidates {
+				if candidate.Status == status.OutcomeOK && candidate.Meaning != nil {
+					t.Errorf("incompatible explicit subject acquired a complete Meaning: %s", candidate.ID)
+				}
+			}
+		})
+	}
+}
