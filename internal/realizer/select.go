@@ -625,11 +625,36 @@ func SelectTargets(input Input) (Result, error) {
 		}
 		all := result.Candidates
 		filtered := make([]TargetCandidate, 0, len(all))
+		licensedPredicates := make(map[string]TargetCandidate)
+		retainedPredicates := make(map[string]bool)
+		predicateNodes := make(map[string]map[meaning.NodeID]bool, len(ordered))
+		for _, source := range ordered {
+			predicateNodes[source.ID] = policySentencePredicateIDs(source)
+		}
 		for _, candidate := range all {
 			source := bySourceID[candidate.SourceCandidateID]
+			key := candidate.SourceCandidateID + "\x00" + string(candidate.NodeID)
+			sentencePredicate := predicateNodes[candidate.SourceCandidateID][candidate.NodeID]
+			if sentencePredicate {
+				licensedPredicates[key] = candidate
+			}
 			if input.CandidatePolicy.KeepTargetCandidate(source, candidate, all) {
 				filtered = append(filtered, candidate)
+				if sentencePredicate {
+					retainedPredicates[key] = true
+				}
 			}
+		}
+		rejectedPredicates := make([]string, 0, len(licensedPredicates))
+		for key := range licensedPredicates {
+			if !retainedPredicates[key] {
+				rejectedPredicates = append(rejectedPredicates, key)
+			}
+		}
+		sort.Strings(rejectedPredicates)
+		for _, key := range rejectedPredicates {
+			result.Outcome = mergeOutcome(result.Outcome, status.OutcomeUnsupported)
+			result.Diagnostics = appendDiagnostic(result.Diagnostics, "TARGET_PREDICATE_POLICY_REJECTED", "target policy rejected every licensed candidate for the sentence predicate", "meaning."+string(licensedPredicates[key].NodeID))
 		}
 		result.Candidates = filtered
 	}
@@ -694,6 +719,46 @@ func SelectTargets(input Input) (Result, error) {
 	}
 	sort.Slice(result.Candidates, func(i, j int) bool { return targetLess(result.Candidates[i], result.Candidates[j]) })
 	return finish()
+}
+
+// policySentencePredicateIDs identifies sentence roots through existing IR
+// wrappers. Supporting referents and attributive predicates are not roots.
+func policySentencePredicateIDs(source semantic.MeaningCandidate) map[meaning.NodeID]bool {
+	result := make(map[meaning.NodeID]bool)
+	if source.Meaning == nil {
+		return result
+	}
+	nodes := make(map[meaning.NodeID]meaning.Node, len(source.Meaning.Nodes))
+	for _, node := range source.Meaning.Nodes {
+		nodes[node.ID] = node
+	}
+	var visit func(meaning.NodeID, int)
+	visit = func(id meaning.NodeID, depth int) {
+		if depth >= meaning.MaxMeaningDepth {
+			return
+		}
+		node := nodes[id]
+		switch node.Kind {
+		case meaning.KindDiscourse:
+			if len(node.Content) == 1 && (node.Act == meaning.ActStatement || source.QuestionAnswer != nil && node.Act == meaning.ActQuestion) {
+				visit(node.Content[0], depth+1)
+			}
+		case meaning.KindScope:
+			if node.Operator == meaning.OperatorNegation {
+				visit(node.Target, depth+1)
+			}
+		case meaning.KindQuestion:
+			if source.QuestionAnswer != nil {
+				visit(node.Target, depth+1)
+			}
+		case meaning.KindEvent, meaning.KindState:
+			result[id] = true
+		}
+	}
+	for _, root := range source.Meaning.Roots {
+		visit(root, 0)
+	}
+	return result
 }
 
 func operatorsForTarget(operators []construction.Operator, target meaning.NodeID) []construction.Operator {
