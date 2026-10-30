@@ -2,8 +2,8 @@
 
 > Observational report generated on push to `main`. Matrix outcomes do not gate the technical `go-ci` workflow.
 
-- Source SHA: `2d0b606ddf53f5b3b49ee40108b1e40ee227f2b2`
-- Generated (UTC): `2026-10-30T20:18:11Z`
+- Source SHA: `736b9bebdd2bf383f7d288836901fe3637e52e9e`
+- Generated (UTC): `2026-10-30T21:31:13Z`
 - Command: `go test ./tests/... -count=1 -v`
 - Command exit code: `1` (NONZERO)
 - Registered records: 1000; record checks: 3000
@@ -26,7 +26,7 @@
 | `A1-NEG-001-EN-PL` | EN → PL | PASS | PASS | PASS | clause_negation, semantic_polarity_scope |
 | `A1-NEG-002-PL-EN` | PL → EN | PASS | PASS | PASS | clause_negation, semantic_polarity_scope |
 | `A1-NEG-003-EN-PL` | EN → PL | PASS | FAIL | FAIL | clause_negation, semantic_polarity_scope |
-| `A1-NEG-004-PL-EN` | PL → EN | PASS | PASS | PASS | clause_negation, semantic_polarity_scope |
+| `A1-NEG-004-PL-EN` | PL → EN | PASS | PASS | FAIL | clause_negation, semantic_polarity_scope |
 | `A1-PO-001-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | case, participant_roles, semantic_possession, valency |
 | `A1-PO-002-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | case, participant_roles, semantic_possession, valency |
 | `A1-PO-003-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | case, participant_roles, semantic_possession, valency |
@@ -240,15 +240,15 @@
 | `A1.11-CASE-1159-EN-PL` | EN → PL | PASS | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1160-PL-EN` | PL → EN | PASS | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1161-EN-PL` | EN → PL | FAIL | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1162-PL-EN` | PL → EN | FAIL | FAIL | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1162-PL-EN` | PL → EN | FAIL | PASS | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1163-EN-PL` | EN → PL | FAIL | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1164-PL-EN` | PL → EN | FAIL | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1165-EN-PL` | EN → PL | FAIL | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1166-PL-EN` | PL → EN | FAIL | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1167-EN-PL` | EN → PL | FAIL | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1168-PL-EN` | PL → EN | PASS | FAIL | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1168-PL-EN` | PL → EN | PASS | PASS | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1169-EN-PL` | EN → PL | PASS | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1170-PL-EN` | PL → EN | PASS | FAIL | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1170-PL-EN` | PL → EN | PASS | PASS | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1171-EN-PL` | EN → PL | PASS | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1172-PL-EN` | PL → EN | PASS | FAIL | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1173-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | adjective_attribute, case_order, participant_roles, semantic_predicate |
@@ -262,7 +262,7 @@
 | `A1.11-CASE-1181-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1182-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.11-CASE-1183-EN-PL` | EN → PL | PASS | PASS | FAIL | adjective_attribute, case_order, participant_roles, semantic_predicate |
-| `A1.11-CASE-1184-PL-EN` | PL → EN | PASS | FAIL | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
+| `A1.11-CASE-1184-PL-EN` | PL → EN | PASS | PASS | PASS | adjective_attribute, case_order, participant_roles, semantic_predicate |
 | `A1.12-AMB-1201-EN-PL` | EN → PL | PASS | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1202-PL-EN` | PL → EN | PASS | PASS | PASS | predicate_roles, reference_binding, semantic_ambiguity |
 | `A1.12-AMB-1203-EN-PL` | EN → PL | FAIL | FAIL | FAIL | predicate_roles, reference_binding, semantic_ambiguity |
@@ -1093,11 +1093,11 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_unknown` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_frame_on_referent` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_on_predicate` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_omitted` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_participant_roles_swapped` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_changed` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_omitted` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_participant_roles_swapped` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/temporal_frames` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/referent_multiplicity` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestNegationExpansionFixturesValidateAndRetainScope` | PASS |
@@ -1273,7 +1273,7 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestParticipantAnchorMisalignmentFailsClosedForTargets/en/participant-anchor-on-object` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestParticipantAnchorMisalignmentFailsClosedForTargets/pl/conflicting-same-actor-anchors` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestParticipantAnchorMisalignmentFailsClosedForTargets/pl/stale-first-paired-context` | PASS |
-| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestParticipantAnchorMisalignmentFailsClosedForTargets/pl/participant-anchor-on-object` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestParticipantAnchorMisalignmentFailsClosedForTargets/pl/participant-anchor-on-object` | FAIL |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPolishImplicitRoleEvidenceRejectsDuplicateAndStaleProofs/duplicate` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPolishImplicitRoleEvidenceRejectsDuplicateAndStaleProofs/stale-derivation` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestPastSeeingIndependentIToPolish/a1.10.time.017.en` | PASS |
@@ -1460,9 +1460,9 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 | case_adjective_order | pl → en | integration | FAIL | 16 |
 | case_adjective_order | pl → en | integration | GAP_I | 7 |
 | case_adjective_order | pl → en | integration | PASS | 22 |
-| case_adjective_order | pl → en | realization | FAIL | 20 |
+| case_adjective_order | pl → en | realization | FAIL | 16 |
 | case_adjective_order | pl → en | realization | GAP_I | 7 |
-| case_adjective_order | pl → en | realization | PASS | 18 |
+| case_adjective_order | pl → en | realization | PASS | 22 |
 | composition_boundary | en → pl | analysis | GAP_ANALYZE | 24 |
 | composition_boundary | en → pl | analysis | GAP_I | 13 |
 | composition_boundary | en → pl | analysis | PASS | 8 |
@@ -1525,11 +1525,11 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 | negation | pl → en | analysis | GAP_ANALYZE | 3 |
 | negation | pl → en | analysis | GAP_I | 9 |
 | negation | pl → en | analysis | PASS | 31 |
-| negation | pl → en | integration | FAIL | 13 |
+| negation | pl → en | integration | FAIL | 14 |
 | negation | pl → en | integration | GAP_ANALYZE | 3 |
 | negation | pl → en | integration | GAP_I | 9 |
 | negation | pl → en | integration | GAP_REALIZE | 3 |
-| negation | pl → en | integration | PASS | 22 |
+| negation | pl → en | integration | PASS | 21 |
 | negation | pl → en | realization | FAIL | 13 |
 | negation | pl → en | realization | GAP_I | 9 |
 | negation | pl → en | realization | GAP_REALIZE | 5 |
@@ -1587,7 +1587,7 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 - Sense catalogue associations parsed: 2075 (not morphology execution coverage).
 - Declared Meaning ID references: 1094 allowed; 1094 required.
 - Inventory fields preserve declared tags, source semantics, allowed/required Meaning IDs, and owner status separately from runtime observations.
-- Inventory source SHA `2d0b606ddf53f5b3b49ee40108b1e40ee227f2b2`: 1000 directions.
+- Inventory source SHA `736b9bebdd2bf383f7d288836901fe3637e52e9e`: 1000 directions.
 
 ### Declared source requirements
 
@@ -1660,7 +1660,7 @@ Aggregates below summarize authored source requirements; they are not observed a
 | `writing_message` | 2 |
 
 Declared role mentions: `agent` 16, `asset` 4, `associate` 4, `associated` 22, `author` 4, `back` 8, `bearer` 24, `beneficiary` 6, `choice_restriction` 2, `companion` 2, `content` 2, `destination` 2, `document` 2, `drinker` 16, `eater` 12, `entity` 2, `existence` 50, `experiencer` 160, `figure` 4, `food` 10, `friend_a` 2, `friend_b` 2, `front` 8, `giver` 20, `helper` 6, `higher` 6, `holder` 50, `instrument` 4, `item` 4, `landmark` 32, `landmark_a` 4, `landmark_b` 4, `liquid` 12, `located` 34, `location` 10, `lower` 6, `manner` 2, `material` 38, `member` 2, `object` 56, `occupant` 6, `owner` 4, `partner` 2, `person_variable` 6, `possessor` 18, `quantified_set` 50, `reader` 38, `reason` 2, `recipient` 24, `runner` 4, `sibling_a` 4, `sibling_b` 4, `sleeper` 22, `source` 2, `speaker` 4, `stimulus` 160, `support` 2, `supported` 2, `target` 4, `thanker` 2, `theme` 20, `time` 4, `tool` 2, `user` 2, `walker` 2, `writer` 2.
-- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "40a329222c6cf7a189325f68d0cef8cc992be702e38997bb5c5a1fe6d9b60f93", "format_version": 1}`; inventory source SHA: `2d0b606ddf53f5b3b49ee40108b1e40ee227f2b2`.
+- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "40a329222c6cf7a189325f68d0cef8cc992be702e38997bb5c5a1fe6d9b60f93", "format_version": 1}`; inventory source SHA: `736b9bebdd2bf383f7d288836901fe3637e52e9e`.
 
 Catalogue sense associations are not proof that a paradigm form or morphology procedure ran. Aggregates below describe declared pack associations only.
 
@@ -1955,18 +1955,19 @@ Observed top-level outcomes by runtime stage; these do not replace check statuse
 | direct_result | resource_limit | 1 |
 | direct_result | unknown | 18 |
 | direct_result | unsupported | 18 |
-| independent_realization |  | 19 |
+| independent_realization |  | 7 |
 | independent_realization | ambiguous | 410 |
 | independent_realization | incomplete | 119 |
 | independent_realization | ok | 111 |
 | independent_realization | resource_limit | 10 |
-| independent_realization | unknown | 20 |
-| independent_realization | unsupported | 73 |
+| independent_realization | unknown | 28 |
+| independent_realization | unsupported | 77 |
 | integration | ambiguous | 370 |
 | integration | error | 2 |
-| integration | incomplete | 161 |
+| integration | incomplete | 163 |
 | integration | ok | 37 |
-| integration | unknown | 9 |
+| integration | resource_limit | 1 |
+| integration | unknown | 6 |
 | integration | unsupported | 421 |
 | native_analysis | ambiguous | 82 |
 | native_analysis | incomplete | 145 |
@@ -2306,7 +2307,7 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:en.transitive` | `construction:en.transitive.svo` | `en.drinking.transitive` | ok | 14 |
 | `construction:en.transitive` | `construction:en.transitive.svo` | `en.eating.transitive` | ok | 18 |
 | `construction:en.transitive` | `construction:en.transitive.svo` | `en.folding_object.transitive` | ok | 2 |
-| `construction:en.transitive` | `construction:en.transitive.svo` | `en.have.possession.transitive` | ok | 16 |
+| `construction:en.transitive` | `construction:en.transitive.svo` | `en.have.possession.transitive` | ok | 22 |
 | `construction:en.transitive` | `construction:en.transitive.svo` | `en.hear.auditory.transitive` | ok | 64 |
 | `construction:en.transitive` | `construction:en.transitive.svo` | `en.helping.transitive` | ok | 12 |
 | `construction:en.transitive` | `construction:en.transitive.svo` | `en.holding_object.transitive` | ok | 8 |
@@ -2428,7 +2429,7 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.vp_auxiliary` | `en.have.possession.transitive` | ok | 3 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.vp_auxiliary` | `en.hear.auditory.transitive` | ok | 10 |
 | `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.vp_auxiliary` | `en.read.text.transitive` | ok | 6 |
-| `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.vp_auxiliary` | `en.see.visual.transitive` | ok | 14 |
+| `construction:en.transitive_negative` | `construction:en.transitive_negative.svo.vp_auxiliary` | `en.see.visual.transitive` | ok | 13 |
 | `construction:en.transitive_past` | `construction:en.transitive_past.svo` | `en.drinking.transitive` | ok | 4 |
 | `construction:en.transitive_past` | `construction:en.transitive_past.svo` | `en.eating.transitive` | ok | 4 |
 | `construction:en.transitive_past` | `construction:en.transitive_past.svo` | `en.get.receive.transitive` | ok | 17 |
@@ -2770,30 +2771,30 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. | EXPLICIT_REALIZATION_ASSUMPTION, REALIZATION_FIELD_LOSS, TRANSLATION_NOT_OK | `A1.6-PO-616-PL-EN` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | EXPLICIT_REALIZATION_ASSUMPTION, PARTIAL_PARSE_EVIDENCE, UNRESOLVED_ROLE_SENSE | `A1.6-PO-618-PL-EN` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | NO_PARSE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-619-EN-PL`, `A1.6-PO-620-PL-EN` |
-| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | PARTIAL_PARSE_EVIDENCE, UNRESOLVED_PARSE_EVIDENCE, UNRESOLVED_ROLE_SENSE | `A1.6-PO-617-EN-PL` |
+| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | PARTIAL_PARSE_EVIDENCE, UNRESOLVED_ROLE_SENSE | `A1.6-PO-617-EN-PL` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. | AMBIGUOUS_PARSE, EXPLICIT_REALIZATION_ASSUMPTION, PARTIAL_PARSE_EVIDENCE, TARGET_ALTERNATIVES_AMBIGUOUS, UNRESOLVED_ROLE_SENSE | `A1.6-PO-603-EN-PL` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. | AMBIGUOUS_PARSE, EXPLICIT_REALIZATION_ASSUMPTION, TARGET_ALTERNATIVES_AMBIGUOUS | `A1.6-PO-601-EN-PL` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. | EXPLICIT_REALIZATION_ASSUMPTION, PARTIAL_PARSE_EVIDENCE, REALIZATION_FIELD_LOSS, TARGET_ALTERNATIVES_AMBIGUOUS, UNRESOLVED_ROLE_SENSE | `A1.6-PO-604-PL-EN` |
+| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. | EXPLICIT_REALIZATION_ASSUMPTION, PARTIAL_PARSE_EVIDENCE, UNRESOLVED_ROLE_SENSE | `A1.6-PO-622-PL-EN` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. | EXPLICIT_REALIZATION_ASSUMPTION, REALIZATION_FIELD_LOSS, TARGET_ALTERNATIVES_AMBIGUOUS | `A1.6-PO-602-PL-EN` |
-| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. | EXPLICIT_REALIZATION_ASSUMPTION, TRANSLATION_NOT_OK | `A1.6-PO-629-EN-PL`, `A1.6-PO-631-EN-PL` |
+| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. | EXPLICIT_REALIZATION_ASSUMPTION, TRANSLATION_NOT_OK | `A1.6-PO-626-PL-EN`, `A1.6-PO-628-PL-EN`, `A1.6-PO-629-EN-PL`, `A1.6-PO-631-EN-PL` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-605-EN-PL`, `A1.6-PO-606-PL-EN`, `A1.6-PO-607-EN-PL`, `A1.6-PO-608-PL-EN` |
-| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. | PARTIAL_PARSE_EVIDENCE, TARGET_NO_SURFACE_CANDIDATE, UNRESOLVED_ROLE_SENSE | `A1.6-PO-622-PL-EN` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. | PARTIAL_PARSE_EVIDENCE, UNRESOLVED_ROLE_SENSE | `A1.6-PO-621-EN-PL`, `A1.6-PO-627-EN-PL` |
-| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. | TARGET_NO_SURFACE_CANDIDATE | `A1.6-PO-626-PL-EN`, `A1.6-PO-628-PL-EN`, `A1.6-PO-630-PL-EN`, `A1.6-PO-632-PL-EN` |
+| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. | TARGET_NO_SURFACE_CANDIDATE | `A1.6-PO-630-PL-EN`, `A1.6-PO-632-PL-EN` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. | none observed | `A1.6-PO-625-EN-PL` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | AMBIGUOUS_PARSE | `A1.6-PO-611-EN-PL` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | AMBIGUOUS_PARSE, PARTIAL_PARSE_EVIDENCE, TARGET_NO_SURFACE_CANDIDATE, UNRESOLVED_ROLE_SENSE | `A1.6-PO-609-EN-PL` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | AMBIGUOUS_PARSE, PARTIAL_PARSE_EVIDENCE, UNRESOLVED_ROLE_SENSE | `A1.6-PO-613-EN-PL`, `A1.6-PO-623-EN-PL` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | EXPLICIT_REALIZATION_ASSUMPTION, PARTIAL_PARSE_EVIDENCE, TARGET_ALTERNATIVES_AMBIGUOUS, UNRESOLVED_ROLE_SENSE | `A1.6-PO-610-PL-EN` |
-| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | PARTIAL_PARSE_EVIDENCE, TARGET_NO_SURFACE_CANDIDATE, UNRESOLVED_ROLE_SENSE | `A1.6-PO-614-PL-EN`, `A1.6-PO-624-PL-EN` |
-| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | TARGET_NO_SURFACE_CANDIDATE | `A1.6-PO-612-PL-EN` |
+| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | EXPLICIT_REALIZATION_ASSUMPTION, PARTIAL_PARSE_EVIDENCE, UNRESOLVED_ROLE_SENSE | `A1.6-PO-614-PL-EN`, `A1.6-PO-624-PL-EN` |
+| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | EXPLICIT_REALIZATION_ASSUMPTION, TRANSLATION_NOT_OK | `A1.6-PO-612-PL-EN` |
 | Meaning representation | `have_unspecified` | Generic HAVE does not distinguish temporary possession from legal ownership and implies neither legal title nor duration; CORE temporary_possession is KindRelation, not a Meaning State/Event predicate, and neutral Meaning has no holder/object possession roles. | AMBIGUOUS_PARSE, PARTIAL_PARSE_EVIDENCE, TARGET_NO_SURFACE_CANDIDATE, UNRESOLVED_ROLE_SENSE | `A1.2-PO-202-EN-PL` |
 | Meaning representation | `have_unspecified` | Generic HAVE does not distinguish temporary possession from legal ownership and implies neither legal title nor duration; CORE temporary_possession is KindRelation, not a Meaning State/Event predicate, and neutral Meaning has no holder/object possession roles. | AMBIGUOUS_PARSE, TARGET_NO_SURFACE_CANDIDATE | `A1-PO-001-EN-PL`, `A1.2-PO-208-EN-PL` |
 | Meaning representation | `have_unspecified` | Generic HAVE does not distinguish temporary possession from legal ownership and implies neither legal title nor duration; CORE temporary_possession is KindRelation, not a Meaning State/Event predicate, and neutral Meaning has no holder/object possession roles. | EXPLICIT_REALIZATION_ASSUMPTION, PARTIAL_PARSE_EVIDENCE, TARGET_ALTERNATIVES_AMBIGUOUS, UNRESOLVED_ROLE_SENSE | `A1.2-PO-201-PL-EN` |
 | Meaning representation | `have_unspecified` | Generic HAVE does not distinguish temporary possession from legal ownership and implies neither legal title nor duration; CORE temporary_possession is KindRelation, not a Meaning State/Event predicate, and neutral Meaning has no holder/object possession roles. | EXPLICIT_REALIZATION_ASSUMPTION, PARTIAL_PARSE_EVIDENCE, UNRESOLVED_ROLE_SENSE | `A1.2-PO-203-PL-EN` |
 | Meaning representation | `have_unspecified` | Generic HAVE does not distinguish temporary possession from legal ownership and implies neither legal title nor duration; CORE temporary_possession is KindRelation, not a Meaning State/Event predicate, and neutral Meaning has no holder/object possession roles. | EXPLICIT_REALIZATION_ASSUMPTION, TARGET_ALTERNATIVES_AMBIGUOUS | `A1-PO-002-PL-EN`, `A1.2-PO-207-PL-EN` |
 | Meaning representation | `have_unspecified` | Generic HAVE does not distinguish temporary possession from legal ownership and implies neither legal title nor duration; CORE temporary_possession is KindRelation, not a Meaning State/Event predicate, and neutral Meaning has no holder/object possession roles. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1-PO-003-EN-PL`, `A1-PO-004-PL-EN`, `A1.2-PO-205-PL-EN`, `A1.2-PO-206-EN-PL` |
-| Meaning representation | `have_unspecified` | Generic HAVE does not distinguish temporary possession from legal ownership and implies neither legal title nor duration; CORE temporary_possession is KindRelation, not a Meaning State/Event predicate, and neutral Meaning has no holder/object possession roles. | PARTIAL_PARSE_EVIDENCE, UNRESOLVED_PARSE_EVIDENCE, UNRESOLVED_ROLE_SENSE | `A1.2-PO-204-EN-PL` |
+| Meaning representation | `have_unspecified` | Generic HAVE does not distinguish temporary possession from legal ownership and implies neither legal title nor duration; CORE temporary_possession is KindRelation, not a Meaning State/Event predicate, and neutral Meaning has no holder/object possession roles. | PARTIAL_PARSE_EVIDENCE, UNRESOLVED_ROLE_SENSE | `A1.2-PO-204-EN-PL` |
 | Meaning representation | `have_unspecified` | The full possession proposition is required; available CORE possession predicates encode a specific relation and cannot express unspecified control or possession without that inference. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-980-PL-EN`, `A1.9-Q-982-PL-EN` |
 | Meaning representation | `have_unspecified` | The full possession proposition is required; available CORE possession predicates encode a specific relation and cannot express unspecified control or possession without that inference. | NO_START_PLAN, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-979-EN-PL`, `A1.9-Q-981-EN-PL` |
 | Meaning representation | `hearing` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_PARSE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-1011-EN-PL`, `A1.9-Q-1012-PL-EN`, `A1.9-Q-925-EN-PL`, `A1.9-Q-926-PL-EN`, `A1.9-Q-927-EN-PL`, `A1.9-Q-928-PL-EN` |
@@ -2925,23 +2926,23 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | direct_result | `TRANSLATION_NOT_OK` | 2 |
 | direct_result | `UNKNOWN_SURFACE` | 1 |
 | direct_result | `UNMATCHED_PARSE_CANDIDATE` | 26 |
-| independent_realization | `DISCOURSE_ACT_UNSUPPORTED` | 40 |
+| independent_realization | `DISCOURSE_ACT_UNSUPPORTED` | 44 |
 | independent_realization | `EXPLICIT_REALIZATION_ASSUMPTION` | 2512 |
 | independent_realization | `NO_LICENSED_TARGET` | 6 |
-| independent_realization | `OPERATOR_COVERAGE_UNKNOWN` | 49 |
-| independent_realization | `OPERATOR_MAPPING_UNAVAILABLE` | 61 |
+| independent_realization | `OPERATOR_COVERAGE_UNKNOWN` | 52 |
+| independent_realization | `OPERATOR_MAPPING_UNAVAILABLE` | 62 |
 | independent_realization | `QUESTION_ANSWER_UNAVAILABLE` | 38 |
 | independent_realization | `REALIZATION_FIELD_LOSS` | 38 |
 | independent_realization | `RESOURCE_LIMIT` | 12 |
-| independent_realization | `TARGET_ALTERNATIVES_AMBIGUOUS` | 484 |
+| independent_realization | `TARGET_ALTERNATIVES_AMBIGUOUS` | 482 |
 | independent_realization | `TARGET_FRAME_VARIANT_MISMATCH` | 2 |
 | independent_realization | `TARGET_LEXICAL_COVERAGE_UNAVAILABLE` | 32 |
-| independent_realization | `TARGET_NO_SURFACE_CANDIDATE` | 20 |
-| independent_realization | `TARGET_OPERATOR_COVERAGE_UNAVAILABLE` | 49 |
+| independent_realization | `TARGET_NO_SURFACE_CANDIDATE` | 28 |
+| independent_realization | `TARGET_OPERATOR_COVERAGE_UNAVAILABLE` | 52 |
 | independent_realization | `TARGET_ROLE_ABSENT_BY_FRAME_LICENSE` | 112 |
 | integration | `AMBIGUOUS_PARSE` | 39 |
 | integration | `DISAMBIGUATION_INCOMPLETE` | 53 |
-| integration | `EXPLICIT_REALIZATION_ASSUMPTION` | 2464 |
+| integration | `EXPLICIT_REALIZATION_ASSUMPTION` | 2468 |
 | integration | `HARD_SELECTIONAL_RESTRICTION` | 6 |
 | integration | `MISSING_REQUIRED_ROLE` | 20 |
 | integration | `NO_PARSE` | 96 |
@@ -2949,22 +2950,23 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | integration | `NO_START_PLAN` | 162 |
 | integration | `OPERATOR_COVERAGE_UNKNOWN` | 28 |
 | integration | `OPERATOR_MAPPING_UNAVAILABLE` | 6 |
-| integration | `PARTIAL_PARSE_EVIDENCE` | 867 |
+| integration | `PARTIAL_PARSE_EVIDENCE` | 870 |
 | integration | `PREDICATE_KIND_UNSUPPORTED` | 15 |
 | integration | `PREDICATE_NODE_UNRESOLVED` | 3 |
 | integration | `REALIZATION_FIELD_LOSS` | 924 |
 | integration | `ROLE_LEXICALIZATION_UNAVAILABLE` | 2 |
 | integration | `SURFACE_OMITTED_ROLE` | 65 |
 | integration | `TARGET_ALTERNATIVES_AMBIGUOUS` | 436 |
-| integration | `TARGET_NO_SURFACE_CANDIDATE` | 32 |
+| integration | `TARGET_NO_SURFACE_CANDIDATE` | 20 |
 | integration | `TARGET_OPERATOR_COVERAGE_UNAVAILABLE` | 6 |
+| integration | `TARGET_REALIZATION_CANCELED` | 2 |
 | integration | `TARGET_REALIZATION_FAILED` | 4 |
 | integration | `TARGET_ROLE_ABSENT_BY_FRAME_LICENSE` | 160 |
-| integration | `TRANSLATION_NOT_OK` | 85 |
+| integration | `TRANSLATION_NOT_OK` | 87 |
 | integration | `UNKNOWN_SURFACE` | 376 |
 | integration | `UNMATCHED_PARSE_CANDIDATE` | 3743 |
-| integration | `UNRESOLVED_PARSE_EVIDENCE` | 4 |
-| integration | `UNRESOLVED_ROLE_SENSE` | 863 |
+| integration | `UNRESOLVED_PARSE_EVIDENCE` | 2 |
+| integration | `UNRESOLVED_ROLE_SENSE` | 866 |
 | integration | `UNSUPPORTED_COMPETING_HEAD` | 1 |
 | integration | `VARIANT_FEATURE_CONDITION_MISMATCH` | 2 |
 | native_analysis | `AMBIGUOUS_PARSE` | 39 |
@@ -2981,7 +2983,7 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | native_analysis | `SURFACE_OMITTED_ROLE` | 19 |
 | native_analysis | `UNKNOWN_SURFACE` | 376 |
 | native_analysis | `UNMATCHED_PARSE_CANDIDATE` | 2084 |
-| native_analysis | `UNRESOLVED_PARSE_EVIDENCE` | 4 |
+| native_analysis | `UNRESOLVED_PARSE_EVIDENCE` | 2 |
 | native_analysis | `UNRESOLVED_ROLE_SENSE` | 269 |
 | native_analysis | `UNSUPPORTED_COMPETING_HEAD` | 1 |
 | source_gap_probe | `NO_PARSE` | 33 |
@@ -2997,6 +2999,6 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 
 ## Counts
 
-PASS: 822 | FAIL: 725 | GAP_ANALYZE: 260 | GAP_REALIZE: 113 | GAP_I: 1080 | SPEC_PENDING: 0 | INFRA: 0 | NOT RUN: 0
+PASS: 825 | FAIL: 722 | GAP_ANALYZE: 260 | GAP_REALIZE: 113 | GAP_I: 1080 | SPEC_PENDING: 0 | INFRA: 0 | NOT RUN: 0
 
 `SPEC_PENDING` means the check ran but lacks a closed independent contract. `NOT RUN` means no matching record check result was observed. Runtime adapter NOT RUN markers are counted separately above. Additional checks retain their own statuses. Consult the full raw log artifact for every individual observation.
