@@ -725,10 +725,26 @@ func polishDedicatedPastAspect(candidate realizer.TargetCandidate) (string, bool
 // already-approved construction path. The selected family and variant remain
 // the source of truth; the paradigm supplies the lexical aspect separately.
 func polishApprovedPastTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate) bool {
-	licensedBuyerOmission := candidate.Frame.ID == "pl.sprzedawac.sell.omit_buyer" &&
-		len(candidate.MissingOmittedRoles) == 1 && candidate.MissingOmittedRoles[0] == "buyer"
-	if source.Meaning == nil || candidate.Kind != meaning.KindEvent || candidate.Outcome != status.OutcomeOK && !licensedBuyerOmission ||
-		len(candidate.MissingOmittedRoles) != 0 && !licensedBuyerOmission || candidate.Family.Family.Language != "pl" ||
+	licensedSurfaceOmission := len(candidate.MissingOmittedRoles) > 0
+	declaredOmittedRoles := make(map[meaning.Role]bool, len(candidate.Frame.SurfaceOmittedRoles))
+	for _, role := range candidate.Frame.SurfaceOmittedRoles {
+		if role == "" || declaredOmittedRoles[role] {
+			licensedSurfaceOmission = false
+			break
+		}
+		declaredOmittedRoles[role] = true
+	}
+	seenOmittedRoles := make(map[meaning.Role]bool, len(candidate.MissingOmittedRoles))
+	for _, role := range candidate.MissingOmittedRoles {
+		if role == "" || !declaredOmittedRoles[role] || seenOmittedRoles[role] {
+			licensedSurfaceOmission = false
+			break
+		}
+		seenOmittedRoles[role] = true
+	}
+	outcomeAllowed := candidate.Outcome == status.OutcomeOK || candidate.Outcome == status.OutcomeIncomplete && licensedSurfaceOmission
+	if source.Meaning == nil || candidate.Kind != meaning.KindEvent || !outcomeAllowed ||
+		len(candidate.MissingOmittedRoles) != 0 && !licensedSurfaceOmission || candidate.Family.Family.Language != "pl" ||
 		!polishPastGenericTargetFamily(candidate.Family.Family.ID.String()) || polishDedicatedPastTransfer(candidate) ||
 		!candidate.TransferBinding.TransferAuthorized() || candidate.TransferBinding.SenseID != candidate.Sense.ID ||
 		candidate.TransferBinding.CoreRef.String() != string(findSentencePredicate(*source.Meaning, candidate.NodeID).Concept) ||
