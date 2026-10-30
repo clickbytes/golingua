@@ -698,7 +698,7 @@ func polishPastNegativeConceptAllowed(concept string) bool {
 
 func polishPastGenericTargetFamily(family string) bool {
 	switch family {
-	case "construction:pl.intransitive", "construction:pl.transitive", "construction:pl.transitive_negative", "construction:pl.attributed_seeing_object_negative":
+	case "construction:pl.intransitive", "construction:pl.transitive", "construction:pl.transitive_to", "construction:pl.transitive_negative", "construction:pl.attributed_seeing_object_negative":
 		return true
 	default:
 		return false
@@ -804,7 +804,7 @@ func polishApprovedPastTargetCandidate(source semantic.MeaningCandidate, candida
 		if hasNie != negative {
 			return false
 		}
-	case "construction:pl.transitive":
+	case "construction:pl.transitive", "construction:pl.transitive_to":
 		if negative || hasNie {
 			return false
 		}
@@ -1032,7 +1032,7 @@ func (policy polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.
 		}
 	}
 	if event, exists := polishMeaningNode(source, candidate.NodeID); exists && event.Kind == meaning.KindEvent && event.TemporalFrame == meaning.TemporalFramePast &&
-		(candidate.Family.Family.ID.String() == "construction:pl.intransitive" || candidate.Family.Family.ID.String() == "construction:pl.transitive") &&
+		(candidate.Family.Family.ID.String() == "construction:pl.intransitive" || candidate.Family.Family.ID.String() == "construction:pl.transitive" || candidate.Family.Family.ID.String() == "construction:pl.transitive_to") &&
 		!polishDedicatedPastTransfer(candidate) && !polishApprovedPastTargetCandidate(source, candidate) {
 		return false
 	}

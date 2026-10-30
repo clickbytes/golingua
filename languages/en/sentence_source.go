@@ -1072,8 +1072,9 @@ func appendPastFiniteAlternative(alternatives []map[features.FeatureID]features.
 
 // englishCommerceTransferPastCapability derives simple-past coverage from
 // retained plans, approved bindings, finite-past VP evidence, and the exact
-// frame argument/omission contract. Transfer routes need every required role;
-// commerce routes may omit only roles expressly licensed by their frame.
+// frame argument/omission contract. Transfer and writing-message routes need
+// every required role; commerce routes may omit only roles expressly licensed
+// by their frame.
 func englishCommerceTransferPastCapability(candidates []parser.PhraseCandidate, forest parser.Forest, registry *construction.Registry, valencyIndex *valency.Index) (map[ids.SenseID]bool, bool) {
 	capabilities := make(map[ids.SenseID]bool)
 	if registry == nil || valencyIndex == nil {
@@ -1148,7 +1149,8 @@ func commerceTransferFrameRoles(frame valency.ValencyFrame) bool {
 	}
 	transfer := roles["giver"] && roles["recipient"] && roles["theme"]
 	commerce := roles["buyer"] && roles["goods"] && roles["seller"]
-	return transfer || commerce
+	writingMessage := roles["writer"] && roles["message"] && roles["recipient"]
+	return transfer || commerce || writingMessage
 }
 
 func commerceTransferRequiredSlotsPresent(specs []construction.SlotSpec, frame valency.ValencyFrame, slots map[string]parser.SlotBinding, candidates map[string]parser.PhraseCandidate, sense ids.SenseID) bool {
@@ -1400,8 +1402,19 @@ func filterEnglishGivingArticleAlternatives(forest parser.Forest, lattice analyz
 func englishGivingSourceAlternativeAllowed(alternative parser.ParseAlternative, lattice analyzer.LexicalLattice, candidates map[string]parser.PhraseCandidate, lexical *lexicon.Index, registry *construction.Registry) bool {
 	if alternative.VariantID.String() == "construction:en.give.transfer.past.double_np.compact_articles" ||
 		alternative.VariantID.String() == "construction:en.give.transfer.past.to_pp.compact_articles" {
-		if alternative.FamilyID.String() != "construction:en.give.transfer.past" || alternative.Permission.SenseID.String() != "sense:en.give.transfer" ||
-			string(alternative.Permission.FrameID) != "en.give.transfer.past" || len(alternative.Unresolved) != 0 || registry == nil || lexical == nil {
+		if alternative.FamilyID.String() != "construction:en.give.transfer.past" || len(alternative.Unresolved) != 0 || registry == nil || lexical == nil {
+			return false
+		}
+		allowAmbiguousNPs := false
+		var wantRoles map[string]string
+		switch {
+		case alternative.Permission.SenseID.String() == "sense:en.give.transfer" && string(alternative.Permission.FrameID) == "en.give.transfer.past":
+			wantRoles = map[string]string{"subject": "giver", "recipient": "recipient", "theme": "theme"}
+		case alternative.VariantID.String() == "construction:en.give.transfer.past.to_pp.compact_articles" &&
+			alternative.Permission.SenseID.String() == "sense:en.writing_message.event" && string(alternative.Permission.FrameID) == "en.writing_message.full":
+			allowAmbiguousNPs = true
+			wantRoles = map[string]string{"subject": "writer", "recipient": "recipient", "theme": "message"}
+		default:
 			return false
 		}
 		approved := false
@@ -1415,7 +1428,42 @@ func englishGivingSourceAlternativeAllowed(alternative parser.ParseAlternative, 
 		if !approved {
 			return false
 		}
-		wantRoles := map[string]string{"subject": "giver", "recipient": "recipient", "theme": "theme"}
+		if len(alternative.Slots) != len(wantRoles)+1 {
+			return false
+		}
+		seenSlots := make(map[string]bool, len(alternative.Slots))
+		for _, slot := range alternative.Slots {
+			if seenSlots[slot.SlotID] {
+				return false
+			}
+			seenSlots[slot.SlotID] = true
+			if slot.SlotID == "verb" {
+				if len(slot.CandidateIDs) == 0 {
+					return false
+				}
+				foundPastWritingVerb := false
+				for _, candidateID := range slot.CandidateIDs {
+					phrase, exists := candidates[candidateID]
+					if !exists || phrase.Category != construction.CategoryVP {
+						return false
+					}
+					if phrase.Features["verb_form"] == "finite" && phrase.Features["tense"] == "past" &&
+						containsEnglishSenseName(phrase.SenseIDs, strings.TrimPrefix(alternative.Permission.SenseID.String(), "sense:")) {
+						foundPastWritingVerb = true
+					}
+				}
+				if !foundPastWritingVerb {
+					return false
+				}
+				continue
+			}
+			if _, requiredNP := wantRoles[slot.SlotID]; !requiredNP {
+				return false
+			}
+		}
+		if !seenSlots["verb"] {
+			return false
+		}
 		for slotID, wantRole := range wantRoles {
 			var slot *parser.SlotBinding
 			for index := range alternative.Slots {
@@ -1426,30 +1474,32 @@ func englishGivingSourceAlternativeAllowed(alternative parser.ParseAlternative, 
 					slot = &alternative.Slots[index]
 				}
 			}
-			if slot == nil || string(slot.Role) != wantRole || len(slot.CandidateIDs) != 1 {
+			if slot == nil || string(slot.Role) != wantRole || len(slot.CandidateIDs) == 0 || !allowAmbiguousNPs && len(slot.CandidateIDs) != 1 {
 				return false
 			}
-			phrase, exists := candidates[slot.CandidateIDs[0]]
-			if !exists || phrase.Category != construction.CategoryNP || phrase.LexemeID.String() == "" ||
-				phrase.Features["determiner"] != "definite" && phrase.Features["determiner"] != "indefinite" || phrase.TokenStart <= 0 {
-				return false
-			}
-			article, hasArticle := englishArticleAt(lattice, phrase.TokenStart-1)
-			if !hasArticle || string(phrase.Features["determiner"]) != englishDeterminerFeature(article) {
-				return false
-			}
-			lexeme, hasLexeme := lexical.ByLexemeID(phrase.LexemeID)
-			if !hasLexeme {
-				return false
-			}
-			if article == "the" {
-				continue
-			}
-			articleForm, knownArticle := englishIndefiniteArticle(lexeme.Properties)
-			mass, pluralOnly := englishNumberClass(lexeme.Properties, lexeme.ParadigmID)
-			number := knownEnglishNounNumber(phrase.Features)
-			if !knownArticle || articleForm != article || mass || pluralOnly || number != "singular" || !hasNumberBehavior(lexical, phrase.LexemeID, "count") {
-				return false
+			for _, candidateID := range slot.CandidateIDs {
+				phrase, exists := candidates[candidateID]
+				if !exists || phrase.Category != construction.CategoryNP || phrase.LexemeID.String() == "" ||
+					phrase.Features["determiner"] != "definite" && phrase.Features["determiner"] != "indefinite" || phrase.TokenStart <= 0 {
+					return false
+				}
+				article, hasArticle := englishArticleAt(lattice, phrase.TokenStart-1)
+				if !hasArticle || string(phrase.Features["determiner"]) != englishDeterminerFeature(article) {
+					return false
+				}
+				lexeme, hasLexeme := lexical.ByLexemeID(phrase.LexemeID)
+				if !hasLexeme {
+					return false
+				}
+				if article == "the" {
+					continue
+				}
+				articleForm, knownArticle := englishIndefiniteArticle(lexeme.Properties)
+				mass, pluralOnly := englishNumberClass(lexeme.Properties, lexeme.ParadigmID)
+				number := knownEnglishNounNumber(phrase.Features)
+				if !knownArticle || articleForm != article || mass || pluralOnly || number != "singular" || !hasNumberBehavior(lexical, phrase.LexemeID, "count") {
+					return false
+				}
 			}
 		}
 		return true
