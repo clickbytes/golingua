@@ -62,6 +62,8 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 			principalParts = finiteEnglishPrincipalParts(lexeme, "see", "sees", "saw", "seen", "seeing")
 		case "lexeme:en.hear.v":
 			principalParts = finiteEnglishPrincipalParts(lexeme, "hear", "hears", "heard", "heard", "hearing")
+		case "lexeme:en.belong.v":
+			principalParts = finiteEnglishPrincipalParts(lexeme, "belong", "belongs", "belonged", "belonged", "belonging")
 		case "lexeme:en.get.v":
 			principalParts = finiteEnglishPrincipalParts(lexeme, "get", "gets", "got", "gotten", "getting")
 		case "lexeme:en.read.v":

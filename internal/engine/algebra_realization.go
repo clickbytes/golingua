@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/clickbytes/golingua/internal/algebra"
+	"github.com/clickbytes/golingua/internal/core"
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/language"
@@ -44,9 +45,9 @@ type AlgebraRealizationCoverage struct {
 	Symbol            string                    `json:"symbol"`
 	SenseID           string                    `json:"sense_id"`
 	CoreRef           string                    `json:"core_ref"`
-	EventPortID       string                    `json:"event_port_id"`
-	EventReferenceID  string                    `json:"event_reference_id"`
-	EventMeaningNode  meaning.NodeID            `json:"event_meaning_node_id"`
+	EventPortID       string                    `json:"event_port_id,omitempty"`
+	EventReferenceID  string                    `json:"event_reference_id,omitempty"`
+	EventMeaningNode  meaning.NodeID            `json:"event_meaning_node_id,omitempty"`
 	RoleSubstitutions []AlgebraRoleSubstitution `json:"role_substitutions"`
 	AnswerVariableID  string                    `json:"answer_variable_id,omitempty"`
 	AnswerSort        string                    `json:"answer_sort,omitempty"`
@@ -177,17 +178,18 @@ type AlgebraRealizationResult struct {
 }
 
 type algebraAtomMatch struct {
-	path             string
-	atom             *algebra.Term
-	signature        algebra.Signature
-	binding          lexicon.SemanticBinding
-	eventPort        string
-	rolePorts        []lexicon.SemanticRolePort
-	arguments        map[string]*algebra.Term
-	answerVariableID string
-	answerSort       string
-	answerRole       string
-	validation       language.TargetValidation
+	path              string
+	atom              *algebra.Term
+	signature         algebra.Signature
+	binding           lexicon.SemanticBinding
+	eventPort         string
+	relationPredicate bool
+	rolePorts         []lexicon.SemanticRolePort
+	arguments         map[string]*algebra.Term
+	answerVariableID  string
+	answerSort        string
+	answerRole        string
+	validation        language.TargetValidation
 }
 
 // RealizeAlgebra selects one approved, exact symbol binding from an explicitly
@@ -319,7 +321,7 @@ func (engine *Engine) realizeAlgebra(
 			unresolved = append(unresolved, AlgebraRealizationResidual{Path: partPaths[index], Code: "UNSUPPORTED_EXPRESSION_PART", Message: "only a directly matched positive Atom, or one direct Atom inside a bounded WH Ask, is realized by this route", Term: cloneAlgebraTerm(part)})
 			continue
 		}
-		match, matchStatus, matchCode, matchMessage := findAlgebraAtomMatch(part, partPaths[index], languagePackage, validations, validatedSignatures, queryAnswer)
+		match, matchStatus, matchCode, matchMessage := findAlgebraAtomMatch(engine, part, partPaths[index], languagePackage, validations, validatedSignatures, queryAnswer)
 		if match != nil {
 			matches = append(matches, *match)
 			continue
@@ -555,6 +557,7 @@ func realizationParts(expression *algebra.Term) ([]*algebra.Term, []string) {
 }
 
 func findAlgebraAtomMatch(
+	engine *Engine,
 	atom *algebra.Term,
 	path string,
 	languagePackage *language.SemanticLanguagePackage,
@@ -602,8 +605,19 @@ func findAlgebraAtomMatch(
 	if binding.Target.Kind != lexicon.SemanticTargetSymbol || string(binding.Target.SymbolRef) != atom.Symbol {
 		return nil, status.OutcomeUnsupported, "TARGET_KIND_UNSUPPORTED", "only a direct symbol target can match this route"
 	}
-	if len(binding.Target.RolePorts) == 0 || len(binding.Target.RolePorts) >= len(signature.Ports) {
-		return nil, status.OutcomeUnsupported, "TARGET_PORT_SHAPE_UNSUPPORTED", "target must map participant ports and leave exactly one typed event port"
+	coreBindings := engine.snapshot.Lexicon().TransferBindings(binding.SenseID)
+	relationPredicate := false
+	if len(coreBindings) == 1 && coreBindings[0].TransferAuthorized() {
+		if concept, found := engine.core.Lookup(coreBindings[0].CoreRef); found && concept.Kind == core.KindRelation && coreBindings[0].CoreRef.String() == "concept:belonging_association" {
+			relationPredicate = true
+		}
+	}
+	if len(binding.Target.RolePorts) == 0 || (!relationPredicate && len(binding.Target.RolePorts) >= len(signature.Ports)) || (relationPredicate && len(binding.Target.RolePorts) != 2) {
+		message := "target must map participant ports and leave exactly one typed event port"
+		if relationPredicate {
+			message = "belonging relation target must map exactly two Entity role ports without an Event port"
+		}
+		return nil, status.OutcomeUnsupported, "TARGET_PORT_SHAPE_UNSUPPORTED", message
 	}
 	portMappings := make(map[string]lexicon.SemanticRolePort, len(binding.Target.RolePorts))
 	roleNames := make(map[string]bool, len(binding.Target.RolePorts))
@@ -630,6 +644,9 @@ func findAlgebraAtomMatch(
 			return nil, status.OutcomeInvalid, "MISSING_ATOM_ARGUMENT", "atom argument does not cover every declared port"
 		}
 		if mapped {
+			if relationPredicate && ((port.Role != "associate" && port.Role != "item") || rolePort.Role != port.Role || rolePort.PortID != port.Role) {
+				return nil, status.OutcomeUnsupported, "INVALID_RELATION_ROLE_PORTS", "belonging relation must map associate and item to identically named Entity ports"
+			}
 			if !algebra.TypeEqual(port.Type, rolePort.Type) || port.Type.Kind != algebra.TypeEntity {
 				return nil, status.OutcomeUnsupported, "TARGET_PORT_TYPE_MISMATCH", "mapped role port does not exactly match an Entity-valued metadata port"
 			}
@@ -643,13 +660,20 @@ func findAlgebraAtomMatch(
 			}
 			continue
 		}
+		if relationPredicate {
+			return nil, status.OutcomeUnsupported, "UNMAPPED_RELATION_PORT", "relation target signatures may contain only fully mapped Entity roles"
+		}
 		if port.Type.Kind != algebra.TypeEvent || eventPort != "" {
 			return nil, status.OutcomeUnsupported, "UNMAPPED_TARGET_PORT", "every non-role port must be the unique Event identity port"
 		}
 		eventPort = port.Role
 	}
-	if eventPort == "" || len(args) != len(signature.Ports) {
-		return nil, status.OutcomeUnsupported, "TARGET_PORT_SHAPE_UNSUPPORTED", "target does not cover the signature with participant roles and one Event identity"
+	if (!relationPredicate && eventPort == "") || len(args) != len(signature.Ports) {
+		message := "target does not cover the signature with participant roles and one Event identity"
+		if relationPredicate {
+			message = "belonging relation target must cover exactly the associate/item Entity signature"
+		}
+		return nil, status.OutcomeUnsupported, "TARGET_PORT_SHAPE_UNSUPPORTED", message
 	}
 	if answer != nil && answerRole == "" {
 		return nil, status.OutcomeUnsupported, "ANSWER_VARIABLE_ROLE_NOT_FOUND", "the declared answer variable must fill exactly one mapped Entity role of the target event"
@@ -662,7 +686,10 @@ func findAlgebraAtomMatch(
 	if answer != nil {
 		answerVariableID, answerSort = answer.ID, string(answer.Type.Kind)
 	}
-	return &algebraAtomMatch{path: path, atom: atom, signature: signature, binding: binding, eventPort: eventPort, rolePorts: append([]lexicon.SemanticRolePort{}, binding.Target.RolePorts...), arguments: args, answerVariableID: answerVariableID, answerSort: answerSort, answerRole: answerRole, validation: validation}, status.OutcomeOK, "", ""
+	if relationPredicate && answer != nil {
+		return nil, status.OutcomeUnsupported, "RELATION_QUESTION_UNSUPPORTED", "relation predicates do not license an answer variable in this route"
+	}
+	return &algebraAtomMatch{path: path, atom: atom, signature: signature, binding: binding, eventPort: eventPort, relationPredicate: relationPredicate, rolePorts: append([]lexicon.SemanticRolePort{}, binding.Target.RolePorts...), arguments: args, answerVariableID: answerVariableID, answerSort: answerSort, answerRole: answerRole, validation: validation}, status.OutcomeOK, "", ""
 }
 
 func targetValidationAuthorized(validations []language.TargetValidation, binding lexicon.SemanticBinding) bool {
@@ -724,10 +751,6 @@ func buildAlgebraMeaningCandidate(
 		return nil, emptyCoverage, noResiduals, status.OutcomeResourceLimit, "RESOURCE_LIMIT", match.path + ".role_ports", "target has too many participant roles for realization"
 	}
 	args := match.arguments
-	eventArg := args[match.eventPort]
-	if eventArg == nil || eventArg.Kind != algebra.TermRef {
-		return nil, emptyCoverage, noResiduals, status.OutcomeUnsupported, "EVENT_IDENTITY_NOT_REFERENCE", match.path + ".args." + match.eventPort, "the unique Event port must be bound to an explicit reference"
-	}
 	declarations := make(map[string]algebra.Declaration, len(input.References))
 	for _, declaration := range input.References {
 		declarations[declaration.ID] = declaration
@@ -736,29 +759,37 @@ func buildAlgebraMeaningCandidate(
 	for _, referent := range input.RequestContext.Referents {
 		contextReferents[referent.ID] = referent
 	}
-	eventReferenceID := eventArg.ID
-	eventDeclaration, declared := declarations[eventReferenceID]
-	eventContext, hasEventContext := contextReferents[eventReferenceID]
-	if !declared || eventDeclaration.Type.Kind != algebra.TypeEvent || !hasEventContext || eventContext.Type.Kind != algebra.TypeEvent {
-		return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "INVALID_EVENT_REFERENCE", match.path + ".args." + match.eventPort, "Event identity must be declared and context-typed as Event"
-	}
-	if eventContext.ConceptID != "" && eventContext.ConceptID != coreRef.String() {
-		return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "EVENT_CONCEPT_CONFLICT", "input.request_context.referents." + eventReferenceID + ".concept_id", "event context classification conflicts with the selected exact lexical binding"
-	}
-	if eventDeclaration.Multiplicity != "" || eventContext.Multiplicity != "" {
-		noResiduals = append(noResiduals, AlgebraRealizationResidual{Path: "input.request_context.referents." + eventReferenceID + ".multiplicity", Code: "UNSUPPORTED_EVENT_MULTIPLICITY", Message: "event multiplicity is not represented by this positive sentence route", ContextReferent: ptrContextReferent(eventContext), ReferenceID: eventReferenceID})
-	}
-	if eventDeclaration.ReferenceTimeID != "" || eventContext.ReferenceTimeID != "" {
-		noResiduals = append(noResiduals, AlgebraRealizationResidual{Path: "input.request_context.referents." + eventReferenceID + ".reference_time_id", Code: "UNSUPPORTED_EVENT_REFERENCE_TIME", Message: "event reference-time link is retained but not realized by this route", ContextReferent: ptrContextReferent(eventContext), ReferenceID: eventReferenceID})
-	}
-	eventFrame := eventDeclaration.TemporalFrame
-	if eventContext.TemporalFrame != "" {
-		if eventFrame != "" && eventFrame != eventContext.TemporalFrame {
-			return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "EVENT_TIME_CONFLICT", "input.request_context.referents." + eventReferenceID + ".temporal_frame", "event declaration and request context temporal frames differ"
+	eventReferenceID := ""
+	eventFrame := ""
+	if !match.relationPredicate {
+		eventArg := args[match.eventPort]
+		if eventArg == nil || eventArg.Kind != algebra.TermRef {
+			return nil, emptyCoverage, noResiduals, status.OutcomeUnsupported, "EVENT_IDENTITY_NOT_REFERENCE", match.path + ".args." + match.eventPort, "the unique Event port must be bound to an explicit reference"
 		}
-		eventFrame = eventContext.TemporalFrame
+		eventReferenceID = eventArg.ID
+		eventDeclaration, declared := declarations[eventReferenceID]
+		eventContext, hasEventContext := contextReferents[eventReferenceID]
+		if !declared || eventDeclaration.Type.Kind != algebra.TypeEvent || !hasEventContext || eventContext.Type.Kind != algebra.TypeEvent {
+			return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "INVALID_EVENT_REFERENCE", match.path + ".args." + match.eventPort, "Event identity must be declared and context-typed as Event"
+		}
+		if eventContext.ConceptID != "" && eventContext.ConceptID != coreRef.String() {
+			return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "EVENT_CONCEPT_CONFLICT", "input.request_context.referents." + eventReferenceID + ".concept_id", "event context classification conflicts with the selected exact lexical binding"
+		}
+		if eventDeclaration.Multiplicity != "" || eventContext.Multiplicity != "" {
+			noResiduals = append(noResiduals, AlgebraRealizationResidual{Path: "input.request_context.referents." + eventReferenceID + ".multiplicity", Code: "UNSUPPORTED_EVENT_MULTIPLICITY", Message: "event multiplicity is not represented by this positive sentence route", ContextReferent: ptrContextReferent(eventContext), ReferenceID: eventReferenceID})
+		}
+		if eventDeclaration.ReferenceTimeID != "" || eventContext.ReferenceTimeID != "" {
+			noResiduals = append(noResiduals, AlgebraRealizationResidual{Path: "input.request_context.referents." + eventReferenceID + ".reference_time_id", Code: "UNSUPPORTED_EVENT_REFERENCE_TIME", Message: "event reference-time link is retained but not realized by this route", ContextReferent: ptrContextReferent(eventContext), ReferenceID: eventReferenceID})
+		}
+		eventFrame = eventDeclaration.TemporalFrame
+		if eventContext.TemporalFrame != "" {
+			if eventFrame != "" && eventFrame != eventContext.TemporalFrame {
+				return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "EVENT_TIME_CONFLICT", "input.request_context.referents." + eventReferenceID + ".temporal_frame", "event declaration and request context temporal frames differ"
+			}
+			eventFrame = eventContext.TemporalFrame
+		}
 	}
-	eventNodeID := meaning.NodeID("dse_event_0")
+	eventNodeID := meaning.NodeID("")
 	participantNodes := make(map[string]meaning.NodeID)
 	participantConcepts := make(map[string]ids.ConceptID)
 	participantMultiplicity := make(map[string]meaning.Multiplicity)
@@ -818,7 +849,10 @@ func buildAlgebraMeaningCandidate(
 		}
 		roleSubstitutions = append(roleSubstitutions, AlgebraRoleSubstitution{PortID: rolePort.PortID, Role: rolePort.Role, ReferenceID: referenceID, MeaningNodeID: participantNodes[referenceID]})
 	}
-	consumedContextReferences := map[string]struct{}{eventReferenceID: {}}
+	consumedContextReferences := map[string]struct{}{}
+	if eventReferenceID != "" {
+		consumedContextReferences[eventReferenceID] = struct{}{}
+	}
 	for referenceID := range participantNodes {
 		consumedContextReferences[referenceID] = struct{}{}
 	}
@@ -828,7 +862,7 @@ func buildAlgebraMeaningCandidate(
 		}
 		noResiduals = append(noResiduals, AlgebraRealizationResidual{
 			Path: fmt.Sprintf("input.request_context.referents[%d]", index), Code: "UNCONSUMED_CONTEXT_REFERENT",
-			Message:         "context referent is retained but is neither the event identity nor a participant of the selected atom",
+			Message:         "context referent is retained but is neither a participant of the selected atom nor an identity used by this route",
 			ContextReferent: ptrContextReferent(referent), ReferenceID: referent.ID,
 		})
 	}
@@ -858,22 +892,36 @@ func buildAlgebraMeaningCandidate(
 	for _, substitution := range roleSubstitutions {
 		participants = append(participants, meaning.Participant{Role: meaning.Role(substitution.Role), Target: substitution.MeaningNodeID})
 	}
-	event, err := meaning.NewEvent(eventNodeID, coreRef, participants)
-	if err != nil {
-		return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "MEANING_BUILD_FAILED", "meaning.event", err.Error()
+	var predicateNode meaning.Node
+	var err error
+	if match.relationPredicate {
+		predicateNode, err = meaning.NewState(meaning.NodeID("dse_state_0"), coreRef, participants)
+		predicateNode.RelationPredicate = true
+	} else {
+		eventNodeID = meaning.NodeID("dse_event_0")
+		predicateNode, err = meaning.NewEvent(eventNodeID, coreRef, participants)
+		predicateNode.TemporalFrame = meaning.TemporalFrame(eventFrame)
+		if eventFrame != "" && !predicateNode.TemporalFrame.Valid() {
+			return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "INVALID_EVENT_TEMPORAL_FRAME", "input.request_context.referents." + eventReferenceID + ".temporal_frame", "event temporal frame is unsupported"
+		}
 	}
-	event.TemporalFrame = meaning.TemporalFrame(eventFrame)
-	if eventFrame != "" && !event.TemporalFrame.Valid() {
-		return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "INVALID_EVENT_TEMPORAL_FRAME", "input.request_context.referents." + eventReferenceID + ".temporal_frame", "event temporal frame is unsupported"
+	if err != nil {
+		return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "MEANING_BUILD_FAILED", "meaning.predicate", err.Error()
 	}
 	nodes := make([]meaning.Node, 0, len(participantNodes)+3)
-	nodes = append(nodes, event)
+	nodes = append(nodes, predicateNode)
 	referenceIDs := make([]string, 0, len(participantNodes))
 	for referenceID := range participantNodes {
 		referenceIDs = append(referenceIDs, referenceID)
 	}
 	sort.Strings(referenceIDs)
 	meaningContext := meaning.RequestContext{ID: realizationContextID(input.RequestContext.ID), Referents: []meaning.Referent{}, Mentions: []meaning.Mention{}}
+	deicticAnchors := map[string]*meaning.DeicticAnchor{}
+	for _, condition := range input.RequestContext.Conditions {
+		if condition.Kind == algebra.ContextPresupposition && condition.Code == "deictic_anchor" && condition.Expression == nil && len(condition.TargetReferentIDs) == 1 && len(condition.Detail) > 0 {
+			deicticAnchors[condition.TargetReferentIDs[0]] = &meaning.DeicticAnchor{Kind: "deixis", Value: condition.Detail}
+		}
+	}
 	for _, referenceID := range referenceIDs {
 		referent, err := meaning.NewReferent(participantNodes[referenceID], participantConcepts[referenceID])
 		if err != nil {
@@ -889,10 +937,10 @@ func buildAlgebraMeaningCandidate(
 		meaningContext.Mentions = append(meaningContext.Mentions, meaning.Mention{
 			ID:     meaning.MentionID(fmt.Sprintf("ir_ref_%d", len(meaningContext.Mentions))),
 			NodeID: participantNodes[referenceID], ReferentID: contextReferentID,
-			EvidenceID: algebraReferenceEvidenceID(referenceID),
+			EvidenceID: algebraReferenceEvidenceID(referenceID), Anchor: deicticAnchors[referenceID],
 		})
 	}
-	contentID := eventNodeID
+	contentID := predicateNode.ID
 	discourseAct := meaning.ActStatement
 	var queryAnswer *semantic.QuestionAnswer
 	if match.answerVariableID != "" {
@@ -936,7 +984,9 @@ func buildAlgebraMeaningCandidate(
 		Contexts: []semantic.MeaningContext{{Meaning: graph, Context: meaningContext}}, Status: status.OutcomeOK,
 		Evidence: semantic.EvidenceTrace{AlternativeID: candidateID, Outcome: status.OutcomeOK, Records: []semantic.EvidenceRecord{}},
 	}
-	roleSubstitutions = append(roleSubstitutions, AlgebraRoleSubstitution{PortID: match.eventPort, Role: "event_identity", ReferenceID: eventReferenceID, MeaningNodeID: eventNodeID})
+	if !match.relationPredicate {
+		roleSubstitutions = append(roleSubstitutions, AlgebraRoleSubstitution{PortID: match.eventPort, Role: "event_identity", ReferenceID: eventReferenceID, MeaningNodeID: eventNodeID})
+	}
 	coverage := AlgebraRealizationCoverage{
 		Path: match.path, Symbol: match.atom.Symbol, SenseID: match.binding.SenseID.String(), CoreRef: coreRef.String(),
 		EventPortID: match.eventPort, EventReferenceID: eventReferenceID, EventMeaningNode: eventNodeID,

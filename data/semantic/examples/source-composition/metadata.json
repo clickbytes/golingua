@@ -224,6 +224,29 @@
       ]
     },
     {
+      "id": "probe.car",
+      "kind": "primitive",
+      "review_status": "approved",
+      "label": "explicit probe convention probe.car",
+      "provenance": [
+        {
+          "id": "dse476-independent-probe",
+          "uri": "https://github.com/clickbytes/golingua/issues/476",
+          "version": "2026-10-30-probe",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
       "id": "probe.dog",
       "kind": "primitive",
       "review_status": "approved",
@@ -263,6 +286,56 @@
       "ports": [
         {
           "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "concept:belonging_association",
+      "kind": "primitive",
+      "label": "belonging association",
+      "description": "An entity is associated with or belongs to a specified item without asserting ownership; this direct relation has no event identity.",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "golingua-en-belonging-476",
+          "uri": "https://github.com/clickbytes/golingua/issues/476#issuecomment-6528414953",
+          "version": "2026-10-30",
+          "license": "internal",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "associate",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "item",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "kind": "arity",
+          "count": 2
+        },
+        {
+          "kind": "port_type",
+          "role": "associate",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "kind": "port_type",
+          "role": "item",
           "type": {
             "kind": "Entity"
           }

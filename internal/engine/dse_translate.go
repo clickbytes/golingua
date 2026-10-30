@@ -313,7 +313,7 @@ func (engine *Engine) translateDSE(ctx context.Context, request Request) (Transl
 			// realizer retains those details as residuals and returns an incomplete
 			// result; it does not let them become a complete translation.
 			realized, realizeErr = engine.realizeAlgebra(requestContext, request.To, targetDocument, targetResources.TargetPackage, profile.SelectedMetadata, false)
-		} else if dseCoordinationDefinitePreview(targetDocument, candidate) {
+		} else if dseCoordinationDefinitePreview(targetDocument, candidate) || dseBelongingConditionPreview(targetDocument, candidate) {
 			// A checked source definite presupposition may remain unexpressed in
 			// the target language. Permit text as an explicitly incomplete preview
 			// only for this narrow coordinated shape; the target residual remains
@@ -474,6 +474,61 @@ func dseCoordinationDefinitePreview(document algebra.Document, candidate semanti
 			coverageCount++
 		}
 		if coverageCount == 0 {
+			return false
+		}
+	}
+	return true
+}
+
+// dseBelongingConditionPreview allows an incomplete surface preview when the
+// exact two-role belonging relation is covered and only definite-reference
+// conditions remain. The conditions stay in the request context and residuals.
+func dseBelongingConditionPreview(document algebra.Document, candidate semantic.DSECandidate) bool {
+	root := document.Expression
+	if candidate.PredicateKind != "relation" || root == nil || root.Kind != algebra.TermAtom || root.Symbol != "concept:belonging_association" || document.RequestContext == nil || len(document.RequestContext.Conditions) == 0 {
+		return false
+	}
+	roles := map[string]string{}
+	for _, argument := range root.Args {
+		if (argument.Role != "associate" && argument.Role != "item") || argument.Value == nil || argument.Value.Kind != algebra.TermRef || argument.Value.Type == nil || argument.Value.Type.Kind != algebra.TypeEntity {
+			return false
+		}
+		if _, duplicate := roles[argument.Role]; duplicate {
+			return false
+		}
+		roles[argument.Role] = argument.Value.ID
+	}
+	if len(roles) != 2 || len(candidate.RoleSources) != 2 {
+		return false
+	}
+	for _, source := range candidate.RoleSources {
+		if source.WHGap != nil || roles[source.Role] != source.ReferenceID {
+			return false
+		}
+	}
+	for _, condition := range document.RequestContext.Conditions {
+		if condition.Kind != algebra.ContextPresupposition || len(condition.TargetReferentIDs) != 1 {
+			return false
+		}
+		if condition.Code == "definite_reference" {
+			if condition.Expression == nil || condition.Expression.Kind != algebra.TermAtom || len(condition.Expression.Args) != 1 || condition.Expression.Args[0].Value == nil || condition.Expression.Args[0].Value.Kind != algebra.TermRef || condition.Expression.Args[0].Value.ID != condition.TargetReferentIDs[0] {
+				return false
+			}
+		} else if condition.Code == "deictic_anchor" {
+			if condition.Expression != nil || (condition.Detail != "demonstrative" && condition.Detail != "distal" && condition.Detail != "proximal") {
+				return false
+			}
+		} else {
+			return false
+		}
+		covered := false
+		for _, coverage := range candidate.ConditionCoverage {
+			if coverage.ConditionID == condition.ID && coverage.Kind == "presupposition" && coverage.Code == condition.Code && len(coverage.TargetReferenceIDs) == 1 && coverage.TargetReferenceIDs[0] == condition.TargetReferentIDs[0] {
+				covered = true
+				break
+			}
+		}
+		if !covered {
 			return false
 		}
 	}
@@ -928,12 +983,26 @@ func enrichDSEContext(engine *Engine, document algebra.Document, candidate seman
 	}
 	type sourceReference struct{ role, referenceID, senseID string }
 	sourceReferences := make([]sourceReference, 0, len(candidate.RoleSources)+1)
-	if candidate.HeadEventReferenceID == "" || candidate.Source.SenseID == "" {
-		return algebra.Document{}, nil, status.OutcomeIncomplete, "DSE_EVENT_SENSE_REQUIRED", "source candidate has no exact event sense and reference"
-	}
-	sourceReferences = append(sourceReferences, sourceReference{role: "event", referenceID: candidate.HeadEventReferenceID, senseID: candidate.Source.SenseID})
 	bindingsByReference := make(map[string]string, len(candidate.RoleSources)+1)
-	bindingsByReference[candidate.HeadEventReferenceID] = candidate.Source.SenseID
+	if candidate.PredicateKind == "relation" {
+		if candidate.HeadEventReferenceID != "" || candidate.Source.SenseID == "" {
+			return algebra.Document{}, nil, status.OutcomeInvalid, "DSE_RELATION_EVENT_FORBIDDEN", "relation predicate must carry its exact sense without an Event identity"
+		}
+		predicateSense, parseErr := ids.ParseSenseID(candidate.Source.SenseID)
+		if parseErr != nil {
+			return algebra.Document{}, nil, status.OutcomeInvalid, "DSE_RELATION_SENSE_INVALID", "relation predicate carries a malformed source sense"
+		}
+		predicateBindings := engine.snapshot.Lexicon().TransferBindings(predicateSense)
+		if len(predicateBindings) != 1 || !predicateBindings[0].TransferAuthorized() || predicateBindings[0].CoreRef.String() != "concept:belonging_association" {
+			return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_RELATION_METADATA_MISMATCH", "selected relation source sense must resolve exactly to belonging_association"
+		}
+	} else {
+		if candidate.HeadEventReferenceID == "" || candidate.Source.SenseID == "" {
+			return algebra.Document{}, nil, status.OutcomeIncomplete, "DSE_EVENT_SENSE_REQUIRED", "source candidate has no exact event sense and reference"
+		}
+		sourceReferences = append(sourceReferences, sourceReference{role: "event", referenceID: candidate.HeadEventReferenceID, senseID: candidate.Source.SenseID})
+		bindingsByReference[candidate.HeadEventReferenceID] = candidate.Source.SenseID
+	}
 	whGapCount := 0
 	for _, role := range candidate.RoleSources {
 		if role.WHGap != nil {
@@ -958,7 +1027,7 @@ func enrichDSEContext(engine *Engine, document algebra.Document, candidate seman
 	if (isAsk && whGapCount != 1) || (!isAsk && whGapCount != 0) {
 		return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_WH_GAP_CARDINALITY", "the typed WH Ask requires exactly one matching source gap and a direct Atom permits none"
 	}
-	if isAsk && !dseQuestionSourcesMatch(document.Expression.Body, candidate, answerID) {
+	if isAsk && (candidate.PredicateKind == "relation" || !dseQuestionSourcesMatch(document.Expression.Body, candidate, answerID)) {
 		return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_WH_ARGUMENT_MAPPING_MISMATCH", "the Ask atom arguments must match the event reference, explicit role references, and one typed source WH gap"
 	}
 	knownDeclarations := make(map[string]algebra.Declaration, len(document.References))

@@ -5,22 +5,512 @@
     "id": "construction:en.to_oblique",
     "language": "en",
     "slot_specs": [
-      {"id":"subject","position":0,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"},
-      {"id":"verb","position":1,"category":"VP","cardinality":{"minimum":1,"maximum":1},"optionality":"required"},
-      {"id":"target","position":2,"category":"NP","cardinality":{"minimum":1,"maximum":1},"optionality":"required","adposition":"to"}
+      {
+        "id": "subject",
+        "position": 0,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "verb",
+        "position": 1,
+        "category": "VP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required"
+      },
+      {
+        "id": "target",
+        "position": 2,
+        "category": "NP",
+        "cardinality": {
+          "minimum": 1,
+          "maximum": 1
+        },
+        "optionality": "required",
+        "adposition": "to"
+      }
     ],
-    "constraints": [{"id":"subject_verb_number","kind":"agreement","strength":"hard","controller_slot":"subject","target_slot":"verb","features":["number"]}],
-    "provenance":{"id":"golingua-issue-434-writing-message","path":"languages/en/constructions/to_oblique.json","version":"2026-10-28","license":"internal","author":"Codex by owner delegation"}
+    "constraints": [
+      {
+        "id": "subject_verb_number",
+        "kind": "agreement",
+        "strength": "hard",
+        "controller_slot": "subject",
+        "target_slot": "verb",
+        "features": [
+          "number"
+        ]
+      }
+    ],
+    "provenance": {
+      "id": "golingua-issue-434-writing-message",
+      "path": "languages/en/constructions/to_oblique.json",
+      "version": "2026-10-28",
+      "license": "internal",
+      "author": "Codex by owner delegation"
+    }
   },
   "variants": [
-    {"id":"construction:en.to_oblique.svo","family_id":"construction:en.to_oblique","sequence":[{"kind":"terminal","terminal":"the","accepted_inputs":["a","an"]},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"to"},{"kind":"terminal","terminal":"the","optional":true,"accepted_inputs":["a","an"]},{"kind":"slot","slot_id":"target"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"both","provenance":{"id":"golingua-issue-434-writing-message","path":"languages/en/constructions/to_oblique.json","version":"2026-10-28","license":"internal","author":"Codex by owner delegation"}},
-    {"id":"construction:en.to_oblique.svo.indefinite_target","family_id":"construction:en.to_oblique","sequence":[{"kind":"terminal","terminal":"the"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"to"},{"kind":"terminal","terminal":"a"},{"kind":"slot","slot_id":"target"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"realize","provenance":{"id":"golingua-issue-434-writing-message","path":"languages/en/constructions/to_oblique.json","version":"2026-10-28","license":"internal","author":"Codex by owner delegation"}},
-    {"id":"construction:en.to_oblique.svo.indefinite_target_an","family_id":"construction:en.to_oblique","sequence":[{"kind":"terminal","terminal":"the"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"to"},{"kind":"terminal","terminal":"an"},{"kind":"slot","slot_id":"target"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"realize","provenance":{"id":"golingua-issue-434-writing-message","path":"languages/en/constructions/to_oblique.json","version":"2026-10-28","license":"internal","author":"Codex by owner delegation"}},
-    {"id":"construction:en.to_oblique.svo.indefinite_subject","family_id":"construction:en.to_oblique","sequence":[{"kind":"terminal","terminal":"a"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"to"},{"kind":"terminal","terminal":"the"},{"kind":"slot","slot_id":"target"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"realize","provenance":{"id":"golingua-issue-434-writing-message","path":"languages/en/constructions/to_oblique.json","version":"2026-10-28","license":"internal","author":"Codex by owner delegation"}},
-    {"id":"construction:en.to_oblique.svo.indefinite_subject_an","family_id":"construction:en.to_oblique","sequence":[{"kind":"terminal","terminal":"an"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"to"},{"kind":"terminal","terminal":"the"},{"kind":"slot","slot_id":"target"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"realize","provenance":{"id":"golingua-issue-434-writing-message","path":"languages/en/constructions/to_oblique.json","version":"2026-10-28","license":"internal","author":"Codex by owner delegation"}},
-    {"id":"construction:en.to_oblique.svo.indefinite_subject_target","family_id":"construction:en.to_oblique","sequence":[{"kind":"terminal","terminal":"a"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"to"},{"kind":"terminal","terminal":"a"},{"kind":"slot","slot_id":"target"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"realize","provenance":{"id":"golingua-issue-434-writing-message","path":"languages/en/constructions/to_oblique.json","version":"2026-10-28","license":"internal","author":"Codex by owner delegation"}},
-    {"id":"construction:en.to_oblique.svo.indefinite_subject_a_target_an","family_id":"construction:en.to_oblique","sequence":[{"kind":"terminal","terminal":"a"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"to"},{"kind":"terminal","terminal":"an"},{"kind":"slot","slot_id":"target"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"realize","provenance":{"id":"golingua-issue-434-writing-message","path":"languages/en/constructions/to_oblique.json","version":"2026-10-28","license":"internal","author":"Codex by owner delegation"}},
-    {"id":"construction:en.to_oblique.svo.indefinite_subject_an_target_a","family_id":"construction:en.to_oblique","sequence":[{"kind":"terminal","terminal":"an"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"to"},{"kind":"terminal","terminal":"a"},{"kind":"slot","slot_id":"target"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"realize","provenance":{"id":"golingua-issue-434-writing-message","path":"languages/en/constructions/to_oblique.json","version":"2026-10-28","license":"internal","author":"Codex by owner delegation"}},
-    {"id":"construction:en.to_oblique.svo.indefinite_subject_an_target_an","family_id":"construction:en.to_oblique","sequence":[{"kind":"terminal","terminal":"an"},{"kind":"slot","slot_id":"subject"},{"kind":"slot","slot_id":"verb"},{"kind":"terminal","terminal":"to"},{"kind":"terminal","terminal":"an"},{"kind":"slot","slot_id":"target"},{"kind":"terminal","terminal":"."}],"markedness":"neutral","priority":0,"direction_policy":"realize","provenance":{"id":"golingua-issue-434-writing-message","path":"languages/en/constructions/to_oblique.json","version":"2026-10-28","license":"internal","author":"Codex by owner delegation"}}
+    {
+      "id": "construction:en.to_oblique.svo",
+      "family_id": "construction:en.to_oblique",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "accepted_inputs": [
+            "a",
+            "an"
+          ]
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "optional": true,
+          "accepted_inputs": [
+            "a",
+            "an"
+          ]
+        },
+        {
+          "kind": "slot",
+          "slot_id": "target"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "both",
+      "provenance": {
+        "id": "golingua-issue-434-writing-message",
+        "path": "languages/en/constructions/to_oblique.json",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.to_oblique.svo.indefinite_target",
+      "family_id": "construction:en.to_oblique",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "target"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-issue-434-writing-message",
+        "path": "languages/en/constructions/to_oblique.json",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.to_oblique.svo.indefinite_target_an",
+      "family_id": "construction:en.to_oblique",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "target"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-issue-434-writing-message",
+        "path": "languages/en/constructions/to_oblique.json",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.to_oblique.svo.indefinite_subject",
+      "family_id": "construction:en.to_oblique",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "target"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-issue-434-writing-message",
+        "path": "languages/en/constructions/to_oblique.json",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.to_oblique.svo.indefinite_subject_an",
+      "family_id": "construction:en.to_oblique",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "target"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-issue-434-writing-message",
+        "path": "languages/en/constructions/to_oblique.json",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.to_oblique.svo.indefinite_subject_target",
+      "family_id": "construction:en.to_oblique",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "target"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-issue-434-writing-message",
+        "path": "languages/en/constructions/to_oblique.json",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.to_oblique.svo.indefinite_subject_a_target_an",
+      "family_id": "construction:en.to_oblique",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "target"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-issue-434-writing-message",
+        "path": "languages/en/constructions/to_oblique.json",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.to_oblique.svo.indefinite_subject_an_target_a",
+      "family_id": "construction:en.to_oblique",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "a"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "target"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-issue-434-writing-message",
+        "path": "languages/en/constructions/to_oblique.json",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.to_oblique.svo.indefinite_subject_an_target_an",
+      "family_id": "construction:en.to_oblique",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "an"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "target"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-issue-434-writing-message",
+        "path": "languages/en/constructions/to_oblique.json",
+        "version": "2026-10-28",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.to_oblique.svo.this_item",
+      "family_id": "construction:en.to_oblique",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "this"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "optional": true,
+          "accepted_inputs": [
+            "a",
+            "an"
+          ]
+        },
+        {
+          "kind": "slot",
+          "slot_id": "target"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "realize",
+      "provenance": {
+        "id": "golingua-issue-476-belonging-deixis",
+        "path": "languages/en/constructions/to_oblique.json",
+        "version": "2026-10-30",
+        "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    }
   ]
 }

@@ -187,6 +187,8 @@ func polishNegativeAttributionBindings() []constructionBindingDeclaration {
 }
 
 var polishConstructionBindingDeclarations = []constructionBindingDeclaration{
+	{"pl.nalezec.belonging", "pl.nalezec.belonging.to_oblique", "pl.to_oblique", "pl.to_oblique.svo"},
+	{"pl.nalezec.belonging", "pl.nalezec.belonging.to_oblique", "pl.to_oblique", "pl.to_oblique.svo.demonstrative_ten"},
 	{"pl.miec.possession", "pl.miec.possession.transitive", "pl.transitive", "pl.transitive.svo"},
 	{"pl.miec.possession", "pl.miec.possession.personal", "pl.transitive_personal", "pl.transitive_personal.prodrop.present.first.singular"},
 	{"pl.miec.possession", "pl.miec.possession.personal", "pl.transitive_personal", "pl.transitive_personal.prodrop.present.first.plural"},
@@ -580,6 +582,10 @@ func CompileValency() (*valency.Index, error) {
 	declarations = append(declarations, outcomeActionFrames...)
 	declarations = append(declarations, polishCommerceOmissionFrames...)
 	declarations = append(declarations, polishCommerceFullPurchaseFrames...)
+	declarations = append(declarations, frameDeclaration{"pl.nalezec.belonging.to_oblique", "pl.nalezec.belonging", "pl.to_oblique", []meaning.Role{"item", "associate"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "item", Required: true, GrammaticalFunction: "subject", Case: "nominative"},
+		{ID: "oblique", Role: "associate", Required: true, GrammaticalFunction: "oblique", Case: "genitive", Adposition: "do"},
+	}})
 	frames := make([]valency.ValencyFrame, 0, len(declarations))
 	for _, item := range declarations {
 		senseID, err := ids.NewSenseID(item.sense)
@@ -787,6 +793,9 @@ func CompileValency() (*valency.Index, error) {
 }
 
 func polishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.sense == "pl.nalezec.belonging" {
+		return polishBelongingLexicalSource
+	}
 	if item.family == "pl.attribution_negative" {
 		return polishNegativeAttributionConstructionSource
 	}
