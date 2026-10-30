@@ -2,8 +2,8 @@
 
 > Observational report generated on push to `main`. Matrix outcomes do not gate the technical `go-ci` workflow.
 
-- Source SHA: `8e70fcc3938ec53e250f77bed7735e98ee1b1ff4`
-- Generated (UTC): `2026-10-30T16:54:45Z`
+- Source SHA: `a8e58859683c94875b887a1abe600c5e6c766b91`
+- Generated (UTC): `2026-10-30T19:20:39Z`
 - Command: `go test ./tests/... -count=1 -v`
 - Command exit code: `1` (NONZERO)
 - Registered records: 1000; record checks: 3000
@@ -1081,18 +1081,18 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/known_present_frame_is_unsupported_even_with_At` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/many_experiencer_referent_is_unsupported` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/many_stimulus_referent_is_unsupported` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/present_versus_absent_frame` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/one_versus_many` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/one_versus_absent_multiplicity` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/present_versus_past` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/present_versus_absent_frame` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_null` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_empty` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_unknown` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_null` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_empty` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_unknown` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_frame_on_referent` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_on_predicate` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_frame_on_referent` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_changed` | PASS |
@@ -1583,10 +1583,10 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 
 - Inventory records parsed: 1000 / 1000 declared directions.
 - Snapshot identity records: 1.
-- Sense catalogue associations parsed: 2071 (not morphology execution coverage).
+- Sense catalogue associations parsed: 2073 (not morphology execution coverage).
 - Declared Meaning ID references: 1094 allowed; 1094 required.
 - Inventory fields preserve declared tags, source semantics, allowed/required Meaning IDs, and owner status separately from runtime observations.
-- Inventory source SHA `8e70fcc3938ec53e250f77bed7735e98ee1b1ff4`: 1000 directions.
+- Inventory source SHA `a8e58859683c94875b887a1abe600c5e6c766b91`: 1000 directions.
 
 ### Declared source requirements
 
@@ -1659,7 +1659,7 @@ Aggregates below summarize authored source requirements; they are not observed a
 | `writing_message` | 2 |
 
 Declared role mentions: `agent` 16, `asset` 4, `associate` 4, `associated` 22, `author` 4, `back` 8, `bearer` 24, `beneficiary` 6, `choice_restriction` 2, `companion` 2, `content` 2, `destination` 2, `document` 2, `drinker` 16, `eater` 12, `entity` 2, `existence` 50, `experiencer` 160, `figure` 4, `food` 10, `friend_a` 2, `friend_b` 2, `front` 8, `giver` 20, `helper` 6, `higher` 6, `holder` 50, `instrument` 4, `item` 4, `landmark` 32, `landmark_a` 4, `landmark_b` 4, `liquid` 12, `located` 34, `location` 10, `lower` 6, `manner` 2, `material` 38, `member` 2, `object` 56, `occupant` 6, `owner` 4, `partner` 2, `person_variable` 6, `possessor` 18, `quantified_set` 50, `reader` 38, `reason` 2, `recipient` 24, `runner` 4, `sibling_a` 4, `sibling_b` 4, `sleeper` 22, `source` 2, `speaker` 4, `stimulus` 160, `support` 2, `supported` 2, `target` 4, `thanker` 2, `theme` 20, `time` 4, `tool` 2, `user` 2, `walker` 2, `writer` 2.
-- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "ffc2cd1d9ddf0780b97dc9e8bc30bc797ae4e3c21c344e32d716f1152bab54c5", "format_version": 1}`; inventory source SHA: `8e70fcc3938ec53e250f77bed7735e98ee1b1ff4`.
+- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "1c1b2c6255161d1b0ac81e1bfcda1f4288212e1b98cc7691bad11df103f33734", "format_version": 1}`; inventory source SHA: `a8e58859683c94875b887a1abe600c5e6c766b91`.
 
 Catalogue sense associations are not proof that a paradigm form or morphology procedure ran. Aggregates below describe declared pack associations only.
 
@@ -1687,7 +1687,7 @@ Catalogue sense associations are not proof that a paradigm form or morphology pr
 | associated | en | pronoun | en_personal_pronoun_you | 1 |
 | associated | en | verb | en_identification_be_present_3sg | 1 |
 | associated | en | verb | en_verb_finite_consonant_y | 1 |
-| associated | en | verb | en_verb_finite_principal_parts | 42 |
+| associated | en | verb | en_verb_finite_principal_parts | 43 |
 | associated | en | verb | en_verb_finite_regular | 16 |
 | associated | en | verb | en_verb_finite_sibilant | 4 |
 | associated | en | verb | en_verb_finite_silent_e | 13 |
@@ -1761,6 +1761,7 @@ Catalogue sense associations are not proof that a paradigm form or morphology pr
 | associated | pl | verb | pl_verb_latac_present_3sg_3pl | 1 |
 | associated | pl | verb | pl_verb_lubic_present_3sg_3pl | 1 |
 | associated | pl | verb | pl_verb_miec_personal | 1 |
+| associated | pl | verb | pl_verb_nalezec_present_3sg_3pl | 1 |
 | associated | pl | verb | pl_verb_niesc_present_3sg_3pl | 1 |
 | associated | pl | verb | pl_verb_oddychac_present_3sg_3pl | 1 |
 | associated | pl | verb | pl_verb_ogladac_present_3sg_3pl | 1 |
@@ -2296,6 +2297,7 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:en.oblique` | `construction:en.oblique.svo.indefinite_target` | `en.look.directed.at` | ok | 10 |
 | `construction:en.question.wh` | `construction:en.question.wh.object.neutral.analyze` | `en.see.visual.transitive` | ok | 2 |
 | `construction:en.question.wh` | `construction:en.question.wh.subject` | `en.see.visual.transitive` | ok | 2 |
+| `construction:en.to_oblique` | `construction:en.to_oblique.svo` | `en.belong.association.to_oblique` | ok | 4 |
 | `construction:en.transitive` | `construction:en.transitive.svo` | `en.buying.event.omit_seller` | incomplete | 4 |
 | `construction:en.transitive` | `construction:en.transitive.svo` | `en.buying.event.omit_seller` | ok | 8 |
 | `construction:en.transitive` | `construction:en.transitive.svo` | `en.carrying.transitive` | ok | 8 |
@@ -2545,6 +2547,7 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:pl.oblique` | `construction:pl.oblique.svo` | `pl.patrzec.directed.na` | ok | 20 |
 | `construction:pl.question.wh` | `construction:pl.question.wh.object.fronted` | `pl.widziec.visual.transitive` | ok | 2 |
 | `construction:pl.question.wh` | `construction:pl.question.wh.subject` | `pl.widziec.visual.transitive` | ok | 2 |
+| `construction:pl.to_oblique` | `construction:pl.to_oblique.svo.demonstrative_ten` | `pl.nalezec.belonging.to_oblique` | ok | 2 |
 | `construction:pl.transitive` | `construction:pl.transitive.ovs` | `pl.dziekowac.thank.action` | ok | 2 |
 | `construction:pl.transitive` | `construction:pl.transitive.ovs` | `pl.pomagac.help.action` | ok | 8 |
 | `construction:pl.transitive` | `construction:pl.transitive.ovs` | `pl.slyszec.auditory.transitive` | ok | 51 |
@@ -2624,49 +2627,49 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `adjective_degree` | known | positive | 151 |
 | `agreement_gender` | known | feminine | 212 |
 | `agreement_gender` | known | masculine_animal | 253 |
-| `agreement_gender` | known | masculine_inanimate | 83 |
-| `agreement_gender` | known | masculine_personal | 240 |
+| `agreement_gender` | known | masculine_inanimate | 85 |
+| `agreement_gender` | known | masculine_personal | 242 |
 | `agreement_gender` | known | neuter | 95 |
 | `agreement_gender` | known | non_masculine_personal | 108 |
-| `aspect` | known | imperfective | 573 |
+| `aspect` | known | imperfective | 575 |
 | `aspect` | known | perfective | 8 |
 | `case` | known | accusative | 373 |
 | `case` | known | dative | 26 |
-| `case` | known | genitive | 65 |
+| `case` | known | genitive | 67 |
 | `case` | known | instrumental | 6 |
-| `case` | known | nominative | 605 |
+| `case` | known | nominative | 607 |
 | `degree` | known | positive | 140 |
 | `determiner` | known | bare | 77 |
-| `determiner` | known | definite | 530 |
+| `determiner` | known | definite | 534 |
 | `determiner` | known | demonstrative_distal | 3 |
 | `determiner` | known | demonstrative_proximal | 43 |
 | `determiner` | known | indefinite | 158 |
 | `gender` | known | feminine | 221 |
 | `gender` | known | masculine_animal | 310 |
-| `gender` | known | masculine_inanimate | 83 |
-| `gender` | known | masculine_personal | 248 |
+| `gender` | known | masculine_inanimate | 85 |
+| `gender` | known | masculine_personal | 250 |
 | `gender` | known | neuter | 114 |
 | `gender` | known | non_masculine_personal | 46 |
-| `mood` | known | indicative | 1177 |
+| `mood` | known | indicative | 1183 |
 | `noun_number` | known | plural | 145 |
-| `noun_number` | known | singular | 618 |
+| `noun_number` | known | singular | 622 |
 | `number` | known | plural | 370 |
-| `number` | known | singular | 1224 |
+| `number` | known | singular | 1230 |
 | `person` | known | first | 84 |
 | `person` | known | second | 64 |
-| `person` | known | third | 1347 |
+| `person` | known | third | 1353 |
 | `pronoun_case` | known | subject | 58 |
 | `pronoun_number` | known | plural | 19 |
 | `pronoun_number` | known | singular | 15 |
 | `pronoun_person` | known | first | 34 |
 | `pronoun_person` | known | second | 24 |
 | `tense` | known | past | 148 |
-| `tense` | known | present | 1062 |
+| `tense` | known | present | 1068 |
 | `verb_form` | known | base | 70 |
-| `verb_form` | known | finite | 1107 |
+| `verb_form` | known | finite | 1113 |
 | `verb_number` | known | plural | 142 |
-| `verb_number` | known | singular | 422 |
-| `voice` | known | active | 1177 |
+| `verb_number` | known | singular | 426 |
+| `voice` | known | active | 1183 |
 
 ## Representation gap diagnosis
 
@@ -2675,7 +2678,9 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | Layer | Required predicate | Missing representation / reason | Observed diagnostic codes | Records |
 |---|---|---|---|---|
 | Meaning representation | `accompaniment` | No accompaniment relation/predicate is licensed; another social or ownership assertion would change meaning. | NO_PARSE, UNMATCHED_PARSE_CANDIDATE | `A1.11-CASE-1181-EN-PL`, `A1.11-CASE-1182-PL-EN` |
-| Meaning representation | `belonging_association` | CORE has no generic BELONG TO association predicate with associate/item roles. It is not equivalent to part-whole, temporary possession, or legal ownership; candidate possession concepts are KindRelation and cannot express the complete sentence as Meaning. No partial graph is supplied. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-633-EN-PL`, `A1.6-PO-634-PL-EN`, `A1.6-PO-635-EN-PL`, `A1.6-PO-636-PL-EN` |
+| Meaning representation | `belonging_association` | CORE has no generic BELONG TO association predicate with associate/item roles. It is not equivalent to part-whole, temporary possession, or legal ownership; candidate possession concepts are KindRelation and cannot express the complete sentence as Meaning. No partial graph is supplied. | NO_PARSE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-636-PL-EN` |
+| Meaning representation | `belonging_association` | CORE has no generic BELONG TO association predicate with associate/item roles. It is not equivalent to part-whole, temporary possession, or legal ownership; candidate possession concepts are KindRelation and cannot express the complete sentence as Meaning. No partial graph is supplied. | PREDICATE_KIND_UNSUPPORTED | `A1.6-PO-633-EN-PL`, `A1.6-PO-634-PL-EN` |
+| Meaning representation | `belonging_association` | CORE has no generic BELONG TO association predicate with associate/item roles. It is not equivalent to part-whole, temporary possession, or legal ownership; candidate possession concepts are KindRelation and cannot express the complete sentence as Meaning. No partial graph is supplied. | PREDICATE_KIND_UNSUPPORTED, UNRESOLVED_ROLE_SENSE | `A1.6-PO-635-EN-PL` |
 | Meaning representation | `between_position` | The full sentence requires the present-time spatial relation between_position with roles located, landmark_a, landmark_b; CORE spatial relation concepts are KindRelation, not Meaning State predicates. A generic located_in relation cannot substitute for this specific relation. Preserve both distinct landmark anchors; their order is not asserted. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.7-LQ-729-EN-PL`, `A1.7-LQ-730-PL-EN`, `A1.7-LQ-731-EN-PL`, `A1.7-LQ-732-PL-EN` |
 | Meaning representation | `black` | The question requires an unknown choice variable restricted to book referents and bound to the black bearer role; Question has no such variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-1013-EN-PL`, `A1.9-Q-1014-PL-EN` |
 | Meaning representation | `black` | The source asserts a future event or state, but Meaning.TemporalFrame represents only past or present; the future frame value/operator cannot be represented. | UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.10-TIME-1103-EN-PL`, `A1.10-TIME-1104-PL-EN` |
@@ -2933,12 +2938,13 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | integration | `EXPLICIT_REALIZATION_ASSUMPTION` | 2484 |
 | integration | `HARD_SELECTIONAL_RESTRICTION` | 6 |
 | integration | `MISSING_REQUIRED_ROLE` | 20 |
-| integration | `NO_PARSE` | 95 |
+| integration | `NO_PARSE` | 96 |
 | integration | `NO_SEMANTIC_ALTERNATIVES` | 2 |
 | integration | `NO_START_PLAN` | 162 |
 | integration | `OPERATOR_COVERAGE_UNKNOWN` | 28 |
 | integration | `OPERATOR_MAPPING_UNAVAILABLE` | 6 |
 | integration | `PARTIAL_PARSE_EVIDENCE` | 870 |
+| integration | `PREDICATE_KIND_UNSUPPORTED` | 9 |
 | integration | `REALIZATION_FIELD_LOSS` | 924 |
 | integration | `SURFACE_OMITTED_ROLE` | 65 |
 | integration | `TARGET_ALTERNATIVES_AMBIGUOUS` | 437 |
@@ -2947,26 +2953,27 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | integration | `TARGET_REALIZATION_FAILED` | 4 |
 | integration | `TARGET_ROLE_ABSENT_BY_FRAME_LICENSE` | 160 |
 | integration | `TRANSLATION_NOT_OK` | 88 |
-| integration | `UNKNOWN_SURFACE` | 385 |
-| integration | `UNMATCHED_PARSE_CANDIDATE` | 3757 |
+| integration | `UNKNOWN_SURFACE` | 381 |
+| integration | `UNMATCHED_PARSE_CANDIDATE` | 3740 |
 | integration | `UNRESOLVED_PARSE_EVIDENCE` | 4 |
-| integration | `UNRESOLVED_ROLE_SENSE` | 860 |
+| integration | `UNRESOLVED_ROLE_SENSE` | 863 |
 | integration | `UNSUPPORTED_COMPETING_HEAD` | 1 |
 | integration | `VARIANT_FEATURE_CONDITION_MISMATCH` | 2 |
 | native_analysis | `AMBIGUOUS_PARSE` | 39 |
 | native_analysis | `DISAMBIGUATION_INCOMPLETE` | 61 |
 | native_analysis | `HARD_SELECTIONAL_RESTRICTION` | 4 |
 | native_analysis | `MISSING_REQUIRED_ROLE` | 12 |
-| native_analysis | `NO_PARSE` | 95 |
+| native_analysis | `NO_PARSE` | 96 |
 | native_analysis | `NO_SEMANTIC_ALTERNATIVES` | 2 |
 | native_analysis | `NO_START_PLAN` | 162 |
 | native_analysis | `OPERATOR_COVERAGE_UNKNOWN` | 13 |
 | native_analysis | `PARTIAL_PARSE_EVIDENCE` | 269 |
+| native_analysis | `PREDICATE_KIND_UNSUPPORTED` | 6 |
 | native_analysis | `SURFACE_OMITTED_ROLE` | 19 |
-| native_analysis | `UNKNOWN_SURFACE` | 385 |
-| native_analysis | `UNMATCHED_PARSE_CANDIDATE` | 2094 |
+| native_analysis | `UNKNOWN_SURFACE` | 381 |
+| native_analysis | `UNMATCHED_PARSE_CANDIDATE` | 2084 |
 | native_analysis | `UNRESOLVED_PARSE_EVIDENCE` | 4 |
-| native_analysis | `UNRESOLVED_ROLE_SENSE` | 265 |
+| native_analysis | `UNRESOLVED_ROLE_SENSE` | 267 |
 | native_analysis | `UNSUPPORTED_COMPETING_HEAD` | 1 |
 | source_gap_probe | `NO_PARSE` | 33 |
 | source_gap_probe | `NO_START_PLAN` | 17 |
