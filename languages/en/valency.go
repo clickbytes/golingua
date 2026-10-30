@@ -223,6 +223,16 @@ func englishNegativeAttributionBindings() []constructionBindingDeclaration {
 }
 
 var englishConstructionBindingDeclarations = []constructionBindingDeclaration{
+	{"en.have.possession", "en.have.possession.transitive", "en.transitive", "en.transitive.svo"},
+	{"en.have.possession", "en.have.possession.transitive", "en.transitive_negative", "en.transitive_negative.svo.vp_auxiliary"},
+	{"en.have.possession", "en.have.possession.transitive", "en.transitive_negative", "en.transitive_negative.svo.do.indefinite_object.analyze"},
+	{"en.have.possession", "en.have.possession.transitive", "en.transitive_negative", "en.transitive_negative.svo.does.indefinite_object.analyze"},
+	{"en.have.possession", "en.have.possession.transitive", "en.transitive_personal", "en.transitive_personal.svo.first"},
+	{"en.have.possession", "en.have.possession.transitive", "en.transitive_personal", "en.transitive_personal.svo.first.indefinite_object"},
+	{"en.have.possession", "en.have.possession.transitive", "en.transitive_personal", "en.transitive_personal.svo.first.indefinite_object_an"},
+	{"en.have.possession", "en.have.possession.transitive", "en.transitive_personal", "en.transitive_personal.svo.second"},
+	{"en.have.possession", "en.have.possession.transitive", "en.transitive_personal", "en.transitive_personal.svo.second.indefinite_object"},
+	{"en.have.possession", "en.have.possession.transitive", "en.transitive_personal", "en.transitive_personal.svo.second.indefinite_object_an"},
 	{"en.go.spatial_movement", "en.go.spatial_movement.intransitive", "en.intransitive", "en.intransitive.sv"},
 	{"en.go.spatial_movement", "en.go.spatial_movement.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject"},
 	{"en.go.spatial_movement", "en.go.spatial_movement.intransitive", "en.intransitive", "en.intransitive.sv.indefinite_subject_an"},
@@ -1232,6 +1242,10 @@ func englishManipulationBindingDeclarations() []constructionBindingDeclaration {
 }
 
 var englishFrames = []frameDeclaration{
+	{"en.have.possession.transitive", "en.have.possession", "en.transitive", []meaning.Role{"holder", "object"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "holder", Required: true, GrammaticalFunction: "subject"},
+		{ID: "object", Role: "object", Required: true, GrammaticalFunction: "object"},
+	}},
 	{"en.hear.auditory.attributed_object", "en.hear.auditory", "en.attributed_seeing_object", []meaning.Role{"experiencer", "stimulus"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "experiencer", Required: true, GrammaticalFunction: "subject"},
 		{ID: "object", Role: "stimulus", Required: true, GrammaticalFunction: "object"},
@@ -1688,6 +1702,14 @@ func CompileValency() (*valency.Index, error) {
 			frame.Provenance = englishIdentificationSource
 		}
 		switch item.id {
+		case "en.have.possession.transitive":
+			for _, family := range []string{"en.transitive_personal", "en.transitive_negative"} {
+				familyID, err := ids.NewConstructionID(family)
+				if err != nil {
+					return nil, fmt.Errorf("English have frame family: %w", err)
+				}
+				frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, familyID)
+			}
 		case "en.writing_message.message_only":
 			pastFamilyID, err := ids.NewConstructionID("en.transitive_past")
 			if err != nil {
@@ -1875,6 +1897,9 @@ func CompileValency() (*valency.Index, error) {
 			continue
 		}
 		seenNegativeRoutes[key] = true
+		if declaration.variant == "en.transitive_negative.svo.vp_auxiliary" {
+			continue
+		}
 		bindingDeclarations = append(bindingDeclarations, constructionBindingDeclaration{
 			sense: declaration.sense, frame: declaration.frame,
 			family: "en.transitive_negative", variant: "en.transitive_negative.svo.vp_auxiliary",

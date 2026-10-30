@@ -5,6 +5,7 @@ package pl
 // data/pl/1000-core-review.tsv; senses link to CORE as pending candidates
 // without transfer authority. No paradigm is asserted for new lexemes yet.
 var coreVerbsEntries = []lexicalEntry{
+	{"pl.miec.v", "mieć", "verb", []lexicalMeaning{{"pl.miec.possession", "A state in which a holder has an object, without asserting legal title or duration.", "possession"}}},
 	{"pl.pytac.v", "pytać", "verb", []lexicalMeaning{{"pl.pytac.request_info", "A communicative act requesting information from an addressee", "asking"}}},
 	{"pl.odpowiadac.v", "odpowiadać", "verb", []lexicalMeaning{{"pl.odpowiadac.answer", "A communicative act supplying information in response to a prior request", "answering"}}},
 	{"pl.czytac.v", "czytać", "verb", []lexicalMeaning{{"pl.czytac.interpret", "An event of interpreting written or otherwise recorded symbolic content", "reading"}}},

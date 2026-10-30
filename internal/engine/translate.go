@@ -123,7 +123,8 @@ func (engine *Engine) Translate(ctx context.Context, request Request) (Translati
 			result.Diagnostics = appendDiagnostic(result.Diagnostics, diagnostic("RESOURCE_LIMIT", "candidates", "translation alternative retention limit was exhausted"))
 			break
 		}
-		if sourceCandidate.Meaning == nil || (sourceCandidate.Status != status.OutcomeOK && !mayRealizePartialRoleCandidate(sourceCandidate, sourceLanguage)) {
+		if sourceCandidate.Meaning == nil || (sourceCandidate.Status != status.OutcomeOK &&
+			!mayRealizePartialRoleCandidate(sourceCandidate, sourceLanguage) && !mayRealizeNegatedMeaningCandidate(sourceCandidate)) {
 			result.Candidates = append(result.Candidates, unresolvedAlternative(sourceCandidate))
 			continue
 		}
@@ -529,6 +530,99 @@ func mayRealizePartialRoleCandidate(candidate semantic.MeaningCandidate, sourceL
 		unresolvedRecords++
 	}
 	return unresolvedRecords > 0
+}
+
+// mayRealizeNegatedMeaningCandidate allows a target adapter to offer a surface
+// candidate for one fully covered predicate whose source parse retained only
+// bounded feature or competing-sense uncertainty. The original incomplete
+// status and diagnostics are restored after realization by Translate.
+func mayRealizeNegatedMeaningCandidate(candidate semantic.MeaningCandidate) bool {
+	if candidate.Status != status.OutcomeIncomplete || candidate.Evidence.Outcome != status.OutcomeIncomplete ||
+		candidate.Meaning == nil || len(candidate.MissingSurfaceOmittedRoles) != 0 || len(candidate.SoftConstraintMisses) != 0 {
+		return false
+	}
+	var predicate *meaning.Node
+	var negationScope *meaning.Node
+	referencedConcepts := make(map[meaning.ConceptRef]bool)
+	for index := range candidate.Meaning.Nodes {
+		node := &candidate.Meaning.Nodes[index]
+		switch node.Kind {
+		case meaning.KindState, meaning.KindEvent:
+			if predicate != nil {
+				return false
+			}
+			predicate = node
+			referencedConcepts[node.Concept] = true
+		case meaning.KindReferent:
+			referencedConcepts[node.Concept] = true
+		case meaning.KindScope:
+			if negationScope != nil || node.Operator != meaning.OperatorNegation {
+				return false
+			}
+			negationScope = node
+		default:
+			return false
+		}
+	}
+	if predicate == nil || negationScope == nil || negationScope.Target != predicate.ID || len(referencedConcepts) == 0 {
+		return false
+	}
+	partialEvidence, operatorEvidence := false, false
+	for _, diagnostic := range candidate.Evidence.Diagnostics {
+		switch diagnostic.Code {
+		case "UNRESOLVED_PARSE_EVIDENCE":
+			partialEvidence = true
+		case "PARTIAL_PARSE_EVIDENCE":
+			if diagnostic.Path != "parse" || diagnostic.Severity != status.SeverityWarning || diagnostic.Message == "" {
+				return false
+			}
+			partialEvidence = true
+		case semantic.DiagnosticUnresolvedRoleSense:
+			if diagnostic.Path != "roles" || diagnostic.Severity != status.SeverityWarning || diagnostic.Message != semantic.UnresolvedRoleSenseReason {
+				return false
+			}
+		default:
+			return false
+		}
+	}
+	if !partialEvidence {
+		return false
+	}
+	coveredConcepts := make(map[meaning.ConceptRef]bool)
+	for _, record := range candidate.Evidence.Records {
+		switch record.Outcome {
+		case status.OutcomeOK:
+			if record.Reason == "explicit operator evidence supplied by caller" {
+				if record.FamilyID.String() == "" || record.VariantID == "" {
+					return false
+				}
+				operatorEvidence = true
+			}
+			concept := meaning.ConceptRefFromID(record.CoreConceptID)
+			if referencedConcepts[concept] && record.SenseID.String() != "" && record.BindingKey != "" {
+				if record.CoreConceptID.String() == string(predicate.Concept) {
+					if record.FamilyID.String() == "" || record.VariantID == "" || record.FrameID == "" {
+						continue
+					}
+				}
+				coveredConcepts[concept] = true
+			}
+		case status.OutcomeUnsupported:
+			if record.Reason != semantic.UnresolvedRoleSenseReason || record.Role == "" || record.SenseID.String() == "" ||
+				record.SourceSpan.End <= record.SourceSpan.Start || record.CandidateID == "" || record.CoreConceptID.String() != "" ||
+				record.BindingKey != "" || record.FrameID != "" || record.FamilyID.String() != "" || record.VariantID != "" {
+				return false
+			}
+		case status.OutcomeIncomplete:
+			return false
+		default:
+			return false
+		}
+	}
+	if !operatorEvidence || len(coveredConcepts) != len(referencedConcepts) {
+		return false
+	}
+	return true
 }
 
 func exactOmissionPredicateEvidence(pack language.Language, candidate semantic.MeaningCandidate, omission semantic.EvidenceRecord) bool {

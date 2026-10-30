@@ -3,11 +3,13 @@ package pl
 import (
 	"context"
 	"fmt"
+	"sort"
 
 	"github.com/clickbytes/golingua/internal/construction"
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/language"
+	"github.com/clickbytes/golingua/internal/lexicon"
 	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/pack"
 	"github.com/clickbytes/golingua/internal/runtime"
@@ -19,6 +21,7 @@ const sentenceProviderVersion = "v2026.10.23-g10-20-reading-past"
 type sentenceProvider struct {
 	source   *runtime.SourcePipeline
 	realizer *runtime.ConstructionPlanRealizer
+	senseIDs []ids.SenseID
 }
 
 var _ language.LanguageProvider = (*sentenceProvider)(nil)
@@ -56,7 +59,7 @@ func NewSentenceProviderWithSeed(snapshot *pack.Pack, seed *Seed) (language.Pack
 	if err != nil {
 		return language.Package{}, nil, err
 	}
-	senseIDs, err := sentenceSenseIDs()
+	senseIDs, err := sentenceSenseIDs(valencyIndex, snapshot.Lexicon())
 	if err != nil {
 		return language.Package{}, nil, err
 	}
@@ -64,7 +67,7 @@ func NewSentenceProviderWithSeed(snapshot *pack.Pack, seed *Seed) (language.Pack
 	if err != nil {
 		return language.Package{}, nil, err
 	}
-	return languagePackage, &sentenceProvider{source: source, realizer: realizer}, nil
+	return languagePackage, &sentenceProvider{source: source, realizer: realizer, senseIDs: senseIDs}, nil
 }
 
 func (provider *sentenceProvider) Language() features.LanguageID { return "pl" }
@@ -81,21 +84,32 @@ func (provider *sentenceProvider) Analyze(ctx context.Context, surface string) (
 	if err != nil {
 		return nil, err
 	}
-	senseIDs, err := sentenceSenseIDs()
-	if err != nil {
-		return nil, err
-	}
-	return runtime.SentenceAnalysisCandidates(result, senseIDs...), nil
+	return runtime.SentenceAnalysisCandidates(result, provider.senseIDs...), nil
 }
 
-func sentenceSenseIDs() ([]ids.SenseID, error) {
-	senseIDs := make([]ids.SenseID, 0, 38)
-	for _, value := range []string{"pl.widziec.visual", "pl.slyszec.auditory", "pl.dostac.receive", "pl.patrzec.directed", "pl.czytac.interpret", "pl.byc.class_membership", "pl.czarny.black", "pl.czerwony.red", "pl.bialy.white", "pl.niebieski.blue", "pl.zielony.green", "pl.otwarty.open", "pl.smutny.sad", "pl.jesc.eat", "pl.pic.drink", "pl.kupowac.buy", "pl.kupic.buy", "pl.sprzedawac.sell", "pl.otwierac_obiekt.open", "pl.zamykac_obiekt.close", "pl.niesc.carry", "pl.trzymac.hold", "pl.ciagnac.pull", "pl.pchac.push", "pl.ciac.cut", "pl.kroic.with_instrument", "pl.skladac.fold", "pl.rozdzierac.tear", "pl.spac.sleep", "pl.oddychac.breathe", "pl.kichac.sneeze", "pl.biec.run", "pl.kaszlec.cough", "pl.chodzic.walk", "pl.zyc.live", "pl.latac.fly", "pl.zasypiac.sleep", "pl.budzic_sie.wake", "pl.pracowac.activity", "pl.isc.move", "pl.dawac.transfer", "pl.dac.transfer", "pl.pomagac.help", "pl.dziekowac.thank", "pl.uzywac.using", "pl.lubic.like", "pl.ogladac.view", "pl.pisac.document", "pl.pisac.write", "pl.pisac.instrument", "pl.rozmawiac.converse"} {
-		senseID, err := ids.NewSenseID(value)
-		if err != nil {
-			return nil, err
+func sentenceSenseIDs(valencyIndex *valency.Index, lexicalIndex *lexicon.Index) ([]ids.SenseID, error) {
+	if valencyIndex == nil || lexicalIndex == nil {
+		return nil, fmt.Errorf("Polish sentence provider requires compiled valency and lexical indexes")
+	}
+	senseSet := make(map[ids.SenseID]struct{})
+	for _, binding := range valencyIndex.Bindings() {
+		if !binding.Approved {
+			continue
 		}
+		for _, transfer := range lexicalIndex.TransferBindings(binding.SenseID) {
+			if transfer.TransferAuthorized() {
+				senseSet[binding.SenseID] = struct{}{}
+				break
+			}
+		}
+	}
+	senseIDs := make([]ids.SenseID, 0, len(senseSet))
+	for senseID := range senseSet {
 		senseIDs = append(senseIDs, senseID)
+	}
+	sort.Slice(senseIDs, func(i, j int) bool { return senseIDs[i].String() < senseIDs[j].String() })
+	if len(senseIDs) == 0 {
+		return nil, fmt.Errorf("Polish sentence provider requires at least one approved lexical route")
 	}
 	return senseIDs, nil
 }

@@ -596,8 +596,8 @@ func Execute(input ExecuteInput) (ExecuteResult, error) {
 		textBytes += len(form.Surface)
 		var vpAuxiliary *VPAuxiliaryForm
 		if req.VPAuxiliary != nil {
-			if !slot.IsMainPredicate() || req.NodeID != plan.NodeID || sourceNode.Kind != meaning.KindEvent {
-				return ExecuteResult{}, executeError(status.OutcomeUnsupported, "VP_AUXILIARY_EVENT_MISMATCH", "slots."+slot.ID+".vp_auxiliary", "VP auxiliary execution requires the exact main event predicate slot")
+			if !slot.IsMainPredicate() || req.NodeID != plan.NodeID || sourceNode.Kind != meaning.KindEvent && sourceNode.Kind != meaning.KindState {
+				return ExecuteResult{}, executeError(status.OutcomeUnsupported, "VP_AUXILIARY_EVENT_MISMATCH", "slots."+slot.ID+".vp_auxiliary", "VP auxiliary execution requires the exact main predicate slot")
 			}
 			generated, auxErr := generateVPAuxiliary(input, slot, req, budget.Procedure)
 			if auxErr != nil {
@@ -1136,7 +1136,7 @@ func cloneAuxiliaryTrace(trace []morph.GenerationTraceStep) []morph.GenerationTr
 func generateVPAuxiliary(input ExecuteInput, slot construction.SlotSpec, request SlotRequest, budget procedure.Budget) (VPAuxiliaryForm, error) {
 	auxiliary := request.VPAuxiliary
 	if auxiliary == nil || auxiliary.EventNodeID == "" || auxiliary.EventNodeID != input.Plan.NodeID || auxiliary.Lexeme.ID.String() != "lexeme:en.do.aux" || auxiliary.Lexeme.Language != lexicon.LanguageID(input.Plan.Language) || auxiliary.Lexeme.POS != lexicon.PartOfSpeech("verb") {
-		return VPAuxiliaryForm{}, executeError(status.OutcomeInvalid, "VP_AUXILIARY_REQUEST_INVALID", "slots."+slot.ID+".vp_auxiliary", "VP auxiliary requires the declared nonsemantic auxiliary lexeme, target language, and exact event identity")
+		return VPAuxiliaryForm{}, executeError(status.OutcomeInvalid, "VP_AUXILIARY_REQUEST_INVALID", "slots."+slot.ID+".vp_auxiliary", "VP auxiliary requires the declared nonsemantic auxiliary lexeme, target language, and exact predicate identity")
 	}
 	if slot.Category != construction.CategoryVP || !slot.IsMainPredicate() || request.NodeID != auxiliary.EventNodeID {
 		return VPAuxiliaryForm{}, executeError(status.OutcomeUnsupported, "VP_AUXILIARY_SLOT_UNSUPPORTED", "slots."+slot.ID+".vp_auxiliary", "VP auxiliary requires a VP-category main predicate slot bound to its event")
@@ -1239,7 +1239,7 @@ func validateVPAuxiliaryNegation(input ExecuteInput, auxiliary *VPAuxiliaryExecu
 	}
 	operator := input.Plan.Construction.Steps[0]
 	if operator.SemanticScope.TargetNodeID != auxiliary.EventNodeID || operator.SemanticScope.ScopeNodeID == "" || auxiliary.NegationParticle == nil || auxiliary.NegationParticle.OperatorID != operator.ID || auxiliary.NegationParticle.Provenance != operator.Provenance {
-		return executeError(status.OutcomeUnsupported, "VP_NEGATION_SCOPE_MISMATCH", "slots.vp_auxiliary.negation", "negation particle must match the exact operator, event target, scope node, and provenance")
+		return executeError(status.OutcomeUnsupported, "VP_NEGATION_SCOPE_MISMATCH", "slots.vp_auxiliary.negation", "negation particle must match the exact operator, predicate target, scope node, and provenance")
 	}
 	if !validSlotSurface(auxiliary.NegationParticle.Surface) || auxiliary.NegationParticle.Provenance.Validate() != nil {
 		return executeError(status.OutcomeInvalid, "VP_NEGATION_PARTICLE_INVALID", "slots.vp_auxiliary.negation", "negation particle must have a valid surface and operator provenance")

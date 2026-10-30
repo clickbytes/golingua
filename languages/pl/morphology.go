@@ -70,6 +70,11 @@ var pushingPastMorphSource = provenance.SourceRef{
 	Version: "2026-10-29", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
 }
 
+var polishHaveMorphSource = provenance.SourceRef{
+	ID: "wsjp-pl-miec-have-present", URI: "https://wsjp.pl/haslo/podglad/3243/miec",
+	Version: "2026-10-30", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
+}
+
 // Only explicitly declared noun and adjective forms enter these paradigms.
 func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm {
 	result := attestedNounParadigms(profile)
@@ -81,7 +86,30 @@ func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm 
 	result = append(result, polishPresentThirdPersonParadigms(profile)...)
 	result = append(result, polishDaćPastParadigm(profile))
 	result = append(result, polishKupicPastParadigm(profile))
+	result = append(result, polishHavePersonalParadigm(profile))
 	return append(result, polishPersonalParadigms(profile)...)
+}
+
+func polishHavePersonalParadigm(profile *features.LanguageFeatureProfile) morph.Paradigm {
+	const id = "pl_verb_miec_personal"
+	paradigm := morph.Paradigm{SchemaVersion: morph.ParadigmSchemaVersion, ID: morph.ParadigmID(id), Language: "pl", ProfileVersion: profile.Version(), POS: "verb"}
+	for _, form := range []struct{ person, number, surface string }{
+		{"first", "singular", "mam"}, {"second", "singular", "masz"}, {"third", "singular", "ma"},
+		{"first", "plural", "mamy"}, {"second", "plural", "macie"}, {"third", "plural", "mają"},
+	} {
+		cellID := morph.CellID("present_" + form.person + "_" + form.number)
+		partID := morph.PrincipalPartID("present_" + form.person + "_" + form.number)
+		stemID := procedure.StemID(id + "_" + string(partID))
+		paradigm.PrincipalPartRequirements = append(paradigm.PrincipalPartRequirements, morph.PrincipalPartRequirement{StemID: stemID, PartID: partID, Required: true})
+		paradigm.Cells = append(paradigm.Cells, morph.ParadigmCell{ID: cellID, Features: []features.FeatureValue{
+			{Feature: "aspect", State: features.StateKnown, Value: "imperfective"}, {Feature: "mood", State: features.StateKnown, Value: "indicative"},
+			{Feature: "number", State: features.StateKnown, Value: features.FeatureValueID(form.number)}, {Feature: "person", State: features.StateKnown, Value: features.FeatureValueID(form.person)},
+			{Feature: "tense", State: features.StateKnown, Value: "present"}, {Feature: "verb_form", State: features.StateKnown, Value: "finite"}, {Feature: "voice", State: features.StateKnown, Value: "active"},
+		}})
+		paradigm.Rules = append(paradigm.Rules, morph.CellRule{CellID: cellID, ProcedureID: "procedure:" + id + "." + string(cellID), Provenance: polishHaveMorphSource,
+			Steps: []procedure.Operation{{Kind: procedure.OperationSelectStem, StemID: stemID}}})
+	}
+	return paradigm
 }
 
 func polishKupicPastParadigm(profile *features.LanguageFeatureProfile) morph.Paradigm {
@@ -333,6 +361,7 @@ func polishPresentThirdPersonParadigms(profile *features.LanguageFeatureProfile)
 
 func polishPresentThirdPersonMorphRecords(lexemes []lexicon.MorphLexeme) ([]lexemeRecord, error) {
 	forms := map[string]struct{ paradigmID, singular, plural string }{
+		"lexeme:pl.miec.v":            {"pl_verb_miec_personal", "ma", "mają"},
 		"lexeme:pl.jesc.v":            {"pl_verb_jesc_present_3sg_3pl", "je", "jedzą"},
 		"lexeme:pl.pic.v":             {"pl_verb_pic_present_3sg_3pl", "pije", "piją"},
 		"lexeme:pl.otwierac_obiekt.v": {"pl_verb_otwierac_obiekt_present_3sg_3pl", "otwiera", "otwierają"},
@@ -382,6 +411,13 @@ func polishPresentThirdPersonMorphRecords(lexemes []lexicon.MorphLexeme) ([]lexe
 			{ID: "present_3sg_form", Form: formsForLexeme.singular},
 			{ID: "present_3pl_form", Form: formsForLexeme.plural},
 		}}
+		if lexeme.ID.String() == "lexeme:pl.miec.v" {
+			principalParts.Parts = []morph.PrincipalPart{
+				{ID: "present_first_singular", Form: "mam"}, {ID: "present_second_singular", Form: "masz"},
+				{ID: "present_third_singular", Form: "ma"}, {ID: "present_first_plural", Form: "mamy"},
+				{ID: "present_second_plural", Form: "macie"}, {ID: "present_third_plural", Form: "mają"},
+			}
+		}
 		if lexeme.ID.String() == "lexeme:pl.pic.v" {
 			principalParts.Parts = append(principalParts.Parts, morph.PrincipalPart{ID: "past_stem", Form: "pi"})
 		}

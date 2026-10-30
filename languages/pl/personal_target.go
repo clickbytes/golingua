@@ -92,6 +92,8 @@ func polishPersonalTargetForPredicate(source semantic.MeaningCandidate, predicat
 		role = "experiencer"
 	case "concept:reading":
 		role = "reader"
+	case "concept:possession":
+		role = "holder"
 	default:
 		return polishPersonalTarget{}, false
 	}
@@ -139,6 +141,16 @@ func polishPersonalVariantFeatures(variant construction.Variant) map[string]stri
 
 func polishPersonalVariantMatches(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, target polishPersonalTarget) bool {
 	if candidate.Family.Family.ID.String() != polishPersonalTargetFamily || candidate.CompiledVariant.Variant.DirectionPolicy == construction.DirectionAnalyze {
+		return false
+	}
+	variantNegated := false
+	for _, token := range candidate.CompiledVariant.Variant.Sequence {
+		if token.Kind == construction.TokenTerminal && token.Terminal == "nie" {
+			variantNegated = true
+			break
+		}
+	}
+	if variantNegated != polishNegatedPredicateTarget(source, candidate.NodeID) {
 		return false
 	}
 	values := polishPersonalVariantFeatures(candidate.CompiledVariant.Variant)
@@ -197,14 +209,11 @@ func polishPersonalVariantAssumptions(source semantic.MeaningCandidate, candidat
 		return nil
 	}
 	values := polishPersonalVariantFeatures(candidate.CompiledVariant.Variant)
-	role := meaning.Role("experiencer")
-	if candidate.Sense.ID.String() == "sense:pl.czytac.interpret" {
-		role = "reader"
-	}
-	subject, ok := polishReferentForRole(source, candidate.NodeID, role)
+	target, ok := polishPersonalTargetForPredicate(source, candidate.NodeID)
 	if !ok {
 		return nil
 	}
+	subject := target.subject
 	path, ok := runtime.MeaningPath(*source.Meaning, candidate.NodeID)
 	if !ok {
 		return nil
@@ -217,7 +226,7 @@ func polishPersonalVariantAssumptions(source semantic.MeaningCandidate, candidat
 		result = append(result, realizer.FieldAssumption{Path: path, Field: "number", Value: values["number"], Reason: "English you does not encode addressee number; the Polish personal variant selects this inflection"})
 	}
 	if values["tense"] == "past" && values["gender"] != "" {
-		_, known, valid := polishPersonalPastAgreementGender(source, candidate, polishPersonalTarget{role: role, subject: subject}, values["number"])
+		_, known, valid := polishPersonalPastAgreementGender(source, candidate, target, values["number"])
 		if valid && !known {
 			gender := values["gender"]
 			if gender == "masculine_personal" && values["number"] == "singular" {

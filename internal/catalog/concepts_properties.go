@@ -5,6 +5,7 @@ import "github.com/clickbytes/golingua/internal/core"
 // propertiesDeclarations returns the reviewed, typed concepts in editorial order.
 func propertiesDeclarations() []declaration {
 	return []declaration{
+		{"possession", "property", "A state in which a holder has an object, without asserting legal title, duration, or collective possession.", core.KindProperty, []core.RoleType{{Name: "holder", AllowedKinds: []core.ConceptKind{core.KindEntity}}, {Name: "object", AllowedKinds: []core.ConceptKind{core.KindEntity}}}},
 		{"length", "size", "Extent of an object measured along its principal longitudinal direction.", core.KindProperty, nil},
 		{"width", "size", "Extent of an object measured across its lateral dimension.", core.KindProperty, nil},
 		{"height", "size", "Vertical extent of an object or position above a reference level.", core.KindProperty, nil},

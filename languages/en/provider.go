@@ -3,11 +3,13 @@ package en
 import (
 	"context"
 	"fmt"
+	"sort"
 
 	"github.com/clickbytes/golingua/internal/construction"
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/language"
+	"github.com/clickbytes/golingua/internal/lexicon"
 	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/pack"
 	"github.com/clickbytes/golingua/internal/runtime"
@@ -19,6 +21,7 @@ const sentenceProviderVersion = "v2026.10.23-g10-20-reading-past"
 type sentenceProvider struct {
 	source   *runtime.SourcePipeline
 	realizer *runtime.ConstructionPlanRealizer
+	senseIDs []ids.SenseID
 }
 
 var _ language.LanguageProvider = (*sentenceProvider)(nil)
@@ -56,7 +59,7 @@ func NewSentenceProviderWithSeed(snapshot *pack.Pack, seed *Seed) (language.Pack
 	if err != nil {
 		return language.Package{}, nil, err
 	}
-	senseIDs, err := sentenceSenseIDs()
+	senseIDs, err := sentenceSenseIDs(valencyIndex, snapshot.Lexicon())
 	if err != nil {
 		return language.Package{}, nil, err
 	}
@@ -64,7 +67,7 @@ func NewSentenceProviderWithSeed(snapshot *pack.Pack, seed *Seed) (language.Pack
 	if err != nil {
 		return language.Package{}, nil, err
 	}
-	return languagePackage, &sentenceProvider{source: source, realizer: realizer}, nil
+	return languagePackage, &sentenceProvider{source: source, realizer: realizer, senseIDs: senseIDs}, nil
 }
 
 func (provider *sentenceProvider) Language() features.LanguageID { return "en" }
@@ -81,21 +84,32 @@ func (provider *sentenceProvider) Analyze(ctx context.Context, surface string) (
 	if err != nil {
 		return nil, err
 	}
-	senseIDs, err := sentenceSenseIDs()
-	if err != nil {
-		return nil, err
-	}
-	return runtime.SentenceAnalysisCandidates(result, senseIDs...), nil
+	return runtime.SentenceAnalysisCandidates(result, provider.senseIDs...), nil
 }
 
-func sentenceSenseIDs() ([]ids.SenseID, error) {
-	senseIDs := make([]ids.SenseID, 0, 39)
-	for _, value := range []string{"en.see.visual", "en.hear.auditory", "en.get.receive", "en.look.directed", "en.read.text", "en.be.class_membership", "en.black.color", "en.red.color", "en.white.color", "en.blue.color", "en.green.color", "en.open.state", "en.sad.state", "en.eating.event", "en.drinking.event", "en.buying.event", "en.selling.event", "en.opening_object.event", "en.closing_object.event", "en.carrying.event", "en.holding_object.event", "en.pulling_object.event", "en.pushing_object.event", "en.cutting_object.event", "en.cutting_object.with_instrument", "en.folding_object.event", "en.tearing_object.event", "en.sleep.physiological", "en.breathing.event", "en.sneezing.event", "en.running.event", "en.coughing.event", "en.walking.event", "en.living.event", "en.flying_motion.event", "en.waking_up.event", "en.falling_asleep.event", "en.working.activity", "en.go.spatial_movement", "en.give.transfer", "en.helping.event", "en.thanking.event", "en.using_object.event", "en.liking.event", "en.watching.event", "en.writing_document.event", "en.writing_message.event", "en.writing_with_instrument.event", "en.conversing.event"} {
-		senseID, err := ids.NewSenseID(value)
-		if err != nil {
-			return nil, err
+func sentenceSenseIDs(valencyIndex *valency.Index, lexicalIndex *lexicon.Index) ([]ids.SenseID, error) {
+	if valencyIndex == nil || lexicalIndex == nil {
+		return nil, fmt.Errorf("English sentence provider requires compiled valency and lexical indexes")
+	}
+	senseSet := make(map[ids.SenseID]struct{})
+	for _, binding := range valencyIndex.Bindings() {
+		if !binding.Approved {
+			continue
 		}
+		for _, transfer := range lexicalIndex.TransferBindings(binding.SenseID) {
+			if transfer.TransferAuthorized() {
+				senseSet[binding.SenseID] = struct{}{}
+				break
+			}
+		}
+	}
+	senseIDs := make([]ids.SenseID, 0, len(senseSet))
+	for senseID := range senseSet {
 		senseIDs = append(senseIDs, senseID)
+	}
+	sort.Slice(senseIDs, func(i, j int) bool { return senseIDs[i].String() < senseIDs[j].String() })
+	if len(senseIDs) == 0 {
+		return nil, fmt.Errorf("English sentence provider requires at least one approved lexical route")
 	}
 	return senseIDs, nil
 }

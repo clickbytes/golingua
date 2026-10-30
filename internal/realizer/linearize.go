@@ -221,7 +221,7 @@ func linearizeWithNPProfiles(plan RealizationPlan, family construction.Construct
 			return LinearizedResult{}, linearizeError(status.OutcomeInvalid, "PREDICATE_SLOT_PLAN_MISMATCH", path, "predicate slot form must match the selected plan node, lexeme, and sense")
 		}
 		if form.VPAuxiliary != nil && (!spec.IsMainPredicate() || form.NodeID != plan.NodeID || form.VPAuxiliary.EventNodeID != plan.NodeID) {
-			return LinearizedResult{}, linearizeError(status.OutcomeInvalid, "VP_AUXILIARY_SLOT_PLAN_MISMATCH", path+".vp_auxiliary", "VP auxiliary form must attach to the exact main event predicate slot")
+			return LinearizedResult{}, linearizeError(status.OutcomeInvalid, "VP_AUXILIARY_SLOT_PLAN_MISMATCH", path+".vp_auxiliary", "VP auxiliary form must attach to the exact main predicate slot")
 		}
 		if spec.ModifierBinding != nil && form.NodeID == plan.NodeID {
 			return LinearizedResult{}, linearizeError(status.OutcomeInvalid, "MODIFIER_SLOT_PLAN_MISMATCH", path, "modifier form must identify its own state rather than the main predicate")
@@ -764,7 +764,7 @@ func validateLinearizedVPAuxiliary(plan RealizationPlan, family construction.Con
 	if auxiliary == nil || auxiliary.SlotID != slotID || auxiliary.EventNodeID != plan.NodeID || form.NodeID != plan.NodeID ||
 		auxiliary.Auxiliary.LexemeID.String() != "lexeme:en.do.aux" || auxiliary.Base.LexemeID != form.LexemeID ||
 		!validSlotSurface(auxiliary.Auxiliary.Surface) || !validSlotSurface(auxiliary.Base.Surface) {
-		return linearizeError(status.OutcomeInvalid, "VP_AUXILIARY_FORM_INVALID", "slots."+slotID+".vp_auxiliary", "auxiliary forms must retain the exact main event, slot, lexeme, and valid surfaces")
+		return linearizeError(status.OutcomeInvalid, "VP_AUXILIARY_FORM_INVALID", "slots."+slotID+".vp_auxiliary", "auxiliary forms must retain the exact main predicate, slot, lexeme, and valid surfaces")
 	}
 	for _, item := range []struct {
 		role      string
@@ -788,7 +788,7 @@ func validateLinearizedVPAuxiliary(plan RealizationPlan, family construction.Con
 	if operator.SemanticScope.TargetNodeID != auxiliary.EventNodeID || operator.SemanticScope.ScopeNodeID == "" ||
 		particle.OperatorID != operator.ID || particle.ScopeNodeID != operator.SemanticScope.ScopeNodeID || particle.Provenance != operator.Provenance ||
 		!validSlotSurface(particle.Surface) || particle.Provenance.Validate() != nil {
-		return linearizeError(status.OutcomeInvalid, "VP_NEGATION_OPERATOR_MISMATCH", "slots."+slotID+".vp_auxiliary.negation", "particle must preserve the exact operator, event target, scope and source provenance")
+		return linearizeError(status.OutcomeInvalid, "VP_NEGATION_OPERATOR_MISMATCH", "slots."+slotID+".vp_auxiliary.negation", "particle must preserve the exact operator, predicate target, scope and source provenance")
 	}
 	class, err := classifyTerminal(particle.Surface)
 	if err != nil || class != terminalWord {

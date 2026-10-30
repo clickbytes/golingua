@@ -24,6 +24,7 @@ type polishPresentNegationRoute struct {
 	objectRole       meaning.Role
 	frame            string
 	derived          bool
+	personal         bool
 	variantsByFamily map[string]map[string]bool
 	roles            []meaning.Role
 	slotsByFamily    map[string]map[string]construction.SlotCategory
@@ -123,8 +124,137 @@ func newPolishNegationRouteResolver(lexiconIndex *lexicon.Index, valencyIndex *v
 			family: familyID.String(), variant: binding.VariantID.String(), subjectRole: subjectRole, kind: meaning.KindEvent,
 		})
 	}
-	resolver.transitive = derivePolishTransitiveNegativeRoutes(lexiconIndex, valencyIndex, registry, packages)
+	resolver.transitive = append(
+		derivePolishTransitiveNegativeRoutes(lexiconIndex, valencyIndex, registry, packages),
+		derivePolishPersonalNegativeRoutes(lexiconIndex, valencyIndex, registry, packages)...,
+	)
 	return resolver
+}
+
+func derivePolishPersonalNegativeRoutes(lexiconIndex *lexicon.Index, valencyIndex *valency.Index, registry *construction.Registry, packages []construction.CompiledConstructionPackage) []polishPresentNegationRoute {
+	if lexiconIndex == nil || valencyIndex == nil || registry == nil {
+		return nil
+	}
+	familyID, err := ids.ParseConstructionID("construction:pl.transitive_personal")
+	if err != nil {
+		return nil
+	}
+	record, exists := registry.ByID(familyID)
+	if !exists || string(record.Family.Language) != "pl" || !polishFamilyHasNegation(record.Family) {
+		return nil
+	}
+	variants := make(map[string]construction.Variant)
+	for _, pkg := range packages {
+		if pkg.Package.Family.ID != familyID {
+			continue
+		}
+		for _, variant := range pkg.Package.Variants {
+			variants[variant.ID.String()] = variant
+		}
+	}
+	frames := make(map[string]valency.ValencyFrame)
+	for _, frame := range valencyIndex.Frames() {
+		frames[string(frame.ID)] = frame
+	}
+	var routes []polishPresentNegationRoute
+	for _, binding := range registry.BindingsByFamilyID(familyID) {
+		if !binding.Approved || binding.FamilyID != familyID {
+			continue
+		}
+		frame, found := frames[string(binding.ValencyFrameID)]
+		if !found || frame.SenseID != binding.SenseID || !polishFrameAllowsFamily(frame, familyID) {
+			continue
+		}
+		subjectRole, objectRole, slots, frameOK := polishPersonalNegativeFrame(record.Family, frame)
+		if !frameOK {
+			continue
+		}
+		variant, found := variants[binding.VariantID.String()]
+		if !found || variant.Validate(record.Family) != nil || variant.DirectionPolicy == construction.DirectionRealize ||
+			!polishVariantHasRequiredNegationPlan(record.Family, variant) ||
+			!polishSequenceHasSlot(variant.Sequence, "verb") || !polishSequenceHasSlot(variant.Sequence, "object") {
+			continue
+		}
+		sense, found := lexiconIndex.BySenseID(binding.SenseID)
+		if !found {
+			continue
+		}
+		lexeme, found := lexiconIndex.ByLexemeID(sense.LexemeID)
+		if !found || lexeme.Language != "pl" || lexeme.POS != "verb" {
+			continue
+		}
+		var concept string
+		for _, transfer := range lexiconIndex.BindingsForSense(binding.SenseID) {
+			if !transfer.TransferAuthorized() {
+				continue
+			}
+			if concept != "" && concept != transfer.CoreRef.String() {
+				concept = ""
+				break
+			}
+			concept = transfer.CoreRef.String()
+		}
+		if concept == "" {
+			continue
+		}
+		routes = append(routes, polishPresentNegationRoute{
+			concept: concept, sense: binding.SenseID.String(), lexeme: sense.LexemeID.String(),
+			family: familyID.String(), variant: binding.VariantID.String(), subjectRole: subjectRole,
+			objectRole: objectRole, frame: string(binding.ValencyFrameID), derived: true, personal: true,
+			variantsByFamily: map[string]map[string]bool{familyID.String(): {binding.VariantID.String(): true}},
+			roles:            []meaning.Role{subjectRole, objectRole}, slotsByFamily: map[string]map[string]construction.SlotCategory{familyID.String(): slots},
+			kind: meaning.KindState,
+		})
+	}
+	return mergePolishDerivedTransitiveRoutes(routes)
+}
+
+func polishPersonalNegativeFrame(family construction.ConstructionFamily, frame valency.ValencyFrame) (meaning.Role, meaning.Role, map[string]construction.SlotCategory, bool) {
+	slots := make(map[string]construction.SlotCategory, len(family.SlotSpecs))
+	for _, spec := range family.SlotSpecs {
+		slots[spec.ID] = spec.Category
+		if spec.ID != "subject" && spec.ID != "verb" && spec.ID != "object" {
+			return "", "", nil, false
+		}
+		if spec.ID == "subject" {
+			if spec.Category != construction.CategoryNP || spec.Optionality != construction.SlotOptional || spec.Cardinality.Maximum != 1 {
+				return "", "", nil, false
+			}
+			continue
+		}
+		if spec.Optionality != construction.SlotRequired || spec.Cardinality.Minimum != 1 || spec.Cardinality.Maximum != 1 {
+			return "", "", nil, false
+		}
+	}
+	if len(slots) != 3 || slots["verb"] != construction.CategoryVP || slots["object"] != construction.CategoryNP ||
+		len(frame.SemanticRoles) != 2 || len(frame.Arguments) != 2 {
+		return "", "", nil, false
+	}
+	var subjectRole, objectRole meaning.Role
+	for _, argument := range frame.Arguments {
+		if !argument.Required || argument.Role == "" {
+			return "", "", nil, false
+		}
+		switch argument.ID {
+		case "subject":
+			if argument.GrammaticalFunction != "subject" || argument.Case != "nominative" || subjectRole != "" {
+				return "", "", nil, false
+			}
+			subjectRole = argument.Role
+		case "object":
+			if argument.GrammaticalFunction != "object" || argument.Case != "genitive" || objectRole != "" {
+				return "", "", nil, false
+			}
+			objectRole = argument.Role
+		default:
+			return "", "", nil, false
+		}
+	}
+	roles := map[meaning.Role]bool{frame.SemanticRoles[0]: true, frame.SemanticRoles[1]: true}
+	if subjectRole == "" || objectRole == "" || subjectRole == objectRole || len(roles) != 2 || !roles[subjectRole] || !roles[objectRole] {
+		return "", "", nil, false
+	}
+	return subjectRole, objectRole, map[string]construction.SlotCategory{"verb": construction.CategoryVP, "object": construction.CategoryNP}, true
 }
 
 func derivePolishTransitiveNegativeRoutes(lexiconIndex *lexicon.Index, valencyIndex *valency.Index, registry *construction.Registry, packages []construction.CompiledConstructionPackage) []polishPresentNegationRoute {
@@ -700,8 +830,11 @@ func polishNegatedPresentCandidate(candidate parser.PhraseCandidate, route polis
 		return candidate.Category == construction.CategoryAP && candidate.LexemeID.String() == route.lexeme &&
 			candidate.Features["degree"] == "positive" && (candidate.Features["number"] == "singular" || candidate.Features["number"] == "plural")
 	}
-	if candidate.Category != construction.CategoryVP || candidate.LexemeID.String() != route.lexeme ||
-		candidate.Features["verb_form"] != "finite" || candidate.Features["person"] != "third" {
+	if candidate.Category != construction.CategoryVP || candidate.LexemeID.String() != route.lexeme || candidate.Features["verb_form"] != "finite" {
+		return false
+	}
+	person := string(candidate.Features["person"])
+	if person != "third" && !(route.personal && (person == "first" || person == "second")) {
 		return false
 	}
 	if candidate.Features["tense"] == "past" {

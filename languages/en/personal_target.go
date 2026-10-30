@@ -78,6 +78,8 @@ func englishPersonalSubjectNode(source semantic.MeaningCandidate, nodeID meaning
 			expected = "experiencer"
 		case "concept:reading":
 			expected = "reader"
+		case "concept:possession":
+			expected = "holder"
 		default:
 			continue
 		}
