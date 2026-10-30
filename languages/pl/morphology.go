@@ -75,6 +75,11 @@ var polishHaveMorphSource = provenance.SourceRef{
 	Version: "2026-10-30", License: "unknown", Author: "Wielki słownik języka polskiego PAN",
 }
 
+var polishBelongingMorphSource = provenance.SourceRef{
+	ID: "golingua-pl-nalezec-present-authored", URI: "https://github.com/clickbytes/golingua/issues/476#issuecomment-6528414953",
+	Version: "2026-10-30", License: "internal", Author: "Codex by owner delegation",
+}
+
 // Only explicitly declared noun and adjective forms enter these paradigms.
 func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm {
 	result := attestedNounParadigms(profile)
@@ -166,6 +171,7 @@ func polishPresentThirdPersonParadigms(profile *features.LanguageFeatureProfile)
 	}{
 		{"pl_verb_jesc_present_3sg_3pl", "je", "jedzą", eatingDrinkingMorphSource},
 		{"pl_verb_pic_present_3sg_3pl", "pije", "piją", drinkingMorphSource},
+		{"pl_verb_nalezec_present_3sg_3pl", "należy", "należą", polishBelongingMorphSource},
 		{"pl_verb_otwierac_obiekt_present_3sg_3pl", "otwiera", "otwierają", provenance.SourceRef{ID: "wsjp-pl-otwierac", URI: "https://wsjp.pl/haslo/podglad/16726/otwierac/4886610/okno", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
 		{"pl_verb_zamykac_obiekt_present_3sg_3pl", "zamyka", "zamykają", provenance.SourceRef{ID: "wsjp-pl-zamykac", URI: "https://wsjp.pl/haslo/podglad/4812/zamykac/5096451/okno", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
 		{"pl_verb_niesc_present_3sg_3pl", "niesie", "niosą", provenance.SourceRef{ID: "wsjp-pl-niesc", URI: "https://wsjp.pl/haslo/podglad/34633/niesc", Version: "2026-10-28", License: "unknown", Author: "Wielki słownik języka polskiego PAN"}},
@@ -362,6 +368,7 @@ func polishPresentThirdPersonParadigms(profile *features.LanguageFeatureProfile)
 func polishPresentThirdPersonMorphRecords(lexemes []lexicon.MorphLexeme) ([]lexemeRecord, error) {
 	forms := map[string]struct{ paradigmID, singular, plural string }{
 		"lexeme:pl.miec.v":            {"pl_verb_miec_personal", "ma", "mają"},
+		"lexeme:pl.nalezec.v":         {"pl_verb_nalezec_present_3sg_3pl", "należy", "należą"},
 		"lexeme:pl.jesc.v":            {"pl_verb_jesc_present_3sg_3pl", "je", "jedzą"},
 		"lexeme:pl.pic.v":             {"pl_verb_pic_present_3sg_3pl", "pije", "piją"},
 		"lexeme:pl.otwierac_obiekt.v": {"pl_verb_otwierac_obiekt_present_3sg_3pl", "otwiera", "otwierają"},

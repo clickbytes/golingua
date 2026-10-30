@@ -31,6 +31,23 @@
         "kind": "presupposition",
         "code": "lexical_descriptor"
       }
+    },
+    {
+      "sense_id": "sense:pl.nalezec.belonging",
+      "frame_id": "pl.nalezec.belonging.to_oblique",
+      "head_port_id": "",
+      "predicate_kind": "relation",
+      "allowed_family_ids": [
+        "construction:pl.to_oblique"
+      ],
+      "allowed_variant_ids": [
+        "construction:pl.to_oblique.svo",
+        "construction:pl.to_oblique.svo.demonstrative_ten"
+      ],
+      "reference_condition": {
+        "kind": "presupposition",
+        "code": "lexical_descriptor"
+      }
     }
   ],
   "operator_mappings": [],

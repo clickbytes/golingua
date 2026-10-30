@@ -7,6 +7,7 @@ import (
 
 	"github.com/clickbytes/golingua/internal/analyzer"
 	"github.com/clickbytes/golingua/internal/construction"
+	"github.com/clickbytes/golingua/internal/core"
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/lexicon"
@@ -15,6 +16,7 @@ import (
 	"github.com/clickbytes/golingua/internal/parser"
 	"github.com/clickbytes/golingua/internal/runtime"
 	"github.com/clickbytes/golingua/internal/semantic"
+	"github.com/clickbytes/golingua/internal/status"
 	"github.com/clickbytes/golingua/internal/text"
 	"github.com/clickbytes/golingua/internal/valency"
 )
@@ -294,7 +296,7 @@ func NewSentenceSourceWithSeed(snapshot *pack.Pack, seed *Seed) (*runtime.Source
 				"noun": {construction.CategoryNP}, "pronoun": {construction.CategoryNP}, "verb": {construction.CategoryVP}, "adjective": {construction.CategoryAP},
 			},
 		}}, lexicon: snapshot.Lexicon()}, lexicon: snapshot.Lexicon()}},
-		EvidenceBuilder: englishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), constructions: registry, resolver: resolver, base: runtime.BareDeclarativeEvidenceBuilder{
+		EvidenceBuilder: englishSentenceEvidenceBuilder{lexicon: snapshot.Lexicon(), core: snapshot.CoreGraph(), constructions: registry, packages: packages, resolver: resolver, base: runtime.BareDeclarativeEvidenceBuilder{
 			SupportedSenses:                     supportedSenses,
 			PredicateFeatureAlternativesBySense: predicateAlternatives,
 			AllowedUnlexicalizedTerminals:       map[string]bool{"at": true, "to": true, "from": true, "with": true, "do": true, "does": true, "did": true, "not": true, "this": true, "that": true, "these": true, "those": true, "it": true, "is": true, "are": true, "a": true, "an": true, "up": true, "asleep": true},
@@ -381,11 +383,21 @@ func (builder englishWHGapPhraseBuilder) Build(ctx context.Context, lattice anal
 type englishSentenceEvidenceBuilder struct {
 	base          runtime.BareDeclarativeEvidenceBuilder
 	lexicon       *lexicon.Index
+	core          *core.ConceptGraph
 	constructions *construction.Registry
+	packages      []construction.CompiledConstructionPackage
 	resolver      englishNegationResolver
 }
 
 func (builder englishSentenceEvidenceBuilder) Build(ctx context.Context, lattice analyzer.LexicalLattice, candidates []parser.PhraseCandidate, forest parser.Forest) (runtime.CompositionEvidence, error) {
+	if routes := englishRelationSourceFeatureAlternatives(lattice, candidates, forest, builder.constructions, builder.packages, builder.lexicon, builder.core, builder.resolver.valency); len(routes) > 0 {
+		builder.base.SupportedSenses = cloneEnglishSupportedSenses(builder.base.SupportedSenses)
+		builder.base.PredicateFeatureAlternativesBySense = cloneEnglishPredicateAlternatives(builder.base.PredicateFeatureAlternativesBySense)
+		for sense, alternatives := range routes {
+			builder.base.SupportedSenses[sense] = true
+			builder.base.PredicateFeatureAlternativesBySense[sense] = alternatives
+		}
+	}
 	evidence, err := builder.buildSyntax(ctx, lattice, candidates, forest)
 	if err != nil {
 		return evidence, err
@@ -1136,6 +1148,197 @@ func englishTransitivePastCapability(candidates []parser.PhraseCandidate, forest
 
 func englishTransitivePastCoverage(candidates []parser.PhraseCandidate, forest parser.Forest, registry *construction.Registry, valencyIndex *valency.Index) bool {
 	return len(englishTransitivePastCapability(candidates, forest, registry, valencyIndex)) > 0
+}
+
+// englishRelationSourceFeatureAlternatives derives the source-side relation
+// capability from the exact selected parse routes. Returning alternatives
+// keyed by sense lets BareDeclarativeEvidenceBuilder apply its ordinary
+// complete-parse and finite-feature checks instead of bypassing them.
+func englishRelationSourceFeatureAlternatives(lattice analyzer.LexicalLattice, candidates []parser.PhraseCandidate, forest parser.Forest, registry *construction.Registry, packages []construction.CompiledConstructionPackage, lexiconIndex *lexicon.Index, ontology *core.ConceptGraph, valencyIndex *valency.Index) map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID {
+	if registry == nil || lexiconIndex == nil || ontology == nil || valencyIndex == nil || len(forest.Roots) != 1 || len(forest.Unmatched) != 0 ||
+		(forest.Outcome != status.OutcomeOK && forest.Outcome != status.OutcomeAmbiguous) {
+		return nil
+	}
+	for _, token := range lattice.Tokens {
+		if token.Token.Folded == "not" || token.Token.Folded == "never" || strings.Contains(token.Token.Folded, "n't") {
+			return nil
+		}
+	}
+	byCandidate := make(map[string]parser.PhraseCandidate, len(candidates))
+	for _, candidate := range candidates {
+		byCandidate[candidate.ID] = candidate
+	}
+	frames := make(map[valency.FrameID]valency.ValencyFrame, len(valencyIndex.Frames()))
+	for _, frame := range valencyIndex.Frames() {
+		frames[frame.ID] = frame
+	}
+	packagesByFamily := make(map[string]construction.CompiledConstructionPackage, len(packages))
+	for _, compiledPackage := range packages {
+		packagesByFamily[compiledPackage.Package.Family.ID.String()] = compiledPackage
+	}
+	result := make(map[ids.SenseID][]map[features.FeatureID]features.FeatureValueID)
+	clauseCount := 0
+	for _, node := range forest.Nodes {
+		if node.Category != "clause" {
+			continue
+		}
+		clauseCount++
+		if len(node.Alternatives) == 0 {
+			return nil
+		}
+		for _, alternative := range node.Alternatives {
+			if len(alternative.Unresolved) != 0 || !alternative.PlanID.Valid() || alternative.Permission.SenseID.String() == "" || alternative.FamilyID.String() == "" {
+				return nil
+			}
+			senseID := alternative.Permission.SenseID
+			frameID := valency.FrameID(alternative.Permission.FrameID)
+			frame, exists := frames[frameID]
+			if !exists || frame.SenseID != senseID || frame.Validate() != nil || len(frame.SemanticRoles) != 2 ||
+				len(frame.Arguments) != 2 || len(frame.SurfaceOmittedRoles) != 0 || !valencyFrameAllowsFamily(frame, alternative.FamilyID) {
+				return nil
+			}
+			roleSet := make(map[meaning.Role]bool, len(frame.SemanticRoles))
+			argumentsByRole := make(map[meaning.Role]valency.ArgumentSlot, len(frame.Arguments))
+			for _, role := range frame.SemanticRoles {
+				if role == "" || roleSet[role] {
+					return nil
+				}
+				roleSet[role] = true
+			}
+			for _, argument := range frame.Arguments {
+				if !argument.Required || !roleSet[argument.Role] {
+					return nil
+				}
+				if _, duplicate := argumentsByRole[argument.Role]; duplicate {
+					return nil
+				}
+				argumentsByRole[argument.Role] = argument
+			}
+			if len(argumentsByRole) != len(roleSet) {
+				return nil
+			}
+			familyRecord, exists := registry.ByID(alternative.FamilyID)
+			if !exists || familyRecord.Family.Validate() != nil || len(familyRecord.Family.SlotSpecs) != 3 {
+				return nil
+			}
+			boundFamily, err := construction.BindFrame(familyRecord, frame)
+			if err != nil {
+				return nil
+			}
+			compiledPackage, exists := packagesByFamily[alternative.FamilyID.String()]
+			if !exists || compiledPackage.Package.Family.ID != familyRecord.Family.ID || compiledPackage.Index == nil {
+				return nil
+			}
+			compiledVariant, exists := compiledPackage.Index.ByID(alternative.VariantID)
+			if !exists || compiledVariant.FamilyID != alternative.FamilyID || compiledVariant.Variant.DirectionPolicy == construction.DirectionRealize {
+				return nil
+			}
+			if _, err := construction.ValidateVariantForFrame(compiledVariant.Variant, boundFamily.Family, frame); err != nil {
+				return nil
+			}
+			bindingCount := 0
+			for _, binding := range registry.BindingsByFamilyID(alternative.FamilyID) {
+				if binding.Approved && binding.SenseID == senseID && binding.ValencyFrameID == frameID && binding.FamilyID == alternative.FamilyID && binding.VariantID.String() == alternative.VariantID.String() {
+					bindingCount++
+				}
+			}
+			if bindingCount != 1 {
+				return nil
+			}
+			transferBindings := lexiconIndex.TransferBindings(senseID)
+			if len(transferBindings) != 1 {
+				return nil
+			}
+			coreConcept, exists := ontology.Lookup(transferBindings[0].CoreRef)
+			if !exists || coreConcept.Kind != core.KindRelation {
+				return nil
+			}
+			if len(alternative.Slots) != len(boundFamily.Family.SlotSpecs) {
+				return nil
+			}
+			slots := make(map[string]parser.SlotBinding, len(alternative.Slots))
+			for _, slot := range alternative.Slots {
+				if _, duplicate := slots[slot.SlotID]; duplicate {
+					return nil
+				}
+				slots[slot.SlotID] = slot
+			}
+			predicateCount := 0
+			var predicate parser.PhraseCandidate
+			roleSlotCount := make(map[meaning.Role]int, len(frame.SemanticRoles))
+			for _, spec := range boundFamily.Family.SlotSpecs {
+				slot, exists := slots[spec.ID]
+				if !exists || spec.Optionality != construction.SlotRequired || spec.Cardinality.Minimum != 1 || spec.Cardinality.Maximum != 1 ||
+					len(slot.CandidateIDs) != 1 || slot.WHGap != nil || len(slot.CandidateIDs[0]) == 0 {
+					return nil
+				}
+				phrase, exists := byCandidate[slot.CandidateIDs[0]]
+				if !exists || phrase.Category != spec.Category {
+					return nil
+				}
+				if slot.Role != "" {
+					role := slot.Role
+					argument, exists := argumentsByRole[role]
+					if !exists || spec.Category != construction.CategoryNP || spec.ModifierBinding != nil ||
+						(spec.ArgumentBinding != nil && spec.ArgumentBinding.SemanticRole != role) ||
+						spec.Case != argument.Case || spec.Adposition != argument.Adposition {
+						return nil
+					}
+					roleSlotCount[role]++
+					continue
+				}
+				if spec.ArgumentBinding != nil || spec.Category != construction.CategoryVP || spec.ModifierBinding != nil || phrase.Category != construction.CategoryVP || !englishPhraseHasSense(phrase.SenseIDs, senseID) {
+					return nil
+				}
+				predicateCount++
+				predicate = phrase
+			}
+			if predicateCount != 1 || len(roleSlotCount) != 2 || !englishRelationPresentFinite(predicate.Features) {
+				return nil
+			}
+			for _, role := range frame.SemanticRoles {
+				if roleSlotCount[role] != 1 {
+					return nil
+				}
+			}
+			result[senseID] = []map[features.FeatureID]features.FeatureValueID{
+				{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "singular"},
+				{"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third", "verb_number": "plural"},
+			}
+		}
+	}
+	if clauseCount != 1 || len(result) == 0 {
+		return nil
+	}
+	return result
+}
+
+func englishRelationPresentFinite(actual map[features.FeatureID]features.FeatureValueID) bool {
+	for key, expected := range map[features.FeatureID]features.FeatureValueID{
+		"verb_form": "finite", "tense": "present", "mood": "indicative", "voice": "active", "person": "third",
+	} {
+		if actual[key] != expected {
+			return false
+		}
+	}
+	return actual["verb_number"] == "singular" || actual["verb_number"] == "plural"
+}
+
+func englishPhraseHasSense(senses []ids.SenseID, wanted ids.SenseID) bool {
+	for _, sense := range senses {
+		if sense == wanted {
+			return true
+		}
+	}
+	return false
+}
+
+func cloneEnglishSupportedSenses(source map[ids.SenseID]bool) map[ids.SenseID]bool {
+	cloned := make(map[ids.SenseID]bool, len(source))
+	for sense, supported := range source {
+		cloned[sense] = supported
+	}
+	return cloned
 }
 
 func englishTransitiveFrameRoles(family construction.ConstructionFamily, frame valency.ValencyFrame) (meaning.Role, meaning.Role, bool) {

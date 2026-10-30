@@ -555,6 +555,7 @@ func init() {
 		englishEatingPastBindingDeclarations(), englishBarePluralBindingDeclarations(),
 		englishManipulationBindingDeclarations(), englishAffectiveBindingDeclarations(),
 		englishWritingMessageBindingDeclarations(),
+		englishBelongingBindingDeclarations(),
 		englishWritingMessagePastBindingDeclarations(),
 		englishWritingMessageNegativeBindingDeclarations(), englishAffectivePastBindingDeclarations(),
 		englishOpeningNegativeBindingDeclarations(),
@@ -568,6 +569,18 @@ func init() {
 	} {
 		englishConstructionBindingDeclarations = append(englishConstructionBindingDeclarations, declarations...)
 	}
+}
+
+func englishBelongingBindingDeclarations() []constructionBindingDeclaration {
+	variants := []string{"svo", "svo.indefinite_target", "svo.indefinite_target_an", "svo.indefinite_subject", "svo.indefinite_subject_an", "svo.indefinite_subject_target", "svo.this_item"}
+	bindings := make([]constructionBindingDeclaration, 0, len(variants))
+	for _, variant := range variants {
+		bindings = append(bindings, constructionBindingDeclaration{
+			sense: "en.belong.association", frame: "en.belong.association.to_oblique",
+			family: "en.to_oblique", variant: "en.to_oblique." + variant,
+		})
+	}
+	return bindings
 }
 
 func englishSneezeCoughNegativeBindingDeclarations() []constructionBindingDeclaration {
@@ -1284,6 +1297,10 @@ var englishFrames = []frameDeclaration{
 		{ID: "target", Role: "recipient", Required: true, GrammaticalFunction: "oblique", Adposition: "to"},
 		{ID: "object", Role: "message", Required: false, GrammaticalFunction: "object"},
 	}},
+	{"en.belong.association.to_oblique", "en.belong.association", "en.to_oblique", []meaning.Role{"item", "associate"}, []valency.ArgumentSlot{
+		{ID: "subject", Role: "item", Required: true, GrammaticalFunction: "subject"},
+		{ID: "target", Role: "associate", Required: true, GrammaticalFunction: "oblique", Adposition: "to"},
+	}},
 	{"en.writing_message.full", "en.writing_message.event", "en.give.transfer", []meaning.Role{"writer", "message", "recipient"}, []valency.ArgumentSlot{
 		{ID: "subject", Role: "writer", Required: true, GrammaticalFunction: "subject"},
 		{ID: "theme", Role: "message", Required: true, GrammaticalFunction: "object"},
@@ -1958,6 +1975,9 @@ func englishUsingTargetBindings() []constructionBindingDeclaration {
 }
 
 func englishConstructionBindingProvenance(item constructionBindingDeclaration) provenance.SourceRef {
+	if item.sense == "en.belong.association" {
+		return englishBelongingLexicalSource
+	}
 	if item.family == "en.attribution_negative" {
 		return englishNegativeAttributionConstructionSource
 	}

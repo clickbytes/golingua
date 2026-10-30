@@ -40,6 +40,7 @@ var polishEntries = []lexicalEntry{
 	{"pl.dac.v", "dać", "verb", []lexicalMeaning{{"pl.dac.transfer", "initiate transfer to a recipient", "giving"}}},
 	{"pl.dawac.v", "dawać", "verb", []lexicalMeaning{{"pl.dawac.transfer", "Transfer an item, right, or opportunity to another participant, typically without specifying completion of a single transfer.", "giving"}}},
 	{"pl.dostac.v", "dostać", "verb", []lexicalMeaning{{"pl.dostac.receive", "become recipient of a theme", "receiving"}, {"pl.dostac.receive_message", "Obtaining a message delivered from another participant.", "receiving_message"}}},
+	{"pl.nalezec.v", "należeć", "verb", []lexicalMeaning{{"pl.nalezec.belonging", "be associated with or belong to an item without asserting ownership", "belonging_association"}}},
 }
 
 var polishCountNounLexemes = map[string]struct{}{
@@ -112,6 +113,13 @@ var polishHaveLexicalSource = provenance.SourceRef{
 	ID: "golingua-issue-476-have-core", URI: "https://github.com/clickbytes/golingua/issues/476#issuecomment-6526225671",
 	Version: "2026-10-30", License: "internal", Author: "Codex by owner delegation",
 }
+
+var polishBelongingLexicalSource = provenance.SourceRef{
+	ID: "golingua-pl-belonging-476", URI: "https://github.com/clickbytes/golingua/issues/476#issuecomment-6528414953",
+	Version: "2026-10-30", License: "internal", Author: "Codex by owner delegation",
+}
+
+var polishApprovedBelongingSenses = map[string]struct{}{"pl.nalezec.belonging": {}}
 
 var polishApprovedHaveSenses = map[string]struct{}{"pl.miec.possession": {}}
 
@@ -618,6 +626,7 @@ var polishApprovedPendingAuditSenses = map[string]struct{}{
 }
 
 var polishFrameBySense = map[string]lexicon.ValencyID{
+	"pl.nalezec.belonging":     "pl.nalezec.belonging.to_oblique",
 	"pl.rozmawiac.converse":    "pl.rozmawiac.converse.action",
 	"pl.byc.class_membership":  "pl.byc.class_membership.frame",
 	"pl.czarny.black":          "pl.czarny.black.frame",
@@ -657,6 +666,7 @@ var polishAdditionalFramesBySense = map[string][]lexicon.ValencyID{
 }
 
 var polishParadigmByLexeme = map[string]string{
+	"pl.nalezec.v":         "pl_verb_nalezec_present_3sg_3pl",
 	"pl.miec.v":            "pl_verb_miec_personal",
 	"pl.rozmawiac.v":       "pl_verb_rozmawiac_present_3sg_3pl",
 	"pl.dac.v":             "pl_verb_dac_past_3sg_masculine",
@@ -879,6 +889,11 @@ func LexicalDocument() (lexicon.Document, error) {
 					binding.Mapping = lexicon.MappingEquivalent
 					binding.Status = lexicon.BindingApproved
 					binding.Provenance = polishHaveLexicalSource
+				}
+				if _, approved := polishApprovedBelongingSenses[senseID.Symbol().Name]; approved {
+					binding.Mapping = lexicon.MappingEquivalent
+					binding.Status = lexicon.BindingApproved
+					binding.Provenance = polishBelongingLexicalSource
 				}
 				if _, approved := polishApprovedLexicalBatch2Senses[senseID.Symbol().Name]; approved {
 					binding.Mapping = lexicon.MappingEquivalent

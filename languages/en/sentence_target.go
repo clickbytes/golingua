@@ -1179,6 +1179,10 @@ func (builder englishSentencePlanAnnotations) Annotations(_ context.Context, sou
 			continue
 		}
 		determiner := englishDeterminerFeature(article)
+		anchors := englishTargetDeicticAnchors(source, referent.ID)
+		if len(anchors) == 1 && anchors["proximal"] && (article == "this" || article == "these") {
+			continue
+		}
 		if participant.Role == "experiencer" && (selected.Family.Family.ID.String() == "construction:en.attributed_seeing" || selected.Family.Family.ID.String() == "construction:en.attributed_seeing_both") {
 			anchors := englishAttributedSeeingSubjectAnchors(source, referent.ID)
 			if len(anchors) != 0 {
@@ -2136,6 +2140,154 @@ func selectedDoorActionObjectReferent(source semantic.MeaningCandidate, eventID 
 	return ""
 }
 
+func englishVariantHasDeterminer(candidate realizer.TargetCandidate, determiner string) bool {
+	for _, token := range candidate.CompiledVariant.Variant.Sequence {
+		if token.Kind == construction.TokenTerminal && token.Terminal == determiner {
+			return true
+		}
+	}
+	return false
+}
+
+func englishSelectedRelationMatches(candidate realizer.TargetCandidate, state meaning.Node) bool {
+	if state.Kind != meaning.KindState || !state.RelationPredicate || state.TemporalFrame != "" ||
+		!candidate.TransferBinding.TransferAuthorized() || candidate.TransferBinding.CoreRef.String() != string(state.Concept) ||
+		candidate.Frame.Validate() != nil || candidate.Frame.SenseID != candidate.Sense.ID ||
+		candidate.ConstructionBinding.SenseID != candidate.Sense.ID || candidate.ConstructionBinding.ValencyFrameID != candidate.Frame.ID ||
+		candidate.ConstructionBinding.FamilyID != candidate.Family.Family.ID || !candidate.ConstructionBinding.Approved ||
+		candidate.CompiledVariant.FamilyID != candidate.Family.Family.ID || candidate.CompiledVariant.Variant.FamilyID != candidate.Family.Family.ID ||
+		candidate.CompiledVariant.Variant.ID.String() != candidate.ConstructionBinding.VariantID.String() ||
+		candidate.CompiledVariant.Variant.DirectionPolicy == construction.DirectionAnalyze ||
+		candidate.ConstructionPlan.SenseID != candidate.Sense.ID || candidate.ConstructionPlan.ValencyFrameID != candidate.Frame.ID ||
+		candidate.ConstructionPlan.InputFamilyID != candidate.Family.Family.ID || candidate.ConstructionPlan.OutputFamilyID != candidate.Family.Family.ID {
+		return false
+	}
+	compiled, err := construction.ValidateVariantForFrame(candidate.CompiledVariant.Variant, candidate.Family.Family, candidate.Frame)
+	if err != nil || compiled.FamilyID != candidate.CompiledVariant.FamilyID || compiled.Variant.ID != candidate.CompiledVariant.Variant.ID ||
+		compiled.PlanID != candidate.CompiledVariant.PlanID || candidate.Family.Family.Validate() != nil || len(candidate.Frame.SemanticRoles) != 2 ||
+		len(candidate.Frame.Arguments) != 2 || len(candidate.Frame.SurfaceOmittedRoles) != 0 || len(state.Participants) != 2 {
+		return false
+	}
+	roleSet := make(map[meaning.Role]bool, len(candidate.Frame.SemanticRoles))
+	for _, role := range candidate.Frame.SemanticRoles {
+		if role == "" || roleSet[role] {
+			return false
+		}
+		roleSet[role] = true
+	}
+	participants := make(map[meaning.Role]meaning.NodeID, len(state.Participants))
+	for _, participant := range state.Participants {
+		if !roleSet[participant.Role] || participant.Target == "" {
+			return false
+		}
+		if _, duplicate := participants[participant.Role]; duplicate {
+			return false
+		}
+		participants[participant.Role] = participant.Target
+	}
+	arguments := make(map[meaning.Role]bool, len(candidate.Frame.Arguments))
+	for _, argument := range candidate.Frame.Arguments {
+		if !argument.Required || !roleSet[argument.Role] || arguments[argument.Role] {
+			return false
+		}
+		arguments[argument.Role] = true
+	}
+	return len(participants) == len(roleSet) && len(arguments) == len(roleSet)
+}
+
+func englishSelectedRelationDeicticRole(candidate realizer.TargetCandidate, state meaning.Node) (meaning.Role, meaning.NodeID, bool) {
+	var selectedRole meaning.Role
+	var selectedReferent meaning.NodeID
+	for _, role := range candidate.Frame.SemanticRoles {
+		determiner, known := englishDeterminerForRole(candidate, role)
+		if !known || determiner != "this" {
+			continue
+		}
+		for _, participant := range state.Participants {
+			if participant.Role != role {
+				continue
+			}
+			if selectedRole != "" || participant.Target == "" {
+				return "", "", false
+			}
+			selectedRole, selectedReferent = role, participant.Target
+		}
+	}
+	return selectedRole, selectedReferent, selectedRole != "" && selectedReferent != ""
+}
+
+func englishRelationTargetDeicticallyCompatible(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, state meaning.Node) bool {
+	if !englishSelectedRelationMatches(candidate, state) {
+		return false
+	}
+	for _, participant := range state.Participants {
+		anchors := englishTargetDeicticAnchors(source, participant.Target)
+		if len(anchors) == 0 {
+			// Keep the pre-existing unanchored behavior for this role: a
+			// demonstrative determiner requires explicit anchor evidence. If
+			// malformed or contradictory evidence was supplied, do not guess.
+			determiner, known := englishDeterminerForRole(candidate, participant.Role)
+			if englishRelationHasAnchorMention(source, participant.Target) || !known || englishRelationDemonstrativeDeterminer(determiner) {
+				return false
+			}
+			continue
+		}
+		if len(anchors) != 1 {
+			return false
+		}
+		determiner, known := englishDeterminerForRole(candidate, participant.Role)
+		if !known {
+			return false
+		}
+		anchor := ""
+		switch {
+		case anchors["proximal"]:
+			anchor = "proximal"
+		case anchors["distal"]:
+			anchor = "distal"
+		case anchors["demonstrative"]:
+			anchor = "demonstrative"
+		default:
+			return false
+		}
+		switch anchor {
+		case "proximal":
+			if determiner != "this" && determiner != "these" {
+				return false
+			}
+		case "distal":
+			if determiner != "that" && determiner != "those" {
+				return false
+			}
+		case "demonstrative":
+			if determiner != "this" && determiner != "that" && determiner != "these" && determiner != "those" {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+func englishRelationDemonstrativeDeterminer(determiner string) bool {
+	switch determiner {
+	case "this", "that", "these", "those":
+		return true
+	default:
+		return false
+	}
+}
+
+func englishRelationHasAnchorMention(source semantic.MeaningCandidate, nodeID meaning.NodeID) bool {
+	for _, paired := range source.Contexts {
+		for _, mention := range paired.Context.Mentions {
+			if mention.NodeID == nodeID && mention.Anchor != nil {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (policy englishDeterminerCandidatePolicy) KeepTargetCandidate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) bool {
 	// The kinship reading of child is licensed for English source analysis, but
 	// offspring remains the canonical English target lexeme for child_of_person.
@@ -2156,6 +2308,22 @@ func (policy englishDeterminerCandidatePolicy) KeepTargetCandidate(source semant
 		attributedFamily     = "construction:en.attributed_seeing"
 	)
 	familyID := candidate.Family.Family.ID.String()
+	if candidate.Kind == meaning.KindState && familyID == "construction:en.to_oblique" {
+		state, exists := englishMeaningNode(source, candidate.NodeID)
+		if !exists || !englishSelectedRelationMatches(candidate, state) {
+			return false
+		}
+		hasAnchorEvidence := false
+		for _, participant := range state.Participants {
+			hasAnchorEvidence = hasAnchorEvidence || englishRelationHasAnchorMention(source, participant.Target)
+		}
+		if hasAnchorEvidence {
+			return englishRelationTargetDeicticallyCompatible(source, candidate, state)
+		}
+		if englishVariantHasDeterminer(candidate, "this") {
+			return false
+		}
+	}
 	if (familyID == "construction:en.give.transfer" || familyID == "construction:en.give.transfer.past") && candidate.Kind == meaning.KindEvent {
 		return englishGivingTargetCandidateAllowed(source, candidate, candidates)
 	}
@@ -3505,6 +3673,7 @@ var englishDeterminerVariants = map[string]englishDeterminers{
 	"construction:en.to_oblique.svo.indefinite_subject":                                                   {subject: "a", target: "the"},
 	"construction:en.to_oblique.svo.indefinite_subject_an":                                                {subject: "an", target: "the"},
 	"construction:en.to_oblique.svo.indefinite_subject_target":                                            {subject: "a", target: "a"},
+	"construction:en.to_oblique.svo.this_item":                                                            {subject: "this", target: "the"},
 	"construction:en.to_oblique.svo.indefinite_subject_a_target_an":                                       {subject: "a", target: "an"},
 	"construction:en.to_oblique.svo.indefinite_subject_an_target_a":                                       {subject: "an", target: "a"},
 	"construction:en.to_oblique.svo.indefinite_subject_an_target_an":                                      {subject: "an", target: "an"},

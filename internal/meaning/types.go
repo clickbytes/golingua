@@ -46,6 +46,9 @@ func nodeFieldsForKind(kind NodeKind) map[string]bool {
 	switch kind {
 	case KindEvent, KindState:
 		specific = []string{"concept", "participants", "temporal_frame"}
+		if kind == KindState {
+			specific = append(specific, "relation_predicate")
+		}
 	case KindReferent:
 		specific = []string{"concept", "multiplicity"}
 	case KindQuestion:
@@ -136,18 +139,19 @@ type Participant struct {
 // Operator for scope; Modality for modality; Act and Content for discourse.
 // ValidateMeaning enforces the union at runtime.
 type Node struct {
-	ID            NodeID        `json:"id"`
-	Kind          NodeKind      `json:"kind"`
-	Concept       ConceptRef    `json:"concept,omitempty"`
-	Participants  []Participant `json:"participants,omitempty"`
-	TemporalFrame TemporalFrame `json:"temporal_frame,omitempty"`
-	Multiplicity  Multiplicity  `json:"multiplicity,omitempty"`
-	Target        NodeID        `json:"target,omitempty"`
-	Operator      Operator      `json:"operator,omitempty"`
-	Modality      Modality      `json:"modality,omitempty"`
-	Quantifier    *Quantifier   `json:"quantifier,omitempty"`
-	Act           DialogueAct   `json:"act,omitempty"`
-	Content       []NodeID      `json:"content,omitempty"`
+	ID                NodeID        `json:"id"`
+	Kind              NodeKind      `json:"kind"`
+	Concept           ConceptRef    `json:"concept,omitempty"`
+	Participants      []Participant `json:"participants,omitempty"`
+	TemporalFrame     TemporalFrame `json:"temporal_frame,omitempty"`
+	RelationPredicate bool          `json:"relation_predicate,omitempty"`
+	Multiplicity      Multiplicity  `json:"multiplicity,omitempty"`
+	Target            NodeID        `json:"target,omitempty"`
+	Operator          Operator      `json:"operator,omitempty"`
+	Modality          Modality      `json:"modality,omitempty"`
+	Quantifier        *Quantifier   `json:"quantifier,omitempty"`
+	Act               DialogueAct   `json:"act,omitempty"`
+	Content           []NodeID      `json:"content,omitempty"`
 }
 
 // Meaning is one versioned semantic interpretation. Roots are entry points;

@@ -121,6 +121,7 @@ type DSEResidual struct {
 type DSECandidate struct {
 	ID                     string                     `json:"id"`
 	Status                 status.OutcomeKind         `json:"status"`
+	PredicateKind          string                     `json:"predicate_kind,omitempty"`
 	Source                 DSESourceRecord            `json:"source"`
 	HeadEventReferenceID   string                     `json:"head_event_reference_id,omitempty"`
 	ClauseSources          []DSEClauseSource          `json:"clause_sources,omitempty"`

@@ -47,6 +47,7 @@ var englishEntries = []lexicalEntry{
 	{"en.learn.v", "learn", "verb", []lexicalMeaning{{"en.learn.knowledge", "acquire knowledge or skill", "learning"}}},
 	{"en.sleep.v", "sleep", "verb", []lexicalMeaning{{"en.sleep.physiological", "undergo physiological sleep", "sleeping"}}},
 	{"en.go.v", "go", "verb", []lexicalMeaning{{"en.go.spatial_movement", "move from one spatial position to another without specifying a particular path or destination", "movement"}}},
+	{"en.belong.v", "belong", "verb", []lexicalMeaning{{"en.belong.association", "be associated with or belong to an item without asserting ownership", "belonging_association"}}},
 }
 
 var englishLexicalSource = provenance.SourceRef{
@@ -185,6 +186,7 @@ var englishPendingAuditSource = provenance.SourceRef{
 	Version: "2026-10-23-pending-audit", License: "unknown", Author: "codex-owner-delegated",
 }
 var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
+	"en.belong.association":    englishBelongingLexicalSource,
 	"en.have.possession":       englishHaveLexicalSource,
 	"en.conversing.event":      englishConversingLexicalBindingSource,
 	"en.newspaper.direct":      englishIssue434LexicalBindingSource,
@@ -1208,7 +1210,13 @@ var englishReviewedEquivalentSenseSources = map[string]provenance.SourceRef{
 	"en.currency_unit.direct":                      englishLexicalReviewBatch20Source,
 }
 
+var englishBelongingLexicalSource = provenance.SourceRef{
+	ID: "golingua-en-belonging-476", URI: "https://github.com/clickbytes/golingua/issues/476#issuecomment-6528414953",
+	Version: "2026-10-30", License: "internal", Author: "Codex by owner delegation",
+}
+
 var englishFrameBySense = map[string]lexicon.ValencyID{
+	"en.belong.association":             "en.belong.association.to_oblique",
 	"en.conversing.event":               "en.conversing.with",
 	"en.helping.event":                  "en.helping.transitive",
 	"en.thanking.event":                 "en.thanking.transitive",
@@ -1251,6 +1259,7 @@ var englishAdditionalFramesBySense = map[string][]lexicon.ValencyID{
 }
 
 var englishParadigmByLexeme = map[string]string{
+	"en.belong.v":                  "en_verb_finite_principal_parts",
 	"en.have.v":                    "en_verb_finite_principal_parts",
 	"en.conversing.v":              "en_verb_finite_regular",
 	"en.be.v":                      "en_identification_be_present_3sg",

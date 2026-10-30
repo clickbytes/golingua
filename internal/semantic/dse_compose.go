@@ -659,8 +659,12 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 		}
 		referenceByCandidate[selected.candidate.ID] = refID
 	}
-	headRef, ok := sourcePortReference(input.ReferenceContext, mapping.HeadPortID)
-	if input.RequireCandidateHeadReference {
+	relationPredicate := mapping.PredicateKind == "relation"
+	headRef, ok := "", false
+	if !relationPredicate {
+		headRef, ok = sourcePortReference(input.ReferenceContext, mapping.HeadPortID)
+	}
+	if input.RequireCandidateHeadReference && !relationPredicate {
 		resolvedHead, resolved, anchoredHead, _, resolveErr := resolveDSEReference(vp.ID, "", false, refsByCandidate, mentionRefs)
 		if resolveErr != nil {
 			return DSECandidate{}, false, resolveErr
@@ -673,20 +677,29 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 		}
 		headRef, ok = resolvedHead, true
 	}
-	if !ok {
+	if !relationPredicate && !ok {
 		return incompleteDSE(vp, alternative, "MISSING_HEAD_EVENT_REFERENCE", "caller must explicitly bind the mapped Event head port")
 	}
-	if sourceEvidence, exists := refsByCandidate[vp.ID]; exists {
-		if sourceEvidence.ReferentID != "" && string(sourceEvidence.ReferentID) != headRef {
-			return DSECandidate{}, false, dseError(status.OutcomeInvalid, "HEAD_REFERENCE_EVIDENCE_CONFLICT", "reference_context.port_references", "caller Event binding conflicts with resolved source evidence")
+	if !relationPredicate {
+		if sourceEvidence, exists := refsByCandidate[vp.ID]; exists {
+			if sourceEvidence.ReferentID != "" && string(sourceEvidence.ReferentID) != headRef {
+				return DSECandidate{}, false, dseError(status.OutcomeInvalid, "HEAD_REFERENCE_EVIDENCE_CONFLICT", "reference_context.port_references", "caller Event binding conflicts with resolved source evidence")
+			}
 		}
 	}
-	request := language.SemanticBindingRequest{SenseID: alternative.Permission.SenseID, FrameID: alternative.Permission.FrameID, BindingIndex: &selectedIndex, ContextID: input.ReferenceContext.ContextID, References: cloneAlgebraDeclarations(input.ReferenceContext.References), RequestContext: cloneDSEContext(input.ReferenceContext.RequestContext), RoleReferences: roleRefs, PortReferences: []language.SemanticPortReference{{PortID: mapping.HeadPortID, ReferenceID: headRef}}}
+	request := language.SemanticBindingRequest{SenseID: alternative.Permission.SenseID, FrameID: alternative.Permission.FrameID, BindingIndex: &selectedIndex, ContextID: input.ReferenceContext.ContextID, References: cloneAlgebraDeclarations(input.ReferenceContext.References), RequestContext: cloneDSEContext(input.ReferenceContext.RequestContext), RoleReferences: roleRefs}
+	if !relationPredicate {
+		request.PortReferences = []language.SemanticPortReference{{PortID: mapping.HeadPortID, ReferenceID: headRef}}
+	}
 	var instantiated language.SemanticInstantiationResult
 	var predicate *algebra.Term
 	var candidate DSECandidate
 	candidate = dseCandidateStart(vp, alternative)
-	candidate.HeadEventReferenceID = headRef
+	if relationPredicate {
+		candidate.PredicateKind = "relation"
+	} else {
+		candidate.HeadEventReferenceID = headRef
+	}
 	for _, selected := range roles {
 		if selected.gap != nil {
 			gap := DSEWHGapEvidence{SlotID: selected.gap.SlotID, Role: string(selected.gap.Role), ScopeNodeID: string(selected.gap.ScopeNodeID), Span: selected.gap.Span}
@@ -698,6 +711,9 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 	}
 	instantiatedStatus := status.OutcomeOK
 	if answer != nil {
+		if relationPredicate {
+			return incompleteDSE(vp, alternative, "RELATION_QUESTION_UNSUPPORTED", "relation predicates in this selected source profile do not license WH questions")
+		}
 		predicate, err = buildDSEQuestionAtom(input.Selected, target, string(alternative.Permission.FrameID), mapping.HeadPortID, roleReferenceByRole, headRef, answerRole, answer.ID)
 		if err != nil {
 			return incompleteDSE(vp, alternative, "QUESTION_TARGET_REFUSED", boundedDSEMessage(err.Error()))
@@ -768,6 +784,19 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 		requestContext.Conditions = []algebra.ContextCondition{}
 	}
 	conditionCoverage := []DSEConditionCoverage{}
+	for _, selected := range roles {
+		if selected.gap != nil {
+			continue
+		}
+		evidence, exists := refsByCandidate[selected.candidate.ID]
+		if !exists || evidence.Anchor == nil {
+			continue
+		}
+		condition := algebra.ContextCondition{Kind: algebra.ContextPresupposition, Code: "deictic_anchor", TargetReferentIDs: []string{roleReferenceByRole[selected.role]}, Detail: evidence.Anchor.Value}
+		condition.ID = dseConditionID(condition)
+		conditionID := addDSECondition(requestContext, condition)
+		conditionCoverage = append(conditionCoverage, DSEConditionCoverage{Kind: language.SourceConditionKind(condition.Kind), Code: condition.Code, ConditionID: conditionID, TargetReferenceIDs: append([]string{}, condition.TargetReferentIDs...)})
+	}
 	roleNPConditions, roleNPChecks, roleNPResiduals, err := instantiateRolePredicates(input, alternative, roles, roleReferenceByRole, request, requestContext)
 	if err != nil {
 		return DSECandidate{}, false, err
@@ -778,7 +807,11 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 		conditionID := addDSECondition(requestContext, cond)
 		conditionCoverage = append(conditionCoverage, DSEConditionCoverage{Kind: language.SourceConditionKind(cond.Kind), Code: cond.Code, ConditionID: conditionID, TargetReferenceIDs: append([]string{}, cond.TargetReferentIDs...)})
 	}
-	featureConditions, coverage, featureResiduals, err := instantiateFeatureConditions(input, alternative, vp, roles, target, mapping, roleReferenceByRole, headRef, request, requestContext)
+	featureHeadRef := headRef
+	if relationPredicate {
+		featureHeadRef = ""
+	}
+	featureConditions, coverage, featureResiduals, err := instantiateFeatureConditions(input, alternative, vp, roles, target, mapping, roleReferenceByRole, featureHeadRef, request, requestContext)
 	if err != nil {
 		return DSECandidate{}, false, err
 	}
@@ -810,8 +843,10 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 			return DSECandidate{}, false, err
 		}
 	}
-	if err := mergeDSECandidateAttributes(&final, vp, headRef, attrs); err != nil {
-		return DSECandidate{}, false, err
+	if !relationPredicate {
+		if err := mergeDSECandidateAttributes(&final, vp, headRef, attrs); err != nil {
+			return DSECandidate{}, false, err
+		}
 	}
 	if err := algebra.CheckDeclarations(algebra.Document{SchemaVersion: final.SchemaVersion, Sorts: final.Sorts, Signatures: final.Signatures, References: final.References, Limits: final.Limits, RequestContext: final.RequestContext}); err != nil {
 		return DSECandidate{}, false, err

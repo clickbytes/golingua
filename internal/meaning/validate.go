@@ -201,7 +201,15 @@ func ValidateMeaning(meaning Meaning, ontology *core.ConceptGraph, budget Budget
 				return invalid("CONCEPT_KIND_MISMATCH", "nodes."+string(node.ID)+".concept", "event node requires an event or abstract concept")
 			}
 		case KindState:
-			if concept.Kind != core.KindProperty && concept.Kind != core.KindAbstract {
+			if node.RelationPredicate {
+				roles := map[Role]bool{}
+				for _, participant := range node.Participants {
+					roles[participant.Role] = true
+				}
+				if concept.Kind != core.KindRelation || node.Concept != "concept:belonging_association" || node.TemporalFrame != "" || len(node.Participants) != 2 || !roles["associate"] || !roles["item"] {
+					return invalid("INVALID_RELATION_STATE", "nodes."+string(node.ID), "explicit belonging relation state requires its relation concept, exact associate/item roles, and no event time")
+				}
+			} else if concept.Kind != core.KindProperty && concept.Kind != core.KindAbstract {
 				return invalid("CONCEPT_KIND_MISMATCH", "nodes."+string(node.ID)+".concept", "state node requires a property or abstract concept")
 			}
 		case KindReferent:

@@ -24,13 +24,14 @@ const (
 // It retains the source path, temporal frame and direct participant referents
 // that licensed projection; it is not world truth.
 type Assertion struct {
-	NodeID        NodeID        `json:"node_id"`
-	Kind          NodeKind      `json:"kind"`
-	Concept       ConceptRef    `json:"concept"`
-	TemporalFrame TemporalFrame `json:"temporal_frame,omitempty"`
-	Participants  []Participant `json:"participants,omitempty"`
-	Referents     []Node        `json:"referents,omitempty"`
-	SourcePath    []NodeID      `json:"source_path"`
+	NodeID            NodeID        `json:"node_id"`
+	Kind              NodeKind      `json:"kind"`
+	Concept           ConceptRef    `json:"concept"`
+	TemporalFrame     TemporalFrame `json:"temporal_frame,omitempty"`
+	RelationPredicate bool          `json:"relation_predicate,omitempty"`
+	Participants      []Participant `json:"participants,omitempty"`
+	Referents         []Node        `json:"referents,omitempty"`
+	SourcePath        []NodeID      `json:"source_path"`
 }
 
 // Unresolved records a semantic scope that cannot be projected as a positive
@@ -151,8 +152,8 @@ func ProjectAsserted(meaning Meaning, budget Budget) (AssertedProjection, error)
 			sort.Slice(referents, func(i, j int) bool { return referents[i].ID < referents[j].ID })
 			projection.Asserted = append(projection.Asserted, Assertion{
 				NodeID: node.ID, Kind: node.Kind, Concept: node.Concept,
-				TemporalFrame: node.TemporalFrame,
-				Participants:  participants, Referents: referents,
+				TemporalFrame: node.TemporalFrame, RelationPredicate: node.RelationPredicate,
+				Participants: participants, Referents: referents,
 				SourcePath: append([]NodeID(nil), frame.path...),
 			})
 		case KindReferent:

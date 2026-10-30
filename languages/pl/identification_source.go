@@ -244,6 +244,8 @@ func addPolishIdentificationReferences(evidence runtime.CompositionEvidence, lat
 				} else if strings.HasPrefix(variant, "construction:pl.attribution_plural.tam") {
 					anchorValue = "distal"
 				}
+			case sense == "pl.nalezec.belonging" && frame == "pl.nalezec.belonging.to_oblique" && family == "construction:pl.to_oblique" && variant == "construction:pl.to_oblique.svo.demonstrative_ten":
+				slotID, anchorValue = "subject", "proximal"
 			case sense == "pl.slyszec.auditory" && frame == "pl.slyszec.auditory.attributed_subject_plural" && family == "construction:pl.attributed_seeing_plural":
 				switch variant {
 				case "construction:pl.attributed_seeing_plural.svo.masculine_personal.ci", "construction:pl.attributed_seeing_plural.svo.non_masculine_personal.te":

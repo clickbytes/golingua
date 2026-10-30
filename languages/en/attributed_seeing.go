@@ -442,6 +442,41 @@ func englishAttributedSeeingSubjectAnchors(source semantic.MeaningCandidate, sub
 	return values
 }
 
+// englishTargetDeicticAnchors reads explicit deixis from target-side Meaning
+// contexts. Unlike source-construction evidence used by attributed seeing,
+// these mentions may already be linked to a request-local referent. Validate
+// that link against the exact paired Meaning before using it to choose a
+// target determiner.
+func englishTargetDeicticAnchors(source semantic.MeaningCandidate, nodeID meaning.NodeID) map[string]bool {
+	values := map[string]bool{}
+	if source.Meaning == nil || nodeID == "" || len(source.Contexts) == 0 {
+		return values
+	}
+	for _, paired := range source.Contexts {
+		same, err := meaning.CanonicalEqual(paired.Meaning, *source.Meaning, meaning.DefaultBudget())
+		if err != nil || !same || meaning.ValidateReferences(paired.Meaning, paired.Context, meaning.DefaultBudget()) != nil {
+			return map[string]bool{}
+		}
+		value := ""
+		for _, mention := range paired.Context.Mentions {
+			if mention.NodeID != nodeID || mention.Anchor == nil {
+				continue
+			}
+			if mention.Anchor.Kind != "deixis" ||
+				(mention.Anchor.Value != "proximal" && mention.Anchor.Value != "distal" && mention.Anchor.Value != "demonstrative") ||
+				value != "" {
+				return map[string]bool{}
+			}
+			value = mention.Anchor.Value
+		}
+		if value == "" {
+			return map[string]bool{}
+		}
+		values[value] = true
+	}
+	return values
+}
+
 func englishAttributedSeeingSubjectVariantAllowed(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, shape englishAttributedSeeingGraph, resolver englishNegationResolver) bool {
 	if candidate.Family.Family.ID.String() == "construction:en.attributed_seeing_object_negative" {
 		return shape.scope.ID != "" && shape.subject.Multiplicity == meaning.MultiplicityOne && shape.object.Multiplicity == meaning.MultiplicityOne &&

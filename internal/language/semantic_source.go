@@ -46,6 +46,7 @@ type SourcePredicateMapping struct {
 	SenseID            ids.SenseID              `json:"sense_id"`
 	FrameID            valency.FrameID          `json:"frame_id"`
 	HeadPortID         string                   `json:"head_port_id"`
+	PredicateKind      string                   `json:"predicate_kind,omitempty"`
 	AllowedFamilyIDs   []ids.ConstructionID     `json:"allowed_family_ids"`
 	AllowedVariantIDs  []construction.VariantID `json:"allowed_variant_ids"`
 	ReferenceCondition *SourceCondition         `json:"reference_condition,omitempty"`
@@ -288,7 +289,7 @@ func decodeSourcePredicateMappings(raw []byte, out *[]SourcePredicateMapping) er
 	result := make([]SourcePredicateMapping, 0, len(rows))
 	for i, item := range rows {
 		path := fmt.Sprintf("predicate_mappings[%d]", i)
-		f, e := languageStrictObject(item, path, []string{"sense_id", "frame_id", "head_port_id", "allowed_family_ids", "allowed_variant_ids", "reference_condition"}, []string{"sense_id", "frame_id", "head_port_id", "allowed_family_ids", "allowed_variant_ids"})
+		f, e := languageStrictObject(item, path, []string{"sense_id", "frame_id", "head_port_id", "predicate_kind", "allowed_family_ids", "allowed_variant_ids", "reference_condition"}, []string{"sense_id", "frame_id", "head_port_id", "allowed_family_ids", "allowed_variant_ids"})
 		if e != nil {
 			return e
 		}
@@ -305,8 +306,21 @@ func decodeSourcePredicateMappings(raw []byte, out *[]SourcePredicateMapping) er
 			return invalid("INVALID_SOURCE_PREDICATE", path+".frame_id", "frame_id must be a bounded non-null ID")
 		}
 		row.FrameID = valency.FrameID(frameText)
-		if e = languageStrictValue(f["head_port_id"], &row.HeadPortID); e != nil || !validSemanticPackageText(row.HeadPortID, 256) {
-			return invalid("INVALID_SOURCE_PREDICATE", path+".head_port_id", "head_port_id must be a bounded non-null ID")
+		if e = languageStrictValue(f["head_port_id"], &row.HeadPortID); e != nil {
+			return invalid("INVALID_SOURCE_PREDICATE", path+".head_port_id", "head_port_id must be a non-null string")
+		}
+		row.PredicateKind = "event"
+		if rawKind, present := f["predicate_kind"]; present {
+			if e = languageStrictValue(rawKind, &row.PredicateKind); e != nil || (row.PredicateKind != "event" && row.PredicateKind != "relation") {
+				return invalid("INVALID_SOURCE_PREDICATE_KIND", path+".predicate_kind", "predicate_kind must be event or relation")
+			}
+		}
+		if row.PredicateKind == "relation" {
+			if row.HeadPortID != "" {
+				return invalid("INVALID_SOURCE_PREDICATE", path+".head_port_id", "relation predicates must not declare an Event head port")
+			}
+		} else if !validSemanticPackageText(row.HeadPortID, 256) {
+			return invalid("INVALID_SOURCE_PREDICATE", path+".head_port_id", "event predicates require a bounded non-null Event head port")
 		}
 		var familyTexts, variantTexts []string
 		if e = languageStrictArrayInto(f["allowed_family_ids"], &familyTexts, path+".allowed_family_ids", construction.MaxFamilyItems); e != nil {
@@ -584,9 +598,50 @@ func validateSourcePlanSelection(doc SourcePlanDocument, pack *SemanticLanguageP
 		if !containsSourceFamily(frame.AllowedFamilyIDs, m.AllowedFamilyIDs) {
 			return invalid("SOURCE_FAMILY_NOT_LINKED", path+".allowed_family_ids", "source plan families must be a subset of selected frame permissions")
 		}
-		typ, roleMapped := sourceTargetPortType(chosen.Target, selected, m.HeadPortID, string(m.FrameID))
-		if !typ.ok || roleMapped || typ.typ.Kind != algebra.TypeEvent {
-			return invalid("INVALID_SOURCE_HEAD_PORT", path+".head_port_id", "head port must be an unmapped typed Event port on the selected target")
+		if m.PredicateKind == "relation" {
+			frameRoleSet := map[string]bool{}
+			for _, role := range frame.SemanticRoles {
+				frameRoleSet[string(role)] = true
+			}
+			if m.HeadPortID != "" || chosen.Target.Kind != lexicon.SemanticTargetSymbol || string(chosen.Target.SymbolRef) != "concept:belonging_association" || len(frame.SemanticRoles) != 2 || !frameRoleSet["associate"] || !frameRoleSet["item"] {
+				return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "belonging relation predicates require exactly the associate/item source frame and no Event head")
+			}
+			rolePortIDs := map[string]string{}
+			for _, rolePort := range chosen.Target.RolePorts {
+				if rolePort.FrameID != string(m.FrameID) {
+					continue
+				}
+				if (rolePort.Role != "associate" && rolePort.Role != "item") || rolePort.PortID != rolePort.Role || rolePortIDs[rolePort.Role] != "" {
+					return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "target role ports must map associate and item one-to-one to identically named ports")
+				}
+				rolePortIDs[rolePort.Role] = rolePort.PortID
+			}
+			if len(rolePortIDs) != 2 {
+				return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "target must map both exact relation roles")
+			}
+			var signature *algebra.Signature
+			for signatureIndex := range selected.Signatures {
+				if selected.Signatures[signatureIndex].ID == string(chosen.Target.SymbolRef) {
+					signature = &selected.Signatures[signatureIndex]
+					break
+				}
+			}
+			if signature == nil || len(signature.Ports) != 2 {
+				return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "relation symbol must declare exactly two target ports")
+			}
+			for _, port := range signature.Ports {
+				if (port.Role != "associate" && port.Role != "item") || port.Type.Kind != algebra.TypeEntity || rolePortIDs[port.Role] != port.Role {
+					return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "relation signature must declare only associate and item Entity ports")
+				}
+			}
+		} else {
+			if m.PredicateKind != "" && m.PredicateKind != "event" {
+				return invalid("INVALID_SOURCE_PREDICATE_KIND", path+".predicate_kind", "predicate kind must be event or relation")
+			}
+			typ, roleMapped := sourceTargetPortType(chosen.Target, selected, m.HeadPortID, string(m.FrameID))
+			if !typ.ok || roleMapped || typ.typ.Kind != algebra.TypeEvent {
+				return invalid("INVALID_SOURCE_HEAD_PORT", path+".head_port_id", "head port must be an unmapped typed Event port on the selected target")
+			}
 		}
 	}
 	for i, c := range doc.FeatureConditions {
