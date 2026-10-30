@@ -604,6 +604,7 @@ func englishAffectivePastBindingDeclarations() []constructionBindingDeclaration 
 	for _, item := range []struct{ sense, frame string }{
 		{"en.liking.event", "en.liking.transitive"},
 		{"en.watching.event", "en.watching.transitive"},
+		{"en.writing_document.event", "en.writing_document.transitive"},
 	} {
 		variants := []string{
 			"svo", "svo.indefinite_object", "svo.indefinite_object_an", "svo.indefinite_subject", "svo.indefinite_subject_an",
@@ -1698,6 +1699,14 @@ func CompileValency() (*valency.Index, error) {
 				return nil, fmt.Errorf("English negative writing-message frame family: %w", err)
 			}
 			frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, negativeFamilyID)
+		case "en.writing_document.transitive":
+			for _, family := range []string{"en.transitive_past", "en.transitive_negative"} {
+				familyID, err := ids.NewConstructionID(family)
+				if err != nil {
+					return nil, fmt.Errorf("English writing-document frame family: %w", err)
+				}
+				frame.AllowedFamilyIDs = append(frame.AllowedFamilyIDs, familyID)
+			}
 		case "en.writing_message.full":
 			pastFamilyID, err := ids.NewConstructionID("en.give.transfer.past")
 			if err != nil {
