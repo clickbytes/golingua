@@ -54,6 +54,24 @@
         "language": "pl",
         "lemma": "właściciel",
         "pos": "noun"
+      },
+      {
+        "id": "lexeme:pl.miec.v",
+        "language": "pl",
+        "lemma": "mieć",
+        "pos": "verb"
+      },
+      {
+        "id": "lexeme:pl.kot.n",
+        "language": "pl",
+        "lemma": "kot",
+        "pos": "noun"
+      },
+      {
+        "id": "lexeme:pl.ksiazka.n",
+        "language": "pl",
+        "lemma": "książka",
+        "pos": "noun"
       }
     ],
     "senses": [
@@ -122,6 +140,34 @@
         "valency_ids": [
           "pl.wlasciciel.legal_ownership.nominal"
         ]
+      },
+      {
+        "id": "sense:pl.miec.possession",
+        "lexeme_id": "lexeme:pl.miec.v",
+        "usage": [
+          "be in a state of having an object, without asserting legal title or duration"
+        ],
+        "valency_ids": [
+          "pl.miec.possession.transitive",
+          "pl.miec.possession.personal",
+          "pl.miec.possession.personal.negative"
+        ]
+      },
+      {
+        "id": "sense:pl.kot.animal",
+        "lexeme_id": "lexeme:pl.kot.n",
+        "usage": [
+          "domestic cat"
+        ],
+        "valency_ids": []
+      },
+      {
+        "id": "sense:pl.ksiazka.physical",
+        "lexeme_id": "lexeme:pl.ksiazka.n",
+        "usage": [
+          "physical book object"
+        ],
+        "valency_ids": []
       }
     ],
     "bindings": [
@@ -375,6 +421,122 @@
             }
           ]
         }
+      },
+      {
+        "sense_id": "sense:pl.miec.possession",
+        "mapping_kind": "equivalent",
+        "status": "approved",
+        "provenance": {
+          "id": "golingua-dse-have-476",
+          "uri": "https://github.com/clickbytes/golingua/issues/476",
+          "version": "2026-10-30",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        },
+        "target": {
+          "schema_version": 1,
+          "kind": "symbol",
+          "profile": "positive-facts-v1",
+          "symbol_ref": "concept:possession",
+          "role_ports": [
+            {
+              "frame_id": "pl.miec.possession.transitive",
+              "role": "holder",
+              "port_id": "holder",
+              "type": {
+                "kind": "Entity"
+              }
+            },
+            {
+              "frame_id": "pl.miec.possession.transitive",
+              "role": "object",
+              "port_id": "object",
+              "type": {
+                "kind": "Entity"
+              }
+            },
+            {
+              "frame_id": "pl.miec.possession.personal",
+              "role": "holder",
+              "port_id": "holder",
+              "type": {
+                "kind": "Entity"
+              }
+            },
+            {
+              "frame_id": "pl.miec.possession.personal",
+              "role": "object",
+              "port_id": "object",
+              "type": {
+                "kind": "Entity"
+              }
+            },
+            {
+              "frame_id": "pl.miec.possession.personal.negative",
+              "role": "holder",
+              "port_id": "holder",
+              "type": {
+                "kind": "Entity"
+              }
+            },
+            {
+              "frame_id": "pl.miec.possession.personal.negative",
+              "role": "object",
+              "port_id": "object",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "sense_id": "sense:pl.kot.animal",
+        "mapping_kind": "equivalent",
+        "status": "approved",
+        "provenance": {
+          "id": "dse476-cat-reference",
+          "uri": "https://github.com/clickbytes/golingua/issues/476",
+          "version": "2026-10-30",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        },
+        "target": {
+          "schema_version": 1,
+          "kind": "reference_predicate",
+          "profile": "positive-facts-v1",
+          "symbol_ref": "probe.cat",
+          "role_ports": [],
+          "reference_port": {
+            "port_id": "entity",
+            "type": {
+              "kind": "Entity"
+            }
+          }
+        }
+      },
+      {
+        "sense_id": "sense:pl.ksiazka.physical",
+        "mapping_kind": "equivalent",
+        "status": "approved",
+        "provenance": {
+          "id": "dse476-book-reference",
+          "uri": "https://github.com/clickbytes/golingua/issues/476",
+          "version": "2026-10-30",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        },
+        "target": {
+          "schema_version": 1,
+          "kind": "reference_predicate",
+          "profile": "positive-facts-v1",
+          "symbol_ref": "probe.book",
+          "role_ports": [],
+          "reference_port": {
+            "port_id": "entity",
+            "type": { "kind": "Entity" }
+          }
+        }
       }
     ]
   },
@@ -587,6 +749,108 @@
         "uri": "https://github.com/clickbytes/golingua/issues/476#issuecomment-6531956278",
         "version": "2026-10-30",
         "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "pl.miec.possession.transitive",
+      "sense_id": "sense:pl.miec.possession",
+      "semantic_roles": [
+        "holder",
+        "object"
+      ],
+      "arguments": [
+        {
+          "id": "subject",
+          "role": "holder",
+          "required": true,
+          "grammatical_function": "subject",
+          "case": "nominative"
+        },
+        {
+          "id": "object",
+          "role": "object",
+          "required": true,
+          "grammatical_function": "object",
+          "case": "accusative"
+        }
+      ],
+      "allowed_family_ids": [
+        "construction:pl.transitive"
+      ],
+      "provenance": {
+        "id": "golingua-dse-have-476",
+        "path": "data/semantic/languages/pl/source.json",
+        "version": "2026-10-30",
+        "license": "internal-neutral-example",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "pl.miec.possession.personal",
+      "sense_id": "sense:pl.miec.possession",
+      "semantic_roles": [
+        "holder",
+        "object"
+      ],
+      "arguments": [
+        {
+          "id": "subject",
+          "role": "holder",
+          "required": true,
+          "grammatical_function": "subject",
+          "case": "nominative"
+        },
+        {
+          "id": "object",
+          "role": "object",
+          "required": true,
+          "grammatical_function": "object",
+          "case": "accusative"
+        }
+      ],
+      "allowed_family_ids": [
+        "construction:pl.transitive_personal"
+      ],
+      "provenance": {
+        "id": "golingua-dse-have-476",
+        "path": "data/semantic/languages/pl/source.json",
+        "version": "2026-10-30",
+        "license": "internal-neutral-example",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "pl.miec.possession.personal.negative",
+      "sense_id": "sense:pl.miec.possession",
+      "semantic_roles": [
+        "holder",
+        "object"
+      ],
+      "arguments": [
+        {
+          "id": "subject",
+          "role": "holder",
+          "required": true,
+          "grammatical_function": "subject",
+          "case": "nominative"
+        },
+        {
+          "id": "object",
+          "role": "object",
+          "required": true,
+          "grammatical_function": "object",
+          "case": "genitive"
+        }
+      ],
+      "allowed_family_ids": [
+        "construction:pl.transitive_personal"
+      ],
+      "provenance": {
+        "id": "golingua-dse-have-476",
+        "path": "data/semantic/languages/pl/source.json",
+        "version": "2026-10-30",
+        "license": "internal-neutral-example",
         "author": "Codex by owner delegation"
       }
     }

@@ -7,6 +7,7 @@ import (
 	"github.com/clickbytes/golingua/internal/algebra"
 	"github.com/clickbytes/golingua/internal/analyzer"
 	"github.com/clickbytes/golingua/internal/construction"
+	"github.com/clickbytes/golingua/internal/core"
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/language"
 	"github.com/clickbytes/golingua/internal/lexicon"
@@ -59,10 +60,15 @@ type DSEInput struct {
 	Lattice                  analyzer.LexicalLattice
 	SourceBytes              int
 	References               []ReferenceEvidence
+	ImplicitRoles            []ImplicitRoleEvidence
 	NodeAttributes           []NodeAttributesEvidence
 	Operators                []OperatorEvidence
 	OperatorCoverageComplete bool
 	Package                  *language.SemanticLanguagePackage
+	Lexicon                  *lexicon.Index
+	Valency                  *valency.Index
+	Core                     *core.ConceptGraph
+	Constructions            *construction.Registry
 	Plan                     *language.SourcePlan
 	Selected                 algebra.Document
 	Rewrite                  algebra.RewriteEnvironment
@@ -97,11 +103,12 @@ type DSEConditionCoverage struct {
 }
 
 type DSERoleSource struct {
-	Role            string            `json:"role"`
-	Source          DSESourceRecord   `json:"source"`
-	ReferenceID     string            `json:"reference_id,omitempty"`
-	ResolutionBasis string            `json:"resolution_basis,omitempty"`
-	WHGap           *DSEWHGapEvidence `json:"wh_gap,omitempty"`
+	Role             string                `json:"role"`
+	Source           DSESourceRecord       `json:"source"`
+	ReferenceID      string                `json:"reference_id,omitempty"`
+	ResolutionBasis  string                `json:"resolution_basis,omitempty"`
+	WHGap            *DSEWHGapEvidence     `json:"wh_gap,omitempty"`
+	ImplicitEvidence *ImplicitRoleEvidence `json:"-"`
 }
 
 type DSEWHGapEvidence struct {

@@ -123,7 +123,7 @@ type polishSentencePlanAnnotations struct {
 
 func (plan polishSentencePlanAnnotations) Annotations(_ context.Context, source semantic.MeaningCandidate, selected realizer.TargetCandidate) ([]realizer.FeatureConstraint, []realizer.FieldAssumption, []realizer.FieldLoss, error) {
 	if selected.Family.Family.ID.String() == polishPersonalTargetFamily {
-		target, ok := polishPersonalTargetForPredicate(source, selected.NodeID)
+		target, ok := polishPersonalTargetForPredicate(source, selected)
 		if !ok || !polishPersonalVariantMatches(source, selected, target) || !polishPredicateEvidenceConsistent(source, selected) {
 			return nil, nil, nil, fmt.Errorf("Polish personal target requires a valid anchored subject and matching licensed variant")
 		}
@@ -536,7 +536,7 @@ func (featurePlan polishSentenceFeatures) Features(_ context.Context, source sem
 	}
 	if slot.Category == construction.CategoryVP {
 		if predicate.Family.Family.ID.String() == polishPersonalTargetFamily {
-			target, ok := polishPersonalTargetForPredicate(source, predicate.NodeID)
+			target, ok := polishPersonalTargetForPredicate(source, predicate)
 			if !ok || !polishPersonalVariantMatches(source, predicate, target) ||
 				!polishFrameEvidenceConsistent(source, predicate.NodeID, predicate.TransferBinding.CoreRef) {
 				return nil, fmt.Errorf("Polish personal predicate variant conflicts with participant, temporal, or valency evidence")
@@ -1066,16 +1066,16 @@ func (policy polishSentenceCandidatePolicy) KeepTargetCandidate(source semantic.
 		return false // Polish personal subjects are pro-drop in this target construction.
 	}
 	if anchorIntent && (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState) {
-		target, personalSubject := polishPersonalTargetForPredicate(source, candidate.NodeID)
+		target, personalSubject := polishPersonalTargetForPredicate(source, candidate)
 		return personalSubject && candidate.Family.Family.ID.String() == polishPersonalTargetFamily &&
 			polishPersonalVariantMatches(source, candidate, target) && polishPredicateEvidenceConsistent(source, candidate)
 	}
 	if anchorIntent && candidate.Kind == meaning.KindReferent {
-		for _, predicate := range source.Meaning.Nodes {
+		for _, predicate := range all {
 			if predicate.Kind != meaning.KindEvent && predicate.Kind != meaning.KindState {
 				continue
 			}
-			target, ok := polishPersonalTargetForPredicate(source, predicate.ID)
+			target, ok := polishPersonalTargetForPredicate(source, predicate)
 			if ok && target.subject.ID == candidate.NodeID {
 				return false // never fall back to a generic person noun for an anchored, omitted subject.
 			}

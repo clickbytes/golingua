@@ -1,6 +1,8 @@
 package en
 
 import (
+	"fmt"
+
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/lexicon"
 	"github.com/clickbytes/golingua/internal/morph"
@@ -35,12 +37,26 @@ func inCodeParadigms(profile *features.LanguageFeatureProfile) []morph.Paradigm 
 // The sentence slice adds explicit singular nouns and attested verb forms;
 // missing English forms remain unavailable.
 func inCodeMorphRecords() ([]lexemeRecord, error) {
+	authored, err := decodeEnglishLexemeDocument(lexemesJSON)
+	if err != nil {
+		return nil, err
+	}
+	authoredByID := make(map[string]lexicon.MorphLexeme, len(authored.Records))
+	for _, record := range authored.Records {
+		authoredByID[record.Lexeme.ID.String()] = record.Lexeme
+	}
 	document, err := LexicalDocument()
 	if err != nil {
 		return nil, err
 	}
 	records := make([]lexemeRecord, 0, len(englishParadigmByLexeme))
 	for _, lexeme := range document.Lexemes {
+		if dataLexeme, dataOwned := authoredByID[lexeme.ID.String()]; dataOwned {
+			if !sameEnglishMorphLexicalIdentity(lexeme, dataLexeme) {
+				return nil, fmt.Errorf("English authored morphology lexeme %q conflicts with lexical identity", lexeme.ID.String())
+			}
+			continue
+		}
 		if lexeme.ParadigmID == "" {
 			continue
 		}
@@ -58,84 +74,6 @@ func inCodeMorphRecords() ([]lexemeRecord, error) {
 		switch lexeme.ID.String() {
 		case "lexeme:en.be.v", "lexeme:en.black.adj", "lexeme:en.red.adj", "lexeme:en.white.adj", "lexeme:en.blue.adj", "lexeme:en.green.adj", "lexeme:en.open.adj", "lexeme:en.sad.adj":
 			principalParts, _ = identificationMorphRecords(lexeme)
-		case "lexeme:en.see.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "see", "sees", "saw", "seen", "seeing")
-		case "lexeme:en.hear.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "hear", "hears", "heard", "heard", "hearing")
-		case "lexeme:en.belong.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "belong", "belongs", "belonged", "belonged", "belonging")
-		case "lexeme:en.own.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "own", "owns", "owned", "owned", "owning")
-		case "lexeme:en.get.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "get", "gets", "got", "gotten", "getting")
-		case "lexeme:en.read.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "read", "reads", "read", "read", "reading")
-		case "lexeme:en.eating.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "eat", "eats", "ate", "eaten", "eating")
-		case "lexeme:en.drinking.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "drink", "drinks", "drank", "drunk", "drinking")
-		case "lexeme:en.opening_object.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "open", "opens", "opened", "opened", "opening")
-		case "lexeme:en.closing_object.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "close", "closes", "closed", "closed", "closing")
-		case "lexeme:en.carrying.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "carry", "carries", "carried", "carried", "carrying")
-		case "lexeme:en.holding_object.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "hold", "holds", "held", "held", "holding")
-		case "lexeme:en.pulling_object.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "pull", "pulls", "pulled", "pulled", "pulling")
-		case "lexeme:en.pushing_object.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "push", "pushes", "pushed", "pushed", "pushing")
-		case "lexeme:en.cutting_object.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "cut", "cuts", "cut", "cut", "cutting")
-		case "lexeme:en.folding_object.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "fold", "folds", "folded", "folded", "folding")
-		case "lexeme:en.tearing_object.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "tear", "tears", "tore", "torn", "tearing")
-		case "lexeme:en.sleep.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "sleep", "sleeps", "slept", "slept", "sleeping")
-		case "lexeme:en.breathing.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "breathe", "breathes", "breathed", "breathed", "breathing")
-		case "lexeme:en.sneezing.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "sneeze", "sneezes", "sneezed", "sneezed", "sneezing")
-		case "lexeme:en.running.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "run", "runs", "ran", "run", "running")
-		case "lexeme:en.coughing.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "cough", "coughs", "coughed", "coughed", "coughing")
-		case "lexeme:en.waking_up.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "wake", "wakes", "woke", "woken", "waking")
-		case "lexeme:en.walking.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "walk", "walks", "walked", "walked", "walking")
-		case "lexeme:en.conversing.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "talk", "talks", "talked", "talked", "talking")
-		case "lexeme:en.falling.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "fall", "falls", "fell", "fallen", "falling")
-		case "lexeme:en.falling_asleep.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "fall", "falls", "fell", "fallen", "falling")
-		case "lexeme:en.living.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "live", "lives", "lived", "lived", "living")
-		case "lexeme:en.working.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "work", "works", "worked", "worked", "working")
-		case "lexeme:en.flying_motion.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "fly", "flies", "flew", "flown", "flying")
-		case "lexeme:en.go.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "go", "goes", "went", "gone", "going")
-		case "lexeme:en.give.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "give", "gives", "gave", "given", "giving")
-		case "lexeme:en.have.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "have", "has", "had", "had", "having")
-		case "lexeme:en.do.aux":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "do", "does", "did", "done", "doing")
-		case "lexeme:en.buying.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "buy", "buys", "bought", "bought", "buying")
-		case "lexeme:en.selling.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "sell", "sells", "sold", "sold", "selling")
-		case "lexeme:en.liking.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "like", "likes", "liked", "liked", "liking")
-		case "lexeme:en.watching.v", "lexeme:en.watching_screen.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "watch", "watches", "watched", "watched", "watching")
-		case "lexeme:en.writing_document.v", "lexeme:en.writing_message.v", "lexeme:en.writing_with_instrument.v":
-			principalParts = finiteEnglishPrincipalParts(lexeme, "write", "writes", "wrote", "written", "writing")
 		}
 		if lexeme.ParadigmID == "en_noun_principal_parts" {
 			principalParts = englishNounPrincipalParts(lexeme)
@@ -166,16 +104,6 @@ func englishNounPrincipalParts(lexeme lexicon.MorphLexeme) morph.PrincipalParts 
 	return morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{
 		{ID: "singular", Form: lexeme.Lemma},
 		{ID: "plural", Form: plural},
-	}}
-}
-
-func finiteEnglishPrincipalParts(lexeme lexicon.MorphLexeme, base, thirdPersonSingular, past, pastParticiple, presentParticiple string) morph.PrincipalParts {
-	return morph.PrincipalParts{LexemeID: lexeme.ID, Parts: []morph.PrincipalPart{
-		{ID: "base", Form: base},
-		{ID: "third_person_singular", Form: thirdPersonSingular},
-		{ID: "past", Form: past},
-		{ID: "past_participle", Form: pastParticiple},
-		{ID: "present_participle", Form: presentParticiple},
 	}}
 }
 

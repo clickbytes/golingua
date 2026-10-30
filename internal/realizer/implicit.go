@@ -4,9 +4,9 @@ import (
 	"github.com/clickbytes/golingua/internal/meaning"
 )
 
-// ImplicitParticipantAnchor validates the person referent and its unresolved
-// participant anchor across the retained request contexts. Conflicting
-// context anchors remain unavailable rather than being selected.
+// ImplicitParticipantAnchor validates a person referent and its participant
+// anchor across retained request contexts, whether mentions are unresolved
+// anchors or resolved mentions with explicit evidence.
 func ImplicitParticipantAnchor(graph meaning.Meaning, contexts []meaning.RequestContext, nodeID meaning.NodeID) (meaning.DeicticAnchor, bool) {
 	var participant meaning.Node
 	foundNode := false
@@ -31,7 +31,9 @@ func ImplicitParticipantAnchor(graph meaning.Meaning, contexts []meaning.Request
 				continue
 			}
 			foundMention = true
-			if mention.ReferentID != "" || mention.EvidenceID != "" || mention.Anchor == nil || mention.Anchor.Kind != "participant" ||
+			resolved := mention.ReferentID != "" && mention.EvidenceID != ""
+			unresolved := mention.ReferentID == "" && mention.EvidenceID == ""
+			if (!resolved && !unresolved) || mention.Anchor == nil || mention.Anchor.Kind != "participant" ||
 				(mention.Anchor.Value != "speaker" && mention.Anchor.Value != "speaker_inclusive_group" && mention.Anchor.Value != "addressee") {
 				return meaning.DeicticAnchor{}, false
 			}

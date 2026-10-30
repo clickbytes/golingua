@@ -2263,6 +2263,9 @@ func (builder englishDeterminerNPBuilder) Build(ctx context.Context, lattice ana
 			if person := candidate.Features["pronoun_person"]; person != "" {
 				candidate.Features["person"] = person
 			}
+			if number := candidate.Features["pronoun_number"]; number != "" && candidate.Features["number"] == "" {
+				candidate.Features["number"] = number
+			}
 			filtered = append(filtered, candidate)
 			continue
 		}

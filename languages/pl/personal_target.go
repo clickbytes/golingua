@@ -61,16 +61,11 @@ func polishPersonalContext(source semantic.MeaningCandidate) (bool, bool) {
 			if mention.Anchor == nil || mention.Anchor.Kind != "participant" {
 				continue
 			}
-			matches := 0
-			for _, node := range source.Meaning.Nodes {
-				if node.Kind != meaning.KindEvent && node.Kind != meaning.KindState {
-					continue
-				}
-				if target, ok := polishPersonalTargetForPredicate(source, node.ID); ok && target.subject.ID == mention.NodeID {
-					matches++
-				}
+			if !polishParticipantAttached(*source.Meaning, mention.NodeID) {
+				return true, false
 			}
-			if matches != 1 {
+			anchor, valid := realizer.ImplicitParticipantAnchor(*source.Meaning, contexts, mention.NodeID)
+			if !valid || anchor.Kind != "participant" || anchor.Value != mention.Anchor.Value {
 				return true, false
 			}
 		}
@@ -78,23 +73,60 @@ func polishPersonalContext(source semantic.MeaningCandidate) (bool, bool) {
 	return true, len(contexts) > 0
 }
 
-func polishPersonalTargetForPredicate(source semantic.MeaningCandidate, predicateID meaning.NodeID) (polishPersonalTarget, bool) {
+func polishParticipantAttached(graph meaning.Meaning, nodeID meaning.NodeID) bool {
+	count := 0
+	for _, node := range graph.Nodes {
+		for _, participant := range node.Participants {
+			if participant.Target == nodeID {
+				count++
+			}
+		}
+	}
+	return count == 1
+}
+
+func polishPersonalTargetForPredicate(source semantic.MeaningCandidate, candidate realizer.TargetCandidate) (polishPersonalTarget, bool) {
 	if source.Meaning == nil {
 		return polishPersonalTarget{}, false
 	}
-	predicate := findSentencePredicate(*source.Meaning, predicateID)
+	predicate := findSentencePredicate(*source.Meaning, candidate.NodeID)
 	if predicate.ID == "" {
 		return polishPersonalTarget{}, false
 	}
 	role := meaning.Role("")
-	switch predicate.Concept {
-	case "concept:seeing", "concept:hearing":
-		role = "experiencer"
-	case "concept:reading":
-		role = "reader"
-	case "concept:possession":
-		role = "holder"
-	default:
+	subjectArguments := 0
+	for _, argument := range candidate.Frame.Arguments {
+		if argument.GrammaticalFunction == "subject" {
+			subjectArguments++
+			role = argument.Role
+		}
+	}
+	if role == "" || subjectArguments != 1 {
+		return polishPersonalTarget{}, false
+	}
+	boundSlots, activeSlots := 0, 0
+	var subjectSlot construction.SlotSpec
+	for _, slot := range candidate.Family.Family.SlotSpecs {
+		if slot.ArgumentBinding == nil || slot.ArgumentBinding.SemanticRole != role {
+			continue
+		}
+		boundSlots++
+		subjectSlot = slot
+		active := false
+		for _, token := range candidate.CompiledVariant.Variant.Sequence {
+			if token.Kind == construction.TokenSlot && token.SlotID == slot.ID {
+				active = true
+			}
+		}
+		if active {
+			activeSlots++
+		}
+	}
+	omittedLicensed := false
+	if boundSlots == 1 && activeSlots == 0 {
+		_, omittedLicensed = construction.ImplicitParticipantSlot(candidate.Family.Family, candidate.CompiledVariant.Variant, subjectSlot.ID)
+	}
+	if boundSlots != 1 || activeSlots != 1 && !omittedLicensed {
 		return polishPersonalTarget{}, false
 	}
 	var subject meaning.Node
@@ -209,7 +241,7 @@ func polishPersonalVariantAssumptions(source semantic.MeaningCandidate, candidat
 		return nil
 	}
 	values := polishPersonalVariantFeatures(candidate.CompiledVariant.Variant)
-	target, ok := polishPersonalTargetForPredicate(source, candidate.NodeID)
+	target, ok := polishPersonalTargetForPredicate(source, candidate)
 	if !ok {
 		return nil
 	}

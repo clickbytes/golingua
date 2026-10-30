@@ -311,13 +311,13 @@ func decodeSourcePredicateMappings(raw []byte, out *[]SourcePredicateMapping) er
 		}
 		row.PredicateKind = "event"
 		if rawKind, present := f["predicate_kind"]; present {
-			if e = languageStrictValue(rawKind, &row.PredicateKind); e != nil || (row.PredicateKind != "event" && row.PredicateKind != "relation") {
-				return invalid("INVALID_SOURCE_PREDICATE_KIND", path+".predicate_kind", "predicate_kind must be event or relation")
+			if e = languageStrictValue(rawKind, &row.PredicateKind); e != nil || (row.PredicateKind != "event" && row.PredicateKind != "relation" && row.PredicateKind != "property") {
+				return invalid("INVALID_SOURCE_PREDICATE_KIND", path+".predicate_kind", "predicate_kind must be event, relation, or an explicitly validated property")
 			}
 		}
-		if row.PredicateKind == "relation" {
+		if row.PredicateKind == "relation" || row.PredicateKind == "property" {
 			if row.HeadPortID != "" {
-				return invalid("INVALID_SOURCE_PREDICATE", path+".head_port_id", "relation predicates must not declare an Event head port")
+				return invalid("INVALID_SOURCE_PREDICATE", path+".head_port_id", "non-event predicates must not declare an Event head port")
 			}
 		} else if !validSemanticPackageText(row.HeadPortID, 256) {
 			return invalid("INVALID_SOURCE_PREDICATE", path+".head_port_id", "event predicates require a bounded non-null Event head port")
@@ -598,13 +598,17 @@ func validateSourcePlanSelection(doc SourcePlanDocument, pack *SemanticLanguageP
 		if !containsSourceFamily(frame.AllowedFamilyIDs, m.AllowedFamilyIDs) {
 			return invalid("SOURCE_FAMILY_NOT_LINKED", path+".allowed_family_ids", "source plan families must be a subset of selected frame permissions")
 		}
-		if m.PredicateKind == "relation" {
+		if m.PredicateKind == "relation" || m.PredicateKind == "property" {
 			frameRoleSet := map[string]bool{}
 			for _, role := range frame.SemanticRoles {
 				frameRoleSet[string(role)] = true
 			}
-			if m.HeadPortID != "" || chosen.Target.Kind != lexicon.SemanticTargetSymbol || (string(chosen.Target.SymbolRef) != "concept:belonging_association" && string(chosen.Target.SymbolRef) != "concept:legal_ownership") || len(frame.SemanticRoles) != 2 {
-				return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "relation predicates require exactly two source roles and no Event head")
+			expectedSymbol := "concept:belonging_association"
+			if m.PredicateKind == "property" {
+				expectedSymbol = "concept:possession"
+			}
+			if m.HeadPortID != "" || chosen.Target.Kind != lexicon.SemanticTargetSymbol || (m.PredicateKind == "relation" && string(chosen.Target.SymbolRef) != "concept:belonging_association" && string(chosen.Target.SymbolRef) != "concept:legal_ownership") || (m.PredicateKind == "property" && string(chosen.Target.SymbolRef) != expectedSymbol) || len(frame.SemanticRoles) != 2 {
+				return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "non-event predicate requires the exact approved two-role symbol and no Event head")
 			}
 			rolePortIDs := map[string]string{}
 			selectedPorts := 0
@@ -619,7 +623,7 @@ func validateSourcePlanSelection(doc SourcePlanDocument, pack *SemanticLanguageP
 				rolePortIDs[rolePort.Role] = rolePort.PortID
 			}
 			if len(rolePortIDs) != 2 || selectedPorts != 2 {
-				return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "target must map both exact relation roles")
+				return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "target must map both exact property/relation roles")
 			}
 			var signature *algebra.Signature
 			for signatureIndex := range selected.Signatures {
@@ -629,16 +633,16 @@ func validateSourcePlanSelection(doc SourcePlanDocument, pack *SemanticLanguageP
 				}
 			}
 			if signature == nil || len(signature.Ports) != 2 {
-				return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "relation symbol must declare exactly two target ports")
+				return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "property/relation symbol must declare exactly two target ports")
 			}
 			for _, port := range signature.Ports {
 				if !frameRoleSet[port.Role] || port.Type.Kind != algebra.TypeEntity || rolePortIDs[port.Role] != port.Role {
-					return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "relation signature must declare only the exact two Entity roles")
+					return invalid("INVALID_SOURCE_RELATION_MAPPING", path, "property/relation signature must declare only the exact two Entity roles")
 				}
 			}
 		} else {
 			if m.PredicateKind != "" && m.PredicateKind != "event" {
-				return invalid("INVALID_SOURCE_PREDICATE_KIND", path+".predicate_kind", "predicate kind must be event or relation")
+				return invalid("INVALID_SOURCE_PREDICATE_KIND", path+".predicate_kind", "predicate kind must be event, relation, or the exact validated possession property")
 			}
 			typ, roleMapped := sourceTargetPortType(chosen.Target, selected, m.HeadPortID, string(m.FrameID))
 			if !typ.ok || roleMapped || typ.typ.Kind != algebra.TypeEvent {

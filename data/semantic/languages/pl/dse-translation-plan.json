@@ -64,9 +64,68 @@
         "kind": "presupposition",
         "code": "lexical_descriptor"
       }
+    },
+    {
+      "sense_id": "sense:pl.miec.possession",
+      "frame_id": "pl.miec.possession.transitive",
+      "head_port_id": "",
+      "predicate_kind": "property",
+      "allowed_family_ids": [
+        "construction:pl.transitive"
+      ],
+      "allowed_variant_ids": [
+        "construction:pl.transitive.svo"
+      ],
+      "reference_condition": {
+        "kind": "presupposition",
+        "code": "lexical_descriptor"
+      }
+    },
+    {
+      "sense_id": "sense:pl.miec.possession",
+      "frame_id": "pl.miec.possession.personal",
+      "head_port_id": "",
+      "predicate_kind": "property",
+      "allowed_family_ids": [
+        "construction:pl.transitive_personal"
+      ],
+      "allowed_variant_ids": [
+        "construction:pl.transitive_personal.prodrop.present.first.singular",
+        "construction:pl.transitive_personal.prodrop.present.first.plural",
+        "construction:pl.transitive_personal.prodrop.present.second.singular",
+        "construction:pl.transitive_personal.prodrop.present.second.plural"
+      ],
+      "reference_condition": {
+        "kind": "presupposition",
+        "code": "lexical_descriptor"
+      }
+    },
+    {
+      "sense_id": "sense:pl.miec.possession",
+      "frame_id": "pl.miec.possession.personal.negative",
+      "head_port_id": "",
+      "predicate_kind": "property",
+      "allowed_family_ids": [
+        "construction:pl.transitive_personal"
+      ],
+      "allowed_variant_ids": [
+        "construction:pl.transitive_personal.prodrop.negative.present.first.singular",
+        "construction:pl.transitive_personal.prodrop.negative.present.first.plural",
+        "construction:pl.transitive_personal.prodrop.negative.present.second.singular",
+        "construction:pl.transitive_personal.prodrop.negative.present.second.plural"
+      ],
+      "reference_condition": {
+        "kind": "presupposition",
+        "code": "lexical_descriptor"
+      }
     }
   ],
-  "operator_mappings": [],
+  "operator_mappings": [
+    {
+      "source_kind": "negation",
+      "operator": "Not"
+    }
+  ],
   "feature_conditions": [],
   "required_feature_ids": [],
   "reference_non_head_pos_allowlist": []

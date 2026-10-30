@@ -1267,66 +1267,20 @@ var englishAdditionalFramesBySense = map[string][]lexicon.ValencyID{
 }
 
 var englishParadigmByLexeme = map[string]string{
-	"en.belong.v":                  "en_verb_finite_principal_parts",
-	"en.own.v":                     "en_verb_finite_principal_parts",
-	"en.have.v":                    "en_verb_finite_principal_parts",
-	"en.conversing.v":              "en_verb_finite_regular",
-	"en.be.v":                      "en_identification_be_present_3sg",
-	"en.black.adj":                 "en_identification_black_positive",
-	"en.red.adj":                   "en_identification_red_positive",
-	"en.white.adj":                 "en_identification_white_positive",
-	"en.blue.adj":                  "en_identification_blue_positive",
-	"en.green.adj":                 "en_identification_green_positive",
-	"en.open.adj":                  "en_identification_open_positive",
-	"en.sad.adj":                   "en_identification_sad_positive",
-	"en.the.det":                   "en_determiner_definite",
-	"en.a.det":                     "en_determiner_indefinite",
-	"en.an.det":                    "en_determiner_indefinite",
-	"en.i.pron":                    "en_personal_pronoun_i",
-	"en.we.pron":                   "en_personal_pronoun_we",
-	"en.you.pron":                  "en_personal_pronoun_you",
-	"en.see.v":                     "en_verb_finite_principal_parts",
-	"en.hear.v":                    "en_verb_finite_principal_parts",
-	"en.look.v":                    "en_verb_finite_regular",
-	"en.helping.v":                 "en_verb_finite_regular",
-	"en.thanking.v":                "en_verb_finite_regular",
-	"en.use.v":                     "en_verb_finite_regular",
-	"en.get.v":                     "en_verb_finite_principal_parts",
-	"en.read.v":                    "en_verb_finite_principal_parts",
-	"en.eating.v":                  "en_verb_finite_principal_parts",
-	"en.drinking.v":                "en_verb_finite_principal_parts",
-	"en.opening_object.v":          "en_verb_finite_principal_parts",
-	"en.closing_object.v":          "en_verb_finite_principal_parts",
-	"en.carrying.v":                "en_verb_finite_principal_parts",
-	"en.holding_object.v":          "en_verb_finite_principal_parts",
-	"en.pulling_object.v":          "en_verb_finite_principal_parts",
-	"en.pushing_object.v":          "en_verb_finite_principal_parts",
-	"en.cutting_object.v":          "en_verb_finite_principal_parts",
-	"en.folding_object.v":          "en_verb_finite_principal_parts",
-	"en.tearing_object.v":          "en_verb_finite_principal_parts",
-	"en.sleep.v":                   "en_verb_finite_principal_parts",
-	"en.breathing.v":               "en_verb_finite_principal_parts",
-	"en.sneezing.v":                "en_verb_finite_principal_parts",
-	"en.running.v":                 "en_verb_finite_principal_parts",
-	"en.coughing.v":                "en_verb_finite_principal_parts",
-	"en.waking_up.v":               "en_verb_finite_principal_parts",
-	"en.walking.v":                 "en_verb_finite_principal_parts",
-	"en.falling.v":                 "en_verb_finite_principal_parts",
-	"en.falling_asleep.v":          "en_verb_finite_principal_parts",
-	"en.living.v":                  "en_verb_finite_principal_parts",
-	"en.working.v":                 "en_verb_finite_principal_parts",
-	"en.flying_motion.v":           "en_verb_finite_principal_parts",
-	"en.go.v":                      "en_verb_finite_principal_parts",
-	"en.give.v":                    "en_verb_finite_principal_parts",
-	"en.do.aux":                    "en_verb_finite_principal_parts",
-	"en.buying.v":                  "en_verb_finite_principal_parts",
-	"en.selling.v":                 "en_verb_finite_principal_parts",
-	"en.liking.v":                  "en_verb_finite_principal_parts",
-	"en.watching.v":                "en_verb_finite_principal_parts",
-	"en.watching_screen.v":         "en_verb_finite_principal_parts",
-	"en.writing_document.v":        "en_verb_finite_principal_parts",
-	"en.writing_with_instrument.v": "en_verb_finite_principal_parts",
-	"en.writing_message.v":         "en_verb_finite_principal_parts",
+	"en.be.v":      "en_identification_be_present_3sg",
+	"en.black.adj": "en_identification_black_positive",
+	"en.red.adj":   "en_identification_red_positive",
+	"en.white.adj": "en_identification_white_positive",
+	"en.blue.adj":  "en_identification_blue_positive",
+	"en.green.adj": "en_identification_green_positive",
+	"en.open.adj":  "en_identification_open_positive",
+	"en.sad.adj":   "en_identification_sad_positive",
+	"en.the.det":   "en_determiner_definite",
+	"en.a.det":     "en_determiner_indefinite",
+	"en.an.det":    "en_determiner_indefinite",
+	"en.i.pron":    "en_personal_pronoun_i",
+	"en.we.pron":   "en_personal_pronoun_we",
+	"en.you.pron":  "en_personal_pronoun_you",
 	// Count nouns use only a spelling class that matches their declared lemma;
 	// mass nouns stay on the explicit singular-only class below.
 	"en.mother.n": "en_noun_regular", "en.father.n": "en_noun_regular",
@@ -1380,24 +1334,9 @@ var englishParadigmByLexeme = map[string]string{
 	"en.foot.n": "en_noun_principal_parts", "en.tooth.n": "en_noun_principal_parts",
 	"en.leaf_plant.n": "en_noun_principal_parts", "en.knife_utensil.n": "en_noun_principal_parts",
 	"en.fish_animal.n": "en_noun_zero_plural", "en.sheep.n": "en_noun_zero_plural",
-	"en.offspring.n":         "en_noun_zero_plural",
-	"en.printing_document.v": "en_verb_finite_regular", "en.cooking_food.v": "en_verb_finite_regular",
-	"en.boiling_food.v": "en_verb_finite_regular", "en.cleaning_home.v": "en_verb_finite_regular",
-	"en.planting_seed.v":   "en_verb_finite_regular",
-	"en.harvesting_crop.v": "en_verb_finite_regular", "en.playing_game.v": "en_verb_finite_regular",
-	"en.intentional_action.v": "en_verb_finite_regular", "en.installing_object.v": "en_verb_finite_regular",
-	"en.earning_money.v": "en_verb_finite_regular", "en.manipulating_object.v": "en_verb_finite_silent_e",
-	"en.brushing_teeth.v": "en_verb_finite_sibilant", "en.dressing_self.v": "en_verb_finite_sibilant",
-	"en.searching_for_item.v": "en_verb_finite_sibilant", "en.touching_object.v": "en_verb_finite_sibilant",
-	"en.baking_food.v": "en_verb_finite_silent_e", "en.bathing.v": "en_verb_finite_silent_e",
-	"en.charging_battery.v": "en_verb_finite_silent_e", "en.replacing_component.v": "en_verb_finite_silent_e",
-	"en.saving_money.v": "en_verb_finite_silent_e", "en.sharing_resource.v": "en_verb_finite_silent_e",
-	"en.reserving_resource.v": "en_verb_finite_silent_e", "en.releasing_object.v": "en_verb_finite_silent_e",
-	"en.placing_object.v": "en_verb_finite_silent_e", "en.rotating_object.v": "en_verb_finite_silent_e",
-	"en.exchanging_goods.v": "en_verb_finite_silent_e", "en.receiving_payment.v": "en_verb_finite_silent_e",
-	"en.frying_food.v": "en_verb_finite_consonant_y",
-	"en.food.n":        "en_noun_singular_attested",
-	"en.money.n":       "en_noun_singular_attested", "en.water.n": "en_noun_singular_attested",
+	"en.offspring.n": "en_noun_zero_plural",
+	"en.food.n":      "en_noun_singular_attested",
+	"en.money.n":     "en_noun_singular_attested", "en.water.n": "en_noun_singular_attested",
 	"en.fish_meat.n": "en_noun_singular_attested",
 	"en.rain.n":      "en_noun_singular_attested",
 	"en.bread.n":     "en_noun_singular_attested", "en.soup_food.n": "en_noun_singular_attested",
@@ -1446,6 +1385,14 @@ var englishCountNounLexemes = map[string]struct{}{
 // LexicalDocument builds the English lexical records from Go declarations.
 // It keeps polysemous senses distinct and leaves unmapped meanings unresolved.
 func LexicalDocument() (lexicon.Document, error) {
+	authoredMorphology, err := decodeEnglishLexemeDocument(lexemesJSON)
+	if err != nil {
+		return lexicon.Document{}, err
+	}
+	authoredMorphologyByID := make(map[string]lexicon.MorphLexeme, len(authoredMorphology.Records))
+	for _, record := range authoredMorphology.Records {
+		authoredMorphologyByID[record.Lexeme.ID.String()] = record.Lexeme
+	}
 	if err := englishIssue434LexicalBindingSource.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("English issue 434 lexical binding source: %w", err)
 	}
@@ -1481,6 +1428,12 @@ func LexicalDocument() (lexicon.Document, error) {
 			}
 			if _, countable := englishCountNounLexemes[entry.id]; countable {
 				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "number_behavior", Value: "count"})
+			}
+			if authored, exists := authoredMorphologyByID[lexeme.ID.String()]; exists {
+				if !sameEnglishMorphLexicalIdentity(lexeme, authored) {
+					return lexicon.Document{}, fmt.Errorf("English authored morphology lexeme %q conflicts with lexical identity", lexeme.ID.String())
+				}
+				lexeme.ParadigmID = authored.ParadigmID
 			}
 			document.Lexemes = append(document.Lexemes, lexeme)
 			for _, meaning := range entry.meanings {
