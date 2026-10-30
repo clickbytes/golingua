@@ -1,12 +1,19 @@
 package matrix
 
 import (
+	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"testing"
 
+	"github.com/clickbytes/golingua/internal/engine"
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/meaning"
+	"github.com/clickbytes/golingua/internal/realizer"
+	langruntime "github.com/clickbytes/golingua/internal/runtime"
 	"github.com/clickbytes/golingua/internal/semantic"
+	"github.com/clickbytes/golingua/internal/status"
 	"github.com/clickbytes/golingua/tests/interlingua"
 )
 
@@ -278,5 +285,171 @@ func TestQuestionFixtureLoaderRoutesOnlyAnchoredContexts(t *testing.T) {
 	}
 	if len(anchoredGraph.Nodes) == 0 {
 		t.Fatal("deictic question fixture graph is empty")
+	}
+}
+
+// A supported surface must not disappear because a different, licensed
+// lexicalization has a typed coverage gap. Invalid data remains fatal.
+func TestTargetAlternativeFailureIsolation(t *testing.T) {
+	shared := Runtime(t)
+	target, ok := shared.TargetRealizerFor("en")
+	if !ok {
+		t.Fatal("English target unavailable")
+	}
+	pipeline, ok := target.(*langruntime.TargetPipeline)
+	if !ok {
+		t.Fatal("production target is not the construction pipeline")
+	}
+	graph, found, err := interlingua.Seeing("seeing.teacher-dog")
+	if err != nil || !found {
+		t.Fatalf("independent seeing fixture: found=%t err=%v", found, err)
+	}
+	source := semantic.MeaningCandidate{
+		ID: "independent-failure-isolation", SemanticID: "independent-failure-isolation", Meaning: &graph,
+		Status:   status.OutcomeOK,
+		Evidence: semantic.EvidenceTrace{AlternativeID: "independent-failure-isolation", Outcome: status.OutcomeOK},
+	}
+	baseline, err := pipeline.Realize(context.Background(), source)
+	if err != nil || len(baseline.Alternatives) != 4 {
+		t.Fatalf("expected four existing determiner alternatives: result=%+v err=%v", baseline, err)
+	}
+	allowed := map[string]bool{}
+	for _, alternative := range baseline.Alternatives {
+		allowed[alternative.Text] = true
+	}
+	before, _ := json.Marshal(source)
+	for _, tc := range []struct {
+		name                              string
+		at                                int
+		kind                              status.OutcomeKind
+		cancel, fatal, malformed, untyped bool
+		wantSurfaces                      int
+	}{
+		{name: "first unsupported", at: 1, kind: status.OutcomeUnsupported, wantSurfaces: 3},
+		{name: "late incomplete", at: 2, kind: status.OutcomeIncomplete, wantSurfaces: 3},
+		{name: "late unknown", at: 2, kind: status.OutcomeUnknown, wantSurfaces: 3},
+		{name: "late ambiguous", at: 2, kind: status.OutcomeAmbiguous, wantSurfaces: 3},
+		{name: "all unsupported", at: 0, kind: status.OutcomeUnsupported, wantSurfaces: 0},
+		{name: "resource limit", at: 2, kind: status.OutcomeResourceLimit, wantSurfaces: 1},
+		{name: "context canceled", at: 2, cancel: true, kind: status.OutcomeResourceLimit, wantSurfaces: 1},
+		{name: "invalid remains fatal", at: 2, kind: status.OutcomeInvalid, fatal: true},
+		{name: "error remains fatal", at: 2, kind: status.OutcomeError, fatal: true},
+		{name: "untyped remains fatal", at: 2, untyped: true, fatal: true},
+		{name: "malformed remains fatal", at: 2, kind: status.OutcomeUnsupported, malformed: true, fatal: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+			copy := *pipeline
+			injected := &targetFailureInjection{inner: pipeline.ExecutionBuilder, at: tc.at, kind: tc.kind, malformed: tc.malformed, untyped: tc.untyped}
+			if tc.cancel {
+				injected.cancel = cancel
+			}
+			copy.ExecutionBuilder = injected
+			result, realizeErr := copy.Realize(ctx, source)
+			logObservation(t, map[string]any{"check_class": "target_failure_isolation", "case_id": tc.name, "stage": "independent_realization", "result": result, "error": errorText(realizeErr)})
+			if tc.fatal {
+				if realizeErr == nil || len(result.Alternatives) != 0 {
+					t.Fatalf("fatal error was converted to a usable partial result: %+v err=%v", result, realizeErr)
+				}
+				return
+			}
+			if realizeErr != nil || len(result.Alternatives) != tc.wantSurfaces || len(result.Diagnostics) == 0 {
+				t.Fatalf("want %d retained alternatives and diagnostic, got %+v err=%v", tc.wantSurfaces, result, realizeErr)
+			}
+			if result.Outcome == status.OutcomeOK {
+				t.Error("partial coverage was reported as a complete success")
+			}
+			if tc.kind == status.OutcomeResourceLimit && (result.Outcome != status.OutcomeResourceLimit || injected.calls != 2) {
+				t.Errorf("resource stop must preserve the first alternative and terminate: outcome=%s calls=%d", result.Outcome, injected.calls)
+			}
+			for _, alternative := range result.Alternatives {
+				if !allowed[alternative.Text] {
+					t.Errorf("injection fabricated a surface: %q", alternative.Text)
+				}
+			}
+			after, _ := json.Marshal(source)
+			if string(before) != string(after) {
+				t.Error("failure handling changed the independent meaning or context")
+			}
+		})
+	}
+}
+
+type targetFailureInjection struct {
+	inner              langruntime.TargetExecutionBuilder
+	calls, at          int
+	kind               status.OutcomeKind
+	cancel             context.CancelFunc
+	malformed, untyped bool
+}
+
+func (injection *targetFailureInjection) Build(ctx context.Context, source semantic.MeaningCandidate, candidates []realizer.TargetCandidate, selected realizer.TargetCandidate, plan realizer.RealizationPlan) (realizer.ExecuteInput, error) {
+	injection.calls++
+	if injection.at == 0 || injection.calls == injection.at {
+		if injection.cancel != nil {
+			injection.cancel()
+			return realizer.ExecuteInput{}, ctx.Err()
+		}
+		if injection.untyped {
+			return realizer.ExecuteInput{}, errors.New("injected untyped failure")
+		}
+		result := status.Result{Status: injection.kind}
+		if !injection.malformed {
+			result.Diagnostics = []status.Diagnostic{{Code: "INJECTED_TARGET_REFUSAL", Path: "target.slots", Message: "bounded fault injection", Severity: status.SeverityWarning}}
+		}
+		return realizer.ExecuteInput{}, fmt.Errorf("wrapped candidate failure: %w", targetInjectedFailure{result: result})
+	}
+	return injection.inner.Build(ctx, source, candidates, selected, plan)
+}
+
+type targetInjectedFailure struct{ result status.Result }
+
+func (targetInjectedFailure) Error() string                 { return "injected target failure" }
+func (failure targetInjectedFailure) Result() status.Result { return failure.result }
+
+// Missing morphology must be a typed coverage gap, not an internal error or
+// permission to use present. Future licensed past forms may satisfy this test;
+// it deliberately does not freeze today's absence of a paradigm cell.
+func TestTargetMissingPastParadigmIsDiagnosed(t *testing.T) {
+	rt := Runtime(t)
+	for _, text := range []string{"The bird flew.", "The birds flew."} {
+		t.Run(text, func(t *testing.T) {
+			result, err := rt.Translate(context.Background(), engine.Request{From: "en", To: "pl", Text: text})
+			logObservation(t, map[string]any{"check_class": "past_morphology_gap", "case_id": text, "stage": "integration", "result": result, "error": errorText(err)})
+			if err != nil || result.Status == status.OutcomeError || result.Status == status.OutcomeInvalid || result.Status == status.OutcomeResourceLimit {
+				t.Fatalf("morphology coverage must not cause a runtime failure: status=%s err=%v", result.Status, err)
+			}
+			surfaces := 0
+			for _, candidate := range result.Candidates {
+				if candidate.Text == "" {
+					continue
+				}
+				surfaces++
+				past := false
+				if candidate.Meaning != nil {
+					for _, node := range candidate.Meaning.Nodes {
+						if node.Concept == "concept:flying_motion" && node.Kind == meaning.KindEvent {
+							past = node.TemporalFrame == meaning.TemporalFramePast
+						}
+					}
+				}
+				if !past {
+					t.Error("realized candidate did not preserve the source past event")
+				}
+				if candidate.Outcome != status.OutcomeOK && candidate.Outcome != status.OutcomeIncomplete && candidate.Outcome != status.OutcomeAmbiguous {
+					t.Errorf("refused candidate contains a surface: %+v", candidate)
+				}
+			}
+			if surfaces == 0 {
+				found := false
+				for _, diagnostic := range result.Diagnostics {
+					found = found || diagnostic.Code == "TARGET_PAST_PARADIGM_UNSUPPORTED"
+				}
+				if result.Status != status.OutcomeUnsupported || !found {
+					t.Errorf("unrealized past must retain its specific coverage diagnostic: %+v", result)
+				}
+			}
+		})
 	}
 }

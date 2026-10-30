@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"sort"
 
@@ -259,13 +260,20 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 surfaceCandidatesLoop:
 	for _, selected := range surfaceCandidates {
 		if err := ctx.Err(); err != nil {
-			return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
+			retainTargetCandidateFailure(&result, ctx.Err())
+			return result, nil
 		}
 		annotationSets := []TargetPlanAnnotations{{}}
 		if alternativesBuilder, ok := pipeline.PlanBuilder.(TargetPlanAlternativesBuilder); ok {
 			annotationSets, err = alternativesBuilder.AnnotationAlternatives(ctx, source, selected)
 			if err != nil {
-				return engine.SurfaceResult{}, err
+				if !retainTargetCandidateFailure(&result, err) {
+					return engine.SurfaceResult{}, err
+				}
+				if result.Outcome == status.OutcomeResourceLimit {
+					break surfaceCandidatesLoop
+				}
+				continue surfaceCandidatesLoop
 			}
 			if len(annotationSets) == 0 {
 				return engine.SurfaceResult{}, targetPipelineError(status.OutcomeInvalid, "EMPTY_TARGET_PLAN_ALTERNATIVES", "target.plan_alternatives", "an alternatives builder must retain at least one annotation choice for each selected target candidate")
@@ -278,13 +286,20 @@ surfaceCandidatesLoop:
 		} else if pipeline.PlanBuilder != nil {
 			constraints, assumptions, losses, annotationErr := pipeline.PlanBuilder.Annotations(ctx, source, selected)
 			if annotationErr != nil {
-				return engine.SurfaceResult{}, annotationErr
+				if !retainTargetCandidateFailure(&result, annotationErr) {
+					return engine.SurfaceResult{}, annotationErr
+				}
+				if result.Outcome == status.OutcomeResourceLimit {
+					break surfaceCandidatesLoop
+				}
+				continue surfaceCandidatesLoop
 			}
 			annotationSets[0] = TargetPlanAnnotations{FeatureConstraints: constraints, Assumptions: assumptions, Losses: losses}
 		}
 		for _, annotations := range annotationSets {
 			if err := ctx.Err(); err != nil {
-				return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
+				retainTargetCandidateFailure(&result, ctx.Err())
+				return result, nil
 			}
 			if len(result.Alternatives) >= engine.MaxTranslationAlternatives {
 				result.Outcome = status.OutcomeResourceLimit
@@ -333,11 +348,18 @@ surfaceCandidatesLoop:
 				}
 			}
 			if err := ctx.Err(); err != nil {
-				return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
+				retainTargetCandidateFailure(&result, ctx.Err())
+				return result, nil
 			}
 			plan, err := realizer.BuildPlan(planInput)
 			if err != nil {
-				return engine.SurfaceResult{}, err
+				if !retainTargetCandidateFailure(&result, err) {
+					return engine.SurfaceResult{}, err
+				}
+				if result.Outcome == status.OutcomeResourceLimit {
+					break surfaceCandidatesLoop
+				}
+				continue
 			}
 			if _, duplicate := seenPlanIDs[plan.ID]; duplicate {
 				return engine.SurfaceResult{}, targetPipelineError(status.OutcomeInvalid, "DUPLICATE_TARGET_PLAN_ALTERNATIVE", "target.plan_alternatives", "annotation choices produced the same canonical realization plan ID")
@@ -366,10 +388,17 @@ surfaceCandidatesLoop:
 				}
 				executionInput, err := pipeline.ExecutionBuilder.Build(ctx, source, executionChoice.Candidates, executionCandidate, plan)
 				if err != nil {
-					return engine.SurfaceResult{}, err
+					if !retainTargetCandidateFailure(&result, err) {
+						return engine.SurfaceResult{}, err
+					}
+					if result.Outcome == status.OutcomeResourceLimit {
+						break surfaceCandidatesLoop
+					}
+					continue
 				}
 				if err := ctx.Err(); err != nil {
-					return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
+					retainTargetCandidateFailure(&result, ctx.Err())
+					return result, nil
 				}
 				// The callback supplies only language-local morphology inputs and
 				// information-structure evidence; identity-bearing values come from the
@@ -382,11 +411,23 @@ surfaceCandidatesLoop:
 				}
 				executed, err := realizer.Execute(executionInput)
 				if err != nil {
-					return engine.SurfaceResult{}, err
+					if !retainTargetCandidateFailure(&result, err) {
+						return engine.SurfaceResult{}, err
+					}
+					if result.Outcome == status.OutcomeResourceLimit {
+						break surfaceCandidatesLoop
+					}
+					continue
 				}
 				linearized, err := realizer.LinearizeWithNPProfiles(plan, executed.Family, executed.Slots, executed.NPForms, executionInput.PhraseProfile, executionInput.FeatureProfile, executionInput.InformationStructure, pipeline.LinearizeBudget)
 				if err != nil {
-					return engine.SurfaceResult{}, err
+					if !retainTargetCandidateFailure(&result, err) {
+						return engine.SurfaceResult{}, err
+					}
+					if result.Outcome == status.OutcomeResourceLimit {
+						break surfaceCandidatesLoop
+					}
+					continue
 				}
 				evidence, bindingOK := targetBindingEvidence(pipeline.LanguageRegistry, pipeline.Language, source, selected, plan)
 				// Selection.Outcome summarizes all retained routes. Keep route-local
@@ -869,6 +910,36 @@ func appendTargetDiagnostics(target []status.Diagnostic, values ...status.Diagno
 	appendUnique(target)
 	appendUnique(values)
 	return result
+}
+
+// retainTargetCandidateFailure keeps a bounded, typed coverage refusal local
+// to a candidate. Resource exhaustion preserves already completed alternatives
+// but must stop enumeration. Invalid, internal and malformed errors stay fatal;
+// an arbitrary Go error is never reclassified as an unsupported translation.
+func retainTargetCandidateFailure(result *engine.SurfaceResult, err error) bool {
+	var failure status.Result
+	if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+		failure = status.Result{Status: status.OutcomeResourceLimit, Diagnostics: []status.Diagnostic{{
+			Code: "TARGET_REALIZATION_CANCELED", Path: "context", Message: "target realization was canceled or timed out", Severity: status.SeverityWarning,
+		}}}
+	} else {
+		var typed interface{ Result() status.Result }
+		if !errors.As(err, &typed) {
+			return false
+		}
+		failure = typed.Result()
+		if failure.Validate() != nil || failure.Text != "" {
+			return false
+		}
+	}
+	switch failure.Status {
+	case status.OutcomeUnsupported, status.OutcomeUnknown, status.OutcomeIncomplete, status.OutcomeAmbiguous, status.OutcomeResourceLimit:
+		result.Outcome = combineTargetOutcomes(result.Outcome, failure.Status)
+		result.Diagnostics = appendTargetDiagnostics(result.Diagnostics, failure.Diagnostics...)
+		return true
+	default:
+		return false
+	}
 }
 
 func combineTargetOutcomes(outcomes ...status.OutcomeKind) status.OutcomeKind {

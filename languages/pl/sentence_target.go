@@ -584,7 +584,7 @@ func (featurePlan polishSentenceFeatures) Features(_ context.Context, source sem
 				} else {
 					aspect, known = polishPastLexicalAspect(predicate, featurePlan.paradigms)
 					if !known {
-						return nil, fmt.Errorf("Polish past negative candidate has no past aspect in its selected paradigm")
+						return nil, polishPastParadigmGap{paradigm: string(predicate.Lexeme.ParadigmID)}
 					}
 				}
 				return knownPolishFeatures(
@@ -626,7 +626,7 @@ func (featurePlan polishSentenceFeatures) Features(_ context.Context, source sem
 				var aspectKnown bool
 				aspect, aspectKnown = polishPastLexicalAspect(predicate, featurePlan.paradigms)
 				if !aspectKnown {
-					return nil, fmt.Errorf("Polish past candidate has no aspect in its selected paradigm")
+					return nil, polishPastParadigmGap{paradigm: string(predicate.Lexeme.ParadigmID)}
 				}
 			} else if polishDedicatedPastTransfer(predicate) {
 				var aspectKnown bool
@@ -734,6 +734,20 @@ func polishDedicatedPastAspect(candidate realizer.TargetCandidate) (string, bool
 	default:
 		return "", false
 	}
+}
+
+// A selected lexeme without an unambiguous finite past cell is a bounded
+// data-coverage gap, not a failure of the runtime or permission to use present.
+type polishPastParadigmGap struct{ paradigm string }
+
+func (gap polishPastParadigmGap) Error() string {
+	return fmt.Sprintf("selected Polish paradigm %q declares no unambiguous finite past aspect", gap.paradigm)
+}
+
+func (gap polishPastParadigmGap) Result() status.Result {
+	return status.Result{Status: status.OutcomeUnsupported, Diagnostics: []status.Diagnostic{{
+		Code: "TARGET_PAST_PARADIGM_UNSUPPORTED", Path: "target.predicate.paradigm", Message: gap.Error(), Severity: status.SeverityWarning,
+	}}}
 }
 
 // polishApprovedPastTargetCandidate checks only the selected candidate's
