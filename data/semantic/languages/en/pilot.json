@@ -42,6 +42,12 @@
         "language": "en",
         "lemma": "own",
         "pos": "verb"
+      },
+      {
+        "id": "lexeme:en.have.v",
+        "language": "en",
+        "lemma": "have",
+        "pos": "verb"
       }
     ],
     "senses": [
@@ -103,6 +109,16 @@
         ],
         "valency_ids": [
           "en.own.legal_ownership.transitive"
+        ]
+      },
+      {
+        "id": "sense:en.have.possession",
+        "lexeme_id": "lexeme:en.have.v",
+        "usage": [
+          "be in a state of having an object, without asserting legal title or duration"
+        ],
+        "valency_ids": [
+          "en.have.possession.transitive"
         ]
       }
     ],
@@ -387,6 +403,42 @@
             }
           ]
         }
+      },
+      {
+        "sense_id": "sense:en.have.possession",
+        "mapping_kind": "equivalent",
+        "status": "approved",
+        "provenance": {
+          "id": "golingua-dse-have-476",
+          "uri": "https://github.com/clickbytes/golingua/issues/476",
+          "version": "2026-10-30",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        },
+        "target": {
+          "schema_version": 1,
+          "kind": "symbol",
+          "profile": "positive-facts-v1",
+          "symbol_ref": "concept:possession",
+          "role_ports": [
+            {
+              "frame_id": "en.have.possession.transitive",
+              "role": "holder",
+              "port_id": "holder",
+              "type": {
+                "kind": "Entity"
+              }
+            },
+            {
+              "frame_id": "en.have.possession.transitive",
+              "role": "object",
+              "port_id": "object",
+              "type": {
+                "kind": "Entity"
+              }
+            }
+          ]
+        }
       }
     ]
   },
@@ -585,6 +637,40 @@
         "uri": "https://github.com/clickbytes/golingua/issues/476#issuecomment-6531956278",
         "version": "2026-10-30",
         "license": "internal",
+        "author": "Codex by owner delegation"
+      }
+    },
+    {
+      "id": "en.have.possession.transitive",
+      "sense_id": "sense:en.have.possession",
+      "semantic_roles": [
+        "holder",
+        "object"
+      ],
+      "arguments": [
+        {
+          "id": "subject",
+          "role": "holder",
+          "required": true,
+          "grammatical_function": "subject"
+        },
+        {
+          "id": "object",
+          "role": "object",
+          "required": true,
+          "grammatical_function": "object"
+        }
+      ],
+      "allowed_family_ids": [
+        "construction:en.transitive",
+        "construction:en.transitive_negative",
+        "construction:en.transitive_personal"
+      ],
+      "provenance": {
+        "id": "golingua-dse-have-476",
+        "path": "data/semantic/languages/en/source.json",
+        "version": "2026-10-30",
+        "license": "internal-neutral-example",
         "author": "Codex by owner delegation"
       }
     }

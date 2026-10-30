@@ -2,8 +2,1146 @@
   "schema_version": 1,
   "records": [
     {
-      "lexeme": {"id": "lexeme:student-n", "language": "pl", "lemma": "student", "pos": "noun", "properties": [{"key": "gender", "value": "masculine_personal"}], "paradigm_id": "pl_masc_personal_student"},
-      "principal_parts": {"lexeme_id": "lexeme:student-n", "parts": [{"id": "base", "form": "student"}]}
+      "lexeme": {
+        "id": "lexeme:student-n",
+        "language": "pl",
+        "lemma": "student",
+        "pos": "noun",
+        "properties": [
+          {
+            "key": "gender",
+            "value": "masculine_personal"
+          }
+        ],
+        "paradigm_id": "pl_masc_personal_student"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:student-n",
+        "parts": [
+          {
+            "id": "base",
+            "form": "student"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.uzywac.v",
+        "language": "pl",
+        "lemma": "używać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_uzywac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.uzywac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "używa"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "używają"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.dawac.v",
+        "language": "pl",
+        "lemma": "dawać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_dawac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.dawac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "daje"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "dają"
+          },
+          {
+            "id": "past_stem",
+            "form": "dawa"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.nalezec.v",
+        "language": "pl",
+        "lemma": "należeć",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_nalezec_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.nalezec.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "należy"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "należą"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.miec.v",
+        "language": "pl",
+        "lemma": "mieć",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_miec_personal"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.miec.v",
+        "parts": [
+          {
+            "id": "present_first_singular",
+            "form": "mam"
+          },
+          {
+            "id": "present_second_singular",
+            "form": "masz"
+          },
+          {
+            "id": "present_third_singular",
+            "form": "ma"
+          },
+          {
+            "id": "present_first_plural",
+            "form": "mamy"
+          },
+          {
+            "id": "present_second_plural",
+            "form": "macie"
+          },
+          {
+            "id": "present_third_plural",
+            "form": "mają"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.jesc.v",
+        "language": "pl",
+        "lemma": "jeść",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_jesc_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.jesc.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "je"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "jedzą"
+          },
+          {
+            "id": "past_singular_stem",
+            "form": "jad"
+          },
+          {
+            "id": "past_pl_masc",
+            "form": "jed"
+          },
+          {
+            "id": "past_pl_nonmasc",
+            "form": "jad"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.spac.v",
+        "language": "pl",
+        "lemma": "spać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_spac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.spac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "śpi"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "śpią"
+          },
+          {
+            "id": "past_stem",
+            "form": "spa"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.chodzic.v",
+        "language": "pl",
+        "lemma": "chodzić",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_chodzic_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.chodzic.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "chodzi"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "chodzą"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.isc.v",
+        "language": "pl",
+        "lemma": "iść",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_isc_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.isc.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "idzie"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "idą"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.biec.v",
+        "language": "pl",
+        "lemma": "biec",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_biec_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.biec.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "biegnie"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "biegną"
+          },
+          {
+            "id": "past_stem",
+            "form": "bieg"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.latac.v",
+        "language": "pl",
+        "lemma": "latać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_latac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.latac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "lata"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "latają"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.niesc.v",
+        "language": "pl",
+        "lemma": "nieść",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_niesc_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.niesc.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "niesie"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "niosą"
+          },
+          {
+            "id": "past_masc_stem",
+            "form": "nió"
+          },
+          {
+            "id": "past_stem",
+            "form": "nios"
+          },
+          {
+            "id": "past_masc_plural_stem",
+            "form": "nie"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.trzymac.v",
+        "language": "pl",
+        "lemma": "trzymać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_trzymac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.trzymac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "trzyma"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "trzymają"
+          },
+          {
+            "id": "past_stem",
+            "form": "trzyma"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.popychac.v",
+        "language": "pl",
+        "lemma": "popychać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_popychac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.popychac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "popycha"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "popychają"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.pchac.v",
+        "language": "pl",
+        "lemma": "pchać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_pchac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.pchac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "pcha"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "pchają"
+          },
+          {
+            "id": "past_stem",
+            "form": "pcha"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.ciagnac.v",
+        "language": "pl",
+        "lemma": "ciągnąć",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_ciagnac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.ciagnac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "ciągnie"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "ciągną"
+          },
+          {
+            "id": "past_stem",
+            "form": "ciągn"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.ciac.v",
+        "language": "pl",
+        "lemma": "ciąć",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_ciac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.ciac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "tnie"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "tną"
+          },
+          {
+            "id": "past_stem",
+            "form": "ci"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.kroic.v",
+        "language": "pl",
+        "lemma": "kroić",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_kroic_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.kroic.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "kroi"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "kroją"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.drzec.v",
+        "language": "pl",
+        "lemma": "drzeć",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_drzec_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.drzec.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "drze"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "drą"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.rozdzierac.v",
+        "language": "pl",
+        "lemma": "rozdzierać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_rozdzierac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.rozdzierac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "rozdziera"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "rozdzierają"
+          },
+          {
+            "id": "past_stem",
+            "form": "rozdziera"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.skladac.v",
+        "language": "pl",
+        "lemma": "składać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_skladac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.skladac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "składa"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "składają"
+          },
+          {
+            "id": "past_stem",
+            "form": "składa"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.otwierac_obiekt.v",
+        "language": "pl",
+        "lemma": "otwierać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_otwierac_obiekt_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.otwierac_obiekt.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "otwiera"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "otwierają"
+          },
+          {
+            "id": "past_stem",
+            "form": "otwiera"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.zamykac_obiekt.v",
+        "language": "pl",
+        "lemma": "zamykać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_zamykac_obiekt_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.zamykac_obiekt.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "zamyka"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "zamykają"
+          },
+          {
+            "id": "past_stem",
+            "form": "zamyka"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.oddychac.v",
+        "language": "pl",
+        "lemma": "oddychać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_oddychac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.oddychac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "oddycha"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "oddychają"
+          },
+          {
+            "id": "past_stem",
+            "form": "oddycha"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.kaszlec.v",
+        "language": "pl",
+        "lemma": "kaszleć",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_kaszlec_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.kaszlec.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "kaszle"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "kaszlą"
+          },
+          {
+            "id": "past_stem",
+            "form": "kaszla"
+          },
+          {
+            "id": "past_masc_plural_stem",
+            "form": "kaszle"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.kichac.v",
+        "language": "pl",
+        "lemma": "kichać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_kichac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.kichac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "kicha"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "kichają"
+          },
+          {
+            "id": "past_stem",
+            "form": "kicha"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.pic.v",
+        "language": "pl",
+        "lemma": "pić",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_pic_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.pic.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "pije"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "piją"
+          },
+          {
+            "id": "past_stem",
+            "form": "pi"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.zasypiac.v",
+        "language": "pl",
+        "lemma": "zasypiać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_zasypiac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.zasypiac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "zasypia"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "zasypiają"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.zyc.v",
+        "language": "pl",
+        "lemma": "żyć",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_zyc_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.zyc.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "żyje"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "żyją"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.dziekowac.v",
+        "language": "pl",
+        "lemma": "dziękować",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_dziekowac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.dziekowac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "dziękuje"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "dziękują"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.pomagac.v",
+        "language": "pl",
+        "lemma": "pomagać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_pomagac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.pomagac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "pomaga"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "pomagają"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.lubic.v",
+        "language": "pl",
+        "lemma": "lubić",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_lubic_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.lubic.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "lubi"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "lubią"
+          },
+          {
+            "id": "past_stem",
+            "form": "lubi"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.rozmawiac.v",
+        "language": "pl",
+        "lemma": "rozmawiać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_rozmawiac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.rozmawiac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "rozmawia"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "rozmawiają"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.ogladac.v",
+        "language": "pl",
+        "lemma": "oglądać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_ogladac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.ogladac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "ogląda"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "oglądają"
+          },
+          {
+            "id": "past_stem",
+            "form": "ogląda"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.pisac.v",
+        "language": "pl",
+        "lemma": "pisać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_pisac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.pisac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "pisze"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "piszą"
+          },
+          {
+            "id": "past_stem",
+            "form": "pisa"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.pracowac.v",
+        "language": "pl",
+        "lemma": "pracować",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_pracowac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.pracowac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "pracuje"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "pracują"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.kupowac.v",
+        "language": "pl",
+        "lemma": "kupować",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_kupowac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.kupowac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "kupuje"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "kupują"
+          },
+          {
+            "id": "past_stem",
+            "form": "kupowa"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.kupic.v",
+        "language": "pl",
+        "lemma": "kupić",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_kupic_past_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.kupic.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "kupuje"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "kupują"
+          },
+          {
+            "id": "past_stem",
+            "form": "kupi"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.sprzedawac.v",
+        "language": "pl",
+        "lemma": "sprzedawać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_sprzedawac_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.sprzedawac.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "sprzedaje"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "sprzedają"
+          },
+          {
+            "id": "past_stem",
+            "form": "sprzedawa"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.dac.v",
+        "language": "pl",
+        "lemma": "dać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_dac_past_3sg_masculine"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.dac.v",
+        "parts": [
+          {
+            "id": "past_stem",
+            "form": "da"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.widziec.v",
+        "language": "pl",
+        "lemma": "widzieć",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_present_i"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.widziec.v",
+        "parts": [
+          {
+            "id": "present_stem",
+            "form": "widz"
+          },
+          {
+            "id": "past_stem",
+            "form": "widzia"
+          },
+          {
+            "id": "past_masculine_personal_plural_stem",
+            "form": "widzie"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.patrzec.v",
+        "language": "pl",
+        "lemma": "patrzeć",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_present_y"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.patrzec.v",
+        "parts": [
+          {
+            "id": "present_stem",
+            "form": "patrz"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.slyszec.v",
+        "language": "pl",
+        "lemma": "słyszeć",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_slyszec_finite"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.slyszec.v",
+        "parts": [
+          {
+            "id": "present_stem",
+            "form": "słysz"
+          },
+          {
+            "id": "past_stem",
+            "form": "słysza"
+          },
+          {
+            "id": "past_masculine_personal_plural_stem",
+            "form": "słysze"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.dostac.v",
+        "language": "pl",
+        "lemma": "dostać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_perfective_finite"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.dostac.v",
+        "parts": [
+          {
+            "id": "future_stem",
+            "form": "dostan"
+          },
+          {
+            "id": "past_stem",
+            "form": "dosta"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.czytac.v",
+        "language": "pl",
+        "lemma": "czytać",
+        "pos": "verb",
+        "paradigm_id": "pl_verb_czytac_finite"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.czytac.v",
+        "parts": [
+          {
+            "id": "present_stem",
+            "form": "czyt"
+          },
+          {
+            "id": "past_stem",
+            "form": "czyta"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:pl.budzic_sie.v",
+        "language": "pl",
+        "lemma": "budzić się",
+        "pos": "verb_reflexive",
+        "paradigm_id": "pl_verb_budzic_sie_present_3sg_3pl"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:pl.budzic_sie.v",
+        "parts": [
+          {
+            "id": "present_3sg_form",
+            "form": "budzi"
+          },
+          {
+            "id": "present_3pl_form",
+            "form": "budzą"
+          }
+        ]
+      }
     }
   ]
 }

@@ -314,7 +314,7 @@ func (engine *Engine) translateDSE(ctx context.Context, request Request) (Transl
 			// realizer retains those details as residuals and returns an incomplete
 			// result; it does not let them become a complete translation.
 			realized, realizeErr = engine.realizeAlgebra(requestContext, request.To, targetDocument, targetResources.TargetPackage, profile.SelectedMetadata, false)
-		} else if dseCoordinationDefinitePreview(targetDocument, candidate) || dseBelongingConditionPreview(targetDocument, candidate) || dseOwnershipConditionPreview(targetDocument, candidate) {
+		} else if dseCoordinationDefinitePreview(targetDocument, candidate) || dsePredicateConditionPreview(targetDocument, candidate) {
 			// A checked source definite presupposition may remain unexpressed in
 			// the target language. Permit text as an explicitly incomplete preview
 			// only for this narrow coordinated shape; the target residual remains
@@ -481,109 +481,122 @@ func dseCoordinationDefinitePreview(document algebra.Document, candidate semanti
 	return true
 }
 
-// dseBelongingConditionPreview allows an incomplete surface preview when the
-// exact two-role belonging relation is covered and only definite-reference
-// conditions remain. The conditions stay in the request context and residuals.
-func dseBelongingConditionPreview(document algebra.Document, candidate semantic.DSECandidate) bool {
-	root := document.Expression
-	if candidate.PredicateKind != "relation" || root == nil || root.Kind != algebra.TermAtom || root.Symbol != "concept:belonging_association" || document.RequestContext == nil || len(document.RequestContext.Conditions) == 0 {
+// dsePredicateConditionPreview permits an incomplete target preview when all
+// remaining reference conditions are explicitly linked to predicate roles.
+// It does not claim the target language expressed those conditions.
+func dsePredicateConditionPreview(document algebra.Document, candidate semantic.DSECandidate) bool {
+	atom := document.Expression
+	if atom != nil && atom.Kind == algebra.TermNot {
+		atom = atom.Body
+	}
+	if atom == nil || atom.Kind != algebra.TermAtom || document.RequestContext == nil || len(document.RequestContext.Conditions) == 0 {
 		return false
 	}
-	roles := map[string]string{}
-	for _, argument := range root.Args {
-		if (argument.Role != "associate" && argument.Role != "item") || argument.Value == nil || argument.Value.Kind != algebra.TermRef || argument.Value.Type == nil || argument.Value.Type.Kind != algebra.TypeEntity {
-			return false
-		}
-		if _, duplicate := roles[argument.Role]; duplicate {
-			return false
-		}
-		roles[argument.Role] = argument.Value.ID
-	}
-	if len(roles) != 2 || len(candidate.RoleSources) != 2 {
-		return false
-	}
+	roleReferences := make(map[string]string, len(candidate.RoleSources))
 	for _, source := range candidate.RoleSources {
-		if source.WHGap != nil || roles[source.Role] != source.ReferenceID {
+		if source.WHGap != nil || source.Role == "" || source.ReferenceID == "" {
 			return false
 		}
+		if _, duplicate := roleReferences[source.Role]; duplicate {
+			return false
+		}
+		roleReferences[source.Role] = source.ReferenceID
 	}
-	for _, condition := range document.RequestContext.Conditions {
-		if condition.Kind != algebra.ContextPresupposition || len(condition.TargetReferentIDs) != 1 {
-			return false
-		}
-		if condition.Code == "definite_reference" {
-			if condition.Expression == nil || condition.Expression.Kind != algebra.TermAtom || len(condition.Expression.Args) != 1 || condition.Expression.Args[0].Value == nil || condition.Expression.Args[0].Value.Kind != algebra.TermRef || condition.Expression.Args[0].Value.ID != condition.TargetReferentIDs[0] {
+	if len(roleReferences) == 0 {
+		return false
+	}
+	for _, argument := range atom.Args {
+		if argument.Role == "event" {
+			if candidate.HeadEventReferenceID == "" || argument.Value == nil || argument.Value.Kind != algebra.TermRef || argument.Value.ID != candidate.HeadEventReferenceID {
 				return false
 			}
-		} else if condition.Code == "deictic_anchor" {
-			if condition.Expression != nil || (condition.Detail != "demonstrative" && condition.Detail != "distal" && condition.Detail != "proximal") {
+			continue
+		}
+		if argument.Value == nil || argument.Value.Kind != algebra.TermRef || roleReferences[argument.Role] != argument.Value.ID {
+			return false
+		}
+	}
+	seenConditions := 0
+	for _, condition := range document.RequestContext.Conditions {
+		if condition.Kind == algebra.ContextPresupposition && condition.Code == "deictic_anchor" {
+			if !dsePreviewParticipantAnchor(document, candidate, condition, roleReferences) {
 				return false
 			}
-		} else {
-			return false
+			seenConditions++
+			continue
 		}
-		covered := false
-		for _, coverage := range candidate.ConditionCoverage {
-			if coverage.ConditionID == condition.ID && coverage.Kind == "presupposition" && coverage.Code == condition.Code && len(coverage.TargetReferenceIDs) == 1 && coverage.TargetReferenceIDs[0] == condition.TargetReferentIDs[0] {
-				covered = true
-				break
-			}
-		}
-		if !covered {
-			return false
-		}
-	}
-	return true
-}
-
-// dseOwnershipConditionPreview permits a text-bearing but incomplete target
-// preview for an exact two-role legal-ownership relation when its only
-// remaining referential conditions are explicitly linked to those roles.
-// The conditions stay in the target request context and are reported as
-// residuals; this does not assert that a target surface expressed them.
-func dseOwnershipConditionPreview(document algebra.Document, candidate semantic.DSECandidate) bool {
-	root := document.Expression
-	if candidate.PredicateKind != "relation" || candidate.HeadEventReferenceID != "" || root == nil || root.Kind != algebra.TermAtom || root.Symbol != "concept:legal_ownership" || document.RequestContext == nil || len(document.RequestContext.Conditions) == 0 {
-		return false
-	}
-	roles := map[string]string{}
-	for _, argument := range root.Args {
-		if (argument.Role != "owner" && argument.Role != "asset") || argument.Value == nil || argument.Value.Kind != algebra.TermRef || argument.Value.Type == nil || argument.Value.Type.Kind != algebra.TypeEntity {
-			return false
-		}
-		if _, duplicate := roles[argument.Role]; duplicate {
-			return false
-		}
-		roles[argument.Role] = argument.Value.ID
-	}
-	if len(roles) != 2 || len(candidate.RoleSources) != 2 {
-		return false
-	}
-	for _, source := range candidate.RoleSources {
-		if source.WHGap != nil || roles[source.Role] == "" || roles[source.Role] != source.ReferenceID {
-			return false
-		}
-	}
-	for _, condition := range document.RequestContext.Conditions {
-		if condition.Kind != algebra.ContextPresupposition || (condition.Code != "definite_reference" && condition.Code != "indefinite_reference") || condition.Expression == nil || condition.Expression.Kind != algebra.TermAtom || len(condition.Expression.Args) != 1 || condition.Expression.Args[0].Role != "entity" || len(condition.TargetReferentIDs) != 1 {
+		if condition.Kind != algebra.ContextPresupposition || (condition.Code != "definite_reference" && condition.Code != "indefinite_reference") || condition.Expression == nil || condition.Expression.Kind != algebra.TermAtom || len(condition.Expression.Args) != 1 || len(condition.TargetReferentIDs) != 1 {
 			return false
 		}
 		argument := condition.Expression.Args[0]
-		if argument.Value == nil || argument.Value.Kind != algebra.TermRef || argument.Value.Type == nil || argument.Value.Type.Kind != algebra.TypeEntity || argument.Value.ID != condition.TargetReferentIDs[0] || (roles["owner"] != argument.Value.ID && roles["asset"] != argument.Value.ID) {
+		if argument.Role != "entity" || argument.Value == nil || argument.Value.Kind != algebra.TermRef || argument.Value.Type == nil || argument.Value.Type.Kind != algebra.TypeEntity || argument.Value.ID != condition.TargetReferentIDs[0] {
+			return false
+		}
+		roleLinked := false
+		for _, referenceID := range roleReferences {
+			if referenceID == argument.Value.ID {
+				roleLinked = true
+			}
+		}
+		if !roleLinked {
 			return false
 		}
 		covered := false
 		for _, coverage := range candidate.ConditionCoverage {
 			if coverage.ConditionID == condition.ID && string(coverage.Kind) == string(condition.Kind) && coverage.Code == condition.Code && len(coverage.TargetReferenceIDs) == 1 && coverage.TargetReferenceIDs[0] == argument.Value.ID {
 				covered = true
-				break
 			}
 		}
 		if !covered {
 			return false
 		}
+		seenConditions++
 	}
-	return true
+	return seenConditions > 0
+}
+
+func dsePreviewParticipantAnchor(document algebra.Document, candidate semantic.DSECandidate, condition algebra.ContextCondition, roleReferences map[string]string) bool {
+	if document.RequestContext == nil || condition.Expression != nil || len(condition.TargetReferentIDs) != 1 {
+		return false
+	}
+	referenceID, anchor := condition.TargetReferentIDs[0], condition.Detail
+	request := document.RequestContext
+	if anchor == "speaker" && request.SpeakerReferentID != referenceID ||
+		anchor == "speaker_inclusive_group" && request.SpeakerReferentID != referenceID ||
+		anchor == "addressee" && request.AddresseeReferentID != referenceID {
+		return false
+	}
+	if anchor != "speaker" && anchor != "speaker_inclusive_group" && anchor != "addressee" {
+		return false
+	}
+	roleLinked := false
+	for _, id := range roleReferences {
+		if id == referenceID {
+			roleLinked = true
+		}
+	}
+	if !roleLinked {
+		return false
+	}
+	multiplicity := ""
+	for _, referent := range request.Referents {
+		if referent.ID == referenceID && referent.Type.Kind == algebra.TypeEntity && referent.ConceptID == "concept:person" {
+			multiplicity = referent.Multiplicity
+		}
+	}
+	if anchor == "speaker" && multiplicity != "one" || anchor == "speaker_inclusive_group" && multiplicity != "many" || multiplicity == "" {
+		return false
+	}
+	for _, reference := range document.References {
+		if reference.ID == referenceID && reference.Type.Kind == algebra.TypeEntity && (reference.Multiplicity == "" || reference.Multiplicity == multiplicity) {
+			for _, coverage := range candidate.ConditionCoverage {
+				if coverage.ConditionID == condition.ID && string(coverage.Kind) == string(condition.Kind) && coverage.Code == condition.Code && len(coverage.TargetReferenceIDs) == 1 && coverage.TargetReferenceIDs[0] == referenceID {
+					return true
+				}
+			}
+		}
+	}
+	return false
 }
 
 func consumeDSELexicalConditions(sourcePackage *language.SemanticLanguagePackage, candidate semantic.DSECandidate, document algebra.Document, mappings []DSEReferenceConceptMapping) (algebra.Document, []DSEConditionConsumption) {
@@ -779,6 +792,9 @@ func dseFailure(result TranslationResult, outcome status.OutcomeKind, code, path
 func dseTranslationAsk(expression *algebra.Term) (answerID, answerRole string, isAsk, supported bool) {
 	if expression == nil {
 		return "", "", false, false
+	}
+	if expression.Kind == algebra.TermNot && expression.Body != nil && expression.Body.Kind == algebra.TermAtom {
+		return "", "", false, true
 	}
 	if expression.Kind == algebra.TermAtom {
 		return "", "", false, true
@@ -1035,6 +1051,7 @@ func enrichDSEContext(engine *Engine, document algebra.Document, candidate seman
 	type sourceReference struct{ role, referenceID, senseID string }
 	sourceReferences := make([]sourceReference, 0, len(candidate.RoleSources)+1)
 	bindingsByReference := make(map[string]string, len(candidate.RoleSources)+1)
+	participantAnchors := make(map[string]string)
 	if candidate.PredicateKind == "relation" {
 		if candidate.HeadEventReferenceID != "" || candidate.Source.SenseID == "" {
 			return algebra.Document{}, nil, status.OutcomeInvalid, "DSE_RELATION_EVENT_FORBIDDEN", "relation predicate must carry its exact sense without an Event identity"
@@ -1050,6 +1067,65 @@ func enrichDSEContext(engine *Engine, document algebra.Document, candidate seman
 		concept, found := engine.core.Lookup(predicateBindings[0].CoreRef)
 		if !found || concept.Kind != core.KindRelation || predicateBindings[0].CoreRef.String() != "concept:belonging_association" && predicateBindings[0].CoreRef.String() != "concept:legal_ownership" || len(concept.RoleTypes) != 2 {
 			return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_RELATION_METADATA_MISMATCH", "selected relation source sense must resolve to a two-role CORE relation concept"
+		}
+	} else if candidate.PredicateKind == "property" {
+		if candidate.HeadEventReferenceID != "" || candidate.Source.SenseID == "" || candidate.Source.FrameID == "" || candidate.Source.FamilyID == "" || candidate.Source.VariantID == "" {
+			return algebra.Document{}, nil, status.OutcomeInvalid, "DSE_PROPERTY_EVIDENCE_INVALID", "property candidate must carry its exact source sense, frame, family, variant and no Event identity"
+		}
+		predicateSense, parseErr := ids.ParseSenseID(candidate.Source.SenseID)
+		if parseErr != nil {
+			return algebra.Document{}, nil, status.OutcomeInvalid, "DSE_PROPERTY_SENSE_INVALID", "property candidate carries a malformed source sense"
+		}
+		predicateBindings := engine.snapshot.Lexicon().TransferBindings(predicateSense)
+		if len(predicateBindings) != 1 || !predicateBindings[0].TransferAuthorized() {
+			return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_PROPERTY_METADATA_MISMATCH", "selected source sense must resolve to one approved property transfer"
+		}
+		concept, found := engine.core.Lookup(predicateBindings[0].CoreRef)
+		if !found || concept.Kind != core.KindProperty || len(concept.RoleTypes) == 0 {
+			return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_PROPERTY_ROLE_SHAPE_MISMATCH", "selected CORE concept must be a property with declared roles"
+		}
+		propertyRoles := make(map[string]bool, len(concept.RoleTypes))
+		for _, role := range concept.RoleTypes {
+			if role.Name == "" || propertyRoles[role.Name] || len(role.AllowedKinds) != 1 || role.AllowedKinds[0] != core.KindEntity {
+				return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_PROPERTY_ROLE_SHAPE_MISMATCH", "selected property requires unique Entity-valued CORE roles"
+			}
+			propertyRoles[role.Name] = true
+		}
+		atom := document.Expression
+		if atom.Kind == algebra.TermNot {
+			atom = atom.Body
+		}
+		if atom == nil || atom.Kind != algebra.TermAtom || atom.Symbol != predicateBindings[0].CoreRef.String() || len(candidate.RoleSources) != len(propertyRoles) || len(atom.Args) != len(propertyRoles) {
+			return algebra.Document{}, nil, status.OutcomeInvalid, "DSE_PROPERTY_ROLE_SHAPE_MISMATCH", "property expression must cover every selected CORE role exactly once"
+		}
+		seen := make(map[string]bool, len(propertyRoles))
+		for _, role := range candidate.RoleSources {
+			if role.WHGap != nil || !propertyRoles[role.Role] || seen[role.Role] || role.ReferenceID == "" {
+				return algebra.Document{}, nil, status.OutcomeInvalid, "DSE_PROPERTY_ROLE_EVIDENCE_MISMATCH", "each property role must retain exact source frame, family and variant provenance"
+			}
+			if role.ImplicitEvidence != nil && (role.Source.FrameID != candidate.Source.FrameID || role.Source.FamilyID != candidate.Source.FamilyID || role.Source.VariantID != candidate.Source.VariantID || role.Source.DerivationID != candidate.Source.DerivationID) {
+				return algebra.Document{}, nil, status.OutcomeInvalid, "DSE_PROPERTY_ROLE_EVIDENCE_MISMATCH", "implicit property roles must retain exact source frame, family and variant provenance"
+			}
+			seen[role.Role] = true
+		}
+		for _, argument := range atom.Args {
+			if !propertyRoles[argument.Role] || argument.Value == nil || argument.Value.Kind != algebra.TermRef {
+				return algebra.Document{}, nil, status.OutcomeInvalid, "DSE_PROPERTY_ROLE_EVIDENCE_MISMATCH", "each CORE property role must bind one explicit reference"
+			}
+			matched := false
+			for _, role := range candidate.RoleSources {
+				if role.Role == argument.Role && role.ReferenceID == argument.Value.ID {
+					matched = true
+				}
+			}
+			if !matched {
+				return algebra.Document{}, nil, status.OutcomeInvalid, "DSE_PROPERTY_ROLE_EVIDENCE_MISMATCH", "property argument references must match the retained source role evidence"
+			}
+		}
+		if document.Expression.Kind == algebra.TermNot && document.Expression.Body != nil && document.Expression.Body.Kind == algebra.TermAtom {
+			// Negation is licensed only for this explicitly approved property route.
+		} else if document.Expression.Kind != algebra.TermAtom {
+			return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_PROPERTY_SCOPE_UNSUPPORTED", "property realization supports only a direct Atom or one Not-scoped Atom"
 		}
 	} else {
 		if candidate.HeadEventReferenceID == "" || candidate.Source.SenseID == "" {
@@ -1070,8 +1146,16 @@ func enrichDSEContext(engine *Engine, document algebra.Document, candidate seman
 		if isAsk && role.Role == answerRole {
 			return algebra.Document{}, nil, status.OutcomeInvalid, "DSE_WH_ROLE_DUPLICATED", "the answer role cannot also be mapped to an explicit source reference"
 		}
-		if role.ReferenceID == "" || role.Source.SenseID == "" {
+		if role.ReferenceID == "" {
 			return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_ROLE_REFERENCE_UNRESOLVED", "every realized role requires an exact source sense and explicit reference"
+		}
+		if role.Source.SenseID == "" {
+			anchor, ok := dseLicensedImplicitParticipantAnchor(candidate, role, document)
+			if !ok {
+				return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_ROLE_REFERENCE_UNRESOLVED", "a role without an overt source NP requires exact validated implicit-role evidence and matching participant context"
+			}
+			participantAnchors[role.ReferenceID] = anchor
+			continue
 		}
 		if prior, exists := bindingsByReference[role.ReferenceID]; exists && prior != role.Source.SenseID {
 			return algebra.Document{}, nil, status.OutcomeInvalid, "DSE_SHARED_REFERENCE_SENSE_CONFLICT", "one source reference has conflicting event or role senses"
@@ -1082,7 +1166,7 @@ func enrichDSEContext(engine *Engine, document algebra.Document, candidate seman
 	if (isAsk && whGapCount != 1) || (!isAsk && whGapCount != 0) {
 		return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_WH_GAP_CARDINALITY", "the typed WH Ask requires exactly one matching source gap and a direct Atom permits none"
 	}
-	if isAsk && (candidate.PredicateKind == "relation" || !dseQuestionSourcesMatch(document.Expression.Body, candidate, answerID)) {
+	if isAsk && (candidate.PredicateKind == "relation" || candidate.PredicateKind == "property" || !dseQuestionSourcesMatch(document.Expression.Body, candidate, answerID)) {
 		return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_WH_ARGUMENT_MAPPING_MISMATCH", "the Ask atom arguments must match the event reference, explicit role references, and one typed source WH gap"
 	}
 	knownDeclarations := make(map[string]algebra.Declaration, len(document.References))
@@ -1097,6 +1181,22 @@ func enrichDSEContext(engine *Engine, document algebra.Document, candidate seman
 			return algebra.Document{}, nil, status.OutcomeInvalid, "DSE_DUPLICATE_CONTEXT_REFERENT", "request context contains duplicate referent IDs"
 		}
 		referents[referent.ID] = index
+	}
+	for referenceID, anchor := range participantAnchors {
+		index, found := referents[referenceID]
+		if !found || context.Referents[index].Type.Kind != algebra.TypeEntity || context.Referents[index].ConceptID != "" && context.Referents[index].ConceptID != "concept:person" {
+			return algebra.Document{}, nil, status.OutcomeInvalid, "DSE_PARTICIPANT_REFERENT_INVALID", "licensed implicit participant must be a compatible typed person referent"
+		}
+		context.Referents[index].ConceptID = "concept:person"
+		anchored := false
+		for _, condition := range context.Conditions {
+			if condition.Kind == algebra.ContextPresupposition && condition.Code == "deictic_anchor" && len(condition.TargetReferentIDs) == 1 && condition.TargetReferentIDs[0] == referenceID && condition.Detail == anchor {
+				anchored = true
+			}
+		}
+		if !anchored {
+			return algebra.Document{}, nil, status.OutcomeUnsupported, "DSE_PARTICIPANT_ANCHOR_MISSING", "implicit participant realization requires the matching validated participant anchor condition"
+		}
 	}
 	resolved := make(map[string]DSEReferenceConceptMapping, len(bindingsByReference))
 	for _, sourceRef := range sourceReferences {
@@ -1136,6 +1236,71 @@ func enrichDSEContext(engine *Engine, document algebra.Document, candidate seman
 	}
 	document.RequestContext = &context
 	return document, mappings, status.OutcomeOK, "", ""
+}
+
+func dseLicensedImplicitParticipantAnchor(candidate semantic.DSECandidate, role semantic.DSERoleSource, document algebra.Document) (string, bool) {
+	evidence := role.ImplicitEvidence
+	badProvenance := evidence == nil || role.ResolutionBasis != "licensed_implicit_role_evidence" || document.RequestContext == nil ||
+		role.ReferenceID == "" || role.Source.CandidateID == "" || role.Source.CandidateID != candidate.Source.CandidateID ||
+		role.Source.DerivationID != candidate.Source.DerivationID || role.Source.FrameID != candidate.Source.FrameID ||
+		role.Source.FamilyID != candidate.Source.FamilyID || role.Source.VariantID != candidate.Source.VariantID ||
+		evidence.PredicateCandidateID != candidate.Source.CandidateID || evidence.DerivationID != candidate.Source.DerivationID ||
+		string(evidence.Role) != role.Role || evidence.CoreConceptID.String() != "concept:person" || evidence.SourceSpan != candidate.Source.Span ||
+		evidence.Multiplicity == "" || evidence.ParticipantAnchor.Kind != "participant"
+	if badProvenance {
+		return "", false
+	}
+	anchor := evidence.ParticipantAnchor.Value
+	request := document.RequestContext
+	if anchor == "speaker" && request.SpeakerReferentID != role.ReferenceID ||
+		anchor == "speaker_inclusive_group" && request.SpeakerReferentID != role.ReferenceID ||
+		anchor == "addressee" && request.AddresseeReferentID != role.ReferenceID {
+		return "", false
+	}
+	declared, contextual := false, false
+	for _, reference := range document.References {
+		if reference.ID == role.ReferenceID && reference.Type.Kind == algebra.TypeEntity &&
+			(reference.Multiplicity == "" || reference.Multiplicity == string(evidence.Multiplicity)) {
+			declared = true
+		}
+	}
+	for _, referent := range request.Referents {
+		if referent.ID == role.ReferenceID && referent.Type.Kind == algebra.TypeEntity &&
+			(referent.ConceptID == "" || referent.ConceptID == "concept:person") && referent.Multiplicity == string(evidence.Multiplicity) {
+			contextual = true
+		}
+	}
+	if !declared || !contextual {
+		return "", false
+	}
+	atom := document.Expression
+	if atom != nil && atom.Kind == algebra.TermNot {
+		atom = atom.Body
+	}
+	if atom == nil || atom.Kind != algebra.TermAtom {
+		return "", false
+	}
+	matchedArgument := false
+	for _, argument := range atom.Args {
+		if argument.Role == role.Role && argument.Value != nil && argument.Value.Kind == algebra.TermRef && argument.Value.ID == role.ReferenceID {
+			matchedArgument = true
+		}
+	}
+	if !matchedArgument {
+		return "", false
+	}
+	coveredAnchor := false
+	for _, condition := range request.Conditions {
+		if condition.Kind == algebra.ContextPresupposition && condition.Code == "deictic_anchor" && condition.Expression == nil &&
+			condition.Detail == anchor && len(condition.TargetReferentIDs) == 1 && condition.TargetReferentIDs[0] == role.ReferenceID {
+			for _, coverage := range candidate.ConditionCoverage {
+				if coverage.ConditionID == condition.ID && string(coverage.Kind) == string(condition.Kind) && coverage.Code == condition.Code && len(coverage.TargetReferenceIDs) == 1 && coverage.TargetReferenceIDs[0] == role.ReferenceID {
+					coveredAnchor = true
+				}
+			}
+		}
+	}
+	return anchor, coveredAnchor
 }
 
 func dseQuestionSourcesMatch(atom *algebra.Term, candidate semantic.DSECandidate, answerID string) bool {

@@ -184,6 +184,8 @@ type algebraAtomMatch struct {
 	binding           lexicon.SemanticBinding
 	eventPort         string
 	relationPredicate bool
+	propertyPredicate bool
+	negated           bool
 	rolePorts         []lexicon.SemanticRolePort
 	arguments         map[string]*algebra.Term
 	answerVariableID  string
@@ -292,6 +294,15 @@ func (engine *Engine) realizeAlgebra(
 	}
 	queryAnswer := (*algebra.Declaration)(nil)
 	expression := input.Expression
+	negated := false
+	if expression.Kind == algebra.TermNot {
+		if expression.Body == nil || expression.Body.Kind != algebra.TermAtom {
+			result.Residuals = append(result.Residuals, AlgebraRealizationResidual{Path: "input.expression", Code: "UNSUPPORTED_NEGATION_SCOPE", Message: "only one Not directly scoping an Atom is supported by this route", Term: cloneAlgebraTerm(expression)})
+			return algebraRealizationFailure(result, status.OutcomeUnsupported, "UNSUPPORTED_NEGATION_SCOPE", "input.expression", "negation scope is unsupported"), nil
+		}
+		negated = true
+		expression = expression.Body
+	}
 	if expression.Kind == algebra.TermAsk {
 		if expression.Restrictor != nil || len(expression.Answers) != 1 || expression.Body == nil || expression.Body.Kind != algebra.TermAtom {
 			result.Residuals = append(result.Residuals, AlgebraRealizationResidual{Path: "input.expression", Code: "UNSUPPORTED_ASK_SHAPE", Message: "this route supports only one Entity answer bound in the role of one direct Atom, without a restrictor", Term: cloneAlgebraTerm(expression)})
@@ -358,6 +369,11 @@ func (engine *Engine) realizeAlgebra(
 		return algebraRealizationFailure(result, status.OutcomeAmbiguous, "MULTIPLE_REALIZABLE_ATOMS", "input.expression", "multiple exact target atoms are present; no fragment was selected"), nil
 	}
 	match := matches[0]
+	match.negated = negated
+	if negated && !match.propertyPredicate {
+		result.Residuals = append(result.Residuals, AlgebraRealizationResidual{Path: "input.expression", Code: "NEGATION_NOT_LICENSED_FOR_ROUTE", Message: "this DSE negation route requires an approved property predicate", Term: cloneAlgebraTerm(input.Expression)})
+		return algebraRealizationFailure(result, status.OutcomeUnsupported, "NEGATION_NOT_LICENSED_FOR_ROUTE", "input.expression", "negation is not licensed for this semantic target"), nil
+	}
 	result.Residuals = append(result.Residuals, unresolved...)
 	if len(result.Residuals) > maxAlgebraRealizationParts {
 		return algebraRealizationFailure(result, status.OutcomeResourceLimit, "RESOURCE_LIMIT", "residuals", "expression residual count exceeds the realization limit"), nil
@@ -605,8 +621,13 @@ func findAlgebraAtomMatch(
 	if binding.Target.Kind != lexicon.SemanticTargetSymbol || string(binding.Target.SymbolRef) != atom.Symbol {
 		return nil, status.OutcomeUnsupported, "TARGET_KIND_UNSUPPORTED", "only a direct symbol target can match this route"
 	}
+	selectedRolePorts, ambiguousFrames := targetRolePortsForSense(binding, languagePackage)
+	if ambiguousFrames {
+		return nil, status.OutcomeAmbiguous, "AMBIGUOUS_TARGET_FRAME_PORTS", "multiple approved target frames for this sense expose different role-to-port mappings"
+	}
 	coreBindings := engine.snapshot.Lexicon().TransferBindings(binding.SenseID)
 	relationPredicate := false
+	propertyPredicate := false
 	relationRoles := make(map[string]bool)
 	if len(coreBindings) == 1 && coreBindings[0].TransferAuthorized() {
 		if concept, found := engine.core.Lookup(coreBindings[0].CoreRef); found && concept.Kind == core.KindRelation && (coreBindings[0].CoreRef.String() == "concept:belonging_association" || coreBindings[0].CoreRef.String() == "concept:legal_ownership") {
@@ -619,19 +640,34 @@ func findAlgebraAtomMatch(
 			}
 		}
 	}
-	if relationPredicate && (len(relationRoles) != 2 || len(binding.Target.RolePorts) != len(relationRoles)) {
+	if len(coreBindings) == 1 && coreBindings[0].TransferAuthorized() {
+		if concept, found := engine.core.Lookup(coreBindings[0].CoreRef); found && concept.Kind == core.KindProperty {
+			if len(concept.RoleTypes) == 0 {
+				return nil, status.OutcomeUnsupported, "PROPERTY_ROLE_SHAPE_UNSUPPORTED", "property realization requires declared Entity-valued roles"
+			}
+			for _, role := range concept.RoleTypes {
+				if role.Name == "" || len(role.AllowedKinds) != 1 || role.AllowedKinds[0] != core.KindEntity || relationRoles[role.Name] {
+					return nil, status.OutcomeUnsupported, "PROPERTY_ROLE_SHAPE_UNSUPPORTED", "property realization requires unique Entity-valued roles"
+				}
+				relationRoles[role.Name] = true
+			}
+			propertyPredicate = true
+		}
+	}
+	if relationPredicate && (len(relationRoles) != 2 || len(selectedRolePorts) != len(relationRoles)) ||
+		propertyPredicate && len(selectedRolePorts) != len(relationRoles) {
 		return nil, status.OutcomeUnsupported, "RELATION_ROLE_SHAPE_UNSUPPORTED", "relation route requires exactly two CORE Entity roles and matching target ports"
 	}
-	if len(binding.Target.RolePorts) == 0 || (!relationPredicate && len(binding.Target.RolePorts) >= len(signature.Ports)) || (relationPredicate && len(binding.Target.RolePorts) != len(relationRoles)) {
+	if len(selectedRolePorts) == 0 || (!relationPredicate && !propertyPredicate && len(selectedRolePorts) >= len(signature.Ports)) || ((relationPredicate || propertyPredicate) && len(selectedRolePorts) != len(relationRoles)) {
 		message := "target must map participant ports and leave exactly one typed event port"
-		if relationPredicate {
+		if relationPredicate || propertyPredicate {
 			message = "relation target must map exactly the declared Entity role ports without an Event port"
 		}
 		return nil, status.OutcomeUnsupported, "TARGET_PORT_SHAPE_UNSUPPORTED", message
 	}
-	portMappings := make(map[string]lexicon.SemanticRolePort, len(binding.Target.RolePorts))
-	roleNames := make(map[string]bool, len(binding.Target.RolePorts))
-	for _, rolePort := range binding.Target.RolePorts {
+	portMappings := make(map[string]lexicon.SemanticRolePort, len(selectedRolePorts))
+	roleNames := make(map[string]bool, len(selectedRolePorts))
+	for _, rolePort := range selectedRolePorts {
 		if rolePort.PortID == "" || rolePort.Role == "" || portMappings[rolePort.PortID].PortID != "" || roleNames[rolePort.Role] {
 			return nil, status.OutcomeUnsupported, "INVALID_TARGET_ROLE_PORTS", "target role/port mapping is empty or duplicated"
 		}
@@ -654,7 +690,7 @@ func findAlgebraAtomMatch(
 			return nil, status.OutcomeInvalid, "MISSING_ATOM_ARGUMENT", "atom argument does not cover every declared port"
 		}
 		if mapped {
-			if relationPredicate && (!relationRoles[port.Role] || rolePort.Role != port.Role || rolePort.PortID != port.Role) {
+			if (relationPredicate || propertyPredicate) && (!relationRoles[port.Role] || rolePort.Role != port.Role || rolePort.PortID != port.Role) {
 				return nil, status.OutcomeUnsupported, "INVALID_RELATION_ROLE_PORTS", "relation must map every declared CORE role to its identically named Entity port"
 			}
 			if !algebra.TypeEqual(port.Type, rolePort.Type) || port.Type.Kind != algebra.TypeEntity {
@@ -670,7 +706,7 @@ func findAlgebraAtomMatch(
 			}
 			continue
 		}
-		if relationPredicate {
+		if relationPredicate || propertyPredicate {
 			return nil, status.OutcomeUnsupported, "UNMAPPED_RELATION_PORT", "relation target signatures may contain only fully mapped Entity roles"
 		}
 		if port.Type.Kind != algebra.TypeEvent || eventPort != "" {
@@ -678,7 +714,7 @@ func findAlgebraAtomMatch(
 		}
 		eventPort = port.Role
 	}
-	if (!relationPredicate && eventPort == "") || len(args) != len(signature.Ports) {
+	if (!relationPredicate && !propertyPredicate && eventPort == "") || len(args) != len(signature.Ports) {
 		message := "target does not cover the signature with participant roles and one Event identity"
 		if relationPredicate {
 			message = "relation target must cover exactly the declared Entity signature roles"
@@ -696,10 +732,62 @@ func findAlgebraAtomMatch(
 	if answer != nil {
 		answerVariableID, answerSort = answer.ID, string(answer.Type.Kind)
 	}
-	if relationPredicate && answer != nil {
+	if (relationPredicate || propertyPredicate) && answer != nil {
 		return nil, status.OutcomeUnsupported, "RELATION_QUESTION_UNSUPPORTED", "relation predicates do not license an answer variable in this route"
 	}
-	return &algebraAtomMatch{path: path, atom: atom, signature: signature, binding: binding, eventPort: eventPort, relationPredicate: relationPredicate, rolePorts: append([]lexicon.SemanticRolePort{}, binding.Target.RolePorts...), arguments: args, answerVariableID: answerVariableID, answerSort: answerSort, answerRole: answerRole, validation: validation}, status.OutcomeOK, "", ""
+	return &algebraAtomMatch{path: path, atom: atom, signature: signature, binding: binding, eventPort: eventPort, relationPredicate: relationPredicate, propertyPredicate: propertyPredicate, rolePorts: selectedRolePorts, arguments: args, answerVariableID: answerVariableID, answerSort: answerSort, answerRole: answerRole, validation: validation}, status.OutcomeOK, "", ""
+}
+
+func targetRolePortsForSense(binding lexicon.SemanticBinding, languagePackage *language.SemanticLanguagePackage) ([]lexicon.SemanticRolePort, bool) {
+	if binding.Target == nil {
+		return nil, false
+	}
+	frames := make(map[string]bool)
+	for _, frame := range languagePackage.Frames() {
+		if frame.SenseID == binding.SenseID {
+			frames[string(frame.ID)] = true
+		}
+	}
+	byFrame := make(map[string][]lexicon.SemanticRolePort)
+	for _, rolePort := range binding.Target.RolePorts {
+		if frames[rolePort.FrameID] {
+			byFrame[rolePort.FrameID] = append(byFrame[rolePort.FrameID], rolePort)
+		}
+	}
+	if len(byFrame) != len(frames) {
+		return nil, true
+	}
+	frameIDs := make([]string, 0, len(byFrame))
+	for frameID := range byFrame {
+		frameIDs = append(frameIDs, frameID)
+	}
+	sort.Strings(frameIDs)
+	if len(frameIDs) == 0 {
+		return nil, false
+	}
+	canonical := func(ports []lexicon.SemanticRolePort) []lexicon.SemanticRolePort {
+		out := append([]lexicon.SemanticRolePort(nil), ports...)
+		sort.Slice(out, func(i, j int) bool {
+			if out[i].Role != out[j].Role {
+				return out[i].Role < out[j].Role
+			}
+			return out[i].PortID < out[j].PortID
+		})
+		return out
+	}
+	selected := canonical(byFrame[frameIDs[0]])
+	for _, frameID := range frameIDs[1:] {
+		other := canonical(byFrame[frameID])
+		if len(other) != len(selected) {
+			return nil, true
+		}
+		for i := range other {
+			if other[i].Role != selected[i].Role || other[i].PortID != selected[i].PortID || !algebra.TypeEqual(other[i].Type, selected[i].Type) {
+				return nil, true
+			}
+		}
+	}
+	return selected, false
 }
 
 func targetValidationAuthorized(validations []language.TargetValidation, binding lexicon.SemanticBinding) bool {
@@ -771,7 +859,7 @@ func buildAlgebraMeaningCandidate(
 	}
 	eventReferenceID := ""
 	eventFrame := ""
-	if !match.relationPredicate {
+	if !match.relationPredicate && !match.propertyPredicate {
 		eventArg := args[match.eventPort]
 		if eventArg == nil || eventArg.Kind != algebra.TermRef {
 			return nil, emptyCoverage, noResiduals, status.OutcomeUnsupported, "EVENT_IDENTITY_NOT_REFERENCE", match.path + ".args." + match.eventPort, "the unique Event port must be bound to an explicit reference"
@@ -876,11 +964,47 @@ func buildAlgebraMeaningCandidate(
 			ContextReferent: ptrContextReferent(referent), ReferenceID: referent.ID,
 		})
 	}
-	if input.RequestContext.SpeakerReferentID != "" {
-		noResiduals = append(noResiduals, AlgebraRealizationResidual{Path: "input.request_context.speaker_referent_id", Code: "UNSUPPORTED_SPEAKER_CONTEXT", Message: "speaker anchoring is retained but not used to choose a surface form in this route", ReferenceID: input.RequestContext.SpeakerReferentID})
+	participantAnchors := map[string]string{}
+	consumedParticipantAnchors := map[string]bool{}
+	conflictingParticipantAnchors := map[string]bool{}
+	for _, condition := range input.RequestContext.Conditions {
+		if condition.Kind != algebra.ContextPresupposition || condition.Code != "deictic_anchor" || condition.Expression != nil || len(condition.TargetReferentIDs) != 1 {
+			continue
+		}
+		referenceID, anchor := condition.TargetReferentIDs[0], condition.Detail
+		if anchor != "speaker" && anchor != "speaker_inclusive_group" && anchor != "addressee" || participantConcepts[referenceID].String() != "concept:person" {
+			continue
+		}
+		if anchor == "speaker" && input.RequestContext.SpeakerReferentID != referenceID ||
+			anchor == "speaker_inclusive_group" && input.RequestContext.SpeakerReferentID != referenceID ||
+			anchor == "addressee" && input.RequestContext.AddresseeReferentID != referenceID {
+			continue
+		}
+		if anchor == "speaker" && participantMultiplicity[referenceID] != meaning.MultiplicityOne ||
+			anchor == "speaker_inclusive_group" && participantMultiplicity[referenceID] != meaning.MultiplicityMany {
+			continue
+		}
+		if existing := participantAnchors[referenceID]; existing != "" && existing != anchor {
+			delete(participantAnchors, referenceID)
+			conflictingParticipantAnchors[referenceID] = true
+			for _, prior := range input.RequestContext.Conditions {
+				if len(prior.TargetReferentIDs) == 1 && prior.TargetReferentIDs[0] == referenceID {
+					delete(consumedParticipantAnchors, prior.ID)
+				}
+			}
+			continue
+		}
+		if conflictingParticipantAnchors[referenceID] {
+			continue
+		}
+		participantAnchors[referenceID] = anchor
+		consumedParticipantAnchors[condition.ID] = true
 	}
-	if input.RequestContext.AddresseeReferentID != "" {
-		noResiduals = append(noResiduals, AlgebraRealizationResidual{Path: "input.request_context.addressee_referent_id", Code: "UNSUPPORTED_ADDRESSEE_CONTEXT", Message: "addressee anchoring is retained but not used to choose a surface form in this route", ReferenceID: input.RequestContext.AddresseeReferentID})
+	if input.RequestContext.SpeakerReferentID != "" && participantAnchors[input.RequestContext.SpeakerReferentID] != "speaker" && participantAnchors[input.RequestContext.SpeakerReferentID] != "speaker_inclusive_group" {
+		noResiduals = append(noResiduals, AlgebraRealizationResidual{Path: "input.request_context.speaker_referent_id", Code: "UNSUPPORTED_SPEAKER_CONTEXT", Message: "speaker anchoring is retained but not matched to an explicit holder anchor", ReferenceID: input.RequestContext.SpeakerReferentID})
+	}
+	if input.RequestContext.AddresseeReferentID != "" && participantAnchors[input.RequestContext.AddresseeReferentID] != "addressee" {
+		noResiduals = append(noResiduals, AlgebraRealizationResidual{Path: "input.request_context.addressee_referent_id", Code: "UNSUPPORTED_ADDRESSEE_CONTEXT", Message: "addressee anchoring is retained but not matched to an explicit holder anchor", ReferenceID: input.RequestContext.AddresseeReferentID})
 	}
 	for index := range input.RequestContext.Mentions {
 		mention := input.RequestContext.Mentions[index]
@@ -892,6 +1016,9 @@ func buildAlgebraMeaningCandidate(
 	}
 	for index := range input.RequestContext.Conditions {
 		condition := cloneAlgebraCondition(input.RequestContext.Conditions[index])
+		if consumedParticipantAnchors[condition.ID] {
+			continue
+		}
 		noResiduals = append(noResiduals, AlgebraRealizationResidual{Path: fmt.Sprintf("input.request_context.conditions[%d]", index), Code: "UNSUPPORTED_CONTEXT_CONDITION", Message: "assumption, presupposition, or loss condition is retained as an explicit residual", ContextCondition: &condition})
 	}
 	if len(noResiduals) > maxAlgebraRealizationParts {
@@ -904,9 +1031,9 @@ func buildAlgebraMeaningCandidate(
 	}
 	var predicateNode meaning.Node
 	var err error
-	if match.relationPredicate {
+	if match.relationPredicate || match.propertyPredicate {
 		predicateNode, err = meaning.NewState(meaning.NodeID("dse_state_0"), coreRef, participants)
-		predicateNode.RelationPredicate = true
+		predicateNode.RelationPredicate = match.relationPredicate
 	} else {
 		eventNodeID = meaning.NodeID("dse_event_0")
 		predicateNode, err = meaning.NewEvent(eventNodeID, coreRef, participants)
@@ -929,7 +1056,14 @@ func buildAlgebraMeaningCandidate(
 	deicticAnchors := map[string]*meaning.DeicticAnchor{}
 	for _, condition := range input.RequestContext.Conditions {
 		if condition.Kind == algebra.ContextPresupposition && condition.Code == "deictic_anchor" && condition.Expression == nil && len(condition.TargetReferentIDs) == 1 && len(condition.Detail) > 0 {
-			deicticAnchors[condition.TargetReferentIDs[0]] = &meaning.DeicticAnchor{Kind: "deixis", Value: condition.Detail}
+			if (condition.Detail == "speaker" || condition.Detail == "speaker_inclusive_group" || condition.Detail == "addressee") && participantAnchors[condition.TargetReferentIDs[0]] != condition.Detail {
+				continue
+			}
+			kind := "deixis"
+			if condition.Detail == "speaker" || condition.Detail == "speaker_inclusive_group" || condition.Detail == "addressee" {
+				kind = "participant"
+			}
+			deicticAnchors[condition.TargetReferentIDs[0]] = &meaning.DeicticAnchor{Kind: kind, Value: condition.Detail}
 		}
 	}
 	for _, referenceID := range referenceIDs {
@@ -951,6 +1085,14 @@ func buildAlgebraMeaningCandidate(
 		})
 	}
 	contentID := predicateNode.ID
+	if match.negated {
+		negation, negationErr := meaning.NewNegation(meaning.NodeID("dse_negation_0"), predicateNode.ID)
+		if negationErr != nil {
+			return nil, emptyCoverage, noResiduals, status.OutcomeInvalid, "MEANING_BUILD_FAILED", "meaning.negation", negationErr.Error()
+		}
+		nodes = append(nodes, negation)
+		contentID = negation.ID
+	}
 	discourseAct := meaning.ActStatement
 	var queryAnswer *semantic.QuestionAnswer
 	if match.answerVariableID != "" {
@@ -994,7 +1136,7 @@ func buildAlgebraMeaningCandidate(
 		Contexts: []semantic.MeaningContext{{Meaning: graph, Context: meaningContext}}, Status: status.OutcomeOK,
 		Evidence: semantic.EvidenceTrace{AlternativeID: candidateID, Outcome: status.OutcomeOK, Records: []semantic.EvidenceRecord{}},
 	}
-	if !match.relationPredicate {
+	if !match.relationPredicate && !match.propertyPredicate {
 		roleSubstitutions = append(roleSubstitutions, AlgebraRoleSubstitution{PortID: match.eventPort, Role: "event_identity", ReferenceID: eventReferenceID, MeaningNodeID: eventNodeID})
 	}
 	coverage := AlgebraRealizationCoverage{

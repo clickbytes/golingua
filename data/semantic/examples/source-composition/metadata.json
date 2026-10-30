@@ -415,6 +415,117 @@
           }
         }
       ]
+    },
+    {
+      "id": "concept:possession",
+      "kind": "primitive",
+      "label": "possession state",
+      "description": "A state in which a holder has an object, without asserting legal title, duration, or collective possession.",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "golingua-dse-have-476",
+          "uri": "https://github.com/clickbytes/golingua/issues/476",
+          "version": "2026-10-30",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "holder",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "role": "object",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "kind": "arity",
+          "count": 2
+        },
+        {
+          "kind": "port_type",
+          "role": "holder",
+          "type": {
+            "kind": "Entity"
+          }
+        },
+        {
+          "kind": "port_type",
+          "role": "object",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.cat",
+      "kind": "primitive",
+      "label": "explicit probe convention probe.cat",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "dse476-cat-reference",
+          "uri": "https://github.com/clickbytes/golingua/issues/476",
+          "version": "2026-10-30",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "kind": "arity",
+          "count": 1
+        },
+        {
+          "kind": "port_type",
+          "role": "entity",
+          "type": {
+            "kind": "Entity"
+          }
+        }
+      ]
+    },
+    {
+      "id": "probe.book",
+      "kind": "primitive",
+      "label": "explicit probe convention probe.book",
+      "review_status": "approved",
+      "provenance": [
+        {
+          "id": "dse476-book-reference",
+          "uri": "https://github.com/clickbytes/golingua/issues/476",
+          "version": "2026-10-30",
+          "license": "internal-neutral-example",
+          "author": "Codex by owner delegation"
+        }
+      ],
+      "ports": [
+        {
+          "role": "entity",
+          "type": { "kind": "Entity" }
+        }
+      ],
+      "constraints": [
+        { "kind": "arity", "count": 1 },
+        { "kind": "port_type", "role": "entity", "type": { "kind": "Entity" } }
+      ]
     }
   ]
 }

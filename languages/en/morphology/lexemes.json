@@ -2,30 +2,2114 @@
   "schema_version": 1,
   "records": [
     {
-      "lexeme": {"id": "lexeme:book-n", "language": "en", "lemma": "book", "pos": "noun", "paradigm_id": "en_noun_regular"},
-      "principal_parts": {"lexeme_id": "lexeme:book-n", "parts": [{"id": "base", "form": "book"}]}
+      "lexeme": {
+        "id": "lexeme:book-n",
+        "language": "en",
+        "lemma": "book",
+        "pos": "noun",
+        "paradigm_id": "en_noun_regular"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:book-n",
+        "parts": [
+          {
+            "id": "base",
+            "form": "book"
+          }
+        ]
+      }
     },
     {
-      "lexeme": {"id": "lexeme:cat-n", "language": "en", "lemma": "cat", "pos": "noun", "paradigm_id": "en_noun_regular"},
-      "principal_parts": {"lexeme_id": "lexeme:cat-n", "parts": [{"id": "base", "form": "cat"}]}
+      "lexeme": {
+        "id": "lexeme:cat-n",
+        "language": "en",
+        "lemma": "cat",
+        "pos": "noun",
+        "paradigm_id": "en_noun_regular"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:cat-n",
+        "parts": [
+          {
+            "id": "base",
+            "form": "cat"
+          }
+        ]
+      }
     },
     {
-      "lexeme": {"id": "lexeme:walk-v", "language": "en", "lemma": "walk", "pos": "verb", "paradigm_id": "en_verb_finite_regular"},
-      "principal_parts": {"lexeme_id": "lexeme:walk-v", "parts": [{"id": "base", "form": "walk"}]}
+      "lexeme": {
+        "id": "lexeme:walk-v",
+        "language": "en",
+        "lemma": "walk",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_regular"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:walk-v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "walk"
+          }
+        ]
+      }
     },
     {
-      "lexeme": {"id": "lexeme:go-v", "language": "en", "lemma": "go", "pos": "verb", "paradigm_id": "en_verb_finite_principal_parts"},
-      "principal_parts": {"lexeme_id": "lexeme:go-v", "parts": [
-        {"id": "base", "form": "go"},
-        {"id": "third_person_singular", "form": "goes"},
-        {"id": "past", "form": "went"},
-        {"id": "past_participle", "form": "gone"},
-        {"id": "present_participle", "form": "going"}
-      ]}
+      "lexeme": {
+        "id": "lexeme:go-v",
+        "language": "en",
+        "lemma": "go",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:go-v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "go"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "goes"
+          },
+          {
+            "id": "past",
+            "form": "went"
+          },
+          {
+            "id": "past_participle",
+            "form": "gone"
+          },
+          {
+            "id": "present_participle",
+            "form": "going"
+          }
+        ]
+      }
     },
     {
-      "lexeme": {"id": "lexeme:bright-adj", "language": "en", "lemma": "bright", "pos": "adjective", "paradigm_id": "en_adjective_regular"},
-      "principal_parts": {"lexeme_id": "lexeme:bright-adj", "parts": [{"id": "base", "form": "bright"}]}
+      "lexeme": {
+        "id": "lexeme:bright-adj",
+        "language": "en",
+        "lemma": "bright",
+        "pos": "adjective",
+        "paradigm_id": "en_adjective_regular"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:bright-adj",
+        "parts": [
+          {
+            "id": "base",
+            "form": "bright"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.do.aux",
+        "language": "en",
+        "lemma": "do",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.do.aux",
+        "parts": [
+          {
+            "id": "base",
+            "form": "do"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "does"
+          },
+          {
+            "id": "past",
+            "form": "did"
+          },
+          {
+            "id": "past_participle",
+            "form": "done"
+          },
+          {
+            "id": "present_participle",
+            "form": "doing"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.see.v",
+        "language": "en",
+        "lemma": "see",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.see.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "see"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "sees"
+          },
+          {
+            "id": "past",
+            "form": "saw"
+          },
+          {
+            "id": "past_participle",
+            "form": "seen"
+          },
+          {
+            "id": "present_participle",
+            "form": "seeing"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.look.v",
+        "language": "en",
+        "lemma": "look",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_regular"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.look.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "look"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.hear.v",
+        "language": "en",
+        "lemma": "hear",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.hear.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "hear"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "hears"
+          },
+          {
+            "id": "past",
+            "form": "heard"
+          },
+          {
+            "id": "past_participle",
+            "form": "heard"
+          },
+          {
+            "id": "present_participle",
+            "form": "hearing"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.get.v",
+        "language": "en",
+        "lemma": "get",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.get.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "get"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "gets"
+          },
+          {
+            "id": "past",
+            "form": "got"
+          },
+          {
+            "id": "past_participle",
+            "form": "gotten"
+          },
+          {
+            "id": "present_participle",
+            "form": "getting"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.give.v",
+        "language": "en",
+        "lemma": "give",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.give.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "give"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "gives"
+          },
+          {
+            "id": "past",
+            "form": "gave"
+          },
+          {
+            "id": "past_participle",
+            "form": "given"
+          },
+          {
+            "id": "present_participle",
+            "form": "giving"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.use.v",
+        "language": "en",
+        "lemma": "use",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_regular"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.use.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "use"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.read.v",
+        "language": "en",
+        "lemma": "read",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.read.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "read"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "reads"
+          },
+          {
+            "id": "past",
+            "form": "read"
+          },
+          {
+            "id": "past_participle",
+            "form": "read"
+          },
+          {
+            "id": "present_participle",
+            "form": "reading"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.sleep.v",
+        "language": "en",
+        "lemma": "sleep",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.sleep.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "sleep"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "sleeps"
+          },
+          {
+            "id": "past",
+            "form": "slept"
+          },
+          {
+            "id": "past_participle",
+            "form": "slept"
+          },
+          {
+            "id": "present_participle",
+            "form": "sleeping"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.go.v",
+        "language": "en",
+        "lemma": "go",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.go.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "go"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "goes"
+          },
+          {
+            "id": "past",
+            "form": "went"
+          },
+          {
+            "id": "past_participle",
+            "form": "gone"
+          },
+          {
+            "id": "present_participle",
+            "form": "going"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.belong.v",
+        "language": "en",
+        "lemma": "belong",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.belong.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "belong"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "belongs"
+          },
+          {
+            "id": "past",
+            "form": "belonged"
+          },
+          {
+            "id": "past_participle",
+            "form": "belonged"
+          },
+          {
+            "id": "present_participle",
+            "form": "belonging"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.own.v",
+        "language": "en",
+        "lemma": "own",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.own.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "own"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "owns"
+          },
+          {
+            "id": "past",
+            "form": "owned"
+          },
+          {
+            "id": "past_participle",
+            "form": "owned"
+          },
+          {
+            "id": "present_participle",
+            "form": "owning"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.thanking.v",
+        "language": "en",
+        "lemma": "thank",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_regular"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.thanking.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "thank"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.conversing.v",
+        "language": "en",
+        "lemma": "talk",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_regular"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.conversing.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "talk"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "talks"
+          },
+          {
+            "id": "past",
+            "form": "talked"
+          },
+          {
+            "id": "past_participle",
+            "form": "talked"
+          },
+          {
+            "id": "present_participle",
+            "form": "talking"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.writing_message.v",
+        "language": "en",
+        "lemma": "write",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.writing_message.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "write"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "writes"
+          },
+          {
+            "id": "past",
+            "form": "wrote"
+          },
+          {
+            "id": "past_participle",
+            "form": "written"
+          },
+          {
+            "id": "present_participle",
+            "form": "writing"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.intentional_action.v",
+        "language": "en",
+        "lemma": "act",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_regular"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.intentional_action.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "act"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.manipulating_object.v",
+        "language": "en",
+        "lemma": "manipulate",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_silent_e"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.manipulating_object.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "manipulate"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.touching_object.v",
+        "language": "en",
+        "lemma": "touch",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_sibilant"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.touching_object.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "touch"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.holding_object.v",
+        "language": "en",
+        "lemma": "hold",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.holding_object.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "hold"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "holds"
+          },
+          {
+            "id": "past",
+            "form": "held"
+          },
+          {
+            "id": "past_participle",
+            "form": "held"
+          },
+          {
+            "id": "present_participle",
+            "form": "holding"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.releasing_object.v",
+        "language": "en",
+        "lemma": "release",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_silent_e"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.releasing_object.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "release"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.placing_object.v",
+        "language": "en",
+        "lemma": "place",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_silent_e"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.placing_object.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "place"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.pushing_object.v",
+        "language": "en",
+        "lemma": "push",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.pushing_object.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "push"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "pushes"
+          },
+          {
+            "id": "past",
+            "form": "pushed"
+          },
+          {
+            "id": "past_participle",
+            "form": "pushed"
+          },
+          {
+            "id": "present_participle",
+            "form": "pushing"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.pulling_object.v",
+        "language": "en",
+        "lemma": "pull",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.pulling_object.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "pull"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "pulls"
+          },
+          {
+            "id": "past",
+            "form": "pulled"
+          },
+          {
+            "id": "past_participle",
+            "form": "pulled"
+          },
+          {
+            "id": "present_participle",
+            "form": "pulling"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.rotating_object.v",
+        "language": "en",
+        "lemma": "rotate",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_silent_e"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.rotating_object.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "rotate"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.opening_object.v",
+        "language": "en",
+        "lemma": "open",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.opening_object.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "open"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "opens"
+          },
+          {
+            "id": "past",
+            "form": "opened"
+          },
+          {
+            "id": "past_participle",
+            "form": "opened"
+          },
+          {
+            "id": "present_participle",
+            "form": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.closing_object.v",
+        "language": "en",
+        "lemma": "close",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.closing_object.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "close"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "closes"
+          },
+          {
+            "id": "past",
+            "form": "closed"
+          },
+          {
+            "id": "past_participle",
+            "form": "closed"
+          },
+          {
+            "id": "present_participle",
+            "form": "closing"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.cutting_object.v",
+        "language": "en",
+        "lemma": "cut",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.cutting_object.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "cut"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "cuts"
+          },
+          {
+            "id": "past",
+            "form": "cut"
+          },
+          {
+            "id": "past_participle",
+            "form": "cut"
+          },
+          {
+            "id": "present_participle",
+            "form": "cutting"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.tearing_object.v",
+        "language": "en",
+        "lemma": "tear",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.tearing_object.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "tear"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "tears"
+          },
+          {
+            "id": "past",
+            "form": "tore"
+          },
+          {
+            "id": "past_participle",
+            "form": "torn"
+          },
+          {
+            "id": "present_participle",
+            "form": "tearing"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.folding_object.v",
+        "language": "en",
+        "lemma": "fold",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.folding_object.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "fold"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "folds"
+          },
+          {
+            "id": "past",
+            "form": "folded"
+          },
+          {
+            "id": "past_participle",
+            "form": "folded"
+          },
+          {
+            "id": "present_participle",
+            "form": "folding"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.buying.v",
+        "language": "en",
+        "lemma": "buy",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.buying.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "buy"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "buys"
+          },
+          {
+            "id": "past",
+            "form": "bought"
+          },
+          {
+            "id": "past_participle",
+            "form": "bought"
+          },
+          {
+            "id": "present_participle",
+            "form": "buying"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.selling.v",
+        "language": "en",
+        "lemma": "sell",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.selling.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "sell"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "sells"
+          },
+          {
+            "id": "past",
+            "form": "sold"
+          },
+          {
+            "id": "past_participle",
+            "form": "sold"
+          },
+          {
+            "id": "present_participle",
+            "form": "selling"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.receiving_payment.v",
+        "language": "en",
+        "lemma": "receive",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_silent_e"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.receiving_payment.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "receive"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.searching_for_item.v",
+        "language": "en",
+        "lemma": "search",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_sibilant"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.searching_for_item.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "search"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.exchanging_goods.v",
+        "language": "en",
+        "lemma": "exchange",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_silent_e"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.exchanging_goods.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "exchange"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.sharing_resource.v",
+        "language": "en",
+        "lemma": "share",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_silent_e"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.sharing_resource.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "share"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.reserving_resource.v",
+        "language": "en",
+        "lemma": "reserve",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_silent_e"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.reserving_resource.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "reserve"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.saving_money.v",
+        "language": "en",
+        "lemma": "save",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_silent_e"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.saving_money.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "save"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.earning_money.v",
+        "language": "en",
+        "lemma": "earn",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_regular"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.earning_money.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "earn"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.liking.v",
+        "language": "en",
+        "lemma": "like",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.liking.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "like"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "likes"
+          },
+          {
+            "id": "past",
+            "form": "liked"
+          },
+          {
+            "id": "past_participle",
+            "form": "liked"
+          },
+          {
+            "id": "present_participle",
+            "form": "liking"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.helping.v",
+        "language": "en",
+        "lemma": "help",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_regular"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.helping.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "help"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.living.v",
+        "language": "en",
+        "lemma": "live",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.living.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "live"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "lives"
+          },
+          {
+            "id": "past",
+            "form": "lived"
+          },
+          {
+            "id": "past_participle",
+            "form": "lived"
+          },
+          {
+            "id": "present_participle",
+            "form": "living"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.breathing.v",
+        "language": "en",
+        "lemma": "breathe",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.breathing.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "breathe"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "breathes"
+          },
+          {
+            "id": "past",
+            "form": "breathed"
+          },
+          {
+            "id": "past_participle",
+            "form": "breathed"
+          },
+          {
+            "id": "present_participle",
+            "form": "breathing"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.coughing.v",
+        "language": "en",
+        "lemma": "cough",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.coughing.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "cough"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "coughs"
+          },
+          {
+            "id": "past",
+            "form": "coughed"
+          },
+          {
+            "id": "past_participle",
+            "form": "coughed"
+          },
+          {
+            "id": "present_participle",
+            "form": "coughing"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.sneezing.v",
+        "language": "en",
+        "lemma": "sneeze",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.sneezing.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "sneeze"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "sneezes"
+          },
+          {
+            "id": "past",
+            "form": "sneezed"
+          },
+          {
+            "id": "past_participle",
+            "form": "sneezed"
+          },
+          {
+            "id": "present_participle",
+            "form": "sneezing"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.drinking.v",
+        "language": "en",
+        "lemma": "drink",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.drinking.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "drink"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "drinks"
+          },
+          {
+            "id": "past",
+            "form": "drank"
+          },
+          {
+            "id": "past_participle",
+            "form": "drunk"
+          },
+          {
+            "id": "present_participle",
+            "form": "drinking"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.falling_asleep.v",
+        "language": "en",
+        "lemma": "fall asleep",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.falling_asleep.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "fall"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "falls"
+          },
+          {
+            "id": "past",
+            "form": "fell"
+          },
+          {
+            "id": "past_participle",
+            "form": "fallen"
+          },
+          {
+            "id": "present_participle",
+            "form": "falling"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.waking_up.v",
+        "language": "en",
+        "lemma": "wake up",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.waking_up.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "wake"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "wakes"
+          },
+          {
+            "id": "past",
+            "form": "woke"
+          },
+          {
+            "id": "past_participle",
+            "form": "woken"
+          },
+          {
+            "id": "present_participle",
+            "form": "waking"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.walking.v",
+        "language": "en",
+        "lemma": "walk",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.walking.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "walk"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "walks"
+          },
+          {
+            "id": "past",
+            "form": "walked"
+          },
+          {
+            "id": "past_participle",
+            "form": "walked"
+          },
+          {
+            "id": "present_participle",
+            "form": "walking"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.running.v",
+        "language": "en",
+        "lemma": "run",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.running.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "run"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "runs"
+          },
+          {
+            "id": "past",
+            "form": "ran"
+          },
+          {
+            "id": "past_participle",
+            "form": "run"
+          },
+          {
+            "id": "present_participle",
+            "form": "running"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.flying_motion.v",
+        "language": "en",
+        "lemma": "fly",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.flying_motion.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "fly"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "flies"
+          },
+          {
+            "id": "past",
+            "form": "flew"
+          },
+          {
+            "id": "past_participle",
+            "form": "flown"
+          },
+          {
+            "id": "present_participle",
+            "form": "flying"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.falling.v",
+        "language": "en",
+        "lemma": "fall",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.falling.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "fall"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "falls"
+          },
+          {
+            "id": "past",
+            "form": "fell"
+          },
+          {
+            "id": "past_participle",
+            "form": "fallen"
+          },
+          {
+            "id": "present_participle",
+            "form": "falling"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.carrying.v",
+        "language": "en",
+        "lemma": "carry",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.carrying.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "carry"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "carries"
+          },
+          {
+            "id": "past",
+            "form": "carried"
+          },
+          {
+            "id": "past_participle",
+            "form": "carried"
+          },
+          {
+            "id": "present_participle",
+            "form": "carrying"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.watching.v",
+        "language": "en",
+        "lemma": "watch",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.watching.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "watch"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "watches"
+          },
+          {
+            "id": "past",
+            "form": "watched"
+          },
+          {
+            "id": "past_participle",
+            "form": "watched"
+          },
+          {
+            "id": "present_participle",
+            "form": "watching"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.watching_screen.v",
+        "language": "en",
+        "lemma": "watch",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.watching_screen.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "watch"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "watches"
+          },
+          {
+            "id": "past",
+            "form": "watched"
+          },
+          {
+            "id": "past_participle",
+            "form": "watched"
+          },
+          {
+            "id": "present_participle",
+            "form": "watching"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.working.v",
+        "language": "en",
+        "lemma": "work",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.working.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "work"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "works"
+          },
+          {
+            "id": "past",
+            "form": "worked"
+          },
+          {
+            "id": "past_participle",
+            "form": "worked"
+          },
+          {
+            "id": "present_participle",
+            "form": "working"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.writing_document.v",
+        "language": "en",
+        "lemma": "write",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.writing_document.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "write"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "writes"
+          },
+          {
+            "id": "past",
+            "form": "wrote"
+          },
+          {
+            "id": "past_participle",
+            "form": "written"
+          },
+          {
+            "id": "present_participle",
+            "form": "writing"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.writing_with_instrument.v",
+        "language": "en",
+        "lemma": "write",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.writing_with_instrument.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "write"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "writes"
+          },
+          {
+            "id": "past",
+            "form": "wrote"
+          },
+          {
+            "id": "past_participle",
+            "form": "written"
+          },
+          {
+            "id": "present_participle",
+            "form": "writing"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.have.v",
+        "language": "en",
+        "lemma": "have",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.have.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "have"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "has"
+          },
+          {
+            "id": "past",
+            "form": "had"
+          },
+          {
+            "id": "past_participle",
+            "form": "had"
+          },
+          {
+            "id": "present_participle",
+            "form": "having"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.eating.v",
+        "language": "en",
+        "lemma": "eat",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_principal_parts"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.eating.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "eat"
+          },
+          {
+            "id": "third_person_singular",
+            "form": "eats"
+          },
+          {
+            "id": "past",
+            "form": "ate"
+          },
+          {
+            "id": "past_participle",
+            "form": "eaten"
+          },
+          {
+            "id": "present_participle",
+            "form": "eating"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.printing_document.v",
+        "language": "en",
+        "lemma": "print",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_regular"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.printing_document.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "print"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.cooking_food.v",
+        "language": "en",
+        "lemma": "cook",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_regular"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.cooking_food.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "cook"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.baking_food.v",
+        "language": "en",
+        "lemma": "bake",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_silent_e"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.baking_food.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "bake"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.boiling_food.v",
+        "language": "en",
+        "lemma": "boil",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_regular"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.boiling_food.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "boil"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.frying_food.v",
+        "language": "en",
+        "lemma": "fry",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_consonant_y"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.frying_food.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "fry"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.cleaning_home.v",
+        "language": "en",
+        "lemma": "clean",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_regular"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.cleaning_home.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "clean"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.dressing_self.v",
+        "language": "en",
+        "lemma": "dress",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_sibilant"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.dressing_self.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "dress"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.brushing_teeth.v",
+        "language": "en",
+        "lemma": "brush",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_sibilant"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.brushing_teeth.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "brush"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.bathing.v",
+        "language": "en",
+        "lemma": "bathe",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_silent_e"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.bathing.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "bathe"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.planting_seed.v",
+        "language": "en",
+        "lemma": "plant",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_regular"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.planting_seed.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "plant"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.harvesting_crop.v",
+        "language": "en",
+        "lemma": "harvest",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_regular"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.harvesting_crop.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "harvest"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.playing_game.v",
+        "language": "en",
+        "lemma": "play",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_regular"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.playing_game.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "play"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.charging_battery.v",
+        "language": "en",
+        "lemma": "charge",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_silent_e"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.charging_battery.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "charge"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.installing_object.v",
+        "language": "en",
+        "lemma": "install",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_regular"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.installing_object.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "install"
+          }
+        ]
+      }
+    },
+    {
+      "lexeme": {
+        "id": "lexeme:en.replacing_component.v",
+        "language": "en",
+        "lemma": "replace",
+        "pos": "verb",
+        "paradigm_id": "en_verb_finite_silent_e"
+      },
+      "principal_parts": {
+        "lexeme_id": "lexeme:en.replacing_component.v",
+        "parts": [
+          {
+            "id": "base",
+            "form": "replace"
+          }
+        ]
+      }
     }
   ]
 }

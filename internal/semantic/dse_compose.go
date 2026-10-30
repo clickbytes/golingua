@@ -13,6 +13,7 @@ import (
 	"github.com/clickbytes/golingua/internal/algebra"
 	"github.com/clickbytes/golingua/internal/analyzer"
 	"github.com/clickbytes/golingua/internal/construction"
+	"github.com/clickbytes/golingua/internal/core"
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/language"
 	"github.com/clickbytes/golingua/internal/lexicon"
@@ -75,8 +76,8 @@ func ComposeDSE(input DSEInput) (DSEResult, error) {
 			input.Forest = resolved
 		}
 	}
-	if input.Forest.Outcome != status.OutcomeOK && input.Forest.Outcome != status.OutcomeIncomplete && input.Forest.Outcome != status.OutcomeResourceLimit {
-		return DSEResult{}, dseError(status.OutcomeUnsupported, "UNSUPPORTED_SOURCE_FOREST", "forest.outcome", "only valid, incomplete, or resource-limited forests can be composed")
+	if input.Forest.Outcome != status.OutcomeOK && input.Forest.Outcome != status.OutcomeIncomplete && input.Forest.Outcome != status.OutcomeAmbiguous && input.Forest.Outcome != status.OutcomeResourceLimit {
+		return DSEResult{}, dseError(status.OutcomeUnsupported, "UNSUPPORTED_SOURCE_FOREST", "forest.outcome", "only valid, incomplete, ambiguous, or resource-limited forests can be composed")
 	}
 	if input.Forest.Outcome == status.OutcomeResourceLimit {
 		return DSEResult{Status: status.OutcomeResourceLimit, Complete: false, Candidates: []DSECandidate{}, Residuals: []DSEResidual{}, Diagnostics: []status.Diagnostic{}, WholeVerificationScope: "type_scope_context_only"}, nil
@@ -102,6 +103,24 @@ func ComposeDSE(input DSEInput) (DSEResult, error) {
 			return DSEResult{}, dseError(status.OutcomeInvalid, "DUPLICATE_PHRASE_CANDIDATE", fmt.Sprintf("candidates[%d].id", i), "candidate IDs must be unique")
 		}
 		candidates[candidate.ID] = candidate
+	}
+	if len(input.ImplicitRoles) != 0 {
+		if input.Lexicon == nil || input.Valency == nil || input.Core == nil || input.Constructions == nil {
+			return DSEResult{}, dseError(status.OutcomeInvalid, "IMPLICIT_ROLE_VALIDATION_UNAVAILABLE", "implicit_roles", "implicit role evidence requires the selected lexical, valency, CORE and construction indexes")
+		}
+		validation := CompositionInput{
+			Forest: input.Forest, Candidates: input.Candidates, Lattice: input.Lattice, SourceBytes: input.SourceBytes,
+			Lexicon: input.Lexicon, Valency: input.Valency, Core: input.Core, Constructions: input.Constructions,
+			ImplicitRoles: input.ImplicitRoles,
+		}
+		if err := validateImplicitRoleEvidence(validation, candidates, input.SourceBytes); err != nil {
+			return DSEResult{}, err
+		}
+		for i := range input.ImplicitRoles {
+			if _, ok := dseImplicitRoleReference(input, &input.ImplicitRoles[i]); !ok {
+				return DSEResult{}, dseError(status.OutcomeInvalid, "IMPLICIT_ROLE_REFERENCE_MISMATCH", fmt.Sprintf("implicit_roles[%d]", i), "implicit participant evidence must match the caller's role reference, participant anchor and multiplicity")
+			}
+		}
 	}
 	attrs := make(map[string]NodeAttributesEvidence, len(input.NodeAttributes))
 	for i, row := range input.NodeAttributes {
@@ -301,6 +320,11 @@ func ComposeDSE(input DSEInput) (DSEResult, error) {
 				for _, role := range frame.SemanticRoles {
 					slot, exists := roleSlots[string(role)]
 					if !exists || (slot.WHGap == nil && len(slot.CandidateIDs) == 0) || (slot.WHGap != nil && (len(slot.CandidateIDs) != 0 || string(slot.WHGap.Role) != string(role) || slot.WHGap.ScopeNodeID == "" || !dseWHGapMatchesSource(slot.WHGap, input.Lattice))) {
+						implicit := dseImplicitRoleFor(input, alternative, vp, string(role))
+						if implicit != nil && containsConstructionID(mapping.AllowedFamilyIDs, alternative.FamilyID) && (len(mapping.AllowedVariantIDs) == 0 || containsVariantID(mapping.AllowedVariantIDs, alternative.VariantID)) {
+							roleSelections = append(roleSelections, dseRoleSelection{role: string(role), implicit: implicit})
+							continue
+						}
 						invalidSlots = true
 						break
 					}
@@ -355,6 +379,7 @@ func ComposeDSE(input DSEInput) (DSEResult, error) {
 							composeErr = err
 							return
 						}
+						candidate.ID = dseSelectionStableID(vp, alternative, selectedRoles, input.ReferenceContext, referenceEvidence, mentionRefs)
 						if !complete {
 							result.Complete = false
 						}
@@ -375,6 +400,12 @@ func ComposeDSE(input DSEInput) (DSEResult, error) {
 						return
 					}
 					slot := roleSelections[pos].slot
+					if roleSelections[pos].implicit != nil {
+						selectedRoles = append(selectedRoles, dseSelectedRole{role: roleSelections[pos].role, implicit: roleSelections[pos].implicit})
+						expand(pos+1, selectedRoles)
+						selectedRoles = selectedRoles[:len(selectedRoles)-1]
+						return
+					}
 					if slot.WHGap != nil {
 						selectedRoles = append(selectedRoles, dseSelectedRole{role: roleSelections[pos].role, gap: slot.WHGap})
 						expand(pos+1, selectedRoles)
@@ -439,6 +470,9 @@ func ComposeDSE(input DSEInput) (DSEResult, error) {
 	}
 	if len(result.Candidates) == 0 && result.Status == status.OutcomeOK {
 		result.Status = status.OutcomeIncomplete
+	}
+	if input.Forest.Outcome == status.OutcomeAmbiguous && result.Status == status.OutcomeOK {
+		result.Status = status.OutcomeAmbiguous
 	}
 	if !result.Complete && result.Status == status.OutcomeOK {
 		result.Status = status.OutcomeIncomplete
@@ -585,14 +619,17 @@ func dseSameParseExceptWHGap(withGap, withoutGap parser.ParseAlternative) bool {
 }
 
 type dseRoleSelection struct {
-	role string
-	slot parser.SlotBinding
+	role     string
+	slot     parser.SlotBinding
+	implicit *ImplicitRoleEvidence
 }
 type dseSelectedRole struct {
 	role      string
 	candidate parser.PhraseCandidate
 	senseID   string
 	gap       *parser.WHGapEvidence
+	implicit  *ImplicitRoleEvidence
+	anchor    *meaning.DeicticAnchor
 }
 
 func dseWHGapMatchesSource(gap *parser.WHGapEvidence, lattice analyzer.LexicalLattice) bool {
@@ -605,6 +642,43 @@ func dseWHGapMatchesSource(gap *parser.WHGapEvidence, lattice analyzer.LexicalLa
 		}
 	}
 	return false
+}
+
+func dseImplicitRoleFor(input DSEInput, alternative parser.ParseAlternative, predicate parser.PhraseCandidate, role string) *ImplicitRoleEvidence {
+	for index := range input.ImplicitRoles {
+		evidence := &input.ImplicitRoles[index]
+		if evidence.DerivationID == alternative.DerivationID && evidence.PredicateCandidateID == predicate.ID && string(evidence.Role) == role {
+			return evidence
+		}
+	}
+	return nil
+}
+
+func dseImplicitRoleReference(input DSEInput, evidence *ImplicitRoleEvidence) (string, bool) {
+	if evidence == nil || input.ReferenceContext.RequestContext == nil {
+		return "", false
+	}
+	refID, found := sourceRoleReference(input.ReferenceContext, string(evidence.Role))
+	if !found {
+		return "", false
+	}
+	anchor := evidence.ParticipantAnchor.Value
+	request := input.ReferenceContext.RequestContext
+	if (anchor == "speaker" || anchor == "speaker_inclusive_group") && request.SpeakerReferentID != refID || anchor == "addressee" && request.AddresseeReferentID != refID {
+		return "", false
+	}
+	multiplicity := string(evidence.Multiplicity)
+	for _, declaration := range input.ReferenceContext.References {
+		if declaration.ID != refID || declaration.Type.Kind != algebra.TypeEntity {
+			continue
+		}
+		for _, referent := range request.Referents {
+			if referent.ID == refID && referent.Type.Kind == algebra.TypeEntity && string(referent.Multiplicity) == multiplicity {
+				return refID, true
+			}
+		}
+	}
+	return "", false
 }
 
 func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp parser.PhraseCandidate, mapping language.SourcePredicateMapping, frame *valency.ValencyFrame, roles []dseSelectedRole, refsByCandidate map[string]ReferenceEvidence, attrs map[string]NodeAttributesEvidence, mentionRefs map[string]dseMentionReference) (DSECandidate, bool, error) {
@@ -662,12 +736,39 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 			answerRole = selected.role
 			continue
 		}
+		if selected.implicit != nil {
+			refID, resolved := dseImplicitRoleReference(input, selected.implicit)
+			if !resolved {
+				return incompleteDSE(vp, alternative, "MISSING_ROLE_REFERENCE_MAPPING", "implicit role evidence has no matching explicit caller participant")
+			}
+			roleRefs = append(roleRefs, language.SemanticRoleReference{Role: selected.role, ReferenceID: refID})
+			roleReferenceByRole[selected.role] = refID
+			roleBasisByRole[selected.role] = "licensed_implicit_role_evidence"
+			if previous, exists := referenceByCandidate[selected.implicit.PredicateCandidateID]; exists && previous != refID {
+				return DSECandidate{}, false, dseError(status.OutcomeInvalid, "CANDIDATE_REFERENCE_CONFLICT", "reference_context.role_references", "one source candidate cannot resolve to different caller references")
+			}
+			referenceByCandidate[selected.implicit.PredicateCandidateID] = refID
+			continue
+		}
 		fallback, hasFallback := sourceRoleReference(input.ReferenceContext, selected.role)
 		refID, resolved, anchored, basis, err := resolveDSEReference(selected.candidate.ID, fallback, hasFallback, refsByCandidate, mentionRefs)
 		if err != nil {
 			return DSECandidate{}, false, err
 		}
-		if anchored || !resolved {
+		if anchored {
+			evidence, hasEvidence := refsByCandidate[selected.candidate.ID]
+			if !hasEvidence || evidence.Anchor == nil || !dseSourceAnchorMatchesCaller(input.ReferenceContext, fallback, evidence.Anchor) {
+				return incompleteDSE(vp, alternative, "SOURCE_ANCHOR_NOT_RESOLVED", "source participant anchor does not match the explicit caller role reference")
+			}
+			refID, resolved, basis = fallback, true, "caller_role_mapping_with_anchor_evidence"
+			for index := range roles {
+				if roles[index].role == selected.role && roles[index].candidate.ID == selected.candidate.ID {
+					anchor := *evidence.Anchor
+					roles[index].anchor = &anchor
+				}
+			}
+		}
+		if !resolved {
 			return incompleteDSE(vp, alternative, "MISSING_ROLE_REFERENCE_MAPPING", "caller did not explicitly bind a source semantic role")
 		}
 		roleRefs = append(roleRefs, language.SemanticRoleReference{Role: selected.role, ReferenceID: refID})
@@ -679,11 +780,37 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 		referenceByCandidate[selected.candidate.ID] = refID
 	}
 	relationPredicate := mapping.PredicateKind == "relation"
+	propertyPredicate := mapping.PredicateKind == "property"
+	if propertyPredicate {
+		roles := map[string]bool{}
+		for _, role := range frame.SemanticRoles {
+			roles[string(role)] = true
+		}
+		if input.Lexicon == nil {
+			return incompleteDSE(vp, alternative, "PROPERTY_MAPPING_NOT_APPROVED", "selected lexical transfer index is unavailable")
+		}
+		bindings := input.Lexicon.TransferBindings(mapping.SenseID)
+		if mapping.HeadPortID != "" || len(bindings) != 1 || !bindings[0].TransferAuthorized() {
+			return incompleteDSE(vp, alternative, "PROPERTY_MAPPING_NOT_APPROVED", "property mapping requires one approved CORE transfer and no Event head port")
+		}
+		if input.Core == nil {
+			return incompleteDSE(vp, alternative, "PROPERTY_MAPPING_NOT_APPROVED", "selected CORE metadata is unavailable for property role validation")
+		}
+		concept, found := input.Core.Lookup(bindings[0].CoreRef)
+		if !found || concept.Kind != core.KindProperty || len(concept.RoleTypes) != len(roles) {
+			return incompleteDSE(vp, alternative, "PROPERTY_MAPPING_NOT_APPROVED", "selected property frame must cover the approved CORE property roles")
+		}
+		for _, role := range concept.RoleTypes {
+			if !roles[role.Name] || len(role.AllowedKinds) != 1 || role.AllowedKinds[0] != core.KindEntity {
+				return incompleteDSE(vp, alternative, "PROPERTY_MAPPING_NOT_APPROVED", "selected property frame roles must exactly cover Entity-valued CORE roles")
+			}
+		}
+	}
 	headRef, ok := "", false
-	if !relationPredicate {
+	if !relationPredicate && !propertyPredicate {
 		headRef, ok = sourcePortReference(input.ReferenceContext, mapping.HeadPortID)
 	}
-	if input.RequireCandidateHeadReference && !relationPredicate {
+	if input.RequireCandidateHeadReference && !relationPredicate && !propertyPredicate {
 		resolvedHead, resolved, anchoredHead, _, resolveErr := resolveDSEReference(vp.ID, "", false, refsByCandidate, mentionRefs)
 		if resolveErr != nil {
 			return DSECandidate{}, false, resolveErr
@@ -696,10 +823,10 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 		}
 		headRef, ok = resolvedHead, true
 	}
-	if !relationPredicate && !ok {
+	if !relationPredicate && !propertyPredicate && !ok {
 		return incompleteDSE(vp, alternative, "MISSING_HEAD_EVENT_REFERENCE", "caller must explicitly bind the mapped Event head port")
 	}
-	if !relationPredicate {
+	if !relationPredicate && !propertyPredicate {
 		if sourceEvidence, exists := refsByCandidate[vp.ID]; exists {
 			if sourceEvidence.ReferentID != "" && string(sourceEvidence.ReferentID) != headRef {
 				return DSECandidate{}, false, dseError(status.OutcomeInvalid, "HEAD_REFERENCE_EVIDENCE_CONFLICT", "reference_context.port_references", "caller Event binding conflicts with resolved source evidence")
@@ -707,7 +834,7 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 		}
 	}
 	request := language.SemanticBindingRequest{SenseID: alternative.Permission.SenseID, FrameID: alternative.Permission.FrameID, BindingIndex: &selectedIndex, ContextID: input.ReferenceContext.ContextID, References: cloneAlgebraDeclarations(input.ReferenceContext.References), RequestContext: cloneDSEContext(input.ReferenceContext.RequestContext), RoleReferences: roleRefs}
-	if !relationPredicate {
+	if !relationPredicate && !propertyPredicate {
 		request.PortReferences = []language.SemanticPortReference{{PortID: mapping.HeadPortID, ReferenceID: headRef}}
 	}
 	var instantiated language.SemanticInstantiationResult
@@ -716,6 +843,8 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 	candidate = dseCandidateStart(vp, alternative)
 	if relationPredicate {
 		candidate.PredicateKind = "relation"
+	} else if propertyPredicate {
+		candidate.PredicateKind = "property"
 	} else {
 		candidate.HeadEventReferenceID = headRef
 	}
@@ -726,12 +855,17 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 			candidate.RoleSources = append(candidate.RoleSources, DSERoleSource{Role: selected.role, Source: source, WHGap: &gap, ResolutionBasis: "parser_wh_gap"})
 			continue
 		}
+		if selected.implicit != nil {
+			source := DSESourceRecord{CandidateID: vp.ID, ReadingIDs: append([]string{}, vp.ReadingIDs...), FrameID: string(alternative.Permission.FrameID), FamilyID: alternative.FamilyID.String(), VariantID: alternative.VariantID.String(), DerivationID: alternative.DerivationID, Span: vp.Span}
+			candidate.RoleSources = append(candidate.RoleSources, DSERoleSource{Role: selected.role, Source: source, ReferenceID: roleReferenceByRole[selected.role], ResolutionBasis: roleBasisByRole[selected.role], ImplicitEvidence: selected.implicit})
+			continue
+		}
 		candidate.RoleSources = append(candidate.RoleSources, DSERoleSource{Role: selected.role, Source: dseRoleRecord(selected.candidate, selected.senseID), ReferenceID: roleReferenceByRole[selected.role], ResolutionBasis: roleBasisByRole[selected.role]})
 	}
 	instantiatedStatus := status.OutcomeOK
 	if answer != nil {
-		if relationPredicate {
-			return incompleteDSE(vp, alternative, "RELATION_QUESTION_UNSUPPORTED", "relation predicates in this selected source profile do not license WH questions")
+		if relationPredicate || propertyPredicate {
+			return incompleteDSE(vp, alternative, "NON_EVENT_QUESTION_UNSUPPORTED", "non-event predicates in this selected source profile do not license WH questions")
 		}
 		predicate, err = buildDSEQuestionAtom(input.Selected, target, string(alternative.Permission.FrameID), mapping.HeadPortID, roleReferenceByRole, headRef, answerRole, answer.ID)
 		if err != nil {
@@ -807,11 +941,17 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 		if selected.gap != nil {
 			continue
 		}
-		evidence, exists := refsByCandidate[selected.candidate.ID]
-		if !exists || evidence.Anchor == nil {
-			continue
+		anchor := ""
+		if selected.implicit != nil {
+			anchor = selected.implicit.ParticipantAnchor.Value
+		} else {
+			evidence, exists := refsByCandidate[selected.candidate.ID]
+			if !exists || evidence.Anchor == nil {
+				continue
+			}
+			anchor = evidence.Anchor.Value
 		}
-		condition := algebra.ContextCondition{Kind: algebra.ContextPresupposition, Code: "deictic_anchor", TargetReferentIDs: []string{roleReferenceByRole[selected.role]}, Detail: evidence.Anchor.Value}
+		condition := algebra.ContextCondition{Kind: algebra.ContextPresupposition, Code: "deictic_anchor", TargetReferentIDs: []string{roleReferenceByRole[selected.role]}, Detail: anchor}
 		condition.ID = dseConditionID(condition)
 		conditionID := addDSECondition(requestContext, condition)
 		conditionCoverage = append(conditionCoverage, DSEConditionCoverage{Kind: language.SourceConditionKind(condition.Kind), Code: condition.Code, ConditionID: conditionID, TargetReferenceIDs: append([]string{}, condition.TargetReferentIDs...)})
@@ -827,7 +967,7 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 		conditionCoverage = append(conditionCoverage, DSEConditionCoverage{Kind: language.SourceConditionKind(cond.Kind), Code: cond.Code, ConditionID: conditionID, TargetReferenceIDs: append([]string{}, cond.TargetReferentIDs...)})
 	}
 	featureHeadRef := headRef
-	if relationPredicate {
+	if relationPredicate || propertyPredicate {
 		featureHeadRef = ""
 	}
 	featureConditions, coverage, featureResiduals, err := instantiateFeatureConditions(input, alternative, vp, roles, target, mapping, roleReferenceByRole, featureHeadRef, request, requestContext)
@@ -862,7 +1002,7 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 			return DSECandidate{}, false, err
 		}
 	}
-	if !relationPredicate {
+	if !relationPredicate && !propertyPredicate {
 		if err := mergeDSECandidateAttributes(&final, vp, headRef, attrs); err != nil {
 			return DSECandidate{}, false, err
 		}
@@ -889,6 +1029,38 @@ func composeDSESelection(input DSEInput, alternative parser.ParseAlternative, vp
 	candidate.Status = status.OutcomeOK
 	candidate.Scope = "typed algebra representation and explicit request context; no world-fact or language-quality claim"
 	return candidate, true, nil
+}
+
+func dseSourceAnchorMatchesCaller(context language.SourceReferenceContext, referenceID string, anchor *meaning.DeicticAnchor) bool {
+	if anchor == nil || anchor.Kind != "participant" || referenceID == "" || context.RequestContext == nil ||
+		(anchor.Value != "speaker" && anchor.Value != "speaker_inclusive_group" && anchor.Value != "addressee") {
+		return false
+	}
+	request := context.RequestContext
+	if anchor.Value == "speaker" && request.SpeakerReferentID != referenceID ||
+		anchor.Value == "speaker_inclusive_group" && request.SpeakerReferentID != referenceID ||
+		anchor.Value == "addressee" && request.AddresseeReferentID != referenceID {
+		return false
+	}
+	declared := false
+	for _, reference := range context.References {
+		if reference.ID == referenceID && reference.Type.Kind == algebra.TypeEntity {
+			declared = true
+		}
+	}
+	if !declared {
+		return false
+	}
+	for _, referent := range request.Referents {
+		if referent.ID != referenceID || referent.Type.Kind != algebra.TypeEntity || referent.ConceptID != "" && referent.ConceptID != "concept:person" {
+			continue
+		}
+		if anchor.Value == "speaker" && referent.Multiplicity == "one" ||
+			anchor.Value == "speaker_inclusive_group" && referent.Multiplicity == "many" || anchor.Value == "addressee" {
+			return true
+		}
+	}
+	return false
 }
 
 func dseTargetRolePort(target *lexicon.SemanticTarget, frameID, role string) (lexicon.SemanticRolePort, bool) {
@@ -989,6 +1161,9 @@ func instantiateRolePredicates(input DSEInput, alternative parser.ParseAlternati
 	}
 	for _, selected := range roles {
 		if selected.gap != nil {
+			continue
+		}
+		if selected.implicit != nil || selected.anchor != nil {
 			continue
 		}
 		_, ok := input.Package.LexiconIndex().ByLexemeID(selected.candidate.LexemeID)
@@ -1357,11 +1532,11 @@ func resolveDSEReference(candidateID, fallback string, hasFallback bool, evidenc
 		}
 		return resolvedID, true, false, basis, nil
 	}
-	if hasFallback {
-		return fallback, true, false, "caller_role_mapping_assumption", nil
-	}
 	if row, ok := evidence[candidateID]; ok && row.Anchor != nil {
 		return "", false, true, "", nil
+	}
+	if hasFallback {
+		return fallback, true, false, "caller_role_mapping_assumption", nil
 	}
 	return "", false, false, "", nil
 }
@@ -1480,6 +1655,86 @@ func dseRoleRecord(candidate parser.PhraseCandidate, sense string) DSESourceReco
 func dseCandidateStart(candidate parser.PhraseCandidate, alternative parser.ParseAlternative) DSECandidate {
 	return DSECandidate{ID: dseStableID(candidate.ID, alternative.DerivationID, alternative.Permission.SenseID.String()), Status: status.OutcomeOK, Source: dseRecord(candidate, alternative), RoleSources: []DSERoleSource{}, GoalSpecs: []json.RawMessage{}, FragmentChecks: []DSEFragmentCheck{}, ConditionCoverage: []DSEConditionCoverage{}, Residuals: []DSEResidual{}, Scope: "typed representation; no world-fact claim"}
 }
+
+func dseSelectionStableID(vp parser.PhraseCandidate, alternative parser.ParseAlternative, roles []dseSelectedRole, context language.SourceReferenceContext, evidence map[string]ReferenceEvidence, mentions map[string]dseMentionReference) string {
+	type roleIdentity struct {
+		Role, CandidateID, SenseID, FallbackReference               string
+		EvidenceReference, EvidenceID, AnchorKind, AnchorValue      string
+		ImplicitPredicate, ImplicitDerivation, ImplicitMultiplicity string
+		GapSlot, GapScope                                           string
+		MentionStatus                                               string
+		MentionReferences                                           []string
+	}
+	type candidateIdentity struct {
+		CandidateID, DerivationID, SenseID, FrameID, FamilyID, VariantID string
+		HeadReference                                                    string
+		CallerRoleReferences                                             []language.SemanticRoleReference
+		CallerPortReferences                                             []language.SemanticPortReference
+		Roles                                                            []roleIdentity
+	}
+	identity := candidateIdentity{
+		CandidateID: vp.ID, DerivationID: alternative.DerivationID,
+		SenseID: alternative.Permission.SenseID.String(), FrameID: string(alternative.Permission.FrameID),
+		FamilyID: alternative.FamilyID.String(), VariantID: alternative.VariantID.String(),
+	}
+	identity.CallerRoleReferences = append([]language.SemanticRoleReference(nil), context.RoleReferences...)
+	sort.Slice(identity.CallerRoleReferences, func(i, j int) bool {
+		if identity.CallerRoleReferences[i].Role != identity.CallerRoleReferences[j].Role {
+			return identity.CallerRoleReferences[i].Role < identity.CallerRoleReferences[j].Role
+		}
+		return identity.CallerRoleReferences[i].ReferenceID < identity.CallerRoleReferences[j].ReferenceID
+	})
+	identity.CallerPortReferences = append([]language.SemanticPortReference(nil), context.PortReferences...)
+	sort.Slice(identity.CallerPortReferences, func(i, j int) bool {
+		if identity.CallerPortReferences[i].PortID != identity.CallerPortReferences[j].PortID {
+			return identity.CallerPortReferences[i].PortID < identity.CallerPortReferences[j].PortID
+		}
+		return identity.CallerPortReferences[i].ReferenceID < identity.CallerPortReferences[j].ReferenceID
+	})
+	if row, ok := evidence[vp.ID]; ok {
+		identity.HeadReference = string(row.ReferentID) + "\x00" + row.EvidenceID
+		if row.Anchor != nil {
+			identity.HeadReference += "\x00" + row.Anchor.Kind + "\x00" + row.Anchor.Value
+		}
+	}
+	for _, role := range roles {
+		key := roleIdentity{Role: role.role}
+		fallback, found := sourceRoleReference(context, role.role)
+		if found {
+			key.FallbackReference = fallback
+		}
+		if role.candidate.ID != "" {
+			key.CandidateID, key.SenseID = role.candidate.ID, role.senseID
+			if row, ok := evidence[role.candidate.ID]; ok {
+				key.EvidenceReference, key.EvidenceID = string(row.ReferentID), row.EvidenceID
+				if row.Anchor != nil {
+					key.AnchorKind, key.AnchorValue = row.Anchor.Kind, row.Anchor.Value
+				}
+			}
+			if mention, ok := mentions[role.candidate.ID]; ok {
+				key.MentionStatus = mention.status
+				key.MentionReferences = append([]string(nil), mention.referenceIDs...)
+				sort.Strings(key.MentionReferences)
+			}
+		}
+		if role.implicit != nil {
+			key.ImplicitPredicate = role.implicit.PredicateCandidateID
+			key.ImplicitDerivation = role.implicit.DerivationID
+			key.ImplicitMultiplicity = string(role.implicit.Multiplicity)
+			key.AnchorKind, key.AnchorValue = role.implicit.ParticipantAnchor.Kind, role.implicit.ParticipantAnchor.Value
+		}
+		if role.gap != nil {
+			key.GapSlot, key.GapScope = string(role.gap.SlotID), string(role.gap.ScopeNodeID)
+		}
+		identity.Roles = append(identity.Roles, key)
+	}
+	encoded, err := json.Marshal(identity)
+	if err != nil {
+		return dseStableID(vp.ID, alternative.DerivationID, alternative.Permission.SenseID.String(), fmt.Sprintf("%#v", roles))
+	}
+	return dseStableID(string(encoded))
+}
+
 func incompleteDSE(candidate parser.PhraseCandidate, alternative parser.ParseAlternative, code, message string) (DSECandidate, bool, error) {
 	out := dseCandidateStart(candidate, alternative)
 	out.Status = status.OutcomeIncomplete

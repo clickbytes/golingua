@@ -64,9 +64,41 @@
         "kind": "presupposition",
         "code": "lexical_descriptor"
       }
+    },
+    {
+      "sense_id": "sense:en.have.possession",
+      "frame_id": "en.have.possession.transitive",
+      "head_port_id": "",
+      "predicate_kind": "property",
+      "allowed_family_ids": [
+        "construction:en.transitive",
+        "construction:en.transitive_negative",
+        "construction:en.transitive_personal"
+      ],
+      "allowed_variant_ids": [
+        "construction:en.transitive.svo",
+        "construction:en.transitive_negative.svo.vp_auxiliary",
+        "construction:en.transitive_personal.svo.first",
+        "construction:en.transitive_personal.svo.second",
+        "construction:en.transitive_personal.svo.first.indefinite_object",
+        "construction:en.transitive_personal.svo.first.indefinite_object_an",
+        "construction:en.transitive_personal.svo.second.indefinite_object",
+        "construction:en.transitive_personal.svo.second.indefinite_object_an",
+        "construction:en.transitive_negative.svo.do.indefinite_object.analyze",
+        "construction:en.transitive_negative.svo.does.indefinite_object.analyze"
+      ],
+      "reference_condition": {
+        "kind": "presupposition",
+        "code": "lexical_descriptor"
+      }
     }
   ],
-  "operator_mappings": [],
+  "operator_mappings": [
+    {
+      "source_kind": "negation",
+      "operator": "Not"
+    }
+  ],
   "feature_conditions": [
     {
       "feature_id": "determiner",

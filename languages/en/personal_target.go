@@ -34,8 +34,8 @@ func englishParticipantAnchor(source semantic.MeaningCandidate, nodeID meaning.N
 	return realizer.ImplicitParticipantAnchor(*source.Meaning, contexts, nodeID)
 }
 
-func englishParticipantPronoun(source semantic.MeaningCandidate, nodeID meaning.NodeID, lexemeID string) bool {
-	if !englishPersonalSubjectNode(source, nodeID) {
+func englishParticipantPronoun(source semantic.MeaningCandidate, predicate realizer.TargetCandidate, nodeID meaning.NodeID, lexemeID string) bool {
+	if englishSubjectNode(source, predicate) != nodeID {
 		return false
 	}
 	anchor, ok := englishParticipantAnchor(source, nodeID)
@@ -64,36 +64,16 @@ func englishParticipantAnchorIntent(source semantic.MeaningCandidate, nodeID mea
 	return false
 }
 
-func englishPersonalSubjectNode(source semantic.MeaningCandidate, nodeID meaning.NodeID) bool {
-	if source.Meaning == nil {
-		return false
-	}
-	for _, node := range source.Meaning.Nodes {
-		if node.Kind != meaning.KindEvent && node.Kind != meaning.KindState {
-			continue
-		}
-		expected := meaning.Role("")
-		switch node.Concept {
-		case "concept:seeing", "concept:hearing":
-			expected = "experiencer"
-		case "concept:reading":
-			expected = "reader"
-		case "concept:possession":
-			expected = "holder"
-		default:
-			continue
-		}
-		count := 0
-		for _, part := range node.Participants {
-			if part.Role == expected && part.Target == nodeID {
+func englishParticipantAttached(graph meaning.Meaning, nodeID meaning.NodeID) bool {
+	count := 0
+	for _, node := range graph.Nodes {
+		for _, participant := range node.Participants {
+			if participant.Target == nodeID {
 				count++
 			}
 		}
-		if count == 1 {
-			return true
-		}
 	}
-	return false
+	return count == 1
 }
 
 func englishParticipantContextIntent(source semantic.MeaningCandidate) (bool, bool) {
@@ -122,7 +102,7 @@ func englishParticipantContextIntent(source semantic.MeaningCandidate) (bool, bo
 			if mention.Anchor == nil || mention.Anchor.Kind != "participant" {
 				continue
 			}
-			if !englishPersonalSubjectNode(source, mention.NodeID) {
+			if !englishParticipantAttached(*source.Meaning, mention.NodeID) {
 				return true, false
 			}
 			if _, valid := englishParticipantAnchor(source, mention.NodeID); !valid {

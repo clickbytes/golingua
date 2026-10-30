@@ -675,74 +675,37 @@ var polishAdditionalFramesBySense = map[string][]lexicon.ValencyID{
 }
 
 var polishParadigmByLexeme = map[string]string{
-	"pl.wlasciciel.n":      "pl_noun_ownership_predicate",
-	"pl.nalezec.v":         "pl_verb_nalezec_present_3sg_3pl",
-	"pl.miec.v":            "pl_verb_miec_personal",
-	"pl.rozmawiac.v":       "pl_verb_rozmawiac_present_3sg_3pl",
-	"pl.dac.v":             "pl_verb_dac_past_3sg_masculine",
-	"pl.lubic.v":           "pl_verb_lubic_present_3sg_3pl",
-	"pl.ogladac.v":         "pl_verb_ogladac_present_3sg_3pl",
-	"pl.pisac.v":           "pl_verb_pisac_present_3sg_3pl",
-	"pl.kroic.v":           "pl_verb_kroic_present_3sg_3pl",
-	"pl.dawac.v":           "pl_verb_dawac_present_3sg_3pl",
-	"pl.pomagac.v":         "pl_verb_pomagac_present_3sg_3pl",
-	"pl.dziekowac.v":       "pl_verb_dziekowac_present_3sg_3pl",
-	"pl.uzywac.v":          "pl_verb_uzywac_present_3sg_3pl",
-	"pl.kupowac.v":         "pl_verb_kupowac_present_3sg_3pl",
-	"pl.kupic.v":           "pl_verb_kupic_past_3sg_3pl",
-	"pl.sprzedawac.v":      "pl_verb_sprzedawac_present_3sg_3pl",
-	"pl.budzic_sie.v":      "pl_verb_budzic_sie_present_3sg_3pl",
-	"pl.isc.v":             "pl_verb_isc_present_3sg_3pl",
-	"pl.zasypiac.v":        "pl_verb_zasypiac_present_3sg_3pl",
-	"pl.pracowac.v":        "pl_verb_pracowac_present_3sg_3pl",
-	"pl.byc.v":             "pl_identification_byc_present_3sg",
-	"pl.czarny.adj":        "pl_adjective_positive_czarny",
-	"pl.czerwony.adj":      "pl_adjective_positive_czerwony",
-	"pl.bialy.adj":         "pl_adjective_positive_bialy",
-	"pl.niebieski.adj":     "pl_adjective_positive_niebieski",
-	"pl.zielony.adj":       "pl_adjective_positive_zielony",
-	"pl.otwarty.adj":       "pl_adjective_positive_otwarty",
-	"pl.smutny.adj":        "pl_adjective_positive_smutny",
-	"pl.sasiad.n":          "pl_noun_attested_masculine_personal",
-	"pl.klient.n":          "pl_noun_attested_masculine_personal",
-	"pl.widziec.v":         "pl_verb_present_i",
-	"pl.slyszec.v":         "pl_verb_slyszec_finite",
-	"pl.patrzec.v":         "pl_verb_present_y",
-	"pl.czytac.v":          "pl_verb_czytac_finite",
-	"pl.jesc.v":            "pl_verb_jesc_present_3sg_3pl",
-	"pl.pic.v":             "pl_verb_pic_present_3sg_3pl",
-	"pl.otwierac_obiekt.v": "pl_verb_otwierac_obiekt_present_3sg_3pl",
-	"pl.zamykac_obiekt.v":  "pl_verb_zamykac_obiekt_present_3sg_3pl",
-	"pl.niesc.v":           "pl_verb_niesc_present_3sg_3pl",
-	"pl.trzymac.v":         "pl_verb_trzymac_present_3sg_3pl",
-	"pl.ciagnac.v":         "pl_verb_ciagnac_present_3sg_3pl",
-	"pl.popychac.v":        "pl_verb_popychac_present_3sg_3pl",
-	"pl.pchac.v":           "pl_verb_pchac_present_3sg_3pl",
-	"pl.ciac.v":            "pl_verb_ciac_present_3sg_3pl",
-	"pl.skladac.v":         "pl_verb_skladac_present_3sg_3pl",
-	"pl.drzec.v":           "pl_verb_drzec_present_3sg_3pl",
-	"pl.rozdzierac.v":      "pl_verb_rozdzierac_present_3sg_3pl",
-	"pl.spac.v":            "pl_verb_spac_present_3sg_3pl",
-	"pl.oddychac.v":        "pl_verb_oddychac_present_3sg_3pl",
-	"pl.kichac.v":          "pl_verb_kichac_present_3sg_3pl",
-	"pl.biec.v":            "pl_verb_biec_present_3sg_3pl",
-	"pl.kaszlec.v":         "pl_verb_kaszlec_present_3sg_3pl",
-	"pl.chodzic.v":         "pl_verb_chodzic_present_3sg_3pl",
-	"pl.zyc.v":             "pl_verb_zyc_present_3sg_3pl",
-	"pl.latac.v":           "pl_verb_latac_present_3sg_3pl",
-	"pl.dorosly.adj":       "pl_adjective_dorosly_attested",
-	"pl.drzewo.n":          "pl_noun_drzewo_attested",
-	"pl.dostac.v":          "pl_verb_perfective_finite",
-	"pl.ja.pron":           string(polishPersonalParadigmID("pl.ja.pron")),
-	"pl.my.pron":           string(polishPersonalParadigmID("pl.my.pron")),
-	"pl.ty.pron":           string(polishPersonalParadigmID("pl.ty.pron")),
-	"pl.wy.pron":           string(polishPersonalParadigmID("pl.wy.pron")),
+	"pl.wlasciciel.n":  "pl_noun_ownership_predicate",
+	"pl.byc.v":         "pl_identification_byc_present_3sg",
+	"pl.czarny.adj":    "pl_adjective_positive_czarny",
+	"pl.czerwony.adj":  "pl_adjective_positive_czerwony",
+	"pl.bialy.adj":     "pl_adjective_positive_bialy",
+	"pl.niebieski.adj": "pl_adjective_positive_niebieski",
+	"pl.zielony.adj":   "pl_adjective_positive_zielony",
+	"pl.otwarty.adj":   "pl_adjective_positive_otwarty",
+	"pl.smutny.adj":    "pl_adjective_positive_smutny",
+	"pl.sasiad.n":      "pl_noun_attested_masculine_personal",
+	"pl.klient.n":      "pl_noun_attested_masculine_personal",
+	"pl.dorosly.adj":   "pl_adjective_dorosly_attested",
+	"pl.drzewo.n":      "pl_noun_drzewo_attested",
+	"pl.ja.pron":       string(polishPersonalParadigmID("pl.ja.pron")),
+	"pl.my.pron":       string(polishPersonalParadigmID("pl.my.pron")),
+	"pl.ty.pron":       string(polishPersonalParadigmID("pl.ty.pron")),
+	"pl.wy.pron":       string(polishPersonalParadigmID("pl.wy.pron")),
 }
 
 // LexicalDocument constructs the Polish lexical data from Go declarations.
 // Pending candidate links preserve possible CORE relationships without
 // licensing translation. This function does not invent inflection or valency.
 func LexicalDocument() (lexicon.Document, error) {
+	authoredMorphology, err := decodePolishLexemeDocument(lexemesJSON)
+	if err != nil {
+		return lexicon.Document{}, err
+	}
+	authoredMorphologyByID := make(map[string]lexicon.MorphLexeme, len(authoredMorphology.Records))
+	for _, record := range authoredMorphology.Records {
+		authoredMorphologyByID[record.Lexeme.ID.String()] = record.Lexeme
+	}
 	if err := polishLexicalSource.Validate(); err != nil {
 		return lexicon.Document{}, fmt.Errorf("Polish lexical source: %w", err)
 	}
@@ -858,6 +821,12 @@ func LexicalDocument() (lexicon.Document, error) {
 			switch entry.id {
 			case "pl.woda.n", "pl.jedzenie.n", "pl.pieniadze.n", "pl.papier.n", "pl.deszcz.n":
 				lexeme.Properties = append(lexeme.Properties, lexicon.Property{Key: "number_behavior", Value: "mass"})
+			}
+			if authored, exists := authoredMorphologyByID[lexeme.ID.String()]; exists {
+				if !samePolishMorphLexicalIdentity(lexeme, authored) {
+					return lexicon.Document{}, fmt.Errorf("Polish authored morphology lexeme %q conflicts with lexical identity", lexeme.ID.String())
+				}
+				lexeme.ParadigmID = authored.ParadigmID
 			}
 			document.Lexemes = append(document.Lexemes, lexeme)
 			for _, meaning := range entry.meanings {

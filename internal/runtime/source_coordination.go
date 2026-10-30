@@ -45,10 +45,11 @@ func (pipeline *SourcePipeline) analyzeDSECoordination(ctx context.Context, synt
 		}
 		inputs[index] = semantic.DSEInput{
 			Context: ctx, Forest: clause.Forest, Candidates: candidates, Lattice: syntax.Lattice,
-			SourceBytes: syntax.OriginalSourceBytes, References: evidence.references,
+			SourceBytes: syntax.OriginalSourceBytes, References: evidence.references, ImplicitRoles: evidence.implicitRoles,
 			NodeAttributes: evidence.attributes, Operators: clause.Evidence.Operators,
 			OperatorCoverageComplete: clause.Evidence.OperatorCoverageComplete,
-			Package:                  options.Package, Plan: options.Plan, Selected: options.Selected,
+			Package:                  options.Package, Lexicon: pipeline.Lexicon, Valency: pipeline.Valency,
+			Core: pipeline.Core, Constructions: pipeline.Constructions, Plan: options.Plan, Selected: options.Selected,
 			Rewrite: options.Rewrite, ReferenceContext: sourceContext, Language: pipeline.Language,
 			Budget: options.Budget,
 		}
@@ -61,8 +62,9 @@ func (pipeline *SourcePipeline) analyzeDSECoordination(ctx context.Context, synt
 }
 
 type clauseInputEvidence struct {
-	references []semantic.ReferenceEvidence
-	attributes []semantic.NodeAttributesEvidence
+	references    []semantic.ReferenceEvidence
+	implicitRoles []semantic.ImplicitRoleEvidence
+	attributes    []semantic.NodeAttributesEvidence
 }
 
 func sourceClauseRoot(forest parser.Forest) (parser.PackedNode, bool) {
@@ -114,6 +116,11 @@ func coordinationClauseInputs(syntax SourceSyntax, clause SourceClauseSyntax, ro
 	for _, row := range clause.Evidence.References {
 		if selectedIDs[row.CandidateID] {
 			clauseEvidence.references = append(clauseEvidence.references, row)
+		}
+	}
+	for _, row := range clause.Evidence.ImplicitRoles {
+		if row.DerivationID == alternative.DerivationID && selectedIDs[row.PredicateCandidateID] {
+			clauseEvidence.implicitRoles = append(clauseEvidence.implicitRoles, row)
 		}
 	}
 	for _, row := range clause.Evidence.NodeAttributes {

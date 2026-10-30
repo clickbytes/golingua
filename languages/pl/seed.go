@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"reflect"
 
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/ids"
@@ -110,18 +111,9 @@ func LoadWithExceptions(extra []morph.ExceptionRule) (*Seed, error) {
 	if err != nil {
 		return nil, fmt.Errorf("compile Polish paradigms: %w", err)
 	}
-	decoder := json.NewDecoder(bytes.NewReader(lexemesJSON))
-	decoder.DisallowUnknownFields()
-	var document lexemeDocument
-	if err := decoder.Decode(&document); err != nil {
-		return nil, fmt.Errorf("Polish lexemes: %w", err)
-	}
-	var trailing any
-	if err := decoder.Decode(&trailing); err != io.EOF {
-		return nil, fmt.Errorf("Polish lexemes: expected exactly one JSON value")
-	}
-	if document.SchemaVersion != 1 || document.Records == nil || len(document.Records) == 0 || len(document.Records) > 128 {
-		return nil, fmt.Errorf("Polish lexeme document has unsupported schema or record count")
+	document, err := decodePolishLexemeDocument(lexemesJSON)
+	if err != nil {
+		return nil, err
 	}
 	additionalRecords, err := inCodeMorphRecords()
 	if err != nil {
@@ -137,8 +129,12 @@ func LoadWithExceptions(extra []morph.ExceptionRule) (*Seed, error) {
 		if record.Lexeme.Language != "pl" || record.PrincipalParts.LexemeID != record.Lexeme.ID {
 			return nil, fmt.Errorf("Polish lexeme record %d has inconsistent language or principal-parts identity", index)
 		}
+		id := record.Lexeme.ID.String()
+		if _, exists := parts[id]; exists {
+			return nil, fmt.Errorf("Polish lexeme ID %q appears more than once in compiled morphology records", id)
+		}
 		lexemes[index] = record.Lexeme
-		parts[record.Lexeme.ID.String()] = record.PrincipalParts
+		parts[id] = record.PrincipalParts
 	}
 	compiledLexicon, err := lexicon.Build(lexicon.Document{SchemaVersion: lexicon.SchemaVersion, Lexemes: lexemes, Senses: []lexicon.LexicalSense{}, Bindings: []lexicon.SemanticBinding{}}, nil, lexicon.DefaultBudget())
 	if err != nil {
@@ -210,6 +206,51 @@ func LoadWithExceptions(extra []morph.ExceptionRule) (*Seed, error) {
 		return nil, fmt.Errorf("build Polish inverse index: %w", err)
 	}
 	return seed, nil
+}
+
+func decodePolishLexemeDocument(data []byte) (lexemeDocument, error) {
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	var document lexemeDocument
+	if err := decoder.Decode(&document); err != nil {
+		return lexemeDocument{}, fmt.Errorf("Polish lexemes: %w", err)
+	}
+	var trailing any
+	if decoder.Decode(&trailing) != io.EOF {
+		return lexemeDocument{}, fmt.Errorf("Polish lexemes: expected exactly one JSON value")
+	}
+	if document.SchemaVersion != 1 || document.Records == nil || len(document.Records) == 0 || len(document.Records) > 128 {
+		return lexemeDocument{}, fmt.Errorf("Polish lexeme document has unsupported schema or record count")
+	}
+	seen := make(map[string]struct{}, len(document.Records))
+	for index, record := range document.Records {
+		id := record.Lexeme.ID.String()
+		if id == "" || record.Lexeme.Language != "pl" || record.PrincipalParts.LexemeID != record.Lexeme.ID {
+			return lexemeDocument{}, fmt.Errorf("Polish lexeme record %d has inconsistent language or principal-parts identity", index)
+		}
+		if _, exists := seen[id]; exists {
+			return lexemeDocument{}, fmt.Errorf("Polish lexeme document repeats lexeme ID %q", id)
+		}
+		if len(record.PrincipalParts.Parts) > morph.MaxPrincipalParts {
+			return lexemeDocument{}, fmt.Errorf("Polish lexeme record %d exceeds the principal-part limit", index)
+		}
+		partIDs := make(map[morph.PrincipalPartID]struct{}, len(record.PrincipalParts.Parts))
+		for _, part := range record.PrincipalParts.Parts {
+			if part.ID == "" {
+				return lexemeDocument{}, fmt.Errorf("Polish lexeme record %d has an empty principal-part ID", index)
+			}
+			if _, exists := partIDs[part.ID]; exists {
+				return lexemeDocument{}, fmt.Errorf("Polish lexeme record %d repeats principal-part ID %q", index, part.ID)
+			}
+			partIDs[part.ID] = struct{}{}
+		}
+		seen[id] = struct{}{}
+	}
+	return document, nil
+}
+
+func samePolishMorphLexicalIdentity(left, right lexicon.MorphLexeme) bool {
+	return left.ID == right.ID && left.Language == right.Language && left.Lemma == right.Lemma && left.POS == right.POS && reflect.DeepEqual(left.Properties, right.Properties)
 }
 
 // Generate resolves one bundled lexeme by stable ID and a language-local
