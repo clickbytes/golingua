@@ -1,0 +1,45 @@
+name: 476-audit-workspace
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/476-audit-workspace.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  workspace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.27.x'
+          cache: false
+      - name: Export tracked source and public build dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          output="$RUNNER_TEMP/golingua-audit-workspace"
+          mkdir -p "$output"
+          test "$GITHUB_REF" = refs/heads/main
+          git rev-parse HEAD > "$output/source-sha.txt"
+          go version > "$output/go-version.txt"
+          git archive --format=tar HEAD | gzip -n > "$output/source.tar.gz"
+          go mod download
+          tar -C "$(go env GOROOT)" -czf "$output/go.tar.gz" .
+          tar -C "$(go env GOMODCACHE)" -czf "$output/modules.tar.gz" .
+          cd "$output"
+          sha256sum source.tar.gz go.tar.gz modules.tar.gz > SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: golingua-audit-workspace-${{ github.sha }}
+          path: ${{ runner.temp }}/golingua-audit-workspace/
+          compression-level: 0
+          retention-days: 1
+          if-no-files-found: error
