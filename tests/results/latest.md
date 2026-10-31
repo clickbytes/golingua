@@ -2,12 +2,12 @@
 
 > Observational report generated on push to `main`. Matrix outcomes do not gate the technical `go-ci` workflow.
 
-- Source SHA: `9d5262fa868a0ba48cd578b144a36becac600611`
-- Generated (UTC): `2026-10-31T02:42:31Z`
+- Source SHA: `851aa004be25c752071147c04da03ab659b34ccb`
+- Generated (UTC): `2026-10-31T02:45:48Z`
 - Command: `go test ./tests/... -count=1 -v`
 - Command exit code: `1` (NONZERO)
 - Registered records: 1000; record checks: 3000
-- Additional observed checks: 330
+- Additional observed checks: 353
 
 | Case ID | Direction | Analysis | Realization | Integration | Declared coverage tags |
 |---|---|---|---|---|---|
@@ -1081,10 +1081,10 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/known_present_frame_is_unsupported_even_with_At` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/many_experiencer_referent_is_unsupported` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/many_stimulus_referent_is_unsupported` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/present_versus_past` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/present_versus_absent_frame` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/one_versus_many` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/one_versus_absent_multiplicity` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/present_versus_past` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_null` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_empty` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_unknown` | PASS |
@@ -1093,11 +1093,11 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_unknown` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_frame_on_referent` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_on_predicate` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_changed` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_participant_roles_swapped` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_changed` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/temporal_frames` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/referent_multiplicity` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestNegationExpansionFixturesValidateAndRetainScope` | PASS |
@@ -1195,10 +1195,10 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersRejectMalformedActualSources/The_teacher_sees_a_dogs.` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersRejectMalformedActualSources/The_teacher_sees_an_dog.` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersRejectMalformedActualSources/The_teacher_sees_a_apple.` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersConcurrentNegativeRealization/request-0` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersConcurrentNegativeRealization/request-2` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersConcurrentNegativeRealization/request-1` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersConcurrentNegativeRealization/request-3` | PASS |
-| `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersConcurrentNegativeRealization/request-0` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestCompositionBoundaries/bearer_is_object` | FAIL |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestCompositionBoundaries/bearer_is_second_cat_despite_matching_concept` | FAIL |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestCompositionBoundaries/event_time_absent` | PASS |
@@ -1345,6 +1345,29 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseAspectLossRequiresSourceEvidence/Matka_nie_piła_wody.` | PASS |
 | `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseAspectLossRequiresSourceEvidence/Lekarze_nie_czytali_listu.` | PASS |
 | `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseAspectLossRequiresSourceEvidence/Pies_nie_widział_kota.` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeaturesDoNotGuessRepeatedOccurrences` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeaturesAddressedParticipantsAndPredicates/left-stimulus` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeaturesAddressedParticipantsAndPredicates/right-stimulus` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeaturesAddressedParticipantsAndPredicates/left-experiencer` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeaturesAddressedParticipantsAndPredicates/right-experiencer` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeaturesAddressedParticipantsAndPredicates/left-` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeaturesAddressedParticipantsAndPredicates/right-` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeaturesRejectStaleAndConflictingEvidence/wrong_cat_with_same_concept` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeaturesRejectStaleAndConflictingEvidence/wrong_owning_predicate` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeaturesRejectStaleAndConflictingEvidence/missing_node` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeaturesRejectStaleAndConflictingEvidence/wrong_concept` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeaturesRejectStaleAndConflictingEvidence/missing_owner` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeaturesRejectStaleAndConflictingEvidence/legacy_ambiguity` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeaturesRejectStaleAndConflictingEvidence/same_occurrence_disagreement` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeatureAddressesOnActualAnalysis/The_cat_sees_a_cat.` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeatureAddressesOnActualAnalysis/The_teachers_did_not_see_the_black_cats.` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeatureAddressesOnActualAnalysis/Czytałam_list.` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeatureAddressesRequireExplicitRemapping` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeatureAddressesPreventCrossGraphEvidenceMerge` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeatureLegacyCompatibilityAndPresence` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeatureAddressBudgetAndOrigin/record_limit` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeatureAddressBudgetAndOrigin/feature_limit` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestSourceFeatureAddressBudgetAndOrigin/generated_address` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestAmbiguityCatalogueLinks` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestInventory` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestInventoryIdentifierSupportsBatches` | PASS |
@@ -1423,7 +1446,7 @@ Packages with no observed test run are reported as infrastructure/build failures
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.7` | FAIL | 98 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.8` | FAIL | 92 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.9` | FAIL | 118 |
-| `github.com/clickbytes/golingua/tests/matrix` | PASS | 61 |
+| `github.com/clickbytes/golingua/tests/matrix` | PASS | 88 |
 | `github.com/clickbytes/golingua/tests/translation` | FAIL | 63 |
 | `github.com/clickbytes/golingua/tests/translation/en-pl` | FAIL | 504 |
 | `github.com/clickbytes/golingua/tests/translation/pl-en` | FAIL | 504 |
@@ -1638,7 +1661,7 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 - Sense catalogue associations parsed: 2075 (not morphology execution coverage).
 - Declared Meaning ID references: 1094 allowed; 1094 required.
 - Inventory fields preserve declared tags, source semantics, allowed/required Meaning IDs, and owner status separately from runtime observations.
-- Inventory source SHA `9d5262fa868a0ba48cd578b144a36becac600611`: 1000 directions.
+- Inventory source SHA `851aa004be25c752071147c04da03ab659b34ccb`: 1000 directions.
 
 ### Declared source requirements
 
@@ -1711,7 +1734,7 @@ Aggregates below summarize authored source requirements; they are not observed a
 | `writing_message` | 2 |
 
 Declared role mentions: `agent` 16, `asset` 4, `associate` 4, `associated` 22, `author` 4, `back` 8, `bearer` 24, `beneficiary` 6, `choice_restriction` 2, `companion` 2, `content` 2, `destination` 2, `document` 2, `drinker` 16, `eater` 12, `entity` 2, `existence` 50, `experiencer` 160, `figure` 4, `food` 10, `friend_a` 2, `friend_b` 2, `front` 8, `giver` 20, `helper` 6, `higher` 6, `holder` 50, `instrument` 4, `item` 4, `landmark` 32, `landmark_a` 4, `landmark_b` 4, `liquid` 12, `located` 34, `location` 10, `lower` 6, `manner` 2, `material` 38, `member` 2, `object` 56, `occupant` 6, `owner` 4, `partner` 2, `person_variable` 6, `possessor` 18, `quantified_set` 50, `reader` 38, `reason` 2, `recipient` 24, `runner` 4, `sibling_a` 4, `sibling_b` 4, `sleeper` 22, `source` 2, `speaker` 4, `stimulus` 160, `support` 2, `supported` 2, `target` 4, `thanker` 2, `theme` 20, `time` 4, `tool` 2, `user` 2, `walker` 2, `writer` 2.
-- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "40a329222c6cf7a189325f68d0cef8cc992be702e38997bb5c5a1fe6d9b60f93", "format_version": 1}`; inventory source SHA: `9d5262fa868a0ba48cd578b144a36becac600611`.
+- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "40a329222c6cf7a189325f68d0cef8cc992be702e38997bb5c5a1fe6d9b60f93", "format_version": 1}`; inventory source SHA: `851aa004be25c752071147c04da03ab659b34ccb`.
 
 Catalogue sense associations are not proof that a paradigm form or morphology procedure ran. Aggregates below describe declared pack associations only.
 
