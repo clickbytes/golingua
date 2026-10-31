@@ -168,7 +168,7 @@ func (plan polishSentencePlanAnnotations) Annotations(_ context.Context, source 
 			if err != nil {
 				return nil, nil, nil, fmt.Errorf("Polish identification source concept %q is invalid: %w", referent.Concept, err)
 			}
-			if values, found := runtime.SourceFeatures(source, "bearer", conceptID); found {
+			if values, found := runtime.SourceFeaturesAt(source, selected.NodeID, "bearer", conceptID); found {
 				determiner := string(values["determiner"])
 				if determiner == "definite" || determiner == "indefinite" {
 					losses = append(losses, realizer.FieldLoss{Path: referentPath, Field: "determiner", Outcome: status.OutcomeIncomplete, Reason: "Polish noun phrase does not encode the source English article distinction"})
@@ -195,7 +195,7 @@ func (plan polishSentencePlanAnnotations) Annotations(_ context.Context, source 
 		if err != nil {
 			return nil, nil, nil, fmt.Errorf("Polish attribution source concept %q is invalid: %w", referent.Concept, err)
 		}
-		if values, found := runtime.SourceFeatures(source, role, conceptID); found {
+		if values, found := runtime.SourceFeaturesAt(source, selected.NodeID, role, conceptID); found {
 			determiner := string(values["determiner"])
 			if determiner == "definite" || determiner == "indefinite" {
 				losses = append(losses, realizer.FieldLoss{Path: referentPath, Field: "determiner", Outcome: status.OutcomeIncomplete, Reason: "Polish noun phrase does not encode the source English article distinction"})
@@ -231,7 +231,7 @@ func (plan polishSentencePlanAnnotations) Annotations(_ context.Context, source 
 			aspect = "imperfective"
 		}
 		if aspect != "" {
-			values, known := runtime.SourceFeatures(source, "", selected.TransferBinding.CoreRef)
+			values, known := runtime.SourceFeaturesAt(source, selected.NodeID, "", selected.TransferBinding.CoreRef)
 			if !known || string(values["aspect"]) == "" {
 				reason := "Meaning does not specify Polish aspect; this candidate selects the lexical aspect of the Polish buying predicate"
 				if selected.TransferBinding.CoreRef.String() == "concept:giving" {
@@ -254,9 +254,9 @@ func (plan polishSentencePlanAnnotations) Annotations(_ context.Context, source 
 			filtered = append(filtered, assumption)
 		}
 		assumptions = filtered
-		values, known := runtime.SourceFeatures(source, "", selected.TransferBinding.CoreRef)
+		values, known := runtime.SourceFeaturesAt(source, selected.NodeID, "", selected.TransferBinding.CoreRef)
 		hasAspectEvidence := known && values["aspect"] != ""
-		if !hasAspectEvidence && !polishHasKnownAspectEvidence(source, selected.TransferBinding.CoreRef) {
+		if !hasAspectEvidence && !polishHasKnownAspectEvidence(source, selected.NodeID, selected.TransferBinding.CoreRef) {
 			aspect, aspectKnown := polishPastLexicalAspect(selected, plan.paradigms)
 			if aspectKnown {
 				assumptions = append(assumptions, realizer.FieldAssumption{
@@ -315,7 +315,7 @@ func (plan polishSentencePlanAnnotations) Annotations(_ context.Context, source 
 			if err != nil {
 				return nil, nil, nil, fmt.Errorf("Polish participant source concept %q is invalid: %w", referent.Concept, err)
 			}
-			if values, found := runtime.SourceFeatures(source, role, conceptID); found {
+			if values, found := runtime.SourceFeaturesAt(source, selected.NodeID, role, conceptID); found {
 				determiner := string(values["determiner"])
 				if determiner == "definite" || determiner == "indefinite" {
 					losses = append(losses, realizer.FieldLoss{Path: referentPath, Field: "determiner", Outcome: status.OutcomeIncomplete, Reason: "Polish noun phrase does not encode the source English article distinction"})
@@ -402,7 +402,7 @@ func polishEventDeterminerLosses(source semantic.MeaningCandidate, selected real
 		if err != nil {
 			continue
 		}
-		values, known := runtime.SourceFeatures(source, role, conceptID)
+		values, known := runtime.SourceFeaturesAt(source, selected.NodeID, role, conceptID)
 		if !known || (values["determiner"] != "definite" && values["determiner"] != "indefinite") {
 			continue
 		}
@@ -928,18 +928,9 @@ func polishPastLexicalAspect(candidate realizer.TargetCandidate, paradigms *morp
 	return aspect, aspect != ""
 }
 
-func polishHasKnownAspectEvidence(source semantic.MeaningCandidate, concept ids.ConceptID) bool {
-	for _, record := range source.Evidence.Records {
-		if record.Outcome != status.OutcomeOK || record.Role != "" || record.CoreConceptID != concept {
-			continue
-		}
-		for _, feature := range record.Features {
-			if feature.Feature == "aspect" && feature.State == features.StateKnown && feature.Value != "" {
-				return true
-			}
-		}
-	}
-	return false
+func polishHasKnownAspectEvidence(source semantic.MeaningCandidate, predicateID meaning.NodeID, concept ids.ConceptID) bool {
+	values, known := runtime.SourceFeaturesAt(source, predicateID, "", concept)
+	return known && values["aspect"] != ""
 }
 
 func sameMeaningPath(left, right []meaning.NodeID) bool {

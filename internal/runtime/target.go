@@ -168,6 +168,9 @@ func (pipeline *TargetPipeline) Realize(ctx context.Context, source semantic.Mea
 	if err := ctx.Err(); err != nil {
 		return engine.SurfaceResult{}, targetPipelineError(status.OutcomeResourceLimit, "TARGET_REALIZATION_CANCELED", "context", "target realization was canceled or timed out")
 	}
+	if err := ValidateSourceFeatureEvidence(source); err != nil {
+		return engine.SurfaceResult{}, err
+	}
 	if coordinated, matched, coordErr := pipeline.realizeCoordinated(ctx, source); matched {
 		return coordinated, coordErr
 	}
@@ -855,7 +858,8 @@ func targetBindingEvidence(registry *language.Registry, languageID features.Lang
 	var sourceSpan = struct{ Start, End int }{}
 	foundSpan := false
 	for _, record := range source.Evidence.Records {
-		if record.Outcome == status.OutcomeOK && record.CoreConceptID == binding.CoreRef && record.SenseID.String() != "" && record.SourceSpan.End > record.SourceSpan.Start {
+		if record.Outcome == status.OutcomeOK && record.CoreConceptID == binding.CoreRef && record.SenseID.String() != "" && record.SourceSpan.End > record.SourceSpan.Start &&
+			(record.MeaningNodeID == candidate.NodeID || record.MeaningNodeID == "" && len(sourceFeatureAddresses(source.Meaning, "", binding.CoreRef)) == 1) {
 			sourceSpan.Start, sourceSpan.End = record.SourceSpan.Start, record.SourceSpan.End
 			foundSpan = true
 			break

@@ -280,9 +280,9 @@ func polishPersonalPastAgreementGender(source semantic.MeaningCandidate, candida
 		role    meaning.Role
 		concept ids.ConceptID
 	}{{target.role, personConcept}, {"", candidate.TransferBinding.CoreRef}} {
-		values, found := runtime.SourceFeatures(source, evidence.role, evidence.concept)
+		values, found := runtime.SourceFeaturesAt(source, candidate.NodeID, evidence.role, evidence.concept)
 		if !found {
-			if polishSourceFeaturesPresent(source, evidence.role, evidence.concept) {
+			if polishSourceFeaturesPresent(source, candidate.NodeID, evidence.role, evidence.concept) {
 				return "", false, false
 			}
 			continue

@@ -91,13 +91,8 @@ func englishTargetNumber(source semantic.MeaningCandidate, referentID meaning.No
 	return "singular", false, true
 }
 
-func englishSourceFeaturesPresent(source semantic.MeaningCandidate, role meaning.Role, concept ids.ConceptID) bool {
-	for _, record := range source.Evidence.Records {
-		if record.Outcome == status.OutcomeOK && record.Role == role && record.CoreConceptID == concept {
-			return true
-		}
-	}
-	return false
+func englishSourceFeaturesPresent(source semantic.MeaningCandidate, predicateID meaning.NodeID, role meaning.Role, concept ids.ConceptID) bool {
+	return runtime.SourceFeaturesPresentAt(source, predicateID, role, concept)
 }
 
 func englishFrameEvidenceConsistent(source semantic.MeaningCandidate, predicateID meaning.NodeID, concept ids.ConceptID) bool {
@@ -105,9 +100,9 @@ func englishFrameEvidenceConsistent(source semantic.MeaningCandidate, predicateI
 	if !exists || predicate.TemporalFrame == "" {
 		return true
 	}
-	values, found := runtime.SourceFeatures(source, "", concept)
+	values, found := runtime.SourceFeaturesAt(source, predicateID, "", concept)
 	if !found {
-		return !englishSourceFeaturesPresent(source, "", concept)
+		return !englishSourceFeaturesPresent(source, predicateID, "", concept)
 	}
 	if tense := string(values["tense"]); tense != "" && tense != string(predicate.TemporalFrame) {
 		return false
@@ -193,9 +188,9 @@ func englishMultiplicityEvidenceConsistent(source semantic.MeaningCandidate, pre
 	}
 	concept, err := ids.ParseConceptID(string(referent.Concept))
 	if err == nil {
-		values, found := runtime.SourceFeatures(source, role, concept)
+		values, found := runtime.SourceFeaturesAt(source, predicateID, role, concept)
 		if !found {
-			if englishSourceFeaturesPresent(source, role, concept) {
+			if englishSourceFeaturesPresent(source, predicateID, role, concept) {
 				return false
 			}
 		} else if !englishNumberFeaturesAgree(values, expected) {
@@ -203,9 +198,9 @@ func englishMultiplicityEvidenceConsistent(source semantic.MeaningCandidate, pre
 		}
 	}
 	if checkPredicate {
-		values, found := runtime.SourceFeatures(source, "", predicateConcept)
+		values, found := runtime.SourceFeaturesAt(source, predicateID, "", predicateConcept)
 		if !found {
-			if englishSourceFeaturesPresent(source, "", predicateConcept) {
+			if englishSourceFeaturesPresent(source, predicateID, "", predicateConcept) {
 				return false
 			}
 		} else if !englishNumberFeaturesAgree(values, expected) {
@@ -259,7 +254,7 @@ func englishIdentificationDefaults(source semantic.MeaningCandidate, predicatePa
 		assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning carries no temporal frame; this licensed English identification route uses present"})
 	}
 	personKnown := false
-	if values, found := runtime.SourceFeatures(source, "", predicateConcept); found {
+	if values, found := runtime.SourceFeaturesAt(source, predicate.ID, "", predicateConcept); found {
 		personKnown = values["person"] != ""
 	}
 	if !personKnown {

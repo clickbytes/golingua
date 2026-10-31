@@ -58,9 +58,9 @@ func polishFrameEvidenceConsistent(source semantic.MeaningCandidate, predicateID
 	if !exists || node.TemporalFrame == "" {
 		return true
 	}
-	values, found := runtime.SourceFeatures(source, "", concept)
+	values, found := runtime.SourceFeaturesAt(source, predicateID, "", concept)
 	if !found {
-		return !polishSourceFeaturesPresent(source, "", concept)
+		return !polishSourceFeaturesPresent(source, predicateID, "", concept)
 	}
 	if tense := string(values["tense"]); tense != "" && tense != string(node.TemporalFrame) {
 		return false
@@ -96,9 +96,9 @@ func polishMultiplicityEvidenceConsistent(source semantic.MeaningCandidate, pred
 		return false
 	}
 	if concept, err := ids.ParseConceptID(string(referent.Concept)); err == nil {
-		values, found := runtime.SourceFeatures(source, role, concept)
+		values, found := runtime.SourceFeaturesAt(source, predicateID, role, concept)
 		if !found {
-			if polishSourceFeaturesPresent(source, role, concept) {
+			if polishSourceFeaturesPresent(source, predicateID, role, concept) {
 				return false
 			}
 		} else if !polishNumberFeaturesAgree(values, expected) {
@@ -106,9 +106,9 @@ func polishMultiplicityEvidenceConsistent(source semantic.MeaningCandidate, pred
 		}
 	}
 	if checkPredicateNumber {
-		values, found := runtime.SourceFeatures(source, "", predicateConcept)
+		values, found := runtime.SourceFeaturesAt(source, predicateID, "", predicateConcept)
 		if !found {
-			if polishSourceFeaturesPresent(source, "", predicateConcept) {
+			if polishSourceFeaturesPresent(source, predicateID, "", predicateConcept) {
 				return false
 			}
 		} else if !polishNumberFeaturesAgree(values, expected) {
@@ -118,13 +118,8 @@ func polishMultiplicityEvidenceConsistent(source semantic.MeaningCandidate, pred
 	return true
 }
 
-func polishSourceFeaturesPresent(source semantic.MeaningCandidate, role meaning.Role, concept ids.ConceptID) bool {
-	for _, record := range source.Evidence.Records {
-		if record.Outcome == status.OutcomeOK && record.Role == role && record.CoreConceptID == concept {
-			return true
-		}
-	}
-	return false
+func polishSourceFeaturesPresent(source semantic.MeaningCandidate, predicateID meaning.NodeID, role meaning.Role, concept ids.ConceptID) bool {
+	return runtime.SourceFeaturesPresentAt(source, predicateID, role, concept)
 }
 
 func polishNumberFeaturesAgree(values map[features.FeatureID]features.FeatureValueID, expected string) bool {
@@ -263,7 +258,7 @@ func polishPredicateEvidenceConsistent(source semantic.MeaningCandidate, predica
 			targetAspect = "imperfective"
 		}
 		if targetAspect != "" {
-			values, known := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)
+			values, known := runtime.SourceFeaturesAt(source, predicate.NodeID, "", predicate.TransferBinding.CoreRef)
 			if known && string(values["aspect"]) != "" && string(values["aspect"]) != targetAspect {
 				return false
 			}

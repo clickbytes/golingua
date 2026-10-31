@@ -301,7 +301,7 @@ func (builder englishSentenceFeatures) Features(_ context.Context, source semant
 			return nil, fmt.Errorf("English present predicate cannot realize subject multiplicity")
 		}
 		person := "third"
-		if values, found := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef); found {
+		if values, found := runtime.SourceFeaturesAt(source, predicate.NodeID, "", predicate.TransferBinding.CoreRef); found {
 			if explicit := string(values["person"]); explicit == "first" || explicit == "second" || explicit == "third" {
 				person = explicit
 			}
@@ -348,7 +348,7 @@ func (builder englishSentenceFeatures) Features(_ context.Context, source semant
 				}
 			case "count":
 				if referent.Multiplicity == "" {
-					if values, found := runtime.SourceFeatures(source, slot.ArgumentBinding.SemanticRole, coreConcept(referent)); found {
+					if values, found := runtime.SourceFeaturesAt(source, predicate.NodeID, slot.ArgumentBinding.SemanticRole, coreConcept(referent)); found {
 						sourceNumber := string(values["number"])
 						if sourceNumber == "" {
 							sourceNumber = string(values["noun_number"])
@@ -465,7 +465,7 @@ func englishNegativeVPFeatures(resolver englishNegationResolver, source semantic
 		return "", "", "", false
 	}
 	featureNumber := ""
-	if values, found := runtime.SourceFeatures(source, route.subjectRole, coreConcept(referent)); found {
+	if values, found := runtime.SourceFeaturesAt(source, event.ID, route.subjectRole, coreConcept(referent)); found {
 		featureNumber = string(values["number"])
 		if featureNumber == "" {
 			featureNumber = string(values["verb_number"])
@@ -593,7 +593,7 @@ func englishNegativeVPFeaturesNoCandidates(source semantic.MeaningCandidate, eve
 		return "", "", "", false
 	}
 	featureNumber := ""
-	if values, found := runtime.SourceFeatures(source, route.subjectRole, coreConcept(referent)); found {
+	if values, found := runtime.SourceFeaturesAt(source, event.ID, route.subjectRole, coreConcept(referent)); found {
 		featureNumber = string(values["number"])
 		if featureNumber == "" {
 			featureNumber = string(values["verb_number"])
@@ -640,7 +640,7 @@ func englishPredicateSubjectPerson(source semantic.MeaningCandidate, predicateID
 		}
 	}
 	if concept, err := ids.ParseConceptID(string(referent.Concept)); err == nil {
-		if values, found := runtime.SourceFeatures(source, role, concept); found {
+		if values, found := runtime.SourceFeaturesAt(source, predicateID, role, concept); found {
 			if person := string(values["person"]); person == "first" || person == "second" || person == "third" {
 				return person, true
 			}
@@ -803,7 +803,7 @@ func englishWHSubjectAgreement(source semantic.MeaningCandidate, predicate reali
 		if source.QuestionAnswer == nil || source.QuestionAnswer.TargetNodeID != predicate.NodeID || source.QuestionAnswer.Role != "experiencer" {
 			return "", "", false, false, false
 		}
-		values, found := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)
+		values, found := runtime.SourceFeaturesAt(source, predicate.NodeID, "", predicate.TransferBinding.CoreRef)
 		person, number := "", ""
 		if found {
 			person = string(values["person"])
@@ -849,8 +849,8 @@ func englishWHSubjectAgreement(source semantic.MeaningCandidate, predicate reali
 		}
 		return true
 	}
-	if !mergeFeatures(runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)) ||
-		!mergeFeatures(runtime.SourceFeatures(source, "experiencer", coreConcept(referent))) {
+	if !mergeFeatures(runtime.SourceFeaturesAt(source, predicate.NodeID, "", predicate.TransferBinding.CoreRef)) ||
+		!mergeFeatures(runtime.SourceFeaturesAt(source, predicate.NodeID, "experiencer", coreConcept(referent))) {
 		return "", "", false, false, false
 	}
 
@@ -920,7 +920,7 @@ func englishWHSubjectAgreement(source semantic.MeaningCandidate, predicate reali
 }
 
 func englishWHQuestionNumberKnown(source semantic.MeaningCandidate, predicate realizer.TargetCandidate, role meaning.Role) bool {
-	values, found := runtime.SourceFeatures(source, "", predicate.TransferBinding.CoreRef)
+	values, found := runtime.SourceFeaturesAt(source, predicate.NodeID, "", predicate.TransferBinding.CoreRef)
 	if found && (string(values["number"]) == "singular" || string(values["number"]) == "plural" ||
 		string(values["verb_number"]) == "singular" || string(values["verb_number"]) == "plural") {
 		return true
@@ -936,7 +936,7 @@ func englishWHQuestionNumberKnown(source semantic.MeaningCandidate, predicate re
 		role    meaning.Role
 		concept ids.ConceptID
 	}{{"", predicate.TransferBinding.CoreRef}, {role, coreConcept(referent)}} {
-		values, found := runtime.SourceFeatures(source, request.role, request.concept)
+		values, found := runtime.SourceFeaturesAt(source, predicate.NodeID, request.role, request.concept)
 		if found && (string(values["number"]) == "singular" || string(values["number"]) == "plural" ||
 			string(values["verb_number"]) == "singular" || string(values["verb_number"]) == "plural") {
 			return true
@@ -1023,7 +1023,7 @@ func (builder englishSentencePlanAnnotations) Annotations(_ context.Context, sou
 		// If the source was Polish iść, the walking sense contributes manner
 		// not encoded by English go. Preserve that information loss explicitly.
 		for _, record := range source.Evidence.Records {
-			if (record.SenseID.String() == "sense:pl.isc.go" || record.SenseID.String() == "sense:pl.isc.move") && record.Origin != semantic.EvidenceOriginGenerated {
+			if (record.SenseID.String() == "sense:pl.isc.go" || record.SenseID.String() == "sense:pl.isc.move") && runtime.SourceEvidenceAppliesAt(source, record, selected.NodeID, "", selected.TransferBinding.CoreRef) {
 				loss := realizer.FieldLoss{Path: path, Field: "manner", Outcome: status.OutcomeIncomplete, Reason: "Polish iść specifies on-foot movement; English go does not encode that manner"}
 				return nil, nil, []realizer.FieldLoss{loss}, nil
 			}
@@ -1063,7 +1063,7 @@ func (builder englishSentencePlanAnnotations) Annotations(_ context.Context, sou
 		if identification.mode == "none" && identification.family == "construction:en.attribution_negative" {
 			variant := selected.CompiledVariant.Variant.ID.String()
 			determiner := ""
-			bearerFeatures, bearerFeaturesFound := runtime.SourceFeatures(source, meaning.Role(identification.role), coreConcept(referent))
+			bearerFeatures, bearerFeaturesFound := runtime.SourceFeaturesAt(source, selected.NodeID, meaning.Role(identification.role), coreConcept(referent))
 			sourceDeterminer := ""
 			if bearerFeaturesFound {
 				sourceDeterminer = string(bearerFeatures["determiner"])
@@ -1147,7 +1147,7 @@ func (builder englishSentencePlanAnnotations) Annotations(_ context.Context, sou
 	_, participantPersonKnown := englishParticipantAnchor(source, subjectID)
 	subject, subjectExists := englishMeaningNode(source, subjectID)
 	nominalSubject := subjectExists && subject.Kind == meaning.KindReferent && !englishParticipantAnchorIntent(source, subjectID)
-	if values, found := runtime.SourceFeatures(source, "", selected.TransferBinding.CoreRef); (!found || values["person"] == "") && !participantPersonKnown && !nominalSubject {
+	if values, found := runtime.SourceFeaturesAt(source, selected.NodeID, "", selected.TransferBinding.CoreRef); (!found || values["person"] == "") && !participantPersonKnown && !nominalSubject {
 		assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning carries no grammatical person; this response uses the approved third-person form"})
 	}
 	if role := englishPredicateSubjectRoleForTarget(selected); role != "" {
@@ -1192,7 +1192,7 @@ func (builder englishSentencePlanAnnotations) Annotations(_ context.Context, sou
 		if selected.Family.Family.ID.String() == "construction:en.transitive_personal" && (participant.Role == "experiencer" || participant.Role == "reader") {
 			continue
 		}
-		values, found := runtime.SourceFeatures(source, participant.Role, coreConcept(referent))
+		values, found := runtime.SourceFeaturesAt(source, selected.NodeID, participant.Role, coreConcept(referent))
 		article, targetDeterminerKnown := englishDeterminerForRole(selected, participant.Role)
 		if !targetDeterminerKnown {
 			continue
@@ -1342,7 +1342,7 @@ func (builder englishSentencePlanAnnotations) AnnotationAlternatives(ctx context
 			return nil, fmt.Errorf("NP-local determiner alternatives have no %s Meaning path", localSlot)
 		}
 		sourceDeterminer := ""
-		if values, has := runtime.SourceFeatures(source, role, coreConcept(referent)); has {
+		if values, has := runtime.SourceFeaturesAt(source, selected.NodeID, role, coreConcept(referent)); has {
 			sourceDeterminer = string(values["determiner"])
 		}
 		choice := localRoleChoice{path: path, assume: sourceDeterminer == ""}
@@ -1451,7 +1451,7 @@ func englishNegativeLocalArticleAlternatives(resolver englishNegationResolver, s
 			return nil, fmt.Errorf("NP-local negative articles require an exact Meaning path for role %s", role)
 		}
 		determiner := ""
-		if values, found := runtime.SourceFeatures(source, role, coreConcept(referent)); found {
+		if values, found := runtime.SourceFeaturesAt(source, selected.NodeID, role, coreConcept(referent)); found {
 			determiner = string(values["determiner"])
 		}
 		number := ""
@@ -1459,7 +1459,7 @@ func englishNegativeLocalArticleAlternatives(resolver englishNegationResolver, s
 		case "count":
 			number = englishMultiplicityNumber(referent.Multiplicity)
 			if number == "" {
-				if values, found := runtime.SourceFeatures(source, role, coreConcept(referent)); found {
+				if values, found := runtime.SourceFeaturesAt(source, selected.NodeID, role, coreConcept(referent)); found {
 					number = string(values["number"])
 					if number == "" {
 						number = string(values["noun_number"])
@@ -1700,7 +1700,7 @@ func englishNegativeLocalNPCandidateAllowed(resolver englishNegationResolver, so
 		case "count":
 			number = englishMultiplicityNumber(referent.Multiplicity)
 			if number == "" {
-				if values, found := runtime.SourceFeatures(source, role, coreConcept(referent)); found {
+				if values, found := runtime.SourceFeaturesAt(source, candidate.NodeID, role, coreConcept(referent)); found {
 					number = string(values["number"])
 					if number == "" {
 						number = string(values["noun_number"])
@@ -1720,7 +1720,7 @@ func englishNegativeLocalNPCandidateAllowed(resolver englishNegationResolver, so
 		default:
 			return false
 		}
-		if values, found := runtime.SourceFeatures(source, role, coreConcept(referent)); found {
+		if values, found := runtime.SourceFeaturesAt(source, candidate.NodeID, role, coreConcept(referent)); found {
 			determiner := string(values["determiner"])
 			if determiner != "" && determiner != "definite" && determiner != "indefinite" && determiner != "bare" {
 				return false
@@ -1989,8 +1989,8 @@ func englishSourcePredicateAspect(source semantic.MeaningCandidate, predicate me
 	seen := map[evidence]struct{}{}
 	occurrences := map[[2]int]map[evidence]struct{}{}
 	for _, record := range source.Evidence.Records {
-		if record.Origin == semantic.EvidenceOriginGenerated || record.Outcome != status.OutcomeOK ||
-			record.Role != "" || record.CoreConceptID.String() != string(predicate.Concept) || record.SenseID.String() == "" || record.FamilyID.String() == "" || record.SourceSpan.End <= record.SourceSpan.Start {
+		if !runtime.SourceEvidenceAppliesAt(source, record, predicate.ID, "", coreConcept(predicate)) ||
+			record.SenseID.String() == "" || record.FamilyID.String() == "" || record.SourceSpan.End <= record.SourceSpan.Start {
 			continue
 		}
 		aspect := ""
@@ -2689,7 +2689,7 @@ func (policy englishDeterminerCandidatePolicy) KeepTargetCandidate(source semant
 		if determinerVariant.object == "bare" && !allMass && number != "plural" {
 			return false
 		}
-		if values, found := runtime.SourceFeatures(source, role, coreConcept(ref)); found && values["determiner"] != "" && string(values["determiner"]) != englishDeterminerFeature(determinerVariant.object) && englishAttributedSeeingDeixis(source, policy.resolver) == "" {
+		if values, found := runtime.SourceFeaturesAt(source, candidate.NodeID, role, coreConcept(ref)); found && values["determiner"] != "" && string(values["determiner"]) != englishDeterminerFeature(determinerVariant.object) && englishAttributedSeeingDeixis(source, policy.resolver) == "" {
 			return false
 		}
 		return true
@@ -2801,7 +2801,7 @@ func (policy englishDeterminerCandidatePolicy) KeepTargetCandidate(source semant
 				return false
 			}
 		}
-		if values, found := runtime.SourceFeatures(source, "bearer", coreConcept(referent)); found && values["determiner"] != "" && string(values["determiner"]) != englishDeterminerFeature(variant.subject) {
+		if values, found := runtime.SourceFeaturesAt(source, candidate.NodeID, "bearer", coreConcept(referent)); found && values["determiner"] != "" && string(values["determiner"]) != englishDeterminerFeature(variant.subject) {
 			return false
 		}
 		return true
@@ -2860,7 +2860,7 @@ func (policy englishDeterminerCandidatePolicy) KeepTargetCandidate(source semant
 			}
 			continue
 		}
-		values, found := runtime.SourceFeatures(source, role, coreConcept(referent))
+		values, found := runtime.SourceFeaturesAt(source, candidate.NodeID, role, coreConcept(referent))
 		determiner := ""
 		if found {
 			determiner = string(values["determiner"])
@@ -3231,7 +3231,7 @@ func englishGivingTargetCandidateAllowed(source semantic.MeaningCandidate, candi
 			if number != "singular" || mass || pluralOnly || articleForm == "" {
 				return false
 			}
-			if values, found := runtime.SourceFeatures(source, role, coreConcept(referent)); found {
+			if values, found := runtime.SourceFeaturesAt(source, candidate.NodeID, role, coreConcept(referent)); found {
 				sourceDeterminer := string(values["determiner"])
 				if sourceDeterminer != "" && sourceDeterminer != "definite" && sourceDeterminer != "indefinite" &&
 					!(candidate.Sense.ID.String() == "sense:en.writing_message.event" && sourceDeterminer == "bare") {
@@ -3250,7 +3250,7 @@ func englishGivingTargetCandidateAllowed(source semantic.MeaningCandidate, candi
 		if actual == "bare" && !mass && !pluralOnly && number != "plural" {
 			return false
 		}
-		if values, found := runtime.SourceFeatures(source, role, coreConcept(referent)); found && values["determiner"] != "" && string(values["determiner"]) != actual {
+		if values, found := runtime.SourceFeaturesAt(source, candidate.NodeID, role, coreConcept(referent)); found && values["determiner"] != "" && string(values["determiner"]) != actual {
 			return false
 		}
 	}
@@ -3377,7 +3377,7 @@ func englishGivingLocalNPCandidateAllowed(source semantic.MeaningCandidate, cand
 			continue
 		}
 		referent, _ := englishMeaningNode(source, participant.Target)
-		if values, found := runtime.SourceFeatures(source, participant.Role, coreConcept(referent)); found {
+		if values, found := runtime.SourceFeaturesAt(source, candidate.NodeID, participant.Role, coreConcept(referent)); found {
 			determiner := string(values["determiner"])
 			if determiner != "" && determiner != "definite" && determiner != "indefinite" {
 				return false

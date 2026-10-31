@@ -914,7 +914,7 @@ func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlter
 	referentNodeByCandidate := map[string]meaning.NodeID{}
 	refNodeIndexByIdentity := map[string]int{}
 	refConceptByIdentity := map[string]ids.ConceptID{}
-	records := []EvidenceRecord{{SourceSpan: predicate.Span, CandidateID: predicate.ID, PhraseNodeID: phraseNodes[predicate.ID], ReadingID: firstString(predicate.ReadingIDs), SenseID: predicateMapping.sense, CoreConceptID: predicateMapping.binding.CoreRef, BindingKey: BindingKeyFor(predicateMapping.sense, predicateMapping.binding.CoreRef), PlanID: alternative.PlanID, FamilyID: alternative.FamilyID, VariantID: alternative.VariantID, FrameID: alternative.Permission.FrameID, Outcome: status.OutcomeOK, Features: evidenceFeatures(predicate.Features), Provenance: predicateMapping.binding.Provenance}}
+	records := []EvidenceRecord{{MeaningNodeID: "event", SourceSpan: predicate.Span, CandidateID: predicate.ID, PhraseNodeID: phraseNodes[predicate.ID], ReadingID: firstString(predicate.ReadingIDs), SenseID: predicateMapping.sense, CoreConceptID: predicateMapping.binding.CoreRef, BindingKey: BindingKeyFor(predicateMapping.sense, predicateMapping.binding.CoreRef), PlanID: alternative.PlanID, FamilyID: alternative.FamilyID, VariantID: alternative.VariantID, FrameID: alternative.Permission.FrameID, Outcome: status.OutcomeOK, Features: evidenceFeatures(predicate.Features), Provenance: predicateMapping.binding.Provenance}}
 	for index, role := range roles {
 		if role.implicit != nil {
 			implicit := role.implicit
@@ -935,7 +935,7 @@ func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlter
 			participants = append(participants, meaning.Participant{Role: role.role, Target: nodeID})
 			reason := "implicit participant role " + string(role.role) + " licensed by construction evidence; no surface subject"
 			records = append(records, EvidenceRecord{
-				SourceSpan: implicit.SourceSpan, CandidateID: predicate.ID, PhraseNodeID: phraseNodes[predicate.ID],
+				MeaningNodeID: "event", SourceSpan: implicit.SourceSpan, CandidateID: predicate.ID, PhraseNodeID: phraseNodes[predicate.ID],
 				ReadingID: firstString(predicate.ReadingIDs), SenseID: predicateMapping.sense,
 				CoreConceptID: predicateMapping.binding.CoreRef,
 				BindingKey:    BindingKeyFor(predicateMapping.sense, predicateMapping.binding.CoreRef),
@@ -994,7 +994,7 @@ func buildMeaningCandidate(input CompositionInput, alternative parser.ParseAlter
 		referentNodeByCandidate[role.candidate.ID] = nodeID
 		refs.Mentions = append(refs.Mentions, mention)
 		participants = append(participants, meaning.Participant{Role: role.role, Target: nodeID})
-		records = append(records, EvidenceRecord{SourceSpan: role.span, CandidateID: role.candidate.ID, PhraseNodeID: phraseNodes[role.candidate.ID], ReadingID: firstString(role.candidate.ReadingIDs), SenseID: role.mapping.sense, CoreConceptID: role.mapping.binding.CoreRef, BindingKey: BindingKeyFor(role.mapping.sense, role.mapping.binding.CoreRef), Role: role.role, Outcome: status.OutcomeOK, Features: evidenceFeatures(role.candidate.Features), Provenance: role.mapping.binding.Provenance})
+		records = append(records, EvidenceRecord{MeaningNodeID: nodeID, PredicateNodeID: "event", SourceSpan: role.span, CandidateID: role.candidate.ID, PhraseNodeID: phraseNodes[role.candidate.ID], ReadingID: firstString(role.candidate.ReadingIDs), SenseID: role.mapping.sense, CoreConceptID: role.mapping.binding.CoreRef, BindingKey: BindingKeyFor(role.mapping.sense, role.mapping.binding.CoreRef), Role: role.role, Outcome: status.OutcomeOK, Features: evidenceFeatures(role.candidate.Features), Provenance: role.mapping.binding.Provenance})
 	}
 	kind := meaning.KindEvent
 	if concept, ok := input.Core.Lookup(predicateMapping.binding.CoreRef); !ok {

@@ -67,27 +67,32 @@ const EvidenceOriginGenerated EvidenceOrigin = "generated"
 
 // EvidenceRecord ties one semantic or unresolved claim to source and typed
 // lexical/construction evidence. Empty semantic IDs represent unavailable
-// evidence; they never license a guessed mapping.
+// evidence; they never license a guessed mapping. MeaningNodeID addresses the
+// exact node in this candidate graph. PredicateNodeID additionally identifies
+// the owning predicate for argument evidence; it is empty for predicate-local
+// lexical evidence. These are neither CORE IDs nor persistent entity IDs.
 type EvidenceRecord struct {
-	Origin         EvidenceOrigin                  `json:"origin,omitempty"`
-	SourceSpan     text.Span                       `json:"source_span"`
-	CandidateID    string                          `json:"candidate_id,omitempty"`
-	PhraseNodeID   parser.NodeID                   `json:"phrase_node_id,omitempty"`
-	ReadingID      string                          `json:"reading_id,omitempty"`
-	SenseID        ids.SenseID                     `json:"sense_id,omitempty"`
-	CoreConceptID  ids.ConceptID                   `json:"core_concept_id,omitempty"`
-	BindingKey     string                          `json:"binding_key,omitempty"`
-	Role           meaning.Role                    `json:"role,omitempty"`
-	Features       []features.FeatureValue         `json:"features,omitempty"`
-	PlanID         construction.ConstructionPlanID `json:"plan_id,omitempty"`
-	NPPhraseID     string                          `json:"np_phrase_id,omitempty"`
-	NPPhrasePlanID string                          `json:"np_phrase_plan_id,omitempty"`
-	FamilyID       ids.ConstructionID              `json:"family_id,omitempty"`
-	VariantID      construction.VariantID          `json:"variant_id,omitempty"`
-	FrameID        valency.FrameID                 `json:"frame_id,omitempty"`
-	Outcome        status.OutcomeKind              `json:"outcome"`
-	Reason         string                          `json:"reason,omitempty"`
-	Provenance     provenance.SourceRef            `json:"provenance,omitempty"`
+	Origin          EvidenceOrigin                  `json:"origin,omitempty"`
+	SourceSpan      text.Span                       `json:"source_span"`
+	CandidateID     string                          `json:"candidate_id,omitempty"`
+	PhraseNodeID    parser.NodeID                   `json:"phrase_node_id,omitempty"`
+	MeaningNodeID   meaning.NodeID                  `json:"meaning_node_id,omitempty"`
+	PredicateNodeID meaning.NodeID                  `json:"predicate_node_id,omitempty"`
+	ReadingID       string                          `json:"reading_id,omitempty"`
+	SenseID         ids.SenseID                     `json:"sense_id,omitempty"`
+	CoreConceptID   ids.ConceptID                   `json:"core_concept_id,omitempty"`
+	BindingKey      string                          `json:"binding_key,omitempty"`
+	Role            meaning.Role                    `json:"role,omitempty"`
+	Features        []features.FeatureValue         `json:"features,omitempty"`
+	PlanID          construction.ConstructionPlanID `json:"plan_id,omitempty"`
+	NPPhraseID      string                          `json:"np_phrase_id,omitempty"`
+	NPPhrasePlanID  string                          `json:"np_phrase_plan_id,omitempty"`
+	FamilyID        ids.ConstructionID              `json:"family_id,omitempty"`
+	VariantID       construction.VariantID          `json:"variant_id,omitempty"`
+	FrameID         valency.FrameID                 `json:"frame_id,omitempty"`
+	Outcome         status.OutcomeKind              `json:"outcome"`
+	Reason          string                          `json:"reason,omitempty"`
+	Provenance      provenance.SourceRef            `json:"provenance,omitempty"`
 }
 
 // MarshalJSON writes typed stable IDs in their external string form. The ID
@@ -95,29 +100,31 @@ type EvidenceRecord struct {
 // directly would otherwise produce empty JSON objects.
 func (record EvidenceRecord) MarshalJSON() ([]byte, error) {
 	type evidenceRecordJSON struct {
-		Origin         EvidenceOrigin                  `json:"origin,omitempty"`
-		SourceSpan     text.Span                       `json:"source_span"`
-		CandidateID    string                          `json:"candidate_id,omitempty"`
-		PhraseNodeID   parser.NodeID                   `json:"phrase_node_id,omitempty"`
-		ReadingID      string                          `json:"reading_id,omitempty"`
-		SenseID        string                          `json:"sense_id,omitempty"`
-		CoreConceptID  string                          `json:"core_concept_id,omitempty"`
-		BindingKey     string                          `json:"binding_key,omitempty"`
-		Role           meaning.Role                    `json:"role,omitempty"`
-		Features       []features.FeatureValue         `json:"features,omitempty"`
-		PlanID         construction.ConstructionPlanID `json:"plan_id,omitempty"`
-		NPPhraseID     string                          `json:"np_phrase_id,omitempty"`
-		NPPhrasePlanID string                          `json:"np_phrase_plan_id,omitempty"`
-		FamilyID       string                          `json:"family_id,omitempty"`
-		VariantID      construction.VariantID          `json:"variant_id,omitempty"`
-		FrameID        valency.FrameID                 `json:"frame_id,omitempty"`
-		Outcome        status.OutcomeKind              `json:"outcome"`
-		Reason         string                          `json:"reason,omitempty"`
-		Provenance     provenance.SourceRef            `json:"provenance,omitempty"`
+		Origin          EvidenceOrigin                  `json:"origin,omitempty"`
+		SourceSpan      text.Span                       `json:"source_span"`
+		CandidateID     string                          `json:"candidate_id,omitempty"`
+		PhraseNodeID    parser.NodeID                   `json:"phrase_node_id,omitempty"`
+		MeaningNodeID   meaning.NodeID                  `json:"meaning_node_id,omitempty"`
+		PredicateNodeID meaning.NodeID                  `json:"predicate_node_id,omitempty"`
+		ReadingID       string                          `json:"reading_id,omitempty"`
+		SenseID         string                          `json:"sense_id,omitempty"`
+		CoreConceptID   string                          `json:"core_concept_id,omitempty"`
+		BindingKey      string                          `json:"binding_key,omitempty"`
+		Role            meaning.Role                    `json:"role,omitempty"`
+		Features        []features.FeatureValue         `json:"features,omitempty"`
+		PlanID          construction.ConstructionPlanID `json:"plan_id,omitempty"`
+		NPPhraseID      string                          `json:"np_phrase_id,omitempty"`
+		NPPhrasePlanID  string                          `json:"np_phrase_plan_id,omitempty"`
+		FamilyID        string                          `json:"family_id,omitempty"`
+		VariantID       construction.VariantID          `json:"variant_id,omitempty"`
+		FrameID         valency.FrameID                 `json:"frame_id,omitempty"`
+		Outcome         status.OutcomeKind              `json:"outcome"`
+		Reason          string                          `json:"reason,omitempty"`
+		Provenance      provenance.SourceRef            `json:"provenance,omitempty"`
 	}
 	return json.Marshal(evidenceRecordJSON{
 		Origin: record.Origin, SourceSpan: record.SourceSpan, CandidateID: record.CandidateID,
-		PhraseNodeID: record.PhraseNodeID, ReadingID: record.ReadingID,
+		PhraseNodeID: record.PhraseNodeID, MeaningNodeID: record.MeaningNodeID, PredicateNodeID: record.PredicateNodeID, ReadingID: record.ReadingID,
 		SenseID: record.SenseID.String(), CoreConceptID: record.CoreConceptID.String(),
 		BindingKey: record.BindingKey, Role: record.Role, Features: record.Features,
 		PlanID: record.PlanID, NPPhraseID: record.NPPhraseID, NPPhrasePlanID: record.NPPhrasePlanID, FamilyID: record.FamilyID.String(), VariantID: record.VariantID,
@@ -237,7 +244,7 @@ func validateEvidenceRecord(record EvidenceRecord, path string) error {
 			return evidenceError(status.OutcomeInvalid, "INVALID_EVIDENCE_SPAN", path+".source_span", "source span must be a non-empty half-open byte range within the input limit")
 		}
 	case EvidenceOriginGenerated:
-		if record.SourceSpan != (text.Span{}) || record.Outcome != status.OutcomeOK || record.CandidateID != "" || record.PhraseNodeID != "" || record.ReadingID != "" || len(record.Features) != 0 || record.Role != "" {
+		if record.SourceSpan != (text.Span{}) || record.Outcome != status.OutcomeOK || record.CandidateID != "" || record.PhraseNodeID != "" || record.ReadingID != "" || len(record.Features) != 0 || record.Role != "" || record.MeaningNodeID != "" || record.PredicateNodeID != "" {
 			return evidenceError(status.OutcomeInvalid, "INVALID_GENERATED_EVIDENCE", path, "generated evidence cannot claim a source span, parse identity, source features, or non-success outcome")
 		}
 	default:
@@ -258,6 +265,8 @@ func validateEvidenceRecord(record EvidenceRecord, path string) error {
 		{record.NPPhraseID, "np_phrase_id", 256},
 		{record.NPPhrasePlanID, "np_phrase_plan_id", 256},
 		{string(record.PhraseNodeID), "phrase_node_id", 256},
+		{string(record.MeaningNodeID), "meaning_node_id", 256},
+		{string(record.PredicateNodeID), "predicate_node_id", 256},
 		{record.ReadingID, "reading_id", 256},
 		{record.BindingKey, "binding_key", 2*ids.MaxSymbolBytes + 2},
 		{record.Reason, "reason", status.MaxDiagnosticMessageBytes},
@@ -265,6 +274,9 @@ func validateEvidenceRecord(record EvidenceRecord, path string) error {
 		if value.text != "" && !validEvidenceText(value.text, value.max) {
 			return evidenceError(status.OutcomeInvalid, "INVALID_EVIDENCE_TEXT", path+"."+value.name, "evidence text is invalid, empty, or exceeds its byte limit")
 		}
+	}
+	if record.PredicateNodeID != "" && (record.MeaningNodeID == "" || record.Role == "") {
+		return evidenceError(status.OutcomeInvalid, "INVALID_EVIDENCE_ADDRESS", path, "participant evidence requires a Meaning node, an owning predicate and a role")
 	}
 	if record.Reason == "" && record.Outcome != status.OutcomeOK {
 		return evidenceError(status.OutcomeInvalid, "MISSING_EVIDENCE_REASON", path+".reason", "non-ok evidence record requires a reason")
@@ -318,7 +330,7 @@ func validateEvidenceRecord(record EvidenceRecord, path string) error {
 func evidenceRecordStrings(record EvidenceRecord) []string {
 	ref := record.Provenance
 	result := []string{
-		record.CandidateID, string(record.PhraseNodeID), record.ReadingID, record.SenseID.String(),
+		record.CandidateID, string(record.PhraseNodeID), string(record.MeaningNodeID), string(record.PredicateNodeID), record.ReadingID, record.SenseID.String(),
 		record.NPPhraseID, record.NPPhrasePlanID,
 		record.CoreConceptID.String(), record.BindingKey, string(record.Role), string(record.PlanID),
 		record.FamilyID.String(), record.VariantID.String(), string(record.FrameID), record.Reason,

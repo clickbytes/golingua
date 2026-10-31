@@ -211,6 +211,7 @@ func modifierCompositionForSlot(
 		state.TemporalFrame = attribute.TemporalFrame
 	}
 	record := modifierEvidenceRecord(modifierCandidate, mapping, modifierBinding.SemanticRole, phraseNodes[modifierCandidate.ID], status.OutcomeOK, "")
+	record.MeaningNodeID = stateID
 	record.NPPhraseID = npPhrase.ID
 	record.NPPhrasePlanID = string(npPhrase.Plan.Plan.ID)
 	return state, status.OutcomeOK, []EvidenceRecord{record}, status.Diagnostic{}

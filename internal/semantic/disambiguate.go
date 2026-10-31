@@ -198,6 +198,11 @@ func Disambiguate(candidates []MeaningCandidate, inputOutcome status.OutcomeKind
 		if err := candidate.Evidence.ValidateWithBudget(budget); err != nil {
 			return Result{}, fmt.Errorf("candidate %q evidence: %w", candidate.ID, err)
 		}
+		if candidate.Meaning != nil {
+			if err := ValidateEvidenceMeaning(candidate.Evidence, *candidate.Meaning); err != nil {
+				return Result{}, fmt.Errorf("candidate %q evidence address: %w", candidate.ID, err)
+			}
+		}
 		if candidate.Evidence.Outcome != candidate.Status {
 			return Result{}, disambiguationError("EVIDENCE_STATUS_MISMATCH", fmt.Sprintf("candidates[%d].evidence.outcome", i), "evidence outcome must match candidate status")
 		}
@@ -257,6 +262,14 @@ func Disambiguate(candidates []MeaningCandidate, inputOutcome status.OutcomeKind
 			}
 			if current.Meaning == nil || candidate.Meaning == nil {
 				continue
+			}
+			// An equivalence result does not supply a graph-local ID mapping.
+			// Keep addressed traces separate unless their graph namespace matches.
+			if HasMeaningEvidenceAddresses(current.Evidence) || HasMeaningEvidenceAddresses(candidate.Evidence) {
+				equal, err := meaning.CanonicalEqual(*current.Meaning, *candidate.Meaning, meaning.DefaultBudget())
+				if err != nil || !equal {
+					continue
+				}
 			}
 			if contextsEquivalent(current.Contexts, candidate.Contexts) {
 				position = possible

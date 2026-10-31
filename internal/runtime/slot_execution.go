@@ -308,7 +308,7 @@ func attachNPExecutionRequests(slots map[string]realizer.SlotRequest, source sem
 			if headSpec.ArgumentBinding != nil {
 				role = headSpec.ArgumentBinding.SemanticRole
 			}
-			selectedDeterminer, err := targetNPEmbeddedDeterminer(profile, phraseProfile, template, realizationPlan.Assumptions, source, role, head, modifier, firstModifier)
+			selectedDeterminer, err := targetNPEmbeddedDeterminer(profile, phraseProfile, template, realizationPlan.Assumptions, source, selected.NodeID, role, head, modifier, firstModifier)
 			if err != nil {
 				return err
 			}
@@ -342,7 +342,7 @@ func attachNPExecutionRequests(slots map[string]realizer.SlotRequest, source sem
 // part when the selected outer variant has no determiner terminal. It only
 // acts on explicit determiner assumptions and obtains surfaces/forms from the
 // language phrase profile.
-func targetNPEmbeddedDeterminer(profile *features.LanguageFeatureProfile, phraseProfile construction.PhraseProfile, template construction.PhraseTemplate, assumptions []realizer.FieldAssumption, source semantic.MeaningCandidate, role meaning.Role, head realizer.SlotRequest, modifier *realizer.SlotRequest, modifierFirst bool) (*realizer.NPDeterminerExecutionRequest, error) {
+func targetNPEmbeddedDeterminer(profile *features.LanguageFeatureProfile, phraseProfile construction.PhraseProfile, template construction.PhraseTemplate, assumptions []realizer.FieldAssumption, source semantic.MeaningCandidate, predicateID meaning.NodeID, role meaning.Role, head realizer.SlotRequest, modifier *realizer.SlotRequest, modifierFirst bool) (*realizer.NPDeterminerExecutionRequest, error) {
 	value := ""
 	bare := false
 	for _, assumption := range assumptions {
@@ -365,7 +365,7 @@ func targetNPEmbeddedDeterminer(profile *features.LanguageFeatureProfile, phrase
 		return nil, nil
 	}
 	sourceDeterminer := ""
-	if values, found := SourceFeatures(source, role, head.Candidate.TransferBinding.CoreRef); found {
+	if values, found := SourceFeaturesAt(source, predicateID, role, head.Candidate.TransferBinding.CoreRef); found {
 		sourceDeterminer = string(values["determiner"])
 	}
 	if sourceDeterminer != "" {
