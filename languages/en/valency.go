@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/clickbytes/golingua/internal/construction"
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/provenance"
@@ -1093,6 +1094,8 @@ func englishClosingNegativeBindingDeclarations() []constructionBindingDeclaratio
 	for _, variant := range []string{
 		"en.transitive_negative.svo", "en.transitive_negative.svo.plural",
 		"en.transitive_negative.svo.plural.bare_object.subject_the",
+		"en.transitive_negative.svo.bare_object.subject_the", "en.transitive_negative.svo.bare_object.subject_a",
+		"en.transitive_negative.svo.past.bare_object.subject_the", "en.transitive_negative.svo.past.bare_object.subject_a",
 		"en.transitive_negative.svo.indefinite_object", "en.transitive_negative.svo.indefinite_subject", "en.transitive_negative.svo.indefinite_subject_object",
 		"en.transitive_negative.svo.past", "en.transitive_negative.svo.past.indefinite_object",
 		"en.transitive_negative.svo.past.indefinite_subject", "en.transitive_negative.svo.past.indefinite_subject_object",
@@ -1882,9 +1885,35 @@ func CompileValency() (*valency.Index, error) {
 	bindingDeclarations = append(bindingDeclarations, englishCommerceOmissionBindings()...)
 	bindingDeclarations = append(bindingDeclarations, englishUsingTargetBindings()...)
 	bindingDeclarations = append(bindingDeclarations, englishConversingBindings()...)
+	// A compact realization may replace an existing target recipe, but an
+	// analysis-only binding never licenses a new generator for its frame.
+	negativeData, err := sentenceConstructions.ReadFile("constructions/transitive_negative.json")
+	if err != nil {
+		return nil, err
+	}
+	negativePackage, err := construction.DecodeConstructionPackage(negativeData)
+	if err != nil {
+		return nil, fmt.Errorf("English negative binding directions: %w", err)
+	}
+	negativeDirections := make(map[string]construction.DirectionPolicy)
+	for _, variant := range negativePackage.Package.Variants {
+		negativeDirections[variant.ID.String()] = variant.DirectionPolicy
+	}
 	seenNegativeRoutes := make(map[string]bool)
 	for _, declaration := range bindingDeclarations {
+		if declaration.family == "en.transitive_negative" && declaration.variant == "en.transitive_negative.svo.vp_auxiliary" {
+			seenNegativeRoutes[declaration.sense+"\x00"+declaration.frame] = true
+		}
+	}
+	for _, declaration := range bindingDeclarations {
 		if declaration.family != "en.transitive_negative" {
+			continue
+		}
+		direction, exists := negativeDirections["construction:"+declaration.variant]
+		if !exists {
+			return nil, fmt.Errorf("English negative binding has unknown variant %q", declaration.variant)
+		}
+		if direction == construction.DirectionAnalyze {
 			continue
 		}
 		key := declaration.sense + "\x00" + declaration.frame
@@ -1892,9 +1921,6 @@ func CompileValency() (*valency.Index, error) {
 			continue
 		}
 		seenNegativeRoutes[key] = true
-		if declaration.variant == "en.transitive_negative.svo.vp_auxiliary" {
-			continue
-		}
 		bindingDeclarations = append(bindingDeclarations, constructionBindingDeclaration{
 			sense: declaration.sense, frame: declaration.frame,
 			family: "en.transitive_negative", variant: "en.transitive_negative.svo.vp_auxiliary",

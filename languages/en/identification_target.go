@@ -3,6 +3,7 @@ package en
 import (
 	"strings"
 
+	"github.com/clickbytes/golingua/internal/construction"
 	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/realizer"
 	"github.com/clickbytes/golingua/internal/runtime"
@@ -327,21 +328,25 @@ func englishAttributionDoorNumberChoice(source semantic.MeaningCandidate, predic
 	if role != "" && (role != "bearer" || slotID != "bearer") {
 		return "", false
 	}
-	variant := predicate.CompiledVariant.Variant.ID.String()
-	switch variant {
-	case "construction:en.attribution.the_plural":
-		if identification.multiplicity == meaning.MultiplicityOne {
+	// Agreement belongs to the selected recipe, not its spelling or tense
+	// suffix. In particular, lexical Polish plural does not determine the
+	// English referent's cardinality.
+	number := ""
+	for _, condition := range predicate.CompiledVariant.Variant.Conditions {
+		if condition.Kind != construction.ConditionFeatureEquals || condition.SlotID != "bearer" || condition.Feature != "noun_number" {
+			continue
+		}
+		value := string(condition.Value)
+		if value != "singular" && value != "plural" || number != "" && number != value {
 			return "", false
 		}
-		return "plural", true
-	case "construction:en.attribution.the":
-		if identification.multiplicity == meaning.MultiplicityMany {
-			return "", false
-		}
-		return "singular", true
-	default:
+		number = value
+	}
+	if number == "" || identification.multiplicity == meaning.MultiplicityOne && number != "singular" ||
+		identification.multiplicity == meaning.MultiplicityMany && number != "plural" {
 		return "", false
 	}
+	return number, true
 }
 
 func englishIdentificationReferenceChoice(variant, family string) (string, bool) {

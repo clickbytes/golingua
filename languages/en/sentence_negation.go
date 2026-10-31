@@ -234,7 +234,7 @@ func (resolver englishNegationResolver) approvedNegativeSourceVariantExists(fami
 			continue
 		}
 		compiled, exists := variantIndex.ByID(variantID)
-		if !exists || compiled.Variant.DirectionPolicy != construction.DirectionAnalyze ||
+		if !exists || compiled.Variant.DirectionPolicy == construction.DirectionRealize ||
 			!variantHasRequiredSlots(familyRecord.Family, compiled.Variant) ||
 			!sequenceHasSlot(compiled.Variant.Sequence, subjectSlot) || !sequenceHasSlot(compiled.Variant.Sequence, predicateSlot) ||
 			!sequenceHasTerminal(compiled.Variant.Sequence, "not") {

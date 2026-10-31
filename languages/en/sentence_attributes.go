@@ -253,9 +253,11 @@ func englishIdentificationDefaults(source semantic.MeaningCandidate, predicatePa
 	if predicate.TemporalFrame == "" {
 		assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "tense", Value: "present", Reason: "Meaning carries no temporal frame; this licensed English identification route uses present"})
 	}
-	personKnown := false
+	// A nominal or demonstrative subject uses third-person agreement by
+	// construction; it does not posit a new semantic participant feature.
+	personKnown := referent.Kind == meaning.KindReferent && !englishParticipantAnchorIntent(source, referent.ID)
 	if values, found := runtime.SourceFeaturesAt(source, predicate.ID, "", predicateConcept); found {
-		personKnown = values["person"] != ""
+		personKnown = personKnown || values["person"] != ""
 	}
 	if !personKnown {
 		assumptions = append(assumptions, realizer.FieldAssumption{Path: predicatePath, Field: "person", Value: "third", Reason: "Meaning carries no grammatical person; this route uses the approved third-person form"})
@@ -317,4 +319,41 @@ func englishPresentNegationNumber(source semantic.MeaningCandidate, predicate re
 		return "", false
 	}
 	return number, true
+}
+
+// englishCountRoleNumber uses semantic cardinality first. Source grammatical
+// number can refine an otherwise open count NP only when its lexical contract
+// does not explicitly keep cardinality unresolved (for example pluralia tantum).
+func englishCountRoleNumber(source semantic.MeaningCandidate, index *lexicon.Index, predicateID meaning.NodeID, role meaning.Role, referent meaning.Node) string {
+	if number := englishMultiplicityNumber(referent.Multiplicity); number != "" {
+		return number
+	}
+	concept := coreConcept(referent)
+	if index != nil {
+		for _, record := range source.Evidence.Records {
+			if !runtime.SourceEvidenceAppliesAt(source, record, predicateID, role, concept) {
+				continue
+			}
+			sense, found := index.BySenseID(record.SenseID)
+			if !found {
+				continue
+			}
+			word, found := index.ByLexemeID(sense.LexemeID)
+			if !found {
+				continue
+			}
+			for _, property := range word.Properties {
+				if property.Key == "multiplicity_behavior" && property.Value == "lexical_plural_not_cardinality" {
+					return ""
+				}
+			}
+		}
+	}
+	if values, found := runtime.SourceFeaturesAt(source, predicateID, role, concept); found {
+		if values["number"] != "" {
+			return string(values["number"])
+		}
+		return string(values["noun_number"])
+	}
+	return ""
 }

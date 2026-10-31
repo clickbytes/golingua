@@ -1457,15 +1457,7 @@ func englishNegativeLocalArticleAlternatives(resolver englishNegationResolver, s
 		number := ""
 		switch class {
 		case "count":
-			number = englishMultiplicityNumber(referent.Multiplicity)
-			if number == "" {
-				if values, found := runtime.SourceFeaturesAt(source, selected.NodeID, role, coreConcept(referent)); found {
-					number = string(values["number"])
-					if number == "" {
-						number = string(values["noun_number"])
-					}
-				}
-			}
+			number = englishCountRoleNumber(source, resolver.lexicon, selected.NodeID, role, referent)
 			if number != "singular" && number != "plural" {
 				return nil, fmt.Errorf("NP-local negative articles require explicit singular or plural evidence for count role %s", role)
 			}
@@ -1698,15 +1690,7 @@ func englishNegativeLocalNPCandidateAllowed(resolver englishNegationResolver, so
 		}
 		switch class {
 		case "count":
-			number = englishMultiplicityNumber(referent.Multiplicity)
-			if number == "" {
-				if values, found := runtime.SourceFeaturesAt(source, candidate.NodeID, role, coreConcept(referent)); found {
-					number = string(values["number"])
-					if number == "" {
-						number = string(values["noun_number"])
-					}
-				}
-			}
+			number = englishCountRoleNumber(source, resolver.lexicon, candidate.NodeID, role, referent)
 			if number != "singular" && number != "plural" || number == "singular" && !articleAvailable {
 				return false
 			}
@@ -2523,7 +2507,7 @@ func (policy englishDeterminerCandidatePolicy) KeepTargetCandidate(source semant
 				if variant == identification.family+".the" {
 					return identification.multiplicity != meaning.MultiplicityMany
 				}
-				if variant == identification.family+".the_plural" {
+				if variant == identification.family+".the_plural" || variant == identification.family+".bare_plural" {
 					return identification.concept == "concept:door" && identification.multiplicity == ""
 				}
 				if variant != identification.family+".a" && variant != identification.family+".an" {

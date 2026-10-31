@@ -281,6 +281,10 @@
           {
             "id": "present_3pl_form",
             "form": "latają"
+          },
+          {
+            "id": "past_stem",
+            "form": "lata"
           }
         ]
       }

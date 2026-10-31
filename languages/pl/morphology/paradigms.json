@@ -10178,6 +10178,11 @@
     "pos": "verb",
     "principal_part_requirements": [
       {
+        "stem_id": "pl_verb_latac_present_3sg_3pl_past_stem",
+        "part_id": "past_stem",
+        "required": true
+      },
+      {
         "stem_id": "pl_verb_latac_present_3sg_3pl_present_3pl_form",
         "part_id": "present_3pl_form",
         "required": true
@@ -10189,6 +10194,231 @@
       }
     ],
     "cells": [
+      {
+        "id": "past_3pl_masc_personal",
+        "features": [
+          {
+            "feature": "aspect",
+            "state": "known",
+            "value": "imperfective"
+          },
+          {
+            "feature": "mood",
+            "state": "known",
+            "value": "indicative"
+          },
+          {
+            "feature": "number",
+            "state": "known",
+            "value": "plural"
+          },
+          {
+            "feature": "person",
+            "state": "known",
+            "value": "third"
+          },
+          {
+            "feature": "gender",
+            "state": "known",
+            "value": "masculine_personal"
+          },
+          {
+            "feature": "tense",
+            "state": "known",
+            "value": "past"
+          },
+          {
+            "feature": "verb_form",
+            "state": "known",
+            "value": "finite"
+          },
+          {
+            "feature": "voice",
+            "state": "known",
+            "value": "active"
+          }
+        ]
+      },
+      {
+        "id": "past_3pl_non_masc_personal",
+        "features": [
+          {
+            "feature": "aspect",
+            "state": "known",
+            "value": "imperfective"
+          },
+          {
+            "feature": "mood",
+            "state": "known",
+            "value": "indicative"
+          },
+          {
+            "feature": "number",
+            "state": "known",
+            "value": "plural"
+          },
+          {
+            "feature": "person",
+            "state": "known",
+            "value": "third"
+          },
+          {
+            "feature": "gender",
+            "state": "known",
+            "value": "non_masculine_personal"
+          },
+          {
+            "feature": "tense",
+            "state": "known",
+            "value": "past"
+          },
+          {
+            "feature": "verb_form",
+            "state": "known",
+            "value": "finite"
+          },
+          {
+            "feature": "voice",
+            "state": "known",
+            "value": "active"
+          }
+        ]
+      },
+      {
+        "id": "past_3sg_fem",
+        "features": [
+          {
+            "feature": "aspect",
+            "state": "known",
+            "value": "imperfective"
+          },
+          {
+            "feature": "mood",
+            "state": "known",
+            "value": "indicative"
+          },
+          {
+            "feature": "number",
+            "state": "known",
+            "value": "singular"
+          },
+          {
+            "feature": "person",
+            "state": "known",
+            "value": "third"
+          },
+          {
+            "feature": "gender",
+            "state": "known",
+            "value": "feminine"
+          },
+          {
+            "feature": "tense",
+            "state": "known",
+            "value": "past"
+          },
+          {
+            "feature": "verb_form",
+            "state": "known",
+            "value": "finite"
+          },
+          {
+            "feature": "voice",
+            "state": "known",
+            "value": "active"
+          }
+        ]
+      },
+      {
+        "id": "past_3sg_masc",
+        "features": [
+          {
+            "feature": "aspect",
+            "state": "known",
+            "value": "imperfective"
+          },
+          {
+            "feature": "mood",
+            "state": "known",
+            "value": "indicative"
+          },
+          {
+            "feature": "number",
+            "state": "known",
+            "value": "singular"
+          },
+          {
+            "feature": "person",
+            "state": "known",
+            "value": "third"
+          },
+          {
+            "feature": "gender",
+            "state": "known",
+            "value": "masculine_personal"
+          },
+          {
+            "feature": "tense",
+            "state": "known",
+            "value": "past"
+          },
+          {
+            "feature": "verb_form",
+            "state": "known",
+            "value": "finite"
+          },
+          {
+            "feature": "voice",
+            "state": "known",
+            "value": "active"
+          }
+        ]
+      },
+      {
+        "id": "past_3sg_neut",
+        "features": [
+          {
+            "feature": "aspect",
+            "state": "known",
+            "value": "imperfective"
+          },
+          {
+            "feature": "mood",
+            "state": "known",
+            "value": "indicative"
+          },
+          {
+            "feature": "number",
+            "state": "known",
+            "value": "singular"
+          },
+          {
+            "feature": "person",
+            "state": "known",
+            "value": "third"
+          },
+          {
+            "feature": "gender",
+            "state": "known",
+            "value": "neuter"
+          },
+          {
+            "feature": "tense",
+            "state": "known",
+            "value": "past"
+          },
+          {
+            "feature": "verb_form",
+            "state": "known",
+            "value": "finite"
+          },
+          {
+            "feature": "voice",
+            "state": "known",
+            "value": "active"
+          }
+        ]
+      },
       {
         "id": "present_indicative_active_imperfective_present_3pl",
         "features": [
@@ -10271,6 +10501,111 @@
       }
     ],
     "rules": [
+      {
+        "cell_id": "past_3pl_masc_personal",
+        "procedure_id": "procedure:pl_verb_latac_present_3sg_3pl.past_3pl_masc_personal",
+        "provenance": {
+          "id": "wsjp-pl-latac-past",
+          "uri": "https://wsjp.pl/haslo/podglad/38367/latac/4212091/samolot-ptak",
+          "version": "2026-10-31",
+          "license": "unknown",
+          "author": "Wielki słownik języka polskiego PAN"
+        },
+        "steps": [
+          {
+            "kind": "select_stem",
+            "stem_id": "pl_verb_latac_present_3sg_3pl_past_stem"
+          },
+          {
+            "kind": "append",
+            "text": "li"
+          }
+        ]
+      },
+      {
+        "cell_id": "past_3pl_non_masc_personal",
+        "procedure_id": "procedure:pl_verb_latac_present_3sg_3pl.past_3pl_non_masc_personal",
+        "provenance": {
+          "id": "wsjp-pl-latac-past",
+          "uri": "https://wsjp.pl/haslo/podglad/38367/latac/4212091/samolot-ptak",
+          "version": "2026-10-31",
+          "license": "unknown",
+          "author": "Wielki słownik języka polskiego PAN"
+        },
+        "steps": [
+          {
+            "kind": "select_stem",
+            "stem_id": "pl_verb_latac_present_3sg_3pl_past_stem"
+          },
+          {
+            "kind": "append",
+            "text": "ły"
+          }
+        ]
+      },
+      {
+        "cell_id": "past_3sg_fem",
+        "procedure_id": "procedure:pl_verb_latac_present_3sg_3pl.past_3sg_fem",
+        "provenance": {
+          "id": "wsjp-pl-latac-past",
+          "uri": "https://wsjp.pl/haslo/podglad/38367/latac/4212091/samolot-ptak",
+          "version": "2026-10-31",
+          "license": "unknown",
+          "author": "Wielki słownik języka polskiego PAN"
+        },
+        "steps": [
+          {
+            "kind": "select_stem",
+            "stem_id": "pl_verb_latac_present_3sg_3pl_past_stem"
+          },
+          {
+            "kind": "append",
+            "text": "ła"
+          }
+        ]
+      },
+      {
+        "cell_id": "past_3sg_masc",
+        "procedure_id": "procedure:pl_verb_latac_present_3sg_3pl.past_3sg_masc",
+        "provenance": {
+          "id": "wsjp-pl-latac-past",
+          "uri": "https://wsjp.pl/haslo/podglad/38367/latac/4212091/samolot-ptak",
+          "version": "2026-10-31",
+          "license": "unknown",
+          "author": "Wielki słownik języka polskiego PAN"
+        },
+        "steps": [
+          {
+            "kind": "select_stem",
+            "stem_id": "pl_verb_latac_present_3sg_3pl_past_stem"
+          },
+          {
+            "kind": "append",
+            "text": "ł"
+          }
+        ]
+      },
+      {
+        "cell_id": "past_3sg_neut",
+        "procedure_id": "procedure:pl_verb_latac_present_3sg_3pl.past_3sg_neut",
+        "provenance": {
+          "id": "wsjp-pl-latac-past",
+          "uri": "https://wsjp.pl/haslo/podglad/38367/latac/4212091/samolot-ptak",
+          "version": "2026-10-31",
+          "license": "unknown",
+          "author": "Wielki słownik języka polskiego PAN"
+        },
+        "steps": [
+          {
+            "kind": "select_stem",
+            "stem_id": "pl_verb_latac_present_3sg_3pl_past_stem"
+          },
+          {
+            "kind": "append",
+            "text": "ło"
+          }
+        ]
+      },
       {
         "cell_id": "present_indicative_active_imperfective_present_3pl",
         "procedure_id": "procedure:pl_verb_latac_present_3sg_3pl.present_plural",
