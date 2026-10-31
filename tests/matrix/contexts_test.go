@@ -5,15 +5,20 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"reflect"
 	"testing"
 
+	"github.com/clickbytes/golingua/internal/construction"
 	"github.com/clickbytes/golingua/internal/engine"
+	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/ids"
+	"github.com/clickbytes/golingua/internal/lexicon"
 	"github.com/clickbytes/golingua/internal/meaning"
 	"github.com/clickbytes/golingua/internal/realizer"
 	langruntime "github.com/clickbytes/golingua/internal/runtime"
 	"github.com/clickbytes/golingua/internal/semantic"
 	"github.com/clickbytes/golingua/internal/status"
+	"github.com/clickbytes/golingua/internal/valency"
 	"github.com/clickbytes/golingua/tests/interlingua"
 )
 
@@ -451,5 +456,227 @@ func TestTargetMissingPastParadigmIsDiagnosed(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+// Extending an unrelated sense must not consume the current clause's entire
+// selection budget. Both sides use the production data and the same independent IR.
+func TestTargetSelectionIgnoresUnrelatedBindings(t *testing.T) {
+	for _, lang := range []features.LanguageID{"en", "pl"} {
+		t.Run(string(lang), func(t *testing.T) {
+			pipeline, input := targetSelectionFixture(t, lang)
+			reference, err := realizer.SelectTargets(input)
+			if err != nil || reference.Outcome == status.OutcomeResourceLimit || len(reference.Candidates) == 0 {
+				t.Fatalf("reference selection unavailable: %s %v", reference.Outcome, err)
+			}
+			frames, bindings := pipeline.Valency.Frames(), pipeline.Valency.Bindings()
+			var other valency.ConstructionBinding
+			for _, binding := range bindings {
+				if binding.SenseID.String() != "sense:en.see.visual" && binding.SenseID.String() != "sense:pl.widziec.visual" && binding.FamilyID.String() == "construction:"+string(lang)+".transitive" {
+					other = binding
+					break
+				}
+			}
+			if other.ValencyFrameID == "" {
+				t.Fatal("unrelated transitive binding unavailable")
+			}
+			var template valency.ValencyFrame
+			for _, frame := range frames {
+				if frame.ID == other.ValencyFrameID {
+					template = frame
+					break
+				}
+			}
+			for i := 0; i < 500; i++ {
+				frame, binding := template, other
+				frame.ID = valency.FrameID(fmt.Sprintf("%s.audit_%03d", template.ID, i))
+				binding.ValencyFrameID = frame.ID
+				frames, bindings = append(frames, frame), append(bindings, binding)
+			}
+			index, err := valency.BuildIndex(frames, bindings)
+			if err != nil {
+				t.Fatal(err)
+			}
+			input.Valency = index
+			input.Constructions = selectionRegistry(t, pipeline, index)
+			got, err := realizer.SelectTargets(input)
+			if err != nil || !reflect.DeepEqual(reference, got) {
+				t.Fatalf("unrelated bindings changed selection: before=%s/%d after=%s/%d err=%v diagnostics=%+v", reference.Outcome, len(reference.Candidates), got.Outcome, len(got.Candidates), err, got.Diagnostics)
+			}
+		})
+	}
+}
+
+func targetSelectionFixture(t *testing.T, lang features.LanguageID) (*langruntime.TargetPipeline, realizer.Input) {
+	t.Helper()
+	rt := Runtime(t)
+	target, ok := rt.TargetRealizerFor(lang)
+	if !ok {
+		t.Fatal("target unavailable")
+	}
+	pipeline, ok := target.(*langruntime.TargetPipeline)
+	if !ok {
+		t.Fatal("production target pipeline unavailable")
+	}
+	graph, ok, err := interlingua.Seeing("seeing.teacher-dog")
+	if err != nil || !ok {
+		t.Fatalf("independent Meaning unavailable: %v", err)
+	}
+	candidate := semantic.MeaningCandidate{ID: "binding-index", SemanticID: "binding-index", Meaning: &graph, Status: status.OutcomeOK,
+		Evidence: semantic.EvidenceTrace{AlternativeID: "binding-index", Outcome: status.OutcomeOK}}
+	return pipeline, realizer.Input{Candidates: []semantic.MeaningCandidate{candidate}, Outcome: status.OutcomeOK,
+		OperatorCoverageComplete: true, Language: lexicon.LanguageID(lang), Lexicon: pipeline.Lexicon,
+		Valency: pipeline.Valency, Constructions: pipeline.Constructions, Variants: pipeline.Variants, Core: pipeline.Core, CandidatePolicy: pipeline.CandidatePolicy}
+}
+
+func selectionRegistry(t *testing.T, pipeline *langruntime.TargetPipeline, index *valency.Index) *construction.Registry {
+	t.Helper()
+	var families []construction.ConstructionFamily
+	for _, record := range pipeline.Constructions.ByLanguage(pipeline.Language) {
+		families = append(families, record.Family)
+	}
+	registry, err := construction.CompileRegistry(families, index)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return registry
+}
+
+func TestTargetSelectionExactLicenseAndBudget(t *testing.T) {
+	pipeline, input := targetSelectionFixture(t, "en")
+	reference, err := realizer.SelectTargets(input)
+	if err != nil || len(reference.Candidates) == 0 {
+		t.Fatal("reference unavailable", err)
+	}
+	var licensed valency.ConstructionBinding
+	for _, candidate := range reference.Candidates {
+		if candidate.Kind == meaning.KindEvent {
+			licensed = candidate.ConstructionBinding
+			break
+		}
+	}
+	if licensed.ValencyFrameID == "" {
+		t.Fatal("event license missing")
+	}
+	for _, mismatch := range []string{"missing", "provenance"} {
+		t.Run(mismatch, func(t *testing.T) {
+			bindings := pipeline.Valency.Bindings()
+			for i, binding := range bindings {
+				if binding != licensed {
+					continue
+				}
+				if mismatch == "missing" {
+					bindings = append(bindings[:i], bindings[i+1:]...)
+				} else {
+					bindings[i].Provenance.Version += "-changed"
+				}
+				break
+			}
+			index, err := valency.BuildIndex(pipeline.Valency.Frames(), bindings)
+			if err != nil {
+				t.Fatal(err)
+			}
+			changed := input
+			changed.Constructions = selectionRegistry(t, pipeline, index)
+			_, err = realizer.SelectTargets(changed)
+			var typed interface{ Result() status.Result }
+			if !errors.As(err, &typed) || typed.Result().Status != status.OutcomeInvalid {
+				t.Fatalf("mismatched index must fail closed: %v", err)
+			}
+			found := false
+			for _, d := range typed.Result().Diagnostics {
+				found = found || d.Code == "CONSTRUCTION_INDEX_MISMATCH"
+			}
+			if !found {
+				t.Fatalf("wrong error: %v", err)
+			}
+		})
+	}
+	t.Run("actual work remains bounded", func(t *testing.T) {
+		input.Budget = realizer.DefaultBudget()
+		input.Budget.MaxExpansions = 8
+		result, err := realizer.SelectTargets(input)
+		var typed interface{ Result() status.Result }
+		limited := err == nil && result.Outcome == status.OutcomeResourceLimit || errors.As(err, &typed) && typed.Result().Status == status.OutcomeResourceLimit
+		if !limited {
+			t.Fatalf("low work budget did not stop selection: %s %v", result.Outcome, err)
+		}
+	})
+}
+
+func TestCompiledBindingIndexesAreExactAndImmutable(t *testing.T) {
+	for _, lang := range []features.LanguageID{"en", "pl"} {
+		t.Run(string(lang), func(t *testing.T) {
+			pipeline, _ := targetSelectionFixture(t, lang)
+			frames, bindings := pipeline.Valency.Frames(), pipeline.Valency.Bindings()
+			for _, frame := range frames {
+				for _, family := range frame.AllowedFamilyIDs {
+					want := []valency.ConstructionBinding{}
+					for _, binding := range bindings {
+						if binding.ValencyFrameID == frame.ID && binding.FamilyID == family {
+							want = append(want, binding)
+						}
+					}
+					got := pipeline.Valency.BindingsForFrameFamily(frame.ID, family)
+					if !reflect.DeepEqual(got, want) {
+						t.Fatalf("route index differs from independent filter: %s %s", frame.ID, family.String())
+					}
+					if len(got) > 0 {
+						got[0].Provenance.Version = "mutated-copy"
+						if !reflect.DeepEqual(pipeline.Valency.BindingsForFrameFamily(frame.ID, family), want) {
+							t.Fatal("index exposed mutable records")
+						}
+					}
+				}
+			}
+			for _, binding := range bindings {
+				if !pipeline.Constructions.HasExactBinding(binding) {
+					t.Fatal("approved license absent", binding)
+				}
+				changed := binding
+				changed.Provenance.Version += "-unlicensed"
+				if pipeline.Constructions.HasExactBinding(changed) {
+					t.Fatal("different provenance accepted")
+				}
+				changed = binding
+				changed.Approved = false
+				if pipeline.Constructions.HasExactBinding(changed) {
+					t.Fatal("unapproved license accepted")
+				}
+				changed = binding
+				changed.ValencyFrameID += ".absent"
+				if pipeline.Constructions.HasExactBinding(changed) {
+					t.Fatal("different frame accepted")
+				}
+			}
+			for i, j := 0, len(frames)-1; i < j; i, j = i+1, j-1 {
+				frames[i], frames[j] = frames[j], frames[i]
+			}
+			for i, j := 0, len(bindings)-1; i < j; i, j = i+1, j-1 {
+				bindings[i], bindings[j] = bindings[j], bindings[i]
+			}
+			reversed, err := valency.BuildIndex(frames, bindings)
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, frame := range frames {
+				for _, family := range frame.AllowedFamilyIDs {
+					if !reflect.DeepEqual(reversed.BindingsForFrameFamily(frame.ID, family), pipeline.Valency.BindingsForFrameFamily(frame.ID, family)) {
+						t.Fatal("route order depends on insertion order")
+					}
+				}
+			}
+			if len(reversed.BindingsForFrameFamily("missing", ids.ConstructionID{})) != 0 {
+				t.Fatal("unknown route accepted")
+			}
+		})
+	}
+	var absent *construction.Registry
+	if absent.HasExactBinding(valency.ConstructionBinding{}) {
+		t.Fatal("nil registry accepted a binding")
+	}
+	var noIndex *valency.Index
+	if len(noIndex.BindingsForFrameFamily("missing", ids.ConstructionID{})) != 0 {
+		t.Fatal("nil index accepted a route")
 	}
 }

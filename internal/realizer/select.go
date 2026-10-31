@@ -212,24 +212,6 @@ func SelectTargets(input Input) (Result, error) {
 	deferredFrameRejections := make(map[string][]frameRejection)
 	deferredFrameOutcomes := make(map[string]status.OutcomeKind)
 	seenCandidateIDs := make(map[string]struct{}, len(ordered))
-	registryBindingsCache := make(map[ids.ConstructionID][]valency.ConstructionBinding)
-	valencyBindingsCache := make(map[ids.ConstructionID][]valency.ConstructionBinding)
-	valencyBindingsForFamily := func(familyID ids.ConstructionID) []valency.ConstructionBinding {
-		if bindings, exists := valencyBindingsCache[familyID]; exists {
-			return bindings
-		}
-		bindings := input.Valency.BindingsByFamilyID(familyID)
-		valencyBindingsCache[familyID] = bindings
-		return bindings
-	}
-	bindingsForFamily := func(familyID ids.ConstructionID) []valency.ConstructionBinding {
-		if bindings, exists := registryBindingsCache[familyID]; exists {
-			return bindings
-		}
-		bindings := input.Constructions.BindingsByFamilyID(familyID)
-		registryBindingsCache[familyID] = bindings
-		return bindings
-	}
 	for candidateIndex, source := range ordered {
 		if !boundedSourceID(source.ID) || !boundedSourceID(source.SemanticID) {
 			return Result{}, selectionError(status.OutcomeInvalid, "INVALID_SOURCE_CANDIDATE_ID", fmt.Sprintf("candidates[%d]", candidateIndex), "source candidate and semantic IDs must be non-empty bounded UTF-8")
@@ -446,7 +428,15 @@ func SelectTargets(input Input) (Result, error) {
 						if len(nodeOperators) > 0 && nodeOperators[0].InputFamilyID != familyID {
 							continue
 						}
-						familyBindings := valencyBindingsForFamily(familyID)
+						// Query the precompiled route, not every unrelated sense in
+						// this family. Charge the lookup and each inspected binding.
+						work++
+						if work > budget.MaxExpansions {
+							result.Outcome = status.OutcomeResourceLimit
+							result.Diagnostics = appendDiagnostic(result.Diagnostics, "RESOURCE_LIMIT", "frame/family lookup reached its configured bound", "budget.expansions")
+							return finish()
+						}
+						familyBindings := input.Valency.BindingsForFrameFamily(frame.ID, familyID)
 						if len(familyBindings) > budget.MaxExpansions-work {
 							result.Outcome = status.OutcomeResourceLimit
 							result.Diagnostics = appendDiagnostic(result.Diagnostics, "RESOURCE_LIMIT", "valency family binding inventory exceeds the remaining selection budget", "budget.expansions")
@@ -462,26 +452,13 @@ func SelectTargets(input Input) (Result, error) {
 							if binding.SenseID != sense.ID || binding.ValencyFrameID != frame.ID || binding.FamilyID != familyID || !binding.Approved {
 								continue
 							}
-							registryBinding := false
-							registeredBindings := bindingsForFamily(familyID)
-							if len(registeredBindings) > budget.MaxExpansions-work {
+							work++
+							if work > budget.MaxExpansions {
 								result.Outcome = status.OutcomeResourceLimit
-								result.Diagnostics = appendDiagnostic(result.Diagnostics, "RESOURCE_LIMIT", "construction registry binding inventory exceeds the remaining selection budget", "budget.expansions")
+								result.Diagnostics = appendDiagnostic(result.Diagnostics, "RESOURCE_LIMIT", "exact construction license lookup reached its configured bound", "budget.expansions")
 								return finish()
 							}
-							for _, registered := range registeredBindings {
-								work++
-								if work > budget.MaxExpansions {
-									result.Outcome = status.OutcomeResourceLimit
-									result.Diagnostics = appendDiagnostic(result.Diagnostics, "RESOURCE_LIMIT", "target candidate expansion reached its configured bound", "budget.expansions")
-									return finish()
-								}
-								if registered.SenseID == binding.SenseID && registered.ValencyFrameID == binding.ValencyFrameID && registered.FamilyID == binding.FamilyID && registered.VariantID == binding.VariantID && registered.Approved == binding.Approved && registered.Provenance == binding.Provenance {
-									registryBinding = true
-									break
-								}
-							}
-							if !registryBinding {
+							if !input.Constructions.HasExactBinding(binding) {
 								return Result{}, selectionError(status.OutcomeInvalid, "CONSTRUCTION_INDEX_MISMATCH", "constructions."+familyID.String(), "exact valency license is absent from the construction registry")
 							}
 							family, err := input.Constructions.FamilyFor(features.LanguageID(input.Language), familyID)

@@ -21,6 +21,7 @@ type FamilyRecord struct {
 type Registry struct {
 	families         []FamilyRecord
 	bindingsByFamily map[string][]valency.ConstructionBinding
+	exactBindings    map[valency.ConstructionBinding]struct{}
 	byID             map[string]int
 	byLanguage       map[string][]int
 	byRoleLayout     map[string][]int
@@ -74,6 +75,7 @@ func CompileRegistry(families []ConstructionFamily, valencyIndex *valency.Index)
 		byRoleLayout[key] = append(byRoleLayout[key], index)
 	}
 	bindingsByFamily := make(map[string][]valency.ConstructionBinding)
+	exactBindings := make(map[valency.ConstructionBinding]struct{})
 	if valencyIndex != nil {
 		for index, binding := range valencyIndex.Bindings() {
 			familyKey := binding.FamilyID.String()
@@ -81,6 +83,7 @@ func CompileRegistry(families []ConstructionFamily, valencyIndex *valency.Index)
 				return nil, unknown("UNKNOWN_CONSTRUCTION_FAMILY", "bindings["+strconv.Itoa(index)+"].family_id", "approved valency binding refers to no family in this registry")
 			}
 			bindingsByFamily[familyKey] = append(bindingsByFamily[familyKey], binding)
+			exactBindings[binding] = struct{}{}
 		}
 	}
 	for familyID := range bindingsByFamily {
@@ -95,7 +98,17 @@ func CompileRegistry(families []ConstructionFamily, valencyIndex *valency.Index)
 			return left.VariantID.String() < right.VariantID.String()
 		})
 	}
-	return &Registry{families: records, bindingsByFamily: bindingsByFamily, byID: byID, byLanguage: byLanguage, byRoleLayout: byRoleLayout}, nil
+	return &Registry{families: records, bindingsByFamily: bindingsByFamily, exactBindings: exactBindings, byID: byID, byLanguage: byLanguage, byRoleLayout: byRoleLayout}, nil
+}
+
+// HasExactBinding checks the complete approved license, including provenance.
+// It does not infer a route from a matching family, frame, or sense alone.
+func (registry *Registry) HasExactBinding(binding valency.ConstructionBinding) bool {
+	if registry == nil || !binding.Approved {
+		return false
+	}
+	_, exists := registry.exactBindings[binding]
+	return exists
 }
 
 // FamilyFor performs a type-safe lookup by language and family ID. It never

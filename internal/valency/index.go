@@ -9,14 +9,22 @@ import (
 // Index is an immutable, deterministic view of validated sense frames,
 // approved construction bindings, and separately stored pending candidates.
 type Index struct {
-	frames     []ValencyFrame
-	bindings   []ConstructionBinding
-	candidates []ConstructionCandidate
-	bySenseID  map[string][]int
-	byFamilyID map[string][]int
+	frames        []ValencyFrame
+	bindings      []ConstructionBinding
+	candidates    []ConstructionCandidate
+	bySenseID     map[string][]int
+	byFamilyID    map[string][]int
+	byFrameFamily map[frameFamilyKey][]int
 }
 
-// BuildIndex validates frames and bindings before compiling the two lookup
+// A frame belongs to exactly one sense; retaining both frame and family in the
+// key prevents another frame or sense from authorizing a requested route.
+type frameFamilyKey struct {
+	frame  FrameID
+	family ids.ConstructionID
+}
+
+// BuildIndex validates frames and bindings before compiling lookup
 // paths. Pending/unapproved bindings are rejected and never become licensed
 // runtime data.
 func BuildIndex(frames []ValencyFrame, bindings []ConstructionBinding) (*Index, error) {
@@ -142,10 +150,13 @@ func BuildIndexWithCandidates(frames []ValencyFrame, bindings []ConstructionBind
 		bySense[senseID] = positions
 	}
 	byFamily = make(map[string][]int)
+	byFrameFamily := make(map[frameFamilyKey][]int)
 	for index, binding := range canonicalBindings {
 		byFamily[binding.FamilyID.String()] = append(byFamily[binding.FamilyID.String()], index)
+		key := frameFamilyKey{frame: binding.ValencyFrameID, family: binding.FamilyID}
+		byFrameFamily[key] = append(byFrameFamily[key], index)
 	}
-	return &Index{frames: canonicalFrames, bindings: canonicalBindings, candidates: canonicalCandidates, bySenseID: bySense, byFamilyID: byFamily}, nil
+	return &Index{frames: canonicalFrames, bindings: canonicalBindings, candidates: canonicalCandidates, bySenseID: bySense, byFamilyID: byFamily, byFrameFamily: byFrameFamily}, nil
 }
 
 // FramesBySenseID returns every frame for a sense in stable ID order. It does
@@ -169,6 +180,21 @@ func (index *Index) BindingsByFamilyID(familyID ids.ConstructionID) []Constructi
 		return []ConstructionBinding{}
 	}
 	positions := index.byFamilyID[familyID.String()]
+	result := make([]ConstructionBinding, len(positions))
+	for offset, position := range positions {
+		result[offset] = cloneBinding(index.bindings[position])
+	}
+	return result
+}
+
+// BindingsForFrameFamily returns only the approved variants of the exact
+// frame/family route, in canonical order. Pending candidates are never indexed.
+// Returned records are detached from the immutable index, as with Bindings().
+func (index *Index) BindingsForFrameFamily(frameID FrameID, familyID ids.ConstructionID) []ConstructionBinding {
+	if index == nil {
+		return []ConstructionBinding{}
+	}
+	positions := index.byFrameFamily[frameFamilyKey{frame: frameID, family: familyID}]
 	result := make([]ConstructionBinding, len(positions))
 	for offset, position := range positions {
 		result[offset] = cloneBinding(index.bindings[position])
