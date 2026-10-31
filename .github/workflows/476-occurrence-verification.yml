@@ -1,0 +1,133 @@
+name: 476-occurrence-verification
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/476-occurrence-verification.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.27.x'
+          cache: false
+      - name: Apply checksum-pinned reviewed occurrence patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/main
+          mkdir -p "$RUNNER_TEMP/occurrence-verification"
+          python3 - <<'PY'
+          import base64, hashlib, json, lzma, os, pathlib, subprocess, urllib.request
+          output = pathlib.Path(os.environ['RUNNER_TEMP'], 'occurrence-verification')
+          request = urllib.request.Request('https://api.github.com/repos/clickbytes/golingua/git/blobs/5688a635d7674c9d5d16311c9991f32726f01560', headers={'Authorization': 'Bearer '+os.environ['GH_TOKEN'], 'Accept': 'application/vnd.github+json'})
+          with urllib.request.urlopen(request) as response:
+              data = base64.b64decode(json.load(response)['content'])
+          assert hashlib.sha256(data).hexdigest() == '281788084d30f927b8b798a88f936cf06e6340c19c1a835d76740de7532064d9'
+          payload = json.loads(lzma.decompress(data))
+          expected = {'docs/work/476-source-occurrences.md', 'internal/runtime/slot_execution.go', 'internal/runtime/source_features.go', 'internal/runtime/target.go', 'internal/semantic/compose.go', 'internal/semantic/disambiguate.go', 'internal/semantic/evidence.go', 'internal/semantic/evidence_address.go', 'internal/semantic/modifiers.go', 'languages/en/sentence_attributes.go', 'languages/en/sentence_target.go', 'languages/pl/personal_target.go', 'languages/pl/sentence_attributes.go', 'languages/pl/sentence_target.go', 'tests/matrix/source_features_test.go'}
+          assert len(payload['files']) == len(expected) and {x['path'] for x in payload['files']} == expected
+          for item in payload['files']:
+              path = pathlib.Path(item['path'])
+              if item['before'] is None:
+                  assert not path.exists(), item['path']
+              else:
+                  assert subprocess.check_output(['git', 'hash-object', str(path)], text=True).strip() == item['before'], item['path']
+          patch = payload['patch'].encode()
+          assert hashlib.sha256(patch).hexdigest() == '5d2c7e83545c38fa4b48f996b523b30baf7fd9f4859ec6952ca95ff37554803b'
+          patchfile = output / 'submitted.patch'
+          patchfile.write_bytes(patch)
+          subprocess.run(['git', 'apply', '--check', '--unidiff-zero', str(patchfile)], check=True)
+          subprocess.run(['git', 'apply', '--unidiff-zero', str(patchfile)], check=True)
+          for item in payload['files']:
+              assert subprocess.check_output(['git', 'hash-object', item['path']], text=True).strip() == item['after'], item['path']
+          (output / 'expected-files.json').write_text(json.dumps(payload['files'], indent=2))
+          (output / 'base.txt').write_text(payload['base']+'\n')
+          PY
+      - name: Verify code and exact occurrence contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          output="$RUNNER_TEMP/occurrence-verification"
+          go version > "$output/go-version.txt"
+          git diff --check
+          python3 - <<'PY'
+          import json, os, pathlib, subprocess
+          output = pathlib.Path(os.environ['RUNNER_TEMP'], 'occurrence-verification')
+          files = [x['path'] for x in json.loads((output/'expected-files.json').read_text()) if x['path'].endswith('.go')]
+          unformatted = subprocess.check_output(['gofmt', '-l', *files], text=True)
+          assert not unformatted, unformatted
+          PY
+          go vet ./... > "$output/vet.log" 2>&1
+          go build -o "$RUNNER_TEMP/golingua-occurrences" ./cmd/golingua > "$output/build.log" 2>&1
+          go test ./tests/matrix -run 'TestSourceFeature|TestNegativePhrase|TestTargetAlternativeFailureIsolation' -count=1 -v > "$output/focused.log" 2>&1
+          go test -race ./tests/matrix -run 'TestSourceFeature' -count=1 -v > "$output/race.log" 2>&1
+      - name: Verify real CLI controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, pathlib, subprocess
+          root = pathlib.Path(os.environ['RUNNER_TEMP'])
+          output = root/'occurrence-verification'
+          binary = str(root/'golingua-occurrences')
+          config = root/'occurrence-runtime.json'
+          config.write_text(json.dumps({'schema_version':1,'dataset_store':str(root/'occurrence-store'),'dataset_id':'golingua-authored','language_package_dirs':[]}))
+          snapshot = subprocess.run([binary,'snapshot','--apply','--store',str(root/'occurrence-store'),'--json'],capture_output=True,text=True,timeout=60)
+          (output/'snapshot.json').write_text(snapshot.stdout)
+          assert snapshot.returncode == 0, snapshot.stderr
+          cases=[('en','pl','The cat sees a cat.','Kot widzi kota.'),('pl','en','Nauczyciel nie widzi psa.','The teacher does not see the dog.'),('pl','en','Czytałam list.','I read the letter.'),('pl','en','Ty czytałam list.',None)]
+          summary=[]
+          for i,(source,target,text,expected) in enumerate(cases):
+              run=subprocess.run([binary,'translate','--from',source,'--to',target,'--text',text,'--runtime-config',str(config),'--json'],capture_output=True,text=True,timeout=60)
+              (output/('cli-'+str(i)+'.json')).write_text(run.stdout)
+              (output/('cli-'+str(i)+'.stderr')).write_text(run.stderr)
+              result=json.loads(run.stdout)
+              texts=sorted({c['text'] for c in result.get('candidates',[]) if c.get('text')})
+              if expected is None:
+                  assert not texts and result['status']=='unsupported', result
+              else:
+                  assert expected in texts, texts
+              summary.append({'input':text,'status':result['status'],'exit_code':run.returncode,'texts':texts})
+          (output/'cli-summary.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2))
+          PY
+      - name: Store verified blobs without updating branches
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64, json, os, pathlib, subprocess, urllib.request
+          output=pathlib.Path(os.environ['RUNNER_TEMP'],'occurrence-verification')
+          files=json.loads((output/'expected-files.json').read_text())
+          result=[]
+          for item in files:
+              assert subprocess.check_output(['git','hash-object',item['path']],text=True).strip()==item['after'], item['path']
+              body=json.dumps({'content':base64.b64encode(pathlib.Path(item['path']).read_bytes()).decode(),'encoding':'base64'}).encode()
+              request=urllib.request.Request('https://api.github.com/repos/clickbytes/golingua/git/blobs',data=body,method='POST',headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','Content-Type':'application/json'})
+              with urllib.request.urlopen(request) as response:
+                  value=json.load(response)
+              assert value['sha']==item['after'], item['path']
+              result.append({'path':item['path'],'mode':'100644','type':'blob','sha':value['sha']})
+          (output/'verified-blobs.json').write_text(json.dumps(result,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: golingua-occurrence-verified-${{ github.sha }}
+          path: ${{ runner.temp }}/occurrence-verification/
+          retention-days: 7
+          if-no-files-found: error
