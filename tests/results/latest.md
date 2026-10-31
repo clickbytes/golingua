@@ -2,12 +2,12 @@
 
 > Observational report generated on push to `main`. Matrix outcomes do not gate the technical `go-ci` workflow.
 
-- Source SHA: `979c08287f533157d2541e8e54dbb20c18cb5f06`
-- Generated (UTC): `2026-10-31T02:05:00Z`
+- Source SHA: `b063258999aa4bdf990611543ac761b179eb599d`
+- Generated (UTC): `2026-10-31T02:11:56Z`
 - Command: `go test ./tests/... -count=1 -v`
 - Command exit code: `1` (NONZERO)
 - Registered records: 1000; record checks: 3000
-- Additional observed checks: 310
+- Additional observed checks: 330
 
 | Case ID | Direction | Analysis | Realization | Integration | Declared coverage tags |
 |---|---|---|---|---|---|
@@ -1073,7 +1073,7 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestA12ContrastGraphsValidateRolesCountsAndScope` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestCorpusEventFixturesValidateAndPreserveAuthoredStructure` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestCorpusMeaningAlternativesRequireEachAllowedReading` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestIdentificationExpansionFixturesAndMissingColorGap` | FAIL |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestIdentificationExpansionFixturesAndColorBoundaries` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestIdentificationMeaning` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/unresolved_time_and_multiplicity=_remain_plannable` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/unresolved_time_and_multiplicity=one_remain_plannable` | PASS |
@@ -1081,10 +1081,10 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/known_present_frame_is_unsupported_even_with_At` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/many_experiencer_referent_is_unsupported` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributesReason/many_stimulus_referent_is_unsupported` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/one_versus_many` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/one_versus_absent_multiplicity` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/present_versus_past` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/present_versus_absent_frame` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/one_versus_many` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/one_versus_absent_multiplicity` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_null` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_empty` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_unknown` | PASS |
@@ -1197,8 +1197,8 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersRejectMalformedActualSources/The_teacher_sees_a_apple.` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersConcurrentNegativeRealization/request-3` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersConcurrentNegativeRealization/request-0` | PASS |
-| `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersConcurrentNegativeRealization/request-2` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersConcurrentNegativeRealization/request-1` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersConcurrentNegativeRealization/request-2` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestCompositionBoundaries/bearer_is_object` | FAIL |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestCompositionBoundaries/bearer_is_second_cat_despite_matching_concept` | FAIL |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestCompositionBoundaries/event_time_absent` | PASS |
@@ -1325,6 +1325,26 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/matrix` | `TestTargetSelectionExactLicenseAndBudget/actual_work_remains_bounded` | PASS |
 | `github.com/clickbytes/golingua/tests/matrix` | `TestCompiledBindingIndexesAreExactAndImmutable/en` | PASS |
 | `github.com/clickbytes/golingua/tests/matrix` | `TestCompiledBindingIndexesAreExactAndImmutable/pl` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseIndependentComposition/singular-present` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseIndependentComposition/plural-past` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseIndependentComposition/mixed-present` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseSourceAgreementAndDerivations/The_teachers_did_not_see_the_black_cats.` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseSourceAgreementAndDerivations/Teachers_do_not_see_black_cats.` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseSourceAgreementAndDerivations/A_teacher_does_not_see_a_black_cat.` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseSourceAgreementAndDerivations/refuse/The_teachers_does_not_see_the_black_cats.` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseSourceAgreementAndDerivations/refuse/The_teacher_do_not_see_the_black_cat.` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseSourceAgreementAndDerivations/refuse/A_teachers_do_not_see_black_cats.` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseSourceAgreementAndDerivations/refuse/Teacher_does_not_see_the_black_cat.` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseSourceAgreementAndDerivations/refuse/The_teacher_does_not_see_an_black_cat.` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseSourceAgreementAndDerivations/refuse/The_teacher_did_not_sees_the_black_cat.` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseKeepsRepeatedConceptsDistinct` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseDoesNotReattachScopeOrModifier/modifier-on-subject` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseDoesNotReattachScopeOrModifier/negate-property` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseDoesNotReattachScopeOrModifier/missing-object` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseTransferLocalArticles` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseAspectLossRequiresSourceEvidence/Matka_nie_piła_wody.` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseAspectLossRequiresSourceEvidence/Lekarze_nie_czytali_listu.` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestNegativePhraseAspectLossRequiresSourceEvidence/Pies_nie_widział_kota.` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestAmbiguityCatalogueLinks` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestInventory` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestInventoryIdentifierSupportsBatches` | PASS |
@@ -1374,7 +1394,7 @@ Packages with no observed test run are reported as infrastructure/build failures
 
 | Package | Go summary | Observed test names |
 |---|---|---|
-| `github.com/clickbytes/golingua/tests/interlingua` | FAIL | 72 |
+| `github.com/clickbytes/golingua/tests/interlingua` | PASS | 72 |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | FAIL | 128 |
 | `github.com/clickbytes/golingua/tests/languages/en/A1.1` | FAIL | 43 |
 | `github.com/clickbytes/golingua/tests/languages/en/A1.10` | FAIL | 116 |
@@ -1403,7 +1423,7 @@ Packages with no observed test run are reported as infrastructure/build failures
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.7` | FAIL | 98 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.8` | FAIL | 92 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.9` | FAIL | 118 |
-| `github.com/clickbytes/golingua/tests/matrix` | PASS | 37 |
+| `github.com/clickbytes/golingua/tests/matrix` | PASS | 61 |
 | `github.com/clickbytes/golingua/tests/translation` | FAIL | 63 |
 | `github.com/clickbytes/golingua/tests/translation/en-pl` | FAIL | 504 |
 | `github.com/clickbytes/golingua/tests/translation/pl-en` | FAIL | 504 |
@@ -1618,7 +1638,7 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 - Sense catalogue associations parsed: 2075 (not morphology execution coverage).
 - Declared Meaning ID references: 1094 allowed; 1094 required.
 - Inventory fields preserve declared tags, source semantics, allowed/required Meaning IDs, and owner status separately from runtime observations.
-- Inventory source SHA `979c08287f533157d2541e8e54dbb20c18cb5f06`: 1000 directions.
+- Inventory source SHA `b063258999aa4bdf990611543ac761b179eb599d`: 1000 directions.
 
 ### Declared source requirements
 
@@ -1691,7 +1711,7 @@ Aggregates below summarize authored source requirements; they are not observed a
 | `writing_message` | 2 |
 
 Declared role mentions: `agent` 16, `asset` 4, `associate` 4, `associated` 22, `author` 4, `back` 8, `bearer` 24, `beneficiary` 6, `choice_restriction` 2, `companion` 2, `content` 2, `destination` 2, `document` 2, `drinker` 16, `eater` 12, `entity` 2, `existence` 50, `experiencer` 160, `figure` 4, `food` 10, `friend_a` 2, `friend_b` 2, `front` 8, `giver` 20, `helper` 6, `higher` 6, `holder` 50, `instrument` 4, `item` 4, `landmark` 32, `landmark_a` 4, `landmark_b` 4, `liquid` 12, `located` 34, `location` 10, `lower` 6, `manner` 2, `material` 38, `member` 2, `object` 56, `occupant` 6, `owner` 4, `partner` 2, `person_variable` 6, `possessor` 18, `quantified_set` 50, `reader` 38, `reason` 2, `recipient` 24, `runner` 4, `sibling_a` 4, `sibling_b` 4, `sleeper` 22, `source` 2, `speaker` 4, `stimulus` 160, `support` 2, `supported` 2, `target` 4, `thanker` 2, `theme` 20, `time` 4, `tool` 2, `user` 2, `walker` 2, `writer` 2.
-- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "40a329222c6cf7a189325f68d0cef8cc992be702e38997bb5c5a1fe6d9b60f93", "format_version": 1}`; inventory source SHA: `979c08287f533157d2541e8e54dbb20c18cb5f06`.
+- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "40a329222c6cf7a189325f68d0cef8cc992be702e38997bb5c5a1fe6d9b60f93", "format_version": 1}`; inventory source SHA: `b063258999aa4bdf990611543ac761b179eb599d`.
 
 Catalogue sense associations are not proof that a paradigm form or morphology procedure ran. Aggregates below describe declared pack associations only.
 
@@ -1986,14 +2006,14 @@ Observed top-level outcomes by runtime stage; these do not replace check statuse
 | direct_result | ok | 68 |
 | direct_result | unsupported | 37 |
 | independent_realization |  | 8 |
-| independent_realization | ambiguous | 413 |
-| independent_realization | incomplete | 154 |
+| independent_realization | ambiguous | 411 |
+| independent_realization | incomplete | 156 |
 | independent_realization | ok | 76 |
 | independent_realization | resource_limit | 2 |
 | independent_realization | unknown | 1 |
 | independent_realization | unsupported | 119 |
-| integration | ambiguous | 371 |
-| integration | incomplete | 195 |
+| integration | ambiguous | 368 |
+| integration | incomplete | 198 |
 | integration | ok | 6 |
 | integration | unknown | 2 |
 | integration | unsupported | 428 |
@@ -2072,7 +2092,7 @@ Authored `meaning_input` supplied to independent realization is excluded from ob
 |---|---|---:|
 | node kind | event | 1142 |
 | node kind | referent | 2681 |
-| node kind | scope | 213 |
+| node kind | scope | 211 |
 | node kind | state | 530 |
 | predicate (event) | `concept:breathing` | 4 |
 | predicate (event) | `concept:buying` | 8 |
@@ -2159,7 +2179,7 @@ Authored `meaning_input` supplied to independent realization is excluded from ob
 | participant role | worker | 4 |
 | participant role | writer | 8 |
 | temporal_frame | past | 209 |
-| temporal_frame | present | 1326 |
+| temporal_frame | present | 1324 |
 | temporal_frame | unknown | 3031 |
 | referent multiplicity | many | 459 |
 | referent multiplicity | one | 2033 |
@@ -2198,10 +2218,8 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:en.attributed_seeing_object` | `construction:en.attributed_seeing_object.svo.indefinite_subject_object` | `en.see.visual.transitive` | ok | 20 |
 | `construction:en.attributed_seeing_object` | `construction:en.attributed_seeing_object.svo.plural_object` | `en.see.visual.transitive` | ok | 12 |
 | `construction:en.attributed_seeing_object` | `construction:en.attributed_seeing_object.svo.plural_object.indefinite_subject` | `en.see.visual.transitive` | ok | 6 |
-| `construction:en.attributed_seeing_object_negative` | `construction:en.attributed_seeing_object_negative.svo` | `en.see.visual.attributed_negative` | ok | 8 |
-| `construction:en.attributed_seeing_object_negative` | `construction:en.attributed_seeing_object_negative.svo.indefinite_both` | `en.see.visual.attributed_negative` | ok | 4 |
-| `construction:en.attributed_seeing_object_negative` | `construction:en.attributed_seeing_object_negative.svo.indefinite_object` | `en.see.visual.attributed_negative` | ok | 4 |
-| `construction:en.attributed_seeing_object_negative` | `construction:en.attributed_seeing_object_negative.svo.indefinite_subject` | `en.see.visual.attributed_negative` | ok | 4 |
+| `construction:en.attributed_seeing_object_negative` | `construction:en.attributed_seeing_object_negative.source.present.svo` | `en.see.visual.attributed_negative` | ok | 4 |
+| `construction:en.attributed_seeing_object_negative` | `construction:en.attributed_seeing_object_negative.svo.vp_auxiliary` | `en.see.visual.attributed_negative` | ok | 4 |
 | `construction:en.attribution` | `construction:en.attribution.a.past` | `en.black.color.frame` | ok | 5 |
 | `construction:en.attribution` | `construction:en.attribution.bare_plural.past` | `en.black.color.frame` | ok | 3 |
 | `construction:en.attribution` | `construction:en.attribution.that` | `en.black.color.frame` | ok | 18 |
@@ -2626,8 +2644,7 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:pl.transitive_negative` | `construction:pl.transitive_negative.svo` | `pl.zamykac_obiekt.close.negative` | ok | 8 |
 | `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.negative.present.first.plural` | `pl.miec.possession.personal.negative` | ok | 3 |
 | `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.negative.present.first.singular` | `pl.miec.possession.personal.negative` | ok | 3 |
-| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.negative.present.second.plural` | `pl.miec.possession.personal.negative` | ok | 1 |
-| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.negative.present.second.singular` | `pl.miec.possession.personal.negative` | ok | 3 |
+| `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.negative.present.second.singular` | `pl.miec.possession.personal.negative` | ok | 2 |
 | `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.past.first.plural.masculine_personal` | `pl.czytac.interpret.frame` | ok | 4 |
 | `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.past.first.plural.non_masculine_personal` | `pl.czytac.interpret.frame` | ok | 4 |
 | `construction:pl.transitive_personal` | `construction:pl.transitive_personal.prodrop.past.first.singular.feminine` | `pl.czytac.interpret.frame` | ok | 2 |
@@ -2798,8 +2815,8 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | Meaning representation | `green` | CORE has black but no green property predicate; generic color has no bearer role/value, so this sentence has no honest MeaningGraph fixture | REALIZATION_FIELD_LOSS, TRANSLATION_NOT_OK | `A1.5-ID-575-EN-PL` |
 | Meaning representation | `have_unspecified` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_PARSE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-985-EN-PL`, `A1.9-Q-986-PL-EN` |
 | Meaning representation | `have_unspecified` | A WH question requires an explicit unknown-variable binding and any stated restriction; the current Meaning Question only targets a proposition and has no WH variable. | NO_START_PLAN, UNKNOWN_SURFACE, UNMATCHED_PARSE_CANDIDATE | `A1.9-Q-983-EN-PL`, `A1.9-Q-984-PL-EN`, `A1.9-Q-987-EN-PL`, `A1.9-Q-988-PL-EN` |
-| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. | EXPLICIT_REALIZATION_ASSUMPTION, PARTIAL_PARSE_EVIDENCE, TARGET_ALTERNATIVES_AMBIGUOUS, UNRESOLVED_PARSE_EVIDENCE | `A1.6-PO-615-EN-PL` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. | EXPLICIT_REALIZATION_ASSUMPTION, REALIZATION_FIELD_LOSS, TRANSLATION_NOT_OK | `A1.6-PO-616-PL-EN` |
+| Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. | OPERATOR_COVERAGE_UNKNOWN, PARTIAL_PARSE_EVIDENCE, UNRESOLVED_PARSE_EVIDENCE | `A1.6-PO-615-EN-PL` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | EXPLICIT_REALIZATION_ASSUMPTION, PARTIAL_PARSE_EVIDENCE, UNRESOLVED_ROLE_SENSE | `A1.6-PO-618-PL-EN` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | NO_PARSE, UNMATCHED_PARSE_CANDIDATE | `A1.6-PO-619-EN-PL`, `A1.6-PO-620-PL-EN` |
 | Meaning representation | `have_unspecified` | CORE has no generic HAVE predicate with holder/object roles. Candidate concepts temporary_possession and legal_ownership are KindRelation, not Meaning State/Event predicates; neither represents generic availability/control or its negation without title or duration. No partial graph is supplied. Collective versus distributive scope and physical copy count remain unresolved. | PARTIAL_PARSE_EVIDENCE, UNRESOLVED_ROLE_SENSE | `A1.6-PO-617-EN-PL` |
@@ -2964,7 +2981,7 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | independent_realization | `OPERATOR_MAPPING_UNAVAILABLE` | 62 |
 | independent_realization | `QUESTION_ANSWER_UNAVAILABLE` | 38 |
 | independent_realization | `REALIZATION_FIELD_LOSS` | 108 |
-| independent_realization | `TARGET_ALTERNATIVES_AMBIGUOUS` | 513 |
+| independent_realization | `TARGET_ALTERNATIVES_AMBIGUOUS` | 511 |
 | independent_realization | `TARGET_FRAME_VARIANT_MISMATCH` | 2 |
 | independent_realization | `TARGET_LEXICAL_COVERAGE_UNAVAILABLE` | 32 |
 | independent_realization | `TARGET_OPERATOR_COVERAGE_UNAVAILABLE` | 52 |
@@ -2974,25 +2991,25 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | independent_realization | `TARGET_ROLE_ABSENT_BY_FRAME_LICENSE` | 112 |
 | integration | `AMBIGUOUS_PARSE` | 39 |
 | integration | `DISAMBIGUATION_INCOMPLETE` | 53 |
-| integration | `EXPLICIT_REALIZATION_ASSUMPTION` | 2488 |
+| integration | `EXPLICIT_REALIZATION_ASSUMPTION` | 2484 |
 | integration | `HARD_SELECTIONAL_RESTRICTION` | 6 |
 | integration | `MISSING_REQUIRED_ROLE` | 20 |
 | integration | `NO_PARSE` | 96 |
 | integration | `NO_SEMANTIC_ALTERNATIVES` | 2 |
 | integration | `NO_START_PLAN` | 162 |
-| integration | `OPERATOR_COVERAGE_UNKNOWN` | 28 |
+| integration | `OPERATOR_COVERAGE_UNKNOWN` | 31 |
 | integration | `OPERATOR_MAPPING_UNAVAILABLE` | 6 |
-| integration | `PARTIAL_PARSE_EVIDENCE` | 870 |
+| integration | `PARTIAL_PARSE_EVIDENCE` | 868 |
 | integration | `PREDICATE_KIND_UNSUPPORTED` | 15 |
 | integration | `PREDICATE_NODE_UNRESOLVED` | 3 |
-| integration | `REALIZATION_FIELD_LOSS` | 998 |
+| integration | `REALIZATION_FIELD_LOSS` | 1046 |
 | integration | `SURFACE_OMITTED_ROLE` | 65 |
-| integration | `TARGET_ALTERNATIVES_AMBIGUOUS` | 438 |
+| integration | `TARGET_ALTERNATIVES_AMBIGUOUS` | 435 |
 | integration | `TARGET_OPERATOR_COVERAGE_UNAVAILABLE` | 6 |
 | integration | `TARGET_PAST_PARADIGM_UNSUPPORTED` | 8 |
 | integration | `TARGET_PREDICATE_POLICY_REJECTED` | 20 |
 | integration | `TARGET_ROLE_ABSENT_BY_FRAME_LICENSE` | 160 |
-| integration | `TRANSLATION_NOT_OK` | 119 |
+| integration | `TRANSLATION_NOT_OK` | 121 |
 | integration | `UNKNOWN_SURFACE` | 376 |
 | integration | `UNMATCHED_PARSE_CANDIDATE` | 3743 |
 | integration | `UNRESOLVED_PARSE_EVIDENCE` | 2 |
@@ -3006,7 +3023,7 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | native_analysis | `NO_PARSE` | 96 |
 | native_analysis | `NO_SEMANTIC_ALTERNATIVES` | 2 |
 | native_analysis | `NO_START_PLAN` | 162 |
-| native_analysis | `OPERATOR_COVERAGE_UNKNOWN` | 13 |
+| native_analysis | `OPERATOR_COVERAGE_UNKNOWN` | 15 |
 | native_analysis | `PARTIAL_PARSE_EVIDENCE` | 269 |
 | native_analysis | `PREDICATE_KIND_UNSUPPORTED` | 10 |
 | native_analysis | `PREDICATE_NODE_UNRESOLVED` | 2 |
