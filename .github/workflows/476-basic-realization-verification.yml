@@ -1,0 +1,140 @@
+name: 476-basic-realization-verification
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/476-basic-realization-verification.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      GOTOOLCHAIN: local
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.27.x'
+          cache: false
+      - name: Apply checksum-pinned reviewed patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/main
+          mkdir -p "$RUNNER_TEMP/basic-verification"
+          python3 - <<'PY'
+          import base64, hashlib, json, lzma, os, pathlib, subprocess, urllib.request
+          out = pathlib.Path(os.environ['RUNNER_TEMP'], 'basic-verification')
+          url = 'https://api.github.com/repos/clickbytes/golingua/git/blobs/10de455deb09b06fdc9d220fc335d0cce60b8f62'
+          request = urllib.request.Request(url, headers={'Authorization': 'Bearer '+os.environ['GH_TOKEN'], 'Accept': 'application/vnd.github+json'})
+          with urllib.request.urlopen(request, timeout=30) as response:
+              blob = json.load(response)
+          packed = base64.b64decode(blob['content'])
+          assert hashlib.sha256(packed).hexdigest() == '795f49adcc338d6c828da1aa8977da893ab9c2f6a4f701b6feb735517989659e'
+          payload = json.loads(lzma.decompress(packed, memlimit=128*1024*1024))
+          allowed = {'docs/work/476-basic-realization.md', 'languages/en/identification_target.go', 'languages/en/sentence_attributes.go', 'languages/en/sentence_negation.go', 'languages/en/sentence_target.go', 'languages/en/valency.go', 'languages/pl/morphology/lexemes.json', 'languages/pl/morphology/paradigms.json', 'tests/languages/en/A1.10/time_other.testdomain.go', 'tests/languages/en/A1.8/negation.testdomain.go', 'tests/languages/pl/A1.10/time_other.testdomain.go', 'tests/matrix/basic_realization_test.go'}
+          assert {entry['path'] for entry in payload['files']} == allowed
+          assert len(payload['files']) == len(allowed)
+          for entry in payload['files']:
+              path = pathlib.Path(entry['path'])
+              if entry['base_blob'] is None:
+                  assert not path.exists(), entry['path']
+              else:
+                  assert subprocess.check_output(['git','hash-object',str(path)],text=True).strip() == entry['base_blob'], entry['path']
+          patch = out/'reviewed.patch'
+          patch.write_text(payload['patch'])
+          subprocess.run(['git','apply','--check','--unidiff-zero',str(patch)],check=True)
+          subprocess.run(['git','apply','--unidiff-zero',str(patch)],check=True)
+          for entry in payload['files']:
+              data = pathlib.Path(entry['path']).read_bytes()
+              assert hashlib.sha256(data).hexdigest() == entry['sha256'], entry['path']
+          (out/'manifest.json').write_text(json.dumps(payload['files'],indent=2))
+          (out/'source-sha.txt').write_text(os.environ['GITHUB_SHA'])
+          PY
+      - name: Verify code and focused regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          output="$RUNNER_TEMP/basic-verification"
+          export GOLINGUA_MATRIX_SHA="$GITHUB_SHA+reviewed-patch"
+          go version > "$output/go-version.txt"
+          git diff --check
+          test -z "$(gofmt -l languages/en/identification_target.go languages/en/sentence_attributes.go languages/en/sentence_negation.go languages/en/sentence_target.go languages/en/valency.go tests/languages/en/A1.10/time_other.testdomain.go tests/languages/en/A1.8/negation.testdomain.go tests/languages/pl/A1.10/time_other.testdomain.go tests/matrix/basic_realization_test.go)"
+          go vet ./... > "$output/vet.log" 2>&1
+          go build -o "$RUNNER_TEMP/golingua-verified" ./cmd/golingua
+          "$RUNNER_TEMP/golingua-verified" --help > "$output/help.log"
+          "$RUNNER_TEMP/golingua-verified" --version > "$output/version.log"
+          go test ./tests/matrix -run 'TestBasicRealization|TestNegativeAnalysisOnly' -count=1 -v > "$output/tests.log" 2>&1
+          go test -race ./tests/matrix -run 'TestBasicRealization|TestNegativeAnalysisOnly' -count=1 -v > "$output/race.log" 2>&1
+          sha256sum "$RUNNER_TEMP/golingua-verified" > "$output/binary-sha256.txt"
+          printf 'format=0\nvet=0\nbuild=0\nhelp=0\nversion=0\ntests=0\nrace=0\n' > "$output/check-exits.txt"
+      - name: Verify actual CLI flows
+        shell: bash
+        run: |
+          set -euo pipefail
+          output="$RUNNER_TEMP/basic-verification"
+          "$RUNNER_TEMP/golingua-verified" snapshot --apply --store "$RUNNER_TEMP/basic-store" --json > "$output/snapshot.json"
+          python3 - <<'PY'
+          import json, os, pathlib, subprocess, time
+          out = pathlib.Path(os.environ['RUNNER_TEMP'], 'basic-verification')
+          config = out/'runtime.json'
+          config.write_text(json.dumps({'schema_version':1,'dataset_store':str(pathlib.Path(os.environ['RUNNER_TEMP'],'basic-store')),'dataset_id':'golingua-authored','language_package_dirs':[]}))
+          cases = [('pl','en','Lekarz nie otwiera drzwi.',8),('pl','en','Nauczyciel nie zamyka okna.',4),('pl','en','Lekarz nie zamykał drzwi.',8),('pl','en','Drzwi były czarne.',4),('en','pl','The bird flew.',1),('en','pl','The birds flew.',1),('pl','en','Ptak latał.',2),('pl','en','Ptaki latały.',2),('en','pl','The doors was black.',0),('pl','en','Ptaki latał.',0)]
+          rows = []
+          for i,(source,target,text,expected) in enumerate(cases):
+              argv = [str(pathlib.Path(os.environ['RUNNER_TEMP'],'golingua-verified')),'translate','--from',source,'--to',target,'--text',text,'--runtime-config',str(config),'--json']
+              started = time.monotonic()
+              result = subprocess.run(argv,capture_output=True,text=True,timeout=40)
+              (out/f'cli-{i}.json').write_text(result.stdout)
+              (out/f'cli-{i}.stderr').write_text(result.stderr)
+              value = json.loads(result.stdout)
+              value = value.get('result',value)
+              texts = sorted({candidate['text'] for candidate in value.get('candidates',[]) if candidate.get('text')})
+              rows.append({'argv':argv,'input':text,'exit_code':result.returncode,'seconds':time.monotonic()-started,'status':value.get('status',value.get('outcome')),'texts':texts})
+              (out/'cli-summary.json').write_text(json.dumps(rows,ensure_ascii=False,indent=2))
+              assert len(texts) == expected, (text,texts,expected)
+              assert not any('open door.' in t or 'close door.' in t for t in texts), texts
+              if expected:
+                  assert result.returncode in (0,6,7), (text,result.returncode)
+          PY
+      - name: Store verified blobs without moving any branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64, hashlib, json, os, pathlib, urllib.request
+          out = pathlib.Path(os.environ['RUNNER_TEMP'],'basic-verification')
+          entries = json.loads((out/'manifest.json').read_text())
+          verified = []
+          for entry in entries:
+              data = pathlib.Path(entry['path']).read_bytes()
+              assert hashlib.sha256(data).hexdigest() == entry['sha256'], entry['path']
+              expected = hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()
+              assert expected == entry['blob']
+              request = urllib.request.Request('https://api.github.com/repos/clickbytes/golingua/git/blobs',data=json.dumps({'content':base64.b64encode(data).decode(),'encoding':'base64'}).encode(),headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','Content-Type':'application/json'},method='POST')
+              with urllib.request.urlopen(request,timeout=30) as response:
+                  value = json.load(response)
+              assert value['sha'] == expected
+              verified.append({'path':entry['path'],'mode':'100644','type':'blob','sha':value['sha']})
+          (out/'verified-blobs.json').write_text(json.dumps(verified,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: golingua-basic-verified-${{ github.sha }}
+          path: ${{ runner.temp }}/basic-verification/
+          retention-days: 7
+          if-no-files-found: error
