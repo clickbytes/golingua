@@ -539,7 +539,7 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 				variantAllowed = route.pastVariantAllowed(variantID)
 			}
 			sourceOnlyVariant := !attributedNegative && !variantAllowed &&
-				englishApprovedSourceOnlyNegativeVariant(builder.resolver, alternative, route, person, number, tense, candidates)
+				englishApprovedSourceOnlyNegativeVariant(builder.resolver, lattice, alternative, route, person, number, tense, candidates)
 			if (alternative.FamilyID != negativeFamily && !attributedNegative) || (!attributedNegative && !variantAllowed && !sourceOnlyVariant) || alternative.Permission.SenseID.String() != route.sense {
 				return runtime.CompositionEvidence{}, nil
 			}
@@ -555,6 +555,19 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 				if !familyExists || !approvedBinding || string(alternative.Permission.FrameID) != route.frame ||
 					!englishAlternativeHasRequiredSlots(alternative, familyRecord.Family, byID) {
 					return runtime.CompositionEvidence{}, nil
+				}
+				if familyHasCapability(familyRecord.Family, "vp-auxiliary-negation") {
+					variants := builder.resolver.variants[alternative.FamilyID]
+					if variants == nil {
+						return runtime.CompositionEvidence{}, nil
+					}
+					compiled, exists := variants.ByID(alternative.VariantID)
+					if !exists {
+						return runtime.CompositionEvidence{}, nil
+					}
+					if _, valid := englishParsedNegativeAgreement(lattice, alternative, familyRecord.Family, compiled.Variant, byID); !valid {
+						return runtime.CompositionEvidence{}, nil
+					}
 				}
 				if route.family == "construction:en.ditransitive_negative" && !englishGivingNegativeFrameCoverage(alternative, familyRecord.Family, builder.resolver.valency, byID) {
 					return runtime.CompositionEvidence{}, nil
@@ -603,13 +616,14 @@ func (builder englishSentenceEvidenceBuilder) buildSyntax(ctx context.Context, l
 // binding, family plan, and retained parse alternative.
 func englishApprovedSourceOnlyNegativeVariant(
 	resolver englishNegationResolver,
+	lattice analyzer.LexicalLattice,
 	alternative parser.ParseAlternative,
 	route englishPresentNegationRoute,
 	person, number, tense string,
 	candidates []parser.PhraseCandidate,
 ) bool {
 	if resolver.registry == nil || resolver.valency == nil || resolver.variants == nil ||
-		route.family != "construction:en.transitive_negative" || alternative.FamilyID.String() != route.family ||
+		alternative.FamilyID.String() != route.family ||
 		alternative.Permission.SenseID.String() != route.sense || string(alternative.Permission.FrameID) != route.frame {
 		return false
 	}
@@ -689,24 +703,32 @@ func englishApprovedSourceOnlyNegativeVariant(
 	if subjectCandidateCount == 0 || person == "" {
 		return false
 	}
-	auxiliary := sequenceAuxiliary(compiled.Variant.Sequence)
-	expectedAuxiliary := ""
-	switch {
-	case tense == "past":
-		expectedAuxiliary = "did"
-	case tense == "present" && englishDoAuxiliaryMatches("do", person, number):
-		expectedAuxiliary = "do"
-	case tense == "present" && englishDoAuxiliaryMatches("does", person, number):
-		expectedAuxiliary = "does"
-	default:
-		return false
+	if familyHasCapability(familyRecord.Family, "vp-auxiliary-negation") {
+		predicate, valid := englishParsedNegativeAgreement(lattice, alternative, familyRecord.Family, compiled.Variant, byID)
+		if !valid || string(predicate.Features["tense"]) != tense {
+			return false
+		}
+	} else {
+		auxiliary := sequenceAuxiliary(compiled.Variant.Sequence)
+		expectedAuxiliary := ""
+		switch {
+		case tense == "past":
+			expectedAuxiliary = "did"
+		case tense == "present" && englishDoAuxiliaryMatches("do", person, number):
+			expectedAuxiliary = "do"
+		case tense == "present" && englishDoAuxiliaryMatches("does", person, number):
+			expectedAuxiliary = "does"
+		default:
+			return false
+		}
+		if auxiliary != expectedAuxiliary ||
+			!englishVariantHasSubjectPersonCondition(compiled.Variant, subjectSlot.ID, person) ||
+			!englishVariantHasSubjectNumberCondition(compiled.Variant, subjectSlot.ID, number) ||
+			!variantHasFeatureCondition(compiled.Variant, predicate.ID, "tense", tense) {
+			return false
+		}
 	}
-	if auxiliary != expectedAuxiliary ||
-		!englishVariantHasSubjectPersonCondition(compiled.Variant, subjectSlot.ID, person) ||
-		!englishVariantHasSubjectNumberCondition(compiled.Variant, subjectSlot.ID, number) ||
-		!variantHasFeatureCondition(compiled.Variant, predicate.ID, "tense", tense) {
-		return false
-	}
+
 	if !englishAlternativeHasRequiredSlots(alternative, familyRecord.Family, phraseCandidatesByID(candidates)) {
 		return false
 	}
@@ -904,7 +926,7 @@ func (builder englishSentenceEvidenceBuilder) buildEnglishAttributedNegativeSeei
 		for _, alternative := range node.Alternatives {
 			variantID := alternative.VariantID.String()
 			if alternative.FamilyID != familyID || alternative.Permission.SenseID != senseID || string(alternative.Permission.FrameID) != frameText ||
-				!approved[variantID] || len(alternative.Unresolved) != 0 {
+				!approved[variantID] || !englishAlternativeUnresolvedSlotsAreBound(alternative, familyRecord.Family) {
 				continue
 			}
 			parsedID, parseErr := construction.ParseVariantID(variantID)
@@ -912,31 +934,12 @@ func (builder englishSentenceEvidenceBuilder) buildEnglishAttributedNegativeSeei
 				continue
 			}
 			compiled, exists := variantIndex.ByID(parsedID)
-			if !exists || compiled.Variant.DirectionPolicy == construction.DirectionAnalyze || !variantHasRequiredSlots(familyRecord.Family, compiled.Variant) ||
-				(!sequenceHasTerminal(compiled.Variant.Sequence, "does") && !sequenceHasTerminal(compiled.Variant.Sequence, "did")) || !sequenceHasTerminal(compiled.Variant.Sequence, "not") {
+			if !exists {
 				continue
 			}
-			conditionNumber, numberConsistent := variantSubjectNumberIfConsistent(compiled.Variant, "subject")
-			if !numberConsistent || conditionNumber != "" && conditionNumber != "singular" || !variantSubjectPersonThird(compiled.Variant, "subject") {
-				continue
-			}
-			if !englishAlternativeHasRequiredSlots(alternative, familyRecord.Family, byID) {
-				continue
-			}
-			var predicateCandidate *parser.PhraseCandidate
-			for _, slot := range alternative.Slots {
-				if slot.SlotID != "verb" || slot.Role != "" || len(slot.CandidateIDs) != 1 {
-					continue
-				}
-				candidate := byID[slot.CandidateIDs[0]]
-				if candidate.Category == construction.CategoryVP && candidate.LexemeID.String() == "lexeme:en.see.v" &&
-					containsEnglishSenseName(candidate.SenseIDs, strings.TrimPrefix(senseText, "sense:")) && candidate.Features["verb_form"] == "base" &&
-					candidate.Features["person"] == "third" && candidate.Features["number"] == "singular" {
-					copy := candidate
-					predicateCandidate = &copy
-				}
-			}
-			if predicateCandidate == nil {
+			predicateCandidate, valid := englishParsedNegativeAgreement(lattice, alternative, familyRecord.Family, compiled.Variant, byID)
+			if !valid || predicateCandidate.LexemeID.String() != "lexeme:en.see.v" ||
+				!containsEnglishSenseName(predicateCandidate.SenseIDs, strings.TrimPrefix(senseText, "sense:")) {
 				continue
 			}
 			key := predicateCandidate.ID + "|" + fmt.Sprint(notSpan.Start) + "|" + fmt.Sprint(notSpan.End)

@@ -64,7 +64,8 @@
     "capabilities": [
       "negation-negated",
       "negation",
-      "surface_negation"
+      "surface_negation",
+      "vp-auxiliary-negation"
     ],
     "provenance": {
       "id": "golingua-437-giving-negation",
@@ -76,40 +77,20 @@
   },
   "variants": [
     {
-      "id": "construction:en.ditransitive_negative.present.the_the_the",
+      "id": "construction:en.ditransitive_negative.double_np.vp_auxiliary",
       "family_id": "construction:en.ditransitive_negative",
       "sequence": [
         {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
           "kind": "slot",
           "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "does"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
         },
         {
           "kind": "slot",
           "slot_id": "verb"
         },
         {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
           "kind": "slot",
           "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
         },
         {
           "kind": "slot",
@@ -122,1606 +103,22 @@
       ],
       "markedness": "neutral",
       "priority": 0,
-      "direction_policy": "both",
+      "direction_policy": "realize",
       "provenance": {
-        "id": "golingua-437-giving-negation",
+        "id": "golingua-476-phrase-negative",
+        "version": "2026-10-31",
         "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
         "license": "internal",
-        "author": "Codex by owner delegation"
+        "author": "OpenAI assistant by owner delegation"
       }
     },
     {
-      "id": "construction:en.ditransitive_negative.present.the_the_a",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "does"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "both",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.present.the_a_the",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "does"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "both",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.present.the_a_a",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "does"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "both",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.present.a_the_the",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "does"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "both",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.present.a_the_a",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "does"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "both",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.present.a_a_the",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "does"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "both",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.present.a_a_a",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "does"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "both",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.past.the_the_the",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "did"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "both",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.past.the_the_a",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "did"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "both",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.past.the_a_the",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "did"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "both",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.past.the_a_a",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "did"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "both",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.past.a_the_the",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "did"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "both",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.past.a_the_a",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "did"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "both",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.past.a_a_the",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "did"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "both",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.past.a_a_a",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "did"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "both",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.present_plural.the_the_the",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "do"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "both",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      },
-      "conditions": [
-        {
-          "kind": "feature_equals",
-          "slot_id": "subject",
-          "feature": "noun_number",
-          "value": "plural"
-        }
-      ]
-    },
-    {
-      "id": "construction:en.ditransitive_negative.present_plural.the_the_a",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "do"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "both",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      },
-      "conditions": [
-        {
-          "kind": "feature_equals",
-          "slot_id": "subject",
-          "feature": "noun_number",
-          "value": "plural"
-        }
-      ]
-    },
-    {
-      "id": "construction:en.ditransitive_negative.present_plural.the_a_the",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "do"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "both",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      },
-      "conditions": [
-        {
-          "kind": "feature_equals",
-          "slot_id": "subject",
-          "feature": "noun_number",
-          "value": "plural"
-        }
-      ]
-    },
-    {
-      "id": "construction:en.ditransitive_negative.present_plural.the_a_a",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "do"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "both",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-29",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      },
-      "conditions": [
-        {
-          "kind": "feature_equals",
-          "slot_id": "subject",
-          "feature": "noun_number",
-          "value": "plural"
-        }
-      ]
-    },
-    {
-      "id": "construction:en.ditransitive_negative.past.to_pp.source.the_the_the",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "did"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "to"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "analyze",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-30",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.past.to_pp.source.the_the_a",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "did"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "to"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "analyze",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-30",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.past.to_pp.source.the_a_the",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "did"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "to"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "analyze",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-30",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.past.to_pp.source.the_a_a",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "did"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "to"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "analyze",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-30",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.past.to_pp.source.a_the_the",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "did"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "to"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "analyze",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-30",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.past.to_pp.source.a_the_a",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "did"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "to"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "analyze",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-30",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.past.to_pp.source.a_a_the",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "did"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "the"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "to"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "analyze",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-30",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.past.to_pp.source.a_a_a",
-      "family_id": "construction:en.ditransitive_negative",
-      "sequence": [
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "did"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "verb"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "theme"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "to"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "a"
-        },
-        {
-          "kind": "slot",
-          "slot_id": "recipient"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "."
-        }
-      ],
-      "markedness": "neutral",
-      "priority": 0,
-      "direction_policy": "analyze",
-      "provenance": {
-        "id": "golingua-437-giving-negation",
-        "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-30",
-        "license": "internal",
-        "author": "Codex by owner delegation"
-      }
-    },
-    {
-      "id": "construction:en.ditransitive_negative.past.to_pp.np_local_subject_theme_recipient",
+      "id": "construction:en.ditransitive_negative.to_pp.vp_auxiliary",
       "family_id": "construction:en.ditransitive_negative",
       "sequence": [
         {
           "kind": "slot",
           "slot_id": "subject"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "did"
-        },
-        {
-          "kind": "terminal",
-          "terminal": "not"
         },
         {
           "kind": "slot",
@@ -1748,11 +145,262 @@
       "priority": 0,
       "direction_policy": "realize",
       "provenance": {
-        "id": "golingua-437-giving-negation",
+        "id": "golingua-476-phrase-negative",
+        "version": "2026-10-31",
         "path": "languages/en/constructions/ditransitive_negative.json",
-        "version": "2026-10-30",
         "license": "internal",
-        "author": "Codex by owner delegation"
+        "author": "OpenAI assistant by owner delegation"
+      }
+    },
+    {
+      "id": "construction:en.ditransitive_negative.source.present.double_np",
+      "family_id": "construction:en.ditransitive_negative",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "accepted_inputs": [
+            "a",
+            "an"
+          ],
+          "optional": true
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "does",
+          "accepted_inputs": [
+            "do"
+          ]
+        },
+        {
+          "kind": "terminal",
+          "terminal": "not"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "accepted_inputs": [
+            "a",
+            "an"
+          ],
+          "optional": true
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "accepted_inputs": [
+            "a",
+            "an"
+          ],
+          "optional": true
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "analyze",
+      "provenance": {
+        "id": "golingua-476-phrase-negative",
+        "version": "2026-10-31",
+        "path": "languages/en/constructions/ditransitive_negative.json",
+        "license": "internal",
+        "author": "OpenAI assistant by owner delegation"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "verb_form",
+          "value": "base"
+        }
+      ]
+    },
+    {
+      "id": "construction:en.ditransitive_negative.source.present.to_pp",
+      "family_id": "construction:en.ditransitive_negative",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "accepted_inputs": [
+            "a",
+            "an"
+          ],
+          "optional": true
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "does",
+          "accepted_inputs": [
+            "do"
+          ]
+        },
+        {
+          "kind": "terminal",
+          "terminal": "not"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "accepted_inputs": [
+            "a",
+            "an"
+          ],
+          "optional": true
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "accepted_inputs": [
+            "a",
+            "an"
+          ],
+          "optional": true
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "analyze",
+      "provenance": {
+        "id": "golingua-476-phrase-negative",
+        "version": "2026-10-31",
+        "path": "languages/en/constructions/ditransitive_negative.json",
+        "license": "internal",
+        "author": "OpenAI assistant by owner delegation"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "present"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "verb_form",
+          "value": "base"
+        }
+      ]
+    },
+    {
+      "id": "construction:en.ditransitive_negative.source.past.double_np",
+      "family_id": "construction:en.ditransitive_negative",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "accepted_inputs": [
+            "a",
+            "an"
+          ],
+          "optional": true
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "did"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "not"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "accepted_inputs": [
+            "a",
+            "an"
+          ],
+          "optional": true
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "accepted_inputs": [
+            "a",
+            "an"
+          ],
+          "optional": true
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "analyze",
+      "provenance": {
+        "id": "golingua-476-phrase-negative",
+        "version": "2026-10-31",
+        "path": "languages/en/constructions/ditransitive_negative.json",
+        "license": "internal",
+        "author": "OpenAI assistant by owner delegation"
       },
       "conditions": [
         {
@@ -1760,6 +408,101 @@
           "slot_id": "verb",
           "feature": "tense",
           "value": "past"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "verb_form",
+          "value": "base"
+        }
+      ]
+    },
+    {
+      "id": "construction:en.ditransitive_negative.source.past.to_pp",
+      "family_id": "construction:en.ditransitive_negative",
+      "sequence": [
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "accepted_inputs": [
+            "a",
+            "an"
+          ],
+          "optional": true
+        },
+        {
+          "kind": "slot",
+          "slot_id": "subject"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "did"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "not"
+        },
+        {
+          "kind": "slot",
+          "slot_id": "verb"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "accepted_inputs": [
+            "a",
+            "an"
+          ],
+          "optional": true
+        },
+        {
+          "kind": "slot",
+          "slot_id": "theme"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "to"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "the",
+          "accepted_inputs": [
+            "a",
+            "an"
+          ],
+          "optional": true
+        },
+        {
+          "kind": "slot",
+          "slot_id": "recipient"
+        },
+        {
+          "kind": "terminal",
+          "terminal": "."
+        }
+      ],
+      "markedness": "neutral",
+      "priority": 0,
+      "direction_policy": "analyze",
+      "provenance": {
+        "id": "golingua-476-phrase-negative",
+        "version": "2026-10-31",
+        "path": "languages/en/constructions/ditransitive_negative.json",
+        "license": "internal",
+        "author": "OpenAI assistant by owner delegation"
+      },
+      "conditions": [
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "tense",
+          "value": "past"
+        },
+        {
+          "kind": "feature_equals",
+          "slot_id": "verb",
+          "feature": "verb_form",
+          "value": "base"
         }
       ]
     }

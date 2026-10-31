@@ -201,6 +201,7 @@ type matcher struct {
 	phraseByKey          map[string]int
 	unsupportedHeads     map[string]bool
 	matchedHeadRanges    map[[2]int]bool
+	retainedDerivations  map[string][]ParseAlternative
 }
 
 func validateLattice(l analyzer.LexicalLattice) error {
@@ -1070,6 +1071,19 @@ func (m *matcher) retain(p compiledPlan, part partial) {
 	alt := ParseAlternative{PlanID: p.plan.ID, FamilyID: p.family.ID, VariantID: p.variant.ID, Permission: p.permission, Slots: bindings,
 		NPPhraseGroups: append([]NPPhraseGroupBinding(nil), part.npGroups...), Unresolved: append([]string(nil), part.unresolved...),
 		DerivationID: derivationID(p, bindings, part.npGroups)}
+	// Optional terminals and an NP group can reach the very same derivation
+	// through different matcher paths. Retain exact derivations once; do not
+	// collapse different bindings, references, unresolved evidence or scopes.
+	key := rootKey + "\x00" + alt.DerivationID
+	if m.retainedDerivations == nil {
+		m.retainedDerivations = make(map[string][]ParseAlternative)
+	}
+	for _, prior := range m.retainedDerivations[key] {
+		if reflect.DeepEqual(prior, alt) {
+			return
+		}
+	}
+	m.retainedDerivations[key] = append(m.retainedDerivations[key], alt)
 	root := &m.forest.Nodes[rootIndex]
 	root.Alternatives = append(root.Alternatives, alt)
 	m.retainedAlternatives++

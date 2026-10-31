@@ -390,14 +390,9 @@ var englishConstructionBindingDeclarations = []constructionBindingDeclaration{
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_subject_object"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing", "en.attributed_seeing.svo.indefinite_subject_a_object_an"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo"},
-	{"en.see.visual", "en.see.visual.attributed_negative", "en.attributed_seeing_object_negative", "en.attributed_seeing_object_negative.svo"},
-	{"en.see.visual", "en.see.visual.attributed_negative", "en.attributed_seeing_object_negative", "en.attributed_seeing_object_negative.svo.indefinite_subject"},
-	{"en.see.visual", "en.see.visual.attributed_negative", "en.attributed_seeing_object_negative", "en.attributed_seeing_object_negative.svo.indefinite_object"},
-	{"en.see.visual", "en.see.visual.attributed_negative", "en.attributed_seeing_object_negative", "en.attributed_seeing_object_negative.svo.indefinite_both"},
-	{"en.see.visual", "en.see.visual.attributed_negative", "en.attributed_seeing_object_negative", "en.attributed_seeing_object_negative.svo.past"},
-	{"en.see.visual", "en.see.visual.attributed_negative", "en.attributed_seeing_object_negative", "en.attributed_seeing_object_negative.svo.past.indefinite_subject"},
-	{"en.see.visual", "en.see.visual.attributed_negative", "en.attributed_seeing_object_negative", "en.attributed_seeing_object_negative.svo.past.indefinite_object"},
-	{"en.see.visual", "en.see.visual.attributed_negative", "en.attributed_seeing_object_negative", "en.attributed_seeing_object_negative.svo.past.indefinite_both"},
+	{"en.see.visual", "en.see.visual.attributed_negative", "en.attributed_seeing_object_negative", "en.attributed_seeing_object_negative.source.present.svo"},
+	{"en.see.visual", "en.see.visual.attributed_negative", "en.attributed_seeing_object_negative", "en.attributed_seeing_object_negative.source.past.svo"},
+	{"en.see.visual", "en.see.visual.attributed_negative", "en.attributed_seeing_object_negative", "en.attributed_seeing_object_negative.svo.vp_auxiliary"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo.this_object"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo.that_object"},
 	{"en.see.visual", "en.see.visual.transitive", "en.attributed_seeing_object", "en.attributed_seeing_object.svo.these_object"},
@@ -963,39 +958,15 @@ func englishGivingConstructionBindings() []constructionBindingDeclaration {
 
 func englishGivingNegativeConstructionBindings() []constructionBindingDeclaration {
 	var bindings []constructionBindingDeclaration
-	for _, subject := range []string{"the", "a"} {
-		for _, recipient := range []string{"the", "a"} {
-			for _, theme := range []string{"the", "a"} {
-				bindings = append(bindings, constructionBindingDeclaration{
-					sense: "en.give.transfer", frame: "en.give.transfer.negative",
-					family:  "en.ditransitive_negative",
-					variant: "en.ditransitive_negative.past.to_pp.source." + subject + "_" + recipient + "_" + theme,
-				})
-			}
-		}
-	}
-	bindings = append(bindings, constructionBindingDeclaration{
-		sense: "en.give.transfer", frame: "en.give.transfer.negative", family: "en.ditransitive_negative",
-		variant: "en.ditransitive_negative.past.to_pp.np_local_subject_theme_recipient",
-	})
-	for _, tense := range []string{"present", "past"} {
-		for _, subject := range []string{"the", "a"} {
-			for _, recipient := range []string{"the", "a"} {
-				for _, theme := range []string{"the", "a"} {
-					variant := "en.ditransitive_negative." + tense + "." + subject + "_" + recipient + "_" + theme
-					bindings = append(bindings, constructionBindingDeclaration{
-						sense: "en.give.transfer", frame: "en.give.transfer.negative",
-						family: "en.ditransitive_negative", variant: variant,
-					})
-				}
-			}
-		}
-	}
-	for _, recipient := range []string{"the", "a"} {
-		for _, theme := range []string{"the", "a"} {
+	for _, order := range []string{"double_np", "to_pp"} {
+		bindings = append(bindings, constructionBindingDeclaration{
+			sense: "en.give.transfer", frame: "en.give.transfer.negative", family: "en.ditransitive_negative",
+			variant: "en.ditransitive_negative." + order + ".vp_auxiliary",
+		})
+		for _, tense := range []string{"present", "past"} {
 			bindings = append(bindings, constructionBindingDeclaration{
-				sense: "en.give.transfer", frame: "en.give.transfer.negative",
-				family: "en.ditransitive_negative", variant: "en.ditransitive_negative.present_plural.the_" + recipient + "_" + theme,
+				sense: "en.give.transfer", frame: "en.give.transfer.negative", family: "en.ditransitive_negative",
+				variant: "en.ditransitive_negative.source." + tense + "." + order,
 			})
 		}
 	}

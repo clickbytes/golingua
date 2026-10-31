@@ -14,7 +14,7 @@ import (
 	"github.com/clickbytes/golingua/tests/interlingua"
 )
 
-func TestIdentificationExpansionFixturesAndMissingColorGap(t *testing.T) {
+func TestIdentificationExpansionFixturesAndColorBoundaries(t *testing.T) {
 	core, err := catalog.Compile()
 	if err != nil {
 		t.Fatalf("INFRA: compile CORE: %v", err)
@@ -70,8 +70,12 @@ func TestIdentificationExpansionFixturesAndMissingColorGap(t *testing.T) {
 	}
 	for _, predicate := range []string{"red", "white", "blue", "green"} {
 		predicateID, _ := ids.NewConceptID(predicate)
-		if _, ok := core.Lookup(predicateID); ok {
-			t.Errorf("unexpected CORE predicate %q", predicate)
+		// The catalog now declares these colors. Check their semantic contract,
+		// not the historical absence that used to explain a representation gap.
+		color, ok := core.Lookup(predicateID)
+		if !ok || color.Kind != "property" || len(color.RoleTypes) != 1 || color.RoleTypes[0].Name != "bearer" ||
+			len(color.RoleTypes[0].AllowedKinds) != 1 || color.RoleTypes[0].AllowedKinds[0] != "entity" {
+			t.Errorf("color %q lacks its declared entity-bearer property signature: %+v", predicate, color)
 		}
 	}
 	blackID, _ := ids.NewConceptID("black")

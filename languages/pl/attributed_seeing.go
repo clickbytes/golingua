@@ -220,7 +220,11 @@ func polishAttributedSeeingFamilyMatches(source semantic.MeaningCandidate, candi
 	subjectMany := shape.subject.Multiplicity == meaning.MultiplicityMany
 	objectMany := shape.object.Multiplicity == meaning.MultiplicityMany
 	switch familyID {
-	case "construction:pl.attributed_seeing", "construction:pl.attributed_seeing_object", "construction:pl.attributed_seeing_object_negative":
+	case "construction:pl.attributed_seeing_object_negative":
+		if shape.scope.ID == "" {
+			return false
+		}
+	case "construction:pl.attributed_seeing", "construction:pl.attributed_seeing_object":
 		if subjectMany || objectMany {
 			return false
 		}
@@ -504,7 +508,9 @@ func polishAttributedSeeingVariant(source semantic.MeaningCandidate, candidate r
 		return variant == "construction:pl.attributed_seeing_object.svo.plural_lexical" && pluralOnly &&
 			polishAttributedSeeingGenderAvailable(source, shape.object, "agreement_gender", "non_masculine_personal", "plural", candidates)
 	case "construction:pl.attributed_seeing_object_negative":
-		return shape.scope.ID != "" && shape.object.Multiplicity == meaning.MultiplicityOne && shape.subject.Multiplicity == meaning.MultiplicityOne &&
+		return shape.scope.ID != "" &&
+			(shape.object.Multiplicity == meaning.MultiplicityOne || shape.object.Multiplicity == meaning.MultiplicityMany) &&
+			(shape.subject.Multiplicity == meaning.MultiplicityOne || shape.subject.Multiplicity == meaning.MultiplicityMany) &&
 			(subjectDeixis == "unresolved" && objectDeixis == "unresolved") &&
 			(variant == "construction:pl.attributed_seeing_object_negative.svo" || variant == "construction:pl.attributed_seeing_object_negative.ovs")
 	case "construction:pl.attributed_seeing_both":

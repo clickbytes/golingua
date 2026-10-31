@@ -956,7 +956,7 @@ func (resolver englishNegationResolver) attributedNegativeSeeingRoute(source sem
 		compiled, exists := variantIndex.ByID(variantID)
 		if !exists || compiled.Variant.DirectionPolicy == construction.DirectionAnalyze || !variantHasRequiredSlots(familyRecord.Family, compiled.Variant) ||
 			!sequenceHasSlot(compiled.Variant.Sequence, subjectSlot) || !sequenceHasSlot(compiled.Variant.Sequence, predicateSlot) ||
-			!sequenceHasTerminal(compiled.Variant.Sequence, "not") {
+			(!sequenceHasTerminal(compiled.Variant.Sequence, "not") && !englishNegativePhraseRecipe(familyRecord.Family, compiled.Variant)) {
 			continue
 		}
 		approvedVariants[binding.VariantID.String()] = true

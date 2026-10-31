@@ -389,6 +389,9 @@ func englishAttributedSeeingContextsValid(source semantic.MeaningCandidate, reso
 }
 
 func englishAttributedSeeingVariant(candidate realizer.TargetCandidate) bool {
+	if englishVPAuxiliaryVariant(candidate) {
+		return true
+	}
 	variant := candidate.CompiledVariant.Variant.ID.String()
 	switch candidate.Family.Family.ID.String() {
 	case "construction:en.attributed_seeing":
@@ -479,7 +482,7 @@ func englishTargetDeicticAnchors(source semantic.MeaningCandidate, nodeID meanin
 
 func englishAttributedSeeingSubjectVariantAllowed(source semantic.MeaningCandidate, candidate realizer.TargetCandidate, shape englishAttributedSeeingGraph, resolver englishNegationResolver) bool {
 	if candidate.Family.Family.ID.String() == "construction:en.attributed_seeing_object_negative" {
-		return shape.scope.ID != "" && shape.subject.Multiplicity == meaning.MultiplicityOne && shape.object.Multiplicity == meaning.MultiplicityOne &&
+		return shape.scope.ID != "" && (englishVPAuxiliaryVariant(candidate) || shape.subject.Multiplicity == meaning.MultiplicityOne && shape.object.Multiplicity == meaning.MultiplicityOne) &&
 			len(englishAttributedSeeingSubjectAnchors(source, shape.subject.ID)) == 0 && len(englishAttributedSeeingSubjectAnchors(source, shape.object.ID)) == 0
 	}
 	variant := candidate.CompiledVariant.Variant.ID.String()

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/clickbytes/golingua/internal/construction"
+	"github.com/clickbytes/golingua/internal/engine"
 	"github.com/clickbytes/golingua/internal/features"
 	"github.com/clickbytes/golingua/internal/ids"
 	"github.com/clickbytes/golingua/internal/language"
@@ -225,9 +226,9 @@ func (builder englishSentenceFeatures) Features(_ context.Context, source semant
 		}
 	}
 	if slot.Category == construction.CategoryVP {
-		if _, _, _, found := englishTransitiveNegativeVPAuxContext(builder.resolver, source, predicate, candidates); found && englishVPAuxiliaryVariant(predicate) {
+		if _, _, _, found := englishNegativeVPAuxContext(builder.resolver, source, predicate, candidates); found && englishVPAuxiliaryVariant(predicate) {
 			_, event, _, _ := builder.resolver.negatedPresent(source)
-			_, number, tense, ok := englishTransitiveNegativeVPFeatures(builder.resolver, source, predicate, candidates)
+			_, number, tense, ok := englishNegativeVPFeatures(builder.resolver, source, predicate, candidates)
 			if !ok || event.ID != predicate.NodeID {
 				return nil, fmt.Errorf("English auxiliary negation requires exact event tense and subject number evidence")
 			}
@@ -382,12 +383,6 @@ func (builder englishSentenceFeatures) Features(_ context.Context, source semant
 	}, nil
 }
 
-func englishVPAuxiliaryVariant(candidate realizer.TargetCandidate) bool {
-	return candidate.Family.Family.ID.String() == "construction:en.transitive_negative" &&
-		candidate.CompiledVariant.Variant.ID.String() == "construction:en.transitive_negative.svo.vp_auxiliary" &&
-		candidate.CompiledVariant.Variant.DirectionPolicy == construction.DirectionRealize
-}
-
 func englishLegacyNegativeVPVariant(candidate realizer.TargetCandidate) bool {
 	sequence := candidate.CompiledVariant.Variant.Sequence
 	if candidate.Family.Family.ID.String() != "construction:en.transitive_negative" || len(sequence) < 6 {
@@ -431,12 +426,12 @@ func englishLegacyNegativeVPVariant(candidate realizer.TargetCandidate) bool {
 		position["subject"] < position["aux"] && position["aux"] < position["not"] && position["not"] < position["verb"] && position["verb"] < position["object"]
 }
 
-func englishTransitiveNegativeVPAuxContextForSource(resolver englishNegationResolver, source semantic.MeaningCandidate, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) bool {
+func englishNegativeVPAuxContextForSource(resolver englishNegationResolver, source semantic.MeaningCandidate, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) bool {
 	if candidate.Family.Family.ID.String() != "construction:en.transitive_negative" || candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState {
 		return false
 	}
 	scope, event, route, found := resolver.negatedPresent(source)
-	_, tenseOK := englishTransitiveNegativeEffectiveTense(resolver, source, candidate)
+	_, tenseOK := englishNegativeEffectiveTense(resolver, source, candidate)
 	if !found || scope.ID == "" || event.ID != candidate.NodeID || route.family != candidate.Family.Family.ID.String() || route.sense != candidate.Sense.ID.String() || !tenseOK {
 		return false
 	}
@@ -454,9 +449,9 @@ func englishTransitiveNegativeVPAuxContextForSource(resolver englishNegationReso
 	return true
 }
 
-func englishTransitiveNegativeVPFeatures(resolver englishNegationResolver, source semantic.MeaningCandidate, predicate realizer.TargetCandidate, candidates []realizer.TargetCandidate) (string, string, string, bool) {
-	scope, event, route, ok := englishTransitiveNegativeVPAuxContext(resolver, source, predicate, candidates)
-	tense, tenseOK := englishTransitiveNegativeEffectiveTense(resolver, source, predicate)
+func englishNegativeVPFeatures(resolver englishNegationResolver, source semantic.MeaningCandidate, predicate realizer.TargetCandidate, candidates []realizer.TargetCandidate) (string, string, string, bool) {
+	scope, event, route, ok := englishNegativeVPAuxContext(resolver, source, predicate, candidates)
+	tense, tenseOK := englishNegativeEffectiveTense(resolver, source, predicate)
 	if !ok || scope.ID == "" || !tenseOK {
 		return "", "", "", false
 	}
@@ -533,13 +528,13 @@ func englishTransitiveNegativeVPFeatures(resolver englishNegationResolver, sourc
 	return "", "", "", false
 }
 
-func englishTransitiveNegativeVPAuxContext(resolver englishNegationResolver, source semantic.MeaningCandidate, predicate realizer.TargetCandidate, candidates []realizer.TargetCandidate) (meaning.Node, meaning.Node, englishPresentNegationRoute, bool) {
+func englishNegativeVPAuxContext(resolver englishNegationResolver, source semantic.MeaningCandidate, predicate realizer.TargetCandidate, candidates []realizer.TargetCandidate) (meaning.Node, meaning.Node, englishPresentNegationRoute, bool) {
 	if !englishVPAuxiliaryVariant(predicate) || predicate.Kind != meaning.KindEvent && predicate.Kind != meaning.KindState || predicate.Frame.ID == "" ||
 		!englishPredicateEvidenceConsistent(source, predicate) {
 		return meaning.Node{}, meaning.Node{}, englishPresentNegationRoute{}, false
 	}
 	scope, event, route, found := resolver.negatedPresent(source)
-	if !found || event.ID != predicate.NodeID || route.family != "construction:en.transitive_negative" || route.sense != predicate.Sense.ID.String() || route.frame != string(predicate.Frame.ID) {
+	if !found || event.ID != predicate.NodeID || route.family != predicate.Family.Family.ID.String() || route.sense != predicate.Sense.ID.String() || route.frame != string(predicate.Frame.ID) {
 		return meaning.Node{}, meaning.Node{}, englishPresentNegationRoute{}, false
 	}
 	if resolver.registry == nil {
@@ -553,17 +548,17 @@ func englishTransitiveNegativeVPAuxContext(resolver englishNegationResolver, sou
 		}
 	}
 	if !approved || !variantHasRequiredSlots(predicate.Family.Family, predicate.CompiledVariant.Variant) ||
-		!sequenceHasSlot(predicate.CompiledVariant.Variant.Sequence, "subject") || !sequenceHasSlot(predicate.CompiledVariant.Variant.Sequence, "verb") || !sequenceHasSlot(predicate.CompiledVariant.Variant.Sequence, "object") {
+		!sequenceHasSlot(predicate.CompiledVariant.Variant.Sequence, "subject") || !sequenceHasSlot(predicate.CompiledVariant.Variant.Sequence, "verb") {
 		return meaning.Node{}, meaning.Node{}, englishPresentNegationRoute{}, false
 	}
-	if _, _, _, ok := englishTransitiveNegativeVPFeaturesNoCandidates(source, event, route); !ok {
+	if _, _, _, ok := englishNegativeVPFeaturesNoCandidates(source, event, route); !ok {
 		return meaning.Node{}, meaning.Node{}, englishPresentNegationRoute{}, false
 	}
 	return scope, event, route, true
 }
 
-func englishTransitiveNegativeEffectiveTense(resolver englishNegationResolver, source semantic.MeaningCandidate, candidate realizer.TargetCandidate) (meaning.TemporalFrame, bool) {
-	if source.Meaning == nil || candidate.Family.Family.ID.String() != "construction:en.transitive_negative" || !englishVPAuxiliaryVariant(candidate) ||
+func englishNegativeEffectiveTense(resolver englishNegationResolver, source semantic.MeaningCandidate, candidate realizer.TargetCandidate) (meaning.TemporalFrame, bool) {
+	if source.Meaning == nil || !englishVPAuxiliaryVariant(candidate) ||
 		candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || !englishPredicateEvidenceConsistent(source, candidate) {
 		return "", false
 	}
@@ -581,7 +576,7 @@ func englishTransitiveNegativeEffectiveTense(resolver englishNegationResolver, s
 	return "", false
 }
 
-func englishTransitiveNegativeVPFeaturesNoCandidates(source semantic.MeaningCandidate, event meaning.Node, route englishPresentNegationRoute) (string, string, string, bool) {
+func englishNegativeVPFeaturesNoCandidates(source semantic.MeaningCandidate, event meaning.Node, route englishPresentNegationRoute) (string, string, string, bool) {
 	tense := event.TemporalFrame
 	if tense == "" && event.Kind == meaning.KindState {
 		tense = meaning.TemporalFramePresent
@@ -670,11 +665,11 @@ func (builder englishSentenceFeatures) BuildVPAuxiliary(_ context.Context, sourc
 	if !slot.IsMainPredicate() || !englishVPAuxiliaryVariant(predicate) {
 		return nil, nil
 	}
-	_, event, _, ok := englishTransitiveNegativeVPAuxContext(builder.resolver, source, predicate, candidates)
+	_, event, _, ok := englishNegativeVPAuxContext(builder.resolver, source, predicate, candidates)
 	if !ok || builder.profile == nil {
 		return nil, fmt.Errorf("English auxiliary negation requires an approved exact binding, scoped Not, and explicit event features")
 	}
-	person, number, tense, ok := englishTransitiveNegativeVPFeatures(builder.resolver, source, predicate, candidates)
+	person, number, tense, ok := englishNegativeVPFeatures(builder.resolver, source, predicate, candidates)
 	if !ok {
 		return nil, fmt.Errorf("English auxiliary negation requires known subject number and event tense")
 	}
@@ -1275,7 +1270,7 @@ func (builder englishSentencePlanAnnotations) AnnotationAlternatives(ctx context
 	}
 	base := runtime.TargetPlanAnnotations{FeatureConstraints: constraints, Assumptions: assumptions, Losses: losses}
 	if englishVPAuxiliaryVariant(selected) {
-		return englishTransitiveNegativeLocalArticleAlternatives(builder.resolver, source, selected, base)
+		return englishNegativeLocalArticleAlternatives(builder.resolver, source, selected, base)
 	}
 	if !englishGivingLocalNPVariantID(selected.CompiledVariant.Variant.ID.String()) {
 		return []runtime.TargetPlanAnnotations{base}, nil
@@ -1390,24 +1385,23 @@ func (builder englishSentencePlanAnnotations) AnnotationAlternatives(ctx context
 	return result, nil
 }
 
-func englishTransitiveNegativeLocalArticleAlternatives(resolver englishNegationResolver, source semantic.MeaningCandidate, selected realizer.TargetCandidate, base runtime.TargetPlanAnnotations) ([]runtime.TargetPlanAnnotations, error) {
-	if source.Meaning == nil || selected.Kind != meaning.KindEvent && selected.Kind != meaning.KindState || selected.Family.Family.ID.String() != "construction:en.transitive_negative" ||
-		!englishVPAuxiliaryVariant(selected) {
-		return nil, fmt.Errorf("NP-local negative articles require the exact approved transitive-negative variant")
+func englishNegativeLocalArticleAlternatives(resolver englishNegationResolver, source semantic.MeaningCandidate, selected realizer.TargetCandidate, base runtime.TargetPlanAnnotations) ([]runtime.TargetPlanAnnotations, error) {
+	if source.Meaning == nil || selected.Kind != meaning.KindEvent && selected.Kind != meaning.KindState || !englishVPAuxiliaryVariant(selected) {
+		return nil, fmt.Errorf("NP-local negative articles require an exact approved phrase-local variant")
 	}
 	predicate, exists := englishMeaningNode(source, selected.NodeID)
 	if !exists || predicate.Kind != meaning.KindEvent && predicate.Kind != meaning.KindState {
 		return nil, fmt.Errorf("NP-local negative articles require a supported predicate")
 	}
-	if _, ok := englishTransitiveNegativeEffectiveTense(resolver, source, selected); !ok {
+	if _, ok := englishNegativeEffectiveTense(resolver, source, selected); !ok {
 		return nil, fmt.Errorf("NP-local negative articles require a supported predicate tense")
 	}
 	roleSlots, ok := englishRequiredFrameRoleSlots(selected)
 	if !ok {
 		return nil, fmt.Errorf("NP-local negative articles require exact frame slot roles")
 	}
-	choices := make([]englishLocalDeterminerChoice, 0, 2)
-	for _, slotID := range []string{"subject", "object"} {
+	choices := make([]englishLocalDeterminerChoice, 0, len(roleSlots))
+	for _, slotID := range englishNegativeNPSlots(selected) {
 		role := meaning.Role("")
 		for candidateRole, candidateSlot := range roleSlots {
 			if candidateSlot == slotID {
@@ -1513,32 +1507,56 @@ func englishTransitiveNegativeLocalArticleAlternatives(resolver englishNegationR
 		}
 		choices = append(choices, item)
 	}
-	if len(choices) != 2 || len(choices[0].values)*len(choices[1].values) > 4 {
-		return nil, fmt.Errorf("NP-local negative article choices exceed the two-role bound")
+	// Article choices are local to referents, not whole-sentence templates.
+	// Shared referents must not receive contradictory assumptions in two slots.
+	unique := make([]englishLocalDeterminerChoice, 0, len(choices))
+	for _, choice := range choices {
+		duplicate := false
+		for _, prior := range unique {
+			if sameMeaningNodePath(prior.path, choice.path) {
+				if prior.assume != choice.assume || !reflect.DeepEqual(prior.values, choice.values) {
+					return nil, fmt.Errorf("NP-local negative articles conflict on a shared referent")
+				}
+				duplicate = true
+				break
+			}
+		}
+		if !duplicate {
+			unique = append(unique, choice)
+		}
+	}
+	choices = unique
+	if len(choices) == 0 || len(choices) > 3 {
+		return nil, fmt.Errorf("NP-local negative articles require one to three licensed referents")
 	}
 	base.Assumptions = filterDeterminerAnnotations(base.Assumptions, choices)
 	base.Losses = filterDeterminerLosses(base.Losses, choices)
 	for _, choice := range choices {
 		base.Assumptions = filterRoleNumberAssumption(base.Assumptions, choice.path)
 	}
-	result := make([]runtime.TargetPlanAnnotations, 0, len(choices[0].values)*len(choices[1].values))
-	for _, subjectChoice := range choices[0].values {
-		for _, objectChoice := range choices[1].values {
-			selectedAnnotations := runtime.TargetPlanAnnotations{
-				FeatureConstraints: append([]realizer.FeatureConstraint(nil), base.FeatureConstraints...),
-				Assumptions:        cloneEnglishAssumptions(base.Assumptions),
-				Losses:             append([]realizer.FieldLoss(nil), base.Losses...),
-			}
-			for index, value := range []string{subjectChoice, objectChoice} {
-				if choices[index].assume {
-					selectedAnnotations.Assumptions = append(selectedAnnotations.Assumptions, realizer.FieldAssumption{
-						Path: append([]meaning.NodeID(nil), choices[index].path...), Field: "determiner", Value: value,
+	result := []runtime.TargetPlanAnnotations{base}
+	for _, choice := range choices {
+		if len(choice.values) == 0 || len(result) > engine.MaxTranslationAlternatives/len(choice.values) {
+			return nil, fmt.Errorf("NP-local negative article choices exceed the realization bound")
+		}
+		expanded := make([]runtime.TargetPlanAnnotations, 0, len(result)*len(choice.values))
+		for _, prior := range result {
+			for _, value := range choice.values {
+				annotations := runtime.TargetPlanAnnotations{
+					FeatureConstraints: append([]realizer.FeatureConstraint(nil), prior.FeatureConstraints...),
+					Assumptions:        cloneEnglishAssumptions(prior.Assumptions),
+					Losses:             append([]realizer.FieldLoss(nil), prior.Losses...),
+				}
+				if choice.assume {
+					annotations.Assumptions = append(annotations.Assumptions, realizer.FieldAssumption{
+						Path: append([]meaning.NodeID(nil), choice.path...), Field: "determiner", Value: value,
 						Reason: "source Meaning does not specify English definiteness; this target alternative selects the " + value + " determiner",
 					})
 				}
+				expanded = append(expanded, annotations)
 			}
-			result = append(result, selectedAnnotations)
 		}
+		result = expanded
 	}
 	return result, nil
 }
@@ -1591,9 +1609,9 @@ type englishLocalDeterminerChoice struct {
 	assume bool
 }
 
-func englishTransitiveNegativeLocalNPCandidateAllowed(resolver englishNegationResolver, source semantic.MeaningCandidate, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) bool {
+func englishNegativeLocalNPCandidateAllowed(resolver englishNegationResolver, source semantic.MeaningCandidate, candidate realizer.TargetCandidate, candidates []realizer.TargetCandidate) bool {
 	if source.Meaning == nil || candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || candidate.Outcome != status.OutcomeOK ||
-		candidate.Family.Family.ID.String() != "construction:en.transitive_negative" || !englishVPAuxiliaryVariant(candidate) ||
+		!englishVPAuxiliaryVariant(candidate) ||
 		candidate.Frame.ID == "" || !englishPredicateEvidenceConsistent(source, candidate) {
 		return false
 	}
@@ -1601,14 +1619,18 @@ func englishTransitiveNegativeLocalNPCandidateAllowed(resolver englishNegationRe
 	if !exists || predicate.Kind != candidate.Kind {
 		return false
 	}
-	if _, ok := englishTransitiveNegativeEffectiveTense(resolver, source, candidate); !ok {
+	if _, ok := englishNegativeEffectiveTense(resolver, source, candidate); !ok {
 		return false
 	}
 	roleSlots, ok := englishRequiredFrameRoleSlots(candidate)
 	if !ok {
 		return false
 	}
-	for _, slotID := range []string{"subject", "object"} {
+	npSlots := englishNegativeNPSlots(candidate)
+	if len(npSlots) != len(roleSlots) {
+		return false
+	}
+	for _, slotID := range npSlots {
 		role := meaning.Role("")
 		for candidateRole, candidateSlot := range roleSlots {
 			if candidateSlot == slotID {
@@ -1773,6 +1795,10 @@ func englishSimplePastEventTarget(resolver englishNegationResolver, source seman
 	if selected.Kind != meaning.KindEvent || predicate.Kind != meaning.KindEvent || selected.NodeID != predicate.ID || predicate.TemporalFrame != meaning.TemporalFramePast ||
 		!englishApprovedPastEventCandidate(resolver, selected, predicate) {
 		return false
+	}
+	if englishVPAuxiliaryVariant(selected) {
+		_, event, route, negated := resolver.negatedPresent(source)
+		return negated && event.ID == predicate.ID && route.family == selected.Family.Family.ID.String() && route.frame == string(selected.Frame.ID) && route.sense == selected.Sense.ID.String()
 	}
 	family := selected.Family.Family.ID.String()
 	variant := selected.CompiledVariant.Variant.ID.String()
@@ -2037,15 +2063,14 @@ func englishApprovedAttributedNegativeSeeingCandidate(resolver englishNegationRe
 		return false
 	}
 	shape, ok := englishAttributedSeeingShape(source, resolver)
-	if !ok || shape.scope.ID == "" || shape.event.ID != candidate.NodeID || shape.subject.Multiplicity != meaning.MultiplicityOne ||
-		shape.object.Multiplicity != meaning.MultiplicityOne || !englishAttributedSeeingContextsValid(source, resolver) ||
+	if !ok || shape.scope.ID == "" || shape.event.ID != candidate.NodeID || !englishVPAuxiliaryVariant(candidate) && (shape.subject.Multiplicity != meaning.MultiplicityOne || shape.object.Multiplicity != meaning.MultiplicityOne) || !englishAttributedSeeingContextsValid(source, resolver) ||
 		!englishAttributedSeeingVariant(candidate) || !englishAttributedSeeingFamilyMatches(source, candidate, shape) ||
 		!englishAttributedSeeingSubjectVariantAllowed(source, candidate, shape, resolver) || !englishPredicateEvidenceConsistent(source, candidate) || source.Meaning == nil ||
 		!realizer.CoversLexicalMeaning(*source.Meaning, candidate.NodeID, candidate.Family.Family) {
 		return false
 	}
 	pastVariant := strings.Contains(candidate.CompiledVariant.Variant.ID.String(), ".svo.past")
-	if pastVariant != (shape.event.TemporalFrame == meaning.TemporalFramePast) {
+	if !englishVPAuxiliaryVariant(candidate) && pastVariant != (shape.event.TemporalFrame == meaning.TemporalFramePast) {
 		return false
 	}
 	familyID := candidate.Family.Family.ID
@@ -2388,6 +2413,22 @@ func (policy englishDeterminerCandidatePolicy) KeepTargetCandidate(source semant
 			return false
 		}
 	}
+	if englishVPAuxiliaryVariant(candidate) {
+		_, _, _, ok := englishNegativeVPFeatures(policy.resolver, source, candidate, candidates)
+		return ok && englishNegativeLocalNPCandidateAllowed(policy.resolver, source, candidate, candidates)
+	}
+	if candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState {
+		for _, compact := range candidates {
+			if compact.NodeID != candidate.NodeID || compact.Sense.ID != candidate.Sense.ID || compact.Frame.ID != candidate.Frame.ID ||
+				!englishVPAuxiliaryVariant(compact) || !englishNegativeSameSurfaceOrder(candidate, compact) {
+				continue
+			}
+			if _, _, _, ok := englishNegativeVPFeatures(policy.resolver, source, compact, candidates); ok &&
+				englishNegativeLocalNPCandidateAllowed(policy.resolver, source, compact, candidates) {
+				return false
+			}
+		}
+	}
 	if identification, recognized := englishNegativeIdentificationState(source); recognized {
 		if candidate.Kind == meaning.KindState && candidate.NodeID == identification.stateID {
 			if !identification.valid || !englishIdentificationAttributesAllowed(source, candidate.NodeID, identification.role, identification.referent, candidate.TransferBinding.CoreRef) ||
@@ -2527,7 +2568,7 @@ func (policy englishDeterminerCandidatePolicy) KeepTargetCandidate(source semant
 	_, hasParticipantAnchor := englishParticipantAnchor(source, subjectNode)
 	if hasParticipantAnchor && familyID != "construction:en.transitive_personal" && (candidate.Kind == meaning.KindEvent || candidate.Kind == meaning.KindState) {
 		if familyID != "construction:en.transitive_negative" || !englishVPAuxiliaryVariant(candidate) ||
-			!englishTransitiveNegativeVPAuxContextForSource(policy.resolver, source, candidate, candidates) {
+			!englishNegativeVPAuxContextForSource(policy.resolver, source, candidate, candidates) {
 			return false
 		}
 	}
@@ -2669,13 +2710,13 @@ func (policy englishDeterminerCandidatePolicy) KeepTargetCandidate(source semant
 		_, event, route, negated := policy.resolver.negatedPresent(source)
 		if negated && event.ID == candidate.NodeID && route.family == "construction:en.transitive_negative" {
 			if englishVPAuxiliaryVariant(candidate) {
-				if _, _, _, ok := englishTransitiveNegativeVPFeatures(policy.resolver, source, candidate, candidates); !ok {
+				if _, _, _, ok := englishNegativeVPFeatures(policy.resolver, source, candidate, candidates); !ok {
 					return false
 				}
 			} else if englishLegacyNegativeVPVariant(candidate) {
 				for _, auxiliaryCandidate := range candidates {
 					if auxiliaryCandidate.NodeID == candidate.NodeID && auxiliaryCandidate.Sense.ID == candidate.Sense.ID && englishVPAuxiliaryVariant(auxiliaryCandidate) &&
-						englishTransitiveNegativeLocalNPCandidateAllowed(policy.resolver, source, auxiliaryCandidate, candidates) {
+						englishNegativeLocalNPCandidateAllowed(policy.resolver, source, auxiliaryCandidate, candidates) {
 						return false
 					}
 				}
@@ -2693,7 +2734,7 @@ func (policy englishDeterminerCandidatePolicy) KeepTargetCandidate(source semant
 		}
 		number, known := "singular", attributedNegativeSeeing
 		if englishVPAuxiliaryVariant(candidate) {
-			_, number, _, known = englishTransitiveNegativeVPFeatures(policy.resolver, source, candidate, candidates)
+			_, number, _, known = englishNegativeVPFeatures(policy.resolver, source, candidate, candidates)
 		} else if !attributedNegativeSeeing {
 			number, known = policy.resolver.negationNumber(source, candidate, sourceRoute, candidates)
 		}
@@ -2702,7 +2743,7 @@ func (policy englishDeterminerCandidatePolicy) KeepTargetCandidate(source semant
 		if !attributedNegativeSeeing && !englishVPAuxiliaryVariant(candidate) {
 			variantAllowed = sourceRoute.variantMatchesNumber(variantID, number)
 		} else if englishVPAuxiliaryVariant(candidate) {
-			_, _, _, variantAllowed = englishTransitiveNegativeVPFeatures(policy.resolver, source, candidate, candidates)
+			_, _, _, variantAllowed = englishNegativeVPFeatures(policy.resolver, source, candidate, candidates)
 		}
 		if event.TemporalFrame == meaning.TemporalFramePast && !englishVPAuxiliaryVariant(candidate) && !attributedNegativeSeeing {
 			variantAllowed = sourceRoute.pastVariantAllowed(variantID)
@@ -2712,7 +2753,7 @@ func (policy englishDeterminerCandidatePolicy) KeepTargetCandidate(source semant
 		}
 	}
 	if englishVPAuxiliaryVariant(candidate) {
-		return englishTransitiveNegativeLocalNPCandidateAllowed(policy.resolver, source, candidate, candidates)
+		return englishNegativeLocalNPCandidateAllowed(policy.resolver, source, candidate, candidates)
 	}
 	if candidate.Kind != meaning.KindEvent && candidate.Kind != meaning.KindState || familyID != intransitiveFamily && familyID != transitiveFamily && familyID != transitivePastFamily && familyID != obliqueFamily && familyID != "construction:en.to_oblique" && familyID != "construction:en.with_oblique" && familyID != "construction:en.transitive_with_oblique" && familyID != attributedFamily && familyID != "construction:en.attribution_negative" && familyID != "construction:en.attributed_seeing_object" && familyID != "construction:en.attributed_seeing_both" && familyID != "construction:en.transitive_personal" && !isNegativeFamily {
 		return true
@@ -2958,7 +2999,7 @@ func englishParticipantPronounForTarget(resolver englishNegationResolver, source
 		licensedRoute := familyID == "construction:en.transitive_personal"
 		if familyID == "construction:en.transitive_negative" {
 			licensedRoute = englishVPAuxiliaryVariant(predicate) &&
-				englishTransitiveNegativeVPAuxContextForSource(resolver, source, predicate, candidates)
+				englishNegativeVPAuxContextForSource(resolver, source, predicate, candidates)
 		}
 		if licensedRoute && englishParticipantPronoun(source, predicate, target.NodeID, target.Lexeme.ID.String()) {
 			return true
