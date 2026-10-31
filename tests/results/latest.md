@@ -2,12 +2,12 @@
 
 > Observational report generated on push to `main`. Matrix outcomes do not gate the technical `go-ci` workflow.
 
-- Source SHA: `3130c97ac78f7f489d8f8b46f7aae75d662eb6be`
-- Generated (UTC): `2026-10-31T00:00:13Z`
+- Source SHA: `c8ccd148d6d4e57923e7365b3033839acaa5f9f4`
+- Generated (UTC): `2026-10-31T00:03:58Z`
 - Command: `go test ./tests/... -count=1 -v`
 - Command exit code: `1` (NONZERO)
 - Registered records: 1000; record checks: 3000
-- Additional observed checks: 303
+- Additional observed checks: 310
 
 | Case ID | Direction | Analysis | Realization | Integration | Declared coverage tags |
 |---|---|---|---|---|---|
@@ -352,25 +352,25 @@
 | `A1.13-COMP-1301-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.13-COMP-1302-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.13-COMP-1303-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
-| `A1.13-COMP-1304-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
+| `A1.13-COMP-1304-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.13-COMP-1305-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
-| `A1.13-COMP-1306-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
+| `A1.13-COMP-1306-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.13-COMP-1307-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.13-COMP-1308-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.13-COMP-1309-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.13-COMP-1310-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.13-COMP-1311-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
-| `A1.13-COMP-1312-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
+| `A1.13-COMP-1312-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.13-COMP-1313-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
-| `A1.13-COMP-1314-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
+| `A1.13-COMP-1314-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.13-COMP-1315-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
-| `A1.13-COMP-1316-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
+| `A1.13-COMP-1316-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.13-COMP-1317-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.13-COMP-1318-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.13-COMP-1319-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
-| `A1.13-COMP-1320-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
+| `A1.13-COMP-1320-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.13-COMP-1321-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
-| `A1.13-COMP-1322-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
+| `A1.13-COMP-1322-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.13-COMP-1323-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.13-COMP-1324-PL-EN` | PL → EN | GAP_I | GAP_I | GAP_I | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.13-COMP-1325-EN-PL` | EN → PL | GAP_I | GAP_I | GAP_I | composition, participant_roles, semantic_event, shared_referent, valency |
@@ -447,13 +447,13 @@
 | `A1.2-TIME-214-EN-PL` | EN → PL | PASS | FAIL | FAIL | participant_roles, semantic_event, time, valency |
 | `A1.2-TIME-217-PL-EN` | PL → EN | PASS | PASS | PASS | participant_roles, semantic_event, time, valency |
 | `A1.2-TIME-218-EN-PL` | EN → PL | PASS | PASS | FAIL | participant_roles, semantic_event, time, valency |
-| `A1.3-CO-301-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
+| `A1.3-CO-301-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.3-CO-302-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
-| `A1.3-CO-303-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
+| `A1.3-CO-303-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
 | `A1.3-CO-304-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, participant_roles, semantic_event, shared_referent, valency |
-| `A1.3-CO-305-PL-EN` | PL → EN | GAP_ANALYZE | FAIL | GAP_ANALYZE | composition, distinct_referents, participant_roles, semantic_event, valency |
+| `A1.3-CO-305-PL-EN` | PL → EN | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, distinct_referents, participant_roles, semantic_event, valency |
 | `A1.3-CO-306-EN-PL` | EN → PL | GAP_ANALYZE | GAP_REALIZE | GAP_ANALYZE | composition, distinct_referents, participant_roles, semantic_event, valency |
-| `A1.3-CO-307-PL-EN` | PL → EN | PASS | FAIL | FAIL | composition, participant_roles, semantic_event, semantic_property_black, valency |
+| `A1.3-CO-307-PL-EN` | PL → EN | PASS | PASS | PASS | composition, participant_roles, semantic_event, semantic_property_black, valency |
 | `A1.3-CO-308-EN-PL` | EN → PL | PASS | PASS | FAIL | composition, participant_roles, semantic_event, semantic_property_black, valency |
 | `A1.3-CO-309-PL-EN` | PL → EN | PASS | PASS | PASS | composition, participant_roles, semantic_event, semantic_property_black, valency |
 | `A1.3-CO-310-EN-PL` | EN → PL | PASS | FAIL | FAIL | composition, participant_roles, semantic_event, semantic_property_black, valency |
@@ -1091,15 +1091,15 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_null` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_empty` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_unknown` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_frame_on_referent` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_multiplicity_on_predicate` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/reject_temporal_frame_on_referent` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_participant_roles_swapped` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_changed` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_temporal_frame_omitted` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_changed` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/GraphMatches_rejects_multiplicity_omitted` | PASS |
-| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/temporal_frames` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/referent_multiplicity` | PASS |
+| `github.com/clickbytes/golingua/tests/interlingua` | `TestMeaningAttributes/temporal_frames` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestNegationExpansionFixturesValidateAndRetainScope` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestNegationExpansionGapLabelsHaveNoFixture` | PASS |
 | `github.com/clickbytes/golingua/tests/interlingua` | `TestNegationExpansionPluralOnlyDoorCountVariants` | PASS |
@@ -1196,9 +1196,9 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersRejectMalformedActualSources/The_teacher_sees_an_dog.` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersRejectMalformedActualSources/The_teacher_sees_a_apple.` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersConcurrentNegativeRealization/request-3` | PASS |
-| `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersConcurrentNegativeRealization/request-1` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersConcurrentNegativeRealization/request-0` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersConcurrentNegativeRealization/request-2` | PASS |
+| `github.com/clickbytes/golingua/tests/languages/en/A1` | `TestPluralDeterminersConcurrentNegativeRealization/request-1` | PASS |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestCompositionBoundaries/bearer_is_object` | FAIL |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestCompositionBoundaries/bearer_is_second_cat_despite_matching_concept` | FAIL |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1` | `TestCompositionBoundaries/event_time_absent` | PASS |
@@ -1318,6 +1318,13 @@ These malformed or unsupported inputs are separate from normal registered transl
 | `github.com/clickbytes/golingua/tests/matrix` | `TestTargetAlternativeFailureIsolation/malformed_remains_fatal` | PASS |
 | `github.com/clickbytes/golingua/tests/matrix` | `TestTargetMissingPastParadigmIsDiagnosed/The_bird_flew.` | PASS |
 | `github.com/clickbytes/golingua/tests/matrix` | `TestTargetMissingPastParadigmIsDiagnosed/The_birds_flew.` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestTargetSelectionIgnoresUnrelatedBindings/en` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestTargetSelectionIgnoresUnrelatedBindings/pl` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestTargetSelectionExactLicenseAndBudget/missing` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestTargetSelectionExactLicenseAndBudget/provenance` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestTargetSelectionExactLicenseAndBudget/actual_work_remains_bounded` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestCompiledBindingIndexesAreExactAndImmutable/en` | PASS |
+| `github.com/clickbytes/golingua/tests/matrix` | `TestCompiledBindingIndexesAreExactAndImmutable/pl` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestAmbiguityCatalogueLinks` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestInventory` | PASS |
 | `github.com/clickbytes/golingua/tests/translation` | `TestInventoryIdentifierSupportsBatches` | PASS |
@@ -1396,7 +1403,7 @@ Packages with no observed test run are reported as infrastructure/build failures
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.7` | FAIL | 98 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.8` | FAIL | 92 |
 | `github.com/clickbytes/golingua/tests/languages/pl/A1.9` | FAIL | 118 |
-| `github.com/clickbytes/golingua/tests/matrix` | PASS | 27 |
+| `github.com/clickbytes/golingua/tests/matrix` | PASS | 37 |
 | `github.com/clickbytes/golingua/tests/translation` | FAIL | 63 |
 | `github.com/clickbytes/golingua/tests/translation/en-pl` | FAIL | 504 |
 | `github.com/clickbytes/golingua/tests/translation/pl-en` | FAIL | 504 |
@@ -1500,14 +1507,13 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 | composition_boundary | pl → en | analysis | GAP_ANALYZE | 24 |
 | composition_boundary | pl → en | analysis | GAP_I | 13 |
 | composition_boundary | pl → en | analysis | PASS | 8 |
-| composition_boundary | pl → en | integration | FAIL | 1 |
 | composition_boundary | pl → en | integration | GAP_ANALYZE | 24 |
 | composition_boundary | pl → en | integration | GAP_I | 13 |
-| composition_boundary | pl → en | integration | PASS | 7 |
-| composition_boundary | pl → en | realization | FAIL | 12 |
+| composition_boundary | pl → en | integration | PASS | 8 |
+| composition_boundary | pl → en | realization | FAIL | 1 |
 | composition_boundary | pl → en | realization | GAP_I | 13 |
-| composition_boundary | pl → en | realization | GAP_REALIZE | 13 |
-| composition_boundary | pl → en | realization | PASS | 7 |
+| composition_boundary | pl → en | realization | GAP_REALIZE | 23 |
+| composition_boundary | pl → en | realization | PASS | 8 |
 | identification | en → pl | analysis | FAIL | 7 |
 | identification | en → pl | analysis | GAP_I | 4 |
 | identification | en → pl | analysis | PASS | 29 |
@@ -1612,7 +1618,7 @@ Pair/group counts describe sample distribution. Coverage targets are planning go
 - Sense catalogue associations parsed: 2075 (not morphology execution coverage).
 - Declared Meaning ID references: 1094 allowed; 1094 required.
 - Inventory fields preserve declared tags, source semantics, allowed/required Meaning IDs, and owner status separately from runtime observations.
-- Inventory source SHA `3130c97ac78f7f489d8f8b46f7aae75d662eb6be`: 1000 directions.
+- Inventory source SHA `c8ccd148d6d4e57923e7365b3033839acaa5f9f4`: 1000 directions.
 
 ### Declared source requirements
 
@@ -1685,7 +1691,7 @@ Aggregates below summarize authored source requirements; they are not observed a
 | `writing_message` | 2 |
 
 Declared role mentions: `agent` 16, `asset` 4, `associate` 4, `associated` 22, `author` 4, `back` 8, `bearer` 24, `beneficiary` 6, `choice_restriction` 2, `companion` 2, `content` 2, `destination` 2, `document` 2, `drinker` 16, `eater` 12, `entity` 2, `existence` 50, `experiencer` 160, `figure` 4, `food` 10, `friend_a` 2, `friend_b` 2, `front` 8, `giver` 20, `helper` 6, `higher` 6, `holder` 50, `instrument` 4, `item` 4, `landmark` 32, `landmark_a` 4, `landmark_b` 4, `liquid` 12, `located` 34, `location` 10, `lower` 6, `manner` 2, `material` 38, `member` 2, `object` 56, `occupant` 6, `owner` 4, `partner` 2, `person_variable` 6, `possessor` 18, `quantified_set` 50, `reader` 38, `reason` 2, `recipient` 24, `runner` 4, `sibling_a` 4, `sibling_b` 4, `sleeper` 22, `source` 2, `speaker` 4, `stimulus` 160, `support` 2, `supported` 2, `target` 4, `thanker` 2, `theme` 20, `time` 4, `tool` 2, `user` 2, `walker` 2, `writer` 2.
-- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "40a329222c6cf7a189325f68d0cef8cc992be702e38997bb5c5a1fe6d9b60f93", "format_version": 1}`; inventory source SHA: `3130c97ac78f7f489d8f8b46f7aae75d662eb6be`.
+- Pack identity: `{"dataset_id": "golingua-authored", "dataset_version": "2026-10-23", "digest": "40a329222c6cf7a189325f68d0cef8cc992be702e38997bb5c5a1fe6d9b60f93", "format_version": 1}`; inventory source SHA: `c8ccd148d6d4e57923e7365b3033839acaa5f9f4`.
 
 Catalogue sense associations are not proof that a paradigm form or morphology procedure ran. Aggregates below describe declared pack associations only.
 
@@ -1978,19 +1984,17 @@ Observed top-level outcomes by runtime stage; these do not replace check statuse
 | direct_result | ambiguous | 47 |
 | direct_result | incomplete | 20 |
 | direct_result | ok | 68 |
-| direct_result | resource_limit | 1 |
-| direct_result | unsupported | 36 |
+| direct_result | unsupported | 37 |
 | independent_realization |  | 8 |
-| independent_realization | ambiguous | 412 |
+| independent_realization | ambiguous | 413 |
 | independent_realization | incomplete | 154 |
 | independent_realization | ok | 76 |
-| independent_realization | resource_limit | 13 |
+| independent_realization | resource_limit | 2 |
 | independent_realization | unknown | 1 |
-| independent_realization | unsupported | 109 |
-| integration | ambiguous | 370 |
+| independent_realization | unsupported | 119 |
+| integration | ambiguous | 371 |
 | integration | incomplete | 195 |
 | integration | ok | 6 |
-| integration | resource_limit | 1 |
 | integration | unknown | 2 |
 | integration | unsupported | 428 |
 | native_analysis | ambiguous | 82 |
@@ -2179,7 +2183,10 @@ Trace rows are deduplicated by case/stage/family/variant/frame/outcome. Feature 
 | `construction:en.attributed_seeing` | `construction:en.attributed_seeing.svo.indefinite_subject_object` | `en.see.visual.transitive` | ok | 19 |
 | `construction:en.attributed_seeing` | `construction:en.attributed_seeing.svo.plural_subject` | `en.see.visual.transitive` | ok | 9 |
 | `construction:en.attributed_seeing` | `construction:en.attributed_seeing.svo.plural_subject.indefinite_object` | `en.see.visual.transitive` | ok | 5 |
-| `construction:en.attributed_seeing_both` | `construction:en.attributed_seeing_both.svo` | `en.see.visual.transitive` | ok | 2 |
+| `construction:en.attributed_seeing_both` | `construction:en.attributed_seeing_both.svo` | `en.see.visual.transitive` | ok | 4 |
+| `construction:en.attributed_seeing_both` | `construction:en.attributed_seeing_both.svo.indefinite_object` | `en.see.visual.transitive` | ok | 2 |
+| `construction:en.attributed_seeing_both` | `construction:en.attributed_seeing_both.svo.indefinite_subject` | `en.see.visual.transitive` | ok | 2 |
+| `construction:en.attributed_seeing_both` | `construction:en.attributed_seeing_both.svo.indefinite_subject_object` | `en.see.visual.transitive` | ok | 2 |
 | `construction:en.attributed_seeing_object` | `construction:en.attributed_seeing_object.svo` | `en.hear.auditory.transitive` | ok | 8 |
 | `construction:en.attributed_seeing_object` | `construction:en.attributed_seeing_object.svo` | `en.see.visual.transitive` | ok | 38 |
 | `construction:en.attributed_seeing_object` | `construction:en.attributed_seeing_object.svo.indefinite_object` | `en.hear.auditory.transitive` | ok | 4 |
@@ -2943,34 +2950,31 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | direct_result | `NO_PARSE` | 7 |
 | direct_result | `NO_START_PLAN` | 1 |
 | direct_result | `REALIZATION_FIELD_LOSS` | 20 |
-| direct_result | `RESOURCE_LIMIT` | 1 |
-| direct_result | `TARGET_ALTERNATIVES_AMBIGUOUS` | 54 |
+| direct_result | `TARGET_ALTERNATIVES_AMBIGUOUS` | 56 |
 | direct_result | `TARGET_LEXICAL_COVERAGE_UNAVAILABLE` | 10 |
-| direct_result | `TARGET_PREDICATE_POLICY_REJECTED` | 32 |
+| direct_result | `TARGET_PREDICATE_POLICY_REJECTED` | 33 |
 | direct_result | `TRANSLATION_NOT_OK` | 2 |
 | direct_result | `UNKNOWN_SURFACE` | 1 |
 | direct_result | `UNMATCHED_PARSE_CANDIDATE` | 26 |
 | independent_realization | `DISCOURSE_ACT_UNSUPPORTED` | 44 |
-| independent_realization | `EXPLICIT_REALIZATION_ASSUMPTION` | 2540 |
+| independent_realization | `EXPLICIT_REALIZATION_ASSUMPTION` | 2548 |
 | independent_realization | `INJECTED_TARGET_REFUSAL` | 6 |
 | independent_realization | `NO_LICENSED_TARGET` | 6 |
 | independent_realization | `OPERATOR_COVERAGE_UNKNOWN` | 52 |
 | independent_realization | `OPERATOR_MAPPING_UNAVAILABLE` | 62 |
 | independent_realization | `QUESTION_ANSWER_UNAVAILABLE` | 38 |
 | independent_realization | `REALIZATION_FIELD_LOSS` | 108 |
-| independent_realization | `RESOURCE_LIMIT` | 13 |
-| independent_realization | `ROLE_LEXICALIZATION_UNAVAILABLE` | 1 |
-| independent_realization | `TARGET_ALTERNATIVES_AMBIGUOUS` | 489 |
+| independent_realization | `TARGET_ALTERNATIVES_AMBIGUOUS` | 513 |
 | independent_realization | `TARGET_FRAME_VARIANT_MISMATCH` | 2 |
 | independent_realization | `TARGET_LEXICAL_COVERAGE_UNAVAILABLE` | 32 |
 | independent_realization | `TARGET_OPERATOR_COVERAGE_UNAVAILABLE` | 52 |
 | independent_realization | `TARGET_PAST_PARADIGM_UNSUPPORTED` | 2 |
-| independent_realization | `TARGET_PREDICATE_POLICY_REJECTED` | 41 |
+| independent_realization | `TARGET_PREDICATE_POLICY_REJECTED` | 43 |
 | independent_realization | `TARGET_REALIZATION_CANCELED` | 1 |
 | independent_realization | `TARGET_ROLE_ABSENT_BY_FRAME_LICENSE` | 112 |
 | integration | `AMBIGUOUS_PARSE` | 39 |
 | integration | `DISAMBIGUATION_INCOMPLETE` | 53 |
-| integration | `EXPLICIT_REALIZATION_ASSUMPTION` | 2480 |
+| integration | `EXPLICIT_REALIZATION_ASSUMPTION` | 2488 |
 | integration | `HARD_SELECTIONAL_RESTRICTION` | 6 |
 | integration | `MISSING_REQUIRED_ROLE` | 20 |
 | integration | `NO_PARSE` | 96 |
@@ -2982,10 +2986,8 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 | integration | `PREDICATE_KIND_UNSUPPORTED` | 15 |
 | integration | `PREDICATE_NODE_UNRESOLVED` | 3 |
 | integration | `REALIZATION_FIELD_LOSS` | 998 |
-| integration | `RESOURCE_LIMIT` | 2 |
-| integration | `ROLE_LEXICALIZATION_UNAVAILABLE` | 2 |
 | integration | `SURFACE_OMITTED_ROLE` | 65 |
-| integration | `TARGET_ALTERNATIVES_AMBIGUOUS` | 437 |
+| integration | `TARGET_ALTERNATIVES_AMBIGUOUS` | 438 |
 | integration | `TARGET_OPERATOR_COVERAGE_UNAVAILABLE` | 6 |
 | integration | `TARGET_PAST_PARADIGM_UNSUPPORTED` | 8 |
 | integration | `TARGET_PREDICATE_POLICY_REJECTED` | 20 |
@@ -3027,6 +3029,6 @@ Gaps are grouped by required predicate and authored missing-representation reaso
 
 ## Counts
 
-PASS: 889 | FAIL: 656 | GAP_ANALYZE: 262 | GAP_REALIZE: 113 | GAP_I: 1080 | SPEC_PENDING: 0 | INFRA: 0 | NOT RUN: 0
+PASS: 891 | FAIL: 644 | GAP_ANALYZE: 262 | GAP_REALIZE: 123 | GAP_I: 1080 | SPEC_PENDING: 0 | INFRA: 0 | NOT RUN: 0
 
 `SPEC_PENDING` means the check ran but lacks a closed independent contract. `NOT RUN` means no matching record check result was observed. Runtime adapter NOT RUN markers are counted separately above. Additional checks retain their own statuses. Consult the full raw log artifact for every individual observation.
